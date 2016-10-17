@@ -1,0 +1,36 @@
+{
+    "name": "compodoc",
+    "version": "0.0.1",
+    "description": "A tool to generate a must-have documentation",
+    "main": "index.js",
+    "bin": {
+        "compodoc": "./bin/index.js"
+    },
+    "scripts": {
+        "start": "npm run tsc",
+        "tsc": "./node_modules/.bin/tsc --newLine LF"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/groupe-sii/compodoc.git"
+    },
+    "keywords": [
+        "angular2",
+        "documentation"
+    ],
+    "author": "Vindent Ogloblinsky (vogloblinsky@sii.fr)",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/groupe-sii/compodoc/issues"
+    },
+    "homepage": "https://github.com/groupe-sii/compodoc#readme",
+    "dependencies": {
+        "@types/node": "6.0.45",
+        "@types/typescript": "0.4.29",
+        "colors": "1.1.2",
+        "commander": "2.9.0",
+        "fs-extra": "0.30.0",
+        "q": "1.4.1",
+        "typescript": "2.0.3"
+    }
+}
