@@ -5,18 +5,25 @@ import * as Q from 'q';
 
 export class HtmlEngine {
     constructor() {
-
+        fs.readFile(path.resolve(__dirname + '/../src/templates/menu.hbs'), 'utf8', (err, data) => {
+            if (err) throw err;
+            Handlebars.registerPartial('menu', data);
+        });
     }
-    render() {
-        let p = Q.defer(),
-            htmlPage;
-        
+    render(name:String) {
+        let p = Q.defer();
+
         fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
             if (err) throw err;
 
-            htmlPage = data;
-            let template:any = Handlebars.compile(htmlPage);
-            let result = template();
+            let template:any = Handlebars.compile(data);
+            console.log(name);
+            let result = template({
+                documentationMainName: name,
+                parsingData: {
+                    components: 5
+                }
+            });
 
             p.resolve(result);
         });

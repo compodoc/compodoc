@@ -1,1 +1,57 @@
-TOTO
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{documentationMainName}} documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <style>
+          .topbar {
+              padding: 20px;
+          }
+          .topbar h1 {
+              margin: 0;
+          }
+          .glyphicon {
+            margin-right: 10px;
+          }
+
+          .panel-body {
+            padding: 0px;
+          }
+
+          .panel-body table tr td {
+            padding-left: 15px
+          }
+
+          .panel-body .table {
+            margin-bottom: 0px;
+          }
+        </style>
+    </head>
+    <body>
+
+        <div class="topbar">
+            <h1>{{documentationMainName}} documentation</h1>
+        </div>
+
+        <div class="container-fluid">
+           <div class="row">
+               <div class="col-sm-3">
+                   {{> menu parsingData }}
+               </div>
+               <div class="col-sm-9">
+                   {{ readme }}
+               </div>
+           </div>
+       </div>
+
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    </body>
+</html>
