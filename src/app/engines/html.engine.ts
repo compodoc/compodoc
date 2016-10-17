@@ -10,20 +10,16 @@ export class HtmlEngine {
             Handlebars.registerPartial('menu', data);
         });
     }
-    render(name:String) {
+    render(options:any) {
         let p = Q.defer();
 
         fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
             if (err) throw err;
 
-            let template:any = Handlebars.compile(data);
-            console.log(name);
-            let result = template({
-                documentationMainName: name,
-                parsingData: {
-                    components: 5
-                }
-            });
+            console.log(options);
+
+            let template:any = Handlebars.compile(data),
+                result = template(options);
 
             p.resolve(result);
         });

@@ -1,16 +1,22 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Q from 'q';
-import * as marked from 'marked';
+import marked from 'marked';
 
 export class MarkdownEngine {
     constructor() {
 
     }
-    render(name:String) {
+    getReadmeFile() {
         let p = Q.defer();
 
-        console.log(marked('I am using __markdown__.'));
+        fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', (err, data) => {
+            if (err) {
+                p.reject('README reading error');
+            } else {
+                p.resolve(marked(data));
+            }
+        });
 
         return p.promise;
     }

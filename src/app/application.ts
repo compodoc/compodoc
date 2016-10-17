@@ -27,6 +27,15 @@ export namespace Application {
     let $htmlengine = new HtmlEngine(),
         $markdownengine = new MarkdownEngine();
 
+    /*
+     * 1. scan ts files for list of modules
+     * 2. scan ts files for list of components
+     * 3. export one page for each modules using module.hbs template
+     * 4. export one page for each components using components.hbs template
+     * 5. render README.md in index.html
+     * 6. render menu with lists of components and modules
+     */
+
     export let run = () => {
 
         let files = [];
@@ -49,11 +58,21 @@ export namespace Application {
 
         logger.info('Ready, steady, go !!!');
 
-        $htmlengine.render(program.name).then((data) => {
-            fs.outputFile('documentation/index.html', data, function (err) {
-                $markdownengine.render('');
+        $markdownengine.getReadmeFile().then((readmeData) => {
+
+            $htmlengine.render({
+                documentationMainName: program.name,
+                readme: readmeData
+            }).then((htmlData) => {
+
+                fs.outputFile('documentation/index.html', htmlData, function (err) {
+
+                });
+
             });
         });
+
+
 
 
 
