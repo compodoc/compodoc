@@ -10,7 +10,7 @@
     "build": "./node_modules/.bin/rollup -c",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "start": "npm run tsc",
-    "tsc": "./node_modules/.bin/tsc --newLine LF",
+    "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
     "watch": "./node_modules/.bin/rollup -c -w"
   },
   "repository": {
@@ -34,12 +34,13 @@
     "commander": "2.9.0",
     "conventional-changelog-cli": "1.2.0",
     "fs-extra": "0.30.0",
+    "gulp-util": "3.0.7",
     "q": "1.4.1",
     "typescript": "2.0.3"
   },
   "devDependencies": {
+    "handlebars": "^4.0.5",
     "rollup": "^0.36.3",
-    "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^2.5.0"
   }
