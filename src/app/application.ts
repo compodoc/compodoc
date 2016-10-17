@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
+import { MarkdownEngine } from './engines/markdown.engine';
 
 let pkg = require('../package.json');
 let program = require('commander');
@@ -14,6 +15,7 @@ export namespace Application {
         .version(pkg.version)
         .option('-f, --file [file]', 'Entry *.ts file')
         .option('-o, --open', 'Open the generated documentation', false)
+        .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
 
@@ -22,7 +24,8 @@ export namespace Application {
         process.exit(1);
     }
 
-    let $htmlengine = new HtmlEngine();
+    let $htmlengine = new HtmlEngine(),
+        $markdownengine = new MarkdownEngine();
 
     export let run = () => {
 
@@ -46,9 +49,9 @@ export namespace Application {
 
         logger.info('Ready, steady, go !!!');
 
-        $htmlengine.render().then((data) => {
-            fs.outputFile('documentation/toto.html', data, function (err) {
-
+        $htmlengine.render(program.name).then((data) => {
+            fs.outputFile('documentation/index.html', data, function (err) {
+                $markdownengine.render('');
             });
         });
 
