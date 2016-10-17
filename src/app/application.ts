@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { logger } from '../logger';
@@ -44,11 +44,15 @@ export namespace Application {
             outputHelp();
         }
 
-        console.log($htmlengine)
-
         logger.info('Ready, steady, go !!!');
 
-        $htmlengine.render();
+        $htmlengine.render().then((data) => {
+            fs.outputFile('documentation/toto.html', data, function (err) {
+
+            });
+        });
+
+
 
     }
 }

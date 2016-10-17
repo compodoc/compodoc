@@ -11,7 +11,8 @@
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "start": "npm run tsc",
     "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
-    "watch": "./node_modules/.bin/rollup -c -w"
+    "watch-rollup": "./node_modules/.bin/rollup -c -w",
+    "watch": "nodemon --watch src -e ts --exec 'npm run build'"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,10 @@
   },
   "homepage": "https://github.com/groupe-sii/compodoc#readme",
   "dependencies": {
+    "@types/fs-extra": "0.0.33",
+    "@types/handlebars": "^4.0.31",
     "@types/node": "6.0.45",
+    "@types/q": "0.0.32",
     "@types/typescript": "0.4.29",
     "colors": "1.1.2",
     "commander": "2.9.0",
@@ -40,6 +44,7 @@
   },
   "devDependencies": {
     "handlebars": "^4.0.5",
+    "nodemon": "^1.11.0",
     "rollup": "^0.36.3",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^2.5.0"
