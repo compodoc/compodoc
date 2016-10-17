@@ -7,6 +7,8 @@ A tool to generate a must-have documentation for your Angular 2 application.
 
 Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [dgeni](https://github.com/angular/dgeni), [typedoc](https://github.com/TypeStrong/typedoc)
 
+## Work in progress, not ready for production
+
 ## Install
 
 Install from npm: `npm install -g compodoc`
