@@ -5,46 +5,96 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>{{documentationMainName}} documentation</title>
         <meta name="description" content="">
+        <base href="/">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         <style>
-          .topbar {
-              padding: 20px;
-          }
-          .topbar h1 {
-              margin: 0;
-          }
-          .glyphicon {
-            margin-right: 10px;
-          }
+            body {
+                background: #f8f8f8;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            .container-fluid {
+                height: calc(100% - 50px);
+                margin-top: 50px;
+                overflow-y: hidden;
+            }
+            .row {
+                height: 100%;
+            }
+            .content {
+                background: white;
+                height: 100%;
+                overflow-y: auto;
+            }
+            .content h1:first-of-type {
+                margin-top: 15px
+            }
+            .glyphicon, .fa {
+              margin-right: 10px;
+            }
+            .fa-code-fork {
+              margin-right: 14px;
+            }
+            .fa-long-arrow-down {
+              margin-right: 16px;
+            }
+            .panel-body {
+              padding: 0px;
+            }
 
-          .panel-body {
-            padding: 0px;
-          }
+            .panel-body table tr td {
+              padding-left: 15px
+            }
 
-          .panel-body table tr td {
-            padding-left: 15px
-          }
+            .panel-body .table {
+              margin-bottom: 0px;
+            }
 
-          .panel-body .table {
-            margin-bottom: 0px;
-          }
+            .navbar-static-top {
+                margin-bottom: 0;
+                height: 50px;
+            }
+            .menu {
+                border-right: 1px solid #e7e7e7;
+                height: 100%;
+                padding: 0;
+            }
+            .menu .panel-group {
+                width: 100%;
+            }
+            .menu .panel-default {
+                border-right: none;
+                border-left: none;
+                border-bottom: none;
+            }
+            .menu .panel-group .panel-heading+.panel-collapse>.panel-body {
+                border-top: none;
+            }
+            .panel-group .panel+.panel {
+                margin-top: 0;
+            }
+            .menu a {
+                color: #3c3c3c;
+            }
         </style>
     </head>
     <body>
 
-        <div class="topbar">
-            <h1>{{documentationMainName}} documentation</h1>
-        </div>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <a href="./" class="navbar-brand">{{documentationMainName}} documentation</a>
+        </nav>
 
         <div class="container-fluid">
            <div class="row">
-               <div class="col-sm-3">
+               <div class="col-sm-2 menu">
                    {{> menu parsingData }}
                </div>
-               <div class="col-sm-9">
+               <div class="col-sm-10 readme content">
                    {{{ readme }}}
                </div>
            </div>
