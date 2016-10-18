@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
+import * as Shelljs from 'shelljs';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -65,7 +66,19 @@ export namespace Application {
             if (err) {
                 logger.error('Error during resources copy');
             } else {
+                processGraph();
+            }
+        });
+    }
+
+    let processGraph = () => {
+        Shelljs.exec('ngd -f src/main.ts -d documentation/graph', {
+            silent: true
+        }, function(code, stdout, stderr) {
+            if(code === 0) {
                 logger.info('Documentation generated in ' + program.output);
+            } else {
+                logger.error('Error during graph generation');
             }
         });
     }
