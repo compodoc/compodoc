@@ -16,8 +16,6 @@ export class HtmlEngine {
         fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
             if (err) throw err;
 
-            console.log(options);
-
             let template:any = Handlebars.compile(data),
                 result = template(options);
 
