@@ -51,12 +51,22 @@ export namespace Application {
                 if (err) {
                     logger.error('Error during index page generation');
                 } else {
-                    logger.info('Documentation generated in ' + program.output);
+                    processResources();
                 }
             });
 
         }, (errorMessage) => {
             logger.error(errorMessage);
+        });
+    }
+
+    let processResources = () => {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + program.output), function (err) {
+            if (err) {
+                logger.error('Error during resources copy');
+            } else {
+                logger.info('Documentation generated in ' + program.output);
+            }
         });
     }
 
