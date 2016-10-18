@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as LiveServer from 'live-server';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -16,6 +17,7 @@ export namespace Application {
         .option('-f, --file [file]', 'Entry *.ts file')
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
+        .option('-s, --serve', 'Serve generated documentation', false)
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
 
@@ -39,6 +41,15 @@ export namespace Application {
     export let run = () => {
 
         let files = [];
+
+        if (program.serve) {
+            logger.info('Serving documentation');
+            LiveServer.start({
+                root: "./documentation",
+                open: false
+            });
+            return;
+        }
 
         if (program.file) {
             logger.info('Using entry', program.file);
@@ -71,10 +82,6 @@ export namespace Application {
 
             });
         });
-
-
-
-
 
     }
 }

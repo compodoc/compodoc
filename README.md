@@ -26,6 +26,7 @@ Options:
   -V, --version            output the version number
   -f, --file [file]        Entry *.ts file
   -o, --open               Open the generated documentation
+  -s, --serve              Serve generated documentation
   -d, --output [folder]    Where to store the generated documentation
 ```
 
