@@ -6,9 +6,13 @@ import * as LiveServer from 'live-server';
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
+import { FileEngine } from './engines/file.engine';
 
-let pkg = require('../package.json');
-let program = require('commander');
+let pkg = require('../package.json'),
+    program = require('commander'),
+    $htmlengine = new HtmlEngine(),
+    $fileengine = new FileEngine(),
+    $markdownengine = new MarkdownEngine();
 
 export namespace Application {
 
@@ -26,8 +30,35 @@ export namespace Application {
         process.exit(1);
     }
 
-    let $htmlengine = new HtmlEngine(),
-        $markdownengine = new MarkdownEngine();
+    let documentationMainName = program.name; //default commander value
+
+    let processMarkdown = () => {
+        $markdownengine.getReadmeFile().then((readmeData) => {
+            processIndex(readmeData);
+        }, (errorMessage) => {
+            logger.error(errorMessage);
+            logger.error('Continuing without README.md file');
+            processIndex();
+        });
+    }
+
+    let processIndex = (readmeData:String) => {
+        $htmlengine.render({
+            documentationMainName: documentationMainName,
+            readme: readmeData
+        }).then((htmlData) => {
+            fs.outputFile(program.output + 'index.html', htmlData, function (err) {
+                if (err) {
+                    logger.error('Error during index page generation');
+                } else {
+                    logger.info('Documentation generated in ' + program.output);
+                }
+            });
+
+        }, (errorMessage) => {
+            logger.error(errorMessage);
+        });
+    }
 
     /*
      * 1. scan ts files for list of modules
@@ -68,27 +99,17 @@ export namespace Application {
             outputHelp();
         }
 
-        $markdownengine.getReadmeFile().then((readmeData) => {
+        $fileengine.get('package.json').then((packageData) => {
 
-            $htmlengine.render({
-                documentationMainName: program.name,
-                readme: readmeData
-            }).then((htmlData) => {
+            if (typeof JSON.parse(packageData).name !== 'undefined') {
+                documentationMainName = JSON.parse(packageData).name;
+            }
 
-                fs.outputFile(program.output + 'index.html', htmlData, function (err) {
-                    if (err) {
-                        logger.error('Error during index page generation');
-                    } else {
-                        logger.info('Documentation generated in ' + program.output);
-                    }
-                });
-
-            }, (errorMessage) => {
-                logger.error(errorMessage);
-            });
+            processMarkdown();
         }, (errorMessage) => {
             logger.error(errorMessage);
+            logger.error('Continuing without package.json file');
+            processMarkdown();
         });
-
     }
 }
