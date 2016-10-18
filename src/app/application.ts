@@ -45,8 +45,9 @@ export namespace Application {
         if (program.serve) {
             logger.info('Serving documentation');
             LiveServer.start({
-                root: "./documentation",
-                open: false
+                root: program.output,
+                open: false,
+                quiet: true
             });
             return;
         }
@@ -67,8 +68,6 @@ export namespace Application {
             outputHelp();
         }
 
-        logger.info('Ready, steady, go !!!');
-
         $markdownengine.getReadmeFile().then((readmeData) => {
 
             $htmlengine.render({
@@ -76,11 +75,19 @@ export namespace Application {
                 readme: readmeData
             }).then((htmlData) => {
 
-                fs.outputFile('documentation/index.html', htmlData, function (err) {
-
+                fs.outputFile(program.output + 'index.html', htmlData, function (err) {
+                    if (err) {
+                        logger.error('Error during index page generation');
+                    } else {
+                        logger.info('Documentation generated in ' + program.output);
+                    }
                 });
 
+            }, (errorMessage) => {
+                logger.error(errorMessage);
             });
+        }, (errorMessage) => {
+            logger.error(errorMessage);
         });
 
     }

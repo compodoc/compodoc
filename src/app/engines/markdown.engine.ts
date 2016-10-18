@@ -12,7 +12,7 @@ export class MarkdownEngine {
 
         fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', (err, data) => {
             if (err) {
-                p.reject('README reading error');
+                p.reject('Error during README reading');
             } else {
                 p.resolve(marked(data));
             }

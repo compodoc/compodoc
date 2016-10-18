@@ -14,12 +14,13 @@ export class HtmlEngine {
         let p = Q.defer();
 
         fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-
-            let template:any = Handlebars.compile(data),
-                result = template(options);
-
-            p.resolve(result);
+            if (err) {
+                p.reject('Error during index page generation');
+            } else {
+                let template:any = Handlebars.compile(data),
+                    result = template(options);
+                p.resolve(result);
+            }
         });
 
         return p.promise;
