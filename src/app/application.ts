@@ -116,7 +116,7 @@ export namespace Application {
     }
 
     let processGraph = () => {
-        Shelljs.exec('ngd -f src/main.ts -d documentation/graph', {
+        Shelljs.exec('ngd -f ' + program.file + ' -d documentation/graph', {
             silent: true
         }, function(code, stdout, stderr) {
             if(code === 0) {
