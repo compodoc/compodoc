@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{{documentationMainName}} documentation</title>
+        <title>{{data.documentationMainName}} documentation</title>
         <meta name="description" content="">
         <base href="/">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,19 +17,19 @@
     <body>
 
         <nav class="navbar navbar-default navbar-fixed-top">
-            <a href="./" class="navbar-brand">{{documentationMainName}} documentation</a>
+            <a href="./" class="navbar-brand">{{data.documentationMainName}} documentation</a>
         </nav>
 
         <div class="container-fluid">
            <div class="row">
                <div class="col-sm-2 menu">
-                   {{> menu parsingData }}
+                   {{> menu data }}
                </div>
-               <div class="col-sm-10 {{#compare context "===" 'readme'}} readme {{/compare}} content">
-                   {{#compare context "===" 'readme'}}
-                        {{{ readme }}}
+               <div class="col-sm-10 {{#compare data.context "===" 'readme'}} readme {{/compare}} content">
+                   {{#compare data.context "===" 'readme'}}
+                        {{{ data.readme }}}
                    {{/compare}}
-                   {{#compare context "===" 'overview'}}
+                   {{#compare data.context "===" 'overview'}}
                     <h1>Overview</h1>
                     <img
                         src="graph/dependencies.svg"

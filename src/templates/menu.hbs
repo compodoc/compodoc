@@ -8,14 +8,19 @@
         <div id="gettingStarted" class="panel-collapse collapse in">
             <div class="panel-body">
                 <table class="table">
+                    {{#if readme}}
                     <tr>
                         <td>
                             <a href="./"><span class="fa fa-file-text-o"></span>README</a>
                         </td>
                     </tr>
+                    {{/if}}
                     <tr>
                         <td>
-                            <a href="./overview.html"><span class="fa fa-th"></span>Overview</a>
+                            <a {{#compare context "===" 'readme'}} href="./overview.html" {{/compare}}
+                                {{#compare context "===" 'overview'}} href="./" {{/compare}}>
+                                <span class="fa fa-th"></span>Overview
+                            </a>
                         </td>
                     </tr>
                     <tr>

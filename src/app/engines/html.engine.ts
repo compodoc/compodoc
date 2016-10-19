@@ -50,6 +50,17 @@ export class HtmlEngine {
           }
           return options.fn(this);
         });
+        Handlebars.registerHelper("debug", function(optionalValue) {
+          console.log("Current Context");
+          console.log("====================");
+          console.log(this);
+
+          if (optionalValue) {
+            console.log("OptionalValue");
+            console.log("====================");
+            console.log(optionalValue);
+          }
+        });
     }
     init() {
         fs.readFile(path.resolve(__dirname + '/../src/templates/menu.hbs'), 'utf8', (err, data) => {
@@ -66,7 +77,9 @@ export class HtmlEngine {
                    reject('Error during index ' + page.name + ' generation');
                } else {
                    let template:any = Handlebars.compile(data),
-                       result = template(o);
+                       result = template({
+                           data: o
+                       });
                    resolve(result);
                }
            });
