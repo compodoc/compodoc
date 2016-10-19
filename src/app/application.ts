@@ -119,6 +119,7 @@ export namespace Application {
                 files = [program.file];
             }
         } else {
+            logger.fatal('Entry file was not found');
             outputHelp();
         }
 
