@@ -1,7 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import * as Q from 'q';
 
 export class HtmlEngine {
     constructor() {
@@ -11,18 +10,16 @@ export class HtmlEngine {
         });
     }
     render(options:any) {
-        let p = Q.defer();
-
-        fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
-            if (err) {
-                p.reject('Error during index page generation');
-            } else {
-                let template:any = Handlebars.compile(data),
-                    result = template(options);
-                p.resolve(result);
-            }
+        return new Promise(function(resolve, reject) {
+           fs.readFile(path.resolve(__dirname + '/../src/templates/index.hbs'), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during index page generation');
+               } else {
+                   let template:any = Handlebars.compile(data),
+                       result = template(options);
+                   resolve(result);
+               }
+           });
         });
-
-        return p.promise;
     }
 };

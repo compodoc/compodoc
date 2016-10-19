@@ -33,6 +33,19 @@ export namespace Application {
 
     let documentationMainName = program.name; //default commander value
 
+    let processPackageJson = () => {
+        $fileengine.get('package.json').then((packageData) => {
+            if (typeof JSON.parse(packageData).name !== 'undefined') {
+                documentationMainName = JSON.parse(packageData).name;
+            }
+            processMarkdown();
+        }, (errorMessage) => {
+            logger.error(errorMessage);
+            logger.error('Continuing without package.json file');
+            processMarkdown();
+        });
+    }
+
     let processMarkdown = () => {
         $markdownengine.getReadmeFile().then((readmeData) => {
             processIndex(readmeData);
@@ -123,17 +136,6 @@ export namespace Application {
             outputHelp();
         }
 
-        $fileengine.get('package.json').then((packageData) => {
-
-            if (typeof JSON.parse(packageData).name !== 'undefined') {
-                documentationMainName = JSON.parse(packageData).name;
-            }
-
-            processMarkdown();
-        }, (errorMessage) => {
-            logger.error(errorMessage);
-            logger.error('Continuing without package.json file');
-            processMarkdown();
-        });
+        processPackageJson();
     }
 }
