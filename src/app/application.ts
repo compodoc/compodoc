@@ -8,11 +8,13 @@ import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
+import { Configuration } from './configuration';
 
 let pkg = require('../package.json'),
     program = require('commander'),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
+    $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine();
 
 export namespace Application {
@@ -31,12 +33,16 @@ export namespace Application {
         process.exit(1);
     }
 
-    let documentationMainName = program.name; //default commander value
+    $configuration.mainData.documentationMainName = program.name; //default commander value
 
     let processPackageJson = () => {
         $fileengine.get('package.json').then((packageData) => {
-            if (typeof JSON.parse(packageData).name !== 'undefined') {
-                documentationMainName = JSON.parse(packageData).name;
+            let parsedData = JSON.parse(packageData);
+            if (typeof parsedData.name !== 'undefined') {
+                $configuration.mainData.documentationMainName = parsedData.name;
+            }
+            if (typeof parsedData.description !== 'undefined') {
+                $configuration.mainData.documentationMainDescription = parsedData.description;
             }
             processMarkdown();
         }, (errorMessage) => {
@@ -48,30 +54,53 @@ export namespace Application {
 
     let processMarkdown = () => {
         $markdownengine.getReadmeFile().then((readmeData) => {
-            processIndex(readmeData);
+            $configuration.addPage({
+                name: 'index',
+                context: 'readme'
+            });
+            $configuration.addPage({
+                name: 'overview',
+                context: 'overview'
+            });
+            $configuration.mainData.readme = readmeData;
+            processPages();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
-            processIndex();
+            $configuration.addPage({
+                name: 'index',
+                context: 'overview'
+            });
+            processPages();
         });
     }
 
-    let processIndex = (readmeData:String) => {
-        $htmlengine.render({
-            documentationMainName: documentationMainName,
-            readme: readmeData
-        }).then((htmlData) => {
-            fs.outputFile(program.output + 'index.html', htmlData, function (err) {
-                if (err) {
-                    logger.error('Error during index page generation');
+    let processPages = () => {
+
+        let pages = $configuration.pages,
+            i = 0,
+            len = pages.length,
+            loop = () => {
+                if( i <= len-1) {
+                    console.log(pages[i]);
+                    $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
+                        fs.outputFile(program.output + pages[i].name + '.html', htmlData, function (err) {
+                            if (err) {
+                                logger.error('Error during ' + pages[i].name + ' page generation');
+                            } else {
+                                i++;
+                                loop();
+                            }
+                        });
+                    }, (errorMessage) => {
+                        logger.error(errorMessage);
+                    });
                 } else {
                     processResources();
-                }
-            });
 
-        }, (errorMessage) => {
-            logger.error(errorMessage);
-        });
+                }
+            };
+        loop();
     }
 
     let processResources = () => {
@@ -130,12 +159,11 @@ export namespace Application {
             }
             else {
                 files = [program.file];
+                processPackageJson();
             }
         } else {
             logger.fatal('Entry file was not found');
             outputHelp();
         }
-
-        processPackageJson();
     }
 }
