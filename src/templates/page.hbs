@@ -25,8 +25,15 @@
                <div class="col-sm-2 menu">
                    {{> menu parsingData }}
                </div>
-               <div class="col-sm-10 readme content">
-                   {{{ readme }}}
+               <div class="col-sm-10 {{#compare context "===" 'readme'}} readme {{/compare}} content">
+                   {{#compare context "===" 'readme'}}
+                        {{{ readme }}}
+                   {{/compare}}
+                   {{#compare context "===" 'overview'}}
+                    <img
+                        src="graph/dependencies.svg"
+                        alt="Main dependencies"/>
+                   {{/compare}}
                </div>
            </div>
        </div>
