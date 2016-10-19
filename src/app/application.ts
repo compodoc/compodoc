@@ -84,7 +84,6 @@ export namespace Application {
             len = pages.length,
             loop = () => {
                 if( i <= len-1) {
-                    console.log(pages[i]);
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
                         fs.outputFile(program.output + pages[i].name + '.html', htmlData, function (err) {
                             if (err) {

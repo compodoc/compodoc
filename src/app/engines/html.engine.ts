@@ -60,7 +60,6 @@ export class HtmlEngine {
     render(mainData:any, page:any) {
         var o = mainData;
         Object.assign(o, page);
-        console.log(o);
         return new Promise(function(resolve, reject) {
            fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
                if (err) {
