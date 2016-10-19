@@ -33,6 +33,8 @@ export namespace Application {
         process.exit(1);
     }
 
+    $htmlengine.init();
+
     $configuration.mainData.documentationMainName = program.name; //default commander value
 
     let processPackageJson = () => {

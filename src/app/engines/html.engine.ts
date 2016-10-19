@@ -50,6 +50,8 @@ export class HtmlEngine {
           }
           return options.fn(this);
         });
+    }
+    init() {
         fs.readFile(path.resolve(__dirname + '/../src/templates/menu.hbs'), 'utf8', (err, data) => {
             if (err) throw err;
             Handlebars.registerPartial('menu', data);
