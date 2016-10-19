@@ -4,8 +4,8 @@ interface Page {
 }
 
 export class Configuration {
-    private _pages: object[] = [];
-    private _mainData: object = {};
+    private _pages:Array<Page> = [];
+    private _mainData: Object = {};
 
     constructor() {
 
@@ -15,17 +15,17 @@ export class Configuration {
         this._pages.push(page);
     }
 
-    get pages():[] {
+    get pages():Array<Page> {
         return this._pages;
     }
-    set pages(pages:[]) {
+    set pages(pages:Array<Page>) {
         this._pages = [];
     }
 
-    get mainData():[] {
+    get mainData():Object {
         return this._mainData;
     }
-    set mainData(data:object) {
+    set mainData(data:Object) {
         Object.assign(this._mainData, data);
     }
 };
