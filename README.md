@@ -9,7 +9,9 @@ Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/an
 
 __Work in progress, not ready for production__
 
-![screenshots-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)
+README page             |  Overview page
+:-------------------------:|:-------------------------:
+![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 
 ## Why this ?
 
