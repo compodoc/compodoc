@@ -5,9 +5,22 @@ compodoc
 
 A tool to generate a must-have documentation for your Angular 2 application.
 
-Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [dgeni](https://github.com/angular/dgeni), [typedoc](https://github.com/TypeStrong/typedoc)
+Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [typedoc](https://github.com/TypeStrong/typedoc)
 
-## Work in progress, not ready for production
+__Work in progress, not ready for production__
+
+![screenshots-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)
+
+## Why this ?
+
+Because we doesn't find our needs on existing tools. We want to have a single place where there is :
+- api documentation of code (typedoc)
+- component(s) documentation
+- general documentation (\*.md files)
+
+## Why not a SPA for outputed documentation ?
+
+[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Install
 
