@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
+import * as _ from 'lodash';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -65,7 +66,7 @@ export namespace Application {
                 context: 'overview'
             });
             $configuration.mainData.readme = readmeData;
-            processPages();
+            getModules();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
@@ -73,8 +74,20 @@ export namespace Application {
                 name: 'index',
                 context: 'overview'
             });
-            processPages();
+            getModules();
         });
+    }
+
+    let getModules = () => {
+        let ngd = require('angular2-dependencies-graph');
+
+        let modules = ngd.Application.getDependencies({
+            file: program.file
+        });
+
+        $configuration.mainData.modules = _.sortBy(modules, ['name']);
+
+        processPages();
     }
 
     let processPages = () => {

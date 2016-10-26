@@ -23,21 +23,6 @@
                             </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./routes.html"><span class="fa fa-code-fork"></span>Routes</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="./classes.html"><span class="fa fa-file-code-o"></span>Classes</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="./injectables.html"><span class="fa fa-long-arrow-down"></span>Injectables</a>
-                        </td>
-                    </tr>
                 </table>
             </div>
         </div>
@@ -52,16 +37,13 @@
         <div id="modules" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table">
+                    {{#each modules}}
                     <tr>
                         <td>
-                            <a href="./">Module 1</a>
+                            <a href="./modules/{{name}}.html">{{ name }}</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./">Module 2</a>
-                        </td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>
@@ -108,6 +90,78 @@
                     <tr>
                         <td>
                             <a href="./">Directives 2</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#classes"><span class="fa fa-file-code-o">
+                </span>Classes</a>
+            </h4>
+        </div>
+        <div id="classes" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <a href="./">Class 1</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="./">Class 2</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#routes"><span class="fa fa-code-fork">
+                </span>Routes</a>
+            </h4>
+        </div>
+        <div id="routes" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <a href="./">Route 1</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="./">Route 2</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#injectables"><span class="fa fa-long-arrow-down">
+                </span>Injectables</a>
+            </h4>
+        </div>
+        <div id="injectables" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <a href="./">Service 1</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="./">Service 2</a>
                         </td>
                     </tr>
                 </table>
