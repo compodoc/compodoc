@@ -128,7 +128,7 @@ export namespace Application {
     }
 
     let processGraph = () => {
-        Shelljs.exec('ngd -f ' + program.file + ' -d documentation/graph', {
+        Shelljs.exec(path.resolve(__dirname + '/../node_modules/.bin/ngd') + ' -f ' + program.file + ' -d documentation/graph', {
             silent: true
         }, function(code, stdout, stderr) {
             if(code === 0) {
@@ -159,7 +159,6 @@ export namespace Application {
                 open: false,
                 quiet: true
             });
-            return;
         }
 
         if (program.file) {
