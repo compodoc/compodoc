@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/groupe-sii/compodoc#readme",
   "dependencies": {
+    "angular2-dependencies-graph": "^1.0.0-alpha.6",
     "colors": "1.1.2",
     "commander": "2.9.0",
     "fs-extra": "0.30.0",
