@@ -17,6 +17,10 @@ body {
     height: 100%;
     overflow-y: auto;
 }
+.content.readme {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 .content h1:first-of-type {
     margin-top: 15px
 }
