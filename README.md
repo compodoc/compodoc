@@ -3,7 +3,7 @@
 compodoc
 ====
 
-A tool to generate a must-have documentation for your Angular 2 application.
+The missing documentation tool for your Angular 2 application.
 
 Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [typedoc](https://github.com/TypeStrong/typedoc)
 
