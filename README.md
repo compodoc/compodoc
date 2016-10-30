@@ -1,9 +1,15 @@
-[![npm version](https://badge.fury.io/js/compodoc.svg)](https://badge.fury.io/js/compodoc)
+[![npm version][npm-image]][npm-url]
+[![Build Status][travis-image]][travis-url]
+
+[travis-url]: https://travis-ci.org/groupe-sii/compodoc
+[travis-image]: https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop
+[npm-url]: https://badge.fury.io/js/compodoc
+[npm-image]: https://badge.fury.io/js/compodoc.svg
 
 compodoc
 ====
 
-A tool to generate a must-have documentation for your Angular 2 application.
+The missing documentation tool for your Angular 2 application.
 
 Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [typedoc](https://github.com/TypeStrong/typedoc)
 

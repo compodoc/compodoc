@@ -1,7 +1,7 @@
 {
   "name": "compodoc",
   "version": "0.0.1",
-  "description": "A tool to generate a must-have documentation",
+  "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
     "compodoc": "./bin/index.js"
@@ -10,6 +10,8 @@
     "build": "./node_modules/.bin/rollup -c",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "start": "npm run tsc",
+    "pretest": "tsc -p test/tsconfig.json",
+    "test": "mocha --opts test/mocha.opts",
     "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
     "watch-rollup": "./node_modules/.bin/rollup -c -w",
     "watch": "nodemon --watch src -e ts --exec 'npm run build'"
@@ -29,24 +31,28 @@
   },
   "homepage": "https://github.com/groupe-sii/compodoc#readme",
   "dependencies": {
+    "colors": "1.1.2",
+    "commander": "2.9.0",
+    "fs-extra": "0.30.0",
+    "gulp-util": "3.0.7",
+    "live-server": "^1.1.0",
+    "lodash": "^4.16.4",
+    "marked": "^0.3.6",
+    "shelljs": "^0.7.4",
+    "typescript": "2.0.3"
+  },
+  "devDependencies": {
     "@types/es6-promise": "0.0.32",
     "@types/fs-extra": "0.0.33",
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
     "@types/node": "6.0.45",
     "@types/typescript": "0.4.29",
-    "colors": "1.1.2",
-    "commander": "2.9.0",
-    "fs-extra": "0.30.0",
-    "gulp-util": "3.0.7",
-    "live-server": "^1.1.0",
-    "marked": "^0.3.6",
-    "shelljs": "^0.7.4",
-    "typescript": "2.0.3"
-  },
-  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.32",
     "conventional-changelog-cli": "^1.2.0",
     "handlebars": "^4.0.5",
+    "mocha": "^3.1.2",
     "nodemon": "^1.11.0",
     "rollup": "^0.36.3",
     "rollup-plugin-typescript": "^0.8.1",

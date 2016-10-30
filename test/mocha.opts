@@ -1,0 +1,6 @@
+--reporter spec
+--ui bdd
+--colors
+--harmony
+--timeout 10000
+test/dist/*.spec.js
