@@ -1,4 +1,10 @@
-[![npm version](https://badge.fury.io/js/compodoc.svg)](https://badge.fury.io/js/compodoc)
+[![npm version][npm-image]][npm-url]
+[![Build Status][travis-image]][travis-url]
+
+[travis-url]: https://travis-ci.org/groupe-sii/compodoc
+[travis-image]: https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop
+[npm-url]: https://badge.fury.io/js/compodoc
+[npm-image]: https://badge.fury.io/js/compodoc.svg
 
 compodoc
 ====
