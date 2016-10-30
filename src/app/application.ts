@@ -3,20 +3,21 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
-import * as _ from 'lodash';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
+import { DependenciesEngine } from './engines/dependencies.engine';
 
 let pkg = require('../package.json'),
     program = require('commander'),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
     $configuration = new Configuration(),
-    $markdownengine = new MarkdownEngine();
+    $markdownengine = new MarkdownEngine(),
+    $dependenciesEngine;
 
 export namespace Application {
 
@@ -66,7 +67,7 @@ export namespace Application {
                 context: 'overview'
             });
             $configuration.mainData.readme = readmeData;
-            getModules();
+            getDependenciesData();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
@@ -74,18 +75,22 @@ export namespace Application {
                 name: 'index',
                 context: 'overview'
             });
-            getModules();
+            getDependenciesData();
         });
     }
 
-    let getModules = () => {
+    let getDependenciesData = () => {
         let ngd = require('angular2-dependencies-graph');
 
-        let modules = ngd.Application.getDependencies({
+        let dependenciesData = ngd.Application.getDependencies({
             file: program.file
         });
 
-        $configuration.mainData.modules = _.sortBy(modules, ['name']);
+        $dependenciesEngine = new DependenciesEngine(dependenciesData);
+
+        $configuration.mainData.modules = $dependenciesEngine.getModules();
+        $configuration.mainData.components = $dependenciesEngine.getComponents();
+        $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         processPages();
     }
@@ -128,7 +133,7 @@ export namespace Application {
     }
 
     let processGraph = () => {
-        Shelljs.exec(path.resolve(__dirname + '/../node_modules/.bin/ngd') + ' -f ' + program.file + ' -d documentation/graph', {
+        Shelljs.exec(path.resolve(__dirname + '/../node_modules/.bin/ngd') + ' -f ' + program.file + ' -d documentation/graph -s', {
             silent: true
         }, function(code, stdout, stderr) {
             if(code === 0) {

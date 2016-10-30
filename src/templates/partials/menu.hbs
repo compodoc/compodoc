@@ -48,6 +48,7 @@
             </div>
         </div>
     </div>
+    {{#if components}}
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -58,20 +59,19 @@
         <div id="components" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table">
+                    {{#each components}}
                     <tr>
                         <td>
-                            <a href="./">Components 1</a>
+                            <a href="./components/{{name}}.html">{{ name }}</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./">Components 2</a>
-                        </td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>
     </div>
+    {{/if}}
+    {{#if directives}}
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -82,20 +82,19 @@
         <div id="directives" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table">
+                    {{#each directives}}
                     <tr>
                         <td>
-                            <a href="./">Directives 1</a>
+                            <a href="./directives/{{name}}.html">{{ name }}</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./">Directives 2</a>
-                        </td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>
     </div>
+    {{/if}}
+    {{#if classes}}
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -120,6 +119,8 @@
             </div>
         </div>
     </div>
+    {{/if}}
+    {{#if routes}}
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -144,6 +145,8 @@
             </div>
         </div>
     </div>
+    {{/if}}
+    {{#if injectables}}
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -168,4 +171,5 @@
             </div>
         </div>
     </div>
+    {{/if}}
 </div>

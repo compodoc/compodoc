@@ -7,11 +7,12 @@
 </div>
 <div class="container-fluid overview">
     <div class="row">
+        {{#if modules}}
         <div class="col-sm-3">
             <div class="card text-center">
               <div class="card-block">
                 <h4 class="card-title"><span class="fa fa-archive"></span></h4>
-                <p class="card-text">4 modules</p>
+                <p class="card-text">{{ modules.length }} modules</p>
 
               </div>
               <div class="card-footer text-muted">
@@ -19,11 +20,13 @@
               </div>
             </div>
         </div>
+        {{/if}}
+        {{#if components}}
         <div class="col-sm-3">
             <div class="card text-center">
               <div class="card-block">
                 <h4 class="card-title"><span class="fa fa-cogs"></span></h4>
-                <p class="card-text">2 components</p>
+                <p class="card-text">{{ components.length }} components</p>
 
               </div>
               <div class="card-footer text-muted">
@@ -31,11 +34,13 @@
               </div>
             </div>
         </div>
+        {{/if}}
+        {{#if directives}}
         <div class="col-sm-3">
             <div class="card text-center">
               <div class="card-block">
                 <h4 class="card-title"><span class="fa fa-code"></span></h4>
-                <p class="card-text">1 directive</p>
+                <p class="card-text">{{ directives.length }} directive</p>
 
               </div>
               <div class="card-footer text-muted">
@@ -43,11 +48,13 @@
               </div>
             </div>
         </div>
+        {{/if}}
+        {{#if routes}}
         <div class="col-sm-3">
             <div class="card text-center">
               <div class="card-block">
                 <h4 class="card-title"><span class="fa fa-code-fork"></span></h4>
-                <p class="card-text">5 routes</p>
+                <p class="card-text">{{ routes.length }} routes</p>
 
               </div>
               <div class="card-footer text-muted">
@@ -55,5 +62,6 @@
               </div>
             </div>
         </div>
+        {{/if}}
     </div>
 </div>
