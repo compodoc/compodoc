@@ -14,7 +14,7 @@
     "test": "mocha --opts test/mocha.opts",
     "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
     "watch-rollup": "./node_modules/.bin/rollup -c -w",
-    "watch": "nodemon --watch src -e ts --exec 'npm run build'"
+    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'"
   },
   "repository": {
     "type": "git",
