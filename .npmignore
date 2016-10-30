@@ -1,3 +1,4 @@
 screenshots/
 tsconfig.json
 rollup.config.js
+test/

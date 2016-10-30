@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2015",
+        "outDir": "./dist",
+        "typeRoots": [
+            "../../node_modules/@types"
+        ],
+        "types": [
+            "mocha",
+            "chai",
+            "node"
+        ]
+    },
+    "include": [
+        "./src/*.spec.ts"
+    ]
+}

@@ -9,3 +9,6 @@ node_modules
 
 # Optional npm cache directory
 .npm
+
+# Test js files
+test/dist/
