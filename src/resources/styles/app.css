@@ -24,6 +24,9 @@ body {
 .content h1:first-of-type {
     margin-top: 15px
 }
+.content.readme h1:first-of-type {
+    margin-top: 0;
+}
 .glyphicon, .fa {
   margin-right: 10px;
 }
@@ -75,4 +78,7 @@ body {
 }
 .menu a {
     color: #3c3c3c;
+}
+.overview .card-title .fa {
+    font-size: 50px;
 }

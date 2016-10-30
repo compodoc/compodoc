@@ -63,9 +63,17 @@ export class HtmlEngine {
         });
     }
     init() {
-        fs.readFile(path.resolve(__dirname + '/../src/templates/menu.hbs'), 'utf8', (err, data) => {
+        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'), 'utf8', (err, data) => {
             if (err) throw err;
             Handlebars.registerPartial('menu', data);
+        });
+        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/overview.hbs'), 'utf8', (err, data) => {
+            if (err) throw err;
+            Handlebars.registerPartial('overview', data);
+        });
+        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/readme.hbs'), 'utf8', (err, data) => {
+            if (err) throw err;
+            Handlebars.registerPartial('readme', data);
         });
     }
     render(mainData:any, page:any) {

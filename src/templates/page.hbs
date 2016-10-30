@@ -10,8 +10,9 @@
 
         <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
         <link rel="stylesheet" href="/styles/reset.css">
-        <link rel="stylesheet" href="/styles/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link rel="stylesheet" href="/styles/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+        <link rel="stylesheet" href="/styles/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/bootstrap-card.css">
+        <link rel="stylesheet" href="/styles/font-awesome.min.css">
         <link rel="stylesheet" href="/styles/app.css">
     </head>
     <body>
@@ -27,14 +28,10 @@
                </div>
                <div class="col-sm-10 {{#compare data.context "===" 'readme'}} readme {{/compare}} content">
                    {{#compare data.context "===" 'readme'}}
-                        {{{ data.readme }}}
+                        {{> readme data}}
                    {{/compare}}
                    {{#compare data.context "===" 'overview'}}
-                    <h1>Overview</h1>
-                    <img
-                        src="graph/dependencies.svg"
-                        alt="Main dependencies"
-                        width="100%"/>
+                        {{> overview data }}
                    {{/compare}}
                </div>
            </div>
