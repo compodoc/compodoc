@@ -118,7 +118,6 @@ export namespace Application {
     }
 
     let processPages = () => {
-
         let pages = $configuration.pages,
             i = 0,
             len = pages.length,
@@ -143,7 +142,6 @@ export namespace Application {
                     });
                 } else {
                     processResources();
-
                 }
             };
         loop();
@@ -154,14 +152,29 @@ export namespace Application {
             if (err) {
                 logger.error('Error during resources copy');
             } else {
-                processGraph();
+                processGraphs();
             }
         });
     }
 
-    let processGraph = () => {
+    let processGraphs = () => {
+        let modules = $configuration.mainData.modules,
+            i = 0,
+            len = modules.length,
+            loop = () => {
+                if( i <= len-1) {
+                    $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name).then(() => {
+                        i++;
+                        loop();
+                    }, (errorMessage) => {
+                        logger.error(errorMessage);
+                    });
+                } else {
+                    logger.info('Documentation generated in ' + program.output);
+                }
+            };
         $ngdengine.renderGraph(program.file, 'documentation/graph').then(() => {
-            logger.info('Documentation generated in ' + program.output);
+            loop();
         }, () => {
             logger.error('Error during graph generation');
         });

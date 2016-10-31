@@ -13,7 +13,7 @@ export class NgdEngine {
                if(code === 0) {
                    resolve();
                } else {
-                   reject();
+                   reject(stderr);
                }
            });
         });
