@@ -82,3 +82,13 @@ body {
 .overview .card-title .fa {
     font-size: 50px;
 }
+.copyright {
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    padding: 0 15px 15px 15px;
+}
+.copyright a {
+    color: #009dff;
+    text-decoration: underline;
+}

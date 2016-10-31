@@ -27,6 +27,7 @@ export namespace Application {
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page.', false)
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
 
@@ -174,6 +175,10 @@ export namespace Application {
                 quiet: true,
                 logLevel: 0
             });
+        }
+
+        if (program.hideGenerator) {
+            $configuration.mainData.hideGenerator = true;
         }
 
         if (program.file) {

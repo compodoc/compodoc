@@ -48,6 +48,7 @@ Options:
   -f, --file [file]        Entry *.ts file
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
+  -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
   -d, --output [folder]    Where to store the generated documentation
 ```
 
