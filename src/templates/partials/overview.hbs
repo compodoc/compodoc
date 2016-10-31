@@ -1,67 +1,97 @@
 <h1>Overview</h1>
 <div class="text-center">
-    <img
-        src="graph/dependencies.svg"
-        alt="Main dependencies"
-        width="100%"/>
+    <object id="demo-svg" type="image/svg+xml" data="graph/dependencies.svg" style="width: 100%; height: 250px;">
+            Your browser does not support SVG
+    </object>
+    <div class="btn-group">
+        <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+        <button id="reset" class="btn btn-default btn-sm">Reset</button>
+        <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+    </div>
 </div>
 <div class="container-fluid overview">
     <div class="row">
         {{#if modules}}
-        <div class="col-sm-3">
-            <div class="card text-center">
-              <div class="card-block">
-                <h4 class="card-title"><span class="fa fa-archive"></span></h4>
-                <p class="card-text">{{ modules.length }} modules</p>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-archive"></span></h4>
+                        <p class="card-text">{{ modules.length }} modules</p>
 
-              </div>
-              <div class="card-footer text-muted">
-                <a href="./modules.html" class="btn btn-default">Browse</a>
-              </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="./modules.html" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
             </div>
-        </div>
         {{/if}}
         {{#if components}}
-        <div class="col-sm-3">
-            <div class="card text-center">
-              <div class="card-block">
-                <h4 class="card-title"><span class="fa fa-cogs"></span></h4>
-                <p class="card-text">{{ components.length }} components</p>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-cogs"></span></h4>
+                        <p class="card-text">{{ components.length }} components</p>
 
-              </div>
-              <div class="card-footer text-muted">
-                <a href="./components.html" class="btn btn-default">Browse</a>
-              </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="./components.html" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
             </div>
-        </div>
         {{/if}}
         {{#if directives}}
-        <div class="col-sm-3">
-            <div class="card text-center">
-              <div class="card-block">
-                <h4 class="card-title"><span class="fa fa-code"></span></h4>
-                <p class="card-text">{{ directives.length }} directive</p>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-code"></span></h4>
+                        <p class="card-text">{{ directives.length }} directive</p>
 
-              </div>
-              <div class="card-footer text-muted">
-                <a href="#" class="btn btn-default">Browse</a>
-              </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="#" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
             </div>
-        </div>
         {{/if}}
         {{#if routes}}
-        <div class="col-sm-3">
-            <div class="card text-center">
-              <div class="card-block">
-                <h4 class="card-title"><span class="fa fa-code-fork"></span></h4>
-                <p class="card-text">{{ routes.length }} routes</p>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-code-fork"></span></h4>
+                        <p class="card-text">{{ routes.length }} routes</p>
 
-              </div>
-              <div class="card-footer text-muted">
-                <a href="#" class="btn btn-default">Browse</a>
-              </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="#" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
             </div>
-        </div>
         {{/if}}
     </div>
 </div>
+<script src="js/svg-pan-zoom.js"></script>
+<script>
+    document.getElementById('demo-svg').addEventListener('load', function() {
+        panZoom = svgPanZoom('#demo-svg', {
+            zoomEnabled: true,
+            minZoom: 1,
+            maxZoom: 5
+        });
+
+        document.getElementById('zoom-in').addEventListener('click', function(ev) {
+            ev.preventDefault()
+            panZoom.zoomIn()
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', function(ev) {
+            ev.preventDefault()
+            panZoom.zoomOut()
+        });
+
+        document.getElementById('reset').addEventListener('click', function(ev) {
+            ev.preventDefault()
+            panZoom.resetZoom();
+            panZoom.resetPan();
+        });
+    });
+</script>
