@@ -68,7 +68,9 @@
                 </span>Components</a>
             </h4>
         </div>
-        <div id="components" class="panel-collapse collapse {{#compare context "===" 'components'}} in {{/compare}}">
+        <div id="components" class="panel-collapse collapse
+                                    {{#compare context "===" 'components'}} in {{/compare}}
+                                    {{#compare context "===" 'component'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each components}}

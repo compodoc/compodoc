@@ -28,6 +28,9 @@ body {
 .content h1:first-of-type {
     margin-top: 15px
 }
+.content h3:first-of-type {
+    margin-top: 5px;
+}
 .content.readme h1:first-of-type {
     margin-top: 0;
 }
