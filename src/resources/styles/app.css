@@ -19,6 +19,7 @@ body {
     background: white;
     height: 100%;
     overflow-y: auto;
+    padding-top: 10px;
 }
 .content.readme {
     padding-top: 15px;
@@ -94,4 +95,8 @@ body {
 .copyright a {
     color: #009dff;
     text-decoration: underline;
+}
+.breadcrumb {
+    background: none;
+    padding-left: 5px;
 }

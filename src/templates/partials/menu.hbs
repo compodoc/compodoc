@@ -44,7 +44,9 @@
                 </span>Modules</a>
             </h4>
         </div>
-        <div id="modules" class="panel-collapse collapse {{#compare context "===" 'modules'}} in {{/compare}}">
+        <div id="modules" class="panel-collapse collapse
+                                {{#compare context "===" 'modules'}} in {{/compare}}
+                                {{#compare context "===" 'module'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each modules}}

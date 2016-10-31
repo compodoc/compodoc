@@ -79,6 +79,10 @@ export class HtmlEngine {
             if (err) throw err;
             Handlebars.registerPartial('modules', data);
         });
+        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/module.hbs'), 'utf8', (err, data) => {
+            if (err) throw err;
+            Handlebars.registerPartial('module', data);
+        });
     }
     render(mainData:any, page:any) {
         var o = mainData;

@@ -94,6 +94,16 @@ export namespace Application {
             name: 'modules',
             context: 'modules'
         });
+        let i = 0,
+            len = $configuration.mainData.modules.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'modules',
+                name: $configuration.mainData.modules[i].name,
+                context: 'module'
+            });
+        }
 
         $configuration.mainData.components = $dependenciesEngine.getComponents();
         $configuration.addPage({
@@ -113,7 +123,12 @@ export namespace Application {
             loop = () => {
                 if( i <= len-1) {
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                        fs.outputFile(program.output + pages[i].name + '.html', htmlData, function (err) {
+                        let path = program.output;
+                        if (pages[i].path) {
+                            path += '/' + pages[i].path + '/';
+                        }
+                        path += pages[i].name + '.html';
+                        fs.outputFile(path, htmlData, function (err) {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
                             } else {
