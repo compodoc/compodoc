@@ -118,6 +118,19 @@ export namespace Application {
             name: 'components',
             context: 'components'
         });
+
+        i = 0;
+        len = $configuration.mainData.components.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'components',
+                name: $configuration.mainData.components[i].name,
+                context: 'component',
+                module: $configuration.mainData.components[i]
+            });
+        }
+
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         processPages();
@@ -130,7 +143,7 @@ export namespace Application {
             len = pages.length,
             loop = () => {
                 if( i <= len-1) {
-                    logger.info('Process page: ', pages[i].name);
+                    logger.info('Process page', pages[i].name);
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
                         let path = program.output;
                         if (pages[i].path) {
@@ -172,7 +185,7 @@ export namespace Application {
             len = modules.length,
             loop = () => {
                 if( i <= len-1) {
-                    logger.info('Process module graph: ', modules[i].name);
+                    logger.info('Process module graph', modules[i].name);
                     $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name).then(() => {
                         i++;
                         loop();

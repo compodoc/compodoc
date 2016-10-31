@@ -26,18 +26,26 @@
                <div class="col-sm-2 menu">
                    {{> menu data }}
                </div>
-               <div class="col-sm-10 {{#compare data.context "===" 'readme'}} readme {{/compare}} content">
+               <div class="col-sm-10 content {{data.context}}">
                    {{#compare data.context "===" 'readme'}}
                         {{> readme data}}
                    {{/compare}}
                    {{#compare data.context "===" 'overview'}}
                         {{> overview data }}
                    {{/compare}}
+
                    {{#compare data.context "===" 'modules'}}
                         {{> modules data }}
                    {{/compare}}
                    {{#compare data.context "===" 'module'}}
                         {{> module data }}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'components'}}
+                        {{> components data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'component'}}
+                        {{> component data }}
                    {{/compare}}
                </div>
            </div>
