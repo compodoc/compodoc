@@ -2,3 +2,16 @@
   <li><a href="/modules.html">Modules</a></li>
   <li>{{name}}</li>
 </ol>
+
+<div class="text-center">
+    <object id="demo-svg" type="image/svg+xml" data="modules/{{name}}/dependencies.svg" style="width: 100%; height: 250px;">
+            Your browser does not support SVG
+    </object>
+    <div class="btn-group">
+        <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+        <button id="reset" class="btn btn-default btn-sm">Reset</button>
+        <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+    </div>
+</div>
+<script src="js/svg-pan-zoom.min.js"></script>
+<script src="js/svg-pan-zoom.controls.js"></script>
