@@ -9,6 +9,9 @@ body {
     margin-top: 50px;
     overflow-y: hidden;
 }
+.container-fluid.modules {
+    margin-top: 25px;
+}
 .row {
     height: 100%;
 }
