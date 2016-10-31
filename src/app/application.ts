@@ -158,11 +158,12 @@ export namespace Application {
         let files = [];
 
         if (program.serve) {
-            logger.info('Serving documentation');
+            logger.info('Serving documentation at http://127.0.0.1:8080');
             LiveServer.start({
                 root: program.output,
                 open: false,
-                quiet: true
+                quiet: true,
+                logLevel: 0
             });
         }
 
