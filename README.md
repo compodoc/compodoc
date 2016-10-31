@@ -18,6 +18,8 @@ __Work in progress, not ready for production__
 README page             |  Overview page
 :-------------------------:|:-------------------------:
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
+Modules page             |  Single module page
+![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)
 
 ## Why this ?
 
