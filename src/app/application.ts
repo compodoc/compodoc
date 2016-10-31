@@ -3,20 +3,23 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
-import * as _ from 'lodash';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
+import { DependenciesEngine } from './engines/dependencies.engine';
+import { NgdEngine } from './engines/ngd.engine';
 
 let pkg = require('../package.json'),
     program = require('commander'),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
     $configuration = new Configuration(),
-    $markdownengine = new MarkdownEngine();
+    $markdownengine = new MarkdownEngine(),
+    $ngdengine = new NgdEngine(),
+    $dependenciesEngine;
 
 export namespace Application {
 
@@ -26,6 +29,7 @@ export namespace Application {
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page.', false)
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
 
@@ -66,7 +70,7 @@ export namespace Application {
                 context: 'overview'
             });
             $configuration.mainData.readme = readmeData;
-            getModules();
+            getDependenciesData();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
@@ -74,31 +78,58 @@ export namespace Application {
                 name: 'index',
                 context: 'overview'
             });
-            getModules();
+            getDependenciesData();
         });
     }
 
-    let getModules = () => {
+    let getDependenciesData = () => {
         let ngd = require('angular2-dependencies-graph');
 
-        let modules = ngd.Application.getDependencies({
+        let dependenciesData = ngd.Application.getDependencies({
             file: program.file
         });
 
-        $configuration.mainData.modules = _.sortBy(modules, ['name']);
+        $dependenciesEngine = new DependenciesEngine(dependenciesData);
+
+        $configuration.mainData.modules = $dependenciesEngine.getModules();
+        $configuration.addPage({
+            name: 'modules',
+            context: 'modules'
+        });
+        let i = 0,
+            len = $configuration.mainData.modules.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'modules',
+                name: $configuration.mainData.modules[i].name,
+                context: 'module'
+            });
+        }
+
+        $configuration.mainData.components = $dependenciesEngine.getComponents();
+        $configuration.addPage({
+            name: 'components',
+            context: 'components'
+        });
+        $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         processPages();
     }
 
     let processPages = () => {
-
         let pages = $configuration.pages,
             i = 0,
             len = pages.length,
             loop = () => {
                 if( i <= len-1) {
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                        fs.outputFile(program.output + pages[i].name + '.html', htmlData, function (err) {
+                        let path = program.output;
+                        if (pages[i].path) {
+                            path += '/' + pages[i].path + '/';
+                        }
+                        path += pages[i].name + '.html';
+                        fs.outputFile(path, htmlData, function (err) {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
                             } else {
@@ -111,7 +142,6 @@ export namespace Application {
                     });
                 } else {
                     processResources();
-
                 }
             };
         loop();
@@ -122,20 +152,31 @@ export namespace Application {
             if (err) {
                 logger.error('Error during resources copy');
             } else {
-                processGraph();
+                processGraphs();
             }
         });
     }
 
-    let processGraph = () => {
-        Shelljs.exec('ngd -f ' + program.file + ' -d documentation/graph', {
-            silent: true
-        }, function(code, stdout, stderr) {
-            if(code === 0) {
-                logger.info('Documentation generated in ' + program.output);
-            } else {
-                logger.error('Error during graph generation');
-            }
+    let processGraphs = () => {
+        let modules = $configuration.mainData.modules,
+            i = 0,
+            len = modules.length,
+            loop = () => {
+                if( i <= len-1) {
+                    $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name).then(() => {
+                        i++;
+                        loop();
+                    }, (errorMessage) => {
+                        logger.error(errorMessage);
+                    });
+                } else {
+                    logger.info('Documentation generated in ' + program.output);
+                }
+            };
+        $ngdengine.renderGraph(program.file, 'documentation/graph').then(() => {
+            loop();
+        }, () => {
+            logger.error('Error during graph generation');
         });
     }
 
@@ -153,13 +194,17 @@ export namespace Application {
         let files = [];
 
         if (program.serve) {
-            logger.info('Serving documentation');
+            logger.info('Serving documentation at http://127.0.0.1:8080');
             LiveServer.start({
                 root: program.output,
                 open: false,
-                quiet: true
+                quiet: true,
+                logLevel: 0
             });
-            return;
+        }
+
+        if (program.hideGenerator) {
+            $configuration.mainData.hideGenerator = true;
         }
 
         if (program.file) {
