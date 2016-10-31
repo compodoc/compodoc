@@ -41,11 +41,6 @@ describe('CLI', () => {
             expect(runHelp.stdout.toString()).to.contain('Serve generated documentation');
         });
 
-        it(`-g`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-g, --hideGenerator');
-            expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
-        });
-
         it(`-d`, () => {
             expect(runHelp.stdout.toString()).to.contain('-d, --output [folder]');
             expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation');
