@@ -5,7 +5,7 @@
                 <a data-toggle="collapse" data-parent="#accordion" href="#gettingStarted"><span class="fa fa-home"></span>Getting started</a>
             </h4>
         </div>
-        <div id="gettingStarted" class="panel-collapse collapse in">
+        <div id="gettingStarted" class="panel-collapse collapse {{#compare context "===" 'readme'}}in{{/compare}} {{#compare context "===" 'overview'}}in{{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#if readme}}
@@ -14,15 +14,25 @@
                             <a href="./"><span class="fa fa-file-text-o"></span>README</a>
                         </td>
                     </tr>
-                    {{/if}}
                     <tr>
                         <td>
                             <a {{#compare context "===" 'readme'}} href="./overview.html" {{/compare}}
-                                {{#compare context "===" 'overview'}} href="./" {{/compare}}>
+                                {{#compare context "===" 'overview'}} href="./" {{/compare}}
+                                {{#compare context "!==" 'overview'}} href="./overview.html" {{/compare}}
+                                {{#compare context "!==" 'readme'}} href="./overview.html" {{/compare}}>
                                 <span class="fa fa-th"></span>Overview
                             </a>
                         </td>
                     </tr>
+                    {{else}}
+                    <tr>
+                        <td>
+                            <a href="./">
+                                <span class="fa fa-th"></span>Overview
+                            </a>
+                        </td>
+                    </tr>
+                    {{/if}}
                 </table>
             </div>
         </div>
@@ -34,7 +44,7 @@
                 </span>Modules</a>
             </h4>
         </div>
-        <div id="modules" class="panel-collapse collapse">
+        <div id="modules" class="panel-collapse collapse {{#compare context "===" 'modules'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each modules}}
@@ -56,7 +66,7 @@
                 </span>Components</a>
             </h4>
         </div>
-        <div id="components" class="panel-collapse collapse">
+        <div id="components" class="panel-collapse collapse {{#compare context "===" 'components'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each components}}
@@ -79,7 +89,7 @@
                 </span>Directives</a>
             </h4>
         </div>
-        <div id="directives" class="panel-collapse collapse">
+        <div id="directives" class="panel-collapse collapse {{#compare context "===" 'directives'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each directives}}
@@ -102,7 +112,7 @@
                 </span>Classes</a>
             </h4>
         </div>
-        <div id="classes" class="panel-collapse collapse">
+        <div id="classes" class="panel-collapse collapse {{#compare context "===" 'classes'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     <tr>
@@ -128,7 +138,7 @@
                 </span>Routes</a>
             </h4>
         </div>
-        <div id="routes" class="panel-collapse collapse">
+        <div id="routes" class="panel-collapse collapse {{#compare context "===" 'routes'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     <tr>
@@ -154,7 +164,7 @@
                 </span>Injectables</a>
             </h4>
         </div>
-        <div id="injectables" class="panel-collapse collapse">
+        <div id="injectables" class="panel-collapse collapse {{#compare context "===" 'injectables'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     <tr>
