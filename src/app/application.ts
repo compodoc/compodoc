@@ -43,6 +43,7 @@ export namespace Application {
     $configuration.mainData.documentationMainName = program.name; //default commander value
 
     let processPackageJson = () => {
+        logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
             if (typeof parsedData.name !== 'undefined') {
@@ -51,6 +52,7 @@ export namespace Application {
             if (typeof parsedData.description !== 'undefined') {
                 $configuration.mainData.documentationMainDescription = parsedData.description;
             }
+            logger.info('package.json file found');
             processMarkdown();
         }, (errorMessage) => {
             logger.error(errorMessage);
@@ -60,6 +62,7 @@ export namespace Application {
     }
 
     let processMarkdown = () => {
+        logger.info('Searching README.md file');
         $markdownengine.getReadmeFile().then((readmeData) => {
             $configuration.addPage({
                 name: 'index',
@@ -70,6 +73,7 @@ export namespace Application {
                 context: 'overview'
             });
             $configuration.mainData.readme = readmeData;
+            logger.info('README.md file found');
             getDependenciesData();
         }, (errorMessage) => {
             logger.error(errorMessage);
@@ -83,6 +87,7 @@ export namespace Application {
     }
 
     let getDependenciesData = () => {
+        logger.info('Get dependencies data');
         let ngd = require('angular2-dependencies-graph');
 
         let dependenciesData = ngd.Application.getDependencies({
@@ -103,7 +108,8 @@ export namespace Application {
             $configuration.addPage({
                 path: 'modules',
                 name: $configuration.mainData.modules[i].name,
-                context: 'module'
+                context: 'module',
+                module: $configuration.mainData.modules[i]
             });
         }
 
@@ -118,11 +124,13 @@ export namespace Application {
     }
 
     let processPages = () => {
+        logger.info('Process pages');
         let pages = $configuration.pages,
             i = 0,
             len = pages.length,
             loop = () => {
                 if( i <= len-1) {
+                    logger.info('Process page: ', pages[i].name);
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
                         let path = program.output;
                         if (pages[i].path) {
@@ -158,11 +166,13 @@ export namespace Application {
     }
 
     let processGraphs = () => {
+        logger.info('Process main graph');
         let modules = $configuration.mainData.modules,
             i = 0,
             len = modules.length,
             loop = () => {
                 if( i <= len-1) {
+                    logger.info('Process module graph: ', modules[i].name);
                     $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name).then(() => {
                         i++;
                         loop();
