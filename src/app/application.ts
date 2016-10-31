@@ -10,6 +10,7 @@ import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
+import { NgdEngine } from './engines/ngd.engine';
 
 let pkg = require('../package.json'),
     program = require('commander'),
@@ -17,6 +18,7 @@ let pkg = require('../package.json'),
     $fileengine = new FileEngine(),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
+    $ngdengine = new NgdEngine(),
     $dependenciesEngine;
 
 export namespace Application {
@@ -158,14 +160,10 @@ export namespace Application {
     }
 
     let processGraph = () => {
-        Shelljs.exec(path.resolve(__dirname + '/../node_modules/.bin/ngd') + ' -f ' + program.file + ' -d documentation/graph -s', {
-            silent: true
-        }, function(code, stdout, stderr) {
-            if(code === 0) {
-                logger.info('Documentation generated in ' + program.output);
-            } else {
-                logger.error('Error during graph generation');
-            }
+        $ngdengine.renderGraph(program.file, 'documentation/graph').then(() => {
+            logger.info('Documentation generated in ' + program.output);
+        }, () => {
+            logger.error('Error during graph generation');
         });
     }
 
