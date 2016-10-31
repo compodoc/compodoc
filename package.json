@@ -44,14 +44,15 @@
     "typescript": "2.0.3"
   },
   "devDependencies": {
+    "@types/chai": "^3.4.34",
     "@types/es6-promise": "0.0.32",
     "@types/fs-extra": "0.0.33",
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
+    "@types/mocha": "^2.2.32",
     "@types/node": "6.0.45",
     "@types/typescript": "0.4.29",
-    "@types/chai": "^3.4.34",
-    "@types/mocha": "^2.2.32",
+    "chai": "^3.5.0",
     "conventional-changelog-cli": "^1.2.0",
     "handlebars": "^4.0.5",
     "mocha": "^3.1.2",
