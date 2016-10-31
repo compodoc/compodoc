@@ -52,6 +52,18 @@ Options:
   -d, --output [folder]    Where to store the generated documentation
 ```
 
+## Roadmap
+
+- [ ] module(s) page(s) with ngmodule comments
+- [x] module(s) page(s) started
+- [ ] component(s) page(s) with @component comments, API, class
+- [x] component(s) page(s) started
+- [ ] handle external markdown files as "functional" documentation
+- [ ] routes
+- [ ] directives
+- [ ] injectables
+- [ ] classes
+- [ ] pipes
 
 ## Resources
 
