@@ -89,7 +89,16 @@ export namespace Application {
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
 
         $configuration.mainData.modules = $dependenciesEngine.getModules();
+        $configuration.addPage({
+            name: 'modules',
+            context: 'modules'
+        });
+
         $configuration.mainData.components = $dependenciesEngine.getComponents();
+        $configuration.addPage({
+            name: 'components',
+            context: 'components'
+        });
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         processPages();
