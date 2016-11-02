@@ -11,6 +11,7 @@ export class DependenciesEngine {
 
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
+        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
     }
     getModules() {
         return this.modules;
@@ -20,5 +21,8 @@ export class DependenciesEngine {
     }
     getDirectives() {
         return this.directives;
+    }
+    getInjectables() {
+        return this.injectables;
     }
 };

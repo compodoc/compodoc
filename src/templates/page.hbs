@@ -47,6 +47,20 @@
                    {{#compare data.context "===" 'component'}}
                         {{> component data }}
                    {{/compare}}
+
+                   {{#compare data.context "===" 'directives'}}
+                        {{> directives data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'directive'}}
+                        {{> directive data }}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'injectables'}}
+                        {{> injectables data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'injectable'}}
+                        {{> injectable data }}
+                   {{/compare}}
                </div>
            </div>
        </div>

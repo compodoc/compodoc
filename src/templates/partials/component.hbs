@@ -4,19 +4,19 @@
 </ol>
 
 <p>
-    <b>File: </b>{{module.file}}
+    <b>File: </b>{{component.file}}
 </p>
 <p>
-    <b>Selector: </b>{{module.selector}}
+    <b>Selector: </b>{{component.selector}}
 </p>
 
 <div class="container-fluid module">
     <div class="row">
-        {{#if module.declarations}}
+        {{#if component.declarations}}
         <div class="col-sm-3">
             <h4>Declarations</h4>
             <ul class="list-group">
-                {{#each module.declarations}}
+                {{#each component.declarations}}
                     <li class="list-group-item">
                         <a {{#compare type "===" 'component'}} href="../components/{{name}}.html" {{/compare}}>{{name}}</a>
                     </li>
@@ -24,11 +24,11 @@
             </ul>
         </div>
         {{/if}}
-        {{#if module.providers}}
+        {{#if component.providers}}
         <div class="col-sm-3">
             <h4>Providers</h4>
             <ul class="list-group">
-                {{#each module.providers}}
+                {{#each component.providers}}
                     <li class="list-group-item">
                         {{name}}
                     </li>

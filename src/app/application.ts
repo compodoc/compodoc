@@ -102,6 +102,15 @@ export namespace Application {
 
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
 
+        prepareModules();
+        prepareComponents();
+        prepareDirectives();
+        prepareInjectables();
+
+        processPages();
+    }
+
+    let prepareModules = () => {
         $configuration.mainData.modules = $dependenciesEngine.getModules();
         $configuration.addPage({
             name: 'modules',
@@ -118,28 +127,68 @@ export namespace Application {
                 module: $configuration.mainData.modules[i]
             });
         }
+    }
 
+    let prepareComponents = () => {
         $configuration.mainData.components = $dependenciesEngine.getComponents();
         $configuration.addPage({
             name: 'components',
             context: 'components'
         });
 
-        i = 0;
-        len = $configuration.mainData.components.length;
+        let i = 0,
+            len = $configuration.mainData.components.length;
 
         for(i; i<len; i++) {
             $configuration.addPage({
                 path: 'components',
                 name: $configuration.mainData.components[i].name,
                 context: 'component',
-                module: $configuration.mainData.components[i]
+                component: $configuration.mainData.components[i]
             });
         }
+    }
 
+    let prepareDirectives = () => {
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
-        processPages();
+        $configuration.addPage({
+            name: 'directives',
+            context: 'directives'
+        });
+
+        let i = 0,
+            len = $configuration.mainData.directives.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'directives',
+                name: $configuration.mainData.directives[i].name,
+                context: 'directive',
+                directive: $configuration.mainData.directives[i]
+            });
+        }
+    }
+
+    let prepareInjectables = () => {
+        $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
+
+        $configuration.addPage({
+            name: 'injectables',
+            context: 'injectables'
+        });
+
+        let i = 0,
+            len = $configuration.mainData.injectables.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'injectables',
+                name: $configuration.mainData.injectables[i].name,
+                context: 'injectable',
+                injectable: $configuration.mainData.injectables[i]
+            });
+        }
     }
 
     let processPages = () => {

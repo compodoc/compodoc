@@ -63,35 +63,33 @@ export class HtmlEngine {
         });
     }
     init() {
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('menu', data);
-        });
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/overview.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('overview', data);
-        });
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/readme.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('readme', data);
-        });
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/modules.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('modules', data);
-        });
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/module.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('module', data);
-        });
+        let partials = [
+            'menu',
+            'overview',
+            'readme',
+            'modules',
+            'module',
+            'components',
+            'component',
+            'directives',
+            'directive',
+            'injectables',
+            'injectable'
+        ],
+            i = 0,
+            len = partials.length,
+            loop = () => {
+                if( i <= len-1) {
 
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/components.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('components', data);
-        });
-        fs.readFile(path.resolve(__dirname + '/../src/templates/partials/component.hbs'), 'utf8', (err, data) => {
-            if (err) throw err;
-            Handlebars.registerPartial('component', data);
-        });
+                    fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', (err, data) => {
+                        if (err) throw err;
+                        Handlebars.registerPartial(partials[i], data);
+                        i++;
+                        loop();
+                    });
+                }
+            }
+        loop();
     }
     render(mainData:any, page:any) {
         var o = mainData;

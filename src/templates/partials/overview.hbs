@@ -48,7 +48,21 @@
 
                     </div>
                     <div class="card-footer text-muted">
-                        <a href="#" class="btn btn-default">Browse</a>
+                        <a href="./directives.html" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+        {{#if injectables}}
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-code-fork"></span></h4>
+                        <p class="card-text">{{ injectables.length }} injectables</p>
+
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="./injectables.html" class="btn btn-default">Browse</a>
                     </div>
                 </div>
             </div>
