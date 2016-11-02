@@ -1,0 +1,19 @@
+<h3>Directives</h3>
+<div class="container-fluid components">
+    <div class="row">
+        {{#each directives}}
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{name}}</h4>
+                </div>
+                <div class="card-block">
+                    <footer class="text-center">
+                        <a href="./directives/{{name}}.html" class="btn btn-default">Browse</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

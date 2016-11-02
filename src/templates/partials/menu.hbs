@@ -93,7 +93,9 @@
                 </span>Directives</a>
             </h4>
         </div>
-        <div id="directives" class="panel-collapse collapse {{#compare context "===" 'directives'}} in {{/compare}}">
+        <div id="directives" class="panel-collapse collapse
+                                    {{#compare context "===" 'directives'}} in {{/compare}}
+                                    {{#compare context "===" 'directive'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     {{#each directives}}
@@ -116,7 +118,9 @@
                 </span>Classes</a>
             </h4>
         </div>
-        <div id="classes" class="panel-collapse collapse {{#compare context "===" 'classes'}} in {{/compare}}">
+        <div id="classes" class="panel-collapse collapse
+                                {{#compare context "===" 'classes'}} in {{/compare}}
+                                {{#compare context "===" 'classe'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     <tr>
@@ -142,7 +146,9 @@
                 </span>Routes</a>
             </h4>
         </div>
-        <div id="routes" class="panel-collapse collapse {{#compare context "===" 'routes'}} in {{/compare}}">
+        <div id="routes" class="panel-collapse collapse
+                                {{#compare context "===" 'routes'}} in {{/compare}}
+                                {{#compare context "===" 'route'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
                     <tr>
@@ -168,19 +174,18 @@
                 </span>Injectables</a>
             </h4>
         </div>
-        <div id="injectables" class="panel-collapse collapse {{#compare context "===" 'injectables'}} in {{/compare}}">
+        <div id="injectables" class="panel-collapse collapse
+                                    {{#compare context "===" 'injectables'}} in {{/compare}}
+                                    {{#compare context "===" 'injectable'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
+                    {{#each injectables}}
                     <tr>
                         <td>
-                            <a href="./">Service 1</a>
+                            <a href="./injectables/{{name}}.html">{{ name }}</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./">Service 2</a>
-                        </td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>
@@ -188,7 +193,7 @@
     {{/if}}
     {{#unless hideGenerator}}
     <p class="copyright">
-        Documentation generated using <a href="http://groupe-sii.github.io/compodoc" target="_blank">Compodoc</a>
+        Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">Compodoc</a>
     </p>
     {{/unless}}
 </div>

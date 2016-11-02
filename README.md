@@ -11,26 +11,13 @@ compodoc
 
 The missing documentation tool for your Angular 2 application.
 
-Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [typedoc](https://github.com/TypeStrong/typedoc)
-
-__Work in progress, not ready for production__
+## Demo with [SoundCloud API client with Angular2 project](https://github.com/r-park/soundcloud-ngrx)
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)
-
-## Why this ?
-
-Because we doesn't find our needs on existing tools. We want to have a single place where there is :
-- api documentation of code (typedoc)
-- component(s) documentation
-- general documentation (\*.md files)
-
-## Why not a SPA for outputed documentation ?
-
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Install
 
@@ -47,12 +34,23 @@ Options:
 
   -h, --help               output usage information
   -V, --version            output the version number
-  -f, --file [file]        Entry *.ts file
+  -f, --file [file]        A tsconfig.json file
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
   -d, --output [folder]    Where to store the generated documentation
 ```
+
+## Why this tool ?
+
+Because we doesn't find our needs on existing tools. We want to have a single place where there is :
+- api documentation of code (typedoc)
+- component(s) documentation
+- general documentation (\*.md files)
+
+## Why not a SPA for outputed documentation ?
+
+[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Roadmap
 
@@ -66,6 +64,7 @@ Options:
 - [ ] injectables
 - [ ] classes
 - [ ] pipes
+- [ ] support for Angular 1.5+ projects written in Typescript
 
 ## Resources
 
@@ -74,7 +73,7 @@ Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekine
 ## License
 
 The MIT License (MIT)
-Copyright (c) 2016 - SII
+Copyright (c) 2016
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

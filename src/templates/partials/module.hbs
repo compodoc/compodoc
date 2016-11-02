@@ -40,7 +40,7 @@
             <ul class="list-group">
                 {{#each module.providers}}
                     <li class="list-group-item">
-                        {{name}}
+                        <a href="../injectables/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -52,7 +52,7 @@
             <ul class="list-group">
                 {{#each module.imports}}
                     <li class="list-group-item">
-                        {{name}}
+                        <a href="../modules/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -64,7 +64,7 @@
             <ul class="list-group">
                 {{#each module.exports}}
                     <li class="list-group-item">
-                        {{name}}
+                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
