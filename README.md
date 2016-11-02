@@ -11,26 +11,13 @@ compodoc
 
 The missing documentation tool for your Angular 2 application.
 
-Use internally : [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [typedoc](https://github.com/TypeStrong/typedoc)
-
-__Work in progress, not ready for production__
+## Demo with [SoundCloud API client with Angular2 project](https://github.com/r-park/soundcloud-ngrx)
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)
-
-## Why this ?
-
-Because we doesn't find our needs on existing tools. We want to have a single place where there is :
-- api documentation of code (typedoc)
-- component(s) documentation
-- general documentation (\*.md files)
-
-## Why not a SPA for outputed documentation ?
-
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Install
 
@@ -54,6 +41,17 @@ Options:
   -d, --output [folder]    Where to store the generated documentation
 ```
 
+## Why this tool ?
+
+Because we doesn't find our needs on existing tools. We want to have a single place where there is :
+- api documentation of code (typedoc)
+- component(s) documentation
+- general documentation (\*.md files)
+
+## Why not a SPA for outputed documentation ?
+
+[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
+
 ## Roadmap
 
 - [ ] module(s) page(s) with ngmodule comments
@@ -66,6 +64,7 @@ Options:
 - [ ] injectables
 - [ ] classes
 - [ ] pipes
+- [ ] support for Angular 1.5+ projects written in Typescript
 
 ## Resources
 
