@@ -74,7 +74,8 @@ export class HtmlEngine {
             'directives',
             'directive',
             'injectables',
-            'injectable'
+            'injectable',
+            'routes'
         ],
             i = 0,
             len = partials.length,

@@ -106,6 +106,7 @@ export namespace Application {
         prepareComponents();
         prepareDirectives();
         prepareInjectables();
+        prepareRoutes();
 
         processPages();
     }
@@ -189,6 +190,28 @@ export namespace Application {
                 injectable: $configuration.mainData.injectables[i]
             });
         }
+    }
+
+    let prepareRoutes = () => {
+        $configuration.mainData.routes = $dependenciesEngine.getRoutes();
+
+        $configuration.addPage({
+            name: 'routes',
+            context: 'routes'
+        });
+
+        /*
+        let i = 0,
+            len = $configuration.mainData.injectables.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'injectables',
+                name: $configuration.mainData.injectables[i].name,
+                context: 'injectable',
+                injectable: $configuration.mainData.injectables[i]
+            });
+        }*/
     }
 
     let processPages = () => {

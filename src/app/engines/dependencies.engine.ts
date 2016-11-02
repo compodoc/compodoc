@@ -2,16 +2,18 @@ import * as _ from 'lodash';
 
 export class DependenciesEngine {
     rawData: Object;
-    modules: [];
+    modules: Object[];
     components: Object[];
     directives: Object[];
+    injectables: Object[];
+    routes: Object[];
     constructor(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
-
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+        this.routes = _.sortBy(this.rawData.routes, ['name']);
     }
     getModules() {
         return this.modules;
@@ -24,5 +26,8 @@ export class DependenciesEngine {
     }
     getInjectables() {
         return this.injectables;
+    }
+    getRoutes() {
+        return this.routes;
     }
 };
