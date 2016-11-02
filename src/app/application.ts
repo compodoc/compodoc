@@ -11,6 +11,7 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
+import { Dependencies } from './crawlers/dependencies';
 
 let pkg = require('../package.json'),
     program = require('commander'),
@@ -88,13 +89,25 @@ export namespace Application {
 
     let getDependenciesData = () => {
         logger.info('Get dependencies data');
+
         let ngd = require('angular2-dependencies-graph');
 
         let dependenciesData = ngd.Application.getDependencies({
             file: program.file
         });
 
+        /*
+        let crawler = new Dependencies(
+          [program.file]
+        );
+
+        let dependenciesData = crawler.getDependencies();
+
+        console.log(dependenciesData.length);*/
+
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
+
+        console.log(dependenciesData);
 
         $configuration.mainData.modules = $dependenciesEngine.getModules();
         $configuration.addPage({
@@ -186,7 +199,7 @@ export namespace Application {
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process module graph', modules[i].name);
-                    $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name).then(() => {
+                    $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name, 'f').then(() => {
                         i++;
                         loop();
                     }, (errorMessage) => {
@@ -196,7 +209,7 @@ export namespace Application {
                     logger.info('Documentation generated in ' + program.output);
                 }
             };
-        $ngdengine.renderGraph(program.file, 'documentation/graph').then(() => {
+        $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
             loop();
         }, () => {
             logger.error('Error during graph generation');
