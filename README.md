@@ -47,7 +47,7 @@ Options:
 
   -h, --help               output usage information
   -V, --version            output the version number
-  -f, --file [file]        Entry *.ts file
+  -f, --file [file]        A tsconfig.json file
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
