@@ -2,7 +2,7 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Compodoc by groupe-sii</title>
+    <title>Compodoc by compodoc</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -12,19 +12,20 @@
   <body>
     <section class="page-header">
       <h1 class="project-name">Compodoc</h1>
-      <h2 class="project-tagline">A tool to generate a must-have documentation for your Angular 2 application</h2>
-      <a href="https://github.com/groupe-sii/compodoc" class="btn">View on GitHub</a>
-      <a href="https://github.com/groupe-sii/compodoc/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/groupe-sii/compodoc/tarball/master" class="btn">Download .tar.gz</a>
+      <h2 class="project-tagline">The missing documentation tool for your Angular 2 application</h2>
+      <a href="https://github.com/compodoc/compodoc" class="btn">View on GitHub</a>
+      <a href="https://github.com/compodoc/compodoc/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/compodoc/compodoc/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
-      <p><a href="https://badge.fury.io/js/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm version"></a></p>
+      <p><a href="https://badge.fury.io/js/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm version"></a>
+<a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a></p>
 
 <h1>
 <a id="compodoc" class="anchor" href="#compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>compodoc</h1>
 
-<p>A tool to generate a must-have documentation for your Angular 2 application.</p>
+<p>The missing documentation tool for your Angular 2 application.</p>
 
 <p>Use internally : <a href="https://github.com/manekinekko/angular2-dependencies-graph">angular2-dependencies-graph</a>, <a href="https://github.com/TypeStrong/typedoc">typedoc</a></p>
 
@@ -41,6 +42,14 @@
 <tr>
 <td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png" alt="screenshot-1"></td>
 <td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png" alt="screenshot-1"></td>
+</tr>
+<tr>
+<td align="center">Modules page</td>
+<td align="center">Single module page</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png" alt="screenshot-1"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png" alt="screenshot-1"></td>
 </tr>
 </tbody>
 </table>
@@ -80,8 +89,25 @@ Options:
   -f, --file [file]        Entry *.ts file
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
+  -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
   -d, --output [folder]    Where to store the generated documentation
 </code></pre>
+
+<h2>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<ul>
+<li>[ ] module(s) page(s) with ngmodule comments</li>
+<li>[x] module(s) page(s) started</li>
+<li>[ ] component(s) page(s) with <a href="https://github.com/component" class="user-mention">@component</a> comments, API, class</li>
+<li>[x] component(s) page(s) started</li>
+<li>[ ] handle external markdown files as "functional" documentation</li>
+<li>[ ] routes</li>
+<li>[ ] directives</li>
+<li>[ ] injectables</li>
+<li>[ ] classes</li>
+<li>[ ] pipes</li>
+</ul>
 
 <h2>
 <a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h2>
@@ -101,7 +127,7 @@ Copyright (c) 2016 - SII</p>
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/groupe-sii/compodoc">Compodoc</a> is maintained by <a href="https://github.com/groupe-sii">groupe-sii</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/compodoc/compodoc">Compodoc</a> is maintained by <a href="https://github.com/compodoc">compodoc</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
