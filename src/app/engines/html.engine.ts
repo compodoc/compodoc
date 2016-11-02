@@ -79,18 +79,23 @@ export class HtmlEngine {
         ],
             i = 0,
             len = partials.length,
-            loop = () => {
+            loop = (resolve, reject) => {
                 if( i <= len-1) {
-
                     fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', (err, data) => {
-                        if (err) throw err;
+                        if (err) { reject(); }
                         Handlebars.registerPartial(partials[i], data);
                         i++;
-                        loop();
+                        loop(resolve, reject);
                     });
+                } else {
+                    resolve();
                 }
             }
-        loop();
+
+
+        return new Promise(function(resolve, reject) {
+            loop(resolve, reject);
+        });
     }
     render(mainData:any, page:any) {
         var o = mainData;

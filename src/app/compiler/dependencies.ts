@@ -37,6 +37,7 @@ interface Deps {
     providers?: Deps[];
     imports?: Deps[];
     exports?: Deps[];
+    exportAs?: string;
     declarations?: Deps[];
     bootstrap?: Deps[];
     __raw?: any
@@ -121,10 +122,12 @@ export class Dependencies {
 
                     let props = this.findProps(visitedNode);
 
+                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '')
+
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             providers: this.getModuleProviders(props),
                             declarations: this.getModuleDeclations(props),
                             imports: this.getModuleImports(props),
@@ -138,8 +141,9 @@ export class Dependencies {
                     else if (this.isComponent(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             selector: this.getComponentSelector(props),
+                            exportAs: this.getComponentExportAs(props),
                             providers: this.getComponentProviders(props),
                             templateUrl: this.getComponentTemplateUrl(props),
                             styleUrls: this.getComponentStyleUrls(props),
@@ -150,7 +154,7 @@ export class Dependencies {
                     else if (this.isInjectable(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'injectable'
                         };
                         outputSymbols['injectables'].push(deps);
@@ -158,7 +162,7 @@ export class Dependencies {
                     else if (this.isPipe(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'pipe'
                         };
                         outputSymbols['pipes'].push(deps);
@@ -166,7 +170,7 @@ export class Dependencies {
                     else if (this.isDirective(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'directive'
                         };
                         outputSymbols['directives'].push(deps);
@@ -263,6 +267,10 @@ export class Dependencies {
 
     private getComponentSelector(props: NodeObject[]): string {
         return this.getSymbolDeps(props, 'selector').pop();
+    }
+
+    private getComponentExportAs(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'exportAs').pop();
     }
 
     private getModuleProviders(props: NodeObject[]): Deps[] {

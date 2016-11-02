@@ -3,38 +3,90 @@
   <li>{{name}}</li>
 </ol>
 
-<p>
-    <b>File: </b>{{component.file}}
+{{#if component.typedocData.comment}}
+<p class="comment">
+    {{component.typedocData.comment.shortText}}
+    {{component.typedocData.comment.text}}
 </p>
-<p>
-    <b>Selector: </b>{{component.selector}}
-</p>
+{{/if}}
 
-<div class="container-fluid module">
-    <div class="row">
-        {{#if component.declarations}}
-        <div class="col-sm-3">
-            <h4>Declarations</h4>
-            <ul class="list-group">
-                {{#each component.declarations}}
-                    <li class="list-group-item">
-                        <a {{#compare type "===" 'component'}} href="../components/{{name}}.html" {{/compare}}>{{name}}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </div>
-        {{/if}}
-        {{#if component.providers}}
-        <div class="col-sm-3">
-            <h4>Providers</h4>
-            <ul class="list-group">
-                {{#each component.providers}}
-                    <li class="list-group-item">
-                        {{name}}
-                    </li>
-                {{/each}}
-            </ul>
-        </div>
-        {{/if}}
-    </div>
-</div>
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <td class="col-md-3">file</td>
+                <td class="col-md-9"><code>{{component.file}}</code></td>
+            </tr>
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>{{component.selector}}</code></td>
+            </tr>
+            {{#if component.exportAs}}
+            <tr>
+                <td class="col-md-3">exportedAs</td>
+                <td class="col-md-9"><code>{{component.exportAs}}</code></td>
+            </tr>
+            {{/if}}
+        </tbody>
+    </table>
+</section>
+
+<!--
+<section>
+    <h3>Inputs</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <td class="col-md-3"><code>activeIds</code></td>
+                <td class="col-md-9">
+                    <div><i>Type: </i><code>string | string[]</code></div>
+                    <div style="margin: 10px 0">An array or comma separated strings of panel identifiers that should be opened</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-3"><code>closeOthers</code></td>
+                <td class="col-md-9">
+                    <div><i>Type: </i><code>boolean</code></div>
+                    <div style="margin: 10px 0">Whether the other panels should be closed when a panel is opened</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-3"><code>type</code></td>
+                <td class="col-md-9">
+                    <div><i>Type: </i><code>string</code></div>
+                    <div style="margin: 10px 0">Type of accordion's panels. Bootstrap 4 recognizes the following types: "success", "info", "warning" and "danger".</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h3 id="outputs">Outputs</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <td class="col-md-3"><code>panelChange</code></td>
+                <td class="col-md-9">A panel change event fired right before the panel toggle happens. See NgbPanelChangeEvent for payload details</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h3 id="methods">Methods</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <td class="col-md-3"><code>toggle</code></td>
+                <td class="col-md-9">
+                    <div><i>Signature: </i><code>toggle(panelId: string)</code></div>
+                    <div><i>Return type: </i><code>void</code></div>
+                    <div style="margin: 10px 0">Programmatically toggle a panel with a given id.</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+-->

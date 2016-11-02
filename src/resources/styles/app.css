@@ -103,5 +103,14 @@ body {
 }
 .breadcrumb {
     background: none;
-    padding-left: 5px;
+    padding-left: 0;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+.breadcrumb a {
+    text-decoration: underline;
+}
+
+.comment {
+    margin: 15px 0;
 }

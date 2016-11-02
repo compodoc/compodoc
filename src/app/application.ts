@@ -11,6 +11,7 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
+import { TypedocEngine } from './engines/typedoc.engine';
 import { Dependencies } from './compiler/dependencies';
 
 let pkg = require('../package.json'),
@@ -22,6 +23,7 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
+    $typedocengine = new TypedocEngine(),
     $dependenciesEngine;
 
 export namespace Application {
@@ -40,8 +42,6 @@ export namespace Application {
         program.outputHelp()
         process.exit(1);
     }
-
-    $htmlengine.init();
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
 
@@ -103,7 +103,10 @@ export namespace Application {
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
 
         prepareModules();
+
         prepareComponents();
+        parseComponents();
+
         prepareDirectives();
         prepareInjectables();
         prepareRoutes();
@@ -150,6 +153,18 @@ export namespace Application {
         }
     }
 
+    let parseComponents = () => {
+        let i = 0,
+            len = $configuration.mainData.components.length;
+
+        for(i; i<len; i++) {
+            $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
+            $configuration.mainData.components[i].typedocData = {
+                comment: $typedocengine.getComment()
+            };
+        }
+    }
+
     let prepareDirectives = () => {
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
@@ -193,6 +208,7 @@ export namespace Application {
     }
 
     let prepareRoutes = () => {
+        logger.info('Process routes');
         $configuration.mainData.routes = $dependenciesEngine.getRoutes();
 
         $configuration.addPage({
@@ -247,6 +263,7 @@ export namespace Application {
     }
 
     let processResources = () => {
+        logger.info('Copy main resources');
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + program.output), function (err) {
             if (err) {
                 logger.error('Error during resources copy');
@@ -342,7 +359,9 @@ export namespace Application {
 
                     files = walk(cwd || '.');
                 }
-                processPackageJson();
+                $htmlengine.init().then(() => {
+                    processPackageJson();
+                });
             }
         } else {
             logger.fatal('Entry file was not found');
