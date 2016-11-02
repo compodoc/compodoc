@@ -129,10 +129,10 @@ export class Dependencies {
                             declarations: this.getModuleDeclations(props),
                             imports: this.getModuleImports(props),
                             exports: this.getModuleExports(props),
-                            bootstrap: this.getModuleBootstrap(props)
+                            bootstrap: this.getModuleBootstrap(props),
+                            type: 'module'
                         };
                         outputSymbols['modules'].push(deps);
-
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
                     }
                     else if (this.isComponent(metadata)) {
@@ -142,28 +142,32 @@ export class Dependencies {
                             selector: this.getComponentSelector(props),
                             providers: this.getComponentProviders(props),
                             templateUrl: this.getComponentTemplateUrl(props),
-                            styleUrls: this.getComponentStyleUrls(props)
+                            styleUrls: this.getComponentStyleUrls(props),
+                            type: 'component'
                         };
                         outputSymbols['components'].push(deps);
                     }
                     else if (this.isInjectable(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/')
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'injectable'
                         };
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/')
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'pipe'
                         };
                         outputSymbols['pipes'].push(deps);
                     }
                     else if (this.isDirective(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/')
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'directive'
                         };
                         outputSymbols['directives'].push(deps);
                     }
