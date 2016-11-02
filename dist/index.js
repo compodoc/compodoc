@@ -5,10 +5,13 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var fs = require('fs-extra');
 var path = require('path');
 var LiveServer = require('live-server');
-var Shelljs = require('shelljs');
-var _ = require('lodash');
 var Handlebars = require('handlebars');
 var marked = _interopDefault(require('marked'));
+var _ = require('lodash');
+var Shelljs = require('shelljs');
+var ts = require('typescript');
+var fs$1 = require('fs');
+var util = require('util');
 
 let gutil = require('gulp-util');
 let c = gutil.colors;
@@ -133,11 +136,31 @@ class HtmlEngine {
         });
     }
     init() {
-        fs.readFile(path.resolve(__dirname + '/../src/templates/menu.hbs'), 'utf8', (err, data) => {
-            if (err)
-                throw err;
-            Handlebars.registerPartial('menu', data);
-        });
+        let partials = [
+            'menu',
+            'overview',
+            'readme',
+            'modules',
+            'module',
+            'components',
+            'component',
+            'directives',
+            'directive',
+            'injectables',
+            'injectable',
+            'routes'
+        ], i = 0, len = partials.length, loop = () => {
+            if (i <= len - 1) {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', (err, data) => {
+                    if (err)
+                        throw err;
+                    Handlebars.registerPartial(partials[i], data);
+                    i++;
+                    loop();
+                });
+            }
+        };
+        loop();
     }
     render(mainData, page) {
         var o = mainData;
@@ -214,20 +237,478 @@ class Configuration {
     }
 }
 
+class DependenciesEngine {
+    constructor(data) {
+        this.rawData = data;
+        this.modules = _.sortBy(this.rawData.modules, ['name']);
+        this.components = _.sortBy(this.rawData.components, ['name']);
+        this.directives = _.sortBy(this.rawData.directives, ['name']);
+        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+        this.routes = _.sortBy(this.rawData.routes, ['name']);
+    }
+    getModules() {
+        return this.modules;
+    }
+    getComponents() {
+        return this.components;
+    }
+    getDirectives() {
+        return this.directives;
+    }
+    getInjectables() {
+        return this.injectables;
+    }
+    getRoutes() {
+        return this.routes;
+    }
+}
+
+class NgdEngine {
+    constructor() {
+    }
+    renderGraph(filepath, outputpath, type) {
+        return new Promise(function (resolve$$1, reject) {
+            Shelljs.exec(path.resolve(__dirname + '/../node_modules/.bin/ngd') + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg', {
+                silent: true
+            }, function (code, stdout, stderr) {
+                if (code === 0) {
+                    resolve$$1();
+                }
+                else {
+                    reject(stderr);
+                }
+            });
+        });
+    }
+}
+
+// get default new line break
+
+// Create a compilerHost object to allow the compiler to read and write files
+function compilerHost(transpileOptions) {
+    const inputFileName = transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
+    const compilerHost = {
+        getSourceFile: (fileName) => {
+            if (fileName.lastIndexOf('.ts') !== -1) {
+                if (fileName === 'lib.d.ts') {
+                    return undefined;
+                }
+                if (path.isAbsolute(fileName) === false) {
+                    fileName = path.join(transpileOptions.tsconfigDirectory, fileName);
+                }
+                let libSource = '';
+                try {
+                    libSource = fs$1.readFileSync(fileName).toString();
+                }
+                catch (e) {
+                    logger.trace(e, fileName);
+                }
+                return ts.createSourceFile(fileName, libSource, transpileOptions.target, false);
+            }
+            return undefined;
+        },
+        writeFile: (name, text) => { },
+        getDefaultLibFileName: () => 'lib.d.ts',
+        useCaseSensitiveFileNames: () => false,
+        getCanonicalFileName: fileName => fileName,
+        getCurrentDirectory: () => '',
+        getNewLine: () => '\n',
+        fileExists: (fileName) => fileName === inputFileName,
+        readFile: () => '',
+        directoryExists: () => true,
+        getDirectories: () => []
+    };
+    return compilerHost;
+}
+
+let q = require('q');
+class Dependencies {
+    constructor(files, options) {
+        this.__cache = {};
+        this.__nsModule = {};
+        this.unknown = '???';
+        this.files = files;
+        const transpileOptions = {
+            target: ts.ScriptTarget.ES5,
+            module: ts.ModuleKind.CommonJS,
+            tsconfigDirectory: options.tsconfigDirectory
+        };
+        this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
+    }
+    getDependencies() {
+        let deps = {
+            'modules': [],
+            'components': [],
+            'injectables': [],
+            'pipes': [],
+            'directives': [],
+            'routes': []
+        };
+        let sourceFiles = this.program.getSourceFiles() || [];
+        sourceFiles.map((file) => {
+            let filePath = file.fileName;
+            if (path.extname(filePath) === '.ts') {
+                if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
+                    logger.info('parsing', filePath);
+                    try {
+                        this.getSourceFileDecorators(file, deps);
+                    }
+                    catch (e) {
+                        logger.trace(e, file.fileName);
+                    }
+                }
+            }
+            return deps;
+        });
+        return deps;
+    }
+    getSourceFileDecorators(srcFile, outputSymbols) {
+        ts.forEachChild(srcFile, (node) => {
+            if (node.decorators) {
+                let visitNode = (visitedNode, index) => {
+                    let name = this.getSymboleName(node);
+                    let deps = {};
+                    let metadata = node.decorators.pop();
+                    let props = this.findProps(visitedNode);
+                    if (this.isModule(metadata)) {
+                        deps = {
+                            name,
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            providers: this.getModuleProviders(props),
+                            declarations: this.getModuleDeclations(props),
+                            imports: this.getModuleImports(props),
+                            exports: this.getModuleExports(props),
+                            bootstrap: this.getModuleBootstrap(props),
+                            type: 'module'
+                        };
+                        outputSymbols['modules'].push(deps);
+                        outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
+                    }
+                    else if (this.isComponent(metadata)) {
+                        deps = {
+                            name,
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            selector: this.getComponentSelector(props),
+                            providers: this.getComponentProviders(props),
+                            templateUrl: this.getComponentTemplateUrl(props),
+                            styleUrls: this.getComponentStyleUrls(props),
+                            type: 'component'
+                        };
+                        outputSymbols['components'].push(deps);
+                    }
+                    else if (this.isInjectable(metadata)) {
+                        deps = {
+                            name,
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'injectable'
+                        };
+                        outputSymbols['injectables'].push(deps);
+                    }
+                    else if (this.isPipe(metadata)) {
+                        deps = {
+                            name,
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'pipe'
+                        };
+                        outputSymbols['pipes'].push(deps);
+                    }
+                    else if (this.isDirective(metadata)) {
+                        deps = {
+                            name,
+                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            type: 'directive'
+                        };
+                        outputSymbols['directives'].push(deps);
+                    }
+                    this.debug(deps);
+                    this.__cache[name] = deps;
+                };
+                let filterByDecorators = (node) => {
+                    if (node.expression && node.expression.expression) {
+                        return /(NgModule|Component|Injectable|Pipe|Directive)/.test(node.expression.expression.text);
+                    }
+                    return false;
+                };
+                node.decorators
+                    .filter(filterByDecorators)
+                    .forEach(visitNode);
+            }
+            else {
+            }
+        });
+    }
+    debug(deps) {
+        logger.debug('debug', `${deps.name}:`);
+        [
+            'imports', 'exports', 'declarations', 'providers', 'bootstrap'
+        ].forEach(symbols => {
+            if (deps[symbols] && deps[symbols].length > 0) {
+                logger.debug('', `- ${symbols}:`);
+                deps[symbols].map(i => i.name).forEach(d$$1 => {
+                    logger.debug('', `\t- ${d$$1}`);
+                });
+            }
+        });
+    }
+    isComponent(metadata) {
+        return metadata.expression.expression.text === 'Component';
+    }
+    isPipe(metadata) {
+        return metadata.expression.expression.text === 'Pipe';
+    }
+    isDirective(metadata) {
+        return metadata.expression.expression.text === 'Directive';
+    }
+    isInjectable(metadata) {
+        return metadata.expression.expression.text === 'Injectable';
+    }
+    isModule(metadata) {
+        return metadata.expression.expression.text === 'NgModule';
+    }
+    getType(name) {
+        let type;
+        if (name.toLowerCase().indexOf('component') !== -1) {
+            type = 'component';
+        }
+        else if (name.toLowerCase().indexOf('pipe') !== -1) {
+            type = 'pipe';
+        }
+        else if (name.toLowerCase().indexOf('module') !== -1) {
+            type = 'module';
+        }
+        else if (name.toLowerCase().indexOf('directive') !== -1) {
+            type = 'directive';
+        }
+        return type;
+    }
+    findRoutes(props) {
+        let i = 0, len = props.length, result = [];
+        for (i; i < len; i++) {
+            if (props[i].ns && props[i].ns === 'RouterModule') {
+                result.push(props[i].name);
+            }
+        }
+        return result;
+    }
+    getSymboleName(node) {
+        return node.name.text;
+    }
+    getComponentSelector(props) {
+        return this.getSymbolDeps(props, 'selector').pop();
+    }
+    getModuleProviders(props) {
+        return this.getSymbolDeps(props, 'providers').map((providerName) => {
+            return this.parseDeepIndentifier(providerName);
+        });
+    }
+    findProps(visitedNode) {
+        if (visitedNode.expression.arguments.length > 0) {
+            return visitedNode.expression.arguments.pop().properties;
+        }
+        else {
+            return '';
+        }
+    }
+    getModuleDeclations(props) {
+        return this.getSymbolDeps(props, 'declarations').map((name) => {
+            let component = this.findComponentSelectorByName(name);
+            if (component) {
+                return component;
+            }
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getModuleImports(props) {
+        return this.getSymbolDeps(props, 'imports').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getModuleExports(props) {
+        return this.getSymbolDeps(props, 'exports').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getModuleBootstrap(props) {
+        return this.getSymbolDeps(props, 'bootstrap').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getComponentProviders(props) {
+        return this.getSymbolDeps(props, 'providers').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getComponentDirectives(props) {
+        return this.getSymbolDeps(props, 'directives').map((name) => {
+            let identifier = this.parseDeepIndentifier(name);
+            identifier.selector = this.findComponentSelectorByName(name);
+            identifier.label = '';
+            return identifier;
+        });
+    }
+    parseDeepIndentifier(name) {
+        let nsModule = name.split('.'), type = this.getType(name);
+        if (nsModule.length > 1) {
+            // cache deps with the same namespace (i.e Shared.*)
+            if (this.__nsModule[nsModule[0]]) {
+                this.__nsModule[nsModule[0]].push(name);
+            }
+            else {
+                this.__nsModule[nsModule[0]] = [name];
+            }
+            return {
+                ns: nsModule[0],
+                name,
+                type: type
+            };
+        }
+        return {
+            name,
+            type: type
+        };
+    }
+    getComponentTemplateUrl(props) {
+        return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
+    }
+    getComponentStyleUrls(props) {
+        return this.sanitizeUrls(this.getSymbolDeps(props, 'styleUrls'));
+    }
+    sanitizeUrls(urls) {
+        return urls.map(url => url.replace('./', ''));
+    }
+    getSymbolDeps(props, type) {
+        let deps = props.filter((node) => {
+            return node.name.text === type;
+        });
+        let parseSymbolText = (text) => {
+            if (text.indexOf('/') !== -1) {
+                text = text.split('/').pop();
+            }
+            return [
+                text
+            ];
+        };
+        let buildIdentifierName = (node, name = '') => {
+            if (node.expression) {
+                name = name ? `.${name}` : name;
+                let nodeName = this.unknown;
+                if (node.name) {
+                    nodeName = node.name.text;
+                }
+                else if (node.text) {
+                    nodeName = node.text;
+                }
+                else if (node.expression) {
+                    if (node.expression.text) {
+                        nodeName = node.expression.text;
+                    }
+                    else if (node.expression.elements) {
+                        if (node.expression.kind === ts.SyntaxKind.ArrayLiteralExpression) {
+                            nodeName = node.expression.elements.map(el => el.text).join(', ');
+                            nodeName = `[${nodeName}]`;
+                        }
+                    }
+                }
+                if (node.kind === ts.SyntaxKind.SpreadElementExpression) {
+                    return `...${nodeName}`;
+                }
+                return `${buildIdentifierName(node.expression, nodeName)}${name}`;
+            }
+            return `${node.text}.${name}`;
+        };
+        let parseProviderConfiguration = (o) => {
+            // parse expressions such as:
+            // { provide: APP_BASE_HREF, useValue: '/' },
+            // or
+            // { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
+            let _genProviderName = [];
+            let _providerProps = [];
+            (o.properties || []).forEach((prop) => {
+                let identifier = prop.initializer.text;
+                if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
+                    identifier = `'${identifier}'`;
+                }
+                // lambda function (i.e useFactory)
+                if (prop.initializer.body) {
+                    let params = (prop.initializer.parameters || []).map((params) => params.name.text);
+                    identifier = `(${params.join(', ')}) => {}`;
+                }
+                else if (prop.initializer.elements) {
+                    let elements = (prop.initializer.elements || []).map((n) => {
+                        if (n.kind === ts.SyntaxKind.StringLiteral) {
+                            return `'${n.text}'`;
+                        }
+                        return n.text;
+                    });
+                    identifier = `[${elements.join(', ')}]`;
+                }
+                _providerProps.push([
+                    // i.e provide
+                    prop.name.text,
+                    // i.e OpaqueToken or 'StringToken'
+                    identifier
+                ].join(': '));
+            });
+            return `{ ${_providerProps.join(', ')} }`;
+        };
+        let parseSymbolElements = (o) => {
+            // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
+            if (o.arguments) {
+                let className = buildIdentifierName(o.expression);
+                // function arguments could be really complexe. There are so
+                // many use cases that we can't handle. Just print "args" to indicate
+                // that we have arguments.
+                let functionArgs = o.arguments.length > 0 ? 'args' : '';
+                let text = `${className}(${functionArgs})`;
+                return text;
+            }
+            else if (o.expression) {
+                let identifier = buildIdentifierName(o);
+                return identifier;
+            }
+            return o.text ? o.text : parseProviderConfiguration(o);
+        };
+        let parseSymbols = (node) => {
+            let text = node.initializer.text;
+            if (text) {
+                return parseSymbolText(text);
+            }
+            else if (node.initializer.expression) {
+                let identifier = parseSymbolElements(node.initializer);
+                return [
+                    identifier
+                ];
+            }
+            else if (node.initializer.elements) {
+                return node.initializer.elements.map(parseSymbolElements);
+            }
+        };
+        return deps.map(parseSymbols).pop() || [];
+    }
+    findComponentSelectorByName(name) {
+        return this.__cache[name];
+    }
+}
+
 let pkg = require('../package.json');
 let program = require('commander');
+let files = [];
+let cwd = process.cwd();
 let $htmlengine = new HtmlEngine();
 let $fileengine = new FileEngine();
 let $configuration = new Configuration();
 let $markdownengine = new MarkdownEngine();
+let $ngdengine = new NgdEngine();
+let $dependenciesEngine;
 var Application;
 (function (Application) {
     program
         .version(pkg.version)
-        .option('-f, --file [file]', 'Entry *.ts file')
+        .option('-f, --file [file]', 'A tsconfig.json file')
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page.', false)
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
     let outputHelp = () => {
@@ -237,6 +718,7 @@ var Application;
     $htmlengine.init();
     $configuration.mainData.documentationMainName = program.name; //default commander value
     let processPackageJson = () => {
+        logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
             if (typeof parsedData.name !== 'undefined') {
@@ -245,6 +727,7 @@ var Application;
             if (typeof parsedData.description !== 'undefined') {
                 $configuration.mainData.documentationMainDescription = parsedData.description;
             }
+            logger.info('package.json file found');
             processMarkdown();
         }, (errorMessage) => {
             logger.error(errorMessage);
@@ -253,6 +736,7 @@ var Application;
         });
     };
     let processMarkdown = () => {
+        logger.info('Searching README.md file');
         $markdownengine.getReadmeFile().then((readmeData) => {
             $configuration.addPage({
                 name: 'index',
@@ -263,7 +747,8 @@ var Application;
                 context: 'overview'
             });
             $configuration.mainData.readme = readmeData;
-            getModules();
+            logger.info('README.md file found');
+            getDependenciesData();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
@@ -271,22 +756,118 @@ var Application;
                 name: 'index',
                 context: 'overview'
             });
-            getModules();
+            getDependenciesData();
         });
     };
-    let getModules = () => {
-        let ngd = require('angular2-dependencies-graph');
-        let modules = ngd.Application.getDependencies({
-            file: program.file
+    let getDependenciesData = () => {
+        logger.info('Get dependencies data');
+        let crawler = new Dependencies(files, {
+            tsconfigDirectory: cwd
         });
-        $configuration.mainData.modules = _.sortBy(modules, ['name']);
+        let dependenciesData = crawler.getDependencies();
+        $dependenciesEngine = new DependenciesEngine(dependenciesData);
+        prepareModules();
+        prepareComponents();
+        prepareDirectives();
+        prepareInjectables();
+        prepareRoutes();
         processPages();
     };
+    let prepareModules = () => {
+        $configuration.mainData.modules = $dependenciesEngine.getModules();
+        $configuration.addPage({
+            name: 'modules',
+            context: 'modules'
+        });
+        let i = 0, len = $configuration.mainData.modules.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'modules',
+                name: $configuration.mainData.modules[i].name,
+                context: 'module',
+                module: $configuration.mainData.modules[i]
+            });
+        }
+    };
+    let prepareComponents = () => {
+        $configuration.mainData.components = $dependenciesEngine.getComponents();
+        $configuration.addPage({
+            name: 'components',
+            context: 'components'
+        });
+        let i = 0, len = $configuration.mainData.components.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'components',
+                name: $configuration.mainData.components[i].name,
+                context: 'component',
+                component: $configuration.mainData.components[i]
+            });
+        }
+    };
+    let prepareDirectives = () => {
+        $configuration.mainData.directives = $dependenciesEngine.getDirectives();
+        $configuration.addPage({
+            name: 'directives',
+            context: 'directives'
+        });
+        let i = 0, len = $configuration.mainData.directives.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'directives',
+                name: $configuration.mainData.directives[i].name,
+                context: 'directive',
+                directive: $configuration.mainData.directives[i]
+            });
+        }
+    };
+    let prepareInjectables = () => {
+        $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
+        $configuration.addPage({
+            name: 'injectables',
+            context: 'injectables'
+        });
+        let i = 0, len = $configuration.mainData.injectables.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'injectables',
+                name: $configuration.mainData.injectables[i].name,
+                context: 'injectable',
+                injectable: $configuration.mainData.injectables[i]
+            });
+        }
+    };
+    let prepareRoutes = () => {
+        $configuration.mainData.routes = $dependenciesEngine.getRoutes();
+        $configuration.addPage({
+            name: 'routes',
+            context: 'routes'
+        });
+        /*
+        let i = 0,
+            len = $configuration.mainData.injectables.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'injectables',
+                name: $configuration.mainData.injectables[i].name,
+                context: 'injectable',
+                injectable: $configuration.mainData.injectables[i]
+            });
+        }*/
+    };
     let processPages = () => {
+        logger.info('Process pages');
         let pages = $configuration.pages, i = 0, len = pages.length, loop = () => {
             if (i <= len - 1) {
+                logger.info('Process page', pages[i].name);
                 $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                    fs.outputFile(program.output + pages[i].name + '.html', htmlData, function (err) {
+                    let path$$1 = program.output;
+                    if (pages[i].path) {
+                        path$$1 += '/' + pages[i].path + '/';
+                    }
+                    path$$1 += pages[i].name + '.html';
+                    fs.outputFile(path$$1, htmlData, function (err) {
                         if (err) {
                             logger.error('Error during ' + pages[i].name + ' page generation');
                         }
@@ -311,50 +892,82 @@ var Application;
                 logger.error('Error during resources copy');
             }
             else {
-                processGraph();
+                processGraphs();
             }
         });
     };
-    let processGraph = () => {
-        Shelljs.exec('ngd -f ' + program.file + ' -d documentation/graph', {
-            silent: true
-        }, function (code, stdout, stderr) {
-            if (code === 0) {
-                logger.info('Documentation generated in ' + program.output);
+    let processGraphs = () => {
+        logger.info('Process main graph');
+        let modules = $configuration.mainData.modules, i = 0, len = modules.length, loop = () => {
+            if (i <= len - 1) {
+                logger.info('Process module graph', modules[i].name);
+                $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name, 'f').then(() => {
+                    i++;
+                    loop();
+                }, (errorMessage) => {
+                    logger.error(errorMessage);
+                });
             }
             else {
-                logger.error('Error during graph generation');
+                logger.info('Documentation generated in ' + program.output);
             }
+        };
+        $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
+            loop();
+        }, () => {
+            logger.error('Error during graph generation');
         });
     };
-    /*
-     * 1. scan ts files for list of modules
-     * 2. scan ts files for list of components
-     * 3. export one page for each modules using module.hbs template
-     * 4. export one page for each components using components.hbs template
-     * 5. render README.md in index.html
-     * 6. render menu with lists of components and modules
-     */
     Application.run = () => {
-        let files = [];
+        let _file;
         if (program.serve) {
-            logger.info('Serving documentation');
+            logger.info('Serving documentation at http://127.0.0.1:8080');
             LiveServer.start({
                 root: program.output,
                 open: false,
-                quiet: true
+                quiet: true,
+                logLevel: 0
             });
-            return;
+        }
+        if (program.hideGenerator) {
+            $configuration.mainData.hideGenerator = true;
         }
         if (program.file) {
-            logger.info('Using entry', program.file);
-            if (!fs.existsSync(program.file) ||
-                !fs.existsSync(path.join(process.cwd(), program.file))) {
-                logger.fatal(`"${program.file}" file was not found`);
+            if (!fs.existsSync(program.file)) {
+                logger.fatal('"tsconfig.json" file was not found in the current directory');
                 process.exit(1);
             }
             else {
-                files = [program.file];
+                _file = path.join(path.join(process.cwd(), path.dirname(program.file)), path.basename(program.file));
+                logger.info('Using tsconfig', _file);
+                files = require(_file).files;
+                // use the current directory of tsconfig.json as a working directory
+                cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                if (!files) {
+                    let exclude = require(_file).exclude || [];
+                    var walk = (dir) => {
+                        let results = [];
+                        let list = fs.readdirSync(dir);
+                        list.forEach((file) => {
+                            if (exclude.indexOf(file) < 0) {
+                                file = path.join(dir, file);
+                                let stat = fs.statSync(file);
+                                if (stat && stat.isDirectory()) {
+                                    results = results.concat(walk(file));
+                                }
+                                else if (/(spec|\.d)\.ts/.test(file)) {
+                                    logger.debug('Ignoring', file);
+                                }
+                                else if (path.extname(file) === '.ts') {
+                                    logger.debug('Including', file);
+                                    results.push(file);
+                                }
+                            }
+                        });
+                        return results;
+                    };
+                    files = walk(cwd || '.');
+                }
                 processPackageJson();
             }
         }
