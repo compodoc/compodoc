@@ -231,6 +231,20 @@ export class Dependencies {
         return metadata.expression.expression.text === 'NgModule';
     }
 
+    private getType(name) {
+        let type;
+        if( name.toLowerCase().indexOf('component') !== -1 ) {
+            type = 'component';
+        } else if( name.toLowerCase().indexOf('pipe') !== -1 ) {
+            type = 'pipe';
+        } else if( name.toLowerCase().indexOf('module') !== -1 ) {
+            type = 'module';
+        } else if( name.toLowerCase().indexOf('directive') !== -1 ) {
+            type = 'directive';
+        }
+        return type;
+    }
+
     private findRoutes(props: NodeObject[]): Object[] {
         let i = 0,
             len = props.length,
@@ -311,7 +325,8 @@ export class Dependencies {
     }
 
     private parseDeepIndentifier(name: string): any {
-        let nsModule = name.split('.');
+        let nsModule = name.split('.'),
+            type = this.getType(name);
         if (nsModule.length > 1) {
 
             // cache deps with the same namespace (i.e Shared.*)
@@ -324,11 +339,13 @@ export class Dependencies {
 
             return {
                 ns: nsModule[0],
-                name
+                name,
+                type: type
             }
         }
         return {
-            name
+            name,
+            type: type
         };
     }
 
