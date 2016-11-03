@@ -67,6 +67,11 @@ export class HtmlEngine {
             text = text.replace(/ /gm, '&nbsp;');
             return new Handlebars.SafeString(text);
         });
+        Handlebars.registerHelper('breakComma', function(text) {
+            text = Handlebars.Utils.escapeExpression(text);
+            text = text.replace(/,/g, ',<br>');;
+            return new Handlebars.SafeString(text);
+        });
     }
     init() {
         let partials = [
