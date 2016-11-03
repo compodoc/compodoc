@@ -105,7 +105,7 @@ export namespace Application {
         prepareModules();
 
         prepareComponents();
-        parseComponents();
+        //parseComponents();
 
         prepareDirectives();
         prepareInjectables();
