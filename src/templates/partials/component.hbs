@@ -19,10 +19,110 @@
                 <td class="col-md-9"><code>{{component.file}}</code></td>
             </tr>
 
+            // Official order
+
+            {{#if component.animations}}
+            <tr>
+                <td class="col-md-3">animations</td>
+                <td class="col-md-9"><code>{{component.animations}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.changeDetection}}
+            <tr>
+                <td class="col-md-3">changeDetection</td>
+                <td class="col-md-9"><code>{{component.changeDetection}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.encapsulation}}
+            <tr>
+                <td class="col-md-3">encapsulation</td>
+                <td class="col-md-9"><code>{{component.encapsulation}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.entryComponents}}
+            <tr>
+                <td class="col-md-3">entryComponents</td>
+                <td class="col-md-9"><code>{{component.entryComponents}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.exportAs}}
+            <tr>
+                <td class="col-md-3">exportedAs</td>
+                <td class="col-md-9"><code>{{component.exportAs}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.host}}
+            <tr>
+                <td class="col-md-3">host</td>
+                <td class="col-md-9"><code>{{component.host}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.inputs}}
+            <tr>
+                <td class="col-md-3">host</td>
+                <td class="col-md-9"><code>{{component.inputs}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.interpolation}}
+            <tr>
+                <td class="col-md-3">host</td>
+                <td class="col-md-9"><code>{{component.interpolation}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.moduleId}}
+            <tr>
+                <td class="col-md-3">moduleId</td>
+                <td class="col-md-9"><code>{{component.moduleId}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.outputs}}
+            <tr>
+                <td class="col-md-3">outputs</td>
+                <td class="col-md-9"><code>{{component.outputs}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.providers}}
+            <tr>
+                <td class="col-md-3">providers</td>
+                <td class="col-md-9"><code>{{component.providers}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.queries}}
+            <tr>
+                <td class="col-md-3">queries</td>
+                <td class="col-md-9"><code>{{component.queries}}</code></td>
+            </tr>
+            {{/if}}
+
             {{#if component.selector}}
             <tr>
                 <td class="col-md-3">selector</td>
                 <td class="col-md-9"><code>{{component.selector}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.styleUrls}}
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>{{component.styleUrls}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.styles}}
+            <tr>
+                <td class="col-md-3">styles</td>
+                <td class="col-md-9"><code>{{component.styles}}</code></td>
             </tr>
             {{/if}}
 
@@ -40,32 +140,13 @@
             </tr>
             {{/if}}
 
-            {{#if component.styles}}
+            {{#if component.viewProviders}}
             <tr>
-                <td class="col-md-3">styles</td>
-                <td class="col-md-9"><code>{{component.styles}}</code></td>
-            </tr>
-            {{/if}}
-            {{#if component.styleUrls}}
-            <tr>
-                <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>{{component.styleUrls}}</code></td>
+                <td class="col-md-3">viewProviders</td>
+                <td class="col-md-9"><code>{{component.viewProviders}}</code></td>
             </tr>
             {{/if}}
 
-            {{#if component.encapsulation}}
-            <tr>
-                <td class="col-md-3">encapsulation</td>
-                <td class="col-md-9"><code>{{component.encapsulation}}</code></td>
-            </tr>
-            {{/if}}
-
-            {{#if component.exportAs}}
-            <tr>
-                <td class="col-md-3">exportedAs</td>
-                <td class="col-md-9"><code>{{component.exportAs}}</code></td>
-            </tr>
-            {{/if}}
         </tbody>
     </table>
 </section>
