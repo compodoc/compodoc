@@ -18,10 +18,48 @@
                 <td class="col-md-3">file</td>
                 <td class="col-md-9"><code>{{component.file}}</code></td>
             </tr>
+
+            {{#if component.selector}}
             <tr>
                 <td class="col-md-3">selector</td>
                 <td class="col-md-9"><code>{{component.selector}}</code></td>
             </tr>
+            {{/if}}
+
+            {{#if component.template}}
+            <tr>
+                <td class="col-md-3">template</td>
+                <td class="col-md-9"><code>{{breaklines component.template}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.templateUrl}}
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>{{component.templateUrl}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.styles}}
+            <tr>
+                <td class="col-md-3">styles</td>
+                <td class="col-md-9"><code>{{component.styles}}</code></td>
+            </tr>
+            {{/if}}
+            {{#if component.styleUrls}}
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>{{component.styleUrls}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.encapsulation}}
+            <tr>
+                <td class="col-md-3">encapsulation</td>
+                <td class="col-md-9"><code>{{component.encapsulation}}</code></td>
+            </tr>
+            {{/if}}
+
             {{#if component.exportAs}}
             <tr>
                 <td class="col-md-3">exportedAs</td>
