@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import { getNewLineCharacter, compilerHost, d } from '../../utilities';
+import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 
 let q = require('q');
@@ -98,7 +98,7 @@ export class Dependencies {
                         this.getSourceFileDecorators(file, deps);
                     }
                     catch (e) {
-                        logger.trace(e, file.fileName);
+                        logger.error(e, file.fileName);
                     }
                 }
 
@@ -375,7 +375,9 @@ export class Dependencies {
     private getComponentTemplate(props: NodeObject[]): string {
         let t = this.getSymbolDeps(props, 'template', true).pop()
         if(t) {
+            t = detectIndent(t, 0);
             t = t.replace(/\n/, '');
+            t = t.replace(/ +$/gm, '');
         }
         return t;
     }
