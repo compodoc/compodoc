@@ -1,23 +1,36 @@
-[![npm version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-
 [travis-url]: https://travis-ci.org/groupe-sii/compodoc
 [travis-image]: https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop
 [npm-url]: https://badge.fury.io/js/compodoc
 [npm-image]: https://badge.fury.io/js/compodoc.svg
 
-compodoc
-====
+<p align="center">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
+  <br>
+  [![npm version][npm-image]][npm-url]
+  [![Build Status][travis-image]][travis-url]
+</p>
 
-The missing documentation tool for your Angular 2 application.
+<p align="center">The missing documentation tool for your Angular 2 application.</p>
 
-## Demo with [SoundCloud API client with Angular2 project](https://github.com/r-park/soundcloud-ngrx)
+Features
+------------
+
+* **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side. Compodoc is responsive, so it looks great on tablets, phones, and even in print.
+
+* **Compodoc is just markdown** — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.
+
+* **Automatic table of contents** - API table of contents is generated using elements found during files parsing
+
+## Demo using [SoundCloud API client with Angular2 project](https://github.com/r-park/soundcloud-ngrx)
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
+
+Getting Started with compodoc
+------------------------------
 
 ## Install
 
