@@ -121,3 +121,7 @@ body {
 .comment {
     margin: 15px 0;
 }
+code {
+    background: none;
+    padding: 2px 0;
+}
