@@ -96,6 +96,13 @@ body {
     padding: 0 15px 15px 15px;
     text-align: center;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.copyright img {
+    width: 80px;
+    margin-top: 10px;
 }
 .copyright a {
     color: #009dff;
