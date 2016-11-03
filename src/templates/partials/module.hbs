@@ -70,5 +70,17 @@
             </ul>
         </div>
         {{/if}}
+        {{#if module.bootstrap}}
+        <div class="col-sm-3">
+            <h4>Bootstrap</h4>
+            <ul class="list-group">
+                {{#each module.bootstrap}}
+                    <li class="list-group-item">
+                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}}
     </div>
 </div>
