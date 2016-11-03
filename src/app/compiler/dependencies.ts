@@ -36,6 +36,8 @@ interface Deps {
     encapsulation?: string;
     moduleId?: string;
     styles?: string[];
+    inputs?: string[];
+    outputs?: string[];
     label?: string;
     file?: string;
     host?: Object;
@@ -153,6 +155,8 @@ export class Dependencies {
                             file: file,
                             changeDetection: this.getComponentChangeDetection(props),
                             selector: this.getComponentSelector(props),
+                            inputs: this.getComponentInputs(props),
+                            outputs: this.getComponentOutputs(props),
                             exportAs: this.getComponentExportAs(props),
                             host: this.getComponentHost(props),
                             providers: this.getComponentProviders(props),
@@ -333,6 +337,14 @@ export class Dependencies {
         return this.getSymbolDeps(props, 'bootstrap').map((name) => {
             return this.parseDeepIndentifier(name);
         });
+    }
+
+    private getComponentInputs(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'inputs');
+    }
+
+    private getComponentOutputs(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'outputs');
     }
 
     private getComponentProviders(props: NodeObject[]): Deps[] {

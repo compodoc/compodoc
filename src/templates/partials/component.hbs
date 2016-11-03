@@ -65,8 +65,8 @@
 
             {{#if component.inputs}}
             <tr>
-                <td class="col-md-3">host</td>
-                <td class="col-md-9"><code>{{component.inputs}}</code></td>
+                <td class="col-md-3">inputs</td>
+                <td class="col-md-9"><code>{{breakComma component.inputs}}</code></td>
             </tr>
             {{/if}}
 
@@ -87,7 +87,7 @@
             {{#if component.outputs}}
             <tr>
                 <td class="col-md-3">outputs</td>
-                <td class="col-md-9"><code>{{component.outputs}}</code></td>
+                <td class="col-md-9"><code>{{breakComma component.outputs}}</code></td>
             </tr>
             {{/if}}
 
