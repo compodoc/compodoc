@@ -69,7 +69,14 @@ export class HtmlEngine {
         });
         Handlebars.registerHelper('breakComma', function(text) {
             text = Handlebars.Utils.escapeExpression(text);
-            text = text.replace(/,/g, ',<br>');;
+            text = text.replace(/,/g, ',<br>');
+            return new Handlebars.SafeString(text);
+        });
+        Handlebars.registerHelper('object', function(text) {
+            text = JSON.stringify(text);
+            text = text.replace(/{"/, '{<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/,"/, ',<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/}$/, '<br>}');
             return new Handlebars.SafeString(text);
         });
     }

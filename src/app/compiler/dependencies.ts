@@ -38,6 +38,7 @@ interface Deps {
     styles?: string[];
     label?: string;
     file?: string;
+    host?: Object;
     templateUrl?: string[];
     template?: string;
     styleUrls?: string[];
@@ -153,6 +154,7 @@ export class Dependencies {
                             changeDetection: this.getComponentChangeDetection(props),
                             selector: this.getComponentSelector(props),
                             exportAs: this.getComponentExportAs(props),
+                            host: this.getComponentHost(props),
                             providers: this.getComponentProviders(props),
                             templateUrl: this.getComponentTemplateUrl(props),
                             template: this.getComponentTemplate(props),
@@ -323,6 +325,10 @@ export class Dependencies {
         });
     }
 
+    private getComponentHost(props: NodeObject[]): Object {
+        return this.getSymbolDepsObject(props, 'host');
+    }
+
     private getModuleBootstrap(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'bootstrap').map((name) => {
             return this.parseDeepIndentifier(name);
@@ -401,6 +407,22 @@ export class Dependencies {
 
     private sanitizeUrls(urls: string[]) {
         return urls.map(url => url.replace('./', ''));
+    }
+
+    private getSymbolDepsObject(props: NodeObject[], type: string, multiLine?: boolean): Object {
+        let deps = props.filter((node: NodeObject) => {
+            return node.name.text === type;
+        });
+
+        let parseProperties = (node: NodeObject): Object => {
+            let obj = {};
+            (node.initializer.properties || []).forEach((prop: NodeObject) => {
+                obj[prop.name.text] = prop.initializer.text;
+            });
+            return obj;
+        };
+
+        return deps.map(parseProperties).pop();
     }
 
     private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {
