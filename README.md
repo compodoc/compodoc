@@ -1,13 +1,8 @@
-[travis-url]: https://travis-ci.org/groupe-sii/compodoc
-[travis-image]: https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop
-[npm-url]: https://badge.fury.io/js/compodoc
-[npm-image]: https://badge.fury.io/js/compodoc.svg
-
 <p align="center">
   <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
   <br>
-  [![npm version][npm-image]][npm-url]
-  [![Build Status][travis-image]][travis-url]
+  <a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
 </p>
 
 <p align="center">The missing documentation tool for your Angular 2 application.</p>
