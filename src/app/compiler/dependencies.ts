@@ -150,6 +150,7 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
+                            changeDetection: this.getComponentChangeDetection(props),
                             selector: this.getComponentSelector(props),
                             exportAs: this.getComponentExportAs(props),
                             providers: this.getComponentProviders(props),
@@ -388,6 +389,10 @@ export class Dependencies {
 
     private getComponentStyles(props: NodeObject[]): string[] {
         return this.getSymbolDeps(props, 'styles');
+    }
+
+    private getComponentChangeDetection(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'changeDetection').pop();
     }
 
     private getComponentEncapsulation(props: NodeObject[]): string[] {
