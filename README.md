@@ -80,6 +80,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 
 Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph)
 
+Logo designed using [Book vector designed by Freepik](http://www.freepik.com/free-photos-vectors/book)
+
 ### License
 
 The MIT License (MIT)
