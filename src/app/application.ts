@@ -115,6 +115,7 @@ export namespace Application {
     }
 
     let prepareModules = () => {
+        logger.info('Prepare modules');
         $configuration.mainData.modules = $dependenciesEngine.getModules();
         $configuration.addPage({
             name: 'modules',
@@ -134,6 +135,7 @@ export namespace Application {
     }
 
     let prepareComponents = () => {
+        logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
         $configuration.addPage({
             name: 'components',
@@ -154,18 +156,30 @@ export namespace Application {
     }
 
     let parseComponents = () => {
+        logger.info('Parse components comments, calling typedoc, this may take some time...');
         let i = 0,
-            len = $configuration.mainData.components.length;
+            len = $configuration.mainData.components.length,
 
+            loop = () => {
+                if( i <= len-1) {
+                    $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
+                    $configuration.mainData.components[i].typedocData = {
+                        comment: $typedocengine.getComment()
+                    };
+                    setTimeout(loop);
+                }
+            };
         for(i; i<len; i++) {
             $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
             $configuration.mainData.components[i].typedocData = {
                 comment: $typedocengine.getComment()
             };
         }
+        //loop();
     }
 
     let prepareDirectives = () => {
+        logger.info('Prepare directives');
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         $configuration.addPage({
@@ -187,6 +201,7 @@ export namespace Application {
     }
 
     let prepareInjectables = () => {
+        logger.info('Prepare injectables');
         $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
 
         $configuration.addPage({
