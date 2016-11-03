@@ -1,17 +1,24 @@
-[![npm version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
+<p align="center">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
+  <br>
+  <a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
+</p>
 
-[travis-url]: https://travis-ci.org/groupe-sii/compodoc
-[travis-image]: https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop
-[npm-url]: https://badge.fury.io/js/compodoc
-[npm-image]: https://badge.fury.io/js/compodoc.svg
+<p align="center">The missing documentation tool for your Angular 2 application</p>
 
-compodoc
-====
+Features
+------------
 
-The missing documentation tool for your Angular 2 application.
+* **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side. Compodoc is responsive, so it looks great on tablets, phones, and even in print.
 
-## Demo with [SoundCloud API client with Angular2 project](https://github.com/r-park/soundcloud-ngrx)
+* **Compodoc is just markdown** — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.
+
+* **Automatic table of contents** - API table of contents is generated using elements found during files parsing
+
+## Demo
+
+Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx)
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
@@ -19,11 +26,14 @@ README page             |  Overview page
 Modules page             |  Single module page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
 
-## Install
+Getting Started with compodoc
+------------------------------
+
+### Install
 
 Install from npm: `npm install -g compodoc`
 
-## Usage
+### Usage
 
 ```
 $ compodoc --help
@@ -41,18 +51,18 @@ Options:
   -d, --output [folder]    Where to store the generated documentation
 ```
 
-## Why this tool ?
+### Why this tool ?
 
 Because we doesn't find our needs on existing tools. We want to have a single place where there is :
 - api documentation of code (typedoc)
 - component(s) documentation
 - general documentation (\*.md files)
 
-## Why not a SPA for outputed documentation ?
+### Why not a SPA for outputed documentation ?
 
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
-## Roadmap
+### Roadmap
 
 - [ ] module(s) page(s) with ngmodule comments
 - [x] module(s) page(s) started
@@ -66,11 +76,11 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [ ] pipes
 - [ ] support for Angular 1.5+ projects written in Typescript
 
-## Resources
+### Resources
 
 Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph)
 
-## License
+### License
 
 The MIT License (MIT)
 Copyright (c) 2016

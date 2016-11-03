@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as util from 'util';
 import * as ts from 'typescript';
 import { getNewLineCharacter, compilerHost, d } from '../../utilities';
 import { logger } from '../../logger';
@@ -29,14 +30,21 @@ interface NodeObject {
 
 interface Deps {
     name: string;
+    type: string;
     selector?: string;
+    changeDetection?: string;
+    encapsulation?: string;
+    moduleId?: string;
+    styles?: string[];
     label?: string;
     file?: string;
     templateUrl?: string[];
+    template?: string;
     styleUrls?: string[];
     providers?: Deps[];
     imports?: Deps[];
     exports?: Deps[];
+    exportAs?: string;
     declarations?: Deps[];
     bootstrap?: Deps[];
     __raw?: any
@@ -121,10 +129,12 @@ export class Dependencies {
 
                     let props = this.findProps(visitedNode);
 
+                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '')
+
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             providers: this.getModuleProviders(props),
                             declarations: this.getModuleDeclations(props),
                             imports: this.getModuleImports(props),
@@ -136,13 +146,18 @@ export class Dependencies {
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
                     }
                     else if (this.isComponent(metadata)) {
+                        //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             selector: this.getComponentSelector(props),
+                            exportAs: this.getComponentExportAs(props),
                             providers: this.getComponentProviders(props),
                             templateUrl: this.getComponentTemplateUrl(props),
+                            template: this.getComponentTemplate(props),
                             styleUrls: this.getComponentStyleUrls(props),
+                            styles: this.getComponentStyles(props),
+                            encapsulation: this.getComponentEncapsulation(props),
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -150,7 +165,7 @@ export class Dependencies {
                     else if (this.isInjectable(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'injectable'
                         };
                         outputSymbols['injectables'].push(deps);
@@ -158,7 +173,7 @@ export class Dependencies {
                     else if (this.isPipe(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'pipe'
                         };
                         outputSymbols['pipes'].push(deps);
@@ -166,7 +181,7 @@ export class Dependencies {
                     else if (this.isDirective(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'directive'
                         };
                         outputSymbols['directives'].push(deps);
@@ -265,6 +280,10 @@ export class Dependencies {
         return this.getSymbolDeps(props, 'selector').pop();
     }
 
+    private getComponentExportAs(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'exportAs').pop();
+    }
+
     private getModuleProviders(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'providers').map((providerName) => {
             return this.parseDeepIndentifier(providerName);
@@ -353,22 +372,38 @@ export class Dependencies {
         return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
     }
 
+    private getComponentTemplate(props: NodeObject[]): string {
+        let t = this.getSymbolDeps(props, 'template', true).pop()
+        if(t) {
+            t = t.replace(/\n/, '');
+        }
+        return t;
+    }
+
     private getComponentStyleUrls(props: NodeObject[]): string[] {
         return this.sanitizeUrls(this.getSymbolDeps(props, 'styleUrls'));
+    }
+
+    private getComponentStyles(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'styles');
+    }
+
+    private getComponentEncapsulation(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'encapsulation');
     }
 
     private sanitizeUrls(urls: string[]) {
         return urls.map(url => url.replace('./', ''));
     }
 
-    private getSymbolDeps(props: NodeObject[], type: string): string[] {
+    private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {
 
         let deps = props.filter((node: NodeObject) => {
             return node.name.text === type;
         });
 
         let parseSymbolText = (text: string) => {
-            if (text.indexOf('/') !== -1) {
+            if (text.indexOf('/') !== -1 && !multiLine) {
                 text = text.split('/').pop();
             }
             return [
