@@ -153,6 +153,7 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
+                            moduleId: this.getComponentModuleId(props),
                             changeDetection: this.getComponentChangeDetection(props),
                             selector: this.getComponentSelector(props),
                             inputs: this.getComponentInputs(props),
@@ -407,6 +408,10 @@ export class Dependencies {
 
     private getComponentStyles(props: NodeObject[]): string[] {
         return this.getSymbolDeps(props, 'styles');
+    }
+
+    private getComponentModuleId(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'moduleId').pop();
     }
 
     private getComponentChangeDetection(props: NodeObject[]): string {
