@@ -31,26 +31,37 @@ interface NodeObject {
 interface Deps {
     name: string;
     type: string;
-    selector?: string;
-    changeDetection?: string;
-    encapsulation?: string;
-    moduleId?: string;
-    styles?: string[];
-    inputs?: string[];
-    outputs?: string[];
     label?: string;
     file?: string;
-    host?: Object;
-    templateUrl?: string[];
-    template?: string;
-    styleUrls?: string[];
-    providers?: Deps[];
-    imports?: Deps[];
-    exports?: Deps[];
+
+    //Component
+
+    animations?: string[]; // TODO
+    changeDetection?: string;
+    encapsulation?: string;
+    entryComponents?: string; // TODO
     exportAs?: string;
+    host?: string;
+    inputs?: string[]; // TODO
+    interpolation?: string; // TODO
+    moduleId?: string; // TODO
+    outputs?: string[]; // TODO
+    queries?: Deps[]; // TODO
+    selector?: string;
+    styleUrls?: string[];
+    styles?: string[];
+    template?: string;
+    templateUrl?: string[];
+
+    //common
+    providers?: Deps[];
+
+    //module
     declarations?: Deps[];
     bootstrap?: Deps[];
-    __raw?: any
+
+    imports?: Deps[];
+    exports?: Deps[];
 }
 
 interface SymbolDeps {
@@ -153,19 +164,23 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            moduleId: this.getComponentModuleId(props),
+                            //animations?: string[]; // TODO
                             changeDetection: this.getComponentChangeDetection(props),
-                            selector: this.getComponentSelector(props),
-                            inputs: this.getComponentInputs(props),
-                            outputs: this.getComponentOutputs(props),
+                            encapsulation: this.getComponentEncapsulation(props),
+                            //entryComponents?: string; // TODO
                             exportAs: this.getComponentExportAs(props),
                             host: this.getComponentHost(props),
+                            inputs: this.getComponentInputs(props),
+                            //interpolation?: string; // TODO
+                            moduleId: this.getComponentModuleId(props),
+                            outputs: this.getComponentOutputs(props),
                             providers: this.getComponentProviders(props),
-                            templateUrl: this.getComponentTemplateUrl(props),
-                            template: this.getComponentTemplate(props),
+                            //queries?: Deps[]; // TODO
+                            selector: this.getComponentSelector(props),
                             styleUrls: this.getComponentStyleUrls(props),
-                            styles: this.getComponentStyles(props),
-                            encapsulation: this.getComponentEncapsulation(props),
+                            styles: this.getComponentStyles(props), // TODO fix args
+                            template: this.getComponentTemplate(props),
+                            templateUrl: this.getComponentTemplateUrl(props),
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
