@@ -80,7 +80,7 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 
 ### Resources
 
-Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph)
+Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [ng-bootstrap](https://ng-bootstrap.github.io)
 
 Logo designed using [Book vector designed by Freepik](http://www.freepik.com/free-photos-vectors/book)
 
