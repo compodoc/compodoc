@@ -72,6 +72,10 @@ export class HtmlEngine {
             text = text.replace(/,/g, ',<br>');
             return new Handlebars.SafeString(text);
         });
+        Handlebars.registerHelper('fxsignature', function(method) {
+            const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
+            return `${method.name}(${args})`;
+        });
         Handlebars.registerHelper('object', function(text) {
             text = JSON.stringify(text);
             text = text.replace(/{"/, '{<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
