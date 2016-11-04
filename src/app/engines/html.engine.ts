@@ -64,6 +64,23 @@ export class HtmlEngine {
         Handlebars.registerHelper('breaklines', function(text) {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+            text = text.replace(/ /gm, '&nbsp;');
+            return new Handlebars.SafeString(text);
+        });
+        Handlebars.registerHelper('breakComma', function(text) {
+            text = Handlebars.Utils.escapeExpression(text);
+            text = text.replace(/,/g, ',<br>');
+            return new Handlebars.SafeString(text);
+        });
+        Handlebars.registerHelper('fxsignature', function(method) {
+            const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
+            return `${method.name}(${args})`;
+        });
+        Handlebars.registerHelper('object', function(text) {
+            text = JSON.stringify(text);
+            text = text.replace(/{"/, '{<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/,"/, ',<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/}$/, '<br>}');
             return new Handlebars.SafeString(text);
         });
     }

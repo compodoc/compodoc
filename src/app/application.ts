@@ -105,7 +105,7 @@ export namespace Application {
         prepareModules();
 
         prepareComponents();
-        parseComponents();
+        //parseComponents();
 
         prepareDirectives();
         prepareInjectables();
@@ -170,6 +170,7 @@ export namespace Application {
                 }
             };
         for(i; i<len; i++) {
+            logger.debug(`   > Loading typedoc for ${$configuration.mainData.components[i].file}`);
             $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
             $configuration.mainData.components[i].typedocData = {
                 comment: $typedocengine.getComment()
@@ -374,6 +375,7 @@ export namespace Application {
 
                     files = walk(cwd || '.');
                 }
+                
                 $htmlengine.init().then(() => {
                     processPackageJson();
                 });

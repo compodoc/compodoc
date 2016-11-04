@@ -96,6 +96,13 @@ body {
     padding: 0 15px 15px 15px;
     text-align: center;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.copyright img {
+    width: 80px;
+    margin-top: 10px;
 }
 .copyright a {
     color: #009dff;
@@ -113,4 +120,14 @@ body {
 
 .comment {
     margin: 15px 0;
+}
+code {
+    background: none;
+    padding: 2px 0;
+}
+.io-description {
+    margin: 10px 0;
+}
+.io-file {
+    margin: 20px 0;
 }

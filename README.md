@@ -3,6 +3,8 @@
   <br>
   <a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
+  <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
+  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
 </p>
 
 <p align="center">The missing documentation tool for your Angular 2 application</p>
@@ -66,12 +68,12 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 
 - [ ] module(s) page(s) with ngmodule comments
 - [x] module(s) page(s) started
-- [ ] component(s) page(s) with @component comments, API, class
+- [x] component(s) page(s) with @component comments, API, class
 - [x] component(s) page(s) started
 - [ ] handle external markdown files as "functional" documentation
 - [ ] routes
 - [ ] directives
-- [ ] injectables
+- [x] injectables
 - [ ] classes
 - [ ] pipes
 - [ ] support for Angular 1.5+ projects written in Typescript
@@ -79,6 +81,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 ### Resources
 
 Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph)
+
+Logo designed using [Book vector designed by Freepik](http://www.freepik.com/free-photos-vectors/book)
 
 ### License
 

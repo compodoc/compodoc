@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import { getNewLineCharacter, compilerHost, d } from '../../utilities';
+import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 
 let q = require('q');
@@ -31,23 +31,40 @@ interface NodeObject {
 interface Deps {
     name: string;
     type: string;
-    selector?: string;
-    changeDetection?: string;
-    encapsulation?: string;
-    moduleId?: string;
-    styles?: string[];
     label?: string;
     file?: string;
-    templateUrl?: string[];
-    template?: string;
-    styleUrls?: string[];
-    providers?: Deps[];
-    imports?: Deps[];
-    exports?: Deps[];
+
+    //Component
+
+    animations?: string[]; // TODO
+    changeDetection?: string;
+    encapsulation?: string;
+    entryComponents?: string; // TODO
     exportAs?: string;
+    host?: string;
+    inputs?: string[];
+    interpolation?: string; // TODO
+    moduleId?: string;
+    outputs?: string[];
+    queries?: Deps[]; // TODO
+    selector?: string;
+    styleUrls?: string[];
+    styles?: string[];
+    template?: string;
+    templateUrl?: string[];
+    viewProviders?: string[];
+
+    inputsClass?: Object[];
+
+    //common
+    providers?: Deps[];
+
+    //module
     declarations?: Deps[];
     bootstrap?: Deps[];
-    __raw?: any
+
+    imports?: Deps[];
+    exports?: Deps[];
 }
 
 interface SymbolDeps {
@@ -59,6 +76,9 @@ export class Dependencies {
 
     private files: string[];
     private program: ts.Program;
+    private programComponent: ts.Program;
+    private typeChecker: ts.TypeChecker;
+    private typeCheckerComponent: ts.TypeChecker;
     private engine: any;
     private __cache: any = {};
     private __nsModule: any = {};
@@ -98,7 +118,7 @@ export class Dependencies {
                         this.getSourceFileDecorators(file, deps);
                     }
                     catch (e) {
-                        logger.trace(e, file.fileName);
+                        logger.error(e, file.fileName);
                     }
                 }
 
@@ -115,7 +135,6 @@ export class Dependencies {
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
-
 
             if (node.decorators) {
 
@@ -150,14 +169,28 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            selector: this.getComponentSelector(props),
-                            exportAs: this.getComponentExportAs(props),
-                            providers: this.getComponentProviders(props),
-                            templateUrl: this.getComponentTemplateUrl(props),
-                            template: this.getComponentTemplate(props),
-                            styleUrls: this.getComponentStyleUrls(props),
-                            styles: this.getComponentStyles(props),
+                            //animations?: string[]; // TODO
+                            changeDetection: this.getComponentChangeDetection(props),
                             encapsulation: this.getComponentEncapsulation(props),
+                            //entryComponents?: string; // TODO waiting doc infos
+                            exportAs: this.getComponentExportAs(props),
+                            host: this.getComponentHost(props),
+                            inputs: this.getComponentInputsMetadata(props),
+                            //interpolation?: string; // TODO waiting doc infos
+                            moduleId: this.getComponentModuleId(props),
+                            outputs: this.getComponentOutputs(props),
+                            providers: this.getComponentProviders(props),
+                            //queries?: Deps[]; // TODO
+                            selector: this.getComponentSelector(props),
+                            styleUrls: this.getComponentStyleUrls(props),
+                            styles: this.getComponentStyles(props), // TODO fix args
+                            template: this.getComponentTemplate(props),
+                            templateUrl: this.getComponentTemplateUrl(props),
+                            viewProviders: this.getComponentViewProviders(props),
+                            inputsClass: this.getComponentIO(file).inputs,
+                            outputsClass: this.getComponentIO(file).outputs,
+                            propertiesClass: this.getComponentIO(file).properties,
+                            methodsClass: this.getComponentIO(file).methods,
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -166,7 +199,9 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'injectable'
+                            type: 'injectable',
+                            properties: this.getComponentIO(file).properties,
+                            methods: this.getComponentIO(file).methods
                         };
                         outputSymbols['injectables'].push(deps);
                     }
@@ -322,14 +357,309 @@ export class Dependencies {
         });
     }
 
+    private getComponentHost(props: NodeObject[]): Object {
+        return this.getSymbolDepsObject(props, 'host');
+    }
+
     private getModuleBootstrap(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'bootstrap').map((name) => {
             return this.parseDeepIndentifier(name);
         });
     }
 
+    private getComponentInputsMetadata(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'inputs');
+    }
+
+    private getDecoratorOfType(node, decoratorType) {
+      var decorators = node.decorators || [];
+
+      for (var i = 0; i < decorators.length; i++) {
+        if (decorators[i].expression.expression.text === decoratorType) {
+          return decorators[i];
+        }
+      }
+
+      return null;
+    }
+
+    private visitInput(property, inDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inArgs = inDecorator.expression.arguments;
+        return {
+            name: inArgs.length ? inArgs[0].text : property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+
+    private visitType(node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return node ? this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node)) : 'void';
+    }
+
+    private visitOutput(property, outDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var outArgs = outDecorator.expression.arguments;
+        return {
+            name: outArgs.length ? outArgs[0].text : property.name.text,
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+
+    private isPrivateOrInternal(member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return ((member.flags & ts.NodeFlags.Private) !== 0) || this.isInternalMember(member);
+    }
+
+    private isInternalMember(member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const jsDoc = ts.displayPartsToString(member.symbol.getDocumentationComment());
+        return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+    }
+
+    private isAngularLifecycleHook(methodName) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const ANGULAR_LIFECYCLE_METHODS = [
+            'ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked',
+            'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'
+        ];
+        return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+    }
+
+    private visitMethodDeclaration(method) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: method.name.text,
+            description: ts.displayPartsToString(method.symbol.getDocumentationComment()),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        }
+    }
+
+    private visitArgument(arg) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: arg.name.text,
+            type: this.visitType(arg)
+        }
+    }
+
+    private getNamesCompareFn(name) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        name = name || 'name';
+        return (a, b) => a[name].localeCompare(b[name]);
+    }
+
+    private stringifyDefaultValue(node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        if (node.text) {
+            return node.text;
+        } else if (node.kind === ts.SyntaxKind.FalseKeyword) {
+            return 'false';
+        } else if (node.kind === ts.SyntaxKind.TrueKeyword) {
+            return 'true';
+        }
+    }
+
+    private visitProperty(property) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+
+    private visitMembers(members) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inputs = [];
+        var outputs = [];
+        var methods = [];
+        var properties = [];
+        var inputDecorator, outDecorator;
+
+
+        for (var i = 0; i < members.length; i++) {
+            inputDecorator = this.getDecoratorOfType(members[i], 'Input');
+            outDecorator = this.getDecoratorOfType(members[i], 'Output');
+
+            if (inputDecorator) {
+                inputs.push(this.visitInput(members[i], inputDecorator));
+
+            } else if (outDecorator) {
+                outputs.push(this.visitOutput(members[i], outDecorator));
+
+            } else if (!this.isPrivateOrInternal(members[i])) {
+                if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
+                    members[i].kind === ts.SyntaxKind.MethodSignature) &&
+                    !this.isAngularLifecycleHook(members[i].name.text)) {
+                    methods.push(this.visitMethodDeclaration(members[i]));
+                } else if (
+                    members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
+                    members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
+                    properties.push(this.visitProperty(members[i]));
+                }
+            }
+        }
+
+        inputs.sort(this.getNamesCompareFn());
+        outputs.sort(this.getNamesCompareFn());
+        properties.sort(this.getNamesCompareFn());
+
+        return {
+            inputs,
+            outputs,
+            methods,
+            properties
+        };
+    }
+
+    private isDirectiveDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var decoratorIdentifierText = decorator.expression.expression.text;
+        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+    }
+
+    private visitDirectiveDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var selector;
+        var exportAs;
+        var properties = decorator.expression.arguments[0].properties;
+
+        for (var i = 0; i < properties.length; i++) {
+            if (properties[i].name.text === 'selector') {
+                // TODO: this will only work if selector is initialized as a string literal
+                selector = properties[i].initializer.text;
+            }
+            if (properties[i].name.text === 'exportAs') {
+                // TODO: this will only work if selector is initialized as a string literal
+                exportAs = properties[i].initializer.text;
+            }
+        }
+
+        return {
+            selector,
+            exportAs
+        };
+    }
+
+    private isServiceDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+         return decorator.expression.expression.text === 'Injectable';
+    }
+
+    private visitClassDeclaration(fileName, classDeclaration) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
+
+        var description = ts.displayPartsToString(symbol.getDocumentationComment());
+        var className = classDeclaration.name.text;
+        var directiveInfo;
+        var members;
+
+        if (classDeclaration.decorators) {
+            for (var i = 0; i < classDeclaration.decorators.length; i++) {
+                if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
+                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
+                    members = this.visitMembers(classDeclaration.members);
+                    return {
+                        inputs: members.inputs,
+                        outputs: members.outputs,
+                        properties: members.properties,
+                        methods: members.methods
+                    };
+                } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
+                  members = this.visitMembers(classDeclaration.members);
+
+                  return [{
+                    fileName,
+                    className,
+                    description,
+                    methods: members.methods,
+                    properties: members.properties
+                  }];
+                }
+            }
+        } else if (description) {
+            members = this.visitMembers(classDeclaration.members);
+
+            return [{
+                description,
+                methods: members.methods,
+                properties: members.properties
+            }];
+        }
+
+        return [];
+    }
+
+    private getComponentIO(filename: string) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        this.programComponent = ts.createProgram([filename], {});
+        let sourceFile = this.programComponent.getSourceFile(filename);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+
+        var res = sourceFile.statements.reduce((directive, statement) => {
+
+            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+                return directive.concat(this.visitClassDeclaration(filename, statement));
+            }
+
+            return directive;
+        }, [])
+
+        return res[0] || {};
+    }
+
+    private getComponentOutputs(props: NodeObject[]): string[] {
+        return this.getSymbolDeps(props, 'outputs');
+    }
+
     private getComponentProviders(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'providers').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+
+    private getComponentViewProviders(props: NodeObject[]): Deps[] {
+        return this.getSymbolDeps(props, 'viewProviders').map((name) => {
             return this.parseDeepIndentifier(name);
         });
     }
@@ -375,7 +705,9 @@ export class Dependencies {
     private getComponentTemplate(props: NodeObject[]): string {
         let t = this.getSymbolDeps(props, 'template', true).pop()
         if(t) {
+            t = detectIndent(t, 0);
             t = t.replace(/\n/, '');
+            t = t.replace(/ +$/gm, '');
         }
         return t;
     }
@@ -388,12 +720,36 @@ export class Dependencies {
         return this.getSymbolDeps(props, 'styles');
     }
 
+    private getComponentModuleId(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'moduleId').pop();
+    }
+
+    private getComponentChangeDetection(props: NodeObject[]): string {
+        return this.getSymbolDeps(props, 'changeDetection').pop();
+    }
+
     private getComponentEncapsulation(props: NodeObject[]): string[] {
         return this.getSymbolDeps(props, 'encapsulation');
     }
 
     private sanitizeUrls(urls: string[]) {
         return urls.map(url => url.replace('./', ''));
+    }
+
+    private getSymbolDepsObject(props: NodeObject[], type: string, multiLine?: boolean): Object {
+        let deps = props.filter((node: NodeObject) => {
+            return node.name.text === type;
+        });
+
+        let parseProperties = (node: NodeObject): Object => {
+            let obj = {};
+            (node.initializer.properties || []).forEach((prop: NodeObject) => {
+                obj[prop.name.text] = prop.initializer.text;
+            });
+            return obj;
+        };
+
+        return deps.map(parseProperties).pop();
     }
 
     private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {
