@@ -68,12 +68,12 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 
 - [ ] module(s) page(s) with ngmodule comments
 - [x] module(s) page(s) started
-- [ ] component(s) page(s) with @component comments, API, class
+- [x] component(s) page(s) with @component comments, API, class
 - [x] component(s) page(s) started
 - [ ] handle external markdown files as "functional" documentation
 - [ ] routes
 - [ ] directives
-- [ ] injectables
+- [x] injectables
 - [ ] classes
 - [ ] pipes
 - [ ] support for Angular 1.5+ projects written in Typescript
