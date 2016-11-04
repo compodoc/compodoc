@@ -163,36 +163,54 @@
     </table>
 </section>
 
-<!--
 <section>
     <h3>Inputs</h3>
     <table class="table table-sm table-hover">
         <tbody>
-            <tr>
-                <td class="col-md-3"><code>activeIds</code></td>
-                <td class="col-md-9">
-                    <div><i>Type: </i><code>string | string[]</code></div>
-                    <div style="margin: 10px 0">An array or comma separated strings of panel identifiers that should be opened</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-3"><code>closeOthers</code></td>
-                <td class="col-md-9">
-                    <div><i>Type: </i><code>boolean</code></div>
-                    <div style="margin: 10px 0">Whether the other panels should be closed when a panel is opened</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-3"><code>type</code></td>
-                <td class="col-md-9">
-                    <div><i>Type: </i><code>string</code></div>
-                    <div style="margin: 10px 0">Type of accordion's panels. Bootstrap 4 recognizes the following types: "success", "info", "warning" and "danger".</div>
-                </td>
-            </tr>
+            {{#each component.inputsClass}}
+                <tr>
+                    <td class="col-md-3"><code>{{name}}</code></td>
+                    <td class="col-md-9">
+                        {{#if type}}
+                            <div><i>Type: </i><code>{{type}}</code></div>
+                        {{/if}}
+                        {{#if defaultValue}}
+                            <div><i>Default value: </i><code>{{defaultValue}}</code></div>
+                        {{/if}}
+                        {{#if description}}
+                            <div class="io-description">{{description}}</div>
+                        {{/if}}
+                    </td>
+                </tr>
+            {{/each}}
         </tbody>
     </table>
 </section>
 
+<section>
+    <h3>Outputs</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            {{#each component.outputsClass}}
+                <tr>
+                    <td class="col-md-3"><code>{{name}}</code></td>
+                    <td class="col-md-9">
+                        {{#if type}}
+                            <div><i>Type: </i><code>{{type}}</code></div>
+                        {{/if}}
+                        {{#if defaultValue}}
+                            <div><i>Default value: </i><code>{{defaultValue}}</code></div>
+                        {{/if}}
+                        {{#if description}}
+                            <div class="io-description">{{description}}</div>
+                        {{/if}}
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>
+<!--
 <section>
     <h3 id="outputs">Outputs</h3>
     <table class="table table-sm table-hover">

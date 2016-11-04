@@ -375,6 +375,7 @@ export namespace Application {
 
                     files = walk(cwd || '.');
                 }
+                
                 $htmlengine.init().then(() => {
                     processPackageJson();
                 });
