@@ -52,6 +52,7 @@ interface Deps {
     styles?: string[];
     template?: string;
     templateUrl?: string[];
+    viewProviders?: string[];
 
     //common
     providers?: Deps[];
@@ -167,11 +168,11 @@ export class Dependencies {
                             //animations?: string[]; // TODO
                             changeDetection: this.getComponentChangeDetection(props),
                             encapsulation: this.getComponentEncapsulation(props),
-                            //entryComponents?: string; // TODO
+                            //entryComponents?: string; // TODO waiting doc infos
                             exportAs: this.getComponentExportAs(props),
                             host: this.getComponentHost(props),
                             inputs: this.getComponentInputs(props),
-                            //interpolation?: string; // TODO
+                            //interpolation?: string; // TODO waiting doc infos
                             moduleId: this.getComponentModuleId(props),
                             outputs: this.getComponentOutputs(props),
                             providers: this.getComponentProviders(props),
@@ -181,6 +182,7 @@ export class Dependencies {
                             styles: this.getComponentStyles(props), // TODO fix args
                             template: this.getComponentTemplate(props),
                             templateUrl: this.getComponentTemplateUrl(props),
+                            viewProviders: this.getComponentViewProviders(props),
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -365,6 +367,12 @@ export class Dependencies {
 
     private getComponentProviders(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'providers').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+
+    private getComponentViewProviders(props: NodeObject[]): Deps[] {
+        return this.getSymbolDeps(props, 'viewProviders').map((name) => {
             return this.parseDeepIndentifier(name);
         });
     }

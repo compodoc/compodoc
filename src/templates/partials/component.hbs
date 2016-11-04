@@ -94,7 +94,13 @@
             {{#if component.providers}}
             <tr>
                 <td class="col-md-3">providers</td>
-                <td class="col-md-9"><code>{{component.providers}}</code></td>
+                <td class="col-md-9">
+                    <code>
+                    {{#each component.providers}}
+                        {{name}}
+                    {{/each}}
+                    </code>
+                </td>
             </tr>
             {{/if}}
 
@@ -143,7 +149,13 @@
             {{#if component.viewProviders}}
             <tr>
                 <td class="col-md-3">viewProviders</td>
-                <td class="col-md-9"><code>{{component.viewProviders}}</code></td>
+                <td class="col-md-9">
+                    <code>
+                    {{#each component.viewProviders}}
+                        {{name}}
+                    {{/each}}
+                    </code>
+                </td>
             </tr>
             {{/if}}
 
