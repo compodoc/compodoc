@@ -199,7 +199,9 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'injectable'
+                            type: 'injectable',
+                            properties: this.getComponentIO(file).properties,
+                            methods: this.getComponentIO(file).methods
                         };
                         outputSymbols['injectables'].push(deps);
                     }
@@ -572,6 +574,13 @@ export class Dependencies {
         };
     }
 
+    private isServiceDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+         return decorator.expression.expression.text === 'Injectable';
+    }
+
     private visitClassDeclaration(fileName, classDeclaration) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -594,6 +603,16 @@ export class Dependencies {
                         properties: members.properties,
                         methods: members.methods
                     };
+                } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
+                  members = this.visitMembers(classDeclaration.members);
+
+                  return [{
+                    fileName,
+                    className,
+                    description,
+                    methods: members.methods,
+                    properties: members.properties
+                  }];
                 }
             }
         } else if (description) {
@@ -626,7 +645,7 @@ export class Dependencies {
             return directive;
         }, [])
 
-        return res[0];
+        return res[0] || {};
     }
 
     private getComponentOutputs(props: NodeObject[]): string[] {
