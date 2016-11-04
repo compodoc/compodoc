@@ -163,6 +163,7 @@
     </table>
 </section>
 
+{{#if component.inputsClass}}
 <section>
     <h3>Inputs</h3>
     <table class="table table-sm table-hover">
@@ -186,7 +187,9 @@
         </tbody>
     </table>
 </section>
+{{/if}}
 
+{{#if component.outputsClass}}
 <section>
     <h3>Outputs</h3>
     <table class="table table-sm table-hover">
@@ -210,6 +213,7 @@
         </tbody>
     </table>
 </section>
+{{/if}}
 <!--
 <section>
     <h3 id="outputs">Outputs</h3>
