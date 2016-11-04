@@ -19,17 +19,30 @@
     </section>
 
     <section class="main-content">
-      <p><a href="https://badge.fury.io/js/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm version"></a>
-<a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a></p>
+      <p align="center">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
+  <br>
+  <a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
+  <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
+  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
+</p>
 
-<h1>
-<a id="compodoc" class="anchor" href="#compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>compodoc</h1>
+<p align="center">The missing documentation tool for your Angular 2 application</p>
 
-<p>The missing documentation tool for your Angular 2 application.</p>
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
-<p>Use internally : <a href="https://github.com/manekinekko/angular2-dependencies-graph">angular2-dependencies-graph</a>, <a href="https://github.com/TypeStrong/typedoc">typedoc</a></p>
+<ul>
+<li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side. Compodoc is responsive, so it looks great on tablets, phones, and even in print.</p></li>
+<li><p><strong>Compodoc is just markdown</strong> — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.</p></li>
+<li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
+</ul>
 
-<p><strong>Work in progress, not ready for production</strong></p>
+<h2>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h2>
+
+<p>Using <a href="https://github.com/r-park/soundcloud-ngrx">SoundCloud API client / Angular2 project</a></p>
 
 <table>
 <thead>
@@ -49,34 +62,21 @@
 </tr>
 <tr>
 <td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png" alt="screenshot-1"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png" alt="screenshot-1"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png" alt="screenshot-1"></td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="why-this-" class="anchor" href="#why-this-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why this ?</h2>
+<a id="getting-started-with-compodoc" class="anchor" href="#getting-started-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started with compodoc</h2>
 
-<p>Because we doesn't find our needs on existing tools. We want to have a single place where there is :</p>
-
-<ul>
-<li>api documentation of code (typedoc)</li>
-<li>component(s) documentation</li>
-<li>general documentation (*.md files)</li>
-</ul>
-
-<h2>
-<a id="why-not-a-spa-for-outputed-documentation-" class="anchor" href="#why-not-a-spa-for-outputed-documentation-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why not a SPA for outputed documentation ?</h2>
-
-<p><a href="https://en.wikipedia.org/wiki/KISS_principle">KISS principle</a> or shortly <strong>"Keep it simple"</strong>. We think static html files are simpler than another SPA inside an "SPA documentation".</p>
-
-<h2>
-<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+<h3>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h3>
 
 <p>Install from npm: <code>npm install -g compodoc</code></p>
 
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
 
 <pre><code>$ compodoc --help
 
@@ -86,39 +86,58 @@ Options:
 
   -h, --help               output usage information
   -V, --version            output the version number
-  -f, --file [file]        Entry *.ts file
+  -f, --file [file]        A tsconfig.json file
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
   -d, --output [folder]    Where to store the generated documentation
 </code></pre>
 
-<h2>
-<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h2>
+<h3>
+<a id="why-this-tool-" class="anchor" href="#why-this-tool-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why this tool ?</h3>
+
+<p>Because we doesn't find our needs on existing tools. We want to have a single place where there is :</p>
+
+<ul>
+<li>api documentation of code (typedoc)</li>
+<li>component(s) documentation</li>
+<li>general documentation (*.md files)</li>
+</ul>
+
+<h3>
+<a id="why-not-a-spa-for-outputed-documentation-" class="anchor" href="#why-not-a-spa-for-outputed-documentation-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why not a SPA for outputed documentation ?</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/KISS_principle">KISS principle</a> or shortly <strong>"Keep it simple"</strong>. We think static html files are simpler than another SPA inside an "SPA documentation".</p>
+
+<h3>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h3>
 
 <ul>
 <li>[ ] module(s) page(s) with ngmodule comments</li>
 <li>[x] module(s) page(s) started</li>
-<li>[ ] component(s) page(s) with <a href="https://github.com/component" class="user-mention">@component</a> comments, API, class</li>
+<li>[x] component(s) page(s) with <a href="https://github.com/component" class="user-mention">@component</a> comments, API, class</li>
 <li>[x] component(s) page(s) started</li>
 <li>[ ] handle external markdown files as "functional" documentation</li>
 <li>[ ] routes</li>
 <li>[ ] directives</li>
-<li>[ ] injectables</li>
+<li>[x] injectables</li>
 <li>[ ] classes</li>
 <li>[ ] pipes</li>
+<li>[ ] support for Angular 1.5+ projects written in Typescript</li>
 </ul>
 
-<h2>
-<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h2>
+<h3>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h3>
 
-<p>Inspired by stuff from <a href="https://github.com/manekinekko/angular2-dependencies-graph">angular2-dependencies-graph</a></p>
+<p>Inspired by stuff from <a href="https://github.com/manekinekko/angular2-dependencies-graph">angular2-dependencies-graph</a>, <a href="https://ng-bootstrap.github.io">ng-bootstrap</a></p>
 
-<h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+<p>Logo designed using <a href="http://www.freepik.com/free-photos-vectors/book">Book vector designed by Freepik</a></p>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h3>
 
 <p>The MIT License (MIT)
-Copyright (c) 2016 - SII</p>
+Copyright (c) 2016</p>
 
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 
