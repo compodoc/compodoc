@@ -189,6 +189,7 @@ export class Dependencies {
                             viewProviders: this.getComponentViewProviders(props),
                             inputsClass: this.getComponentIO(file).inputs,
                             outputsClass: this.getComponentIO(file).outputs,
+                            propertiesClass: this.getComponentIO(file).properties,
                             methodsClass: this.getComponentIO(file).methods,
                             type: 'component'
                         };
