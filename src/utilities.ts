@@ -110,7 +110,7 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
                     libSource = fs.readFileSync(fileName).toString();
                 }
                 catch(e) {
-                    logger.trace(e, fileName);
+                    logger.debug(e, fileName);
                 }
 
                 return ts.createSourceFile(fileName, libSource, transpileOptions.target, false);
