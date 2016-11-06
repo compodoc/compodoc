@@ -9,6 +9,7 @@ var Handlebars = require('handlebars');
 var marked = _interopDefault(require('marked'));
 var _ = require('lodash');
 var Shelljs = require('shelljs');
+var typedoc = require('typedoc');
 var ts = require('typescript');
 var fs$1 = require('fs');
 var util = require('util');
@@ -134,6 +135,28 @@ class HtmlEngine {
                 console.log(optionalValue);
             }
         });
+        Handlebars.registerHelper('breaklines', function (text) {
+            text = Handlebars.Utils.escapeExpression(text);
+            text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+            text = text.replace(/ /gm, '&nbsp;');
+            return new Handlebars.SafeString(text);
+        });
+        Handlebars.registerHelper('breakComma', function (text) {
+            text = Handlebars.Utils.escapeExpression(text);
+            text = text.replace(/,/g, ',<br>');
+            return new Handlebars.SafeString(text);
+        });
+        Handlebars.registerHelper('fxsignature', function (method) {
+            const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
+            return `${method.name}(${args})`;
+        });
+        Handlebars.registerHelper('object', function (text) {
+            text = JSON.stringify(text);
+            text = text.replace(/{"/, '{<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/,"/, ',<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
+            text = text.replace(/}$/, '<br>}');
+            return new Handlebars.SafeString(text);
+        });
     }
     init() {
         let partials = [
@@ -149,18 +172,24 @@ class HtmlEngine {
             'injectables',
             'injectable',
             'routes'
-        ], i = 0, len = partials.length, loop = () => {
+        ], i = 0, len = partials.length, loop = (resolve$$1, reject) => {
             if (i <= len - 1) {
                 fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', (err, data) => {
-                    if (err)
-                        throw err;
+                    if (err) {
+                        reject();
+                    }
                     Handlebars.registerPartial(partials[i], data);
                     i++;
-                    loop();
+                    loop(resolve$$1, reject);
                 });
             }
+            else {
+                resolve$$1();
+            }
         };
-        loop();
+        return new Promise(function (resolve$$1, reject) {
+            loop(resolve$$1, reject);
+        });
     }
     render(mainData, page) {
         var o = mainData;
@@ -282,8 +311,89 @@ class NgdEngine {
     }
 }
 
+const typedocOptions = {
+    'mode': 'modules',
+    'theme': 'default',
+    'logger': 'none',
+    'ignoreCompilerErrors': 'true',
+    'experimentalDecorators': 'true',
+    'emitDecoratorMetadata': 'true',
+    'excludeExternals': 'true',
+    'target': 'ES6',
+    'moduleResolution': 'node',
+    'preserveConstEnums': 'true',
+    'stripInternal': 'true',
+    'suppressExcessPropertyErrors': 'true',
+    'suppressImplicitAnyIndexErrors': 'true',
+    'module': 'commonjs'
+};
+class TypedocEngine {
+    constructor() {
+        this.app = new typedoc.Application(typedocOptions);
+    }
+    parseFile(filepath) {
+        this.reflection = this.app.convert([filepath]);
+    }
+    getComment() {
+        let comment = '';
+        for (var prop in this.reflection.reflections) {
+            if (this.reflection.reflections[prop].comment) {
+                comment = this.reflection.reflections[prop].comment;
+                break;
+            }
+        }
+        return comment;
+    }
+}
+
 // get default new line break
 
+function detectIndent(str, count, indent) {
+    let stripIndent = function (str) {
+        const match = str.match(/^[ \t]*(?=\S)/gm);
+        if (!match) {
+            return str;
+        }
+        // TODO: use spread operator when targeting Node.js 6
+        const indent = Math.min.apply(Math, match.map(x => x.length)); // eslint-disable-line
+        const re = new RegExp(`^[ \\t]{${indent}}`, 'gm');
+        return indent > 0 ? str.replace(re, '') : str;
+    }, repeating = function (n, str) {
+        str = str === undefined ? ' ' : str;
+        if (typeof str !== 'string') {
+            throw new TypeError(`Expected \`input\` to be a \`string\`, got \`${typeof str}\``);
+        }
+        if (n < 0 || !Number.isFinite(n)) {
+            throw new TypeError(`Expected \`count\` to be a positive finite number, got \`${n}\``);
+        }
+        let ret = '';
+        do {
+            if (n & 1) {
+                ret += str;
+            }
+            str += str;
+        } while ((n >>= 1));
+        return ret;
+    }, indentString = function (str, count, indent) {
+        indent = indent === undefined ? ' ' : indent;
+        count = count === undefined ? 1 : count;
+        if (typeof str !== 'string') {
+            throw new TypeError(`Expected \`input\` to be a \`string\`, got \`${typeof str}\``);
+        }
+        if (typeof count !== 'number') {
+            throw new TypeError(`Expected \`count\` to be a \`number\`, got \`${typeof count}\``);
+        }
+        if (typeof indent !== 'string') {
+            throw new TypeError(`Expected \`indent\` to be a \`string\`, got \`${typeof indent}\``);
+        }
+        if (count === 0) {
+            return str;
+        }
+        indent = count > 1 ? repeating(count, indent) : indent;
+        return str.replace(/^(?!\s*$)/mg, indent);
+    };
+    return indentString(stripIndent(str), count || 0, indent);
+}
 // Create a compilerHost object to allow the compiler to read and write files
 function compilerHost(transpileOptions) {
     const inputFileName = transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
@@ -301,7 +411,7 @@ function compilerHost(transpileOptions) {
                     libSource = fs$1.readFileSync(fileName).toString();
                 }
                 catch (e) {
-                    logger.trace(e, fileName);
+                    logger.debug(e, fileName);
                 }
                 return ts.createSourceFile(fileName, libSource, transpileOptions.target, false);
             }
@@ -354,7 +464,7 @@ class Dependencies {
                         this.getSourceFileDecorators(file, deps);
                     }
                     catch (e) {
-                        logger.trace(e, file.fileName);
+                        logger.error(e, file.fileName);
                     }
                 }
             }
@@ -370,10 +480,11 @@ class Dependencies {
                     let deps = {};
                     let metadata = node.decorators.pop();
                     let props = this.findProps(visitedNode);
+                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             providers: this.getModuleProviders(props),
                             declarations: this.getModuleDeclations(props),
                             imports: this.getModuleImports(props),
@@ -385,13 +496,32 @@ class Dependencies {
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
                     }
                     else if (this.isComponent(metadata)) {
+                        //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
-                            selector: this.getComponentSelector(props),
+                            file: file,
+                            //animations?: string[]; // TODO
+                            changeDetection: this.getComponentChangeDetection(props),
+                            encapsulation: this.getComponentEncapsulation(props),
+                            //entryComponents?: string; // TODO waiting doc infos
+                            exportAs: this.getComponentExportAs(props),
+                            host: this.getComponentHost(props),
+                            inputs: this.getComponentInputsMetadata(props),
+                            //interpolation?: string; // TODO waiting doc infos
+                            moduleId: this.getComponentModuleId(props),
+                            outputs: this.getComponentOutputs(props),
                             providers: this.getComponentProviders(props),
-                            templateUrl: this.getComponentTemplateUrl(props),
+                            //queries?: Deps[]; // TODO
+                            selector: this.getComponentSelector(props),
                             styleUrls: this.getComponentStyleUrls(props),
+                            styles: this.getComponentStyles(props),
+                            template: this.getComponentTemplate(props),
+                            templateUrl: this.getComponentTemplateUrl(props),
+                            viewProviders: this.getComponentViewProviders(props),
+                            inputsClass: this.getComponentIO(file).inputs,
+                            outputsClass: this.getComponentIO(file).outputs,
+                            propertiesClass: this.getComponentIO(file).properties,
+                            methodsClass: this.getComponentIO(file).methods,
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -399,15 +529,17 @@ class Dependencies {
                     else if (this.isInjectable(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
-                            type: 'injectable'
+                            file: file,
+                            type: 'injectable',
+                            properties: this.getComponentIO(file).properties,
+                            methods: this.getComponentIO(file).methods
                         };
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'pipe'
                         };
                         outputSymbols['pipes'].push(deps);
@@ -415,7 +547,7 @@ class Dependencies {
                     else if (this.isDirective(metadata)) {
                         deps = {
                             name,
-                            file: srcFile.fileName.split('/').splice(-3).join('/'),
+                            file: file,
                             type: 'directive'
                         };
                         outputSymbols['directives'].push(deps);
@@ -496,6 +628,9 @@ class Dependencies {
     getComponentSelector(props) {
         return this.getSymbolDeps(props, 'selector').pop();
     }
+    getComponentExportAs(props) {
+        return this.getSymbolDeps(props, 'exportAs').pop();
+    }
     getModuleProviders(props) {
         return this.getSymbolDeps(props, 'providers').map((providerName) => {
             return this.parseDeepIndentifier(providerName);
@@ -528,13 +663,272 @@ class Dependencies {
             return this.parseDeepIndentifier(name);
         });
     }
+    getComponentHost(props) {
+        return this.getSymbolDepsObject(props, 'host');
+    }
     getModuleBootstrap(props) {
         return this.getSymbolDeps(props, 'bootstrap').map((name) => {
             return this.parseDeepIndentifier(name);
         });
     }
+    getComponentInputsMetadata(props) {
+        return this.getSymbolDeps(props, 'inputs');
+    }
+    getDecoratorOfType(node, decoratorType) {
+        var decorators = node.decorators || [];
+        for (var i = 0; i < decorators.length; i++) {
+            if (decorators[i].expression.expression.text === decoratorType) {
+                return decorators[i];
+            }
+        }
+        return null;
+    }
+    visitInput(property, inDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inArgs = inDecorator.expression.arguments;
+        return {
+            name: inArgs.length ? inArgs[0].text : property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+    visitType(node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return node ? this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node)) : 'void';
+    }
+    visitOutput(property, outDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var outArgs = outDecorator.expression.arguments;
+        return {
+            name: outArgs.length ? outArgs[0].text : property.name.text,
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+    isPrivateOrInternal(member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return ((member.flags & ts.NodeFlags.Private) !== 0) || this.isInternalMember(member);
+    }
+    isInternalMember(member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const jsDoc = ts.displayPartsToString(member.symbol.getDocumentationComment());
+        return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+    }
+    isAngularLifecycleHook(methodName) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const ANGULAR_LIFECYCLE_METHODS = [
+            'ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked',
+            'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'
+        ];
+        return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+    }
+    visitMethodDeclaration(method) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: method.name.text,
+            description: ts.displayPartsToString(method.symbol.getDocumentationComment()),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        };
+    }
+    visitArgument(arg) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: arg.name.text,
+            type: this.visitType(arg)
+        };
+    }
+    getNamesCompareFn(name) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        name = name || 'name';
+        return (a, b) => a[name].localeCompare(b[name]);
+    }
+    stringifyDefaultValue(node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        if (node.text) {
+            return node.text;
+        }
+        else if (node.kind === ts.SyntaxKind.FalseKeyword) {
+            return 'false';
+        }
+        else if (node.kind === ts.SyntaxKind.TrueKeyword) {
+            return 'true';
+        }
+    }
+    visitProperty(property) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+        };
+    }
+    visitMembers(members) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inputs = [];
+        var outputs = [];
+        var methods = [];
+        var properties = [];
+        var inputDecorator, outDecorator;
+        for (var i = 0; i < members.length; i++) {
+            inputDecorator = this.getDecoratorOfType(members[i], 'Input');
+            outDecorator = this.getDecoratorOfType(members[i], 'Output');
+            if (inputDecorator) {
+                inputs.push(this.visitInput(members[i], inputDecorator));
+            }
+            else if (outDecorator) {
+                outputs.push(this.visitOutput(members[i], outDecorator));
+            }
+            else if (!this.isPrivateOrInternal(members[i])) {
+                if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
+                    members[i].kind === ts.SyntaxKind.MethodSignature) &&
+                    !this.isAngularLifecycleHook(members[i].name.text)) {
+                    methods.push(this.visitMethodDeclaration(members[i]));
+                }
+                else if (members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
+                    members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
+                    properties.push(this.visitProperty(members[i]));
+                }
+            }
+        }
+        inputs.sort(this.getNamesCompareFn());
+        outputs.sort(this.getNamesCompareFn());
+        properties.sort(this.getNamesCompareFn());
+        return {
+            inputs,
+            outputs,
+            methods,
+            properties
+        };
+    }
+    isDirectiveDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var decoratorIdentifierText = decorator.expression.expression.text;
+        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+    }
+    visitDirectiveDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var selector;
+        var exportAs;
+        var properties = decorator.expression.arguments[0].properties;
+        for (var i = 0; i < properties.length; i++) {
+            if (properties[i].name.text === 'selector') {
+                // TODO: this will only work if selector is initialized as a string literal
+                selector = properties[i].initializer.text;
+            }
+            if (properties[i].name.text === 'exportAs') {
+                // TODO: this will only work if selector is initialized as a string literal
+                exportAs = properties[i].initializer.text;
+            }
+        }
+        return {
+            selector,
+            exportAs
+        };
+    }
+    isServiceDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return decorator.expression.expression.text === 'Injectable';
+    }
+    visitClassDeclaration(fileName, classDeclaration) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
+        var description = ts.displayPartsToString(symbol.getDocumentationComment());
+        var className = classDeclaration.name.text;
+        var directiveInfo;
+        var members;
+        if (classDeclaration.decorators) {
+            for (var i = 0; i < classDeclaration.decorators.length; i++) {
+                if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
+                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
+                    members = this.visitMembers(classDeclaration.members);
+                    return {
+                        inputs: members.inputs,
+                        outputs: members.outputs,
+                        properties: members.properties,
+                        methods: members.methods
+                    };
+                }
+                else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
+                    members = this.visitMembers(classDeclaration.members);
+                    return [{
+                            fileName,
+                            className,
+                            description,
+                            methods: members.methods,
+                            properties: members.properties
+                        }];
+                }
+            }
+        }
+        else if (description) {
+            members = this.visitMembers(classDeclaration.members);
+            return [{
+                    description,
+                    methods: members.methods,
+                    properties: members.properties
+                }];
+        }
+        return [];
+    }
+    getComponentIO(filename) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        this.programComponent = ts.createProgram([filename], {});
+        let sourceFile = this.programComponent.getSourceFile(filename);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+        var res = sourceFile.statements.reduce((directive, statement) => {
+            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+                return directive.concat(this.visitClassDeclaration(filename, statement));
+            }
+            return directive;
+        }, []);
+        return res[0] || {};
+    }
+    getComponentOutputs(props) {
+        return this.getSymbolDeps(props, 'outputs');
+    }
     getComponentProviders(props) {
         return this.getSymbolDeps(props, 'providers').map((name) => {
+            return this.parseDeepIndentifier(name);
+        });
+    }
+    getComponentViewProviders(props) {
+        return this.getSymbolDeps(props, 'viewProviders').map((name) => {
             return this.parseDeepIndentifier(name);
         });
     }
@@ -570,18 +964,52 @@ class Dependencies {
     getComponentTemplateUrl(props) {
         return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
     }
+    getComponentTemplate(props) {
+        let t = this.getSymbolDeps(props, 'template', true).pop();
+        if (t) {
+            t = detectIndent(t, 0);
+            t = t.replace(/\n/, '');
+            t = t.replace(/ +$/gm, '');
+        }
+        return t;
+    }
     getComponentStyleUrls(props) {
         return this.sanitizeUrls(this.getSymbolDeps(props, 'styleUrls'));
+    }
+    getComponentStyles(props) {
+        return this.getSymbolDeps(props, 'styles');
+    }
+    getComponentModuleId(props) {
+        return this.getSymbolDeps(props, 'moduleId').pop();
+    }
+    getComponentChangeDetection(props) {
+        return this.getSymbolDeps(props, 'changeDetection').pop();
+    }
+    getComponentEncapsulation(props) {
+        return this.getSymbolDeps(props, 'encapsulation');
     }
     sanitizeUrls(urls) {
         return urls.map(url => url.replace('./', ''));
     }
-    getSymbolDeps(props, type) {
+    getSymbolDepsObject(props, type, multiLine) {
+        let deps = props.filter((node) => {
+            return node.name.text === type;
+        });
+        let parseProperties = (node) => {
+            let obj = {};
+            (node.initializer.properties || []).forEach((prop) => {
+                obj[prop.name.text] = prop.initializer.text;
+            });
+            return obj;
+        };
+        return deps.map(parseProperties).pop();
+    }
+    getSymbolDeps(props, type, multiLine) {
         let deps = props.filter((node) => {
             return node.name.text === type;
         });
         let parseSymbolText = (text) => {
-            if (text.indexOf('/') !== -1) {
+            if (text.indexOf('/') !== -1 && !multiLine) {
                 text = text.split('/').pop();
             }
             return [
@@ -699,9 +1127,10 @@ let $fileengine = new FileEngine();
 let $configuration = new Configuration();
 let $markdownengine = new MarkdownEngine();
 let $ngdengine = new NgdEngine();
+let $typedocengine = new TypedocEngine();
 let $dependenciesEngine;
-var Application;
-(function (Application) {
+var Application$1;
+(function (Application$$1) {
     program
         .version(pkg.version)
         .option('-f, --file [file]', 'A tsconfig.json file')
@@ -715,7 +1144,6 @@ var Application;
         program.outputHelp();
         process.exit(1);
     };
-    $htmlengine.init();
     $configuration.mainData.documentationMainName = program.name; //default commander value
     let processPackageJson = () => {
         logger.info('Searching package.json file');
@@ -768,12 +1196,14 @@ var Application;
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
         prepareModules();
         prepareComponents();
+        //parseComponents();
         prepareDirectives();
         prepareInjectables();
         prepareRoutes();
         processPages();
     };
     let prepareModules = () => {
+        logger.info('Prepare modules');
         $configuration.mainData.modules = $dependenciesEngine.getModules();
         $configuration.addPage({
             name: 'modules',
@@ -790,6 +1220,7 @@ var Application;
         }
     };
     let prepareComponents = () => {
+        logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
         $configuration.addPage({
             name: 'components',
@@ -805,7 +1236,28 @@ var Application;
             });
         }
     };
+    let parseComponents = () => {
+        logger.info('Parse components comments, calling typedoc, this may take some time...');
+        let i = 0, len = $configuration.mainData.components.length, loop = () => {
+            if (i <= len - 1) {
+                $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
+                $configuration.mainData.components[i].typedocData = {
+                    comment: $typedocengine.getComment()
+                };
+                setTimeout(loop);
+            }
+        };
+        for (i; i < len; i++) {
+            logger.debug(`   > Loading typedoc for ${$configuration.mainData.components[i].file}`);
+            $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
+            $configuration.mainData.components[i].typedocData = {
+                comment: $typedocengine.getComment()
+            };
+        }
+        //loop();
+    };
     let prepareDirectives = () => {
+        logger.info('Prepare directives');
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
         $configuration.addPage({
             name: 'directives',
@@ -822,6 +1274,7 @@ var Application;
         }
     };
     let prepareInjectables = () => {
+        logger.info('Prepare injectables');
         $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
         $configuration.addPage({
             name: 'injectables',
@@ -838,6 +1291,7 @@ var Application;
         }
     };
     let prepareRoutes = () => {
+        logger.info('Process routes');
         $configuration.mainData.routes = $dependenciesEngine.getRoutes();
         $configuration.addPage({
             name: 'routes',
@@ -887,6 +1341,7 @@ var Application;
         loop();
     };
     let processResources = () => {
+        logger.info('Copy main resources');
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + program.output), function (err) {
             if (err) {
                 logger.error('Error during resources copy');
@@ -918,7 +1373,7 @@ var Application;
             logger.error('Error during graph generation');
         });
     };
-    Application.run = () => {
+    Application$$1.run = () => {
         let _file;
         if (program.serve) {
             logger.info('Serving documentation at http://127.0.0.1:8080');
@@ -968,7 +1423,9 @@ var Application;
                     };
                     files = walk(cwd || '.');
                 }
-                processPackageJson();
+                $htmlengine.init().then(() => {
+                    processPackageJson();
+                });
             }
         }
         else {
@@ -976,6 +1433,6 @@ var Application;
             outputHelp();
         }
     };
-})(Application || (Application = {}));
+})(Application$1 || (Application$1 = {}));
 
-Application.run();
+Application$1.run();
