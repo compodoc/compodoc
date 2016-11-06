@@ -1,5 +1,13 @@
 <a name="0.0.1"></a>
 ## 0.0.1 (2016-10-17)
 
+Initial release
 
+### Features
 
+Support of :
+- components
+- modules
+- directives
+- pipes
+- injectables
