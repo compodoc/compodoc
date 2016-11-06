@@ -3,22 +3,26 @@
   <li>{{name}}</li>
 </ol>
 
-{{#if component.typedocData.comment}}
 <p class="comment">
-    {{component.typedocData.comment.shortText}}
-    {{component.typedocData.comment.text}}
+    <h3>File</h3>
 </p>
+<p class="comment">
+    <code>{{component.file}}</code>
+</p>
+
+{{#if component.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{{ component.description}}}
+    </p>
 {{/if}}
 
 <section>
     <h3>Metadata</h3>
     <table class="table table-sm table-hover">
         <tbody>
-            <tr>
-                <td class="col-md-3">file</td>
-                <td class="col-md-9"><code>{{component.file}}</code></td>
-            </tr>
-
             <!-- Official order -->
 
             {{#if component.animations}}
@@ -179,7 +183,7 @@
                             <div><i>Default value: </i><code>{{defaultValue}}</code></div>
                         {{/if}}
                         {{#if description}}
-                            <div class="io-description">{{description}}</div>
+                            <div class="io-description">{{{description}}}</div>
                         {{/if}}
                     </td>
                 </tr>
@@ -205,7 +209,7 @@
                             <div><i>Default value: </i><code>{{defaultValue}}</code></div>
                         {{/if}}
                         {{#if description}}
-                            <div class="io-description">{{description}}</div>
+                            <div class="io-description">{{{description}}}</div>
                         {{/if}}
                     </td>
                 </tr>
@@ -231,7 +235,7 @@
                             <div><i>Return type: </i><code>{{returnType}}</code></div>
                         {{/if}}
                         {{#if description}}
-                            <div class="io-description">{{description}}</div>
+                            <div class="io-description">{{{description}}}</div>
                         {{/if}}
                     </td>
                 </tr>
@@ -257,7 +261,7 @@
                             <div><i>Default value: </i><code>{{defaultValue}}</code></div>
                         {{/if}}
                         {{#if description}}
-                            <div class="io-description">{{description}}</div>
+                            <div class="io-description">{{{description}}}</div>
                         {{/if}}
                     </td>
                 </tr>

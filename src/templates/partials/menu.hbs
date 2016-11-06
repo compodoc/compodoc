@@ -193,6 +193,33 @@
         </div>
     </div>
     {{/if}}
+
+    {{#if pipes}}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#pipes"><span class="fa fa-plus">
+                </span>Pipes</a>
+            </h4>
+        </div>
+        <div id="pipes" class="panel-collapse collapse
+                                    {{#compare context "===" 'pipes'}} in {{/compare}}
+                                    {{#compare context "===" 'pipe'}} in {{/compare}}">
+            <div class="panel-body">
+                <table class="table">
+                    {{#each pipes}}
+                    <tr>
+                        <td>
+                            <a href="./pipes/{{name}}.html">{{ name }}</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
     {{#unless hideGenerator}}
     <p class="copyright">
         Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank"><img src="./images/compodoc.svg" class="img-responsive"></a>

@@ -22,7 +22,7 @@
         </nav>
 
         <div class="container-fluid">
-           <div class="row">
+           <div class="row main">
                <div class="col-sm-2 menu">
                    {{> menu data }}
                </div>
@@ -60,6 +60,13 @@
                    {{/compare}}
                    {{#compare data.context "===" 'injectable'}}
                         {{> injectable data }}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'pipes'}}
+                        {{> pipes data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'pipe'}}
+                        {{> pipe data }}
                    {{/compare}}
 
                    {{#compare data.context "===" 'routes'}}

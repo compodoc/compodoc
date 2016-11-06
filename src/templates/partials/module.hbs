@@ -16,15 +16,27 @@
 <script src="js/svg-pan-zoom.min.js"></script>
 <script src="js/svg-pan-zoom.controls.js"></script>
 
-<p class="io-file">
-    <b>File: </b>{{module.file}}
+<p class="comment">
+    <h3>File</h3>
 </p>
+<p class="comment">
+    <code>{{module.file}}</code>
+</p>
+
+{{#if module.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{{ module.description}}}
+    </p>
+{{/if}}
 
 <div class="container-fluid module">
     <div class="row">
         {{#if module.declarations}}
         <div class="col-sm-3">
-            <h4>Declarations</h4>
+            <h3>Declarations</h3>
             <ul class="list-group">
                 {{#each module.declarations}}
                     <li class="list-group-item">
@@ -36,7 +48,7 @@
         {{/if}}
         {{#if module.providers}}
         <div class="col-sm-3">
-            <h4>Providers</h4>
+            <h3>Providers</h3>
             <ul class="list-group">
                 {{#each module.providers}}
                     <li class="list-group-item">
@@ -48,7 +60,7 @@
         {{/if}}
         {{#if module.imports}}
         <div class="col-sm-3">
-            <h4>Imports</h4>
+            <h3>Imports</h3>
             <ul class="list-group">
                 {{#each module.imports}}
                     <li class="list-group-item">
@@ -60,7 +72,7 @@
         {{/if}}
         {{#if module.exports}}
         <div class="col-sm-3">
-            <h4>Exports</h4>
+            <h3>Exports</h3>
             <ul class="list-group">
                 {{#each module.exports}}
                     <li class="list-group-item">
@@ -72,7 +84,7 @@
         {{/if}}
         {{#if module.bootstrap}}
         <div class="col-sm-3">
-            <h4>Bootstrap</h4>
+            <h3>Bootstrap</h3>
             <ul class="list-group">
                 {{#each module.bootstrap}}
                     <li class="list-group-item">
