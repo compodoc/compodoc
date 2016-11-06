@@ -9,7 +9,6 @@ var Handlebars = require('handlebars');
 var marked = _interopDefault(require('marked'));
 var _ = require('lodash');
 var Shelljs = require('shelljs');
-var typedoc = require('typedoc');
 var ts = require('typescript');
 var fs$1 = require('fs');
 var util = require('util');
@@ -171,6 +170,8 @@ class HtmlEngine {
             'directive',
             'injectables',
             'injectable',
+            'pipes',
+            'pipe',
             'routes'
         ], i = 0, len = partials.length, loop = (resolve$$1, reject) => {
             if (i <= len - 1) {
@@ -274,6 +275,7 @@ class DependenciesEngine {
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.routes = _.sortBy(this.rawData.routes, ['name']);
+        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
     }
     getModules() {
         return this.modules;
@@ -289,6 +291,9 @@ class DependenciesEngine {
     }
     getRoutes() {
         return this.routes;
+    }
+    getPipes() {
+        return this.pipes;
     }
 }
 
@@ -308,41 +313,6 @@ class NgdEngine {
                 }
             });
         });
-    }
-}
-
-const typedocOptions = {
-    'mode': 'modules',
-    'theme': 'default',
-    'logger': 'none',
-    'ignoreCompilerErrors': 'true',
-    'experimentalDecorators': 'true',
-    'emitDecoratorMetadata': 'true',
-    'excludeExternals': 'true',
-    'target': 'ES6',
-    'moduleResolution': 'node',
-    'preserveConstEnums': 'true',
-    'stripInternal': 'true',
-    'suppressExcessPropertyErrors': 'true',
-    'suppressImplicitAnyIndexErrors': 'true',
-    'module': 'commonjs'
-};
-class TypedocEngine {
-    constructor() {
-        this.app = new typedoc.Application(typedocOptions);
-    }
-    parseFile(filepath) {
-        this.reflection = this.app.convert([filepath]);
-    }
-    getComment() {
-        let comment = '';
-        for (var prop in this.reflection.reflections) {
-            if (this.reflection.reflections[prop].comment) {
-                comment = this.reflection.reflections[prop].comment;
-                break;
-            }
-        }
-        return comment;
     }
 }
 
@@ -481,6 +451,7 @@ class Dependencies {
                     let metadata = node.decorators.pop();
                     let props = this.findProps(visitedNode);
                     let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
+                    let IO = this.getComponentIO(file);
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
@@ -490,7 +461,8 @@ class Dependencies {
                             imports: this.getModuleImports(props),
                             exports: this.getModuleExports(props),
                             bootstrap: this.getModuleBootstrap(props),
-                            type: 'module'
+                            type: 'module',
+                            description: IO.description
                         };
                         outputSymbols['modules'].push(deps);
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
@@ -518,10 +490,11 @@ class Dependencies {
                             template: this.getComponentTemplate(props),
                             templateUrl: this.getComponentTemplateUrl(props),
                             viewProviders: this.getComponentViewProviders(props),
-                            inputsClass: this.getComponentIO(file).inputs,
-                            outputsClass: this.getComponentIO(file).outputs,
-                            propertiesClass: this.getComponentIO(file).properties,
-                            methodsClass: this.getComponentIO(file).methods,
+                            inputsClass: IO.inputs,
+                            outputsClass: IO.outputs,
+                            propertiesClass: IO.properties,
+                            methodsClass: IO.methods,
+                            description: IO.description,
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -531,8 +504,9 @@ class Dependencies {
                             name,
                             file: file,
                             type: 'injectable',
-                            properties: this.getComponentIO(file).properties,
-                            methods: this.getComponentIO(file).methods
+                            properties: IO.properties,
+                            methods: IO.methods,
+                            description: IO.description
                         };
                         outputSymbols['injectables'].push(deps);
                     }
@@ -540,7 +514,8 @@ class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'pipe'
+                            type: 'pipe',
+                            description: IO.description
                         };
                         outputSymbols['pipes'].push(deps);
                     }
@@ -548,7 +523,8 @@ class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'directive'
+                            type: 'directive',
+                            description: IO.description
                         };
                         outputSymbols['directives'].push(deps);
                     }
@@ -855,6 +831,12 @@ class Dependencies {
             exportAs
         };
     }
+    isPipeDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return decorator.expression.expression.text === 'Pipe';
+    }
     isServiceDecorator(decorator) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -876,6 +858,7 @@ class Dependencies {
                     directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
                     members = this.visitMembers(classDeclaration.members);
                     return {
+                        description,
                         inputs: members.inputs,
                         outputs: members.outputs,
                         properties: members.properties,
@@ -890,6 +873,13 @@ class Dependencies {
                             description,
                             methods: members.methods,
                             properties: members.properties
+                        }];
+                }
+                else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
+                    return [{
+                            fileName,
+                            className,
+                            description
                         }];
                 }
             }
@@ -1127,19 +1117,18 @@ let $fileengine = new FileEngine();
 let $configuration = new Configuration();
 let $markdownengine = new MarkdownEngine();
 let $ngdengine = new NgdEngine();
-let $typedocengine = new TypedocEngine();
 let $dependenciesEngine;
-var Application$1;
-(function (Application$$1) {
+var Application;
+(function (Application) {
     program
         .version(pkg.version)
         .option('-f, --file [file]', 'A tsconfig.json file')
-        .option('-o, --open', 'Open the generated documentation', false)
+        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
+        .option('-o, --open', 'Open the generated documentation', false)
         .option('-s, --serve', 'Serve generated documentation', false)
-        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page.', false)
-        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
+        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
     let outputHelp = () => {
         program.outputHelp();
@@ -1198,10 +1187,10 @@ var Application$1;
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
         prepareModules();
         prepareComponents();
-        //parseComponents();
         prepareDirectives();
         prepareInjectables();
         prepareRoutes();
+        preparePipes();
         processPages();
     };
     let prepareModules = () => {
@@ -1221,6 +1210,23 @@ var Application$1;
             });
         }
     };
+    let preparePipes = () => {
+        logger.info('Prepare pipes');
+        $configuration.mainData.pipes = $dependenciesEngine.getPipes();
+        $configuration.addPage({
+            name: 'pipes',
+            context: 'pipes'
+        });
+        let i = 0, len = $configuration.mainData.pipes.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'pipes',
+                name: $configuration.mainData.pipes[i].name,
+                context: 'pipe',
+                pipe: $configuration.mainData.pipes[i]
+            });
+        }
+    };
     let prepareComponents = () => {
         logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
@@ -1237,26 +1243,6 @@ var Application$1;
                 component: $configuration.mainData.components[i]
             });
         }
-    };
-    let parseComponents = () => {
-        logger.info('Parse components comments, calling typedoc, this may take some time...');
-        let i = 0, len = $configuration.mainData.components.length, loop = () => {
-            if (i <= len - 1) {
-                $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
-                $configuration.mainData.components[i].typedocData = {
-                    comment: $typedocengine.getComment()
-                };
-                setTimeout(loop);
-            }
-        };
-        for (i; i < len; i++) {
-            logger.debug(`   > Loading typedoc for ${$configuration.mainData.components[i].file}`);
-            $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
-            $configuration.mainData.components[i].typedocData = {
-                comment: $typedocengine.getComment()
-            };
-        }
-        //loop();
     };
     let prepareDirectives = () => {
         logger.info('Prepare directives');
@@ -1375,7 +1361,7 @@ var Application$1;
             logger.error('Error during graph generation');
         });
     };
-    Application$$1.run = () => {
+    Application.run = () => {
         let _file;
         if (program.serve) {
             logger.info('Serving documentation at http://127.0.0.1:8080');
@@ -1435,6 +1421,6 @@ var Application$1;
             outputHelp();
         }
     };
-})(Application$1 || (Application$1 = {}));
+})(Application || (Application = {}));
 
-Application$1.run();
+Application.run();

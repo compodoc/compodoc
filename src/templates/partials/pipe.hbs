@@ -1,0 +1,20 @@
+<ol class="breadcrumb">
+  <li><a href="./pipes.html">Pipes</a></li>
+  <li>{{name}}</li>
+</ol>
+
+<p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>{{pipe.file}}</code>
+</p>
+
+{{#if pipe.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{breaklines pipe.description}}
+    </p>
+{{/if}}
