@@ -48,6 +48,7 @@ Options:
   -V, --version            output the version number
   -f, --file [file]        A tsconfig.json file
   -o, --open               Open the generated documentation
+  -b, --base [base]        Base reference of html tag
   -s, --serve              Serve generated documentation
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
   -d, --output [folder]    Where to store the generated documentation

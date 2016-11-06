@@ -32,6 +32,7 @@ export namespace Application {
         .version(pkg.version)
         .option('-f, --file [file]', 'A tsconfig.json file')
         .option('-o, --open', 'Open the generated documentation', false)
+        .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-s, --serve', 'Serve generated documentation', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page.', false)
@@ -44,6 +45,8 @@ export namespace Application {
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
+
+    $configuration.mainData.base = program.base;
 
     let processPackageJson = () => {
         logger.info('Searching package.json file');
@@ -375,7 +378,7 @@ export namespace Application {
 
                     files = walk(cwd || '.');
                 }
-                
+
                 $htmlengine.init().then(() => {
                     processPackageJson();
                 });
