@@ -24,23 +24,23 @@
     "angular2",
     "documentation"
   ],
-  "author": "Vindent Ogloblinsky (vogloblinsky@sii.fr)",
+  "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/groupe-sii/compodoc/issues"
   },
   "homepage": "https://github.com/groupe-sii/compodoc#readme",
   "dependencies": {
-    "angular2-dependencies-graph": "^1.0.0-alpha.6",
-    "colors": "1.1.2",
-    "commander": "2.9.0",
-    "fs-extra": "1.0.0",
-    "gulp-util": "3.0.7",
+    "angular2-dependencies-graph": "^1.0.0-alpha.10",
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "fs-extra": "^1.0.0",
+    "gulp-util": "^3.0.7",
     "live-server": "^1.1.0",
-    "lodash": "^4.16.4",
+    "lodash": "^4.16.6",
     "marked": "^0.3.6",
-    "shelljs": "^0.7.4",
-    "typescript": "2.0.7"
+    "shelljs": "^0.7.5",
+    "typescript": "^2.0.7"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
