@@ -28,7 +28,7 @@ describe('CLI', () => {
 
         it(`-f`, () => {
             expect(runHelp.stdout.toString()).to.contain('-f, --file [file]');
-            expect(runHelp.stdout.toString()).to.contain('Entry *.ts file');
+            expect(runHelp.stdout.toString()).to.contain('A tsconfig.json file');
         });
 
         it(`-o`, () => {
@@ -36,14 +36,29 @@ describe('CLI', () => {
             expect(runHelp.stdout.toString()).to.contain('Open the generated documentation');
         });
 
+        it(`-b`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-b, --base [base]');
+            expect(runHelp.stdout.toString()).to.contain('Base reference of html tag');
+        });
+
+        it(`-n`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-n, --name [name]');
+            expect(runHelp.stdout.toString()).to.contain('Title documentation');
+        });
+
         it(`-s`, () => {
             expect(runHelp.stdout.toString()).to.contain('-s, --serve');
             expect(runHelp.stdout.toString()).to.contain('Serve generated documentation');
         });
 
+        it(`-g`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-g, --hideGenerator');
+            expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
+        });
+
         it(`-d`, () => {
             expect(runHelp.stdout.toString()).to.contain('-d, --output [folder]');
-            expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation');
+            expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation (default: ./documentation)');
         });
     });
 
