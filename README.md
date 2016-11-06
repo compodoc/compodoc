@@ -12,7 +12,7 @@
 Features
 ------------
 
-* **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side. Compodoc is responsive, so it looks great on tablets, phones, and even in print.
+* **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
 * **Compodoc is just markdown** — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.
 
