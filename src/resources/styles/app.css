@@ -16,6 +16,10 @@ body {
     padding: 0;
     margin-top: 0;
 }
+.container-fluid.module h3 a {
+    margin-left: 10px;
+    color: #333;
+}
 .row.main {
     height: 100%;
 }
