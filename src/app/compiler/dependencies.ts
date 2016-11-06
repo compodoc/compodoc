@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
+import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 
@@ -95,6 +96,12 @@ export class Dependencies {
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
     }
 
+    private breakLines(text) {
+        text = text.replace(/(\n)/gm, '<br>');
+        text = text.replace(/(<br>)$/gm, '');
+        return text;
+    }
+
     getDependencies() {
         let deps: Object = {
             'modules': [],
@@ -163,7 +170,7 @@ export class Dependencies {
                             exports: this.getModuleExports(props),
                             bootstrap: this.getModuleBootstrap(props),
                             type: 'module',
-                            description: IO.description
+                            description: this.breakLines(IO.description)
                         };
                         outputSymbols['modules'].push(deps);
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
@@ -195,7 +202,7 @@ export class Dependencies {
                             outputsClass: IO.outputs,
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
-                            description: IO.description,
+                            description: this.breakLines(IO.description),
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -207,8 +214,10 @@ export class Dependencies {
                             type: 'injectable',
                             properties: IO.properties,
                             methods: IO.methods,
-                            description: IO.description
+                            description: this.breakLines(IO.description)
                         };
+                        console.log(IO.description)
+                        console.log(deps.description)
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
@@ -216,7 +225,7 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'pipe',
-                            description: IO.description
+                            description: this.breakLines(IO.description)
                         };
                         outputSymbols['pipes'].push(deps);
                     }
@@ -225,7 +234,7 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'directive',
-                            description: IO.description
+                            description: this.breakLines(IO.description)
                         };
                         outputSymbols['directives'].push(deps);
                     }
@@ -400,7 +409,7 @@ export class Dependencies {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
 
@@ -418,7 +427,7 @@ export class Dependencies {
         var outArgs = outDecorator.expression.arguments;
         return {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
 
@@ -454,7 +463,7 @@ export class Dependencies {
          */
         return {
             name: method.name.text,
-            description: ts.displayPartsToString(method.symbol.getDocumentationComment()),
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         }
@@ -499,7 +508,7 @@ export class Dependencies {
             name: property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: ts.displayPartsToString(property.symbol.getDocumentationComment())
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
 
@@ -549,14 +558,6 @@ export class Dependencies {
         };
     }
 
-    private isDirectiveDecorator(decorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        var decoratorIdentifierText = decorator.expression.expression.text;
-        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
-    }
-
     private visitDirectiveDecorator(decorator) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -589,6 +590,21 @@ export class Dependencies {
          return decorator.expression.expression.text === 'Pipe';
     }
 
+    private isModuleDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+         return decorator.expression.expression.text === 'NgModule';
+    }
+
+    private isDirectiveDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var decoratorIdentifierText = decorator.expression.expression.text;
+        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+    }
+
     private isServiceDecorator(decorator) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -601,7 +617,7 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-        var description = ts.displayPartsToString(symbol.getDocumentationComment());
+        var description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
@@ -627,7 +643,7 @@ export class Dependencies {
                     methods: members.methods,
                     properties: members.properties
                   }];
-              } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
+              } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
                     fileName,
                     className,
