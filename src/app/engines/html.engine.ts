@@ -97,6 +97,8 @@ export class HtmlEngine {
             'directive',
             'injectables',
             'injectable',
+            'pipes',
+            'pipe',
             'routes'
         ],
             i = 0,

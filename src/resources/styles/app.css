@@ -12,7 +12,7 @@ body {
 .container-fluid.modules {
     margin-top: 25px;
 }
-.row {
+.row.main {
     height: 100%;
 }
 .content {
@@ -116,6 +116,7 @@ body {
 }
 .breadcrumb a {
     text-decoration: underline;
+    color: #333;
 }
 
 .comment {

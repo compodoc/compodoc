@@ -33,6 +33,7 @@ interface Deps {
     type: string;
     label?: string;
     file?: string;
+    description?: string;
 
     //Component
 
@@ -148,7 +149,9 @@ export class Dependencies {
 
                     let props = this.findProps(visitedNode);
 
-                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '')
+                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
+
+                    let IO = this.getComponentIO(file);
 
                     if (this.isModule(metadata)) {
                         deps = {
@@ -159,7 +162,8 @@ export class Dependencies {
                             imports: this.getModuleImports(props),
                             exports: this.getModuleExports(props),
                             bootstrap: this.getModuleBootstrap(props),
-                            type: 'module'
+                            type: 'module',
+                            description: IO.description
                         };
                         outputSymbols['modules'].push(deps);
                         outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
@@ -187,10 +191,11 @@ export class Dependencies {
                             template: this.getComponentTemplate(props),
                             templateUrl: this.getComponentTemplateUrl(props),
                             viewProviders: this.getComponentViewProviders(props),
-                            inputsClass: this.getComponentIO(file).inputs,
-                            outputsClass: this.getComponentIO(file).outputs,
-                            propertiesClass: this.getComponentIO(file).properties,
-                            methodsClass: this.getComponentIO(file).methods,
+                            inputsClass: IO.inputs,
+                            outputsClass: IO.outputs,
+                            propertiesClass: IO.properties,
+                            methodsClass: IO.methods,
+                            description: IO.description,
                             type: 'component'
                         };
                         outputSymbols['components'].push(deps);
@@ -200,8 +205,9 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'injectable',
-                            properties: this.getComponentIO(file).properties,
-                            methods: this.getComponentIO(file).methods
+                            properties: IO.properties,
+                            methods: IO.methods,
+                            description: IO.description
                         };
                         outputSymbols['injectables'].push(deps);
                     }
@@ -209,7 +215,8 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'pipe'
+                            type: 'pipe',
+                            description: IO.description
                         };
                         outputSymbols['pipes'].push(deps);
                     }
@@ -217,7 +224,8 @@ export class Dependencies {
                         deps = {
                             name,
                             file: file,
-                            type: 'directive'
+                            type: 'directive',
+                            description: IO.description
                         };
                         outputSymbols['directives'].push(deps);
                     }
@@ -574,6 +582,13 @@ export class Dependencies {
         };
     }
 
+    private isPipeDecorator(decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+         return decorator.expression.expression.text === 'Pipe';
+    }
+
     private isServiceDecorator(decorator) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -586,7 +601,6 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-
         var description = ts.displayPartsToString(symbol.getDocumentationComment());
         var className = classDeclaration.name.text;
         var directiveInfo;
@@ -598,6 +612,7 @@ export class Dependencies {
                     directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
                     members = this.visitMembers(classDeclaration.members);
                     return {
+                        description,
                         inputs: members.inputs,
                         outputs: members.outputs,
                         properties: members.properties,
@@ -605,13 +620,18 @@ export class Dependencies {
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
-
                   return [{
                     fileName,
                     className,
                     description,
                     methods: members.methods,
                     properties: members.properties
+                  }];
+              } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
+                  return [{
+                    fileName,
+                    className,
+                    description
                   }];
                 }
             }

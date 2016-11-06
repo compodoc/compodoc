@@ -11,7 +11,6 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
-import { TypedocEngine } from './engines/typedoc.engine';
 import { Dependencies } from './compiler/dependencies';
 
 let pkg = require('../package.json'),
@@ -23,7 +22,6 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
-    $typedocengine = new TypedocEngine(),
     $dependenciesEngine;
 
 export namespace Application {
@@ -31,12 +29,12 @@ export namespace Application {
     program
         .version(pkg.version)
         .option('-f, --file [file]', 'A tsconfig.json file')
-        .option('-o, --open', 'Open the generated documentation', false)
+        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
+        .option('-o, --open', 'Open the generated documentation', false)
         .option('-s, --serve', 'Serve generated documentation', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
-        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .parse(process.argv);
 
     let outputHelp = () => {
@@ -108,11 +106,12 @@ export namespace Application {
         prepareModules();
 
         prepareComponents();
-        //parseComponents();
 
         prepareDirectives();
         prepareInjectables();
         prepareRoutes();
+
+        preparePipes();
 
         processPages();
     }
@@ -137,6 +136,26 @@ export namespace Application {
         }
     }
 
+    let preparePipes = () => {
+        logger.info('Prepare pipes');
+        $configuration.mainData.pipes = $dependenciesEngine.getPipes();
+        $configuration.addPage({
+            name: 'pipes',
+            context: 'pipes'
+        });
+        let i = 0,
+            len = $configuration.mainData.pipes.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'pipes',
+                name: $configuration.mainData.pipes[i].name,
+                context: 'pipe',
+                pipe: $configuration.mainData.pipes[i]
+            });
+        }
+    }
+
     let prepareComponents = () => {
         logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
@@ -156,30 +175,6 @@ export namespace Application {
                 component: $configuration.mainData.components[i]
             });
         }
-    }
-
-    let parseComponents = () => {
-        logger.info('Parse components comments, calling typedoc, this may take some time...');
-        let i = 0,
-            len = $configuration.mainData.components.length,
-
-            loop = () => {
-                if( i <= len-1) {
-                    $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
-                    $configuration.mainData.components[i].typedocData = {
-                        comment: $typedocengine.getComment()
-                    };
-                    setTimeout(loop);
-                }
-            };
-        for(i; i<len; i++) {
-            logger.debug(`   > Loading typedoc for ${$configuration.mainData.components[i].file}`);
-            $typedocengine.parseFile(cwd + '/' + $configuration.mainData.components[i].file);
-            $configuration.mainData.components[i].typedocData = {
-                comment: $typedocengine.getComment()
-            };
-        }
-        //loop();
     }
 
     let prepareDirectives = () => {

@@ -3,6 +3,18 @@
   <li>{{name}}</li>
 </ol>
 
-<p class="io-file">
-    <b>File: </b>{{directive.file}}
+<p class="comment">
+    <h3>File</h3>
 </p>
+<p class="comment">
+    <code>{{directive.file}}</code>
+</p>
+
+{{#if directive.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{breaklines directive.description}}
+    </p>
+{{/if}}

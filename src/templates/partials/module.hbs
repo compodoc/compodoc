@@ -16,9 +16,21 @@
 <script src="js/svg-pan-zoom.min.js"></script>
 <script src="js/svg-pan-zoom.controls.js"></script>
 
-<p class="io-file">
-    <b>File: </b>{{module.file}}
+<p class="comment">
+    <h3>File</h3>
 </p>
+<p class="comment">
+    <code>{{module.file}}</code>
+</p>
+
+{{#if module.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{breaklines module.description}}
+    </p>
+{{/if}}
 
 <div class="container-fluid module">
     <div class="row">

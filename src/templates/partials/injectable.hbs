@@ -3,9 +3,21 @@
   <li>{{name}}</li>
 </ol>
 
-<p class="io-file">
-    <b>File: </b>{{injectable.file}}
+<p class="comment">
+    <h3>File</h3>
 </p>
+<p class="comment">
+    <code>{{injectable.file}}</code>
+</p>
+
+{{#if injectable.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{breaklines injectable.description}}
+    </p>
+{{/if}}
 
 {{#if injectable.methods}}
 <section>
