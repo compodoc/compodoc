@@ -22,7 +22,7 @@
       <p align="center">
   <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
   <br>
-  <a href="https://travis-ci.org/groupe-sii/compodoc"><img src="https://travis-ci.org/groupe-sii/compodoc.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
@@ -34,13 +34,18 @@
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-<li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side. Compodoc is responsive, so it looks great on tablets, phones, and even in print.</p></li>
+<li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side</p></li>
 <li><p><strong>Compodoc is just markdown</strong> — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.</p></li>
 <li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
 </ul>
 
 <h2>
-<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h2>
+<a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
+
+<p>Documentation generated for <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">TodoMVC Angular 2 Compodoc demo</a></p>
+
+<h2>
+<a id="static-demo" class="anchor" href="#static-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Demo</h2>
 
 <p>Using <a href="https://github.com/r-park/soundcloud-ngrx">SoundCloud API client / Angular2 project</a></p>
 
@@ -73,7 +78,10 @@
 <h3>
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h3>
 
-<p>Install from npm: <code>npm install -g compodoc</code></p>
+<p>Install from npm :</p>
+
+<pre><code>npm install -g compodoc
+</code></pre>
 
 <h3>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
@@ -87,10 +95,12 @@ Options:
   -h, --help               output usage information
   -V, --version            output the version number
   -f, --file [file]        A tsconfig.json file
+  -d, --output [folder]    Where to store the generated documentation
+  -b, --base [base]        Base reference of html tag
+  -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
-  -d, --output [folder]    Where to store the generated documentation
 </code></pre>
 
 <h3>
@@ -99,8 +109,8 @@ Options:
 <p>Because we doesn't find our needs on existing tools. We want to have a single place where there is :</p>
 
 <ul>
-<li>api documentation of code (typedoc)</li>
-<li>component(s) documentation</li>
+<li>api documentation of code</li>
+<li>component(s), directive(s), pipe(s), ... documentation</li>
 <li>general documentation (*.md files)</li>
 </ul>
 
@@ -113,17 +123,17 @@ Options:
 <a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h3>
 
 <ul>
-<li>[ ] module(s) page(s) with ngmodule comments</li>
+<li>[ ] handle external markdown files as "functional" documentation</li>
+<li>[ ] routes</li>
+<li>[ ] classes</li>
+<li>[ ] support for Angular 1.5+ projects written in Typescript</li>
+<li>[x] module(s) page(s) with ngmodule comments</li>
 <li>[x] module(s) page(s) started</li>
 <li>[x] component(s) page(s) with <a href="https://github.com/component" class="user-mention">@component</a> comments, API, class</li>
 <li>[x] component(s) page(s) started</li>
-<li>[ ] handle external markdown files as "functional" documentation</li>
-<li>[ ] routes</li>
-<li>[ ] directives</li>
+<li>[x] directives</li>
 <li>[x] injectables</li>
-<li>[ ] classes</li>
-<li>[ ] pipes</li>
-<li>[ ] support for Angular 1.5+ projects written in Typescript</li>
+<li>[x] pipes</li>
 </ul>
 
 <h3>
@@ -136,14 +146,9 @@ Options:
 <h3>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h3>
 
-<p>The MIT License (MIT)
-Copyright (c) 2016</p>
+<p>Everything in this repo is MIT License unless otherwise specified.</p>
 
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-
-<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+<p>MIT © 2016 - <a href="http://www.vincentogloblinsky.com">Vincent Ogloblinsky</a></p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/compodoc/compodoc">Compodoc</a> is maintained by <a href="https://github.com/compodoc">compodoc</a>.</span>
