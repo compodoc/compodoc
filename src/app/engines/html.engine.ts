@@ -50,6 +50,19 @@ export class HtmlEngine {
           }
           return options.fn(this);
         });
+        Handlebars.registerHelper("filterAngular2Modules", function(text, options) {
+            const NG2_MODULES:string[] = [
+                'BrowserModule',
+                'FormsModule',
+                'HttpModule',
+                'RouterModule'
+            ];
+            if (NG2_MODULES.indexOf(text) > -1) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
         Handlebars.registerHelper("debug", function(optionalValue) {
           console.log("Current Context");
           console.log("====================");
