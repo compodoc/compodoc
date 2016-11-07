@@ -22,7 +22,8 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
-    $dependenciesEngine;
+    $dependenciesEngine,
+    startTime = new Date();
 
 export namespace Application {
 
@@ -33,13 +34,18 @@ export namespace Application {
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-o, --open', 'Open the generated documentation', false)
-        .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
+        .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
 
     let outputHelp = () => {
         program.outputHelp()
         process.exit(1);
+    }
+
+    if (program.silent) {
+        logger.silent = false;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
@@ -302,13 +308,14 @@ export namespace Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    logger.info('Documentation generated in ' + program.output);
+                    let finalTime = (new Date() - startTime) / 1000;
+                    logger.info('Documentation generated in ' + program.output + 'in ' + finalTime + ' seconds');
                 }
             };
         $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
             loop();
-        }, () => {
-            logger.error('Error during graph generation');
+        }, (err) => {
+            logger.error('Error during graph generation: ', err);
         });
     }
 

@@ -140,3 +140,19 @@ code {
 .io-file {
     margin: 20px 0;
 }
+.navbar .btn-menu {
+    position: absolute;
+    right: 0;
+    margin: 10px;
+}
+.xs-menu {
+    margin-top: 50px;
+    height: calc(100% - 50px);
+    display: none;
+    overflow-y: scroll;
+}
+
+.xs-menu .copyright {
+    margin-top: 20px;
+    position: relative;
+}

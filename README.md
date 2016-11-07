@@ -14,7 +14,7 @@ Features
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
-* **Compodoc is just markdown** — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.
+* **Compodoc is just markdown** — Write your comments with Markdown or provide externals Markdown files for enhancing the API documentation.
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
@@ -28,9 +28,11 @@ Using [SoundCloud API client / Angular2 project](https://github.com/r-park/sound
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
-![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
+![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
-![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
+![screenshot-3](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
+Component page             |  
+![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  |
 
 Getting Started with compodoc
 ------------------------------
@@ -59,7 +61,7 @@ Options:
   -b, --base [base]        Base reference of html tag
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
-  -s, --serve              Serve generated documentation
+  -s, --serve              Serve generated documentation (default http://localhost:8080/)
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
 ```
 
@@ -80,10 +82,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [ ] routes
 - [ ] classes
 - [ ] support for Angular 1.5+ projects written in Typescript
-- [x] module(s) page(s) with ngmodule comments
-- [x] module(s) page(s) started
-- [x] component(s) page(s) with @component comments, API, class
-- [x] component(s) page(s) started
+- [x] module(s) page(s) with comments
+- [x] component(s) page(s) with comments, API, class
 - [x] directives
 - [x] injectables
 - [x] pipes

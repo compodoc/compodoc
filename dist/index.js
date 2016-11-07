@@ -29,23 +29,36 @@ class Logger {
         this.name = pkg$1.name;
         this.version = pkg$1.version;
         this.logger = gutil.log;
+        this.silent = true;
     }
     title(...args) {
+        if (!this.silent)
+            return;
         this.logger(c.cyan(...args));
     }
     info(...args) {
+        if (!this.silent)
+            return;
         this.logger(this.format(LEVEL.INFO, ...args));
     }
     warn(...args) {
+        if (!this.silent)
+            return;
         this.logger(this.format(LEVEL.WARN, ...args));
     }
     error(...args) {
+        if (!this.silent)
+            return;
         this.logger(this.format(LEVEL.FATAL, ...args));
     }
     fatal(...args) {
+        if (!this.silent)
+            return;
         this.error(...args);
     }
     debug(...args) {
+        if (!this.silent)
+            return;
         this.logger(this.format(LEVEL.DEBUG, ...args));
     }
     format(level, ...args) {
@@ -81,6 +94,7 @@ let logger = new Logger();
 //import * as helpers from 'handlebars-helpers';
 class HtmlEngine {
     constructor() {
+        this.cache = {};
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
         Handlebars.registerHelper("compare", function (a, operator, b, options) {
             if (arguments.length < 4) {
@@ -123,6 +137,20 @@ class HtmlEngine {
                 return options.inverse(this);
             }
             return options.fn(this);
+        });
+        Handlebars.registerHelper("filterAngular2Modules", function (text, options) {
+            const NG2_MODULES = [
+                'BrowserModule',
+                'FormsModule',
+                'HttpModule',
+                'RouterModule'
+            ];
+            if (NG2_MODULES.indexOf(text) > -1) {
+                return options.fn(this);
+            }
+            else {
+                return options.inverse(this);
+            }
         });
         Handlebars.registerHelper("debug", function (optionalValue) {
             console.log("Current Context");
@@ -193,20 +221,29 @@ class HtmlEngine {
         });
     }
     render(mainData, page) {
-        var o = mainData;
+        var o = mainData, that = this;
         Object.assign(o, page);
         return new Promise(function (resolve$$1, reject) {
-            fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
-                if (err) {
-                    reject('Error during index ' + page.name + ' generation');
-                }
-                else {
-                    let template = Handlebars.compile(data), result = template({
-                        data: o
-                    });
-                    resolve$$1(result);
-                }
-            });
+            if (that.cache['page']) {
+                let template = Handlebars.compile(that.cache['page']), result = template({
+                    data: o
+                });
+                resolve$$1(result);
+            }
+            else {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
+                    if (err) {
+                        reject('Error during index ' + page.name + ' generation');
+                    }
+                    else {
+                        that.cache['page'] = data;
+                        let template = Handlebars.compile(data), result = template({
+                            data: o
+                        });
+                        resolve$$1(result);
+                    }
+                });
+            }
         });
     }
 }
@@ -513,8 +550,6 @@ class Dependencies {
                             methods: IO.methods,
                             description: this.breakLines(IO.description)
                         };
-                        console.log(IO.description);
-                        console.log(deps.description);
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
@@ -1131,6 +1166,7 @@ let $configuration = new Configuration();
 let $markdownengine = new MarkdownEngine();
 let $ngdengine = new NgdEngine();
 let $dependenciesEngine;
+let startTime = new Date();
 var Application;
 (function (Application) {
     program
@@ -1140,13 +1176,17 @@ var Application;
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-o, --open', 'Open the generated documentation', false)
-        .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
+        .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
     let outputHelp = () => {
         program.outputHelp();
         process.exit(1);
     };
+    if (program.silent) {
+        logger.silent = false;
+    }
     $configuration.mainData.documentationMainName = program.name; //default commander value
     $configuration.mainData.base = program.base;
     let processPackageJson = () => {
@@ -1365,13 +1405,14 @@ var Application;
                 });
             }
             else {
-                logger.info('Documentation generated in ' + program.output);
+                let finalTime = (new Date() - startTime) / 1000;
+                logger.info('Documentation generated in ' + program.output + 'in ' + finalTime + ' seconds');
             }
         };
         $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
             loop();
-        }, () => {
-            logger.error('Error during graph generation');
+        }, (err) => {
+            logger.error('Error during graph generation: ', err);
         });
     };
     Application.run = () => {

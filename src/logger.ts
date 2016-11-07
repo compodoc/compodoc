@@ -14,42 +14,50 @@ class Logger {
 	name;
 	logger;
 	version;
+	silent;
 
 	constructor() {
 		this.name = pkg.name;
 		this.version = pkg.version;
 		this.logger = gutil.log;
+		this.silent = true;
 	}
 
 	title(...args) {
+		if(!this.silent) return;
 		this.logger(
 			c.cyan(...args)
 		);
 	}
 
 	info(...args) {
+		if(!this.silent) return;
 		this.logger(
 			this.format(LEVEL.INFO, ...args)
 		);
 	}
 
 	warn(...args) {
+		if(!this.silent) return;
 		this.logger(
 			this.format(LEVEL.WARN, ...args)
 		);
 	}
 
 	error(...args) {
+		if(!this.silent) return;
 		this.logger(
 			this.format(LEVEL.FATAL, ...args)
 		);
 	}
 
 	fatal(...args) {
+		if(!this.silent) return;
 		this.error(...args);
 	}
 
 	debug(...args) {
+		if(!this.silent) return;
 		this.logger(
 			this.format(LEVEL.DEBUG, ...args)
 		);

@@ -40,7 +40,7 @@
             <ul class="list-group">
                 {{#each module.declarations}}
                     <li class="list-group-item">
-                        <a {{#compare type "===" 'component'}} href="../components/{{name}}.html" {{/compare}}>{{name}}</a>
+                        <a {{#compare type "===" 'component'}} href="./components/{{name}}.html" {{/compare}}>{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -48,11 +48,11 @@
         {{/if}}
         {{#if module.providers}}
         <div class="col-sm-3">
-            <h3>Providers<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#providers-anchor" target="_blank"><span class="fa fa-info-circle"></h3>
+            <h3>Providers<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#providers-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
             <ul class="list-group">
                 {{#each module.providers}}
                     <li class="list-group-item">
-                        <a href="../injectables/{{name}}.html" >{{name}}</a>
+                        <a href="./injectables/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -60,11 +60,16 @@
         {{/if}}
         {{#if module.imports}}
         <div class="col-sm-3">
-            <h3>Imports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#imports-anchor" target="_blank"><span class="fa fa-info-circle"></h3>
+            <h3>Imports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#imports-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
             <ul class="list-group">
                 {{#each module.imports}}
                     <li class="list-group-item">
-                        <a href="../modules/{{name}}.html" >{{name}}</a>
+                        {{#filterAngular2Modules name}}
+                            {{name}}
+                        {{else}}
+                            <a href="./modules/{{name}}.html" >{{name}}</a>
+                        {{/filterAngular2Modules}}
+
                     </li>
                 {{/each}}
             </ul>
@@ -72,11 +77,11 @@
         {{/if}}
         {{#if module.exports}}
         <div class="col-sm-3">
-            <h3>Exports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#exports-anchor" target="_blank"><span class="fa fa-info-circle"></h3>
+            <h3>Exports<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#exports-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
             <ul class="list-group">
                 {{#each module.exports}}
                     <li class="list-group-item">
-                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
+                        <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -84,11 +89,11 @@
         {{/if}}
         {{#if module.bootstrap}}
         <div class="col-sm-3">
-            <h3>Bootstrap<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#bootstrap-anchor" target="_blank"><span class="fa fa-info-circle"></h3>
+            <h3>Bootstrap<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#bootstrap-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
             <ul class="list-group">
                 {{#each module.bootstrap}}
                     <li class="list-group-item">
-                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
+                        <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
