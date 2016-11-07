@@ -4,6 +4,7 @@ import * as Handlebars from 'handlebars';
 //import * as helpers from 'handlebars-helpers';
 
 export class HtmlEngine {
+    cache: object = {};
     constructor() {
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
         Handlebars.registerHelper( "compare", function(a, operator, b, options) {
@@ -135,20 +136,31 @@ export class HtmlEngine {
         });
     }
     render(mainData:any, page:any) {
-        var o = mainData;
+        var o = mainData,
+            that = this;
         Object.assign(o, page);
         return new Promise(function(resolve, reject) {
-           fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
-               if (err) {
-                   reject('Error during index ' + page.name + ' generation');
-               } else {
-                   let template:any = Handlebars.compile(data),
-                       result = template({
-                           data: o
-                       });
-                   resolve(result);
-               }
-           });
+            if(that.cache['page']) {
+                let template:any = Handlebars.compile(that.cache['page']),
+                    result = template({
+                        data: o
+                    });
+                resolve(result);
+            } else {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
+                   if (err) {
+                       reject('Error during index ' + page.name + ' generation');
+                   } else {
+                       that.cache['page'] = data;
+                       let template:any = Handlebars.compile(data),
+                           result = template({
+                               data: o
+                           });
+                       resolve(result);
+                   }
+               });
+            }
+
         });
     }
 };
