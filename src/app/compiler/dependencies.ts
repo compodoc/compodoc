@@ -216,8 +216,6 @@ export class Dependencies {
                             methods: IO.methods,
                             description: this.breakLines(IO.description)
                         };
-                        console.log(IO.description)
-                        console.log(deps.description)
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
