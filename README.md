@@ -14,7 +14,7 @@ Features
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
-* **Compodoc is just markdown** — Write your comments With Markdown, provide externals Markdown files for enhancing the API documentation.
+* **Compodoc is just markdown** — Write your comments with Markdown or provide externals Markdown files for enhancing the API documentation.
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
