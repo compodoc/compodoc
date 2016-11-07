@@ -33,7 +33,7 @@ export namespace Application {
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-o, --open', 'Open the generated documentation', false)
-        .option('-s, --serve', 'Serve generated documentation', false)
+        .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
 
@@ -307,8 +307,8 @@ export namespace Application {
             };
         $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
             loop();
-        }, () => {
-            logger.error('Error during graph generation');
+        }, (err) => {
+            logger.error('Error during graph generation: ', err);
         });
     }
 

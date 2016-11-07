@@ -59,7 +59,7 @@ Options:
   -b, --base [base]        Base reference of html tag
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
-  -s, --serve              Serve generated documentation
+  -s, --serve              Serve generated documentation (default http://localhost:8080/)
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
 ```
 
@@ -80,10 +80,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [ ] routes
 - [ ] classes
 - [ ] support for Angular 1.5+ projects written in Typescript
-- [x] module(s) page(s) with ngmodule comments
-- [x] module(s) page(s) started
-- [x] component(s) page(s) with @component comments, API, class
-- [x] component(s) page(s) started
+- [x] module(s) page(s) with comments
+- [x] component(s) page(s) with comments, API, class
 - [x] directives
 - [x] injectables
 - [x] pipes
