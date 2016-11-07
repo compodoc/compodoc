@@ -40,7 +40,7 @@
             <ul class="list-group">
                 {{#each module.declarations}}
                     <li class="list-group-item">
-                        <a {{#compare type "===" 'component'}} href="../components/{{name}}.html" {{/compare}}>{{name}}</a>
+                        <a {{#compare type "===" 'component'}} href="./components/{{name}}.html" {{/compare}}>{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -52,7 +52,7 @@
             <ul class="list-group">
                 {{#each module.providers}}
                     <li class="list-group-item">
-                        <a href="../injectables/{{name}}.html" >{{name}}</a>
+                        <a href="./injectables/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -64,7 +64,7 @@
             <ul class="list-group">
                 {{#each module.imports}}
                     <li class="list-group-item">
-                        <a href="../modules/{{name}}.html" >{{name}}</a>
+                        <a href="./modules/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -76,7 +76,7 @@
             <ul class="list-group">
                 {{#each module.exports}}
                     <li class="list-group-item">
-                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
+                        <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -88,7 +88,7 @@
             <ul class="list-group">
                 {{#each module.bootstrap}}
                     <li class="list-group-item">
-                        <a href="../{{type}}s/{{name}}.html" >{{name}}</a>
+                        <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
                     </li>
                 {{/each}}
             </ul>
