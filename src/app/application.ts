@@ -22,7 +22,8 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
-    $dependenciesEngine;
+    $dependenciesEngine,
+    startTime = new Date();
 
 export namespace Application {
 
@@ -302,7 +303,8 @@ export namespace Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    logger.info('Documentation generated in ' + program.output);
+                    let finalTime = (new Date() - startTime) / 1000;
+                    logger.info('Documentation generated in ' + program.output + 'in ' + finalTime + ' seconds');
                 }
             };
         $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
