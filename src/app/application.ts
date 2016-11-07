@@ -34,6 +34,7 @@ export namespace Application {
         .option('-b, --base [base]', 'Base reference of html tag', '/')
         .option('-n, --name [name]', 'Title documentation', `Application documentation`)
         .option('-o, --open', 'Open the generated documentation', false)
+        .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
@@ -41,6 +42,10 @@ export namespace Application {
     let outputHelp = () => {
         program.outputHelp()
         process.exit(1);
+    }
+
+    if (program.silent) {
+        logger.silent = false;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
