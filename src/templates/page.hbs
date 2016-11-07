@@ -19,11 +19,16 @@
 
         <nav class="navbar navbar-default navbar-fixed-top">
             <a href="./" class="navbar-brand">{{data.documentationMainName}} documentation</a>
+            <button type="button" class="btn btn-default btn-menu fa fa-bars visible-xs" id="btn-menu"></button>
         </nav>
+
+        <div class="xs-menu" id="mobile-menu">
+            {{> menu data }}
+        </div>
 
         <div class="container-fluid">
            <div class="row main">
-               <div class="col-sm-2 menu">
+               <div class="col-sm-2 menu hidden-xs">
                    {{> menu data }}
                </div>
                <div class="col-sm-10 content {{data.context}}">
