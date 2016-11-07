@@ -1169,12 +1169,13 @@ let $dependenciesEngine;
 let startTime = new Date();
 var Application;
 (function (Application) {
+    let defaultTitle = `Application documentation`;
     program
         .version(pkg.version)
         .option('-f, --file [file]', 'A tsconfig.json file')
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
         .option('-b, --base [base]', 'Base reference of html tag', '/')
-        .option('-n, --name [name]', 'Title documentation', `Application documentation`)
+        .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
@@ -1193,8 +1194,8 @@ var Application;
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
-            if (typeof parsedData.name !== 'undefined') {
-                $configuration.mainData.documentationMainName = parsedData.name;
+            if (typeof parsedData.name !== 'undefined' && program.name === defaultTitle) {
+                $configuration.mainData.documentationMainName = parsedData.name + ' documentation';
             }
             if (typeof parsedData.description !== 'undefined') {
                 $configuration.mainData.documentationMainDescription = parsedData.description;
