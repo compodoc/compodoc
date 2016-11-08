@@ -119,20 +119,17 @@
             </h4>
         </div>
         <div id="classes" class="panel-collapse collapse
-                                {{#compare context "===" 'classes'}} in {{/compare}}
-                                {{#compare context "===" 'classe'}} in {{/compare}}">
+                                    {{#compare context "===" 'classes'}} in {{/compare}}
+                                    {{#compare context "===" 'classe'}} in {{/compare}}">
             <div class="panel-body">
                 <table class="table">
+                    {{#each classes}}
                     <tr>
                         <td>
-                            <a href="./">Class 1</a>
+                            <a href="./classes/{{name}}.html">{{ name }}</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <a href="./">Class 2</a>
-                        </td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>

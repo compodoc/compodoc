@@ -80,8 +80,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 
 - [ ] handle external markdown files as "functional" documentation
 - [ ] routes
-- [ ] classes
 - [ ] support for Angular 1.5+ projects written in Typescript
+- [x] classes
 - [x] module(s) page(s) with comments
 - [x] component(s) page(s) with comments, API, class
 - [x] directives

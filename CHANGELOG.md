@@ -1,3 +1,15 @@
+<a name="0.0.8"></a>
+## 0.0.3 (2016-11-08)
+
+### Bug Fixes
+
+* **app:** title argument ([4b37cf2](https://github.com/groupe-sii/compodoc/commit/4b37cf2))
+* **app:** css for menu, scroll bounce, mobile main height ([839a49a](https://github.com/groupe-sii/compodoc/commit/839a49a))
+
+### Features
+
+* **app:** simple classes support ([35f2cc5](https://github.com/groupe-sii/compodoc/commit/35f2cc5))
+
 <a name="0.0.2"></a>
 ## 0.0.2 (2016-11-07)
 

@@ -115,11 +115,23 @@ export namespace Application {
 
         prepareComponents();
 
-        prepareDirectives();
-        prepareInjectables();
-        prepareRoutes();
+        if ($dependenciesEngine.directives.length > 0) {
+            prepareDirectives();
+        }
+        if ($dependenciesEngine.injectables.length > 0) {
+            prepareInjectables();
+        }
+        if ($dependenciesEngine.routes.length > 0) {
+            prepareRoutes();
+        }
 
-        preparePipes();
+        if ($dependenciesEngine.pipes.length > 0) {
+            preparePipes();
+        }
+
+        if ($dependenciesEngine.classes.length > 0) {
+            prepareClasses();
+        }
 
         processPages();
     }
@@ -160,6 +172,26 @@ export namespace Application {
                 name: $configuration.mainData.pipes[i].name,
                 context: 'pipe',
                 pipe: $configuration.mainData.pipes[i]
+            });
+        }
+    }
+
+    let prepareClasses = () => {
+        logger.info('Prepare classes');
+        $configuration.mainData.classes = $dependenciesEngine.getClasses();
+        $configuration.addPage({
+            name: 'classes',
+            context: 'classes'
+        });
+        let i = 0,
+            len = $configuration.mainData.classes.length;
+
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'classes',
+                name: $configuration.mainData.classes[i].name,
+                context: 'class',
+                class: $configuration.mainData.classes[i]
             });
         }
     }
@@ -240,14 +272,14 @@ export namespace Application {
 
         /*
         let i = 0,
-            len = $configuration.mainData.injectables.length;
+            len = $configuration.mainData.routes.length;
 
         for(i; i<len; i++) {
             $configuration.addPage({
-                path: 'injectables',
-                name: $configuration.mainData.injectables[i].name,
-                context: 'injectable',
-                injectable: $configuration.mainData.injectables[i]
+                path: 'routes',
+                name: $configuration.mainData.routes[i].name,
+                context: 'route',
+                route: $configuration.mainData.routes[i]
             });
         }*/
     }

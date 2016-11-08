@@ -5,9 +5,11 @@ body {
     height: 100%;
 }
 .container-fluid {
-    height: calc(100% - 50px);
     margin-top: 50px;
     overflow-y: hidden;
+}
+.container-fluid.main {
+    height: calc(100% - 50px);
 }
 .container-fluid.modules {
     margin-top: 25px;
@@ -27,6 +29,7 @@ body {
     background: white;
     height: 100%;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding-top: 10px;
 }
 .content.readme {
@@ -106,7 +109,10 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
     align-items: center;
+    -webkit-align-items: center;
 }
 .copyright img {
     width: 80px;

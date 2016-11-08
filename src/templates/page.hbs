@@ -26,7 +26,7 @@
             {{> menu data }}
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid main">
            <div class="row main">
                <div class="col-sm-2 menu hidden-xs">
                    {{> menu data }}
@@ -72,6 +72,13 @@
                    {{/compare}}
                    {{#compare data.context "===" 'pipe'}}
                         {{> pipe data }}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'classes'}}
+                        {{> classes data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'class'}}
+                        {{> class data }}
                    {{/compare}}
 
                    {{#compare data.context "===" 'routes'}}

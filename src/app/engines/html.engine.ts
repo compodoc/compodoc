@@ -113,6 +113,8 @@ export class HtmlEngine {
             'injectable',
             'pipes',
             'pipe',
+            'classes',
+            'class',
             'routes'
         ],
             i = 0,

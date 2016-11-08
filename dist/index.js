@@ -200,6 +200,8 @@ class HtmlEngine {
             'injectable',
             'pipes',
             'pipe',
+            'classes',
+            'class',
             'routes'
         ], i = 0, len = partials.length, loop = (resolve$$1, reject) => {
             if (i <= len - 1) {
@@ -313,6 +315,7 @@ class DependenciesEngine {
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.routes = _.sortBy(this.rawData.routes, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
+        this.classes = _.sortBy(this.rawData.classes, ['name']);
     }
     getModules() {
         return this.modules;
@@ -331,6 +334,9 @@ class DependenciesEngine {
     }
     getPipes() {
         return this.pipes;
+    }
+    getClasses() {
+        return this.classes;
     }
 }
 
@@ -464,7 +470,8 @@ class Dependencies {
             'injectables': [],
             'pipes': [],
             'directives': [],
-            'routes': []
+            'routes': [],
+            'classes': []
         };
         let sourceFiles = this.program.getSourceFiles() || [];
         sourceFiles.map((file) => {
@@ -486,13 +493,13 @@ class Dependencies {
     }
     getSourceFileDecorators(srcFile, outputSymbols) {
         ts.forEachChild(srcFile, (node) => {
+            let deps = {};
+            let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
             if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
-                    let name = this.getSymboleName(node);
-                    let deps = {};
                     let metadata = node.decorators.pop();
+                    let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
-                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
                     let IO = this.getComponentIO(file);
                     if (this.isModule(metadata)) {
                         deps = {
@@ -584,6 +591,21 @@ class Dependencies {
                     .forEach(visitNode);
             }
             else {
+                if (node.symbol) {
+                    if (node.symbol.flags === ts.SymbolFlags.Class) {
+                        let name = this.getSymboleName(node);
+                        let IO = this.getComponentIO(file);
+                        deps = {
+                            name,
+                            file: file,
+                            type: 'class',
+                            description: this.breakLines(IO.description),
+                            properties: IO.properties,
+                            methods: IO.methods
+                        };
+                        outputSymbols['classes'].push(deps);
+                    }
+                }
             }
         });
     }
@@ -1241,10 +1263,21 @@ var Application;
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
         prepareModules();
         prepareComponents();
-        prepareDirectives();
-        prepareInjectables();
-        prepareRoutes();
-        preparePipes();
+        if ($dependenciesEngine.directives.length > 0) {
+            prepareDirectives();
+        }
+        if ($dependenciesEngine.injectables.length > 0) {
+            prepareInjectables();
+        }
+        if ($dependenciesEngine.routes.length > 0) {
+            prepareRoutes();
+        }
+        if ($dependenciesEngine.pipes.length > 0) {
+            preparePipes();
+        }
+        if ($dependenciesEngine.classes.length > 0) {
+            prepareClasses();
+        }
         processPages();
     };
     let prepareModules = () => {
@@ -1278,6 +1311,23 @@ var Application;
                 name: $configuration.mainData.pipes[i].name,
                 context: 'pipe',
                 pipe: $configuration.mainData.pipes[i]
+            });
+        }
+    };
+    let prepareClasses = () => {
+        logger.info('Prepare classes');
+        $configuration.mainData.classes = $dependenciesEngine.getClasses();
+        $configuration.addPage({
+            name: 'classes',
+            context: 'classes'
+        });
+        let i = 0, len = $configuration.mainData.classes.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'classes',
+                name: $configuration.mainData.classes[i].name,
+                context: 'class',
+                class: $configuration.mainData.classes[i]
             });
         }
     };
@@ -1341,14 +1391,14 @@ var Application;
         });
         /*
         let i = 0,
-            len = $configuration.mainData.injectables.length;
+            len = $configuration.mainData.routes.length;
 
         for(i; i<len; i++) {
             $configuration.addPage({
-                path: 'injectables',
-                name: $configuration.mainData.injectables[i].name,
-                context: 'injectable',
-                injectable: $configuration.mainData.injectables[i]
+                path: 'routes',
+                name: $configuration.mainData.routes[i].name,
+                context: 'route',
+                route: $configuration.mainData.routes[i]
             });
         }*/
     };

@@ -8,6 +8,7 @@ export class DependenciesEngine {
     injectables: Object[];
     routes: Object[];
     pipes: Object[];
+    classes: Object[];
     constructor(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
@@ -16,6 +17,7 @@ export class DependenciesEngine {
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.routes = _.sortBy(this.rawData.routes, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
+        this.classes = _.sortBy(this.rawData.classes, ['name']);
     }
     getModules() {
         return this.modules;
@@ -34,5 +36,8 @@ export class DependenciesEngine {
     }
     getPipes() {
         return this.pipes;
+    }
+    getClasses() {
+        return this.classes;
     }
 };
