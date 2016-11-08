@@ -3,11 +3,11 @@
 
 ### Bug Fixes
 
-* **overview:** syntax ([995696ea](https://github.com/groupe-sii/compodoc/commit/995696ea
+* **overview:** syntax ([995696ea](https://github.com/groupe-sii/compodoc/commit/995696ea))
 
 ### Features
 
-* **app:** routes support ([8fe00e6f](https://github.com/groupe-sii/compodoc/commit/8fe00e6f
+* **app:** routes support ([8fe00e6f](https://github.com/groupe-sii/compodoc/commit/8fe00e6f))
 
 <a name="0.0.3"></a>
 ## 0.0.3 (2016-11-08)
