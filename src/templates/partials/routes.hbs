@@ -1,5 +1,17 @@
 <h3>Routes</h3>
+<table class="table table-sm table-hover">
+    <tbody>
+        <tr>
+            <td class="col-md-3"><b>Path</b></td>
+            <td class="col-md-9"><b>Component</b></td>
+        </tr>
 
-{{#each routes}}
-    {{this}}
-{{/each}}
+        {{#each routes}}
+        <tr>
+            <td class="col-md-3">{{path}}</td>
+            <td class="col-md-9"><a href="./components/{{component}}.html">{{component}}</a></td>
+        </tr>
+        {{/each}}
+
+    </tbody>
+</table>
