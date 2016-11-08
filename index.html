@@ -112,6 +112,21 @@ Options:
 </code></pre>
 
 <h3>
+<a id="remark-for-routes" class="anchor" href="#remark-for-routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for routes</h3>
+
+<p>Follow the style guide and provide a const of type 'Routes' like that :</p>
+
+<pre><code>const APP_ROUTES: Routes = [
+    { path: 'about', component: AboutComponent },
+    { path: '', component: HomeComponent}
+];
+
+...
+
+RouterModule.forRoot(APP_ROUTES)
+</code></pre>
+
+<h3>
 <a id="why-this-tool-" class="anchor" href="#why-this-tool-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why this tool ?</h3>
 
 <p>Because we doesn't find our needs on existing tools. We want to have a single place where there is :</p>
@@ -132,8 +147,8 @@ Options:
 
 <ul>
 <li>[ ] handle external markdown files as "functional" documentation</li>
-<li>[ ] routes</li>
 <li>[ ] support for Angular 1.5+ projects written in Typescript</li>
+<li>[x] routes</li>
 <li>[x] classes</li>
 <li>[x] module(s) page(s) with comments</li>
 <li>[x] component(s) page(s) with comments, API, class</li>
