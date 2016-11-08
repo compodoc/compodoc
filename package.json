@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/groupe-sii/compodoc.git"
+    "url": "git+https://github.com/compodoc/compodoc.git"
   },
   "keywords": [
     "angular2",
@@ -30,9 +30,9 @@
   "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/groupe-sii/compodoc/issues"
+    "url": "https://github.com/compodoc/compodoc/issues"
   },
-  "homepage": "https://github.com/groupe-sii/compodoc#readme",
+  "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
     "angular2-dependencies-graph": "^1.0.0-alpha.10",
     "colors": "^1.1.2",
