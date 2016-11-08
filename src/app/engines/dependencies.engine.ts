@@ -15,7 +15,7 @@ export class DependenciesEngine {
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.routes = _.sortBy(this.rawData.routes, ['name']);
+        this.routes = _.sortBy(_.uniqBy(this.rawData.routes, 'path'), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
     }

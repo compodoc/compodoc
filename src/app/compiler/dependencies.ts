@@ -4,6 +4,7 @@ import * as ts from 'typescript';
 import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
+import { generate } from './codegen';
 
 let q = require('q');
 
@@ -169,7 +170,6 @@ export class Dependencies {
                             description: this.breakLines(IO.description)
                         };
                         outputSymbols['modules'].push(deps);
-                        outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
                     }
                     else if (this.isComponent(metadata)) {
                         //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
@@ -249,24 +249,26 @@ export class Dependencies {
                     .filter(filterByDecorators)
                     .forEach(visitNode);
             }
-            else {
-                if (node.symbol) {
-                    if(node.symbol.flags === ts.SymbolFlags.Class) {
-                        let name = this.getSymboleName(node);
-                        let IO = this.getComponentIO(file);
-                        deps = {
-                            name,
-                            file: file,
-                            type: 'class',
-                            description: this.breakLines(IO.description),
-                            properties: IO.properties,
-                            methods: IO.methods
-                        };
-                        outputSymbols['classes'].push(deps);
-                    }
+            else if (node.symbol) {
+                if(node.symbol.flags === ts.SymbolFlags.Class) {
+                    let name = this.getSymboleName(node);
+                    let IO = this.getComponentIO(file);
+                    deps = {
+                        name,
+                        file: file,
+                        type: 'class',
+                        description: this.breakLines(IO.description),
+                        properties: IO.properties,
+                        methods: IO.methods
+                    };
+                    outputSymbols['classes'].push(deps);
+                }
+            } else {
+                let IO = this.getRouteIO(file);
+                if(IO.routes) {
+                    outputSymbols['routes'] = [...outputSymbols['routes'], ...JSON.parse(IO.routes.replace(/ /gm, ''))];
                 }
             }
-
         });
 
     }
@@ -670,6 +672,43 @@ export class Dependencies {
         }
 
         return [];
+    }
+
+    private visitEnumDeclaration(fileName, node) {
+        if( node.declarationList.declarations ) {
+            let i = 0,
+                len = node.declarationList.declarations.length;
+            for(i; i<len; i++) {
+                if(node.declarationList.declarations[i].type) {
+                    if(node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        return [{
+                            routes: generate(node.declarationList.declarations[i].initializer)
+                        }];
+                    }
+                }
+            }
+        }
+        return [];
+    }
+
+    private getRouteIO(filename: string) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        this.programComponent = ts.createProgram([filename], {});
+        let sourceFile = this.programComponent.getSourceFile(filename);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+
+        var res = sourceFile.statements.reduce((directive, statement) => {
+
+            if (statement.kind === ts.SyntaxKind.VariableStatement) {
+                return directive.concat(this.visitEnumDeclaration(filename, statement));
+            }
+
+            return directive;
+        }, [])
+
+        return res[0] || {};
     }
 
     private getComponentIO(filename: string) {
