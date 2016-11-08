@@ -65,6 +65,21 @@ Options:
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
 ```
 
+### Remark for routes
+
+Follow the style guide and provide a const of type 'Routes' like that :
+
+```
+const APP_ROUTES: Routes = [
+    { path: 'about', component: AboutComponent },
+    { path: '', component: HomeComponent}
+];
+
+...
+
+RouterModule.forRoot(APP_ROUTES)
+```
+
 ### Why this tool ?
 
 Because we doesn't find our needs on existing tools. We want to have a single place where there is :
@@ -79,8 +94,8 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 ### Roadmap
 
 - [ ] handle external markdown files as "functional" documentation
-- [ ] routes
 - [ ] support for Angular 1.5+ projects written in Typescript
+- [x] routes
 - [x] classes
 - [x] module(s) page(s) with comments
 - [x] component(s) page(s) with comments, API, class

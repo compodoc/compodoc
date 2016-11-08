@@ -313,7 +313,7 @@ class DependenciesEngine {
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.routes = _.sortBy(this.rawData.routes, ['name']);
+        this.routes = _.sortBy(_.uniqBy(this.rawData.routes, 'path'), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
     }
@@ -444,6 +444,154 @@ function compilerHost(transpileOptions) {
     return compilerHost;
 }
 
+let code = [];
+let gen = (function () {
+    let tmp = [];
+    return (token = null) => {
+        if (!token) {
+            //console.log(' ! token');
+            return code;
+        }
+        else if (token === '\n') {
+            //console.log(' \n');
+            code.push(tmp.join(''));
+            tmp = [];
+        }
+        else {
+            code.push(token);
+        }
+        return code;
+    };
+}());
+function generate(node) {
+    code = [];
+    visitAndRecognize(node);
+    return code.join('');
+}
+function visitAndRecognize(node, depth = 0) {
+    recognize(node);
+    depth++;
+    node.getChildren().forEach(c => visitAndRecognize(c, depth));
+}
+function recognize(node) {
+    //console.log('recognizing...', ts.SyntaxKind[node.kind+'']);
+    switch (node.kind) {
+        case ts.SyntaxKind.FirstLiteralToken:
+        case ts.SyntaxKind.Identifier:
+            gen('\"');
+            gen(node.text);
+            gen('\"');
+            break;
+        case ts.SyntaxKind.StringLiteral:
+            gen('\"');
+            gen(node.text);
+            gen('\"');
+            break;
+        case ts.SyntaxKind.ArrayLiteralExpression:
+            break;
+        case ts.SyntaxKind.ImportKeyword:
+            gen('import');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.FromKeyword:
+            gen('from');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.ExportKeyword:
+            gen('\n');
+            gen('export');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.ClassKeyword:
+            gen('class');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.ThisKeyword:
+            gen('this');
+            break;
+        case ts.SyntaxKind.ConstructorKeyword:
+            gen('constructor');
+            break;
+        case ts.SyntaxKind.FalseKeyword:
+            gen('false');
+            break;
+        case ts.SyntaxKind.TrueKeyword:
+            gen('true');
+            break;
+        case ts.SyntaxKind.NullKeyword:
+            gen('null');
+            break;
+        case ts.SyntaxKind.AtToken:
+            break;
+        case ts.SyntaxKind.PlusToken:
+            gen('+');
+            break;
+        case ts.SyntaxKind.EqualsGreaterThanToken:
+            gen(' => ');
+            break;
+        case ts.SyntaxKind.OpenParenToken:
+            gen('(');
+            break;
+        case ts.SyntaxKind.ImportClause:
+        case ts.SyntaxKind.ObjectLiteralExpression:
+            gen('{');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.Block:
+            gen('{');
+            gen('\n');
+            break;
+        case ts.SyntaxKind.CloseBraceToken:
+            gen('}');
+            break;
+        case ts.SyntaxKind.CloseParenToken:
+            gen(')');
+            break;
+        case ts.SyntaxKind.OpenBracketToken:
+            gen('[');
+            break;
+        case ts.SyntaxKind.CloseBracketToken:
+            gen(']');
+            break;
+        case ts.SyntaxKind.SemicolonToken:
+            gen(';');
+            gen('\n');
+            break;
+        case ts.SyntaxKind.CommaToken:
+            gen(',');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.ColonToken:
+            gen(' ');
+            gen(':');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.DotToken:
+            gen('.');
+            break;
+        case ts.SyntaxKind.DoStatement:
+            break;
+        case ts.SyntaxKind.Decorator:
+            break;
+        case ts.SyntaxKind.FirstAssignment:
+            gen(' = ');
+            break;
+        case ts.SyntaxKind.FirstPunctuation:
+            gen(' ');
+            break;
+        case ts.SyntaxKind.PrivateKeyword:
+            gen('private');
+            gen(' ');
+            break;
+        case ts.SyntaxKind.PublicKeyword:
+            gen('public');
+            gen(' ');
+            break;
+        default:
+            break;
+    }
+}
+
 let q = require('q');
 class Dependencies {
     constructor(files, options) {
@@ -514,7 +662,6 @@ class Dependencies {
                             description: this.breakLines(IO.description)
                         };
                         outputSymbols['modules'].push(deps);
-                        outputSymbols['routes'] = [...outputSymbols['routes'], ...this.findRoutes(deps.imports)];
                     }
                     else if (this.isComponent(metadata)) {
                         //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
@@ -590,21 +737,25 @@ class Dependencies {
                     .filter(filterByDecorators)
                     .forEach(visitNode);
             }
+            else if (node.symbol) {
+                if (node.symbol.flags === ts.SymbolFlags.Class) {
+                    let name = this.getSymboleName(node);
+                    let IO = this.getComponentIO(file);
+                    deps = {
+                        name,
+                        file: file,
+                        type: 'class',
+                        description: this.breakLines(IO.description),
+                        properties: IO.properties,
+                        methods: IO.methods
+                    };
+                    outputSymbols['classes'].push(deps);
+                }
+            }
             else {
-                if (node.symbol) {
-                    if (node.symbol.flags === ts.SymbolFlags.Class) {
-                        let name = this.getSymboleName(node);
-                        let IO = this.getComponentIO(file);
-                        deps = {
-                            name,
-                            file: file,
-                            type: 'class',
-                            description: this.breakLines(IO.description),
-                            properties: IO.properties,
-                            methods: IO.methods
-                        };
-                        outputSymbols['classes'].push(deps);
-                    }
+                let IO = this.getRouteIO(file);
+                if (IO.routes) {
+                    outputSymbols['routes'] = [...outputSymbols['routes'], ...JSON.parse(IO.routes.replace(/ /gm, ''))];
                 }
             }
         });
@@ -963,6 +1114,36 @@ class Dependencies {
                 }];
         }
         return [];
+    }
+    visitEnumDeclaration(fileName, node) {
+        if (node.declarationList.declarations) {
+            let i = 0, len = node.declarationList.declarations.length;
+            for (i; i < len; i++) {
+                if (node.declarationList.declarations[i].type) {
+                    if (node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        return [{
+                                routes: generate(node.declarationList.declarations[i].initializer)
+                            }];
+                    }
+                }
+            }
+        }
+        return [];
+    }
+    getRouteIO(filename) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        this.programComponent = ts.createProgram([filename], {});
+        let sourceFile = this.programComponent.getSourceFile(filename);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+        var res = sourceFile.statements.reduce((directive, statement) => {
+            if (statement.kind === ts.SyntaxKind.VariableStatement) {
+                return directive.concat(this.visitEnumDeclaration(filename, statement));
+            }
+            return directive;
+        }, []);
+        return res[0] || {};
     }
     getComponentIO(filename) {
         /**
