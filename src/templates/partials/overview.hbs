@@ -16,7 +16,7 @@
                 <div class="card text-center">
                     <div class="card-block">
                         <h4 class="card-title"><span class="fa fa-archive"></span></h4>
-                        <p class="card-text">{{ modules.length }} modules</p>
+                        <p class="card-text">{{ modules.length }} module{{#compare modules.length ">" 1}}s{{/compare}}</p>
 
                     </div>
                     <div class="card-footer text-muted">
@@ -30,7 +30,7 @@
                 <div class="card text-center">
                     <div class="card-block">
                         <h4 class="card-title"><span class="fa fa-cogs"></span></h4>
-                        <p class="card-text">{{ components.length }} components</p>
+                        <p class="card-text">{{ components.length }} component{{#compare components.length ">" 1}}s{{/compare}}</p>
 
                     </div>
                     <div class="card-footer text-muted">
@@ -44,7 +44,7 @@
                 <div class="card text-center">
                     <div class="card-block">
                         <h4 class="card-title"><span class="fa fa-code"></span></h4>
-                        <p class="card-text">{{ directives.length }} directive</p>
+                        <p class="card-text">{{ directives.length }} directive{{#compare directives.length ">" 1}}s{{/compare}}</p>
 
                     </div>
                     <div class="card-footer text-muted">
@@ -58,7 +58,7 @@
                 <div class="card text-center">
                     <div class="card-block">
                         <h4 class="card-title"><span class="fa fa-code-fork"></span></h4>
-                        <p class="card-text">{{ injectables.length }} injectables</p>
+                        <p class="card-text">{{ injectables.length }} injectable{{#compare injectables.length ">" 1}}s{{/compare}}</p>
 
                     </div>
                     <div class="card-footer text-muted">
@@ -74,11 +74,25 @@
                 <div class="card text-center">
                     <div class="card-block">
                         <h4 class="card-title"><span class="fa fa-plus"></span></h4>
-                        <p class="card-text">{{ pipes.length }} pipes</p>
+                        <p class="card-text">{{ pipes.length }} pipe{{#compare pipes.length ">" 1}}s{{/compare}}</p>
 
                     </div>
                     <div class="card-footer text-muted">
                         <a href="./pipes.html" class="btn btn-default">Browse</a>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+        {{#if classes}}
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-file-code-o"></span></h4>
+                        <p class="card-text">{{ classes.length }} classe{{#compare classes.length ">" 1}}s{{/compare}}</p>
+
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="./classes.html" class="btn btn-default">Browse</a>
                     </div>
                 </div>
             </div>

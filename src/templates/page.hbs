@@ -74,6 +74,13 @@
                         {{> pipe data }}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'classes'}}
+                        {{> classes data }}
+                   {{/compare}}
+                   {{#compare data.context "===" 'class'}}
+                        {{> class data }}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'routes'}}
                         {{> routes data }}
                    {{/compare}}

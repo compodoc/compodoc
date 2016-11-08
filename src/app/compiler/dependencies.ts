@@ -109,7 +109,8 @@ export class Dependencies {
             'injectables': [],
             'pipes': [],
             'directives': [],
-            'routes': []
+            'routes': [],
+            'classes': []
         };
         let sourceFiles = this.program.getSourceFiles() || [];
 
@@ -144,20 +145,15 @@ export class Dependencies {
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
 
-            if (node.decorators) {
+            let deps: Deps = <Deps>{};
+            let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
 
+            if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
 
-                    let name = this.getSymboleName(node);
-
-                    let deps: Deps = <Deps>{};
-
                     let metadata = node.decorators.pop();
-
+                    let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
-
-                    let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
-
                     let IO = this.getComponentIO(file);
 
                     if (this.isModule(metadata)) {
@@ -254,7 +250,21 @@ export class Dependencies {
                     .forEach(visitNode);
             }
             else {
-                // process.stdout.write('.');
+                if (node.symbol) {
+                    if(node.symbol.flags === ts.SymbolFlags.Class) {
+                        let name = this.getSymboleName(node);
+                        let IO = this.getComponentIO(file);
+                        deps = {
+                            name,
+                            file: file,
+                            type: 'class',
+                            description: this.breakLines(IO.description),
+                            properties: IO.properties,
+                            methods: IO.methods
+                        };
+                        outputSymbols['classes'].push(deps);
+                    }
+                }
             }
 
         });
