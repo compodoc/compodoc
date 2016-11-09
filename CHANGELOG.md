@@ -1,5 +1,13 @@
+<a name="0.0.5"></a>
+## 0.0.5 (2016-11-09)
+
+### Bug Fixes
+
+* **app:** handle false-positives ([f4e9d8a2](https://github.com/groupe-sii/compodoc/commit/f4e9d8a2))
+* **app:** fix class items ([295e9f81](https://github.com/groupe-sii/compodoc/commit/295e9f81))
+
 <a name="0.0.4"></a>
-## 0.0.3 (2016-11-08)
+## 0.0.4 (2016-11-08)
 
 ### Bug Fixes
 
