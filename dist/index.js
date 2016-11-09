@@ -744,11 +744,17 @@ class Dependencies {
                     deps = {
                         name,
                         file: file,
-                        type: 'class',
-                        description: this.breakLines(IO.description),
-                        properties: IO.properties,
-                        methods: IO.methods
+                        type: 'class'
                     };
+                    if (IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if (IO.description) {
+                        deps.description = this.breakLines(IO.description);
+                    }
+                    if (IO.methods) {
+                        deps.methods = IO.properties;
+                    }
                     outputSymbols['classes'].push(deps);
                 }
             }
@@ -1120,7 +1126,7 @@ class Dependencies {
             let i = 0, len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
                 if (node.declarationList.declarations[i].type) {
-                    if (node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                    if (node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
                         return [{
                                 routes: generate(node.declarationList.declarations[i].initializer)
                             }];
