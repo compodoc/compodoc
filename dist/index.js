@@ -340,27 +340,25 @@ class DependenciesEngine {
     }
 }
 
-class NgdEngine {
-    constructor() {
-    }
-    renderGraph(filepath, outputpath, type) {
-        return new Promise(function (resolve$$1, reject) {
-            Shelljs.exec(path.resolve(process.cwd() + '/node_modules/.bin/ngd') + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg', {
-                silent: true
-            }, function (code, stdout, stderr) {
-                if (code === 0) {
-                    resolve$$1();
-                }
-                else {
-                    reject(stderr);
-                }
-            });
-        });
-    }
-}
-
 // get default new line break
 
+function isGlobal() {
+    var isGlobal = false;
+    if (process.platform === "win32") {
+        var paths = process.env.Path.split(";");
+        for (var i = 0; i < paths.length; i++) {
+            if (paths[i].indexOf("npm") !== -1 &&
+                process.mainModule.filename.indexOf(paths[i]) !== -1) {
+                isGlobal = true;
+                break;
+            }
+        }
+    }
+    else {
+        isGlobal = process.env._ !== process.execPath;
+    }
+    return isGlobal;
+}
 function detectIndent(str, count, indent) {
     let stripIndent = function (str) {
         const match = str.match(/^[ \t]*(?=\S)/gm);
@@ -442,6 +440,27 @@ function compilerHost(transpileOptions) {
         getDirectories: () => []
     };
     return compilerHost;
+}
+
+class NgdEngine {
+    constructor() {
+    }
+    renderGraph(filepath, outputpath, type) {
+        return new Promise(function (resolve$$1, reject) {
+            let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
+            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
+            Shelljs.exec(finalPath, {
+                silent: true
+            }, function (code, stdout, stderr) {
+                if (code === 0) {
+                    resolve$$1();
+                }
+                else {
+                    reject(stderr);
+                }
+            });
+        });
+    }
 }
 
 let code = [];
@@ -1378,12 +1397,12 @@ let $dependenciesEngine;
 let startTime = new Date();
 var Application;
 (function (Application) {
-    let defaultTitle = `Application documentation`;
+    let defaultTitle = `Application documentation`, defaultFolder = `./documentation/`;
     program
         .version(pkg.version)
-        .option('-f, --file [file]', 'A tsconfig.json file')
-        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
-        .option('-b, --base [base]', 'Base reference of html tag', '/')
+        .option('-p, --tsconfig [config]', 'A tsconfig.json file')
+        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
+        .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
@@ -1396,6 +1415,9 @@ var Application;
     };
     if (program.silent) {
         logger.silent = false;
+    }
+    if (program.output) {
+        defaultFolder = program.output;
     }
     $configuration.mainData.documentationMainName = program.name; //default commander value
     $configuration.mainData.base = program.base;
@@ -1595,7 +1617,7 @@ var Application;
             if (i <= len - 1) {
                 logger.info('Process page', pages[i].name);
                 $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                    let path$$1 = program.output;
+                    let path$$1 = defaultFolder;
                     if (pages[i].path) {
                         path$$1 += '/' + pages[i].path + '/';
                     }
@@ -1621,7 +1643,7 @@ var Application;
     };
     let processResources = () => {
         logger.info('Copy main resources');
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + program.output), function (err) {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + defaultFolder), function (err) {
             if (err) {
                 logger.error('Error during resources copy');
             }
@@ -1644,73 +1666,100 @@ var Application;
             }
             else {
                 let finalTime = (new Date() - startTime) / 1000;
-                logger.info('Documentation generated in ' + program.output + 'in ' + finalTime + ' seconds');
+                logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
+                if (program.serve) {
+                    logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                    runWebServer(defaultFolder);
+                }
             }
         };
-        $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
+        $ngdengine.renderGraph(program.tsconfig, 'documentation/graph', 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);
         });
     };
+    let runWebServer = (folder) => {
+        LiveServer.start({
+            root: folder,
+            open: false,
+            quiet: true,
+            logLevel: 0
+        });
+    };
     Application.run = () => {
         let _file;
-        if (program.serve) {
-            logger.info('Serving documentation at http://127.0.0.1:8080');
-            LiveServer.start({
-                root: program.output,
-                open: false,
-                quiet: true,
-                logLevel: 0
-            });
-        }
-        if (program.hideGenerator) {
-            $configuration.mainData.hideGenerator = true;
-        }
-        if (program.file) {
-            if (!fs.existsSync(program.file)) {
-                logger.fatal('"tsconfig.json" file was not found in the current directory');
+        if (program.serve && !program.tsconfig && program.output) {
+            // if -s & -d, serve it
+            if (!fs.existsSync(program.output)) {
+                logger.fatal(`${program.output} folder doesn't exist`);
                 process.exit(1);
             }
             else {
-                _file = path.join(path.join(process.cwd(), path.dirname(program.file)), path.basename(program.file));
-                logger.info('Using tsconfig', _file);
-                files = require(_file).files;
-                // use the current directory of tsconfig.json as a working directory
-                cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-                if (!files) {
-                    let exclude = require(_file).exclude || [];
-                    var walk = (dir) => {
-                        let results = [];
-                        let list = fs.readdirSync(dir);
-                        list.forEach((file) => {
-                            if (exclude.indexOf(file) < 0) {
-                                file = path.join(dir, file);
-                                let stat = fs.statSync(file);
-                                if (stat && stat.isDirectory()) {
-                                    results = results.concat(walk(file));
-                                }
-                                else if (/(spec|\.d)\.ts/.test(file)) {
-                                    logger.debug('Ignoring', file);
-                                }
-                                else if (path.extname(file) === '.ts') {
-                                    logger.debug('Including', file);
-                                    results.push(file);
-                                }
-                            }
-                        });
-                        return results;
-                    };
-                    files = walk(cwd || '.');
-                }
-                $htmlengine.init().then(() => {
-                    processPackageJson();
-                });
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:8080`);
+                runWebServer(program.output);
+            }
+        }
+        else if (program.serve && !program.tsconfig && !program.output) {
+            // if only -s find ./documentation, if ok serve, else error provide -d
+            if (!fs.existsSync(defaultFolder)) {
+                logger.fatal('Provide output generated folder with -d flag');
+                process.exit(1);
+            }
+            else {
+                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                runWebServer(defaultFolder);
             }
         }
         else {
-            logger.fatal('Entry file was not found');
-            outputHelp();
+            if (program.hideGenerator) {
+                $configuration.mainData.hideGenerator = true;
+            }
+            if (program.tsconfig) {
+                if (!fs.existsSync(program.tsconfig)) {
+                    logger.fatal('"tsconfig.json" file was not found in the current directory');
+                    process.exit(1);
+                }
+                else {
+                    _file = path.join(path.join(process.cwd(), path.dirname(program.tsconfig)), path.basename(program.tsconfig));
+                    logger.info('Using tsconfig', _file);
+                    files = require(_file).files;
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    if (!files) {
+                        let exclude = require(_file).exclude || [];
+                        var walk = (dir) => {
+                            let results = [];
+                            let list = fs.readdirSync(dir);
+                            list.forEach((file) => {
+                                if (exclude.indexOf(file) < 0) {
+                                    file = path.join(dir, file);
+                                    let stat = fs.statSync(file);
+                                    if (stat && stat.isDirectory()) {
+                                        results = results.concat(walk(file));
+                                    }
+                                    else if (/(spec|\.d)\.ts/.test(file)) {
+                                        logger.debug('Ignoring', file);
+                                    }
+                                    else if (path.extname(file) === '.ts') {
+                                        logger.debug('Including', file);
+                                        results.push(file);
+                                    }
+                                }
+                            });
+                            return results;
+                        };
+                        files = walk(cwd || '.');
+                    }
+                    $htmlengine.init().then(() => {
+                        processPackageJson();
+                    });
+                }
+            }
+            else {
+                logger.fatal('Entry file was not found');
+                outputHelp();
+            }
         }
     };
 })(Application || (Application = {}));
