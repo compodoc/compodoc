@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
