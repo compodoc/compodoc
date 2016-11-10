@@ -23,6 +23,25 @@ export function getNewLineCharacter(options: ts.CompilerOptions): string {
     return carriageReturnLineFeed;
 }
 
+export function isGlobal() {
+	var isGlobal = false;
+
+	if (process.platform === "win32"){
+		var paths = process.env.Path.split (";");
+		for (var i=0; i<paths.length; i++){
+			if (paths[i].indexOf ("npm") !== -1 &&
+					process.mainModule.filename.indexOf (paths[i]) !== -1){
+				isGlobal = true;
+				break;
+			}
+		}
+	}else{
+		isGlobal = process.env._ !== process.execPath;
+	}
+
+	return isGlobal;
+}
+
 export function detectIndent(str, count, indent?): string {
     let stripIndent = function(str: string) {
         const match = str.match(/^[ \t]*(?=\S)/gm);
