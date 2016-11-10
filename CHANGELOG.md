@@ -1,3 +1,10 @@
+<a name="0.0.6"></a>
+## 0.0.6 (2016-11-10)
+
+### Bug Fixes
+
+* **app:** handlebars not in the dependencies list ([38aa0d6d](https://github.com/groupe-sii/compodoc/commit/38aa0d6d))
+
 <a name="0.0.5"></a>
 ## 0.0.5 (2016-11-09)
 
