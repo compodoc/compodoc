@@ -65,9 +65,29 @@ Options:
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
 ```
 
+### Local installation
+
+```
+npm install --save-dev compodoc
+```
+
+Define a script task for it in your package.json :
+
+```
+"scripts": {
+  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
+}
+```
+
+and run it like a normal npm script :
+
+```
+npm run compodoc
+```
+
 ### Remark for routes
 
-Follow the style guide and provide a const of type 'Routes' like that :
+Follow the style guide and provide a const of type 'Routes' :
 
 ```
 const APP_ROUTES: Routes = [
