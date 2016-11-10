@@ -31,9 +31,9 @@ export namespace Application {
 
     program
         .version(pkg.version)
-        .option('-f, --file [file]', 'A tsconfig.json file')
+        .option('-p, --tsconfig [config]', 'A tsconfig.json file')
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', `./documentation/`)
-        .option('-b, --base [base]', 'Base reference of html tag', '/')
+        .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
@@ -346,7 +346,7 @@ export namespace Application {
                     logger.info('Documentation generated in ' + program.output + 'in ' + finalTime + ' seconds');
                 }
             };
-        $ngdengine.renderGraph(program.file, 'documentation/graph', 'p').then(() => {
+        $ngdengine.renderGraph(program.tsconfig, 'documentation/graph', 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);
@@ -371,14 +371,14 @@ export namespace Application {
             $configuration.mainData.hideGenerator = true;
         }
 
-        if (program.file) {
-            if (!fs.existsSync(program.file)) {
+        if (program.tsconfig) {
+            if (!fs.existsSync(program.tsconfig)) {
                 logger.fatal('"tsconfig.json" file was not found in the current directory');
                 process.exit(1);
             } else {
                 _file = path.join(
-                  path.join(process.cwd(), path.dirname(program.file)),
-                  path.basename(program.file)
+                  path.join(process.cwd(), path.dirname(program.tsconfig)),
+                  path.basename(program.tsconfig)
                 );
                 logger.info('Using tsconfig', _file);
 
