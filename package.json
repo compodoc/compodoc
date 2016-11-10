@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
@@ -31,6 +31,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/compodoc/compodoc/issues"
+  },
+  "engines": {
+    "node": ">= 5.4.1 < 7"
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {

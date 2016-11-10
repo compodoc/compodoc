@@ -1,3 +1,21 @@
+<a name="0.0.7"></a>
+## 0.0.7 (2016-11-11)
+
+### Bug Fixes
+
+* **app:** local call of ngd, even compodoc installed globally or locally ([8393fc0](https://github.com/compodoc/compodoc/commit/8393fc0)), closes [#5](https://github.com/compodoc/compodoc/issues/5)
+* **app:** local/global call of ngd ([b9163a7](https://github.com/compodoc/compodoc/commit/b9163a7))
+* **app:** handle -s -d and -p correctly ([dc0b388](https://github.com/compodoc/compodoc/commit/dc0b388)), closes [#6](https://github.com/compodoc/compodoc/issues/6)
+
+### Features
+
+* **app:** rename file flag to tsconfig flag, details for base flag ([3b21bc0](https://github.com/compodoc/compodoc/commit/3b21bc0))
+* **app:** specify Node.js version ([c394caf](https://github.com/compodoc/compodoc/commit/c394caf))
+
+### Breaking changes
+
+* -f flag is now -p flag. More similar to tsc flags.
+
 <a name="0.0.6"></a>
 ## 0.0.6 (2016-11-10)
 

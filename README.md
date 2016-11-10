@@ -56,18 +56,68 @@ Options:
 
   -h, --help               output usage information
   -V, --version            output the version number
-  -f, --file [file]        A tsconfig.json file
+  -p, --tsconfig [config]  A tsconfig.json file
   -d, --output [folder]    Where to store the generated documentation
-  -b, --base [base]        Base reference of html tag
+  -b, --base [base]        Base reference of html tag <base>
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation (default http://localhost:8080/)
   -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
 ```
 
+### Local installation
+
+```
+npm install --save-dev compodoc
+```
+
+Define a script task for it in your package.json :
+
+```
+"scripts": {
+  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
+}
+```
+
+and run it like a normal npm script :
+
+```
+npm run compodoc
+```
+
+### Common use cases
+
+#### Render documentation
+
+Documentation is generated in default output folder, then run your HTTP server in that folder.
+
+```
+compodoc -p src/tsconfig.json
+```
+
+#### Serve generated documentation with compodoc
+
+Documentation was generated in default output folder or a specific one, the local HTTP server is launched at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -s
+
+or
+
+compodoc -s -d ./doc
+```
+
+#### Render documentation, and serve it with compodoc
+
+Documentation is generated in default output folder, and a local HTTP server is available at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -p src/tsconfig.json -s
+```
+
 ### Remark for routes
 
-Follow the style guide and provide a const of type 'Routes' like that :
+Follow the style guide and provide a const of type 'Routes' :
 
 ```
 const APP_ROUTES: Routes = [
