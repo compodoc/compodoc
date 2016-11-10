@@ -85,6 +85,36 @@ and run it like a normal npm script :
 npm run compodoc
 ```
 
+### Common use cases
+
+#### Render documentation
+
+Documentation is generated in default output folder, then run your HTTP server in that folder.
+
+```
+compodoc -p src/tsconfig.json
+```
+
+#### Serve generated documentation with compodoc
+
+Documentation was generated in default output folder or a specific one, the local HTTP server is launched at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -s
+
+or
+
+compodoc -s -d ./doc
+```
+
+#### Render documentation, and serve it with compodoc
+
+Documentation is generated in default output folder, and a local HTTP server is available at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -p src/tsconfig.json -s
+```
+
 ### Remark for routes
 
 Follow the style guide and provide a const of type 'Routes' :
