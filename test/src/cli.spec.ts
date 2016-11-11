@@ -26,7 +26,7 @@ describe('CLI', () => {
 
     describe('should display options in help', () => {
 
-        it(`-f`, () => {
+        it(`-p`, () => {
             expect(runHelp.stdout.toString()).to.contain('-p, --tsconfig [config]');
             expect(runHelp.stdout.toString()).to.contain('A tsconfig.json file');
         });
