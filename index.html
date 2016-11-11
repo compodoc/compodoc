@@ -102,9 +102,9 @@ Options:
 
   -h, --help               output usage information
   -V, --version            output the version number
-  -f, --file [file]        A tsconfig.json file
+  -p, --tsconfig [config]  A tsconfig.json file
   -d, --output [folder]    Where to store the generated documentation
-  -b, --base [base]        Base reference of html tag
+  -b, --base [base]        Base reference of html tag &lt;base&gt;
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation (default http://localhost:8080/)
@@ -112,9 +112,58 @@ Options:
 </code></pre>
 
 <h3>
+<a id="local-installation" class="anchor" href="#local-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Local installation</h3>
+
+<pre><code>npm install --save-dev compodoc
+</code></pre>
+
+<p>Define a script task for it in your package.json :</p>
+
+<pre><code>"scripts": {
+  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
+}
+</code></pre>
+
+<p>and run it like a normal npm script :</p>
+
+<pre><code>npm run compodoc
+</code></pre>
+
+<h3>
+<a id="common-use-cases" class="anchor" href="#common-use-cases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common use cases</h3>
+
+<h4>
+<a id="render-documentation" class="anchor" href="#render-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Render documentation</h4>
+
+<p>Documentation is generated in default output folder, then run your HTTP server in that folder.</p>
+
+<pre><code>compodoc -p src/tsconfig.json
+</code></pre>
+
+<h4>
+<a id="serve-generated-documentation-with-compodoc" class="anchor" href="#serve-generated-documentation-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Serve generated documentation with compodoc</h4>
+
+<p>Documentation was generated in default output folder or a specific one, the local HTTP server is launched at <a href="http://localhost:8080">http://localhost:8080</a></p>
+
+<pre><code>compodoc -s
+
+or
+
+compodoc -s -d ./doc
+</code></pre>
+
+<h4>
+<a id="render-documentation-and-serve-it-with-compodoc" class="anchor" href="#render-documentation-and-serve-it-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Render documentation, and serve it with compodoc</h4>
+
+<p>Documentation is generated in default output folder, and a local HTTP server is available at <a href="http://localhost:8080">http://localhost:8080</a></p>
+
+<pre><code>compodoc -p src/tsconfig.json -s
+</code></pre>
+
+<h3>
 <a id="remark-for-routes" class="anchor" href="#remark-for-routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for routes</h3>
 
-<p>Follow the style guide and provide a const of type 'Routes' like that :</p>
+<p>Follow the style guide and provide a const of type 'Routes' :</p>
 
 <pre><code>const APP_ROUTES: Routes = [
     { path: 'about', component: AboutComponent },
