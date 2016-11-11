@@ -764,7 +764,14 @@ class Dependencies {
             else {
                 let IO = this.getRouteIO(file);
                 if (IO.routes) {
-                    outputSymbols['routes'] = [...outputSymbols['routes'], ...JSON.parse(IO.routes.replace(/ /gm, ''))];
+                    let newRoutes;
+                    try {
+                        newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
+                    }
+                    catch (e) {
+                        logger.error('Routes parsing error, maybe a trailing comma ?');
+                    }
+                    outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
             }
         });
@@ -921,7 +928,11 @@ class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const jsDoc = ts.displayPartsToString(member.symbol.getDocumentationComment());
+        let comment = [];
+        if (member.symbol) {
+            comment = member.symbol.getDocumentationComment();
+        }
+        const jsDoc = ts.displayPartsToString(comment);
         return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
     }
     isAngularLifecycleHook(methodName) {
@@ -1716,7 +1727,7 @@ var Application;
                             let results = [];
                             let list = fs.readdirSync(dir);
                             list.forEach((file) => {
-                                if (exclude.indexOf(file) < 0) {
+                                if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
                                     file = path.join(dir, file);
                                     let stat = fs.statSync(file);
                                     if (stat && stat.isDirectory()) {

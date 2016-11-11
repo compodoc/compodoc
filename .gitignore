@@ -12,3 +12,8 @@ node_modules
 
 # Test js files
 test/dist/
+
+# Coverage directory used by tools like istanbul
+coverage
+.nyc_output
+coverage.*

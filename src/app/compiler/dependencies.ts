@@ -272,7 +272,13 @@ export class Dependencies {
             } else {
                 let IO = this.getRouteIO(file);
                 if(IO.routes) {
-                    outputSymbols['routes'] = [...outputSymbols['routes'], ...JSON.parse(IO.routes.replace(/ /gm, ''))];
+                    let newRoutes;
+                    try {
+                        newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
+                    } catch (e) {
+                        logger.error('Routes parsing error, maybe a trailing comma ?');
+                    }
+                    outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
             }
         });
@@ -458,7 +464,11 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const jsDoc = ts.displayPartsToString(member.symbol.getDocumentationComment());
+        let comment = [];
+        if (member.symbol) {
+            comment = member.symbol.getDocumentationComment();
+        }
+        const jsDoc = ts.displayPartsToString(comment);
         return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
     }
 

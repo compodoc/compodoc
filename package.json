@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
@@ -11,7 +11,8 @@
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "start": "npm run tsc",
     "pretest": "tsc -p test/tsconfig.json",
-    "test": "mocha --opts test/mocha.opts",
+    "test": "nyc mocha --opts test/mocha.opts",
+    "posttest": "nyc report --reporter=json && codecov -f coverage/*.json",
     "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
     "watch-rollup": "./node_modules/.bin/rollup -c -w",
     "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'"
@@ -48,7 +49,7 @@
     "lodash": "^4.16.6",
     "marked": "^0.3.6",
     "shelljs": "^0.7.5",
-    "typescript": "^2.0.7"
+    "typescript": "^2.0.9"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
@@ -60,9 +61,11 @@
     "@types/node": "6.0.46",
     "@types/typescript": "0.4.29",
     "chai": "^3.5.0",
+    "codecov": "^1.0.1",
     "conventional-changelog-cli": "^1.2.0",
     "mocha": "^3.1.2",
     "nodemon": "^1.11.0",
+    "nyc": "^8.4.0",
     "rollup": "^0.36.3",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^2.5.0"

@@ -421,7 +421,7 @@ export namespace Application {
                             let results = [];
                             let list = fs.readdirSync(dir);
                             list.forEach((file) => {
-                                if (exclude.indexOf(file) < 0) {
+                                if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
                                     file = path.join(dir, file);
                                     let stat = fs.statSync(file);
                                     if (stat && stat.isDirectory()) {
