@@ -464,7 +464,12 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const jsDoc = ts.displayPartsToString(member.symbol.getDocumentationComment());
+        let comment = [];
+        console.log(member.symbol)
+        if (member.symbol) {
+            comment = member.symbol.getDocumentationComment();
+        }
+        const jsDoc = ts.displayPartsToString(comment);
         return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
     }
 
