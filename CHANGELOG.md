@@ -1,10 +1,23 @@
+<a name="0.0.9"></a>
+## 0.0.9 (2016-11-12)
+
+### Bug Fixes
+
+* **app:** exclude by default node_modules folder ([69b1e4d](https://github.com/compodoc/compodoc/commit/69b1e4d)), closes [#11](https://github.com/compodoc/compodoc/issues/11)
+* **app:** handle ; after function in class ([eb7c7e1](https://github.com/compodoc/compodoc/commit/eb7c7e1)), closes [#12](https://github.com/compodoc/compodoc/issues/12)
+
+### Features
+
+* **app:** add nyc and codecovfeat ([775875b](https://github.com/compodoc/compodoc/commit/775875b))
+* **routes:** display redirectTo ([e7448e7](https://github.com/compodoc/compodoc/commit/e7448e7))
+* **app:** display error for routes parsing ([69a52d7](https://github.com/compodoc/compodoc/commit/69a52d7))
+
 <a name="0.0.8"></a>
 ## 0.0.8 (2016-11-11)
 
 ### Bug Fixes
 
 * **app:** isGlobal npm context test ([3ddc9ce](https://github.com/compodoc/compodoc/commit/3ddc9ce))
-
 
 <a name="0.0.7"></a>
 ## 0.0.7 (2016-11-11)
