@@ -465,7 +465,6 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         let comment = [];
-        console.log(member.symbol)
         if (member.symbol) {
             comment = member.symbol.getDocumentationComment();
         }
