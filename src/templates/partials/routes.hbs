@@ -3,13 +3,15 @@
     <tbody>
         <tr>
             <td class="col-md-3"><b>Path</b></td>
-            <td class="col-md-9"><b>Component</b></td>
+            <td class="col-md-3"><b>Component</b></td>
+            <td class="col-md-6"><b>redirectTo</b></td>
         </tr>
 
         {{#each routes}}
         <tr>
             <td class="col-md-3">{{path}}</td>
-            <td class="col-md-9"><a href="./components/{{component}}.html">{{component}}</a></td>
+            <td class="col-md-3"><a href="./components/{{component}}.html">{{component}}</a></td>
+            <td class="col-md-6">{{redirectTo}}</td>
         </tr>
         {{/each}}
 
