@@ -272,7 +272,13 @@ export class Dependencies {
             } else {
                 let IO = this.getRouteIO(file);
                 if(IO.routes) {
-                    outputSymbols['routes'] = [...outputSymbols['routes'], ...JSON.parse(IO.routes.replace(/ /gm, ''))];
+                    let newRoutes;
+                    try {
+                        newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
+                    } catch (e) {
+                        logger.error('Routes parsing error, maybe a trailing comma ?');
+                    }
+                    outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
             }
         });
