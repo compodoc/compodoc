@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as Shelljs from 'shelljs';
 
-import { isGlobal } from '../../utilities';
+const isGlobal: any = require('is-global-exec');
 
 export class NgdEngine {
     constructor() {

@@ -340,25 +340,30 @@ class DependenciesEngine {
     }
 }
 
+const isGlobal = require('is-global-exec');
+class NgdEngine {
+    constructor() {
+    }
+    renderGraph(filepath, outputpath, type) {
+        return new Promise(function (resolve$$1, reject) {
+            let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
+            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
+            Shelljs.exec(finalPath, {
+                silent: true
+            }, function (code, stdout, stderr) {
+                if (code === 0) {
+                    resolve$$1();
+                }
+                else {
+                    reject(stderr);
+                }
+            });
+        });
+    }
+}
+
 // get default new line break
 
-function isGlobal() {
-    var isGlobal = false;
-    if (process.platform === "win32") {
-        var paths = process.env.Path.split(";");
-        for (var i = 0; i < paths.length; i++) {
-            if (paths[i].indexOf("npm") !== -1 &&
-                process.mainModule.filename.indexOf(paths[i]) !== -1) {
-                isGlobal = true;
-                break;
-            }
-        }
-    }
-    else {
-        isGlobal = process.env._ !== process.execPath;
-    }
-    return isGlobal;
-}
 function detectIndent(str, count, indent) {
     let stripIndent = function (str) {
         const match = str.match(/^[ \t]*(?=\S)/gm);
@@ -440,27 +445,6 @@ function compilerHost(transpileOptions) {
         getDirectories: () => []
     };
     return compilerHost;
-}
-
-class NgdEngine {
-    constructor() {
-    }
-    renderGraph(filepath, outputpath, type) {
-        return new Promise(function (resolve$$1, reject) {
-            let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
-            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
-            Shelljs.exec(finalPath, {
-                silent: true
-            }, function (code, stdout, stderr) {
-                if (code === 0) {
-                    resolve$$1();
-                }
-                else {
-                    reject(stderr);
-                }
-            });
-        });
-    }
 }
 
 let code = [];
