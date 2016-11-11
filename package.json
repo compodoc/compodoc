@@ -49,7 +49,7 @@
     "lodash": "^4.16.6",
     "marked": "^0.3.6",
     "shelljs": "^0.7.5",
-    "typescript": "^2.0.7"
+    "typescript": "^2.0.9"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
