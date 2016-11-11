@@ -1,3 +1,11 @@
+<a name="0.0.8"></a>
+## 0.0.8 (2016-11-11)
+
+### Bug Fixes
+
+* **app:** isGlobal npm context test ([3ddc9ce](https://github.com/compodoc/compodoc/commit/3ddc9ce))
+
+
 <a name="0.0.7"></a>
 ## 0.0.7 (2016-11-11)
 
