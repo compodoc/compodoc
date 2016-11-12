@@ -298,12 +298,15 @@ export namespace Application {
                 if( i <= len-1) {
                     logger.info('Process page', pages[i].name);
                     $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                        let path = defaultFolder;
-                        if (pages[i].path) {
-                            path += '/' + pages[i].path + '/';
+                        let finalPath = defaultFolder;
+                        if(defaultFolder.lastIndexOf('/') === -1) {
+                            finalPath += '/';
                         }
-                        path += pages[i].name + '.html';
-                        fs.outputFile(path, htmlData, function (err) {
+                        if (pages[i].path) {
+                            finalPath += pages[i].path + '/';
+                        }
+                        finalPath += pages[i].name + '.html';
+                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
                             } else {
@@ -340,7 +343,12 @@ export namespace Application {
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process module graph', modules[i].name);
-                    $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name, 'f').then(() => {
+                    let finalPath = defaultFolder;
+                    if(defaultFolder.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    finalPath += 'modules/' + modules[i].name;
+                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
                         i++;
                         loop();
                     }, (errorMessage) => {
@@ -355,7 +363,12 @@ export namespace Application {
                     }
                 }
             };
-        $ngdengine.renderGraph(program.tsconfig, 'documentation/graph', 'p').then(() => {
+        let finalMainGraphPath = defaultFolder;
+        if(defaultFolder.lastIndexOf('/') === -1) {
+            finalMainGraphPath += '/';
+        }
+        finalMainGraphPath += 'graph';
+        $ngdengine.renderGraph(program.tsconfig, finalMainGraphPath, 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);
