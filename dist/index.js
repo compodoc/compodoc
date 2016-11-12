@@ -347,6 +347,9 @@ class NgdEngine {
     renderGraph(filepath, outputpath, type) {
         return new Promise(function (resolve$$1, reject) {
             let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
+            if (process.env.MODE && process.env.MODE === 'TESTING') {
+                ngdPath = __dirname + '/../node_modules/.bin/ngd';
+            }
             let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
             Shelljs.exec(finalPath, {
                 silent: true
@@ -1612,12 +1615,15 @@ var Application;
             if (i <= len - 1) {
                 logger.info('Process page', pages[i].name);
                 $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                    let path$$1 = defaultFolder;
-                    if (pages[i].path) {
-                        path$$1 += '/' + pages[i].path + '/';
+                    let finalPath = defaultFolder;
+                    if (defaultFolder.lastIndexOf('/') === -1) {
+                        finalPath += '/';
                     }
-                    path$$1 += pages[i].name + '.html';
-                    fs.outputFile(path$$1, htmlData, function (err) {
+                    if (pages[i].path) {
+                        finalPath += pages[i].path + '/';
+                    }
+                    finalPath += pages[i].name + '.html';
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
                         if (err) {
                             logger.error('Error during ' + pages[i].name + ' page generation');
                         }
@@ -1652,7 +1658,12 @@ var Application;
         let modules = $configuration.mainData.modules, i = 0, len = modules.length, loop = () => {
             if (i <= len - 1) {
                 logger.info('Process module graph', modules[i].name);
-                $ngdengine.renderGraph(modules[i].file, 'documentation/modules/' + modules[i].name, 'f').then(() => {
+                let finalPath = defaultFolder;
+                if (defaultFolder.lastIndexOf('/') === -1) {
+                    finalPath += '/';
+                }
+                finalPath += 'modules/' + modules[i].name;
+                $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
                     i++;
                     loop();
                 }, (errorMessage) => {
@@ -1668,7 +1679,12 @@ var Application;
                 }
             }
         };
-        $ngdengine.renderGraph(program.tsconfig, 'documentation/graph', 'p').then(() => {
+        let finalMainGraphPath = defaultFolder;
+        if (defaultFolder.lastIndexOf('/') === -1) {
+            finalMainGraphPath += '/';
+        }
+        finalMainGraphPath += 'graph';
+        $ngdengine.renderGraph(program.tsconfig, finalMainGraphPath, 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);

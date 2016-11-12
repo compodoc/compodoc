@@ -10,6 +10,9 @@ export class NgdEngine {
     renderGraph(filepath:String, outputpath: String, type: String) {
         return new Promise(function(resolve, reject) {
            let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
+           if (process.env.MODE && process.env.MODE === 'TESTING') {
+               ngdPath = __dirname + '/../node_modules/.bin/ngd';
+           }
            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg'
            Shelljs.exec(finalPath, {
                silent: true
