@@ -78,6 +78,8 @@ body {
 }
 .menu .panel-group {
     width: 100%;
+    height: 100%;
+    overflow-y: auto;
 }
 .menu .panel-default {
     border-right: none;
@@ -94,6 +96,10 @@ body {
 }
 .panel-group .panel+.panel {
     margin-top: 0;
+}
+.panel-group .panel {
+    z-index: 2;
+    position: relative;
 }
 .menu a {
     color: #3c3c3c;
@@ -114,6 +120,7 @@ body {
     -webkit-flex-direction: column;
     align-items: center;
     -webkit-align-items: center;
+    z-index: 1;
 }
 .copyright img {
     width: 80px;
