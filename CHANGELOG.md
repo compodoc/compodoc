@@ -1,3 +1,10 @@
+<a name="0.0.10"></a>
+## 0.0.10 (2016-11-12)
+
+### Bug Fixes
+
+* **app:** logo is overlaying menu ([71aad4b](https://github.com/compodoc/compodoc/commit/71aad4b)), closes [#13](https://github.com/compodoc/compodoc/issues/13)
+
 <a name="0.0.9"></a>
 ## 0.0.9 (2016-11-12)
 
