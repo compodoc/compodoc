@@ -31,12 +31,14 @@ export function temporaryDir() {
 
     return {
         name,
-        create() {
+        create(param?) {
+            if (param) name = param;
             if (!fs.existsSync(name)){
                 fs.mkdirSync(name);
             }
         },
-        clean() {
+        clean(param?) {
+            if (param) name = param;
             cleanUp(name);
         }
     }
