@@ -1,3 +1,10 @@
+<a name="0.0.12"></a>
+## 0.0.12 (2016-11-13)
+
+### Features
+
+* **app:** provide external styling theme file ([3e4f98c](https://github.com/compodoc/compodoc/commit/3e4f98c)), closes [#9](https://github.com/compodoc/compodoc/issues/9)
+
 <a name="0.0.11"></a>
 ## 0.0.11 (2016-11-13)
 
