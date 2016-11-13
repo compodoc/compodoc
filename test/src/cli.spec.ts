@@ -76,7 +76,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('MODE=TESTING node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', (error, stdout, stderr) => {
+            exec('cross-env MODE=TESTING node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -128,7 +128,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('MODE=TESTING node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json', (error, stdout, stderr) => {
+            exec('cross-env MODE=TESTING node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json', (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -180,7 +180,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('MODE=TESTING node ./bin/index.js -p ./test/src/todomvc-ng2/tsconfig.json', (error, stdout, stderr) => {
+            exec('cross-env MODE=TESTING node ./bin/index.js -p ./test/src/todomvc-ng2/tsconfig.json', (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
