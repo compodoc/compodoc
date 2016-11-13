@@ -35,6 +35,7 @@ export namespace Application {
         .option('-p, --tsconfig [config]', 'A tsconfig.json file')
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
         .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
+        .option('-y, --extStyle [file]', 'External styling theme file')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
@@ -330,6 +331,15 @@ export namespace Application {
             if (err) {
                 logger.error('Error during resources copy');
             } else {
+                if (program.extStyle) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + program.extStyle), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/bootstrap.min.css'), function (err) {
+                        if (err) {
+                            logger.error('Error during external styling file copy ', err);
+                        } else {
+                            logger.info('External styling file copy succeeded');
+                        }
+                    });
+                }
                 processGraphs();
             }
         });

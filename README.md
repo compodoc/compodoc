@@ -61,6 +61,7 @@ Options:
   -p, --tsconfig [config]  A tsconfig.json file
   -d, --output [folder]    Where to store the generated documentation
   -b, --base [base]        Base reference of html tag <base>
+  -y, --extStyle [file]    External styling theme file
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation (default http://localhost:8080/)

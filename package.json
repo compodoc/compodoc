@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
@@ -12,7 +12,8 @@
     "start": "npm run tsc",
     "pretest": "tsc -p test/tsconfig.json",
     "test": "nyc mocha --opts test/mocha.opts",
-    "posttest": "nyc report --reporter=json && codecov -f coverage/*.json",
+    "posttest": "nyc report --reporter=json",
+    "codecov": "codecov -f coverage/*.json",
     "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
     "watch-rollup": "./node_modules/.bin/rollup -c -w",
     "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'"

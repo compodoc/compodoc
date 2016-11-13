@@ -4,6 +4,15 @@ body {
     width: 100%;
     height: 100%;
 }
+.navbar {
+    min-height: 50px;
+}
+.navbar-brand {
+    height: 50px;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 15px;
+}
 .container-fluid {
     margin-top: 50px;
     overflow-y: hidden;
