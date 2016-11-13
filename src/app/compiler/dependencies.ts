@@ -147,8 +147,8 @@ export class Dependencies {
         ts.forEachChild(srcFile, (node: ts.Node) => {
 
             let deps: Deps = <Deps>{};
-            let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
-
+            let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+            let file = srcFile.fileName.replace(cleaner, '');
             if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
 
