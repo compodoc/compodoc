@@ -147,8 +147,8 @@ export class Dependencies {
         ts.forEachChild(srcFile, (node: ts.Node) => {
 
             let deps: Deps = <Deps>{};
-            let file = srcFile.fileName.replace(process.cwd() + path.sep, '');
-
+            let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+            let file = srcFile.fileName.replace(cleaner, '');
             if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
 
@@ -332,18 +332,6 @@ export class Dependencies {
             type = 'directive';
         }
         return type;
-    }
-
-    private findRoutes(props: NodeObject[]): Object[] {
-        let i = 0,
-            len = props.length,
-            result = [];
-        for(i; i < len; i++) {
-            if(props[i].ns && props[i].ns === 'RouterModule') {
-                result.push(props[i].name);
-            }
-        }
-        return result;
     }
 
     private getSymboleName(node): string {

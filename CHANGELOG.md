@@ -1,3 +1,10 @@
+<a name="0.0.11"></a>
+## 0.0.11 (2016-11-13)
+
+### Bug Fixes
+
+* **dependencies:** windows file path issue ([2567f87](https://github.com/compodoc/compodoc/commit/2567f87)), closes [#14](https://github.com/compodoc/compodoc/issues/14)
+
 <a name="0.0.10"></a>
 ## 0.0.10 (2016-11-12)
 

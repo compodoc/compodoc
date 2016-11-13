@@ -176,4 +176,61 @@ describe('CLI', () => {
         });
     });
 
+    describe('when generation with big app', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            exec('MODE=TESTING node ./bin/index.js -p ./test/src/todomvc-ng2/tsconfig.json', (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
+        });
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists('documentation');
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists('documentation/index.html');
+            expect(isIndexExists).to.be.true;
+            const isComponentsExists = exists('documentation/components.html');
+            expect(isComponentsExists).to.be.true;
+            const isDirectivesExists = exists('documentation/directives.html');
+            expect(isDirectivesExists).to.be.true;
+            const isInjectablesExists = exists('documentation/injectables.html');
+            expect(isInjectablesExists).to.be.true;
+            const isModulesExists = exists('documentation/modules.html');
+            expect(isModulesExists).to.be.true;
+            const isOverviewExists = exists('documentation/overview.html');
+            expect(isOverviewExists).to.be.true;
+            const isClassesExists = exists('documentation/classes.html');
+            expect(isClassesExists).to.be.true;
+            const isPipesExists = exists('documentation/pipes.html');
+            expect(isPipesExists).to.be.true;
+            const isRoutesExists = exists('documentation/routes.html');
+            expect(isRoutesExists).to.be.true;
+        });
+
+        it('should have generated resources folder', () => {
+            const isImagesExists = exists('documentation/images');
+            expect(isImagesExists).to.be.true;
+            const isJSExists = exists('documentation/js');
+            expect(isJSExists).to.be.true;
+            const isStylesExists = exists('documentation/styles');
+            expect(isStylesExists).to.be.true;
+            const isFontsExists = exists('documentation/fonts');
+            expect(isFontsExists).to.be.true;
+        });
+    });
 });
