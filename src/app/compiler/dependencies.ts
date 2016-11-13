@@ -334,18 +334,6 @@ export class Dependencies {
         return type;
     }
 
-    private findRoutes(props: NodeObject[]): Object[] {
-        let i = 0,
-            len = props.length,
-            result = [];
-        for(i; i < len; i++) {
-            if(props[i].ns && props[i].ns === 'RouterModule') {
-                result.push(props[i].name);
-            }
-        }
-        return result;
-    }
-
     private getSymboleName(node): string {
         return node.name.text;
     }
