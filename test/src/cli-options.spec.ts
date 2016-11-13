@@ -41,6 +41,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Base reference of html tag');
         });
 
+        it(`-y`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-y, --extStyle [file]');
+            expect(runHelp.stdout.toString()).to.contain('External styling theme file');
+        });
+
         it(`-n`, () => {
             expect(runHelp.stdout.toString()).to.contain('-n, --name [name]');
             expect(runHelp.stdout.toString()).to.contain('Title documentation');
