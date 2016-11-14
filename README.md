@@ -47,9 +47,10 @@ Component page             |
   - [Local installation](#local-installation)
 - [Common use cases](#common-use-cases)
   - [Render documentation](#render-documentation)
-  - [Styling the documentation](#styling-hte-documentation)
   - [Serve generated documentation with compodoc](#serve-generated-documentation-with-compodoc)
   - [Render documentation, and serve it with compodoc](#render-documentation-and-serve-it-with-compodoc)
+  - [Styling the documentation](#styling-hte-documentation)
+  - [Documentation of each component](#documentation-of-each-component)
 - [Remark for routes](#remark-for-routes)
 - [Why this tool ?](#why-this-tool-)
 - [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
@@ -119,6 +120,26 @@ Documentation is generated in default output folder, then run your HTTP server i
 compodoc -p src/tsconfig.json
 ```
 
+### Serve generated documentation with compodoc
+
+Documentation was generated in default output folder or a specific one, the local HTTP server is launched at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -s
+
+or
+
+compodoc -s -d ./doc
+```
+
+### Render documentation, and serve it with compodoc
+
+Documentation is generated in default output folder, and a local HTTP server is available at [http://localhost:8080](http://localhost:8080)
+
+```
+compodoc -p src/tsconfig.json -s
+```
+
 ### Styling the documentation
 ```
 compodoc -p src/tsconfig.json -y your_theme_styles/
@@ -144,24 +165,19 @@ Compodoc use [bootstrap](http://getbootstrap.com/) 3.3.7. You can customize Comp
     └── bootstrap.min.css // your bootstrap theme
 ```
 
-### Serve generated documentation with compodoc
+### Documentation of each component
 
-Documentation was generated in default output folder or a specific one, the local HTTP server is launched at [http://localhost:8080](http://localhost:8080)
+A comment description in xxx.component.ts file, between /** **/ can be a little short.
 
-```
-compodoc -s
-
-or
-
-compodoc -s -d ./doc
-```
-
-### Render documentation, and serve it with compodoc
-
-Documentation is generated in default output folder, and a local HTTP server is available at [http://localhost:8080](http://localhost:8080)
+Compodoc search for a default README.md file inside the root folder of each component, and add it inside a tab in the component page.
 
 ```
-compodoc -p src/tsconfig.json -s
+└── my-component/
+    ├── my.component.ts
+    ├── my.component.spec.ts
+    ├── my.component.scss|css
+    ├── my.component.html
+    └── README.md
 ```
 
 ## Remark for routes
