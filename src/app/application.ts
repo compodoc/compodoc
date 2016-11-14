@@ -351,7 +351,7 @@ export namespace Application {
                 if (program.extTheme) {
                     fs.emptyDir(path.resolve(process.cwd() + path.sep + defaultFolder + 'styles'), function (err) {
                         if (err) {
-                            logger.error('impossible to delete the styles folder');
+                            logger.error('Impossible to delete the documentation styles folder');
                         }
                         else {
                             fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
