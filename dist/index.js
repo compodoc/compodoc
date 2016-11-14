@@ -5,8 +5,8 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var fs = require('fs-extra');
 var path = require('path');
 var LiveServer = require('live-server');
-var Handlebars = require('handlebars');
 var marked = _interopDefault(require('marked'));
+var Handlebars = require('handlebars');
 var _ = require('lodash');
 var Shelljs = require('shelljs');
 var ts = require('typescript');
@@ -1462,23 +1462,26 @@ var Application;
         let dependenciesData = crawler.getDependencies();
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
         prepareModules();
-        prepareComponents();
-        if ($dependenciesEngine.directives.length > 0) {
-            prepareDirectives();
-        }
-        if ($dependenciesEngine.injectables.length > 0) {
-            prepareInjectables();
-        }
-        if ($dependenciesEngine.routes.length > 0) {
-            prepareRoutes();
-        }
-        if ($dependenciesEngine.pipes.length > 0) {
-            preparePipes();
-        }
-        if ($dependenciesEngine.classes.length > 0) {
-            prepareClasses();
-        }
-        processPages();
+        prepareComponents().then((readmeData) => {
+            if ($dependenciesEngine.directives.length > 0) {
+                prepareDirectives();
+            }
+            if ($dependenciesEngine.injectables.length > 0) {
+                prepareInjectables();
+            }
+            if ($dependenciesEngine.routes.length > 0) {
+                prepareRoutes();
+            }
+            if ($dependenciesEngine.pipes.length > 0) {
+                preparePipes();
+            }
+            if ($dependenciesEngine.classes.length > 0) {
+                prepareClasses();
+            }
+            processPages();
+        }, (errorMessage) => {
+            logger.error(errorMessage);
+        });
     };
     let prepareModules = () => {
         logger.info('Prepare modules');
@@ -1538,15 +1541,43 @@ var Application;
             name: 'components',
             context: 'components'
         });
-        let i = 0, len = $configuration.mainData.components.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'components',
-                name: $configuration.mainData.components[i].name,
-                context: 'component',
-                component: $configuration.mainData.components[i]
-            });
-        }
+        return new Promise(function (resolve$$1, reject) {
+            let i = 0, len = $configuration.mainData.components.length, loop = () => {
+                if (i <= len - 1) {
+                    let dirname$$1 = path.dirname($configuration.mainData.components[i].file), readmeFile = dirname$$1 + path.sep + 'README.md';
+                    if (fs.existsSync(readmeFile)) {
+                        logger.info('README.md exist for this component, include it');
+                        fs.readFile(readmeFile, 'utf8', (err, data) => {
+                            if (err)
+                                throw err;
+                            $configuration.mainData.components[i].readme = marked(data);
+                            $configuration.addPage({
+                                path: 'components',
+                                name: $configuration.mainData.components[i].name,
+                                context: 'component',
+                                component: $configuration.mainData.components[i]
+                            });
+                            i++;
+                            loop();
+                        });
+                    }
+                    else {
+                        $configuration.addPage({
+                            path: 'components',
+                            name: $configuration.mainData.components[i].name,
+                            context: 'component',
+                            component: $configuration.mainData.components[i]
+                        });
+                        i++;
+                        loop();
+                    }
+                }
+                else {
+                    resolve$$1();
+                }
+            };
+            loop();
+        });
     };
     let prepareDirectives = () => {
         logger.info('Prepare directives');
@@ -1589,18 +1620,6 @@ var Application;
             name: 'routes',
             context: 'routes'
         });
-        /*
-        let i = 0,
-            len = $configuration.mainData.routes.length;
-
-        for(i; i<len; i++) {
-            $configuration.addPage({
-                path: 'routes',
-                name: $configuration.mainData.routes[i].name,
-                context: 'route',
-                route: $configuration.mainData.routes[i]
-            });
-        }*/
     };
     let processPages = () => {
         logger.info('Process pages');
@@ -1643,20 +1662,13 @@ var Application;
             }
             else {
                 if (program.extTheme) {
-                    fs.emptyDir(path.resolve(process.cwd() + path.sep + defaultFolder + 'styles'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
                         if (err) {
-                            logger.error('impossible to delete the styles folder');
+                            logger.error('Error during external styling theme copy ', err);
                         }
                         else {
-                            fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
-                                if (err) {
-                                    logger.error('Error during external styling theme copy ', err);
-                                }
-                                else {
-                                    logger.info('External styling theme copy succeeded');
-                                    processGraphs();
-                                }
-                            });
+                            logger.info('External styling theme copy succeeded');
+                            processGraphs();
                         }
                     });
                 }

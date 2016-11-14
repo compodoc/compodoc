@@ -1,3 +1,10 @@
+<a name="0.0.13"></a>
+## 0.0.13 (2016-11-15)
+
+### Features
+
+* **app:** support of one README.md file for each component ([f1c626d](https://github.com/compodoc/compodoc/commit/f1c626d)), closes [#10](https://github.com/compodoc/compodoc/issues/10)
+
 <a name="0.0.12"></a>
 ## 0.0.12 (2016-11-13)
 
