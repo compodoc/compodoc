@@ -1393,7 +1393,7 @@ var Application;
         .option('-p, --tsconfig [config]', 'A tsconfig.json file')
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
         .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
-        .option('-y, --extStyle [file]', 'External styling theme file')
+        .option('-y, --extTheme [file]', 'External styling theme file')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
@@ -1639,20 +1639,30 @@ var Application;
         logger.info('Copy main resources');
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + defaultFolder), function (err) {
             if (err) {
-                logger.error('Error during resources copy');
+                logger.error('Error during resources copy ', err);
             }
             else {
-                if (program.extStyle) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + program.extStyle), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/bootstrap.min.css'), function (err) {
+                if (program.extTheme) {
+                    fs.emptyDir(path.resolve(process.cwd() + path.sep + defaultFolder + 'styles'), function (err) {
                         if (err) {
-                            logger.error('Error during external styling file copy ', err);
+                            logger.error('impossible to delete the styles folder');
                         }
                         else {
-                            logger.info('External styling file copy succeeded');
+                            fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
+                                if (err) {
+                                    logger.error('Error during external styling theme copy ', err);
+                                }
+                                else {
+                                    logger.info('External styling theme copy succeeded');
+                                    processGraphs();
+                                }
+                            });
                         }
                     });
                 }
-                processGraphs();
+                else {
+                    processGraphs();
+                }
             }
         });
     };
