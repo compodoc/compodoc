@@ -61,7 +61,7 @@ Options:
   -p, --tsconfig [config]  A tsconfig.json file
   -d, --output [folder]    Where to store the generated documentation
   -b, --base [base]        Base reference of html tag <base>
-  -y, --extStyle [file]    External styling theme file
+  -y, --extTheme [file]    External styling theme
   -n, --name [name]        Title documentation
   -o, --open               Open the generated documentation
   -s, --serve              Serve generated documentation (default http://localhost:8080/)
@@ -96,6 +96,20 @@ Documentation is generated in default output folder, then run your HTTP server i
 
 ```
 compodoc -p src/tsconfig.json
+```
+
+#### Styling the documentation
+```
+compodoc -y your_folder/
+```
+Inside your folder you need to provide at least a style.css file. If you need more files you can import them.
+@Example (style.css):
+```
+@import "./reset.css";
+@import "./bootstrap.min.css";
+@import "./bootstrap-card.css";
+@import "./font-awesome.min.css";
+@import "./app.css";
 ```
 
 #### Serve generated documentation with compodoc

@@ -42,8 +42,8 @@ describe('CLI Options', () => {
         });
 
         it(`-y`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-y, --extStyle [file]');
-            expect(runHelp.stdout.toString()).to.contain('External styling theme file');
+            expect(runHelp.stdout.toString()).to.contain('-y, --extTheme [file]');
+            expect(runHelp.stdout.toString()).to.contain('External styling theme');
         });
 
         it(`-n`, () => {
