@@ -349,19 +349,12 @@ export namespace Application {
             }
             else {
                 if (program.extTheme) {
-                    fs.emptyDir(path.resolve(process.cwd() + path.sep + defaultFolder + 'styles'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
                         if (err) {
-                            logger.error('Impossible to delete the documentation styles folder');
-                        }
-                        else {
-                            fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
-                                if (err) {
-                                    logger.error('Error during external styling theme copy ', err);
-                                } else {
-                                    logger.info('External styling theme copy succeeded');
-                                    processGraphs();
-                                }
-                            });
+                            logger.error('Error during external styling theme copy ', err);
+                        } else {
+                            logger.info('External styling theme copy succeeded');
+                            processGraphs();
                         }
                     });
                 }

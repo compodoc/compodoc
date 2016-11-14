@@ -121,16 +121,27 @@ compodoc -p src/tsconfig.json
 
 ### Styling the documentation
 ```
-compodoc -y your_folder/
+compodoc -p src/tsconfig.json -y your_theme_styles/
 ```
-Inside your folder you need to provide at least a style.css file. If you need more files you can import them.
-@Example (style.css):
+
+Inside your folder you need to provide at least a style.css file with these 5 imports as below.
+
 ```
 @import "./reset.css";
 @import "./bootstrap.min.css";
 @import "./bootstrap-card.css";
 @import "./font-awesome.min.css";
-@import "./app.css";
+@import "./compodoc.css";
+```
+
+Compodoc use [bootstrap](http://getbootstrap.com/) 3.3.7. You can customize Compodoc easily.
+
+[bootswatch.com](http://bootswatch.com/) can be a good starting point. If you want to override the default theme, just provide a bootstrap.min.css file, and it will override the default one.
+
+```
+└── your_theme_styles/
+    ├── style.css // the main css file with default imports
+    └── bootstrap.min.css // your bootstrap theme
 ```
 
 ### Serve generated documentation with compodoc
