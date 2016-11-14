@@ -7,6 +7,7 @@
   <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
+  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="npm dev dependencies"></a>
 </p>
 
 <p align="center">The missing documentation tool for your Angular 2 application</p>
@@ -19,6 +20,8 @@ Features
 * **Compodoc is just markdown** — Write your comments with Markdown or provide externals Markdown files for enhancing the API documentation.
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
+
+* **Compodoc is open-source and on npm** - Use it directly in your project using npm and one script, that's it !
 
 ## Live Demo
 
@@ -36,8 +39,26 @@ Modules page             |  Single module page
 Component page             |  
 ![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  |
 
-Getting Started with compodoc
-------------------------------
+# Table of Contents
+
+- [Getting Started with compodoc](#getting-started-with-compodoc)
+  - [Install](#install)
+  - [Usage](#usage)
+  - [Local installation](#local-installation)
+- [Common use cases](#common-use-cases)
+  - [Render documentation](#render-documentation)
+  - [Styling the documentation](#styling-hte-documentation)
+  - [Serve generated documentation with compodoc](#serve-generated-documentation-with-compodoc)
+  - [Render documentation, and serve it with compodoc](#render-documentation-and-serve-it-with-compodoc)
+- [Remark for routes](#remark-for-routes)
+- [Why this tool ?](#why-this-tool-)
+- [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
+- [Roadmap](#roadmap)
+- [Contributors](#contributors)
+- [Resources](#resources)
+- [License](#license)
+
+## Getting Started with compodoc
 
 ### Install
 
@@ -88,9 +109,9 @@ and run it like a normal npm script :
 npm run compodoc
 ```
 
-### Common use cases
+## Common use cases
 
-#### Render documentation
+### Render documentation
 
 Documentation is generated in default output folder, then run your HTTP server in that folder.
 
@@ -98,7 +119,7 @@ Documentation is generated in default output folder, then run your HTTP server i
 compodoc -p src/tsconfig.json
 ```
 
-#### Styling the documentation
+### Styling the documentation
 ```
 compodoc -y your_folder/
 ```
@@ -112,7 +133,7 @@ Inside your folder you need to provide at least a style.css file. If you need mo
 @import "./app.css";
 ```
 
-#### Serve generated documentation with compodoc
+### Serve generated documentation with compodoc
 
 Documentation was generated in default output folder or a specific one, the local HTTP server is launched at [http://localhost:8080](http://localhost:8080)
 
@@ -124,7 +145,7 @@ or
 compodoc -s -d ./doc
 ```
 
-#### Render documentation, and serve it with compodoc
+### Render documentation, and serve it with compodoc
 
 Documentation is generated in default output folder, and a local HTTP server is available at [http://localhost:8080](http://localhost:8080)
 
@@ -132,7 +153,7 @@ Documentation is generated in default output folder, and a local HTTP server is 
 compodoc -p src/tsconfig.json -s
 ```
 
-### Remark for routes
+## Remark for routes
 
 Follow the style guide and provide a const of type 'Routes' :
 
@@ -147,18 +168,18 @@ const APP_ROUTES: Routes = [
 RouterModule.forRoot(APP_ROUTES)
 ```
 
-### Why this tool ?
+## Why this tool ?
 
 Because we doesn't find our needs on existing tools. We want to have a single place where there is :
 - api documentation of code
 - component(s), directive(s), pipe(s), ... documentation
 - general documentation (\*.md files)
 
-### Why not a SPA for outputed documentation ?
+## Why not a SPA for outputed documentation ?
 
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
-### Roadmap
+## Roadmap
 
 - [ ] handle external markdown files as "functional" documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
@@ -170,13 +191,19 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [x] injectables
 - [x] pipes
 
-### Resources
+## Contributors
+
+[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|
+:---: |:---: |:---: |:---: |:---: |:---: |
+[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico)|
+
+## Resources
 
 Inspired by stuff from [angular2-dependencies-graph](https://github.com/manekinekko/angular2-dependencies-graph), [ng-bootstrap](https://ng-bootstrap.github.io)
 
 Logo designed using [Book vector designed by Freepik](http://www.freepik.com/free-photos-vectors/book)
 
-### License
+## License
 
 Everything in this repo is MIT License unless otherwise specified.
 
