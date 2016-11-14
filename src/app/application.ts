@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
+import marked from 'marked';
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -119,27 +120,29 @@ export namespace Application {
 
         prepareModules();
 
-        prepareComponents();
+        prepareComponents().then((readmeData) => {
+            if ($dependenciesEngine.directives.length > 0) {
+                prepareDirectives();
+            }
+            if ($dependenciesEngine.injectables.length > 0) {
+                prepareInjectables();
+            }
+            if ($dependenciesEngine.routes.length > 0) {
+                prepareRoutes();
+            }
 
-        if ($dependenciesEngine.directives.length > 0) {
-            prepareDirectives();
-        }
-        if ($dependenciesEngine.injectables.length > 0) {
-            prepareInjectables();
-        }
-        if ($dependenciesEngine.routes.length > 0) {
-            prepareRoutes();
-        }
+            if ($dependenciesEngine.pipes.length > 0) {
+                preparePipes();
+            }
 
-        if ($dependenciesEngine.pipes.length > 0) {
-            preparePipes();
-        }
+            if ($dependenciesEngine.classes.length > 0) {
+                prepareClasses();
+            }
 
-        if ($dependenciesEngine.classes.length > 0) {
-            prepareClasses();
-        }
-
-        processPages();
+            processPages();
+        }, (errorMessage) => {
+            logger.error(errorMessage);
+        });
     }
 
     let prepareModules = () => {
@@ -210,17 +213,43 @@ export namespace Application {
             context: 'components'
         });
 
-        let i = 0,
-            len = $configuration.mainData.components.length;
-
-        for(i; i<len; i++) {
-            $configuration.addPage({
-                path: 'components',
-                name: $configuration.mainData.components[i].name,
-                context: 'component',
-                component: $configuration.mainData.components[i]
-            });
-        }
+        return new Promise(function(resolve, reject) {
+            let i = 0,
+                len = $configuration.mainData.components.length,
+                loop = () => {
+                    if( i <= len-1) {
+                        let dirname = path.dirname($configuration.mainData.components[i].file),
+                            readmeFile = dirname + path.sep + 'README.md';
+                        if (fs.existsSync(readmeFile)) {
+                            logger.info('README.md exist for this component, include it');
+                            fs.readFile(readmeFile, 'utf8', (err, data) => {
+                                if (err) throw err;
+                                $configuration.mainData.components[i].readme = marked(data);
+                                $configuration.addPage({
+                                    path: 'components',
+                                    name: $configuration.mainData.components[i].name,
+                                    context: 'component',
+                                    component: $configuration.mainData.components[i]
+                                });
+                                i++;
+                                loop();
+                            });
+                        } else {
+                            $configuration.addPage({
+                                path: 'components',
+                                name: $configuration.mainData.components[i].name,
+                                context: 'component',
+                                component: $configuration.mainData.components[i]
+                            });
+                            i++;
+                            loop();
+                        }
+                    } else {
+                        resolve();
+                    }
+                };
+            loop();
+        });
     }
 
     let prepareDirectives = () => {
@@ -275,19 +304,6 @@ export namespace Application {
             name: 'routes',
             context: 'routes'
         });
-
-        /*
-        let i = 0,
-            len = $configuration.mainData.routes.length;
-
-        for(i; i<len; i++) {
-            $configuration.addPage({
-                path: 'routes',
-                name: $configuration.mainData.routes[i].name,
-                context: 'route',
-                route: $configuration.mainData.routes[i]
-            });
-        }*/
     }
 
     let processPages = () => {
