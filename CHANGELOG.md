@@ -1,3 +1,14 @@
+<a name="0.0.14"></a>
+## 0.0.14 (2016-11-15)
+
+### Bug Fixes
+
+* **dependencies:** display uncommented functions or variables ([a9b47c2](https://github.com/compodoc/compodoc/commit/a9b47c2)), closes [#21](https://github.com/compodoc/compodoc/issues/21)
+
+### Features
+
+* **app:** syntax highlighting for markdowns files ([c4800a7](https://github.com/compodoc/compodoc/commit/c4800a7)), closes [#19](https://github.com/compodoc/compodoc/issues/19)
+
 <a name="0.0.13"></a>
 ## 0.0.13 (2016-11-15)
 
