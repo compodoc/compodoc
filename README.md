@@ -180,6 +180,8 @@ Compodoc search for a default README.md file inside the root folder of each comp
     └── README.md
 ```
 
+The live demo as a component documented in that way : [TodoMVC Angular 2 Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
+
 ## Remark for routes
 
 Follow the style guide and provide a const of type 'Routes' :
