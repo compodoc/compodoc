@@ -51,6 +51,7 @@ Component page             |
   - [Render documentation, and serve it with compodoc](#render-documentation-and-serve-it-with-compodoc)
   - [Styling the documentation](#styling-hte-documentation)
   - [Documentation of each component](#documentation-of-each-component)
+  - [Syntax highlighting in markdown files](#syntax-highlighting-in-markdown-files)
 - [Remark for routes](#remark-for-routes)
 - [Why this tool ?](#why-this-tool-)
 - [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
@@ -167,7 +168,7 @@ Compodoc use [bootstrap](http://getbootstrap.com/) 3.3.7. You can customize Comp
 
 ### Documentation of each component
 
-A comment description in xxx.component.ts file, between /** **/ can be a little short.
+A comment description in xxx.component.ts file, between JSDoc comments can be a little short.
 
 Compodoc search for a default README.md file inside the root folder of each component, and add it inside a tab in the component page.
 
@@ -179,6 +180,8 @@ Compodoc search for a default README.md file inside the root folder of each comp
     ├── my.component.html
     └── README.md
 ```
+
+The live demo as a component documented in that way : [TodoMVC Angular 2 Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
 
 ## Remark for routes
 
@@ -194,6 +197,14 @@ const APP_ROUTES: Routes = [
 
 RouterModule.forRoot(APP_ROUTES)
 ```
+
+### Syntax highlighting in markdown files
+
+Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and compiling to html. [highlight.js](highlightjs.org) has been added for supporting syntax highlighting.
+
+Just use a normal code block in your markdown with correct language : [Github help](https://help.github.com/articles/creating-and-highlighting-code-blocks/)
+
+The integrated languages are : json, bash, javascript, markdown, html, typescript
 
 ## Why this tool ?
 

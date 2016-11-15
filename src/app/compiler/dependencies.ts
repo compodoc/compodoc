@@ -445,7 +445,7 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return ((member.flags & ts.NodeFlags.Private) !== 0) || this.isInternalMember(member);
+        return ((member.flags & ts.NodeFlags.Private) !== 0);
     }
 
     private isInternalMember(member) {
