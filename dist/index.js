@@ -5,8 +5,10 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var fs = require('fs-extra');
 var path = require('path');
 var LiveServer = require('live-server');
-var marked = _interopDefault(require('marked'));
+var marked = require('marked');
+var marked__default = _interopDefault(marked);
 var Handlebars = require('handlebars');
+var highlightjs = _interopDefault(require('highlight.js'));
 var _ = require('lodash');
 var Shelljs = require('shelljs');
 var ts = require('typescript');
@@ -252,6 +254,14 @@ class HtmlEngine {
 
 class MarkdownEngine {
     constructor() {
+        const renderer = new marked.Renderer();
+        renderer.code = (code, language) => {
+            const validLang = !!(language && highlightjs.getLanguage(language));
+            let highlighted = validLang ? highlightjs.highlight(language, code).value : code;
+            highlighted = highlighted.replace(/(\r\n|\n|\r)/gm, '<br>');
+            return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
+        };
+        marked__default.setOptions({ renderer });
     }
     getReadmeFile() {
         return new Promise(function (resolve$$1, reject) {
@@ -260,7 +270,7 @@ class MarkdownEngine {
                     reject('Error during README.md file reading');
                 }
                 else {
-                    resolve$$1(marked(data));
+                    resolve$$1(marked__default(data));
                 }
             });
         });
@@ -894,7 +904,7 @@ class Dependencies {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
     visitType(node) {
@@ -910,14 +920,14 @@ class Dependencies {
         var outArgs = outDecorator.expression.arguments;
         return {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
     isPrivateOrInternal(member) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return ((member.flags & ts.NodeFlags.Private) !== 0) || this.isInternalMember(member);
+        return ((member.flags & ts.NodeFlags.Private) !== 0);
     }
     isInternalMember(member) {
         /**
@@ -946,7 +956,7 @@ class Dependencies {
          */
         return {
             name: method.name.text,
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         };
@@ -989,7 +999,7 @@ class Dependencies {
             name: property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
     }
     visitMembers(members) {
@@ -1084,7 +1094,7 @@ class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-        var description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
+        var description = marked__default(ts.displayPartsToString(symbol.getDocumentationComment()));
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
@@ -1550,7 +1560,7 @@ var Application;
                         fs.readFile(readmeFile, 'utf8', (err, data) => {
                             if (err)
                                 throw err;
-                            $configuration.mainData.components[i].readme = marked(data);
+                            $configuration.mainData.components[i].readme = marked__default(data);
                             $configuration.addPage({
                                 path: 'components',
                                 name: $configuration.mainData.components[i].name,
