@@ -179,3 +179,8 @@ code {
     margin-top: 20px;
     position: relative;
 }
+
+pre {
+    padding: 0;
+    border: none;
+}
