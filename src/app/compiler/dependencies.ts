@@ -267,10 +267,10 @@ export class Dependencies {
                         deps.properties = IO.properties;
                     }
                     if(IO.description) {
-                        deps.description = this.breakLines(IO.description)
+                        deps.description = this.breakLines(IO.description);
                     }
                     if(IO.methods) {
-                        deps.methods = IO.properties;
+                        deps.methods = IO.methods;
                     }
                     outputSymbols['classes'].push(deps);
                 }
