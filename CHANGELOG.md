@@ -1,3 +1,12 @@
+<a name="0.0.15"></a>
+## 0.0.15 (2016-11-16)
+
+### Bug Fixes
+
+* **overview:** blocks alignment ([6738c22](https://github.com/compodoc/compodoc/commit/6738c22))
+* **parsing:** class methods issue ([05316cb](https://github.com/compodoc/compodoc/commit/05316cb))
+* **parsing:** don't create ts program for each child on a file, 300% boost ! ([9f754cd](https://github.com/compodoc/compodoc/commit/9f754cd))
+
 <a name="0.0.14"></a>
 ## 0.0.14 (2016-11-15)
 
