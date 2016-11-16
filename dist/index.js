@@ -656,16 +656,19 @@ class Dependencies {
         return deps;
     }
     getSourceFileDecorators(srcFile, outputSymbols) {
+        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+        let file = srcFile.fileName.replace(cleaner, '');
+        this.programComponent = ts.createProgram([file], {});
+        let sourceFile = this.programComponent.getSourceFile(file);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
         ts.forEachChild(srcFile, (node) => {
             let deps = {};
-            let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
-            let file = srcFile.fileName.replace(cleaner, '');
             if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
                     let metadata = node.decorators.pop();
                     let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
-                    let IO = this.getComponentIO(file);
+                    let IO = this.getComponentIO(file, sourceFile);
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
@@ -757,7 +760,7 @@ class Dependencies {
             else if (node.symbol) {
                 if (node.symbol.flags === ts.SymbolFlags.Class) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getComponentIO(file);
+                    let IO = this.getComponentIO(file, sourceFile);
                     deps = {
                         name,
                         file: file,
@@ -770,13 +773,13 @@ class Dependencies {
                         deps.description = this.breakLines(IO.description);
                     }
                     if (IO.methods) {
-                        deps.methods = IO.properties;
+                        deps.methods = IO.methods;
                     }
                     outputSymbols['classes'].push(deps);
                 }
             }
             else {
-                let IO = this.getRouteIO(file);
+                let IO = this.getRouteIO(file, sourceFile);
                 if (IO.routes) {
                     let newRoutes;
                     try {
@@ -1155,13 +1158,10 @@ class Dependencies {
         }
         return [];
     }
-    getRouteIO(filename) {
+    getRouteIO(filename, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        this.programComponent = ts.createProgram([filename], {});
-        let sourceFile = this.programComponent.getSourceFile(filename);
-        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
         var res = sourceFile.statements.reduce((directive, statement) => {
             if (statement.kind === ts.SyntaxKind.VariableStatement) {
                 return directive.concat(this.visitEnumDeclaration(filename, statement));
@@ -1170,13 +1170,10 @@ class Dependencies {
         }, []);
         return res[0] || {};
     }
-    getComponentIO(filename) {
+    getComponentIO(filename, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        this.programComponent = ts.createProgram([filename], {});
-        let sourceFile = this.programComponent.getSourceFile(filename);
-        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
         var res = sourceFile.statements.reduce((directive, statement) => {
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
                 return directive.concat(this.visitClassDeclaration(filename, statement));
