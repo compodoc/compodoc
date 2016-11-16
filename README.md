@@ -220,6 +220,7 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 ## Roadmap
 
 - [ ] handle external markdown files as "functional" documentation
+- [ ] watch/recompile feature while serving documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
 - [x] routes
 - [x] classes
