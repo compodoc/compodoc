@@ -5,6 +5,8 @@ import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 import marked from 'marked';
 
+const glob: any = require('glob');
+
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
@@ -29,6 +31,8 @@ let pkg = require('../package.json'),
 export namespace Application {
 
     let defaultTitle = `Application documentation`,
+        defaultAdditionalEntryName = 'Additional documentation',
+        defaultAdditionalEntryPath = 'additional-documentation',
         defaultFolder = `./documentation/`;
 
     program
@@ -57,6 +61,10 @@ export namespace Application {
 
     if (program.output) {
         defaultFolder = program.output;
+    }
+
+    if (program.includesName) {
+        defaultAdditionalEntryName = program.includesName;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
@@ -156,9 +164,55 @@ export namespace Application {
     }
 
     let processAddtionalDocumentation = () => {
-        logger.info('Process additional documentation');
+        logger.info('Process additional documentation: ', program.includes, path.resolve(process.cwd() + path.sep + program.includes + '/**/*'));
+        $configuration.mainData.additionalpages = {
+            entryName: defaultAdditionalEntryName,
+            pages: []
+        };
         return new Promise(function(resolve, reject) {
-            resolve();
+            glob( process.cwd() + path.sep + program.includes + '/**/*', {
+                dot: false,
+                cwd: __dirname
+            }, function(err, files) {
+                let i = 0,
+                    f,
+                    basename,
+                    len = files.length;
+                let loop = function() {
+                    if (i < len) {
+                        f = files[i];
+                        basename = path.basename(f);
+                        console.log(f);
+                        if( i === 0) {
+                            $configuration.mainData.additionalpages.pages.push({
+                                name: 'Index'
+                            });
+                            $configuration.addPage({
+                                path: defaultAdditionalEntryPath,
+                                name: 'index',
+                                context: 'additionalpages',
+                                page: 'toto'
+                            });
+                        } else {
+                            $configuration.mainData.additionalpages.pages.push({
+                                name: basename
+                            });
+                            $configuration.addPage({
+                                path: defaultAdditionalEntryPath,
+                                name: basename,
+                                context: 'additionalpage',
+                                page: 'toto'
+                            });
+                        }
+                        i++
+                        loop();
+                    } else {
+                        console.log($configuration);
+                        resolve();
+                    }
+                };
+                loop();
+            });
         });
     }
 

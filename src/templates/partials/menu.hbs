@@ -37,6 +37,33 @@
             </div>
         </div>
     </div>
+
+    {{#if additionalpages}}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#additional-doc"><span class="fa fa-book">
+                </span>{{ additionalpages.entryName }}</a>
+            </h4>
+        </div>
+        <div id="additional-doc" class="panel-collapse collapse
+                                {{#compare context "===" 'additionalpages'}} in {{/compare}}
+                                {{#compare context "===" 'additionalpage'}} in {{/compare}}">
+            <div class="panel-body">
+                <table class="table">
+                    {{#each additionalpages.pages}}
+                    <tr>
+                        <td>
+                            <a href="./additional-documentation/{{name}}.html">{{ name }}</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">

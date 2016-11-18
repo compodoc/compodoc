@@ -1381,6 +1381,7 @@ class Dependencies {
     }
 }
 
+const glob = require('glob');
 let pkg = require('../package.json');
 let program = require('commander');
 let files = [];
@@ -1394,7 +1395,7 @@ let $dependenciesEngine;
 let startTime = new Date();
 var Application;
 (function (Application) {
-    let defaultTitle = `Application documentation`, defaultFolder = `./documentation/`;
+    let defaultTitle = `Application documentation`, defaultAdditionalEntryName = 'Additional documentation', defaultAdditionalEntryPath = 'additional-documentation', defaultFolder = `./documentation/`;
     program
         .version(pkg.version)
         .option('-p, --tsconfig [config]', 'A tsconfig.json file')
@@ -1403,6 +1404,8 @@ var Application;
         .option('-y, --extTheme [file]', 'External styling theme file')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
+        .option('-i, --includes [path]', 'Path of external markdown files to include')
+        .option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
@@ -1416,6 +1419,9 @@ var Application;
     }
     if (program.output) {
         defaultFolder = program.output;
+    }
+    if (program.includesName) {
+        defaultAdditionalEntryName = program.includesName;
     }
     $configuration.mainData.documentationMainName = program.name; //default commander value
     $configuration.mainData.base = program.base;
@@ -1485,9 +1491,69 @@ var Application;
             if ($dependenciesEngine.classes.length > 0) {
                 prepareClasses();
             }
-            processPages();
+            if (program.includes) {
+                processAddtionalDocumentation().then(() => {
+                    processPages();
+                }, (err) => {
+                    logger.error('Error during additional documentation generation: ', err);
+                });
+            }
+            else {
+                processPages();
+            }
         }, (errorMessage) => {
             logger.error(errorMessage);
+        });
+    };
+    let processAddtionalDocumentation = () => {
+        logger.info('Process additional documentation: ', program.includes, path.resolve(process.cwd() + path.sep + program.includes + '/**/*'));
+        $configuration.mainData.additionalpages = {
+            entryName: defaultAdditionalEntryName,
+            pages: []
+        };
+        return new Promise(function (resolve$$1, reject) {
+            glob(process.cwd() + path.sep + program.includes + '/**/*', {
+                dot: false,
+                cwd: __dirname
+            }, function (err, files) {
+                let i = 0, f, basename$$1, len = files.length;
+                let loop = function () {
+                    if (i < len) {
+                        f = files[i];
+                        basename$$1 = path.basename(f);
+                        console.log(f);
+                        if (i === 0) {
+                            $configuration.mainData.additionalpages.pages.push({
+                                name: 'Index'
+                            });
+                            $configuration.addPage({
+                                path: defaultAdditionalEntryPath,
+                                name: 'index',
+                                context: 'additionalpages',
+                                page: 'toto'
+                            });
+                        }
+                        else {
+                            $configuration.mainData.additionalpages.pages.push({
+                                name: basename$$1
+                            });
+                            $configuration.addPage({
+                                path: defaultAdditionalEntryPath,
+                                name: basename$$1,
+                                context: 'additionalpage',
+                                page: 'toto'
+                            });
+                        }
+                        i++;
+                        loop();
+                    }
+                    else {
+                        console.log($configuration);
+                        resolve$$1();
+                    }
+                };
+                loop();
+            });
         });
     };
     let prepareModules = () => {
