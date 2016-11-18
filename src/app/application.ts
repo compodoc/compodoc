@@ -39,6 +39,8 @@ export namespace Application {
         .option('-y, --extTheme [file]', 'External styling theme file')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
+        .option('-i, --includes [path]', 'Path of external markdown files to include')
+        .option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
@@ -139,9 +141,24 @@ export namespace Application {
                 prepareClasses();
             }
 
-            processPages();
+            if (program.includes) {
+                processAddtionalDocumentation().then(() => {
+                    processPages();
+                }, (err) => {
+                    logger.error('Error during additional documentation generation: ', err);
+                });
+            } else {
+                processPages();
+            }
         }, (errorMessage) => {
             logger.error(errorMessage);
+        });
+    }
+
+    let processAddtionalDocumentation = () => {
+        logger.info('Process additional documentation');
+        return new Promise(function(resolve, reject) {
+            resolve();
         });
     }
 

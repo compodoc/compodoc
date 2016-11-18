@@ -79,16 +79,18 @@ Usage: compodoc [options]
 
 Options:
 
-  -h, --help               output usage information
-  -V, --version            output the version number
-  -p, --tsconfig [config]  A tsconfig.json file
-  -d, --output [folder]    Where to store the generated documentation
-  -b, --base [base]        Base reference of html tag <base>
-  -y, --extTheme [file]    External styling theme
-  -n, --name [name]        Title documentation
-  -o, --open               Open the generated documentation
-  -s, --serve              Serve generated documentation (default http://localhost:8080/)
-  -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -p, --tsconfig [config]   A tsconfig.json file
+  -d, --output [folder]     Where to store the generated documentation
+  -b, --base [base]         Base reference of html tag <base>
+  -y, --extTheme [file]     External styling theme
+  -n, --name [name]         Title documentation
+  -o, --open                Open the generated documentation
+  -i, --includes [path]     Path of external markdown files to include
+  -j, --includesName [name] Name of item menu of externals markdown file
+  -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 ```
 
 ### Local installation
