@@ -25,7 +25,7 @@ Features
 
 ## Live Demo
 
-Documentation generated for [TodoMVC Angular 2 Compodoc demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular 2 Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
 ## Static Demo
 
