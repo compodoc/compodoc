@@ -14,12 +14,11 @@ body {
     padding: 15px;
 }
 .container-fluid {
-    margin-top: 50px;
     overflow-y: hidden;
     overflow-x: hidden;
 }
 .container-fluid.main {
-    height: calc(100% - 50px);
+    height: 100%;
 }
 .container-fluid.modules {
     margin-top: 25px;
@@ -67,7 +66,9 @@ body {
 .panel-body {
   padding: 0px;
 }
-
+.panel-group .panel-heading+.panel-collapse>.list-group, .panel-group .panel-heading+.panel-collapse>.panel-body {
+    border-top: 0;
+}
 .panel-body table tr td {
   padding-left: 15px
 }
@@ -75,7 +76,9 @@ body {
 .panel-body .table {
   margin-bottom: 0px;
 }
-
+.panel-group .panel:first-child {
+    border-top: 0;
+}
 .navbar-static-top {
     margin-bottom: 0;
     height: 50px;
@@ -109,6 +112,10 @@ body {
 .panel-group .panel {
     z-index: 2;
     position: relative;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: 0;
+    border-right: 0;
 }
 .menu a {
     color: #3c3c3c;
@@ -144,6 +151,7 @@ body {
     padding-left: 0;
     margin-bottom: 10px;
     font-size: 24px;
+    padding-top: 0;
 }
 .breadcrumb a {
     text-decoration: underline;
@@ -183,4 +191,13 @@ code {
 pre {
     padding: 0;
     border: none;
+}
+
+@media (max-width: 767px) {
+    .container-fluid {
+        margin-top: 50px;
+    }
+    .container-fluid.main {
+        height: calc(100% - 50px);
+    }
 }
