@@ -87,8 +87,7 @@ Options:
   -y, --extTheme [file]     External styling theme
   -n, --name [name]         Title documentation
   -o, --open                Open the generated documentation
-  -i, --includes [path]     Path of external markdown files to include
-  -j, --includesName [name] Name of item menu of externals markdown file
+  -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
   -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 ```
