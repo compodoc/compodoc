@@ -14,6 +14,7 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
+import { PackageJSONEngine } from './engines/package.engine';
 import { Dependencies } from './compiler/dependencies';
 
 let pkg = require('../package.json'),
@@ -25,6 +26,7 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
+    $packageJSONengine = new PackageJSONEngine(),
     $dependenciesEngine,
     startTime = new Date();
 
@@ -74,6 +76,7 @@ export namespace Application {
     let processPackageJson = () => {
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
+            logger.info('package.json file found');
             let parsedData = JSON.parse(packageData);
             if (typeof parsedData.name !== 'undefined' && program.name === defaultTitle) {
                 $configuration.mainData.documentationMainName = parsedData.name + ' documentation';
@@ -81,8 +84,11 @@ export namespace Application {
             if (typeof parsedData.description !== 'undefined') {
                 $configuration.mainData.documentationMainDescription = parsedData.description;
             }
-            logger.info('package.json file found');
-            processMarkdown();
+            $packageJSONengine.getAngularVersion(parsedData).then((version) => {
+                processMarkdown();
+            }, (errorMessage) => {
+                logger.error(errorMessage);
+            });
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Please add a package.json file in your project');

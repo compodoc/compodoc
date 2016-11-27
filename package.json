@@ -51,6 +51,7 @@
     "live-server": "^1.1.0",
     "lodash": "^4.17.2",
     "marked": "^0.3.6",
+    "semver-utils": "^1.1.1",
     "shelljs": "^0.7.5",
     "typescript": "^2.0.10"
   },
