@@ -10,7 +10,7 @@ export class FileEngine {
         return new Promise(function(resolve, reject) {
            fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
                if (err) {
-                   reject('Error during ' + filepath + ' read');
+                   reject('Error during ' + filepath + ' reading');
                } else {
                    resolve(data);
                }

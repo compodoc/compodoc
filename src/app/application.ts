@@ -85,8 +85,7 @@ export namespace Application {
             processMarkdown();
         }, (errorMessage) => {
             logger.error(errorMessage);
-            logger.error('Continuing without package.json file');
-            processMarkdown();
+            logger.error('Please add a package.json file in your project');
         });
     }
 
