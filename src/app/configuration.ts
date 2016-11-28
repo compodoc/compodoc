@@ -3,9 +3,10 @@ interface Page {
     context: string;
 }
 
-export class Configuration {
+class Configuration {
     private _pages:Array<Page> = [];
     private _mainData: Object = {};
+    private _angularVersion: string;
 
     constructor() {
 
@@ -28,4 +29,13 @@ export class Configuration {
     set mainData(data:Object) {
         Object.assign(this._mainData, data);
     }
+
+    get angularVersion():string {
+        return this._angularVersion;
+    }
+    set angularVersion(version:string) {
+        this._angularVersion = version;
+    }
 };
+
+export var $configuration = new Configuration();

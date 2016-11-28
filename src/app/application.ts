@@ -11,7 +11,7 @@ import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
-import { Configuration } from './configuration';
+import { $configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { PackageJSONEngine } from './engines/package.engine';
@@ -23,7 +23,6 @@ let pkg = require('../package.json'),
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
-    $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $packageJSONengine = new PackageJSONEngine(),
@@ -84,7 +83,9 @@ export namespace Application {
             if (typeof parsedData.description !== 'undefined') {
                 $configuration.mainData.documentationMainDescription = parsedData.description;
             }
-            $packageJSONengine.getAngularVersion(parsedData).then((version) => {
+            $packageJSONengine.getAngularVersion(parsedData).then((version: string) => {
+                logger.info('Angular version ' + version + ' detected');
+                $configuration.angularVersion = version;
                 processMarkdown();
             }, (errorMessage) => {
                 logger.error(errorMessage);

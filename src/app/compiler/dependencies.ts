@@ -5,6 +5,7 @@ import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { generate } from './codegen';
+import { $configuration } from '../configuration';
 
 let q = require('q');
 
@@ -125,7 +126,11 @@ export class Dependencies {
                     logger.info('parsing', filePath);
 
                     try {
-                        this.getSourceFileDecorators(file, deps);
+                        if (parseInt($configuration.angularVersion) >= 2) {
+                            this.getSourceFileDecorators(file, deps);
+                        } else {
+                            this.getSourceFileDecoratorsVersion1(file, deps);
+                        }
                     }
                     catch (e) {
                         logger.error(e, file.fileName);
@@ -141,6 +146,31 @@ export class Dependencies {
         return deps;
     }
 
+    private getSourceFileDecoratorsVersion1(srcFile: ts.SourceFile, outputSymbols: Object): void {
+        console.log('getSourceFileDecoratorsVersion1');
+
+        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+        let file = srcFile.fileName.replace(cleaner, '');
+
+        this.programComponent = ts.createProgram([file], {});
+        let sourceFile = this.programComponent.getSourceFile(file);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+
+        ts.forEachChild(srcFile, (node: ts.Node) => {
+            let deps: Deps = <Deps>{}
+            var variableName = '';
+
+            if (node.kind === ts.SyntaxKind.VariableStatement) {
+                console.log(util.inspect(node.declarationList, { showHidden: true, depth: 6 }));
+                if (node.declarationList && node.declarationList.declarations.length >= 1) {
+                    variableName = node.declarationList.declarations[0].name.text;
+
+                    // loop deeply throught each expression
+                }
+                console.log('variableName: ', variableName);
+            }
+        });
+    }
 
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
 
