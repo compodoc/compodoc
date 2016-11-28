@@ -6,6 +6,8 @@ import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilit
 import { logger } from '../../logger';
 import { generate } from './codegen';
 import { $configuration } from '../configuration';
+import * as _ from 'lodash';
+const traverse = require('traverse');
 
 let q = require('q');
 
@@ -161,11 +163,32 @@ export class Dependencies {
             var variableName = '';
 
             if (node.kind === ts.SyntaxKind.VariableStatement) {
-                console.log(util.inspect(node.declarationList, { showHidden: true, depth: 6 }));
+                //console.log(util.inspect(node.declarationList, { showHidden: true, depth: 6 }));
                 if (node.declarationList && node.declarationList.declarations.length >= 1) {
                     variableName = node.declarationList.declarations[0].name.text;
 
                     // loop deeply throught each expression
+                    //console.log('node.declarationList.declarations[0].initializer: ', node.declarationList.declarations[0].initializer);
+
+                    var i = 0,
+                        child;
+                    //childs = traverse(node.declarationList.declarations[0].initializer).nodes();
+                    //console.log(childs);
+                    //_.each()
+                    function process(key,value) {
+                        console.log(key + " : "+value);
+                    }
+
+                    function traverse(o,func) {
+                        for (var i in o) {
+                            if (o[i] !== null && typeof(o[i])=="object" && i === 'expression') {
+                                func.apply(this,[i,o[i]]);
+                                traverse(o[i],func);
+                            }
+                        }
+                    }
+
+                    traverse(node.declarationList.declarations[0].initializer, process);
                 }
                 console.log('variableName: ', variableName);
             }
