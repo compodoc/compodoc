@@ -1,3 +1,14 @@
+<a name="0.0.16"></a>
+## 0.0.16 (2016-11-29)
+
+### Bug Fixes
+
+* **app:**  support old Node.js versions using babel ([8b9139c](https://github.com/compodoc/compodoc/commit/8b9139c)), closes [#25](https://github.com/compodoc/compodoc/issues/25)
+
+### Features
+
+* **app:** delete top navbar, prepare for next design release ([9c1d7c2](https://github.com/compodoc/compodoc/commit/9c1d7c2))
+
 <a name="0.0.15"></a>
 ## 0.0.15 (2016-11-16)
 

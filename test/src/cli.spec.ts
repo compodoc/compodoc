@@ -233,4 +233,26 @@ describe('CLI', () => {
             expect(isFontsExists).to.be.true;
         });
     });
+
+    describe('when generation with -t flag', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should not display anything', () => {
+            expect(stdoutString).to.be.empty;
+        });
+    });
 });

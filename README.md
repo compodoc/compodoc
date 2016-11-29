@@ -25,7 +25,7 @@ Features
 
 ## Live Demo
 
-Documentation generated for [TodoMVC Angular 2 Compodoc demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular 2 Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
 ## Static Demo
 
@@ -79,16 +79,17 @@ Usage: compodoc [options]
 
 Options:
 
-  -h, --help               output usage information
-  -V, --version            output the version number
-  -p, --tsconfig [config]  A tsconfig.json file
-  -d, --output [folder]    Where to store the generated documentation
-  -b, --base [base]        Base reference of html tag <base>
-  -y, --extTheme [file]    External styling theme
-  -n, --name [name]        Title documentation
-  -o, --open               Open the generated documentation
-  -s, --serve              Serve generated documentation (default http://localhost:8080/)
-  -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -p, --tsconfig [config]   A tsconfig.json file
+  -d, --output [folder]     Where to store the generated documentation
+  -b, --base [base]         Base reference of html tag <base>
+  -y, --extTheme [file]     External styling theme
+  -n, --name [name]         Title documentation
+  -o, --open                Open the generated documentation
+  -t, --silent              In silent mode, log messages aren't logged in the console
+  -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 ```
 
 ### Local installation
