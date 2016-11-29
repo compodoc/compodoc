@@ -182,7 +182,6 @@ export namespace Application {
                     if (i < len) {
                         f = files[i];
                         basename = path.basename(f);
-                        console.log(f);
                         if( i === 0) {
                             $configuration.mainData.additionalpages.pages.push({
                                 name: 'Index'
@@ -207,7 +206,6 @@ export namespace Application {
                         i++
                         loop();
                     } else {
-                        console.log($configuration);
                         resolve();
                     }
                 };
