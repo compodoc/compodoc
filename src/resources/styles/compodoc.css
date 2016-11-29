@@ -23,7 +23,13 @@ body {
 .container-fluid.overview {
     margin-top: 50px;
 }
-.container-fluid.modules {
+.container-fluid.modules,
+.container-fluid.components,
+.container-fluid.directives,
+.container-fluid.classes,
+.container-fluid.injectables,
+.container-fluid.pipes,
+.content.routes table {
     margin-top: 25px;
 }
 .container-fluid.module {
