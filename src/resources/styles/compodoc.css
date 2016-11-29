@@ -20,6 +20,9 @@ body {
 .container-fluid.main {
     height: 100%;
 }
+.container-fluid.overview {
+    margin-top: 50px;
+}
 .container-fluid.modules {
     margin-top: 25px;
 }
