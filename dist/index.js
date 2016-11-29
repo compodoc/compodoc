@@ -1875,7 +1875,6 @@ var Application;
                     if (i < len) {
                         f = files[i];
                         basename$$1 = path.basename(f);
-                        console.log(f);
                         if (i === 0) {
                             $configuration.mainData.additionalpages.pages.push({
                                 name: 'Index'
@@ -1900,7 +1899,6 @@ var Application;
                         i++;
                         loop();
                     } else {
-                        console.log($configuration);
                         resolve$$1();
                     }
                 };
