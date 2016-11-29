@@ -846,8 +846,6 @@ function recognize(node) {
     }
 }
 
-var q = require('q');
-
 var Dependencies = function () {
     function Dependencies(files, options) {
         classCallCheck(this, Dependencies);

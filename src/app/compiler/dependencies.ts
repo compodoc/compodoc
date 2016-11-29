@@ -6,8 +6,6 @@ import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilit
 import { logger } from '../../logger';
 import { generate } from './codegen';
 
-let q = require('q');
-
 interface NodeObject {
     kind: Number;
     pos: Number;
