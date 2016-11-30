@@ -46,7 +46,7 @@
 <h2>
 <a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
 
-<p>Documentation generated for <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">TodoMVC Angular 2 Compodoc demo</a></p>
+<p><a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">Demo</a> : documentation generated for <a href="https://github.com/compodoc/compodoc-demo-todomvc-angular2">TodoMVC Angular 2 Compodoc demo</a></p>
 
 <h2>
 <a id="static-demo" class="anchor" href="#static-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Demo</h2>
@@ -138,16 +138,17 @@ Usage: compodoc [options]
 
 Options:
 
-  -h, --help               output usage information
-  -V, --version            output the version number
-  -p, --tsconfig [config]  A tsconfig.json file
-  -d, --output [folder]    Where to store the generated documentation
-  -b, --base [base]        Base reference of html tag &lt;base&gt;
-  -y, --extTheme [file]    External styling theme
-  -n, --name [name]        Title documentation
-  -o, --open               Open the generated documentation
-  -s, --serve              Serve generated documentation (default http://localhost:8080/)
-  -g, --hideGenerator      Do not print the Compodoc link at the bottom of the page
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -p, --tsconfig [config]   A tsconfig.json file
+  -d, --output [folder]     Where to store the generated documentation
+  -b, --base [base]         Base reference of html tag &lt;base&gt;
+  -y, --extTheme [file]     External styling theme
+  -n, --name [name]         Title documentation
+  -o, --open                Open the generated documentation
+  -t, --silent              In silent mode, log messages aren't logged in the console
+  -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 </code></pre>
 
 <h3>
@@ -285,6 +286,7 @@ RouterModule.forRoot(APP_ROUTES)
 
 <ul>
 <li>[ ] handle external markdown files as "functional" documentation</li>
+<li>[ ] watch/recompile feature while serving documentation</li>
 <li>[ ] support for Angular 1.5+ projects written in Typescript</li>
 <li>[x] routes</li>
 <li>[x] classes</li>
