@@ -7,7 +7,6 @@ import { logger } from '../../logger';
 import { generate } from './codegen';
 import { $configuration } from '../configuration';
 import * as _ from 'lodash';
-const traverse = require('traverse');
 
 let q = require('q');
 
@@ -167,32 +166,97 @@ export class Dependencies {
                 if (node.declarationList && node.declarationList.declarations.length >= 1) {
                     variableName = node.declarationList.declarations[0].name.text;
 
-                    // loop deeply throught each expression
+                    // loop deeply throught each expression in initializer
                     //console.log('node.declarationList.declarations[0].initializer: ', node.declarationList.declarations[0].initializer);
+                    //console.log(util.inspect(node.declarationList.declarations[0].initializer, { showHidden: true, depth: 16 }));
 
-                    var i = 0,
-                        child;
-                    //childs = traverse(node.declarationList.declarations[0].initializer).nodes();
-                    //console.log(childs);
-                    //_.each()
-                    function process(key,value) {
-                        console.log(key + " : "+value);
+                    let expressions = {},
+                        crawlerIndex = 0;
+
+                    function process(index, key, value) {
+                        //console.log(index, key + " : " , value);
+                        expressions['expression' + index] = value;
                     }
 
                     function traverse(o,func) {
                         for (var i in o) {
                             if (o[i] !== null && typeof(o[i])=="object" && i === 'expression') {
-                                func.apply(this,[i,o[i]]);
+                                func.apply(this,[crawlerIndex, i, o[i]]);
+                                crawlerIndex += 1;
                                 traverse(o[i],func);
                             }
                         }
                     }
 
                     traverse(node.declarationList.declarations[0].initializer, process);
+
+                    //Clean expressions
+                    for (var expression in expressions) {
+                        if (expressions[expression].expression) {
+                            expressions[expression]['childExpressionEnd'] = expressions[expression].expression.end;
+                            delete expressions[expression].expression;
+                        }
+                    }
+
+                    // Find links between expressions, and reconstruct links
+                    for (var expression in expressions) {
+                        if (expressions[expression].kind === ts.SyntaxKind.PropertyAccessExpression) {
+                            for (var expr in expressions) {
+                                if (expressions[expr].kind === ts.SyntaxKind.CallExpression) {
+                                    if (expressions[expr].childExpressionEnd === expressions[expression].end) {
+                                        expressions[expression].parent = expressions[expr];
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Find now Angular APIs : module & component
+
+                    for (var expression in expressions) {
+                        if (expressions[expression].name && expressions[expression].name.text === 'module') {
+                            console.log('found one module !');
+
+                            let parent = expressions[expression].parent,
+                                name = '',
+                                i = 0,
+                                len = parent.arguments.length;
+
+                            for(i; i<len; i++) {
+                                if (parent.arguments[i].kind === 9) {
+                                    name = parent.arguments[i].text;
+                                }
+                            }
+
+                            outputSymbols['modules'].push({
+                                name: this.findParentName(expressions[expression].parent)
+                            });
+                        } else if (expressions[expression].name && expressions[expression].name.text === 'component') {
+                            console.log('found one component !');
+                            outputSymbols['components'].push({
+                                name: this.findParentName(expressions[expression].parent)
+                            });
+                        }
+                    }
+
+                    //console.log('expressions: ', expressions);
                 }
-                console.log('variableName: ', variableName);
+                //console.log('variableName: ', variableName);
             }
         });
+    }
+
+    private findParentName(node) {
+        let name = '',
+            i = 0,
+            len = node.arguments.length;
+
+        for(i; i<len; i++) {
+            if (node.arguments[i].kind === 9) {
+                name = node.arguments[i].text;
+            }
+        }
+        return name;
     }
 
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
