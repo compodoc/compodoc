@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "The missing documentation tool for your Angular 2 application",
   "main": "index.js",
   "bin": {
@@ -27,7 +27,9 @@
     "documentation",
     "components",
     "module",
-    "graph"
+    "graph",
+    "dependencies",
+    "markdown"
   ],
   "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
   "license": "MIT",

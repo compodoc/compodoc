@@ -1,3 +1,10 @@
+<a name="0.0.17"></a>
+## 0.0.17 (2016-12-01)
+
+### Bug Fixes
+
+* **chore:**  update supported version to Node.js 7+ ([8a8e0f6](https://github.com/compodoc/compodoc/commit/8a8e0f6)), closes [#18](https://github.com/compodoc/compodoc/issues/18)
+
 <a name="0.0.16"></a>
 ## 0.0.16 (2016-11-29)
 
