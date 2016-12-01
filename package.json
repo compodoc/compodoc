@@ -35,11 +35,11 @@
     "url": "https://github.com/compodoc/compodoc/issues"
   },
   "engines": {
-    "node": ">= 5.4.1 < 7"
+    "node": ">= 5.4.1"
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
-    "angular2-dependencies-graph": "^1.0.0-alpha.10",
+    "angular2-dependencies-graph": "^1.0.0-alpha.11",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "fs-extra": "^1.0.0",
