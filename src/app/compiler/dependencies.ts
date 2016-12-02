@@ -229,7 +229,8 @@ export class Dependencies {
                             }
 
                             outputSymbols['modules'].push({
-                                name: this.findParentName(expressions[expression].parent)
+                                name: this.findParentName(expressions[expression].parent),
+                                file: file
                             });
                         } else if (expressions[expression].name && expressions[expression].name.text === 'component') {
                             console.log('found one component !');
