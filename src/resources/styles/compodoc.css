@@ -15,7 +15,7 @@ body {
 
 .navbar-brand {
     height: 50px;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 20px;
     padding: 15px;
 }
@@ -117,6 +117,10 @@ body {
 
 .content.readme h1:first-of-type {
     margin-top: 0;
+}
+
+.content table {
+    margin-top: 20px;
 }
 
 
@@ -224,6 +228,10 @@ body {
 
 .menu ul.list li.chapter ul.links {
     padding-left: 20px;
+}
+
+.menu ul.list li.chapter .simple {
+    padding: 10px 15px;
 }
 
 .menu .panel-group {

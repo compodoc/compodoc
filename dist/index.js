@@ -1927,10 +1927,6 @@ var Application;
     var preparePipes = function preparePipes() {
         logger.info('Prepare pipes');
         $configuration.mainData.pipes = $dependenciesEngine.getPipes();
-        $configuration.addPage({
-            name: 'pipes',
-            context: 'pipes'
-        });
         var i = 0,
             len = $configuration.mainData.pipes.length;
         for (i; i < len; i++) {
@@ -1945,10 +1941,6 @@ var Application;
     var prepareClasses = function prepareClasses() {
         logger.info('Prepare classes');
         $configuration.mainData.classes = $dependenciesEngine.getClasses();
-        $configuration.addPage({
-            name: 'classes',
-            context: 'classes'
-        });
         var i = 0,
             len = $configuration.mainData.classes.length;
         for (i; i < len; i++) {
@@ -1963,10 +1955,6 @@ var Application;
     var prepareComponents = function prepareComponents() {
         logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
-        $configuration.addPage({
-            name: 'components',
-            context: 'components'
-        });
         return new Promise(function (resolve$$1, reject) {
             var i = 0,
                 len = $configuration.mainData.components.length,
@@ -2008,10 +1996,6 @@ var Application;
     var prepareDirectives = function prepareDirectives() {
         logger.info('Prepare directives');
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
-        $configuration.addPage({
-            name: 'directives',
-            context: 'directives'
-        });
         var i = 0,
             len = $configuration.mainData.directives.length;
         for (i; i < len; i++) {
@@ -2026,10 +2010,6 @@ var Application;
     var prepareInjectables = function prepareInjectables() {
         logger.info('Prepare injectables');
         $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
-        $configuration.addPage({
-            name: 'injectables',
-            context: 'injectables'
-        });
         var i = 0,
             len = $configuration.mainData.injectables.length;
         for (i; i < len; i++) {
