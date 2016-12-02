@@ -1,242 +1,131 @@
-<div class="panel-group" id="accordion">
-    <div class="panel panel-default hidden-xs">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a href="./">{{documentationMainName}}</a>
-            </h4>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#gettingStarted"><span class="fa fa-home"></span>Getting started</a>
-            </h4>
-        </div>
-        <div id="gettingStarted" class="panel-collapse collapse {{#compare context "===" 'readme'}}in{{/compare}} {{#compare context "===" 'overview'}}in{{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#if readme}}
-                    <tr>
-                        <td>
-                            <a href="./"><span class="fa fa-file-text-o"></span>README</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a {{#compare context "===" 'readme'}} href="./overview.html" {{/compare}}
-                                {{#compare context "===" 'overview'}} href="./" {{/compare}}
-                                {{#compare context "!==" 'overview'}} href="./overview.html" {{/compare}}
-                                {{#compare context "!==" 'readme'}} href="./overview.html" {{/compare}}>
-                                <span class="fa fa-th"></span>Overview
-                            </a>
-                        </td>
-                    </tr>
-                    {{else}}
-                    <tr>
-                        <td>
-                            <a href="./">
-                                <span class="fa fa-th"></span>Overview
-                            </a>
-                        </td>
-                    </tr>
-                    {{/if}}
-                </table>
-            </div>
-        </div>
-    </div>
-
-    {{#if additionalpages}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#additional-doc"><span class="fa fa-book">
-                </span>{{ additionalpages.entryName }}</a>
-            </h4>
-        </div>
-        <div id="additional-doc" class="panel-collapse collapse
-                                {{#compare context "===" 'additionalpages'}} in {{/compare}}
-                                {{#compare context "===" 'additionalpage'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each additionalpages.pages}}
-                    <tr>
-                        <td>
-                            <a href="./additional-documentation/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#modules"><span class="fa fa-archive">
-                </span>Modules</a>
-            </h4>
-        </div>
-        <div id="modules" class="panel-collapse collapse
-                                {{#compare context "===" 'modules'}} in {{/compare}}
-                                {{#compare context "===" 'module'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each modules}}
-                    <tr>
-                        <td>
-                            <a href="./modules/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{#if components}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#components"><span class="fa fa-cogs">
-                </span>Components</a>
-            </h4>
-        </div>
-        <div id="components" class="panel-collapse collapse
-                                    {{#compare context "===" 'components'}} in {{/compare}}
-                                    {{#compare context "===" 'component'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each components}}
-                    <tr>
-                        <td>
-                            <a href="./components/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-    {{#if directives}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#directives"><span class="fa fa-code">
-                </span>Directives</a>
-            </h4>
-        </div>
-        <div id="directives" class="panel-collapse collapse
-                                    {{#compare context "===" 'directives'}} in {{/compare}}
-                                    {{#compare context "===" 'directive'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each directives}}
-                    <tr>
-                        <td>
-                            <a href="./directives/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-    {{#if classes}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#classes"><span class="fa fa-file-code-o">
-                </span>Classes</a>
-            </h4>
-        </div>
-        <div id="classes" class="panel-collapse collapse
-                                    {{#compare context "===" 'classes'}} in {{/compare}}
-                                    {{#compare context "===" 'class'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each classes}}
-                    <tr>
-                        <td>
-                            <a href="./classes/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-    {{#if routes}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#routes"><span class="fa fa-code-fork">
-                </span>Routes</a>
-            </h4>
-        </div>
-    </div>
-    {{/if}}
-    {{#if injectables}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#injectables"><span class="fa fa-long-arrow-down">
-                </span>Injectables</a>
-            </h4>
-        </div>
-        <div id="injectables" class="panel-collapse collapse
-                                    {{#compare context "===" 'injectables'}} in {{/compare}}
-                                    {{#compare context "===" 'injectable'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each injectables}}
-                    <tr>
-                        <td>
-                            <a href="./injectables/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
-    {{#if pipes}}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#pipes"><span class="fa fa-plus">
-                </span>Pipes</a>
-            </h4>
-        </div>
-        <div id="pipes" class="panel-collapse collapse
-                                    {{#compare context "===" 'pipes'}} in {{/compare}}
-                                    {{#compare context "===" 'pipe'}} in {{/compare}}">
-            <div class="panel-body">
-                <table class="table">
-                    {{#each pipes}}
-                    <tr>
-                        <td>
-                            <a href="./pipes/{{name}}.html">{{ name }}</a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
-
-    <p class="copyright">
-		{{#unless hideGenerator}}
-            Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank"><img src="./images/compodoc-vectorise.svg" class="img-responsive"></a>
-		{{/unless}}
-    </p>
-
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
 </div>
+
+<nav>
+
+    <ul class="list">
+
+        <li class="title">
+            <a href="./">{{documentationMainName}}</a>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="chapter">
+            <a data-type="chapter-link" href="./"><span class="fa fa-home"></span>Getting started</a>
+            <ul class="links">
+                {{#if readme}}
+                    <li class="link">
+                        <a href="./"><span class="fa fa-file-text-o"></span>README</a>
+                    </li>
+                    <li class="link">
+                        <a {{#compare context "===" 'readme'}} href="./overview.html" {{/compare}}
+                            {{#compare context "===" 'overview'}} href="./" {{/compare}}
+                            {{#compare context "!==" 'overview'}} href="./overview.html" {{/compare}}
+                            {{#compare context "!==" 'readme'}} href="./overview.html" {{/compare}}>
+                            <span class="fa fa-th"></span>Overview
+                        </a>
+                    </li>
+                {{else}}
+                    <li class="link">
+                        <a href="./">
+                            <span class="fa fa-th"></span>Overview
+                        </a>
+                    </li>
+                {{/if}}
+            </ul>
+        </li>
+
+        <li class="chapter">
+            <a data-type="chapter-link" href="./modules.html"><span class="fa fa-archive"></span>Modules</a>
+            <ul class="links">
+                {{#each modules}}
+                    <li class="link">
+                        <a href="./modules/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+
+        {{#if components}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./components.html"><span class="fa fa-cogs"></span>Components</a>
+            <ul class="links">
+                {{#each components}}
+                    <li class="link">
+                        <a href="./components/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#if directives}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./directives.html"><span class="fa fa-code"></span>Directives</a>
+            <ul class="links">
+                {{#each directives}}
+                    <li class="link">
+                        <a href="./directives/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#if classes}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./classes.html"><span class="fa fa-file-code-o"></span>Classes</a>
+            <ul class="links">
+                {{#each classes}}
+                    <li class="link">
+                        <a href="./classes/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#if routes}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./routes.html"><span class="fa fa-code-fork"></span>Routes</a>
+        </li>
+        {{/if}}
+
+        {{#if injectables}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./injectables.html"><span class="fa fa-long-arrow-down"></span>Injectables</a>
+            <ul class="links">
+                {{#each injectables}}
+                    <li class="link">
+                        <a href="./injectables/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#if pipes}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./pipes.html"><span class="fa fa-plus"></span>Pipes</a>
+            <ul class="links">
+                {{#each pipes}}
+                    <li class="link">
+                        <a href="./pipes/{{name}}.html">{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#unless hideGenerator}}
+        <li class="divider"></li>
+        <li class="copyright">
+                Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank"><img src="./images/compodoc-vectorise.svg" class="img-responsive"></a>
+        </li>
+        {{/unless}}
+
+    </ul>
+
+</nav>

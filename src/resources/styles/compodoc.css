@@ -1,144 +1,77 @@
 body {
-    background: #f8f8f8;
     position: absolute;
     width: 100%;
     height: 100%;
 }
+
+
+/**
+ * Mobile navbar
+ */
+
 .navbar {
     min-height: 50px;
 }
+
 .navbar-brand {
     height: 50px;
     font-size: 18px;
     line-height: 20px;
     padding: 15px;
 }
-.container-fluid {
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
-.container-fluid.main {
-    height: 100%;
-}
-.container-fluid.overview {
-    margin-top: 50px;
-}
-.container-fluid.modules,
-.container-fluid.components,
-.container-fluid.directives,
-.container-fluid.classes,
-.container-fluid.injectables,
-.container-fluid.pipes,
-.content.routes table {
-    margin-top: 25px;
-}
-.container-fluid.module {
-    padding: 0;
-    margin-top: 0;
-}
-.container-fluid.module h3 a {
-    margin-left: 10px;
-    color: #333;
-}
-.row.main {
-    height: 100%;
-}
-.content {
-    background: white;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-top: 10px;
-}
-.content.readme {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-.content > h1:first-of-type {
-    margin-top: 15px
-}
-.content > h3:first-of-type {
-    margin-top: 5px;
-}
-.content.readme h1:first-of-type {
-    margin-top: 0;
-}
-.glyphicon, .fa {
-  margin-right: 10px;
-}
-.fa-code-fork {
-  margin-right: 14px;
-}
-.fa-long-arrow-down {
-  margin-right: 16px;
-}
-.panel-body {
-  padding: 0px;
-}
-.panel-group .panel-heading+.panel-collapse>.list-group, .panel-group .panel-heading+.panel-collapse>.panel-body {
-    border-top: 0;
-}
-.panel-body table tr td {
-  padding-left: 15px
-}
 
-.panel-body .table {
-  margin-bottom: 0px;
-}
-.panel-group .panel:first-child {
-    border-top: 0;
-}
 .navbar-static-top {
     margin-bottom: 0;
     height: 50px;
 }
-.menu {
-    border-right: 1px solid #e7e7e7;
+
+
+/**
+ * Main container
+ */
+
+.container-fluid {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.container-fluid.main {
     height: 100%;
     padding: 0;
 }
-.menu .panel-group {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
+
+.container-fluid.overview {
+    margin-top: 50px;
 }
-.menu .panel-default {
-    border-right: none;
-    border-left: none;
-    border-bottom: none;
+
+.container-fluid.modules, .container-fluid.components, .container-fluid.directives, .container-fluid.classes, .container-fluid.injectables, .container-fluid.pipes, .content.routes table {
+    margin-top: 25px;
 }
-.menu .panel-group .panel-heading+.panel-collapse>.panel-body {
-    border-top: none;
-    overflow-y: auto;
-    max-height: 350px;
-}
-.menu .panel-default:last-of-type {
-    border-bottom: 1px solid #ddd;
-}
-.panel-group .panel+.panel {
+
+.container-fluid.module {
+    padding: 0;
     margin-top: 0;
 }
-.panel-group .panel {
-    z-index: 2;
-    position: relative;
-    border-radius: 0;
-    box-shadow: none;
-    border-left: 0;
-    border-right: 0;
+
+.container-fluid.module h3 a {
+    margin-left: 10px;
+    color: #333;
 }
-.menu a {
-    color: #3c3c3c;
-}
-.overview .card-title .fa {
-    font-size: 50px;
-}
-.copyright {
-    position: absolute;
-    bottom: 0;
+
+.row.main {
+    height: 100%;
     margin: 0;
-    padding: 0 15px 15px 15px;
+}
+
+
+/**
+ * Copyright
+ */
+
+.copyright {
+    margin: 0;
+    padding: 15px;
     text-align: center;
-    width: 100%;
     display: flex;
     flex-direction: column;
     display: -webkit-flex;
@@ -147,14 +80,195 @@ body {
     -webkit-align-items: center;
     z-index: 1;
 }
+
 .copyright img {
     width: 80px;
     margin-top: 10px;
 }
+
 .copyright a {
     color: #009dff;
     text-decoration: underline;
 }
+
+
+/**
+ * Content
+ */
+
+.content {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    width: calc(100% - 300px);
+    position: absolute;
+    top: 0;
+    left: 300px;
+    padding: 15px;
+}
+
+.content>h1:first-of-type {
+    margin-top: 15px
+}
+
+.content>h3:first-of-type {
+    margin-top: 5px;
+}
+
+.content.readme h1:first-of-type {
+    margin-top: 0;
+}
+
+
+/**
+ * Icons
+ */
+
+.glyphicon, .fa {
+    margin-right: 10px;
+}
+
+.fa-code-fork {
+    margin-right: 14px;
+}
+
+.fa-long-arrow-down {
+    margin-right: 16px;
+}
+
+
+/**
+ * Menu
+ */
+
+#book-search-input {
+    display: none;
+    padding: 6px;
+    background: 0 0;
+    transition: top .5s ease;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, .07);
+    border-top: 1px solid rgba(0, 0, 0, .07);
+    margin-bottom: 10px;
+    margin-top: -1px
+}
+
+#book-search-input input, #book-search-input input:focus, #book-search-input input:hover {
+    width: 100%;
+    background: 0 0;
+    border: 1px solid transparent;
+    box-shadow: none;
+    outline: 0;
+    line-height: 22px;
+    padding: 7px 7px;
+    color: inherit
+}
+
+.panel-body {
+    padding: 0px;
+}
+
+.panel-group .panel-heading+.panel-collapse>.list-group, .panel-group .panel-heading+.panel-collapse>.panel-body {
+    border-top: 0;
+}
+
+.panel-body table tr td {
+    padding-left: 15px
+}
+
+.panel-body .table {
+    margin-bottom: 0px;
+}
+
+.panel-group .panel:first-child {
+    border-top: 0;
+}
+
+.menu {
+    background: #fafafa;
+    border-right: 1px solid #e7e7e7;
+    height: 100%;
+    padding: 0;
+    width: 300px;
+    overflow-y: auto;
+}
+
+.menu ul.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu ul.list li.title {
+    padding-top: 10px;
+}
+
+.menu ul.list li a {
+    display: block;
+    padding: 10px 15px;
+    border-bottom: none;
+    color: #364149;
+    background: 0 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative
+}
+
+.menu ul.list li.divider {
+    height: 1px;
+    margin: 7px 0;
+    overflow: hidden;
+    background: rgba(0, 0, 0, .07)
+}
+
+.menu ul.list li.chapter ul.links {
+    padding-left: 20px;
+}
+
+.menu .panel-group {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.menu .panel-default {
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+}
+
+.menu .panel-group .panel-heading+.panel-collapse>.panel-body {
+    border-top: none;
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.menu .panel-default:last-of-type {
+    border-bottom: 1px solid #ddd;
+}
+
+.panel-group .panel+.panel {
+    margin-top: 0;
+}
+
+.panel-group .panel {
+    z-index: 2;
+    position: relative;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: 0;
+    border-right: 0;
+}
+
+.menu a {
+    color: #3c3c3c;
+}
+
+.overview .card-title .fa {
+    font-size: 50px;
+}
+
 .breadcrumb {
     background: none;
     padding-left: 0;
@@ -162,6 +276,7 @@ body {
     font-size: 24px;
     padding-top: 0;
 }
+
 .breadcrumb a {
     text-decoration: underline;
     color: #333;
@@ -170,26 +285,34 @@ body {
 .comment {
     margin: 15px 0;
 }
+
 code {
     background: none;
     padding: 2px 0;
 }
+
 .io-description {
     margin: 10px 0;
 }
+
 .io-file {
     margin: 20px 0;
 }
+
 .navbar .btn-menu {
     position: absolute;
     right: 0;
     margin: 10px;
 }
+
 .xs-menu {
-    margin-top: 50px;
     height: calc(100% - 50px);
     display: none;
+    width: 100%;
     overflow-y: scroll;
+    z-index: 1;
+    top: 50px;
+    position: absolute;
 }
 
 .xs-menu .copyright {
@@ -207,6 +330,15 @@ pre {
         margin-top: 50px;
     }
     .container-fluid.main {
+
         height: calc(100% - 50px);
+    }
+    .content {
+        width: 100%;
+        left: 0;
+        top: 50px;
+    }
+    .menu ul.list li.title {
+        display: none;
     }
 }

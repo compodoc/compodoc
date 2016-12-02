@@ -13,10 +13,10 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-default navbar-fixed-top visible-xs">
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
             <a href="./" class="navbar-brand">{{data.documentationMainName}}</a>
             <button type="button" class="btn btn-default btn-menu fa fa-bars" id="btn-menu"></button>
-        </nav>
+        </div>
 
         <div class="xs-menu menu" id="mobile-menu">
             {{> menu data }}
@@ -24,10 +24,10 @@
 
         <div class="container-fluid main">
            <div class="row main">
-               <div class="col-sm-2 menu hidden-xs">
+               <div class="menu hidden-xs">
                    {{> menu data }}
                </div>
-               <div class="col-sm-10 content {{data.context}}">
+               <div class="content {{data.context}}">
                    {{#compare data.context "===" 'readme'}}
                         {{> readme data}}
                    {{/compare}}
