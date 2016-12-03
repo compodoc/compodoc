@@ -85,6 +85,7 @@ Options:
   -d, --output [folder]     Where to store the generated documentation
   -b, --base [base]         Base reference of html tag <base>
   -y, --extTheme [file]     External styling theme
+  -h, --theme [theme]       Choose one of available themes ('readthedocs')
   -n, --name [name]         Title documentation
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console

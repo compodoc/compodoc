@@ -33,7 +33,8 @@ export namespace Application {
     let defaultTitle = `Application documentation`,
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
-        defaultFolder = `./documentation/`;
+        defaultFolder = './documentation/',
+        defaultTheme = 'gitbook';
 
     program
         .version(pkg.version)
@@ -41,6 +42,7 @@ export namespace Application {
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
         .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
         .option('-y, --extTheme [file]', 'External styling theme file')
+        .option('-h, --theme [theme]', 'Choose one of available themes (\'readthedocs\')')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         //.option('-i, --includes [path]', 'Path of external markdown files to include')
@@ -65,6 +67,11 @@ export namespace Application {
 
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
+    }
+
+    if (program.theme) {
+        defaultTheme = program.theme;
+        $configuration.mainData.theme = defaultTheme;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value

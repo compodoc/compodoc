@@ -1,0 +1,80 @@
+.menu {
+    background: #343131;
+    color: #fcfcfc;
+}
+.menu ul.list li a {
+    color: #fcfcfc;
+}
+
+.menu ul.list li.title {
+    background: #2980B9;
+    padding-bottom: 5px;
+}
+
+.menu ul.list li:nth-child(2) {
+    margin-top: 0;
+}
+
+.menu ul.list li.chapter a, .menu ul.list li.chapter .simple {
+    color: #555;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.menu ul.list li.chapter ul.links a {
+    color: #b3b3b3;
+    text-transform: none;
+    padding-left: 35px;
+}
+.menu ul.list li.chapter ul.links a:hover {
+    background: #4E4A4A;
+}
+
+.menu ul.list li.chapter ul.links {
+    padding-left: 0;
+}
+
+.menu ul.list li.divider {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.copyright {
+    color: #b3b3b3;
+}
+
+.content {
+    background: #fcfcfc;
+}
+
+.content a {
+    color: #2980B9;
+}
+.content a:hover {
+    color: #3091d1;
+}
+.content a:visited {
+    color: #9B59B6;
+}
+code {
+    color: #d14;
+}
+
+.list-group-item:first-child, .list-group-item:last-child {
+    border-radius: 0;
+}
+
+.menu ul.list li.title a {
+    text-decoration: none;
+}
+.menu ul.list li.title a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.breadcrumb>li+li:before {
+     content: "»\00a0"
+}
+
+.breadcrumb {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e1e4e5;
+}

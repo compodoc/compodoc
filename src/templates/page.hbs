@@ -10,6 +10,9 @@
 
         <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
 	    <link rel="stylesheet" href="./styles/style.css">
+        {{#if data.theme}}
+        <link rel="stylesheet" href="./styles/{{data.theme}}.css">
+        {{/if}}
     </head>
     <body>
 

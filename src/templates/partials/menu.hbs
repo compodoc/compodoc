@@ -122,7 +122,15 @@
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">
-                Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank"><img src="./images/compodoc-vectorise.svg" class="img-responsive"></a>
+                Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">
+                    {{#if theme }}
+                        {{#compare theme "===" 'readthedocs'}}
+                            <img src="./images/compodoc-vectorise-inverted.svg" class="img-responsive">
+                        {{/compare}}
+                    {{else}}
+                    <img src="./images/compodoc-vectorise.svg" class="img-responsive">
+                    {{/if}}
+                </a>
         </li>
         {{/unless}}
 
