@@ -25,10 +25,10 @@
   <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
   <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"></a>
-  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm badge"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
-  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
-  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="npm dev dependencies"></a>
+  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
+  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
 
 <p align="center">The missing documentation tool for your Angular 2 application</p>
@@ -38,7 +38,7 @@
 
 <ul>
 <li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side</p></li>
-<li><p><strong>Compodoc is just markdown</strong> — Write your comments with Markdown or provide externals Markdown files for enhancing the API documentation.</p></li>
+<li><p><strong>Beautiful themes</strong> — 7 themes are available from famous documentation tools like Gitbook, readthedocs or projects like Vagrant, Laravel, Postmark and Stripe.</p></li>
 <li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
 <li><p><strong>Compodoc is open-source and on npm</strong> - Use it directly in your project using npm and one script, that's it !</p></li>
 </ul>
@@ -51,7 +51,7 @@
 <h2>
 <a id="static-demo" class="anchor" href="#static-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Demo</h2>
 
-<p>Using <a href="https://github.com/r-park/soundcloud-ngrx">SoundCloud API client / Angular2 project</a></p>
+<p>Using <a href="https://github.com/r-park/soundcloud-ngrx">SoundCloud API client / Angular2 project</a> and default theme (gitbook)</p>
 
 <table>
 <thead>
@@ -97,6 +97,7 @@
 <li><a href="#local-installation">Local installation</a></li>
 </ul>
 </li>
+<li><a href="#themes">Themes</a></li>
 <li>
 <a href="#common-use-cases">Common use cases</a>
 
@@ -144,6 +145,7 @@ Options:
   -d, --output [folder]     Where to store the generated documentation
   -b, --base [base]         Base reference of html tag &lt;base&gt;
   -y, --extTheme [file]     External styling theme
+  -h, --theme [theme]       Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   -n, --name [name]         Title documentation
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console
@@ -168,6 +170,48 @@ Options:
 
 <pre><code>npm run compodoc
 </code></pre>
+
+<h2>
+<a id="themes" class="anchor" href="#themes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Themes</h2>
+
+<table>
+<thead>
+<tr>
+<th align="center">Default (gitbook)</th>
+<th align="center">Laravel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-gitbook.png" alt="theme-gitbook"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-laravel.png" alt="theme-laravel"></td>
+</tr>
+<tr>
+<td align="center">Readthedocs</td>
+<td align="center">Stripe</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-readthedocs.png" alt="theme-readthedocs"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-stripe.png" alt="theme-stripe"></td>
+</tr>
+<tr>
+<td align="center">Vagrant</td>
+<td align="center">Postmark</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-vagrant.png" alt="theme-vagrant"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-postmark.png" alt="theme-postmark"></td>
+</tr>
+<tr>
+<td align="center">Original</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-original.png" alt="theme-original"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
 
 <h2>
 <a id="common-use-cases" class="anchor" href="#common-use-cases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common use cases</h2>
