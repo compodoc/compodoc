@@ -3,11 +3,11 @@
   <br>
   <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
-  <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov" /></a>
-  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"/></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm badge"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
-  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm dev dependencies"></a>
-  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="npm dev dependencies"></a>
+  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
+  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
 
 <p align="center">The missing documentation tool for your Angular 2 application</p>
@@ -17,7 +17,7 @@ Features
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
-* **Compodoc is just markdown** — Write your comments with Markdown or provide externals Markdown files for enhancing the API documentation.
+* **Beautiful themes** — 7 themes are available from famous documentation tools like Gitbook, readthedocs or projects like Vagrant, Laravel, Postmark and Stripe.
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
@@ -29,7 +29,7 @@ Features
 
 ## Static Demo
 
-Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx)
+Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx) and default theme (gitbook)
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
@@ -45,6 +45,7 @@ Component page             |
   - [Install](#install)
   - [Usage](#usage)
   - [Local installation](#local-installation)
+- [Themes](#themes)
 - [Common use cases](#common-use-cases)
   - [Render documentation](#render-documentation)
   - [Serve generated documentation with compodoc](#serve-generated-documentation-with-compodoc)
@@ -85,6 +86,7 @@ Options:
   -d, --output [folder]     Where to store the generated documentation
   -b, --base [base]         Base reference of html tag <base>
   -y, --extTheme [file]     External styling theme
+  -h, --theme [theme]       Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   -n, --name [name]         Title documentation
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console
@@ -111,6 +113,18 @@ and run it like a normal npm script :
 ```
 npm run compodoc
 ```
+
+## Themes
+
+Default (gitbook)             |  Laravel
+:-------------------------:|:-------------------------:
+![theme-gitbook](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-gitbook.png)  | ![theme-laravel](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-laravel.png)
+Readthedocs             |  Stripe
+![theme-readthedocs](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-readthedocs.png)  | ![theme-stripe](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-stripe.png)
+Vagrant             |  Postmark
+![theme-vagrant](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-vagrant.png)  | ![theme-postmark](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-postmark.png)
+Original             |  
+![theme-original](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-original.png)  |
 
 ## Common use cases
 

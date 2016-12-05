@@ -19,8 +19,9 @@
 }
 
 .card-title {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 5px;
+  margin-bottom: 2px;
+  text-align: center;
 }
 
 .card-subtitle {
@@ -30,6 +31,7 @@
 
 .card-text:last-child {
   margin-bottom: 0;
+  margin-top: 10px;
 }
 
 .card-link:hover {

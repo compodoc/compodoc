@@ -17,6 +17,9 @@ export class HtmlEngine {
             case '==':
               result = a == b;
               break;
+            case 'indexof':
+                result = (b.indexOf(a) !== -1);
+                break;
             case '===':
               result = a === b;
               break;

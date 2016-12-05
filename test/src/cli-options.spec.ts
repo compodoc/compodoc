@@ -46,6 +46,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('External styling theme');
         });
 
+        it(`-h`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-h, --theme [theme]');
+            expect(runHelp.stdout.toString()).to.contain('Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)');
+        });
+
         it(`-n`, () => {
             expect(runHelp.stdout.toString()).to.contain('-n, --name [name]');
             expect(runHelp.stdout.toString()).to.contain('Title documentation');

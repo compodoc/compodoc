@@ -1,3 +1,10 @@
+<a name="0.0.18"></a>
+## 0.0.18 (2016-12-05)
+
+### Features
+
+* **design:**  7 new themes ([740e165](https://github.com/compodoc/compodoc/commit/740e165))
+
 <a name="0.0.17"></a>
 ## 0.0.17 (2016-12-01)
 

@@ -33,7 +33,8 @@ export namespace Application {
     let defaultTitle = `Application documentation`,
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
-        defaultFolder = `./documentation/`;
+        defaultFolder = './documentation/',
+        defaultTheme = 'gitbook';
 
     program
         .version(pkg.version)
@@ -41,6 +42,7 @@ export namespace Application {
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
         .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
         .option('-y, --extTheme [file]', 'External styling theme file')
+        .option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         //.option('-i, --includes [path]', 'Path of external markdown files to include')
@@ -65,6 +67,11 @@ export namespace Application {
 
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
+    }
+
+    if (program.theme) {
+        defaultTheme = program.theme;
+        $configuration.mainData.theme = defaultTheme;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
@@ -237,10 +244,6 @@ export namespace Application {
     let preparePipes = () => {
         logger.info('Prepare pipes');
         $configuration.mainData.pipes = $dependenciesEngine.getPipes();
-        $configuration.addPage({
-            name: 'pipes',
-            context: 'pipes'
-        });
         let i = 0,
             len = $configuration.mainData.pipes.length;
 
@@ -257,10 +260,6 @@ export namespace Application {
     let prepareClasses = () => {
         logger.info('Prepare classes');
         $configuration.mainData.classes = $dependenciesEngine.getClasses();
-        $configuration.addPage({
-            name: 'classes',
-            context: 'classes'
-        });
         let i = 0,
             len = $configuration.mainData.classes.length;
 
@@ -277,10 +276,6 @@ export namespace Application {
     let prepareComponents = () => {
         logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
-        $configuration.addPage({
-            name: 'components',
-            context: 'components'
-        });
 
         return new Promise(function(resolve, reject) {
             let i = 0,
@@ -325,11 +320,6 @@ export namespace Application {
         logger.info('Prepare directives');
         $configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
-        $configuration.addPage({
-            name: 'directives',
-            context: 'directives'
-        });
-
         let i = 0,
             len = $configuration.mainData.directives.length;
 
@@ -346,11 +336,6 @@ export namespace Application {
     let prepareInjectables = () => {
         logger.info('Prepare injectables');
         $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
-
-        $configuration.addPage({
-            name: 'injectables',
-            context: 'injectables'
-        });
 
         let i = 0,
             len = $configuration.mainData.injectables.length;

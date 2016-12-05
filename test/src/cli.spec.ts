@@ -100,12 +100,6 @@ describe('CLI', () => {
         it('should have generated main pages', () => {
             const isIndexExists = exists(`${tmp.name}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isComponentsExists = exists(`${tmp.name}/components.html`);
-            expect(isComponentsExists).to.be.true;
-            const isDirectivesExists = exists(`${tmp.name}/directives.html`);
-            expect(isDirectivesExists).to.be.true;
-            const isInjectablesExists = exists(`${tmp.name}/injectables.html`);
-            expect(isInjectablesExists).to.be.true;
             const isModulesExists = exists(`${tmp.name}/modules.html`);
             expect(isModulesExists).to.be.true;
             const isOverviewExists = exists(`${tmp.name}/overview.html`);
@@ -152,12 +146,6 @@ describe('CLI', () => {
         it('should have generated main pages', () => {
             const isIndexExists = exists('documentation/index.html');
             expect(isIndexExists).to.be.true;
-            const isComponentsExists = exists('documentation/components.html');
-            expect(isComponentsExists).to.be.true;
-            const isDirectivesExists = exists('documentation/directives.html');
-            expect(isDirectivesExists).to.be.true;
-            const isInjectablesExists = exists('documentation/injectables.html');
-            expect(isInjectablesExists).to.be.true;
             const isModulesExists = exists('documentation/modules.html');
             expect(isModulesExists).to.be.true;
             const isOverviewExists = exists('documentation/overview.html');
@@ -204,20 +192,10 @@ describe('CLI', () => {
         it('should have generated main pages', () => {
             const isIndexExists = exists('documentation/index.html');
             expect(isIndexExists).to.be.true;
-            const isComponentsExists = exists('documentation/components.html');
-            expect(isComponentsExists).to.be.true;
-            const isDirectivesExists = exists('documentation/directives.html');
-            expect(isDirectivesExists).to.be.true;
-            const isInjectablesExists = exists('documentation/injectables.html');
-            expect(isInjectablesExists).to.be.true;
             const isModulesExists = exists('documentation/modules.html');
             expect(isModulesExists).to.be.true;
             const isOverviewExists = exists('documentation/overview.html');
             expect(isOverviewExists).to.be.true;
-            const isClassesExists = exists('documentation/classes.html');
-            expect(isClassesExists).to.be.true;
-            const isPipesExists = exists('documentation/pipes.html');
-            expect(isPipesExists).to.be.true;
             const isRoutesExists = exists('documentation/routes.html');
             expect(isRoutesExists).to.be.true;
         });
