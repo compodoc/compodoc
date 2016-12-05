@@ -283,6 +283,9 @@ var HtmlEngine = function () {
                 case '==':
                     result = a == b;
                     break;
+                case 'indexof':
+                    result = b.indexOf(a) !== -1;
+                    break;
                 case '===':
                     result = a === b;
                     break;
@@ -1760,8 +1763,9 @@ var Application;
     var defaultTitle = 'Application documentation',
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
-        defaultFolder = './documentation/';
-    program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', '/').option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', defaultTitle).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
+        defaultFolder = './documentation/',
+        defaultTheme = 'gitbook';
+    program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', '/').option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', defaultTitle).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
     var outputHelp = function outputHelp() {
         program.outputHelp();
         process.exit(1);
@@ -1774,6 +1778,10 @@ var Application;
     }
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
+    }
+    if (program.theme) {
+        defaultTheme = program.theme;
+        $configuration.mainData.theme = defaultTheme;
     }
     $configuration.mainData.documentationMainName = program.name; //default commander value
     $configuration.mainData.base = program.base;
