@@ -42,7 +42,7 @@ export namespace Application {
         .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
         .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
         .option('-y, --extTheme [file]', 'External styling theme file')
-        .option('-h, --theme [theme]', 'Choose one of available themes (\'readthedocs\')')
+        .option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
         .option('-n, --name [name]', 'Title documentation', defaultTitle)
         .option('-o, --open', 'Open the generated documentation', false)
         //.option('-i, --includes [path]', 'Path of external markdown files to include')

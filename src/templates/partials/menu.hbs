@@ -10,26 +10,27 @@
             <a href="./">{{documentationMainName}}</a>
         </li>
 
-        <li class="divider hidden-xs"></li>
+        <li class="divider"></li>
 
         <li class="chapter">
             <a data-type="chapter-link" href="./"><span class="fa fa-home"></span>Getting started</a>
             <ul class="links">
                 {{#if readme}}
                     <li class="link">
-                        <a href="./"><span class="fa fa-file-text-o"></span>README</a>
+                        <a href="./" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
                     </li>
                     <li class="link">
                         <a {{#compare context "===" 'readme'}} href="./overview.html" {{/compare}}
                             {{#compare context "===" 'overview'}} href="./" {{/compare}}
                             {{#compare context "!==" 'overview'}} href="./overview.html" {{/compare}}
-                            {{#compare context "!==" 'readme'}} href="./overview.html" {{/compare}}>
+                            {{#compare context "!==" 'readme'}} href="./overview.html" {{/compare}}
+                            {{#compare name "===" 'overview' }} class="active" {{/compare}}>
                             <span class="fa fa-th"></span>Overview
                         </a>
                     </li>
                 {{else}}
                     <li class="link">
-                        <a href="./">
+                        <a href="./" {{#compare name "===" 'overview' }} class="active" {{/compare}}>
                             <span class="fa fa-th"></span>Overview
                         </a>
                     </li>
@@ -42,7 +43,7 @@
             <ul class="links">
                 {{#each modules}}
                     <li class="link">
-                        <a href="./modules/{{name}}.html">{{ name }}</a>
+                        <a href="./modules/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -54,7 +55,7 @@
             <ul class="links">
                 {{#each components}}
                     <li class="link">
-                        <a href="./components/{{name}}.html">{{ name }}</a>
+                        <a href="./components/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -67,7 +68,7 @@
             <ul class="links">
                 {{#each directives}}
                     <li class="link">
-                        <a href="./directives/{{name}}.html">{{ name }}</a>
+                        <a href="./directives/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -80,7 +81,7 @@
             <ul class="links">
                 {{#each classes}}
                     <li class="link">
-                        <a href="./classes/{{name}}.html">{{ name }}</a>
+                        <a href="./classes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -99,7 +100,7 @@
             <ul class="links">
                 {{#each injectables}}
                     <li class="link">
-                        <a href="./injectables/{{name}}.html">{{ name }}</a>
+                        <a href="./injectables/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -112,7 +113,7 @@
             <ul class="links">
                 {{#each pipes}}
                     <li class="link">
-                        <a href="./pipes/{{name}}.html">{{ name }}</a>
+                        <a href="./pipes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -124,8 +125,10 @@
         <li class="copyright">
                 Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">
                     {{#if theme }}
-                        {{#compare theme "===" 'readthedocs'}}
+                        {{#compare theme "indexof" 'readthedocs,vagrant,postman'}}
                             <img src="./images/compodoc-vectorise-inverted.svg" class="img-responsive">
+                        {{else}}
+                            <img src="./images/compodoc-vectorise.svg" class="img-responsive">
                         {{/compare}}
                     {{else}}
                     <img src="./images/compodoc-vectorise.svg" class="img-responsive">
