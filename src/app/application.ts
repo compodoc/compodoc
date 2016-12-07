@@ -14,6 +14,7 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
+import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
 
 let pkg = require('../package.json'),
@@ -25,6 +26,7 @@ let pkg = require('../package.json'),
     $configuration = new Configuration(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
+    $searchEngine = new SearchEngine(),
     $dependenciesEngine,
     startTime = new Date();
 
@@ -383,6 +385,11 @@ export namespace Application {
                             finalPath += pages[i].path + '/';
                         }
                         finalPath += pages[i].name + '.html';
+                        $searchEngine.indexPage({
+                            infos: pages[i],
+                            rawData: htmlData,
+                            url: finalPath
+                        });
                         fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
@@ -395,6 +402,7 @@ export namespace Application {
                         logger.error(errorMessage);
                     });
                 } else {
+                    $searchEngine.generateSearchIndexJson(defaultFolder);
                     processResources();
                 }
             };
