@@ -9,11 +9,10 @@ const lunr: any = require('lunr'),
 
 export class SearchEngine {
     searchIndex: any;
-    documentsStore: object = {};
+    documentsStore: Object = {};
     indexSize: number;
     constructor() {}
     private getSearchIndex() {
-        console.log('getSearchIndex');
         if (!this.searchIndex) {
             this.searchIndex = lunr(function () {
                 this.ref('url');
@@ -24,8 +23,6 @@ export class SearchEngine {
         return this.searchIndex;
     }
     indexPage(page) {
-        console.log('indexPage');
-
         var text,
             $ = cheerio.load(page.rawData);
 
@@ -44,7 +41,6 @@ export class SearchEngine {
         this.getSearchIndex().add(doc);
     }
     generateSearchIndexJson(outputFolder) {
-        console.log('generateSearchIndexJson: ', path.resolve(process.cwd() + path.sep + outputFolder));
         fs.writeJson(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + 'search_index.json'), {
             index: this.getSearchIndex(),
             store: this.documentsStore
