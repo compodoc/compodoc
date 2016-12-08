@@ -9,5 +9,25 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementsByTagName('body')[0].style['overflow-y'] = 'hidden';
         }
         menuCollapsed = !menuCollapsed;
-    })
+    });
+
+    // Scroll to active link
+    var menus = document.querySelectorAll('.menu'),
+        i = 0,
+        len = menus.length,
+        activeMenu,
+        activeMenuClass,
+        activeLink;
+
+    for (i; i<len; i++) {
+        if (getComputedStyle(menus[i]).display != 'none') {
+            activeMenu = menus[i];
+            activeMenuClass = activeMenu.getAttribute('class').split(' ')[0];
+        }
+    }
+
+    if (activeMenu) {
+        activeLink = document.querySelector('.' + activeMenuClass + ' .active');
+        activeMenu.scrollTop = activeLink.offsetTop;
+    }
 });
