@@ -71,6 +71,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Serve generated documentation');
         });
 
+        it(`-sp`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-r, --port [port]');
+            expect(runHelp.stdout.toString()).to.contain('Change default serving port');
+        });
+
         it(`-g`, () => {
             expect(runHelp.stdout.toString()).to.contain('-g, --hideGenerator');
             expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
