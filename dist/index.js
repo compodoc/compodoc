@@ -154,10 +154,8 @@ var pkg$1 = require('../package.json');
 var LEVEL;
 (function (LEVEL) {
     LEVEL[LEVEL["INFO"] = 0] = "INFO";
-    LEVEL[LEVEL["WARN"] = 1] = "WARN";
-    LEVEL[LEVEL["DEBUG"] = 2] = "DEBUG";
-    LEVEL[LEVEL["FATAL"] = 3] = "FATAL";
-    LEVEL[LEVEL["ERROR"] = 4] = "ERROR";
+    LEVEL[LEVEL["DEBUG"] = 1] = "DEBUG";
+    LEVEL[LEVEL["ERROR"] = 2] = "ERROR";
 })(LEVEL || (LEVEL = {}));
 
 var Logger = function () {
@@ -171,12 +169,6 @@ var Logger = function () {
     }
 
     createClass(Logger, [{
-        key: 'title',
-        value: function title() {
-            if (!this.silent) return;
-            this.logger(c.cyan.apply(c, arguments));
-        }
-    }, {
         key: 'info',
         value: function info() {
             if (!this.silent) return;
@@ -188,40 +180,23 @@ var Logger = function () {
             this.logger(this.format.apply(this, [LEVEL.INFO].concat(args)));
         }
     }, {
-        key: 'warn',
-        value: function warn() {
+        key: 'error',
+        value: function error() {
             if (!this.silent) return;
 
             for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 args[_key2] = arguments[_key2];
             }
 
-            this.logger(this.format.apply(this, [LEVEL.WARN].concat(args)));
-        }
-    }, {
-        key: 'error',
-        value: function error() {
-            if (!this.silent) return;
-
-            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                args[_key3] = arguments[_key3];
-            }
-
-            this.logger(this.format.apply(this, [LEVEL.FATAL].concat(args)));
-        }
-    }, {
-        key: 'fatal',
-        value: function fatal() {
-            if (!this.silent) return;
-            this.error.apply(this, arguments);
+            this.logger(this.format.apply(this, [LEVEL.ERROR].concat(args)));
         }
     }, {
         key: 'debug',
         value: function debug() {
             if (!this.silent) return;
 
-            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                args[_key4] = arguments[_key4];
+            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                args[_key3] = arguments[_key3];
             }
 
             this.logger(this.format.apply(this, [LEVEL.DEBUG].concat(args)));
@@ -235,8 +210,8 @@ var Logger = function () {
                 return s + Array(Math.max(0, l - s.length + 1)).join(c);
             };
 
-            for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-                args[_key5 - 1] = arguments[_key5];
+            for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                args[_key4 - 1] = arguments[_key4];
             }
 
             var msg = args.join(' ');
@@ -247,14 +222,10 @@ var Logger = function () {
                 case LEVEL.INFO:
                     msg = c.green(msg);
                     break;
-                case LEVEL.WARN:
-                    msg = c.gray(msg);
-                    break;
                 case LEVEL.DEBUG:
                     msg = c.cyan(msg);
                     break;
                 case LEVEL.ERROR:
-                case LEVEL.FATAL:
                     msg = c.red(msg);
                     break;
             }
@@ -1031,6 +1002,7 @@ var Dependencies = function () {
                             newRoutes = JSON.parse(_IO.routes.replace(/ /gm, ''));
                         } catch (e) {
                             logger.error('Routes parsing error, maybe a trailing comma ?');
+                            return true;
                         }
                         outputSymbols['routes'] = [].concat(toConsumableArray(outputSymbols['routes']), toConsumableArray(newRoutes));
                     }
@@ -1764,8 +1736,9 @@ var Application;
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
         defaultFolder = './documentation/',
+        defaultPort = 8080,
         defaultTheme = 'gitbook';
-    program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', '/').option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', defaultTitle).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
+    program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', '/').option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', defaultTitle).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port').option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
     var outputHelp = function outputHelp() {
         program.outputHelp();
         process.exit(1);
@@ -1782,6 +1755,9 @@ var Application;
     if (program.theme) {
         defaultTheme = program.theme;
         $configuration.mainData.theme = defaultTheme;
+    }
+    if (program.port) {
+        defaultPort = program.port;
     }
     $configuration.mainData.documentationMainName = program.name; //default commander value
     $configuration.mainData.base = program.base;
@@ -2115,7 +2091,7 @@ var Application;
                 var finalTime = (new Date() - startTime) / 1000;
                 logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
                 if (program.serve) {
-                    logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:8080');
+                    logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:' + defaultPort);
                     runWebServer(defaultFolder);
                 }
             }
@@ -2136,7 +2112,8 @@ var Application;
             root: folder,
             open: false,
             quiet: true,
-            logLevel: 0
+            logLevel: 0,
+            port: defaultPort
         });
     };
     Application.run = function () {
@@ -2144,19 +2121,19 @@ var Application;
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!fs.existsSync(program.output)) {
-                logger.fatal(program.output + ' folder doesn\'t exist');
+                logger.error(program.output + ' folder doesn\'t exist');
                 process.exit(1);
             } else {
-                logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:8080');
+                logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + defaultPort);
                 runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
             if (!fs.existsSync(defaultFolder)) {
-                logger.fatal('Provide output generated folder with -d flag');
+                logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:8080');
+                logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:' + defaultPort);
                 runWebServer(defaultFolder);
             }
         } else {
@@ -2165,7 +2142,7 @@ var Application;
             }
             if (program.tsconfig) {
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.fatal('"tsconfig.json" file was not found in the current directory');
+                    logger.error('"tsconfig.json" file was not found in the current directory');
                     process.exit(1);
                 } else {
                     _file = path.join(path.join(process.cwd(), path.dirname(program.tsconfig)), path.basename(program.tsconfig));
@@ -2207,7 +2184,7 @@ var Application;
                     });
                 }
             } else {
-                logger.fatal('Entry file was not found');
+                logger.error('Entry file was not found');
                 outputHelp();
             }
         }
