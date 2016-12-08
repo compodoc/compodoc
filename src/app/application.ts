@@ -490,7 +490,7 @@ export namespace Application {
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!fs.existsSync(program.output)) {
-                logger.fatal(`${program.output} folder doesn't exist`);
+                logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
                 logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${defaultPort}`);
@@ -499,7 +499,7 @@ export namespace Application {
         } else if (program.serve && !program.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
             if (!fs.existsSync(defaultFolder)) {
-                logger.fatal('Provide output generated folder with -d flag');
+                logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
                 logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
@@ -512,7 +512,7 @@ export namespace Application {
 
             if (program.tsconfig) {
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.fatal('"tsconfig.json" file was not found in the current directory');
+                    logger.error('"tsconfig.json" file was not found in the current directory');
                     process.exit(1);
                 } else {
                     _file = path.join(
@@ -559,7 +559,7 @@ export namespace Application {
                     });
                 }
             } else {
-                logger.fatal('Entry file was not found');
+                logger.error('Entry file was not found');
                 outputHelp();
             }
         }
