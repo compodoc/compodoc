@@ -8,17 +8,23 @@
 
     LunrSearchEngine.prototype.init = function() {
         var that = this;
-        var d = $.Deferred();
+        var d = new promise.Promise();
 
-        $.getJSON(gitbook.state.basePath+'/search_index.json')
-        .then(function(data) {
-            // eslint-disable-next-line no-undef
-            that.index = lunr.Index.load(data.index);
-            that.store = data.store;
-            d.resolve();
+        $.ajax({
+            type: 'GET',
+            url: './search_index.json',
+            dataType: 'json',
+            success: function(data){
+                that.index = lunr.Index.load(data.index);
+                that.store = data.store;
+                d.done();
+            },
+            error: function(xhr, type){
+                console.error('Error loading search index json');
+            }
         });
 
-        return d.promise();
+        return d;
     };
 
     LunrSearchEngine.prototype.search = function(q, offset, length) {
