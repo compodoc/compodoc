@@ -280,6 +280,7 @@ export class Dependencies {
                         newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
                     } catch (e) {
                         logger.error('Routes parsing error, maybe a trailing comma ?');
+                        return true;
                     }
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
