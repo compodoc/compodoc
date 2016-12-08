@@ -1,3 +1,13 @@
+<a name="0.0.19"></a>
+## 0.0.19 (2016-12-08)
+
+### Bug Fixes
+
+* **menu:**  scroll to active link ([1c1ef1f](https://github.com/compodoc/compodoc/commit/1c1ef1f)), closes [#27](https://github.com/compodoc/compodoc/issues/27)
+* **menu:**  simple routes or modules entry active class ([ec81568](https://github.com/compodoc/compodoc/commit/ec81568))
+* **dependencies:**  don't stop on routes parsing errors ([cef716b](https://github.com/compodoc/compodoc/commit/cef716b)), closes [#26](https://github.com/compodoc/compodoc/issues/26)
+* **app:**  default serving port flag ([ea5ec23](https://github.com/compodoc/compodoc/commit/ea5ec23)), closes [#29](https://github.com/compodoc/compodoc/issues/29)
+
 <a name="0.0.18"></a>
 ## 0.0.18 (2016-12-05)
 
