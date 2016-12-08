@@ -34,6 +34,7 @@ export namespace Application {
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
         defaultFolder = './documentation/',
+        defaultPort = 8080,
         defaultTheme = 'gitbook';
 
     program
@@ -49,6 +50,7 @@ export namespace Application {
         //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
+        .option('-r, --port [port]', 'Change default serving port')
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
 
@@ -72,6 +74,10 @@ export namespace Application {
     if (program.theme) {
         defaultTheme = program.theme;
         $configuration.mainData.theme = defaultTheme;
+    }
+
+    if (program.port) {
+        defaultPort = program.port;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
@@ -442,7 +448,7 @@ export namespace Application {
                     let finalTime = (new Date() - startTime) / 1000;
                     logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
                     if (program.serve) {
-                        logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                        logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
                         runWebServer(defaultFolder);
                     }
                 }
@@ -464,7 +470,8 @@ export namespace Application {
             root: folder,
             open: false,
             quiet: true,
-            logLevel: 0
+            logLevel: 0,
+            port: defaultPort
         });
     }
 
@@ -475,19 +482,19 @@ export namespace Application {
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!fs.existsSync(program.output)) {
-                logger.fatal(`${program.output} folder doesn't exist`);
+                logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:8080`);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${defaultPort}`);
                 runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
             if (!fs.existsSync(defaultFolder)) {
-                logger.fatal('Provide output generated folder with -d flag');
+                logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
                 runWebServer(defaultFolder);
             }
         } else {
@@ -497,7 +504,7 @@ export namespace Application {
 
             if (program.tsconfig) {
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.fatal('"tsconfig.json" file was not found in the current directory');
+                    logger.error('"tsconfig.json" file was not found in the current directory');
                     process.exit(1);
                 } else {
                     _file = path.join(
@@ -544,7 +551,7 @@ export namespace Application {
                     });
                 }
             } else {
-                logger.fatal('Entry file was not found');
+                logger.error('Entry file was not found');
                 outputHelp();
             }
         }
