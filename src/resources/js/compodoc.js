@@ -1,6 +1,7 @@
 var compodoc = {
     EVENTS: {
-        READY: 'compodoc.ready'
+        READY: 'compodoc.ready',
+        SEARCH_READY: 'compodoc.search.ready'
     }
 };
 

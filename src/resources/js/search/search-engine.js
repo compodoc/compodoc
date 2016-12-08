@@ -15,7 +15,9 @@
         return engine.init()
         .then(function() {
             initialized = true;
-            gitbook.events.trigger('search.ready');
+            compodoc.dispatchEvent({
+                type: compodoc.EVENTS.SEARCH_READY
+            });
         });
     }
 
