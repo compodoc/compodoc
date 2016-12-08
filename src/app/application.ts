@@ -36,6 +36,7 @@ export namespace Application {
         defaultAdditionalEntryName = 'Additional documentation',
         defaultAdditionalEntryPath = 'additional-documentation',
         defaultFolder = './documentation/',
+        defaultPort = 8080,
         defaultTheme = 'gitbook';
 
     program
@@ -51,6 +52,7 @@ export namespace Application {
         //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
         .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
         .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
+        .option('-r, --port [port]', 'Change default serving port')
         .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
         .parse(process.argv);
 
@@ -74,6 +76,10 @@ export namespace Application {
     if (program.theme) {
         defaultTheme = program.theme;
         $configuration.mainData.theme = defaultTheme;
+    }
+
+    if (program.port) {
+        defaultPort = program.port;
     }
 
     $configuration.mainData.documentationMainName = program.name; //default commander value
@@ -450,7 +456,7 @@ export namespace Application {
                     let finalTime = (new Date() - startTime) / 1000;
                     logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
                     if (program.serve) {
-                        logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                        logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
                         runWebServer(defaultFolder);
                     }
                 }
@@ -472,7 +478,8 @@ export namespace Application {
             root: folder,
             open: false,
             quiet: true,
-            logLevel: 0
+            logLevel: 0,
+            port: defaultPort
         });
     }
 
@@ -486,7 +493,7 @@ export namespace Application {
                 logger.fatal(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:8080`);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${defaultPort}`);
                 runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
@@ -495,7 +502,7 @@ export namespace Application {
                 logger.fatal('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:8080`);
+                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
                 runWebServer(defaultFolder);
             }
         } else {

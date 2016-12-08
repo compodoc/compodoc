@@ -91,6 +91,7 @@ Options:
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -r, --port [port]         Change default serving port
   -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 ```
 
