@@ -39,7 +39,7 @@
         </li>
 
         <li class="chapter">
-            <a data-type="chapter-link" href="./modules.html"><span class="fa fa-archive"></span>Modules</a>
+            <a data-type="chapter-link" href="./modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}><span class="fa fa-archive"></span>Modules</a>
             <ul class="links">
                 {{#each modules}}
                     <li class="link">
@@ -90,7 +90,7 @@
 
         {{#if routes}}
         <li class="chapter">
-            <a data-type="chapter-link" href="./routes.html"><span class="fa fa-code-fork"></span>Routes</a>
+            <a data-type="chapter-link" href="./routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
         </li>
         {{/if}}
 
