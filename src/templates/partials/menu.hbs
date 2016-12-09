@@ -107,6 +107,19 @@
         </li>
         {{/if}}
 
+        {{#if interfaces}}
+        <li class="chapter">
+            <div class="simple"><span class="fa fa-info"></span>Interfaces</div>
+            <ul class="links">
+                {{#each interfaces}}
+                    <li class="link">
+                        <a href="./interfaces/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
         {{#if pipes}}
         <li class="chapter">
             <div class="simple"><span class="fa fa-plus"></span>Pipes</div>

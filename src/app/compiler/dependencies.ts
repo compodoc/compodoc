@@ -109,7 +109,8 @@ export class Dependencies {
             'pipes': [],
             'directives': [],
             'routes': [],
-            'classes': []
+            'classes': [],
+            'interfaces': []
         };
         let sourceFiles = this.program.getSourceFiles() || [];
 
@@ -271,6 +272,24 @@ export class Dependencies {
                         deps.methods = IO.methods;
                     }
                     outputSymbols['classes'].push(deps);
+                } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
+                    let name = this.getSymboleName(node);
+                    let IO = this.getInterfaceIO(file, sourceFile, node);
+                    deps = {
+                        name,
+                        file: file,
+                        type: 'interface'
+                    };
+                    if(IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if(IO.description) {
+                        deps.description = this.breakLines(IO.description);
+                    }
+                    if(IO.methods) {
+                        deps.methods = IO.methods;
+                    }
+                    outputSymbols['interfaces'].push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, sourceFile);
@@ -475,6 +494,22 @@ export class Dependencies {
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
     }
 
+    private visitCallDeclaration(method) {
+        return {
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        }
+    }
+
+    private visitIndexDeclaration(method) {
+        return {
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        }
+    }
+
     private visitMethodDeclaration(method) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -560,6 +595,10 @@ export class Dependencies {
                     members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
                     members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
                     properties.push(this.visitProperty(members[i]));
+                } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
+                    properties.push(this.visitCallDeclaration(members[i]));
+                } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
+                    properties.push(this.visitIndexDeclaration(members[i]));
                 }
             }
         }
@@ -677,6 +716,13 @@ export class Dependencies {
                 methods: members.methods,
                 properties: members.properties
             }];
+        } else {
+            members = this.visitMembers(classDeclaration.members);
+
+            return [{
+                methods: members.methods,
+                properties: members.properties
+            }];
         }
 
         return [];
@@ -723,6 +769,24 @@ export class Dependencies {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
                 return directive.concat(this.visitClassDeclaration(filename, statement));
+            }
+
+            return directive;
+        }, [])
+
+        return res[0] || {};
+    }
+
+    private getInterfaceIO(filename: string, sourceFile, node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce((directive, statement) => {
+
+            if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    return directive.concat(this.visitClassDeclaration(filename, statement));
+                }
             }
 
             return directive;

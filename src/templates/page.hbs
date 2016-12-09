@@ -80,6 +80,10 @@
                         {{> class data }}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'interface'}}
+                        {{> interface data }}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'routes'}}
                         {{> routes data }}
                    {{/compare}}

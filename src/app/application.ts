@@ -164,6 +164,10 @@ export namespace Application {
                 prepareClasses();
             }
 
+            if ($dependenciesEngine.interfaces.length > 0) {
+                prepareInterfaces();
+            }
+
             if (program.includes) {
                 processAddtionalDocumentation().then(() => {
                     processPages();
@@ -277,6 +281,22 @@ export namespace Application {
                 name: $configuration.mainData.classes[i].name,
                 context: 'class',
                 class: $configuration.mainData.classes[i]
+            });
+        }
+    }
+
+    let prepareInterfaces = () => {
+        logger.info('Prepare interfaces');
+        $configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+        let i = 0,
+            len = $configuration.mainData.interfaces.length;
+        console.log($configuration.mainData.interfaces)
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'interfaces',
+                name: $configuration.mainData.interfaces[i].name,
+                context: 'interface',
+                interface: $configuration.mainData.interfaces[i]
             });
         }
     }

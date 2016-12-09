@@ -1,0 +1,87 @@
+<ol class="breadcrumb">
+  <li>Interfaces</li>
+  <li>{{name}}</li>
+</ol>
+
+<p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>{{interface.file}}</code>
+</p>
+
+{{#if interface.description}}
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        {{{ interface.description}}}
+    </p>
+{{/if}}
+
+{{#if interface.methods}}
+<section>
+    <h3 id="methods">Methods</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            {{#each interface.methods}}
+                <tr>
+                    <td class="col-md-3"><code>{{name}}</code></td>
+                    <td class="col-md-9">
+                        {{#if args}}
+                            <div><i>Signature: </i><code>{{fxsignature this}}</code></div>
+                        {{/if}}
+                        {{#if returnType}}
+                            <div><i>Return type: </i><code>{{returnType}}</code></div>
+                        {{/if}}
+                        {{#if description}}
+                            <div class="io-description">{{{description}}}</div>
+                        {{/if}}
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>
+{{/if}}
+
+{{#if interface.properties}}
+<section>
+    <h3 id="inputs">Properties</h3>
+    <table class="table table-sm table-hover">
+        <tbody>
+            {{#each interface.properties}}
+                <tr>
+                    {{#if name}}
+                        <td class="col-md-3"><code>{{name}}</code></td>
+                        <td class="col-md-9">
+                            {{#if type}}
+                                <div><i>Type: </i><code>{{type}}</code></div>
+                            {{/if}}
+                            {{#if defaultValue}}
+                                <div><i>Default value: </i><code>{{defaultValue}}</code></div>
+                            {{/if}}
+                            {{#if description}}
+                                <div class="io-description">{{{description}}}</div>
+                            {{/if}}
+                        </td>
+                    {{else}}
+                        <td class="col-md-12">
+                            {{#if args}}
+                                <div><i>Signature: </i><code>{{fxsignature this}}</code></div>
+                            {{/if}}
+                            {{#if returnType}}
+                                <div><i>Return type: </i><code>{{returnType}}</code></div>
+                            {{/if}}
+                            {{#if description}}
+                                <div class="io-description">{{{description}}}</div>
+                            {{/if}}
+                        </td>
+                    {{/if}}
+
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</section>
+{{/if}}
