@@ -199,13 +199,14 @@ h4, h5 {
  */
 
 #book-search-input {
+    display: none;
     padding: 6px;
     background: 0 0;
     transition: top .5s ease;
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, .07);
     border-top: 1px solid rgba(0, 0, 0, .07);
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     margin-top: -1px
 }
 
@@ -254,6 +255,10 @@ h4, h5 {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.menu ul.list li.title {
+    padding-top: 10px;
 }
 
 .menu ul.list li a {

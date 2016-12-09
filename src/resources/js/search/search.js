@@ -13,8 +13,6 @@
     var $searchResultsCount;
     var $searchQuery;
 
-    console.log($body);
-
     // Throttle search
     function throttle(fn, wait) {
         var timeout;
@@ -114,11 +112,11 @@
     }
 
     compodoc.addEventListener(compodoc.EVENTS.SEARCH_READY, function(event) {
-        console.log('compodoc search.ready');
+        //console.log('compodoc search.ready');
 
-        bindSearch();
+        //bindSearch();
 
-        launchSearchFromQueryString();
+        //launchSearchFromQueryString();
     });
 
     function getParameterByName(name) {

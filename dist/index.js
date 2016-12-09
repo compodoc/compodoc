@@ -562,6 +562,62 @@ var NgdEngine = function () {
     return NgdEngine;
 }();
 
+var lunr = require('lunr');
+var cheerio = require('cheerio');
+var Entities = require('html-entities').AllHtmlEntities;
+var Html = new Entities();
+
+var SearchEngine = function () {
+    function SearchEngine() {
+        classCallCheck(this, SearchEngine);
+
+        this.documentsStore = {};
+    }
+
+    createClass(SearchEngine, [{
+        key: 'getSearchIndex',
+        value: function getSearchIndex() {
+            if (!this.searchIndex) {
+                this.searchIndex = lunr(function () {
+                    this.ref('url');
+                    this.field('title', { boost: 10 });
+                    this.field('body');
+                });
+            }
+            return this.searchIndex;
+        }
+    }, {
+        key: 'indexPage',
+        value: function indexPage(page) {
+            var text,
+                $ = cheerio.load(page.rawData);
+            text = $('.content').html();
+            text = Html.decode(text);
+            text = text.replace(/(<([^>]+)>)/ig, '');
+            var doc = {
+                url: page.url,
+                title: page.infos.context + ' - ' + page.infos.name,
+                body: text
+            };
+            this.documentsStore[doc.url] = doc;
+            this.getSearchIndex().add(doc);
+        }
+    }, {
+        key: 'generateSearchIndexJson',
+        value: function generateSearchIndexJson(outputFolder) {
+            fs.writeJson(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + 'search_index.json'), {
+                index: this.getSearchIndex(),
+                store: this.documentsStore
+            }, function (err) {
+                if (err) {
+                    logger.error('Error during search index file generation ', err);
+                }
+            });
+        }
+    }]);
+    return SearchEngine;
+}();
+
 // get default new line break
 
 function detectIndent(str, count, indent) {
@@ -1728,6 +1784,7 @@ var $fileengine = new FileEngine();
 var $configuration = new Configuration();
 var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
+var $searchEngine = new SearchEngine();
 var $dependenciesEngine = void 0;
 var startTime = new Date();
 var Application;
@@ -2030,6 +2087,11 @@ var Application;
                         finalPath += pages[i].path + '/';
                     }
                     finalPath += pages[i].name + '.html';
+                    $searchEngine.indexPage({
+                        infos: pages[i],
+                        rawData: htmlData,
+                        url: finalPath
+                    });
                     fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
                         if (err) {
                             logger.error('Error during ' + pages[i].name + ' page generation');
@@ -2042,6 +2104,7 @@ var Application;
                     logger.error(errorMessage);
                 });
             } else {
+                $searchEngine.generateSearchIndexJson(defaultFolder);
                 processResources();
             }
         };
