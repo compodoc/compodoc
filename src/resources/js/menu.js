@@ -29,5 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (activeMenu) {
         activeLink = document.querySelector('.' + activeMenuClass + ' .active');
         activeMenu.scrollTop = activeLink.offsetTop;
+        if (activeLink.innerHTML.toLowerCase().indexOf('readme') != -1 || activeLink.innerHTML.toLowerCase().indexOf('overview') != -1) {
+            activeMenu.scrollTop = 0;
+        }
     }
 });
