@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular application" width="226">
   <br>
   <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
@@ -10,7 +10,7 @@
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
 
-<p align="center">The missing documentation tool for your Angular 2 application</p>
+<p align="center">The missing documentation tool for your Angular application</p>
 
 Features
 ------------
@@ -25,7 +25,7 @@ Features
 
 ## Live Demo
 
-[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular 2 Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
 ## Static Demo
 
@@ -197,7 +197,7 @@ Compodoc search for a default README.md file inside the root folder of each comp
     └── README.md
 ```
 
-The live demo as a component documented in that way : [TodoMVC Angular 2 Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
+The live demo as a component documented in that way : [TodoMVC Angular Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
 
 ## Remark for routes
 
