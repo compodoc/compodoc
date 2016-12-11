@@ -2,3 +2,5 @@ screenshots/
 tsconfig.json
 rollup.config.js
 test/
+coverage
+.nyc_output
