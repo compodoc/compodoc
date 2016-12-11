@@ -271,6 +271,7 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    this.debug(deps);
                     outputSymbols['classes'].push(deps);
                 } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
                     let name = this.getSymboleName(node);
@@ -292,6 +293,7 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    this.debug(deps);
                     outputSymbols['interfaces'].push(deps);
                 }
             } else {
@@ -312,7 +314,6 @@ export class Dependencies {
     }
     private debug(deps: Deps) {
         logger.debug('debug', `${deps.name}:`);
-
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
