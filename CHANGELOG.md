@@ -1,3 +1,10 @@
+<a name="0.0.21"></a>
+## 0.0.21 (2016-12-12)
+
+### Bug Fixes
+
+* **app:**  es6 object.assign support ([6c25f59](https://github.com/compodoc/compodoc/commit/6c25f59))
+
 <a name="0.0.20"></a>
 ## 0.0.20 (2016-12-12)
 
