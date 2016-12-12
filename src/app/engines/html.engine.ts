@@ -89,9 +89,21 @@ export class HtmlEngine {
             text = text.replace(/,/g, ',<br>');
             return new Handlebars.SafeString(text);
         });
-        Handlebars.registerHelper('fxsignature', function(method) {
+        Handlebars.registerHelper('functionSignature', function(method) {
             const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
-            return `${method.name}(${args})`;
+            if (method.name) {
+                return `${method.name}(${args})`;
+            } else {
+                return `(${args})`;
+            }
+        });
+        Handlebars.registerHelper('indexableSignature', function(method) {
+            const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
+            if (method.name) {
+                return `${method.name}[${args}]`;
+            } else {
+                return `[${args}]`;
+            }
         });
         Handlebars.registerHelper('object', function(text) {
             text = JSON.stringify(text);
@@ -118,7 +130,10 @@ export class HtmlEngine {
             'pipe',
             'classes',
             'class',
-            'routes'
+	        'interface',
+            'routes',
+            'search-results',
+            'search-input'
         ],
             i = 0,
             len = partials.length,

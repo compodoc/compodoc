@@ -1,7 +1,3 @@
-<div id="book-search-input" role="search">
-    <input type="text" placeholder="Type to search">
-</div>
-
 <nav>
 
     <ul class="list">
@@ -11,6 +7,10 @@
         </li>
 
         <li class="divider"></li>
+
+        {{#compare menu "===" 'normal' }}
+            {{> search-input }}
+        {{/compare}}
 
         <li class="chapter">
             <a data-type="chapter-link" href="./"><span class="fa fa-home"></span>Getting started</a>
@@ -101,6 +101,19 @@
                 {{#each injectables}}
                     <li class="link">
                         <a href="./injectables/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
+        {{#if interfaces}}
+        <li class="chapter">
+            <div class="simple"><span class="fa fa-info"></span>Interfaces</div>
+            <ul class="links">
+                {{#each interfaces}}
+                    <li class="link">
+                        <a href="./interfaces/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>

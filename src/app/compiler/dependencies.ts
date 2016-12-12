@@ -109,7 +109,8 @@ export class Dependencies {
             'pipes': [],
             'directives': [],
             'routes': [],
-            'classes': []
+            'classes': [],
+            'interfaces': []
         };
         let sourceFiles = this.program.getSourceFiles() || [];
 
@@ -270,7 +271,30 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    this.debug(deps);
                     outputSymbols['classes'].push(deps);
+                } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
+                    let name = this.getSymboleName(node);
+                    let IO = this.getInterfaceIO(file, sourceFile, node);
+                    deps = {
+                        name,
+                        file: file,
+                        type: 'interface'
+                    };
+                    if(IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if(IO.kind) {
+                        deps.kind = IO.kind;
+                    }
+                    if(IO.description) {
+                        deps.description = this.breakLines(IO.description);
+                    }
+                    if(IO.methods) {
+                        deps.methods = IO.methods;
+                    }
+                    this.debug(deps);
+                    outputSymbols['interfaces'].push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, sourceFile);
@@ -290,7 +314,6 @@ export class Dependencies {
     }
     private debug(deps: Deps) {
         logger.debug('debug', `${deps.name}:`);
-
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
@@ -475,6 +498,22 @@ export class Dependencies {
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
     }
 
+    private visitCallDeclaration(method) {
+        return {
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        }
+    }
+
+    private visitIndexDeclaration(method) {
+        return {
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            returnType: this.visitType(method.type)
+        }
+    }
+
     private visitMethodDeclaration(method) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -538,6 +577,7 @@ export class Dependencies {
         var outputs = [];
         var methods = [];
         var properties = [];
+        var kind;
         var inputDecorator, outDecorator;
 
 
@@ -560,6 +600,12 @@ export class Dependencies {
                     members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
                     members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
                     properties.push(this.visitProperty(members[i]));
+                } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
+                    properties.push(this.visitCallDeclaration(members[i]));
+                    kind = members[i].kind;
+                } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
+                    properties.push(this.visitIndexDeclaration(members[i]));
+                    kind = members[i].kind;
                 }
             }
         }
@@ -572,7 +618,8 @@ export class Dependencies {
             inputs,
             outputs,
             methods,
-            properties
+            properties,
+            kind
         };
     }
 
@@ -650,7 +697,8 @@ export class Dependencies {
                         inputs: members.inputs,
                         outputs: members.outputs,
                         properties: members.properties,
-                        methods: members.methods
+                        methods: members.methods,
+                        kind: members.kind
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
@@ -659,7 +707,8 @@ export class Dependencies {
                     className,
                     description,
                     methods: members.methods,
-                    properties: members.properties
+                    properties: members.properties,
+                    kind: members.kind
                   }];
               } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
@@ -675,7 +724,16 @@ export class Dependencies {
             return [{
                 description,
                 methods: members.methods,
-                properties: members.properties
+                properties: members.properties,
+                kind: members.kind
+            }];
+        } else {
+            members = this.visitMembers(classDeclaration.members);
+
+            return [{
+                methods: members.methods,
+                properties: members.properties,
+                kind: members.kind
             }];
         }
 
@@ -723,6 +781,24 @@ export class Dependencies {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
                 return directive.concat(this.visitClassDeclaration(filename, statement));
+            }
+
+            return directive;
+        }, [])
+
+        return res[0] || {};
+    }
+
+    private getInterfaceIO(filename: string, sourceFile, node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce((directive, statement) => {
+
+            if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    return directive.concat(this.visitClassDeclaration(filename, statement));
+                }
             }
 
             return directive;

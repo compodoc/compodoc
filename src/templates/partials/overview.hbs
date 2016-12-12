@@ -73,6 +73,16 @@
                 </div>
             </div>
         {{/if}}
+        {{#if interfaces}}
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-info"></span></h4>
+                        <p class="card-text">{{ interfaces.length }} interface{{#compare interfaces.length ">" 1}}s{{/compare}}</p>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
         {{#if routes}}
             <div class="col-sm-3">
                 <div class="card text-center">
@@ -87,5 +97,5 @@
         {{/if}}
     </div>
 </div>
-<script src="js/svg-pan-zoom.min.js"></script>
+<script src="js/libs/svg-pan-zoom.min.js"></script>
 <script src="js/svg-pan-zoom.controls.js"></script>

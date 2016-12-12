@@ -14,6 +14,7 @@ import { FileEngine } from './engines/file.engine';
 import { Configuration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
+import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
 
 let pkg = require('../package.json'),
@@ -22,9 +23,10 @@ let pkg = require('../package.json'),
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
-    $configuration = new Configuration(),
+    $configuration = Configuration.getInstance(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
+    $searchEngine = new SearchEngine(),
     $dependenciesEngine,
     startTime = new Date();
 
@@ -66,6 +68,7 @@ export namespace Application {
     if (program.output) {
         defaultFolder = program.output;
     }
+    $configuration.mainData.defaultFolder = defaultFolder;
 
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
@@ -160,6 +163,10 @@ export namespace Application {
 
             if ($dependenciesEngine.classes.length > 0) {
                 prepareClasses();
+            }
+
+            if ($dependenciesEngine.interfaces.length > 0) {
+                prepareInterfaces();
             }
 
             if (program.includes) {
@@ -279,6 +286,21 @@ export namespace Application {
         }
     }
 
+    let prepareInterfaces = () => {
+        logger.info('Prepare interfaces');
+        $configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+        let i = 0,
+            len = $configuration.mainData.interfaces.length;
+        for(i; i<len; i++) {
+            $configuration.addPage({
+                path: 'interfaces',
+                name: $configuration.mainData.interfaces[i].name,
+                context: 'interface',
+                interface: $configuration.mainData.interfaces[i]
+            });
+        }
+    }
+
     let prepareComponents = () => {
         logger.info('Prepare components');
         $configuration.mainData.components = $dependenciesEngine.getComponents();
@@ -383,6 +405,11 @@ export namespace Application {
                             finalPath += pages[i].path + '/';
                         }
                         finalPath += pages[i].name + '.html';
+                        $searchEngine.indexPage({
+                            infos: pages[i],
+                            rawData: htmlData,
+                            url: finalPath
+                        });
                         fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
@@ -395,6 +422,7 @@ export namespace Application {
                         logger.error(errorMessage);
                     });
                 } else {
+                    $searchEngine.generateSearchIndexJson(defaultFolder);
                     processResources();
                 }
             };
