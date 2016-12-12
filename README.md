@@ -12,12 +12,18 @@
 
 <p align="center">The missing documentation tool for your Angular application</p>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+</p>
+
 Features
 ------------
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
-* **Beautiful themes** — 7 themes are available from famous documentation tools like Gitbook, readthedocs or projects like Vagrant, Laravel, Postmark and Stripe.
+* **Beautiful themes** — 7 themes are available from famous documentation tools like [Gitbook](https://www.gitbook.com), [Read the Docs](https://readthedocs.org/) or projects like [Vagrant](https://www.vagrantup.com/docs/), [Laravel](https://laravel.com/docs/5.3), [Postmark](http://developer.postmarkapp.com/) and [Stripe](https://stripe.com/docs/api).
+
+* **Search** — Compodoc include a powerful search engine ([lunr.js](http://lunrjs.com/)) for easily finding your information
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
@@ -36,8 +42,8 @@ README page             |  Overview page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
 ![screenshot-3](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
-Component page             |  
-![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  |
+Component page             |  Search page
+![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png)
 
 # Table of Contents
 
@@ -244,6 +250,7 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [x] component(s) page(s) with comments, API, class
 - [x] directives
 - [x] injectables
+- [x] interfaces
 - [x] pipes
 
 ## Contributors
