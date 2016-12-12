@@ -1,3 +1,11 @@
+<a name="0.0.20"></a>
+## 0.0.20 (2016-12-12)
+
+### Features
+
+* **search:** search bar ([3e3c8d0](https://github.com/compodoc/compodoc/commit/3e3c8d0))
+* **app:** add interfaces management ([896f233](https://github.com/compodoc/compodoc/commit/896f233))
+
 <a name="0.0.19"></a>
 ## 0.0.19 (2016-12-08)
 

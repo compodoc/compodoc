@@ -320,11 +320,25 @@ var HtmlEngine = function () {
             text = text.replace(/,/g, ',<br>');
             return new Handlebars.SafeString(text);
         });
-        Handlebars.registerHelper('fxsignature', function (method) {
+        Handlebars.registerHelper('functionSignature', function (method) {
             var args = method.args.map(function (arg) {
                 return arg.name + ': ' + arg.type;
             }).join(', ');
-            return method.name + '(' + args + ')';
+            if (method.name) {
+                return method.name + '(' + args + ')';
+            } else {
+                return '(' + args + ')';
+            }
+        });
+        Handlebars.registerHelper('indexableSignature', function (method) {
+            var args = method.args.map(function (arg) {
+                return arg.name + ': ' + arg.type;
+            }).join(', ');
+            if (method.name) {
+                return method.name + '[' + args + ']';
+            } else {
+                return '[' + args + ']';
+            }
         });
         Handlebars.registerHelper('object', function (text) {
             text = JSON.stringify(text);
@@ -338,7 +352,7 @@ var HtmlEngine = function () {
     createClass(HtmlEngine, [{
         key: 'init',
         value: function init() {
-            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'routes'],
+            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input'],
                 i = 0,
                 len = partials.length,
                 loop = function loop(resolve$$1, reject) {
@@ -451,6 +465,10 @@ var Configuration = function () {
 
         this._pages = [];
         this._mainData = {};
+        if (Configuration._instance) {
+            throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
+        }
+        Configuration._instance = this;
     }
 
     createClass(Configuration, [{
@@ -474,9 +492,16 @@ var Configuration = function () {
         set: function set(data) {
             Object.assign(this._mainData, data);
         }
+    }], [{
+        key: 'getInstance',
+        value: function getInstance() {
+            return Configuration._instance;
+        }
     }]);
     return Configuration;
 }();
+
+Configuration._instance = new Configuration();
 
 var DependenciesEngine = function () {
     function DependenciesEngine(data) {
@@ -487,6 +512,7 @@ var DependenciesEngine = function () {
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
         this.routes = _.sortBy(_.uniqBy(this.rawData.routes, 'path'), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
@@ -511,6 +537,11 @@ var DependenciesEngine = function () {
         key: 'getInjectables',
         value: function getInjectables() {
             return this.injectables;
+        }
+    }, {
+        key: 'getInterfaces',
+        value: function getInterfaces() {
+            return this.interfaces;
         }
     }, {
         key: 'getRoutes',
@@ -565,6 +596,7 @@ var NgdEngine = function () {
 var lunr = require('lunr');
 var cheerio = require('cheerio');
 var Entities = require('html-entities').AllHtmlEntities;
+var $configuration$1 = Configuration.getInstance();
 var Html = new Entities();
 
 var SearchEngine = function () {
@@ -594,6 +626,7 @@ var SearchEngine = function () {
             text = $('.content').html();
             text = Html.decode(text);
             text = text.replace(/(<([^>]+)>)/ig, '');
+            page.url = page.url.replace($configuration$1.mainData.defaultFolder, '');
             var doc = {
                 url: page.url,
                 title: page.infos.context + ' - ' + page.infos.name,
@@ -911,7 +944,8 @@ var Dependencies = function () {
                 'pipes': [],
                 'directives': [],
                 'routes': [],
-                'classes': []
+                'classes': [],
+                'interfaces': []
             };
             var sourceFiles = this.program.getSourceFiles() || [];
             sourceFiles.map(function (file) {
@@ -1048,14 +1082,37 @@ var Dependencies = function () {
                         if (IO.methods) {
                             deps.methods = IO.methods;
                         }
+                        _this2.debug(deps);
                         outputSymbols['classes'].push(deps);
+                    } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
+                        var _name = _this2.getSymboleName(node);
+                        var _IO = _this2.getInterfaceIO(file, sourceFile, node);
+                        deps = {
+                            name: _name,
+                            file: file,
+                            type: 'interface'
+                        };
+                        if (_IO.properties) {
+                            deps.properties = _IO.properties;
+                        }
+                        if (_IO.kind) {
+                            deps.kind = _IO.kind;
+                        }
+                        if (_IO.description) {
+                            deps.description = _this2.breakLines(_IO.description);
+                        }
+                        if (_IO.methods) {
+                            deps.methods = _IO.methods;
+                        }
+                        _this2.debug(deps);
+                        outputSymbols['interfaces'].push(deps);
                     }
                 } else {
-                    var _IO = _this2.getRouteIO(file, sourceFile);
-                    if (_IO.routes) {
+                    var _IO2 = _this2.getRouteIO(file, sourceFile);
+                    if (_IO2.routes) {
                         var newRoutes = void 0;
                         try {
-                            newRoutes = JSON.parse(_IO.routes.replace(/ /gm, ''));
+                            newRoutes = JSON.parse(_IO2.routes.replace(/ /gm, ''));
                         } catch (e) {
                             logger.error('Routes parsing error, maybe a trailing comma ?');
                             return true;
@@ -1279,9 +1336,35 @@ var Dependencies = function () {
             return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
         }
     }, {
+        key: 'visitCallDeclaration',
+        value: function visitCallDeclaration(method) {
+            var _this8 = this;
+
+            return {
+                description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+                args: method.parameters ? method.parameters.map(function (prop) {
+                    return _this8.visitArgument(prop);
+                }) : [],
+                returnType: this.visitType(method.type)
+            };
+        }
+    }, {
+        key: 'visitIndexDeclaration',
+        value: function visitIndexDeclaration(method) {
+            var _this9 = this;
+
+            return {
+                description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+                args: method.parameters ? method.parameters.map(function (prop) {
+                    return _this9.visitArgument(prop);
+                }) : [],
+                returnType: this.visitType(method.type)
+            };
+        }
+    }, {
         key: 'visitMethodDeclaration',
         value: function visitMethodDeclaration(method) {
-            var _this8 = this;
+            var _this10 = this;
 
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -1290,7 +1373,7 @@ var Dependencies = function () {
                 name: method.name.text,
                 description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
                 args: method.parameters ? method.parameters.map(function (prop) {
-                    return _this8.visitArgument(prop);
+                    return _this10.visitArgument(prop);
                 }) : [],
                 returnType: this.visitType(method.type)
             };
@@ -1354,6 +1437,7 @@ var Dependencies = function () {
             var outputs = [];
             var methods = [];
             var properties = [];
+            var kind;
             var inputDecorator, outDecorator;
             for (var i = 0; i < members.length; i++) {
                 inputDecorator = this.getDecoratorOfType(members[i], 'Input');
@@ -1367,6 +1451,12 @@ var Dependencies = function () {
                         methods.push(this.visitMethodDeclaration(members[i]));
                     } else if (members[i].kind === ts.SyntaxKind.PropertyDeclaration || members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
                         properties.push(this.visitProperty(members[i]));
+                    } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
+                        properties.push(this.visitCallDeclaration(members[i]));
+                        kind = members[i].kind;
+                    } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
+                        properties.push(this.visitIndexDeclaration(members[i]));
+                        kind = members[i].kind;
                     }
                 }
             }
@@ -1377,7 +1467,8 @@ var Dependencies = function () {
                 inputs: inputs,
                 outputs: outputs,
                 methods: methods,
-                properties: properties
+                properties: properties,
+                kind: kind
             };
         }
     }, {
@@ -1458,7 +1549,8 @@ var Dependencies = function () {
                             inputs: members.inputs,
                             outputs: members.outputs,
                             properties: members.properties,
-                            methods: members.methods
+                            methods: members.methods,
+                            kind: members.kind
                         };
                     } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                         members = this.visitMembers(classDeclaration.members);
@@ -1467,7 +1559,8 @@ var Dependencies = function () {
                             className: className,
                             description: description,
                             methods: members.methods,
-                            properties: members.properties
+                            properties: members.properties,
+                            kind: members.kind
                         }];
                     } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                         return [{
@@ -1482,7 +1575,15 @@ var Dependencies = function () {
                 return [{
                     description: description,
                     methods: members.methods,
-                    properties: members.properties
+                    properties: members.properties,
+                    kind: members.kind
+                }];
+            } else {
+                members = this.visitMembers(classDeclaration.members);
+                return [{
+                    methods: members.methods,
+                    properties: members.properties,
+                    kind: members.kind
                 }];
             }
             return [];
@@ -1508,14 +1609,14 @@ var Dependencies = function () {
     }, {
         key: 'getRouteIO',
         value: function getRouteIO(filename, sourceFile) {
-            var _this9 = this;
+            var _this11 = this;
 
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
             var res = sourceFile.statements.reduce(function (directive, statement) {
                 if (statement.kind === ts.SyntaxKind.VariableStatement) {
-                    return directive.concat(_this9.visitEnumDeclaration(filename, statement));
+                    return directive.concat(_this11.visitEnumDeclaration(filename, statement));
                 }
                 return directive;
             }, []);
@@ -1524,14 +1625,32 @@ var Dependencies = function () {
     }, {
         key: 'getComponentIO',
         value: function getComponentIO(filename, sourceFile) {
-            var _this10 = this;
+            var _this12 = this;
 
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
             var res = sourceFile.statements.reduce(function (directive, statement) {
                 if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
-                    return directive.concat(_this10.visitClassDeclaration(filename, statement));
+                    return directive.concat(_this12.visitClassDeclaration(filename, statement));
+                }
+                return directive;
+            }, []);
+            return res[0] || {};
+        }
+    }, {
+        key: 'getInterfaceIO',
+        value: function getInterfaceIO(filename, sourceFile, node) {
+            var _this13 = this;
+
+            /**
+             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+             */
+            var res = sourceFile.statements.reduce(function (directive, statement) {
+                if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
+                    if (statement.pos === node.pos && statement.end === node.end) {
+                        return directive.concat(_this13.visitClassDeclaration(filename, statement));
+                    }
                 }
                 return directive;
             }, []);
@@ -1545,29 +1664,29 @@ var Dependencies = function () {
     }, {
         key: 'getComponentProviders',
         value: function getComponentProviders(props) {
-            var _this11 = this;
+            var _this14 = this;
 
             return this.getSymbolDeps(props, 'providers').map(function (name) {
-                return _this11.parseDeepIndentifier(name);
+                return _this14.parseDeepIndentifier(name);
             });
         }
     }, {
         key: 'getComponentViewProviders',
         value: function getComponentViewProviders(props) {
-            var _this12 = this;
+            var _this15 = this;
 
             return this.getSymbolDeps(props, 'viewProviders').map(function (name) {
-                return _this12.parseDeepIndentifier(name);
+                return _this15.parseDeepIndentifier(name);
             });
         }
     }, {
         key: 'getComponentDirectives',
         value: function getComponentDirectives(props) {
-            var _this13 = this;
+            var _this16 = this;
 
             return this.getSymbolDeps(props, 'directives').map(function (name) {
-                var identifier = _this13.parseDeepIndentifier(name);
-                identifier.selector = _this13.findComponentSelectorByName(name);
+                var identifier = _this16.parseDeepIndentifier(name);
+                identifier.selector = _this16.findComponentSelectorByName(name);
                 identifier.label = '';
                 return identifier;
             });
@@ -1661,7 +1780,7 @@ var Dependencies = function () {
     }, {
         key: 'getSymbolDeps',
         value: function getSymbolDeps(props, type, multiLine) {
-            var _this14 = this;
+            var _this17 = this;
 
             var deps = props.filter(function (node) {
                 return node.name.text === type;
@@ -1677,7 +1796,7 @@ var Dependencies = function () {
 
                 if (node.expression) {
                     name = name ? '.' + name : name;
-                    var nodeName = _this14.unknown;
+                    var nodeName = _this17.unknown;
                     if (node.name) {
                         nodeName = node.name.text;
                     } else if (node.text) {
@@ -1781,7 +1900,7 @@ var files = [];
 var cwd = process.cwd();
 var $htmlengine = new HtmlEngine();
 var $fileengine = new FileEngine();
-var $configuration = new Configuration();
+var $configuration = Configuration.getInstance();
 var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
@@ -1806,6 +1925,7 @@ var Application;
     if (program.output) {
         defaultFolder = program.output;
     }
+    $configuration.mainData.defaultFolder = defaultFolder;
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
     }
@@ -1883,6 +2003,9 @@ var Application;
             }
             if ($dependenciesEngine.classes.length > 0) {
                 prepareClasses();
+            }
+            if ($dependenciesEngine.interfaces.length > 0) {
+                prepareInterfaces();
             }
             if (program.includes) {
                 processAddtionalDocumentation().then(function () {
@@ -1990,6 +2113,20 @@ var Application;
                 name: $configuration.mainData.classes[i].name,
                 context: 'class',
                 class: $configuration.mainData.classes[i]
+            });
+        }
+    };
+    var prepareInterfaces = function prepareInterfaces() {
+        logger.info('Prepare interfaces');
+        $configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+        var i = 0,
+            len = $configuration.mainData.interfaces.length;
+        for (i; i < len; i++) {
+            $configuration.addPage({
+                path: 'interfaces',
+                name: $configuration.mainData.interfaces[i].name,
+                context: 'interface',
+                interface: $configuration.mainData.interfaces[i]
             });
         }
     };
