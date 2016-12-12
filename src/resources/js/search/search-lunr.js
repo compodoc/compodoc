@@ -7,8 +7,8 @@
     }
 
     LunrSearchEngine.prototype.init = function() {
-        var that = this;
-        var d = new promise.Promise();
+        var that = this,
+            d = new promise.Promise();
 
         $.ajax({
             type: 'GET',
@@ -28,8 +28,9 @@
     };
 
     LunrSearchEngine.prototype.search = function(q, offset, length) {
-        var that = this;
-        var results = [];
+        var that = this,
+            results = [],
+            d = new promise.Promise();
 
         if (this.index) {
             results = $.map(this.index.search(q), function(result) {
@@ -43,18 +44,36 @@
             });
         }
 
-        return $.Deferred().resolve({
+        d.done({
             query: q,
             results: results.slice(0, length),
             count: results.length
-        }).promise();
+        });
+
+        return d;
     };
 
     compodoc.addEventListener(compodoc.EVENTS.READY, function(event) {
         console.log('compodoc ready');
-        var engine = compodoc.search.getEngine();
-        if (!engine) {
-            compodoc.search.setEngine(LunrSearchEngine);
+
+        var engine = new LunrSearchEngine(),
+            initialized = false;
+
+        engine.init()
+        .then(function() {
+            initialized = true;
+            compodoc.dispatchEvent({
+                type: compodoc.EVENTS.SEARCH_READY
+            });
+        });
+
+        function query(q, offset, length) {
+            if (!initialized) throw new Error('Search has not been initialized');
+            return engine.search(q, offset, length);
         }
+
+        compodoc.search = {
+            query: query
+        };
     });
 })(compodoc);
