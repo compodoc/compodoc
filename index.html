@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <p align="center">
-  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular 2 application" width="226">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular application" width="226">
   <br>
   <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
   <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
@@ -31,14 +31,19 @@
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
 
-<p align="center">The missing documentation tool for your Angular 2 application</p>
+<p align="center">The missing documentation tool for your Angular application</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+</p>
 
 <h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
 <li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side</p></li>
-<li><p><strong>Beautiful themes</strong> — 7 themes are available from famous documentation tools like Gitbook, readthedocs or projects like Vagrant, Laravel, Postmark and Stripe.</p></li>
+<li><p><strong>Beautiful themes</strong> — 7 themes are available from famous documentation tools like <a href="https://www.gitbook.com">Gitbook</a>, <a href="https://readthedocs.org/">Read the Docs</a> or projects like <a href="https://www.vagrantup.com/docs/">Vagrant</a>, <a href="https://laravel.com/docs/5.3">Laravel</a>, <a href="http://developer.postmarkapp.com/">Postmark</a> and <a href="https://stripe.com/docs/api">Stripe</a>.</p></li>
+<li><p><strong>Search</strong> — Compodoc include a powerful search engine (<a href="http://lunrjs.com/">lunr.js</a>) for easily finding your information</p></li>
 <li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
 <li><p><strong>Compodoc is open-source and on npm</strong> - Use it directly in your project using npm and one script, that's it !</p></li>
 </ul>
@@ -46,7 +51,7 @@
 <h2>
 <a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
 
-<p><a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">Demo</a> : documentation generated for <a href="https://github.com/compodoc/compodoc-demo-todomvc-angular2">TodoMVC Angular 2 Compodoc demo</a></p>
+<p><a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">Demo</a> : documentation generated for <a href="https://github.com/compodoc/compodoc-demo-todomvc-angular2">TodoMVC Angular Compodoc demo</a></p>
 
 <h2>
 <a id="static-demo" class="anchor" href="#static-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Demo</h2>
@@ -75,11 +80,11 @@
 </tr>
 <tr>
 <td align="center">Component page</td>
-<td align="center"></td>
+<td align="center">Search page</td>
 </tr>
 <tr>
 <td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png" alt="screenshot-5"></td>
-<td align="center"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png" alt="screenshot-5"></td>
 </tr>
 </tbody>
 </table>
@@ -150,6 +155,7 @@ Options:
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -r, --port [port]         Change default serving port
   -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
 </code></pre>
 
@@ -283,7 +289,7 @@ compodoc -s -d ./doc
     └── README.md
 </code></pre>
 
-<p>The live demo as a component documented in that way : <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html">TodoMVC Angular 2 Compodoc demo / todo component</a></p>
+<p>The live demo as a component documented in that way : <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html">TodoMVC Angular Compodoc demo / todo component</a></p>
 
 <h2>
 <a id="remark-for-routes" class="anchor" href="#remark-for-routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for routes</h2>
@@ -338,6 +344,7 @@ RouterModule.forRoot(APP_ROUTES)
 <li>[x] component(s) page(s) with comments, API, class</li>
 <li>[x] directives</li>
 <li>[x] injectables</li>
+<li>[x] interfaces</li>
 <li>[x] pipes</li>
 </ul>
 
