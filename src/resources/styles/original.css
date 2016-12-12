@@ -38,6 +38,10 @@
     font-weight: bold;
 }
 
-.xs-menu {
-
+#book-search-input {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+.menu ul.list li.divider {
+    margin: 0;
 }
