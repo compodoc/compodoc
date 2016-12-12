@@ -22,15 +22,17 @@
         </div>
 
         <div class="xs-menu menu" id="mobile-menu">
+            {{> search-input data }}
             {{> menu data }}
         </div>
 
         <div class="container-fluid main">
            <div class="row main">
                <div class="hidden-xs menu">
-                   {{> menu data }}
+                   {{> menu data menu='normal' }}
                </div>
                <div class="content {{data.context}}">
+                   <div class="content-data">
                    {{#compare data.context "===" 'readme'}}
                         {{> readme data}}
                    {{/compare}}
@@ -87,6 +89,8 @@
                    {{#compare data.context "===" 'additionalpages'}}
                         {{> readme data }}
                    {{/compare}}
+                   </div>
+                   {{> search-results data }}
                </div>
            </div>
        </div>
@@ -95,10 +99,10 @@
 
        <script src="./js/libs/EventDispatcher.js"></script>
        <script src="./js/libs/promise.min.js"></script>
+       <script src="./js/libs/zepto.min.js"></script>
 
        <script src="./js/compodoc.js"></script>
 
-       <script src="./js/search/search-engine.js"></script>
        <script src="./js/search/search.js"></script>
        <script src="./js/search/lunr.min.js"></script>
        <script src="./js/search/search-lunr.js"></script>

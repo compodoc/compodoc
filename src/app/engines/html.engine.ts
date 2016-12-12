@@ -118,7 +118,9 @@ export class HtmlEngine {
             'pipe',
             'classes',
             'class',
-            'routes'
+            'routes',
+            'search-results',
+            'search-input'
         ],
             i = 0,
             len = partials.length,
