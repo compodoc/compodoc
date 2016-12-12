@@ -2,16 +2,24 @@
 <table class="table table-sm table-hover">
     <tbody>
         <tr>
-            <td class="col-md-3"><b>Path</b></td>
-            <td class="col-md-3"><b>Component</b></td>
-            <td class="col-md-6"><b>redirectTo</b></td>
+            <td class="col-md-3"><b>path</b></td>
+            <td class="col-md-3"><b>pathMatch</b></td>
+            <td class="col-md-3"><b>component</b></td>
+            <td class="col-md-3"><b>redirectTo</b></td>
         </tr>
 
         {{#each routes}}
         <tr>
-            <td class="col-md-3">{{path}}</td>
+            <td class="col-md-3">
+                {{#compare path "===" '' }}
+                    " "
+                {{else}}
+                    {{path}}
+                {{/compare}}
+            </td>
+            <td class="col-md-3">{{pathMatch}}</td>
             <td class="col-md-3"><a href="./components/{{component}}.html">{{component}}</a></td>
-            <td class="col-md-6">{{redirectTo}}</td>
+            <td class="col-md-3">{{redirectTo}}</td>
         </tr>
         {{/each}}
 

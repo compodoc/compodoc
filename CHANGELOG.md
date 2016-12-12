@@ -1,9 +1,19 @@
+<a name="0.0.22"></a>
+## 0.0.22 (2016-12-12)
+
+### Bug Fixes
+
+* **routes:** support for multiple components for same route ([5782415](https://github.com/compodoc/compodoc/commit/5782415)), closes [#33](https://github.com/compodoc/compodoc/issues/33)
+### Features
+
+* **routes:** extend routes page : empty path, pathMatch ([4474973](https://github.com/compodoc/compodoc/commit/4474973))
+
 <a name="0.0.21"></a>
 ## 0.0.21 (2016-12-12)
 
 ### Bug Fixes
 
-* **app:**  es6 object.assign support ([6c25f59](https://github.com/compodoc/compodoc/commit/6c25f59))
+* **app:** es6 object.assign support ([6c25f59](https://github.com/compodoc/compodoc/commit/6c25f59))
 
 <a name="0.0.20"></a>
 ## 0.0.20 (2016-12-12)
