@@ -1,10 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { logger } from '../../logger';
+import { Configuration } from '../configuration';
 
 const lunr: any = require('lunr'),
       cheerio: any = require('cheerio'),
       Entities:any = require('html-entities').AllHtmlEntities,
+      $configuration = Configuration.getInstance(),
       Html = new Entities();
 
 export class SearchEngine {
@@ -29,6 +31,8 @@ export class SearchEngine {
         text = $('.content').html();
         text = Html.decode(text);
         text = text.replace(/(<([^>]+)>)/ig, '');
+
+        page.url = page.url.replace($configuration.mainData.defaultFolder, '');
 
         var doc = {
             url: page.url,

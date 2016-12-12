@@ -1,17 +1,19 @@
 (function(compodoc) {
-    var MAX_RESULTS = 15;
-    var MAX_DESCRIPTION_SIZE = 500;
+    var MAX_RESULTS = 15,
+        MAX_DESCRIPTION_SIZE = 500,
 
-    var usePushState = (typeof history.pushState !== 'undefined');
+        usePushState = (typeof history.pushState !== 'undefined'),
 
     // DOM Elements
-    var $body = $('body');
-    var $bookSearchResults;
-    var $searchInput;
-    var $searchList;
-    var $searchTitle;
-    var $searchResultsCount;
-    var $searchQuery;
+        $body = $('body'),
+        $searchResults,
+        $searchInput,
+        $searchList,
+        $searchTitle,
+        $searchResultsCount,
+        $searchQuery,
+        $mainContainer,
+        $xsMenu;
 
     // Throttle search
     function throttle(fn, wait) {
@@ -29,38 +31,89 @@
     }
 
     function displayResults(res) {
-        console.log('displayResults: ', res);
+        var noResults = res.count == 0;
+        $searchResults.toggleClass('no-results', noResults);
+
+        // Clear old results
+        $searchList.empty();
+
+        // Display title for research
+        $searchResultsCount.text(res.count);
+        $searchQuery.text(res.query);
+
+        // Create an <li> element for each result
+        res.results.forEach(function(res) {
+            var $li = $('<li>', {
+                'class': 'search-results-item'
+            });
+
+            var $title = $('<h3>');
+
+            var $link = $('<a>', {
+                'href': res.url,
+                'text': res.title
+            });
+
+            var content = res.body.trim();
+            if (content.length > MAX_DESCRIPTION_SIZE) {
+                content = content.slice(0, MAX_DESCRIPTION_SIZE).trim()+'...';
+            }
+            var $content = $('<p>').html(content);
+
+            $link.appendTo($title);
+            $title.appendTo($li);
+            $content.appendTo($li);
+            $li.appendTo($searchList);
+        });
     }
 
     function launchSearch(q) {
-        console.log('launchSearch: ', q);
+        $body.addClass('with-search');
+
+        if ($xsMenu.css('display') === 'block') {
+            $mainContainer.css('height', 'calc(100% - 100px)');
+            $mainContainer.css('margin-top', '100px');
+        }
+
+        throttle(compodoc.search.query(q, 0, MAX_RESULTS)
+        .then(function(results) {
+            displayResults(results);
+        }), 1000);
     }
 
     function closeSearch() {
-        console.log('closeSearch');
+        $body.removeClass('with-search');
+        if ($xsMenu.css('display') === 'block') {
+            $mainContainer.css('height', 'calc(100% - 50px)');
+            $mainContainer.css('margin-top', '50px');
+        }
     }
 
-    function launchSearchFromQueryString() {
-        var q = getParameterByName('q');
-        if (q && q.length > 0) {
-            // Update search input
-            $searchInput.val(q);
-
-            // Launch search
-            launchSearch(q);
-        }
+    function bindMenuButton() {
+        document.getElementById('btn-menu').addEventListener('click', function() {
+            if ($xsMenu.css('display') === 'none') {
+                $body.removeClass('with-search');
+                $mainContainer.css('height', 'calc(100% - 50px)');
+                $mainContainer.css('margin-top', '50px');
+            }
+            $.each($searchInputs, function(index, item){
+                var item = $(item);
+                item.val('');
+            });
+        });
     }
 
     function bindSearch() {
         // Bind DOM
         $searchInputs        = $('#book-search-input input');
-        console.log($searchInputs);
-        /*
-        $bookSearchResults  = $('#book-search-results');
-        $searchList         = $bookSearchResults.find('.search-results-list');
-        $searchTitle        = $bookSearchResults.find('.search-results-title');
+
+        $searchResults = $('.search-results');
+        $searchList         = $searchResults.find('.search-results-list');
+        $searchTitle        = $searchResults.find('.search-results-title');
         $searchResultsCount = $searchTitle.find('.search-results-count');
-        $searchQuery        = $searchTitle.find('.search-query');*/
+        $searchQuery        = $searchTitle.find('.search-query');
+        $mainContainer      = $('.container-fluid');
+        $xsMenu             = $('.xs-menu');
 
         // Launch query based on input content
         function handleUpdate(item) {
@@ -68,8 +121,7 @@
 
             if (q.length == 0) {
                 closeSearch();
-            }
-            else {
+            } else {
                 launchSearch(q);
             }
         }
@@ -78,7 +130,6 @@
         var propertyChangeUnbound = false;
 
         $.each($searchInputs, function(index, item){
-            console.log(item);
             var item = $(item);
             // HTML5 (IE9 & others)
             item.on('input', function(e) {
@@ -108,15 +159,24 @@
     }
 
     function launchSearchFromQueryString() {
-
+        var q = getParameterByName('q');
+        if (q && q.length > 0) {
+            // Update search inputs
+            $.each($searchInputs, function(index, item){
+                var item = $(item);
+                item.val(q)
+            });
+            // Launch search
+            launchSearch(q);
+        }
     }
 
     compodoc.addEventListener(compodoc.EVENTS.SEARCH_READY, function(event) {
-        //console.log('compodoc search.ready');
+        bindSearch();
 
-        //bindSearch();
+        bindMenuButton();
 
-        //launchSearchFromQueryString();
+        launchSearchFromQueryString();
     });
 
     function getParameterByName(name) {

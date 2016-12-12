@@ -130,8 +130,10 @@ export class HtmlEngine {
             'pipe',
             'classes',
             'class',
-            'interface',
-            'routes'
+	    'interface',
+            'routes',
+            'search-results',
+            'search-input'
         ],
             i = 0,
             len = partials.length,

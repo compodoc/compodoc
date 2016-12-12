@@ -1,7 +1,3 @@
-<div id="book-search-input" role="search">
-    <input type="text" placeholder="Type to search">
-</div>
-
 <nav>
 
     <ul class="list">
@@ -11,6 +7,10 @@
         </li>
 
         <li class="divider"></li>
+
+        {{#compare menu "===" 'normal' }}
+            {{> search-input }}
+        {{/compare}}
 
         <li class="chapter">
             <a data-type="chapter-link" href="./"><span class="fa fa-home"></span>Getting started</a>

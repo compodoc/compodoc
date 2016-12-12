@@ -23,7 +23,7 @@ let pkg = require('../package.json'),
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
-    $configuration = new Configuration(),
+    $configuration = Configuration.getInstance(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $searchEngine = new SearchEngine(),
@@ -68,6 +68,7 @@ export namespace Application {
     if (program.output) {
         defaultFolder = program.output;
     }
+    $configuration.mainData.defaultFolder = defaultFolder;
 
     if (program.includesName) {
         defaultAdditionalEntryName = program.includesName;
