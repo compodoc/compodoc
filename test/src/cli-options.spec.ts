@@ -71,7 +71,7 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Serve generated documentation');
         });
 
-        it(`-sp`, () => {
+        it(`-r`, () => {
             expect(runHelp.stdout.toString()).to.contain('-r, --port [port]');
             expect(runHelp.stdout.toString()).to.contain('Change default serving port');
         });
