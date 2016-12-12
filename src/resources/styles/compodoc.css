@@ -330,6 +330,13 @@ h4, h5 {
     margin: 0;
     background: none;
 }
+.menu ul.list li:nth-child(2){
+    margin: 0;
+    background: none;
+}
+.menu .title {
+    padding: 8px 0;
+}
 
 .overview .card-title .fa {
     font-size: 50px;
