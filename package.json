@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
-    "angular2-dependencies-graph": "^1.0.0-alpha.11",
+    "angular2-dependencies-graph": "^1.0.0-alpha.12",
     "cheerio": "^0.22.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
