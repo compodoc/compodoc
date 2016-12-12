@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "The missing documentation tool for your Angular application",
   "main": "index.js",
   "bin": {
@@ -24,6 +24,7 @@
   },
   "keywords": [
     "angular2",
+    "angular",
     "documentation",
     "components",
     "module",
