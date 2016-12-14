@@ -59,6 +59,7 @@ Component page             |  Search page
   - [Styling the documentation](#styling-hte-documentation)
   - [Documentation of each component](#documentation-of-each-component)
   - [Syntax highlighting in markdown files](#syntax-highlighting-in-markdown-files)
+- [Remark for comments](#remark-for-comments)
 - [Remark for routes](#remark-for-routes)
 - [Why this tool ?](#why-this-tool-)
 - [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
@@ -204,6 +205,30 @@ Compodoc search for a default README.md file inside the root folder of each comp
 ```
 
 The live demo as a component documented in that way : [TodoMVC Angular Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
+
+## Remark for comments
+
+Compodoc use Typescript AST parser and it's internal APIs, so the comments have to be JSDoc comments :
+
+```
+/**
+ * Supported comment
+ */
+```
+
+These ones are not supported :
+
+```
+/*
+ * unsupported comment
+ */
+
+/*
+  unsupported comment
+ */
+
+// unsupported comment
+```
 
 ## Remark for routes
 
