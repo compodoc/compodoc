@@ -1,3 +1,3 @@
-import {Application} from './app/application';
+import * as application from './app/application';
 
-Application.run();
+export let Application = application.Application;

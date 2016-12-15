@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var fs = require('fs-extra');
@@ -1931,7 +1929,7 @@ var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
 var $dependenciesEngine = void 0;
 var startTime = new Date();
-var Application$1;
+var Application;
 (function (Application) {
     var defaultTitle = 'Application documentation',
         defaultAdditionalEntryName = 'Additional documentation',
@@ -2414,8 +2412,6 @@ var Application$1;
             }
         }
     };
-})(Application$1 || (Application$1 = {}));
+})(Application || (Application = {}));
 
-var Application$$1 = Application$1;
-
-exports.Application = Application$$1;
+Application.run();

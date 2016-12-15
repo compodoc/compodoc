@@ -2,12 +2,12 @@
   "name": "compodoc",
   "version": "0.0.23",
   "description": "The missing documentation tool for your Angular application",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "compodoc": "./bin/index.js"
+    "compodoc": "./bin/index-cli.js"
   },
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c",
+    "build": "./node_modules/.bin/rollup -c rollup/rollup.config.js && ./node_modules/.bin/rollup -c rollup/rollup-cli.config.js",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "start": "npm run tsc",
     "pretest": "tsc -p test/tsconfig.json",
