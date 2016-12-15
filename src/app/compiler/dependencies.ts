@@ -96,9 +96,12 @@ export class Dependencies {
     }
 
     private breakLines(text) {
-        text = text.replace(/(\n)/gm, '<br>');
-        text = text.replace(/(<br>)$/gm, '');
-        return text;
+        var _t = text;
+        if (typeof _t !== 'undefined') {
+            _t = _t.replace(/(\n)/gm, '<br>');
+            _t = _t.replace(/(<br>)$/gm, '');
+        }
+        return _t;
     }
 
     getDependencies() {
@@ -307,6 +310,26 @@ export class Dependencies {
                         return true;
                     }
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
+                }
+                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                    let name = this.getSymboleName(node);
+                    let IO = this.getComponentIO(file, sourceFile);
+                    deps = {
+                        name,
+                        file: file,
+                        type: 'class'
+                    };
+                    if(IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if(IO.description) {
+                        deps.description = this.breakLines(IO.description);
+                    }
+                    if(IO.methods) {
+                        deps.methods = IO.methods;
+                    }
+                    this.debug(deps);
+                    outputSymbols['classes'].push(deps);
                 }
             }
         });
