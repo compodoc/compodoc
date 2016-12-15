@@ -928,9 +928,12 @@ var Dependencies = function () {
     createClass(Dependencies, [{
         key: 'breakLines',
         value: function breakLines(text) {
-            text = text.replace(/(\n)/gm, '<br>');
-            text = text.replace(/(<br>)$/gm, '');
-            return text;
+            var _t = text;
+            if (typeof _t !== 'undefined') {
+                _t = _t.replace(/(\n)/gm, '<br>');
+                _t = _t.replace(/(<br>)$/gm, '');
+            }
+            return _t;
         }
     }, {
         key: 'getDependencies',
@@ -1118,6 +1121,26 @@ var Dependencies = function () {
                             return true;
                         }
                         outputSymbols['routes'] = [].concat(toConsumableArray(outputSymbols['routes']), toConsumableArray(newRoutes));
+                    }
+                    if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                        var _name2 = _this2.getSymboleName(node);
+                        var _IO3 = _this2.getComponentIO(file, sourceFile);
+                        deps = {
+                            name: _name2,
+                            file: file,
+                            type: 'class'
+                        };
+                        if (_IO3.properties) {
+                            deps.properties = _IO3.properties;
+                        }
+                        if (_IO3.description) {
+                            deps.description = _this2.breakLines(_IO3.description);
+                        }
+                        if (_IO3.methods) {
+                            deps.methods = _IO3.methods;
+                        }
+                        _this2.debug(deps);
+                        outputSymbols['classes'].push(deps);
                     }
                 }
             });
