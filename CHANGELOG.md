@@ -1,3 +1,14 @@
+<a name="0.0.23"></a>
+## 0.0.23 (2016-12-15)
+
+### Bug Fixes
+
+* **dependencies:** multiple class declarations in one file ([fbc0d7b](https://github.com/compodoc/compodoc/commit/fbc0d7b)), closes [#37](https://github.com/compodoc/compodoc/issues/37)
+
+### Features
+
+* **doc:** details for supported comments ([86851ca](https://github.com/compodoc/compodoc/commit/86851ca)), closes [#36](https://github.com/compodoc/compodoc/issues/36)
+
 <a name="0.0.22"></a>
 ## 0.0.22 (2016-12-12)
 
