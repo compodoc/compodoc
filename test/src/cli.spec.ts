@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import {temporaryDir, shell, pkg, exists, exec} from './helpers';
+import {temporaryDir, shell, pkg, exists, exec, read} from './helpers';
 const tmp = temporaryDir();
 
 describe('CLI', () => {
@@ -70,7 +70,6 @@ describe('CLI', () => {
             expect(command.stdout.toString()).to.contain('folder doesn\'t exist');
         });
     });
-
     describe('when generation with d flag', () => {
 
         let stdoutString = null;
@@ -115,6 +114,11 @@ describe('CLI', () => {
             expect(isStylesExists).to.be.true;
             const isFontsExists = exists(`${tmp.name}/fonts`);
             expect(isFontsExists).to.be.true;
+        });
+
+        it('should have generated search index json', () => {
+            const isIndexExists = exists(`${tmp.name}/search_index.json`);
+            expect(isIndexExists).to.be.true;
         });
     });
 
@@ -210,6 +214,11 @@ describe('CLI', () => {
             const isFontsExists = exists('documentation/fonts');
             expect(isFontsExists).to.be.true;
         });
+
+        it('should have generated search index json', () => {
+            const isIndexExists = exists(`documentation/search_index.json`);
+            expect(isIndexExists).to.be.true;
+        });
     });
 
     describe('when generation with -t flag', () => {
@@ -231,6 +240,105 @@ describe('CLI', () => {
 
         it('should not display anything', () => {
             expect(stdoutString).to.be.empty;
+        });
+    });
+
+    describe('when generation with -b flag', () => {
+
+        let stdoutString = null,
+            baseTest = 'https://compodoc.github.io/compodoc-demo-todomvc-angular2/',
+            index = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should edit base tag', () => {
+            index = read(`${tmp.name}/index.html`);
+            expect(index).to.contain('<base href="' + baseTest + '">');
+        });
+    });
+
+    describe('when generation with -h flag', () => {
+
+        let stdoutString = null,
+            baseTheme = 'laravel',
+            index = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -h ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should add theme css', () => {
+            index = read(`${tmp.name}/index.html`);
+            expect(index).to.contain('href="./styles/' + baseTheme + '.css"');
+        });
+    });
+
+    describe('when generation with -n flag', () => {
+
+        let stdoutString = null,
+            name = 'TodoMVC Angular 2 documentation',
+            index = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should edit name', () => {
+            index = read(`${tmp.name}/index.html`);
+            expect(index).to.contain('<a href="./">' + name + '</a>');
+        });
+    });
+
+    describe('when generation with -g flag', () => {
+
+        let stdoutString = null,
+            index = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -g -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean('documentation'));
+
+        it('should not contain compodoc logo', () => {
+            index = read(`${tmp.name}/index.html`);
+            expect(index).to.not.contain('src="./images/compodoc-vectorise.svg"');
         });
     });
 });
