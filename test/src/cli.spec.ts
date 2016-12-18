@@ -354,9 +354,17 @@ describe('CLI', () => {
               if (error) {
                   stdoutString = stdout;
                   console.log('error exec')
-                  done();
-                  return;
+                  //done();
+                  //return;
               }
+            });
+            child.on('exit', (code, signal) => {
+                console.log(`child process exit signal ${signal} / code ${code}`);
+                console.log(`stdoutString: ${stdoutString}`)
+                done();
+            });
+            child.on('close', (code, signal) => {
+                console.log(`child process close signal ${signal} / code ${code}`);
             });
             setTimeout(() => {
                 console.log('force exit command');
