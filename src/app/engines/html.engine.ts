@@ -60,8 +60,16 @@ export class HtmlEngine {
                 'FormsModule',
                 'HttpModule',
                 'RouterModule'
-            ];
-            if (NG2_MODULES.indexOf(text) > -1) {
+            ],
+                len = NG2_MODULES.length;
+            let i = 0,
+                result = false;
+            for (i; i < len; i++) {
+                if (text.indexOf(NG2_MODULES[i]) > -1) {
+                    result = true;
+                }
+            }
+            if (result) {
                 return options.fn(this);
             } else {
                 return options.inverse(this);

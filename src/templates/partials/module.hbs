@@ -69,7 +69,6 @@
                         {{else}}
                             <a href="./modules/{{name}}.html" >{{name}}</a>
                         {{/filterAngular2Modules}}
-
                     </li>
                 {{/each}}
             </ul>
@@ -81,7 +80,11 @@
             <ul class="list-group">
                 {{#each module.exports}}
                     <li class="list-group-item">
-                        <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
+                        {{#filterAngular2Modules name}}
+                            {{name}}
+                        {{else}}
+                            <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
+                        {{/filterAngular2Modules}}
                     </li>
                 {{/each}}
             </ul>
