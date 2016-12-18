@@ -345,29 +345,22 @@ describe('CLI', () => {
     */
     describe('when generation with -r flag', () => {
 
-        let stdoutString = null,
+        let stdoutString = '',
             port = 6666,
             child;
         before(function (done) {
             tmp.create();
-            child = exec('node ./bin/index.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
-              if (error) {
-                  stdoutString = stdout;
-                  console.log('error exec')
-                  //done();
-                  //return;
-              }
+            child = exec('node ./bin/index.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child.stdout.on('data', function(data) {
+                console.log(`on data : ${data}`);
+                stdoutString += data;
             });
             child.on('exit', (code, signal) => {
                 console.log(`child process exit signal ${signal} / code ${code}`);
                 console.log(`stdoutString: ${stdoutString}`)
                 done();
             });
-            child.on('close', (code, signal) => {
-                console.log(`child process close signal ${signal} / code ${code}`);
-            });
             setTimeout(() => {
-                console.log('force exit command');
                 child.kill();
             }, 5000);
         });
