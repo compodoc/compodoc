@@ -5,7 +5,7 @@ import {temporaryDir, shell, pkg, exists, exec, read} from './helpers';
 const tmp = temporaryDir();
 
 describe('CLI', () => {
-    /*
+
     describe('when no tsconfig.json provided', () => {
 
         let command = null;
@@ -342,7 +342,7 @@ describe('CLI', () => {
             expect(index).to.not.contain('src="./images/compodoc-vectorise.svg"');
         });
     });
-    */
+
     describe('when generation with -r flag', () => {
 
         let stdoutString = '',
@@ -352,12 +352,9 @@ describe('CLI', () => {
             tmp.create();
             child = exec('node ./bin/index.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
-                console.log(`on data : ${data}`);
                 stdoutString += data;
             });
             child.on('exit', (code, signal) => {
-                console.log(`child process exit signal ${signal} / code ${code}`);
-                console.log(`stdoutString: ${stdoutString}`)
                 done();
             });
             setTimeout(() => {
@@ -371,19 +368,19 @@ describe('CLI', () => {
             expect(stdoutString).to.contain(port);
         });
     });
-    /*
+
     describe('when serving with -s flag in another directory', () => {
 
-        let stdoutString = null,
+        let stdoutString = '',
             child;
         before(function (done) {
             tmp.create();
-            child = exec('node ./bin/index.js -s -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
-              if (error) {
-                  stdoutString = stdout;
-                  done();
-                  return;
-              }
+            child = exec('node ./bin/index.js -s -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child.stdout.on('data', function(data) {
+                stdoutString += data;
+            });
+            child.on('exit', (code, signal) => {
+                done();
             });
             setTimeout(() => {
                 child.kill();
@@ -401,14 +398,12 @@ describe('CLI', () => {
         let stdoutString = null,
             child;
         before(function (done) {
-            child = exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
-              if (error) {
-                  stdoutString = stdout;
-                  done();
-                  return;
-              }
-              stdoutString = stdout;
-              done();
+            child = exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child.stdout.on('data', function(data) {
+                stdoutString += data;
+            });
+            child.on('exit', (code, signal) => {
+                done();
             });
             setTimeout(() => {
                 child.kill();
@@ -420,5 +415,5 @@ describe('CLI', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
     });
-    */
+
 });
