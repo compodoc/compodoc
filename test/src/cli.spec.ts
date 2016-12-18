@@ -5,6 +5,7 @@ import {temporaryDir, shell, pkg, exists, exec, read} from './helpers';
 const tmp = temporaryDir();
 
 describe('CLI', () => {
+    /*
     describe('when no tsconfig.json provided', () => {
 
         let command = null;
@@ -341,7 +342,7 @@ describe('CLI', () => {
             expect(index).to.not.contain('src="./images/compodoc-vectorise.svg"');
         });
     });
-
+    */
     describe('when generation with -r flag', () => {
 
         let stdoutString = null,
@@ -352,13 +353,15 @@ describe('CLI', () => {
             child = exec('node ./bin/index.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                   stdoutString = stdout;
+                  console.log('error exec')
                   done();
                   return;
               }
             });
             setTimeout(() => {
+                console.log('force exit command');
                 child.kill();
-            }, 2000);
+            }, 5000);
         });
         after(() => tmp.clean(tmp.name));
 
@@ -367,7 +370,7 @@ describe('CLI', () => {
             expect(stdoutString).to.contain(port);
         });
     });
-
+    /*
     describe('when serving with -s flag in another directory', () => {
 
         let stdoutString = null,
@@ -416,4 +419,5 @@ describe('CLI', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
     });
+    */
 });
