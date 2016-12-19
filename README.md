@@ -29,6 +29,8 @@ Features
 
 * **Compodoc is open-source and on npm** - Use it directly in your project using npm and one script, that's it !
 
+* **Compodoc is a local tool** - No server needed, no sources uploaded online
+
 ## Live Demo
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
