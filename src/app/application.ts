@@ -20,7 +20,6 @@ import { Dependencies } from './compiler/dependencies';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 let pkg = require('../package.json'),
-    files = [],
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
@@ -32,6 +31,7 @@ let pkg = require('../package.json'),
 
 export class Application {
     options:Object;
+    files: Array<string>;
 
     configuration:IConfiguration;
 
@@ -42,58 +42,25 @@ export class Application {
      */
     constructor(options?:Object) {
         this.configuration = Configuration.getInstance();
+
+        for (let option in options ) {
+            if(typeof this.configuration.mainData[option] !== 'undefined') {
+                this.configuration.mainData[option] = options[option];
+            }
+        }
     }
 
     /**
-     * Initialize compodoc with the given options object.
-     *
-     * @param options  The desired options to set.
+     * Start compodoc
      */
-    protected generate(options?:Object) {
-        this.options = options;
-
-        let _file = path.join(
-          path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
-          path.basename(this.configuration.mainData.tsconfig)
-        );
-        logger.info('Using tsconfig', _file);
-
-        files = require(_file).files;
-
-        // use the current directory of tsconfig.json as a working directory
-        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-
-        if (!files) {
-            let exclude = require(_file).exclude || [];
-
-            var walk = (dir) => {
-                let results = [];
-                let list = fs.readdirSync(dir);
-                list.forEach((file) => {
-                    if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                        file = path.join(dir, file);
-                        let stat = fs.statSync(file);
-                        if (stat && stat.isDirectory()) {
-                            results = results.concat(walk(file));
-                        }
-                        else if (/(spec|\.d)\.ts/.test(file)) {
-                            logger.debug('Ignoring', file);
-                        }
-                        else if (path.extname(file) === '.ts') {
-                            logger.debug('Including', file);
-                            results.push(file);
-                        }
-                    }
-                });
-                return results;
-            };
-
-            files = walk(cwd || '.');
-        }
-
+    protected generate() {
         $htmlengine.init().then(() => {
             this.processPackageJson();
         });
+    }
+
+    setFiles(files:Array<string>) {
+        this.files = files;
     }
 
     processPackageJson() {
@@ -144,7 +111,7 @@ export class Application {
         logger.info('Get dependencies data');
 
         let crawler = new Dependencies(
-          files, {
+          this.files, {
             tsconfigDirectory: cwd
           }
         );
@@ -407,8 +374,8 @@ export class Application {
                 if( i <= len-1) {
                     logger.info('Process page', pages[i].name);
                     $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = this.configuration.mainData.defaultFolder;
-                        if(this.configuration.mainData.defaultFolder.lastIndexOf('/') === -1) {
+                        let finalPath = this.configuration.mainData.output;
+                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
                             finalPath += '/';
                         }
                         if (pages[i].path) {
@@ -432,7 +399,7 @@ export class Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.defaultFolder);
+                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output);
                     this.processResources();
                 }
             };
@@ -442,13 +409,13 @@ export class Application {
     processResources() {
         logger.info('Copy main resources');
         let that = this;
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.defaultFolder), function (err) {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), function (err) {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (that.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.defaultFolder + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
@@ -472,8 +439,8 @@ export class Application {
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process module graph', modules[i].name);
-                    let finalPath = this.configuration.mainData.defaultFolder;
-                    if(this.configuration.mainData.defaultFolder.lastIndexOf('/') === -1) {
+                    let finalPath = this.configuration.mainData.output;
+                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     finalPath += 'modules/' + modules[i].name;
@@ -485,10 +452,10 @@ export class Application {
                     });
                 } else {
                     let finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + this.configuration.mainData.defaultFolder + ' in ' + finalTime + ' seconds');
+                    logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds');
                     if (this.configuration.mainData.serve) {
-                        logger.info(`Serving documentation from ${this.configuration.mainData.defaultFolder} at http://127.0.0.1:${this.configuration.mainData.port}`);
-                        this.runWebServer(this.configuration.mainData.defaultFolder);
+                        logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                        this.runWebServer(this.configuration.mainData.output);
                     }
                 }
             };

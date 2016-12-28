@@ -41,7 +41,7 @@ export class CliApplication extends Application
         }
 
         if (program.output) {
-            this.configuration.mainData.defaultFolder = program.output;
+            this.configuration.mainData.output = program.output;
         }
 
         if (program.base) {
@@ -117,6 +117,45 @@ export class CliApplication extends Application
                     logger.error('"tsconfig.json" file was not found in the current directory');
                     process.exit(1);
                 } else {
+                    let _file = path.join(
+                      path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                      path.basename(this.configuration.mainData.tsconfig)
+                    );
+                    logger.info('Using tsconfig', _file);
+
+                    files = require(_file).files;
+
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+
+                    if (!files) {
+                        let exclude = require(_file).exclude || [];
+
+                        var walk = (dir) => {
+                            let results = [];
+                            let list = fs.readdirSync(dir);
+                            list.forEach((file) => {
+                                if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                                    file = path.join(dir, file);
+                                    let stat = fs.statSync(file);
+                                    if (stat && stat.isDirectory()) {
+                                        results = results.concat(walk(file));
+                                    }
+                                    else if (/(spec|\.d)\.ts/.test(file)) {
+                                        logger.debug('Ignoring', file);
+                                    }
+                                    else if (path.extname(file) === '.ts') {
+                                        logger.debug('Including', file);
+                                        results.push(file);
+                                    }
+                                }
+                            });
+                            return results;
+                        };
+
+                        files = walk(cwd || '.');
+                    }
+                    super.setFiles(files);
                     super.generate();
                 }
             } else {

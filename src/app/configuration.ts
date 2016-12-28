@@ -13,7 +13,7 @@ interface Page {
 }
 
 interface IMainData {
-    defaultFolder: string;
+    output: string;
     theme: string;
     extTheme: string;
     serve: boolean;
@@ -48,7 +48,7 @@ export class Configuration implements IConfiguration {
 
     private _pages:Array<Page> = [];
     private _mainData: IMainData = {
-        defaultFolder: COMPODOC_DEFAULTS.folder,
+        output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
         extTheme: '',
         serve: false,

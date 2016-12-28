@@ -32,7 +32,7 @@ export class SearchEngine {
         text = Html.decode(text);
         text = text.replace(/(<([^>]+)>)/ig, '');
 
-        page.url = page.url.replace($configuration.mainData.defaultFolder, '');
+        page.url = page.url.replace($configuration.mainData.output, '');
 
         var doc = {
             url: page.url,
