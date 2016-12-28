@@ -11,11 +11,13 @@ import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
-import { Configuration } from './configuration';
+import { Configuration, IConfiguration } from './configuration';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
+
+import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 let pkg = require('../package.json'),
     program = require('commander'),
@@ -23,115 +25,125 @@ let pkg = require('../package.json'),
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
     $fileengine = new FileEngine(),
-    $configuration = Configuration.getInstance(),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $searchEngine = new SearchEngine(),
     $dependenciesEngine,
     startTime = new Date();
 
-export namespace Application {
+export class Application {
+    options:Object;
 
-    let defaultTitle = `Application documentation`,
-        defaultAdditionalEntryName = 'Additional documentation',
-        defaultAdditionalEntryPath = 'additional-documentation',
-        defaultFolder = './documentation/',
-        defaultPort = 8080,
-        defaultTheme = 'gitbook';
+    configuration:IConfiguration;
 
-    program
-        .version(pkg.version)
-        .option('-p, --tsconfig [config]', 'A tsconfig.json file')
-        .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
-        .option('-b, --base [base]', 'Base reference of html tag <base>', '/')
-        .option('-y, --extTheme [file]', 'External styling theme file')
-        .option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
-        .option('-n, --name [name]', 'Title documentation', defaultTitle)
-        .option('-o, --open', 'Open the generated documentation', false)
-        //.option('-i, --includes [path]', 'Path of external markdown files to include')
-        //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
-        .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
-        .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
-        .option('-r, --port [port]', 'Change default serving port')
-        .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
-        .parse(process.argv);
+    /**
+     * Create a new compodoc application instance.
+     *
+     * @param options An object containing the options that should be used.
+     */
+    constructor(options?:Object) {
+        this.configuration = Configuration.getInstance();
 
-    let outputHelp = () => {
-        program.outputHelp()
-        process.exit(1);
+        this.bootstrap(options);
     }
 
-    if (program.silent) {
-        logger.silent = false;
+    /**
+     * Initialize compodoc with the given options object.
+     *
+     * @param options  The desired options to set.
+     */
+    protected bootstrap(options?:Object) {
+        this.options = options;
+
+        let _file = path.join(
+          path.join(process.cwd(), path.dirname(program.tsconfig)),
+          path.basename(program.tsconfig)
+        );
+        logger.info('Using tsconfig', _file);
+
+        files = require(_file).files;
+
+        // use the current directory of tsconfig.json as a working directory
+        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+
+        if (!files) {
+            let exclude = require(_file).exclude || [];
+
+            var walk = (dir) => {
+                let results = [];
+                let list = fs.readdirSync(dir);
+                list.forEach((file) => {
+                    if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                        file = path.join(dir, file);
+                        let stat = fs.statSync(file);
+                        if (stat && stat.isDirectory()) {
+                            results = results.concat(walk(file));
+                        }
+                        else if (/(spec|\.d)\.ts/.test(file)) {
+                            logger.debug('Ignoring', file);
+                        }
+                        else if (path.extname(file) === '.ts') {
+                            logger.debug('Including', file);
+                            results.push(file);
+                        }
+                    }
+                });
+                return results;
+            };
+
+            files = walk(cwd || '.');
+        }
+
+        $htmlengine.init().then(() => {
+            this.processPackageJson();
+        });
     }
 
-    if (program.output) {
-        defaultFolder = program.output;
-    }
-    $configuration.mainData.defaultFolder = defaultFolder;
-
-    if (program.includesName) {
-        defaultAdditionalEntryName = program.includesName;
-    }
-
-    if (program.theme) {
-        defaultTheme = program.theme;
-        $configuration.mainData.theme = defaultTheme;
-    }
-
-    if (program.port) {
-        defaultPort = program.port;
-    }
-
-    $configuration.mainData.documentationMainName = program.name; //default commander value
-
-    $configuration.mainData.base = program.base;
-
-    let processPackageJson = () => {
+    processPackageJson() {
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
-            if (typeof parsedData.name !== 'undefined' && program.name === defaultTitle) {
-                $configuration.mainData.documentationMainName = parsedData.name + ' documentation';
+            if (typeof parsedData.name !== 'undefined' && program.name === COMPODOC_DEFAULTS.title) {
+                this.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
             }
             if (typeof parsedData.description !== 'undefined') {
-                $configuration.mainData.documentationMainDescription = parsedData.description;
+                this.configuration.mainData.documentationMainDescription = parsedData.description;
             }
             logger.info('package.json file found');
-            processMarkdown();
+            this.processMarkdown();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without package.json file');
-            processMarkdown();
+            this.processMarkdown();
         });
     }
 
-    let processMarkdown = () => {
+    processMarkdown() {
         logger.info('Searching README.md file');
         $markdownengine.getReadmeFile().then((readmeData) => {
-            $configuration.addPage({
+            this.configuration.addPage({
                 name: 'index',
                 context: 'readme'
             });
-            $configuration.addPage({
+            this.configuration.addPage({
                 name: 'overview',
                 context: 'overview'
             });
-            $configuration.mainData.readme = readmeData;
+            this.configuration.mainData.readme = readmeData;
             logger.info('README.md file found');
-            getDependenciesData();
+            this.getDependenciesData();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without README.md file');
-            $configuration.addPage({
+            this.configuration.addPage({
                 name: 'index',
                 context: 'overview'
             });
-            getDependenciesData();
+            this.getDependenciesData();
         });
     }
 
-    let getDependenciesData = () => {
+    getDependenciesData() {
         logger.info('Get dependencies data');
 
         let crawler = new Dependencies(
@@ -144,49 +156,49 @@ export namespace Application {
 
         $dependenciesEngine = new DependenciesEngine(dependenciesData);
 
-        prepareModules();
+        this.prepareModules();
 
-        prepareComponents().then((readmeData) => {
+        this.prepareComponents().then((readmeData) => {
             if ($dependenciesEngine.directives.length > 0) {
-                prepareDirectives();
+                this.prepareDirectives();
             }
             if ($dependenciesEngine.injectables.length > 0) {
-                prepareInjectables();
+                this.prepareInjectables();
             }
             if ($dependenciesEngine.routes.length > 0) {
-                prepareRoutes();
+                this.prepareRoutes();
             }
 
             if ($dependenciesEngine.pipes.length > 0) {
-                preparePipes();
+                this.preparePipes();
             }
 
             if ($dependenciesEngine.classes.length > 0) {
-                prepareClasses();
+                this.prepareClasses();
             }
 
             if ($dependenciesEngine.interfaces.length > 0) {
-                prepareInterfaces();
+                this.prepareInterfaces();
             }
 
             if (program.includes) {
-                processAddtionalDocumentation().then(() => {
-                    processPages();
+                this.processAddtionalDocumentation().then(() => {
+                    this.processPages();
                 }, (err) => {
                     logger.error('Error during additional documentation generation: ', err);
                 });
             } else {
-                processPages();
+                this.processPages();
             }
         }, (errorMessage) => {
             logger.error(errorMessage);
         });
     }
 
-    let processAddtionalDocumentation = () => {
+    processAddtionalDocumentation() {
         logger.info('Process additional documentation: ', program.includes, path.resolve(process.cwd() + path.sep + program.includes + '/**/*'));
-        $configuration.mainData.additionalpages = {
-            entryName: defaultAdditionalEntryName,
+        this.configuration.mainData.additionalpages = {
+            entryName: COMPODOC_DEFAULTS.additionalEntryName,
             pages: []
         };
         return new Promise(function(resolve, reject) {
@@ -203,21 +215,21 @@ export namespace Application {
                         f = files[i];
                         basename = path.basename(f);
                         if( i === 0) {
-                            $configuration.mainData.additionalpages.pages.push({
+                            this.configuration.mainData.additionalpages.pages.push({
                                 name: 'Index'
                             });
-                            $configuration.addPage({
-                                path: defaultAdditionalEntryPath,
+                            this.configuration.addPage({
+                                path: COMPODOC_DEFAULTS.additionalEntryPath,
                                 name: 'index',
                                 context: 'additionalpages',
                                 page: 'toto'
                             });
                         } else {
-                            $configuration.mainData.additionalpages.pages.push({
+                            this.configuration.mainData.additionalpages.pages.push({
                                 name: basename
                             });
-                            $configuration.addPage({
-                                path: defaultAdditionalEntryPath,
+                            this.configuration.addPage({
+                                path: COMPODOC_DEFAULTS.additionalEntryPath,
                                 name: basename,
                                 context: 'additionalpage',
                                 page: 'toto'
@@ -234,104 +246,105 @@ export namespace Application {
         });
     }
 
-    let prepareModules = () => {
+    prepareModules() {
         logger.info('Prepare modules');
-        $configuration.mainData.modules = $dependenciesEngine.getModules();
-        $configuration.addPage({
+        this.configuration.mainData.modules = $dependenciesEngine.getModules();
+        this.configuration.addPage({
             name: 'modules',
             context: 'modules'
         });
         let i = 0,
-            len = $configuration.mainData.modules.length;
+            len = this.configuration.mainData.modules.length;
 
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'modules',
-                name: $configuration.mainData.modules[i].name,
+                name: this.configuration.mainData.modules[i].name,
                 context: 'module',
-                module: $configuration.mainData.modules[i]
+                module: this.configuration.mainData.modules[i]
             });
         }
     }
 
-    let preparePipes = () => {
+    preparePipes = () => {
         logger.info('Prepare pipes');
-        $configuration.mainData.pipes = $dependenciesEngine.getPipes();
+        this.configuration.mainData.pipes = $dependenciesEngine.getPipes();
         let i = 0,
-            len = $configuration.mainData.pipes.length;
+            len = this.configuration.mainData.pipes.length;
 
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'pipes',
-                name: $configuration.mainData.pipes[i].name,
+                name: this.configuration.mainData.pipes[i].name,
                 context: 'pipe',
-                pipe: $configuration.mainData.pipes[i]
+                pipe: this.configuration.mainData.pipes[i]
             });
         }
     }
 
-    let prepareClasses = () => {
+    prepareClasses = () => {
         logger.info('Prepare classes');
-        $configuration.mainData.classes = $dependenciesEngine.getClasses();
+        this.configuration.mainData.classes = $dependenciesEngine.getClasses();
         let i = 0,
-            len = $configuration.mainData.classes.length;
+            len = this.configuration.mainData.classes.length;
 
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'classes',
-                name: $configuration.mainData.classes[i].name,
+                name: this.configuration.mainData.classes[i].name,
                 context: 'class',
-                class: $configuration.mainData.classes[i]
+                class: this.configuration.mainData.classes[i]
             });
         }
     }
 
-    let prepareInterfaces = () => {
+    prepareInterfaces() {
         logger.info('Prepare interfaces');
-        $configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+        this.configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
         let i = 0,
-            len = $configuration.mainData.interfaces.length;
+            len = this.configuration.mainData.interfaces.length;
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'interfaces',
-                name: $configuration.mainData.interfaces[i].name,
+                name: this.configuration.mainData.interfaces[i].name,
                 context: 'interface',
-                interface: $configuration.mainData.interfaces[i]
+                interface: this.configuration.mainData.interfaces[i]
             });
         }
     }
 
-    let prepareComponents = () => {
+    prepareComponents() {
         logger.info('Prepare components');
-        $configuration.mainData.components = $dependenciesEngine.getComponents();
+        let that = this;
+        that.configuration.mainData.components = $dependenciesEngine.getComponents();
 
         return new Promise(function(resolve, reject) {
             let i = 0,
-                len = $configuration.mainData.components.length,
+                len = that.configuration.mainData.components.length,
                 loop = () => {
                     if( i <= len-1) {
-                        let dirname = path.dirname($configuration.mainData.components[i].file),
+                        let dirname = path.dirname(that.configuration.mainData.components[i].file),
                             readmeFile = dirname + path.sep + 'README.md';
                         if (fs.existsSync(readmeFile)) {
                             logger.info('README.md exist for this component, include it');
                             fs.readFile(readmeFile, 'utf8', (err, data) => {
                                 if (err) throw err;
-                                $configuration.mainData.components[i].readme = marked(data);
-                                $configuration.addPage({
+                                that.configuration.mainData.components[i].readme = marked(data);
+                                that.configuration.addPage({
                                     path: 'components',
-                                    name: $configuration.mainData.components[i].name,
+                                    name: that.configuration.mainData.components[i].name,
                                     context: 'component',
-                                    component: $configuration.mainData.components[i]
+                                    component: that.configuration.mainData.components[i]
                                 });
                                 i++;
                                 loop();
                             });
                         } else {
-                            $configuration.addPage({
+                            that.configuration.addPage({
                                 path: 'components',
-                                name: $configuration.mainData.components[i].name,
+                                name: that.configuration.mainData.components[i].name,
                                 context: 'component',
-                                component: $configuration.mainData.components[i]
+                                component: that.configuration.mainData.components[i]
                             });
                             i++;
                             loop();
@@ -344,61 +357,61 @@ export namespace Application {
         });
     }
 
-    let prepareDirectives = () => {
+    prepareDirectives = () => {
         logger.info('Prepare directives');
-        $configuration.mainData.directives = $dependenciesEngine.getDirectives();
+        this.configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
         let i = 0,
-            len = $configuration.mainData.directives.length;
+            len = this.configuration.mainData.directives.length;
 
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'directives',
-                name: $configuration.mainData.directives[i].name,
+                name: this.configuration.mainData.directives[i].name,
                 context: 'directive',
-                directive: $configuration.mainData.directives[i]
+                directive: this.configuration.mainData.directives[i]
             });
         }
     }
 
-    let prepareInjectables = () => {
+    prepareInjectables() {
         logger.info('Prepare injectables');
-        $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
+        this.configuration.mainData.injectables = $dependenciesEngine.getInjectables();
 
         let i = 0,
-            len = $configuration.mainData.injectables.length;
+            len = this.configuration.mainData.injectables.length;
 
         for(i; i<len; i++) {
-            $configuration.addPage({
+            this.configuration.addPage({
                 path: 'injectables',
-                name: $configuration.mainData.injectables[i].name,
+                name: this.configuration.mainData.injectables[i].name,
                 context: 'injectable',
-                injectable: $configuration.mainData.injectables[i]
+                injectable: this.configuration.mainData.injectables[i]
             });
         }
     }
 
-    let prepareRoutes = () => {
+    prepareRoutes() {
         logger.info('Process routes');
-        $configuration.mainData.routes = $dependenciesEngine.getRoutes();
+        this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
 
-        $configuration.addPage({
+        this.configuration.addPage({
             name: 'routes',
             context: 'routes'
         });
     }
 
-    let processPages = () => {
+    processPages() {
         logger.info('Process pages');
-        let pages = $configuration.pages,
+        let pages = this.configuration.pages,
             i = 0,
             len = pages.length,
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process page', pages[i].name);
-                    $htmlengine.render($configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = defaultFolder;
-                        if(defaultFolder.lastIndexOf('/') === -1) {
+                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
+                        let finalPath = COMPODOC_DEFAULTS.folder;
+                        if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
                             finalPath += '/';
                         }
                         if (pages[i].path) {
@@ -422,47 +435,48 @@ export namespace Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    $searchEngine.generateSearchIndexJson(defaultFolder);
-                    processResources();
+                    $searchEngine.generateSearchIndexJson(COMPODOC_DEFAULTS.folder);
+                    this.processResources();
                 }
             };
         loop();
     }
 
-    let processResources = () => {
+    processResources() {
         logger.info('Copy main resources');
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + defaultFolder), function (err) {
+        let that = this;
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + COMPODOC_DEFAULTS.folder), function (err) {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (program.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + COMPODOC_DEFAULTS.folder + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
                             logger.info('External styling theme copy succeeded');
-                            processGraphs();
+                            that.processGraphs();
                         }
                     });
                 }
                 else {
-                    processGraphs();
+                    that.processGraphs();
                 }
             }
         });
-    };
+    }
 
-    let processGraphs = () => {
+    processGraphs() {
         logger.info('Process main graph');
-        let modules = $configuration.mainData.modules,
+        let modules = this.configuration.mainData.modules,
             i = 0,
             len = modules.length,
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process module graph', modules[i].name);
-                    let finalPath = defaultFolder;
-                    if(defaultFolder.lastIndexOf('/') === -1) {
+                    let finalPath = COMPODOC_DEFAULTS.folder;
+                    if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     finalPath += 'modules/' + modules[i].name;
@@ -474,15 +488,15 @@ export namespace Application {
                     });
                 } else {
                     let finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
+                    logger.info('Documentation generated in ' + COMPODOC_DEFAULTS.folder + ' in ' + finalTime + ' seconds');
                     if (program.serve) {
-                        logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
-                        runWebServer(defaultFolder);
+                        logger.info(`Serving documentation from ${COMPODOC_DEFAULTS.folder} at http://127.0.0.1:${COMPODOC_DEFAULTS.port}`);
+                        this.runWebServer(COMPODOC_DEFAULTS.folder);
                     }
                 }
             };
-        let finalMainGraphPath = defaultFolder;
-        if(defaultFolder.lastIndexOf('/') === -1) {
+        let finalMainGraphPath = COMPODOC_DEFAULTS.folder;
+        if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
             finalMainGraphPath += '/';
         }
         finalMainGraphPath += 'graph';
@@ -493,95 +507,25 @@ export namespace Application {
         });
     }
 
-    let runWebServer = (folder) => {
+    runWebServer(folder) {
         LiveServer.start({
             root: folder,
             open: false,
             quiet: true,
             logLevel: 0,
-            port: defaultPort
+            port: COMPODOC_DEFAULTS.port
         });
     }
 
-    export let run = () => {
+    /**
+     * Return the application / root component instance.
+     */
+    get application():Application {
+        return this;
+    }
 
-        let _file;
 
-        if (program.serve && !program.tsconfig && program.output) {
-            // if -s & -d, serve it
-            if (!fs.existsSync(program.output)) {
-                logger.error(`${program.output} folder doesn't exist`);
-                process.exit(1);
-            } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${defaultPort}`);
-                runWebServer(program.output);
-            }
-        } else if (program.serve && !program.tsconfig && !program.output) {
-            // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!fs.existsSync(defaultFolder)) {
-                logger.error('Provide output generated folder with -d flag');
-                process.exit(1);
-            } else {
-                logger.info(`Serving documentation from ${defaultFolder} at http://127.0.0.1:${defaultPort}`);
-                runWebServer(defaultFolder);
-            }
-        } else {
-            if (program.hideGenerator) {
-                $configuration.mainData.hideGenerator = true;
-            }
-
-            if (program.tsconfig) {
-                if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
-                    process.exit(1);
-                } else {
-                    _file = path.join(
-                      path.join(process.cwd(), path.dirname(program.tsconfig)),
-                      path.basename(program.tsconfig)
-                    );
-                    logger.info('Using tsconfig', _file);
-
-                    files = require(_file).files;
-
-                    // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-
-                    if (!files) {
-                        let exclude = require(_file).exclude || [];
-
-                        var walk = (dir) => {
-                            let results = [];
-                            let list = fs.readdirSync(dir);
-                            list.forEach((file) => {
-                                if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                    file = path.join(dir, file);
-                                    let stat = fs.statSync(file);
-                                    if (stat && stat.isDirectory()) {
-                                        results = results.concat(walk(file));
-                                    }
-                                    else if (/(spec|\.d)\.ts/.test(file)) {
-                                        logger.debug('Ignoring', file);
-                                    }
-                                    else if (path.extname(file) === '.ts') {
-                                        logger.debug('Including', file);
-                                        results.push(file);
-                                    }
-                                }
-                            });
-                            return results;
-                        };
-
-                        files = walk(cwd || '.');
-                    }
-
-                    $htmlengine.init().then(() => {
-                        processPackageJson();
-                    });
-                }
-            } else {
-                logger.error('Entry file was not found');
-                outputHelp();
-            }
-        }
+    get isCLI():boolean {
+        return false;
     }
 }

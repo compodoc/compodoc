@@ -1,3 +1,2 @@
-import * as application from './app/application';
-
-export let Application = application.Application;
+export { Application } from './app/application';
+export { CliApplication } from './index-cli';
