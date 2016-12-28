@@ -1,3 +1,6 @@
 #! /usr/bin/env node
 
-require('../dist/index-cli.js');
+var cd = require('../dist/index-cli.js'),
+    cdI = new cd.CliApplication();
+
+cdI.generate();
