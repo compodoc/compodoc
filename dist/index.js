@@ -63,7 +63,7 @@ var createClass = function () {
 
 
 
-var get$1 = function get$1(object, property, receiver) {
+var get = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;
   var desc = Object.getOwnPropertyDescriptor(object, property);
 
@@ -73,7 +73,7 @@ var get$1 = function get$1(object, property, receiver) {
     if (parent === null) {
       return undefined;
     } else {
-      return get$1(parent, property, receiver);
+      return get(parent, property, receiver);
     }
   } else if ("value" in desc) {
     return desc.value;
@@ -88,43 +88,43 @@ var get$1 = function get$1(object, property, receiver) {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var set$1 = function set$1(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set$1(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
   }
 
-  return value;
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 };
+
+
+
+
+
+
+
+
+
+
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+
+
+
 
 
 
@@ -294,8 +294,16 @@ var HtmlEngine = function () {
             return options.fn(this);
         });
         Handlebars.registerHelper("filterAngular2Modules", function (text, options) {
-            var NG2_MODULES = ['BrowserModule', 'FormsModule', 'HttpModule', 'RouterModule'];
-            if (NG2_MODULES.indexOf(text) > -1) {
+            var NG2_MODULES = ['BrowserModule', 'FormsModule', 'HttpModule', 'RouterModule'],
+                len = NG2_MODULES.length;
+            var i = 0,
+                result = false;
+            for (i; i < len; i++) {
+                if (text.indexOf(NG2_MODULES[i]) > -1) {
+                    result = true;
+                }
+            }
+            if (result) {
                 return options.fn(this);
             } else {
                 return options.inverse(this);
@@ -461,12 +469,45 @@ var FileEngine = function () {
     return FileEngine;
 }();
 
+var COMPODOC_DEFAULTS = {
+    title: 'Application documentation',
+    additionalEntryName: 'Additional documentation',
+    additionalEntryPath: 'additional-documentation',
+    folder: './documentation/',
+    port: 8080,
+    theme: 'gitbook',
+    base: '/'
+};
+
 var Configuration = function () {
     function Configuration() {
         classCallCheck(this, Configuration);
 
         this._pages = [];
-        this._mainData = {};
+        this._mainData = {
+            output: COMPODOC_DEFAULTS.folder,
+            theme: COMPODOC_DEFAULTS.theme,
+            extTheme: '',
+            serve: false,
+            port: COMPODOC_DEFAULTS.port,
+            open: false,
+            documentationMainName: COMPODOC_DEFAULTS.title,
+            documentationMainDescription: '',
+            base: COMPODOC_DEFAULTS.base,
+            hideGenerator: false,
+            modules: [],
+            readme: '',
+            additionalpages: {},
+            pipes: [],
+            classes: [],
+            interfaces: [],
+            components: [],
+            directives: [],
+            injectables: [],
+            routes: [],
+            tsconfig: '',
+            includes: false
+        };
         if (Configuration._instance) {
             throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
         }
@@ -598,7 +639,7 @@ var NgdEngine = function () {
 var lunr = require('lunr');
 var cheerio = require('cheerio');
 var Entities = require('html-entities').AllHtmlEntities;
-var $configuration$1 = Configuration.getInstance();
+var $configuration = Configuration.getInstance();
 var Html = new Entities();
 
 var SearchEngine = function () {
@@ -628,7 +669,7 @@ var SearchEngine = function () {
             text = $('.content').html();
             text = Html.decode(text);
             text = text.replace(/(<([^>]+)>)/ig, '');
-            page.url = page.url.replace($configuration$1.mainData.defaultFolder, '');
+            page.url = page.url.replace($configuration.mainData.output, '');
             var doc = {
                 url: page.url,
                 title: page.infos.context + ' - ' + page.infos.name,
@@ -1001,6 +1042,7 @@ var Dependencies = function () {
                             };
                             outputSymbols['modules'].push(deps);
                         } else if (_this2.isComponent(metadata)) {
+                            if (props.length === 0) return;
                             //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
                             deps = {
                                 name: name,
@@ -1920,502 +1962,619 @@ var Dependencies = function () {
 
 var glob = require('glob');
 var pkg = require('../package.json');
-var program = require('commander');
-var files = [];
 var cwd = process.cwd();
 var $htmlengine = new HtmlEngine();
 var $fileengine = new FileEngine();
-var $configuration = Configuration.getInstance();
 var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
 var $dependenciesEngine = void 0;
 var startTime = new Date();
-var Application$1;
-(function (Application) {
-    var defaultTitle = 'Application documentation',
-        defaultAdditionalEntryName = 'Additional documentation',
-        defaultAdditionalEntryPath = 'additional-documentation',
-        defaultFolder = './documentation/',
-        defaultPort = 8080,
-        defaultTheme = 'gitbook';
-    program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', '/').option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', defaultTitle).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port').option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
-    var outputHelp = function outputHelp() {
-        program.outputHelp();
-        process.exit(1);
-    };
-    if (program.silent) {
-        logger.silent = false;
-    }
-    if (program.output) {
-        defaultFolder = program.output;
-    }
-    $configuration.mainData.defaultFolder = defaultFolder;
-    if (program.includesName) {
-        defaultAdditionalEntryName = program.includesName;
-    }
-    if (program.theme) {
-        defaultTheme = program.theme;
-        $configuration.mainData.theme = defaultTheme;
-    }
-    if (program.port) {
-        defaultPort = program.port;
-    }
-    $configuration.mainData.documentationMainName = program.name; //default commander value
-    $configuration.mainData.base = program.base;
-    var processPackageJson = function processPackageJson() {
-        logger.info('Searching package.json file');
-        $fileengine.get('package.json').then(function (packageData) {
-            var parsedData = JSON.parse(packageData);
-            if (typeof parsedData.name !== 'undefined' && program.name === defaultTitle) {
-                $configuration.mainData.documentationMainName = parsedData.name + ' documentation';
-            }
-            if (typeof parsedData.description !== 'undefined') {
-                $configuration.mainData.documentationMainDescription = parsedData.description;
-            }
-            logger.info('package.json file found');
-            processMarkdown();
-        }, function (errorMessage) {
-            logger.error(errorMessage);
-            logger.error('Continuing without package.json file');
-            processMarkdown();
-        });
-    };
-    var processMarkdown = function processMarkdown() {
-        logger.info('Searching README.md file');
-        $markdownengine.getReadmeFile().then(function (readmeData) {
-            $configuration.addPage({
-                name: 'index',
-                context: 'readme'
-            });
-            $configuration.addPage({
-                name: 'overview',
-                context: 'overview'
-            });
-            $configuration.mainData.readme = readmeData;
-            logger.info('README.md file found');
-            getDependenciesData();
-        }, function (errorMessage) {
-            logger.error(errorMessage);
-            logger.error('Continuing without README.md file');
-            $configuration.addPage({
-                name: 'index',
-                context: 'overview'
-            });
-            getDependenciesData();
-        });
-    };
-    var getDependenciesData = function getDependenciesData() {
-        logger.info('Get dependencies data');
-        var crawler = new Dependencies(files, {
-            tsconfigDirectory: cwd
-        });
-        var dependenciesData = crawler.getDependencies();
-        $dependenciesEngine = new DependenciesEngine(dependenciesData);
-        prepareModules();
-        prepareComponents().then(function (readmeData) {
-            if ($dependenciesEngine.directives.length > 0) {
-                prepareDirectives();
-            }
-            if ($dependenciesEngine.injectables.length > 0) {
-                prepareInjectables();
-            }
-            if ($dependenciesEngine.routes.length > 0) {
-                prepareRoutes();
-            }
-            if ($dependenciesEngine.pipes.length > 0) {
-                preparePipes();
-            }
-            if ($dependenciesEngine.classes.length > 0) {
-                prepareClasses();
-            }
-            if ($dependenciesEngine.interfaces.length > 0) {
-                prepareInterfaces();
-            }
-            if (program.includes) {
-                processAddtionalDocumentation().then(function () {
-                    processPages();
-                }, function (err) {
-                    logger.error('Error during additional documentation generation: ', err);
+
+var Application = function () {
+    /**
+     * Create a new compodoc application instance.
+     *
+     * @param options An object containing the options that should be used.
+     */
+    function Application(options) {
+        var _this = this;
+
+        classCallCheck(this, Application);
+
+        this.preparePipes = function () {
+            logger.info('Prepare pipes');
+            _this.configuration.mainData.pipes = $dependenciesEngine.getPipes();
+            var i = 0,
+                len = _this.configuration.mainData.pipes.length;
+            for (i; i < len; i++) {
+                _this.configuration.addPage({
+                    path: 'pipes',
+                    name: _this.configuration.mainData.pipes[i].name,
+                    context: 'pipe',
+                    pipe: _this.configuration.mainData.pipes[i]
                 });
-            } else {
-                processPages();
             }
-        }, function (errorMessage) {
-            logger.error(errorMessage);
-        });
-    };
-    var processAddtionalDocumentation = function processAddtionalDocumentation() {
-        logger.info('Process additional documentation: ', program.includes, path.resolve(process.cwd() + path.sep + program.includes + '/**/*'));
-        $configuration.mainData.additionalpages = {
-            entryName: defaultAdditionalEntryName,
-            pages: []
         };
-        return new Promise(function (resolve$$1, reject) {
-            glob(process.cwd() + path.sep + program.includes + '/**/*', {
-                dot: false,
-                cwd: __dirname
-            }, function (err, files) {
+        this.prepareClasses = function () {
+            logger.info('Prepare classes');
+            _this.configuration.mainData.classes = $dependenciesEngine.getClasses();
+            var i = 0,
+                len = _this.configuration.mainData.classes.length;
+            for (i; i < len; i++) {
+                _this.configuration.addPage({
+                    path: 'classes',
+                    name: _this.configuration.mainData.classes[i].name,
+                    context: 'class',
+                    class: _this.configuration.mainData.classes[i]
+                });
+            }
+        };
+        this.prepareDirectives = function () {
+            logger.info('Prepare directives');
+            _this.configuration.mainData.directives = $dependenciesEngine.getDirectives();
+            var i = 0,
+                len = _this.configuration.mainData.directives.length;
+            for (i; i < len; i++) {
+                _this.configuration.addPage({
+                    path: 'directives',
+                    name: _this.configuration.mainData.directives[i].name,
+                    context: 'directive',
+                    directive: _this.configuration.mainData.directives[i]
+                });
+            }
+        };
+        this.configuration = Configuration.getInstance();
+        for (var option in options) {
+            if (typeof this.configuration.mainData[option] !== 'undefined') {
+                this.configuration.mainData[option] = options[option];
+            }
+        }
+    }
+    /**
+     * Start compodoc
+     */
+
+
+    createClass(Application, [{
+        key: 'generate',
+        value: function generate() {
+            var _this2 = this;
+
+            $htmlengine.init().then(function () {
+                _this2.processPackageJson();
+            });
+        }
+    }, {
+        key: 'setFiles',
+        value: function setFiles(files) {
+            this.files = files;
+        }
+    }, {
+        key: 'processPackageJson',
+        value: function processPackageJson() {
+            var _this3 = this;
+
+            logger.info('Searching package.json file');
+            $fileengine.get('package.json').then(function (packageData) {
+                var parsedData = JSON.parse(packageData);
+                if (typeof parsedData.name !== 'undefined' && _this3.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
+                    _this3.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
+                }
+                if (typeof parsedData.description !== 'undefined') {
+                    _this3.configuration.mainData.documentationMainDescription = parsedData.description;
+                }
+                logger.info('package.json file found');
+                _this3.processMarkdown();
+            }, function (errorMessage) {
+                logger.error(errorMessage);
+                logger.error('Continuing without package.json file');
+                _this3.processMarkdown();
+            });
+        }
+    }, {
+        key: 'processMarkdown',
+        value: function processMarkdown() {
+            var _this4 = this;
+
+            logger.info('Searching README.md file');
+            $markdownengine.getReadmeFile().then(function (readmeData) {
+                _this4.configuration.addPage({
+                    name: 'index',
+                    context: 'readme'
+                });
+                _this4.configuration.addPage({
+                    name: 'overview',
+                    context: 'overview'
+                });
+                _this4.configuration.mainData.readme = readmeData;
+                logger.info('README.md file found');
+                _this4.getDependenciesData();
+            }, function (errorMessage) {
+                logger.error(errorMessage);
+                logger.error('Continuing without README.md file');
+                _this4.configuration.addPage({
+                    name: 'index',
+                    context: 'overview'
+                });
+                _this4.getDependenciesData();
+            });
+        }
+    }, {
+        key: 'getDependenciesData',
+        value: function getDependenciesData() {
+            var _this5 = this;
+
+            logger.info('Get dependencies data');
+            var crawler = new Dependencies(this.files, {
+                tsconfigDirectory: cwd
+            });
+            var dependenciesData = crawler.getDependencies();
+            $dependenciesEngine = new DependenciesEngine(dependenciesData);
+            this.prepareModules();
+            this.prepareComponents().then(function (readmeData) {
+                if ($dependenciesEngine.directives.length > 0) {
+                    _this5.prepareDirectives();
+                }
+                if ($dependenciesEngine.injectables.length > 0) {
+                    _this5.prepareInjectables();
+                }
+                if ($dependenciesEngine.routes.length > 0) {
+                    _this5.prepareRoutes();
+                }
+                if ($dependenciesEngine.pipes.length > 0) {
+                    _this5.preparePipes();
+                }
+                if ($dependenciesEngine.classes.length > 0) {
+                    _this5.prepareClasses();
+                }
+                if ($dependenciesEngine.interfaces.length > 0) {
+                    _this5.prepareInterfaces();
+                }
+                if (_this5.configuration.mainData.includes) {
+                    _this5.processAddtionalDocumentation().then(function () {
+                        _this5.processPages();
+                    }, function (err) {
+                        logger.error('Error during additional documentation generation: ', err);
+                    });
+                } else {
+                    _this5.processPages();
+                }
+            }, function (errorMessage) {
+                logger.error(errorMessage);
+            });
+        }
+    }, {
+        key: 'processAddtionalDocumentation',
+        value: function processAddtionalDocumentation() {
+            logger.info('Process additional documentation: ', this.configuration.mainData.includes, path.resolve(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*'));
+            this.configuration.mainData.additionalpages = {
+                entryName: COMPODOC_DEFAULTS.additionalEntryName,
+                pages: []
+            };
+            return new Promise(function (resolve$$1, reject) {
+                glob(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*', {
+                    dot: false,
+                    cwd: __dirname
+                }, function (err, files) {
+                    var i = 0,
+                        f = void 0,
+                        basename$$1 = void 0,
+                        len = files.length;
+                    var loop = function loop() {
+                        if (i < len) {
+                            f = files[i];
+                            basename$$1 = path.basename(f);
+                            if (i === 0) {
+                                this.configuration.mainData.additionalpages.pages.push({
+                                    name: 'Index'
+                                });
+                                this.configuration.addPage({
+                                    path: COMPODOC_DEFAULTS.additionalEntryPath,
+                                    name: 'index',
+                                    context: 'additionalpages',
+                                    page: 'toto'
+                                });
+                            } else {
+                                this.configuration.mainData.additionalpages.pages.push({
+                                    name: basename$$1
+                                });
+                                this.configuration.addPage({
+                                    path: COMPODOC_DEFAULTS.additionalEntryPath,
+                                    name: basename$$1,
+                                    context: 'additionalpage',
+                                    page: 'toto'
+                                });
+                            }
+                            i++;
+                            loop();
+                        } else {
+                            resolve$$1();
+                        }
+                    };
+                    loop();
+                });
+            });
+        }
+    }, {
+        key: 'prepareModules',
+        value: function prepareModules() {
+            logger.info('Prepare modules');
+            this.configuration.mainData.modules = $dependenciesEngine.getModules();
+            this.configuration.addPage({
+                name: 'modules',
+                context: 'modules'
+            });
+            var i = 0,
+                len = this.configuration.mainData.modules.length;
+            for (i; i < len; i++) {
+                this.configuration.addPage({
+                    path: 'modules',
+                    name: this.configuration.mainData.modules[i].name,
+                    context: 'module',
+                    module: this.configuration.mainData.modules[i]
+                });
+            }
+        }
+    }, {
+        key: 'prepareInterfaces',
+        value: function prepareInterfaces() {
+            logger.info('Prepare interfaces');
+            this.configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+            var i = 0,
+                len = this.configuration.mainData.interfaces.length;
+            for (i; i < len; i++) {
+                this.configuration.addPage({
+                    path: 'interfaces',
+                    name: this.configuration.mainData.interfaces[i].name,
+                    context: 'interface',
+                    interface: this.configuration.mainData.interfaces[i]
+                });
+            }
+        }
+    }, {
+        key: 'prepareComponents',
+        value: function prepareComponents() {
+            logger.info('Prepare components');
+            var that = this;
+            that.configuration.mainData.components = $dependenciesEngine.getComponents();
+            return new Promise(function (resolve$$1, reject) {
                 var i = 0,
-                    f = void 0,
-                    basename$$1 = void 0,
-                    len = files.length;
-                var loop = function loop() {
-                    if (i < len) {
-                        f = files[i];
-                        basename$$1 = path.basename(f);
-                        if (i === 0) {
-                            $configuration.mainData.additionalpages.pages.push({
-                                name: 'Index'
-                            });
-                            $configuration.addPage({
-                                path: defaultAdditionalEntryPath,
-                                name: 'index',
-                                context: 'additionalpages',
-                                page: 'toto'
+                    len = that.configuration.mainData.components.length,
+                    loop = function loop() {
+                    if (i <= len - 1) {
+                        var dirname$$1 = path.dirname(that.configuration.mainData.components[i].file),
+                            readmeFile = dirname$$1 + path.sep + 'README.md';
+                        if (fs.existsSync(readmeFile)) {
+                            logger.info('README.md exist for this component, include it');
+                            fs.readFile(readmeFile, 'utf8', function (err, data) {
+                                if (err) throw err;
+                                that.configuration.mainData.components[i].readme = marked__default(data);
+                                that.configuration.addPage({
+                                    path: 'components',
+                                    name: that.configuration.mainData.components[i].name,
+                                    context: 'component',
+                                    component: that.configuration.mainData.components[i]
+                                });
+                                i++;
+                                loop();
                             });
                         } else {
-                            $configuration.mainData.additionalpages.pages.push({
-                                name: basename$$1
+                            that.configuration.addPage({
+                                path: 'components',
+                                name: that.configuration.mainData.components[i].name,
+                                context: 'component',
+                                component: that.configuration.mainData.components[i]
                             });
-                            $configuration.addPage({
-                                path: defaultAdditionalEntryPath,
-                                name: basename$$1,
-                                context: 'additionalpage',
-                                page: 'toto'
-                            });
+                            i++;
+                            loop();
                         }
-                        i++;
-                        loop();
                     } else {
                         resolve$$1();
                     }
                 };
                 loop();
             });
-        });
-    };
-    var prepareModules = function prepareModules() {
-        logger.info('Prepare modules');
-        $configuration.mainData.modules = $dependenciesEngine.getModules();
-        $configuration.addPage({
-            name: 'modules',
-            context: 'modules'
-        });
-        var i = 0,
-            len = $configuration.mainData.modules.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'modules',
-                name: $configuration.mainData.modules[i].name,
-                context: 'module',
-                module: $configuration.mainData.modules[i]
-            });
         }
-    };
-    var preparePipes = function preparePipes() {
-        logger.info('Prepare pipes');
-        $configuration.mainData.pipes = $dependenciesEngine.getPipes();
-        var i = 0,
-            len = $configuration.mainData.pipes.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'pipes',
-                name: $configuration.mainData.pipes[i].name,
-                context: 'pipe',
-                pipe: $configuration.mainData.pipes[i]
-            });
-        }
-    };
-    var prepareClasses = function prepareClasses() {
-        logger.info('Prepare classes');
-        $configuration.mainData.classes = $dependenciesEngine.getClasses();
-        var i = 0,
-            len = $configuration.mainData.classes.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'classes',
-                name: $configuration.mainData.classes[i].name,
-                context: 'class',
-                class: $configuration.mainData.classes[i]
-            });
-        }
-    };
-    var prepareInterfaces = function prepareInterfaces() {
-        logger.info('Prepare interfaces');
-        $configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
-        var i = 0,
-            len = $configuration.mainData.interfaces.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'interfaces',
-                name: $configuration.mainData.interfaces[i].name,
-                context: 'interface',
-                interface: $configuration.mainData.interfaces[i]
-            });
-        }
-    };
-    var prepareComponents = function prepareComponents() {
-        logger.info('Prepare components');
-        $configuration.mainData.components = $dependenciesEngine.getComponents();
-        return new Promise(function (resolve$$1, reject) {
+    }, {
+        key: 'prepareInjectables',
+        value: function prepareInjectables() {
+            logger.info('Prepare injectables');
+            this.configuration.mainData.injectables = $dependenciesEngine.getInjectables();
             var i = 0,
-                len = $configuration.mainData.components.length,
+                len = this.configuration.mainData.injectables.length;
+            for (i; i < len; i++) {
+                this.configuration.addPage({
+                    path: 'injectables',
+                    name: this.configuration.mainData.injectables[i].name,
+                    context: 'injectable',
+                    injectable: this.configuration.mainData.injectables[i]
+                });
+            }
+        }
+    }, {
+        key: 'prepareRoutes',
+        value: function prepareRoutes() {
+            logger.info('Process routes');
+            this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
+            this.configuration.addPage({
+                name: 'routes',
+                context: 'routes'
+            });
+        }
+    }, {
+        key: 'processPages',
+        value: function processPages() {
+            var _this6 = this;
+
+            logger.info('Process pages');
+            var pages = this.configuration.pages,
+                i = 0,
+                len = pages.length,
                 loop = function loop() {
                 if (i <= len - 1) {
-                    var dirname$$1 = path.dirname($configuration.mainData.components[i].file),
-                        readmeFile = dirname$$1 + path.sep + 'README.md';
-                    if (fs.existsSync(readmeFile)) {
-                        logger.info('README.md exist for this component, include it');
-                        fs.readFile(readmeFile, 'utf8', function (err, data) {
-                            if (err) throw err;
-                            $configuration.mainData.components[i].readme = marked__default(data);
-                            $configuration.addPage({
-                                path: 'components',
-                                name: $configuration.mainData.components[i].name,
-                                context: 'component',
-                                component: $configuration.mainData.components[i]
-                            });
-                            i++;
-                            loop();
+                    logger.info('Process page', pages[i].name);
+                    $htmlengine.render(_this6.configuration.mainData, pages[i]).then(function (htmlData) {
+                        var finalPath = _this6.configuration.mainData.output;
+                        if (_this6.configuration.mainData.output.lastIndexOf('/') === -1) {
+                            finalPath += '/';
+                        }
+                        if (pages[i].path) {
+                            finalPath += pages[i].path + '/';
+                        }
+                        finalPath += pages[i].name + '.html';
+                        $searchEngine.indexPage({
+                            infos: pages[i],
+                            rawData: htmlData,
+                            url: finalPath
                         });
-                    } else {
-                        $configuration.addPage({
-                            path: 'components',
-                            name: $configuration.mainData.components[i].name,
-                            context: 'component',
-                            component: $configuration.mainData.components[i]
+                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                            if (err) {
+                                logger.error('Error during ' + pages[i].name + ' page generation');
+                            } else {
+                                i++;
+                                loop();
+                            }
                         });
-                        i++;
-                        loop();
-                    }
+                    }, function (errorMessage) {
+                        logger.error(errorMessage);
+                    });
                 } else {
-                    resolve$$1();
+                    $searchEngine.generateSearchIndexJson(_this6.configuration.mainData.output);
+                    _this6.processResources();
                 }
             };
             loop();
-        });
-    };
-    var prepareDirectives = function prepareDirectives() {
-        logger.info('Prepare directives');
-        $configuration.mainData.directives = $dependenciesEngine.getDirectives();
-        var i = 0,
-            len = $configuration.mainData.directives.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'directives',
-                name: $configuration.mainData.directives[i].name,
-                context: 'directive',
-                directive: $configuration.mainData.directives[i]
+        }
+    }, {
+        key: 'processResources',
+        value: function processResources() {
+            logger.info('Copy main resources');
+            var that = this;
+            fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), function (err) {
+                if (err) {
+                    logger.error('Error during resources copy ', err);
+                } else {
+                    if (that.configuration.mainData.extTheme) {
+                        fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                            if (err) {
+                                logger.error('Error during external styling theme copy ', err);
+                            } else {
+                                logger.info('External styling theme copy succeeded');
+                                that.processGraphs();
+                            }
+                        });
+                    } else {
+                        that.processGraphs();
+                    }
+                }
             });
         }
-    };
-    var prepareInjectables = function prepareInjectables() {
-        logger.info('Prepare injectables');
-        $configuration.mainData.injectables = $dependenciesEngine.getInjectables();
-        var i = 0,
-            len = $configuration.mainData.injectables.length;
-        for (i; i < len; i++) {
-            $configuration.addPage({
-                path: 'injectables',
-                name: $configuration.mainData.injectables[i].name,
-                context: 'injectable',
-                injectable: $configuration.mainData.injectables[i]
-            });
-        }
-    };
-    var prepareRoutes = function prepareRoutes() {
-        logger.info('Process routes');
-        $configuration.mainData.routes = $dependenciesEngine.getRoutes();
-        $configuration.addPage({
-            name: 'routes',
-            context: 'routes'
-        });
-    };
-    var processPages = function processPages() {
-        logger.info('Process pages');
-        var pages = $configuration.pages,
-            i = 0,
-            len = pages.length,
-            loop = function loop() {
-            if (i <= len - 1) {
-                logger.info('Process page', pages[i].name);
-                $htmlengine.render($configuration.mainData, pages[i]).then(function (htmlData) {
-                    var finalPath = defaultFolder;
-                    if (defaultFolder.lastIndexOf('/') === -1) {
+    }, {
+        key: 'processGraphs',
+        value: function processGraphs() {
+            var _this7 = this;
+
+            logger.info('Process main graph');
+            var modules = this.configuration.mainData.modules,
+                i = 0,
+                len = modules.length,
+                loop = function loop() {
+                if (i <= len - 1) {
+                    logger.info('Process module graph', modules[i].name);
+                    var finalPath = _this7.configuration.mainData.output;
+                    if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
-                    if (pages[i].path) {
-                        finalPath += pages[i].path + '/';
-                    }
-                    finalPath += pages[i].name + '.html';
-                    $searchEngine.indexPage({
-                        infos: pages[i],
-                        rawData: htmlData,
-                        url: finalPath
-                    });
-                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                        if (err) {
-                            logger.error('Error during ' + pages[i].name + ' page generation');
-                        } else {
-                            i++;
-                            loop();
-                        }
-                    });
-                }, function (errorMessage) {
-                    logger.error(errorMessage);
-                });
-            } else {
-                $searchEngine.generateSearchIndexJson(defaultFolder);
-                processResources();
-            }
-        };
-        loop();
-    };
-    var processResources = function processResources() {
-        logger.info('Copy main resources');
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + defaultFolder), function (err) {
-            if (err) {
-                logger.error('Error during resources copy ', err);
-            } else {
-                if (program.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + defaultFolder + '/styles/'), function (err) {
-                        if (err) {
-                            logger.error('Error during external styling theme copy ', err);
-                        } else {
-                            logger.info('External styling theme copy succeeded');
-                            processGraphs();
-                        }
+                    finalPath += 'modules/' + modules[i].name;
+                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
+                        i++;
+                        loop();
+                    }, function (errorMessage) {
+                        logger.error(errorMessage);
                     });
                 } else {
-                    processGraphs();
+                    var finalTime = (new Date() - startTime) / 1000;
+                    logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds');
+                    if (_this7.configuration.mainData.serve) {
+                        logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
+                        _this7.runWebServer(_this7.configuration.mainData.output);
+                    }
                 }
+            };
+            var finalMainGraphPath = COMPODOC_DEFAULTS.folder;
+            if (COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+                finalMainGraphPath += '/';
             }
-        });
-    };
-    var processGraphs = function processGraphs() {
-        logger.info('Process main graph');
-        var modules = $configuration.mainData.modules,
-            i = 0,
-            len = modules.length,
-            loop = function loop() {
-            if (i <= len - 1) {
-                logger.info('Process module graph', modules[i].name);
-                var finalPath = defaultFolder;
-                if (defaultFolder.lastIndexOf('/') === -1) {
-                    finalPath += '/';
-                }
-                finalPath += 'modules/' + modules[i].name;
-                $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
-                    i++;
-                    loop();
-                }, function (errorMessage) {
-                    logger.error(errorMessage);
-                });
-            } else {
-                var finalTime = (new Date() - startTime) / 1000;
-                logger.info('Documentation generated in ' + defaultFolder + ' in ' + finalTime + ' seconds');
-                if (program.serve) {
-                    logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:' + defaultPort);
-                    runWebServer(defaultFolder);
-                }
-            }
-        };
-        var finalMainGraphPath = defaultFolder;
-        if (defaultFolder.lastIndexOf('/') === -1) {
-            finalMainGraphPath += '/';
+            finalMainGraphPath += 'graph';
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, finalMainGraphPath, 'p').then(function () {
+                loop();
+            }, function (err) {
+                logger.error('Error during graph generation: ', err);
+            });
         }
-        finalMainGraphPath += 'graph';
-        $ngdengine.renderGraph(program.tsconfig, finalMainGraphPath, 'p').then(function () {
-            loop();
-        }, function (err) {
-            logger.error('Error during graph generation: ', err);
-        });
-    };
-    var runWebServer = function runWebServer(folder) {
-        LiveServer.start({
-            root: folder,
-            open: false,
-            quiet: true,
-            logLevel: 0,
-            port: defaultPort
-        });
-    };
-    Application.run = function () {
-        var _file = void 0;
-        if (program.serve && !program.tsconfig && program.output) {
-            // if -s & -d, serve it
-            if (!fs.existsSync(program.output)) {
-                logger.error(program.output + ' folder doesn\'t exist');
+    }, {
+        key: 'runWebServer',
+        value: function runWebServer(folder) {
+            LiveServer.start({
+                root: folder,
+                open: false,
+                quiet: true,
+                logLevel: 0,
+                port: COMPODOC_DEFAULTS.port
+            });
+        }
+        /**
+         * Return the application / root component instance.
+         */
+
+    }, {
+        key: 'application',
+        get: function get() {
+            return this;
+        }
+    }, {
+        key: 'isCLI',
+        get: function get() {
+            return false;
+        }
+    }]);
+    return Application;
+}();
+
+var pkg$2 = require('../package.json');
+var program = require('commander');
+var files = [];
+var cwd$1 = process.cwd();
+
+var CliApplication = function (_Application) {
+    inherits(CliApplication, _Application);
+
+    function CliApplication() {
+        classCallCheck(this, CliApplication);
+        return possibleConstructorReturn(this, (CliApplication.__proto__ || Object.getPrototypeOf(CliApplication)).apply(this, arguments));
+    }
+
+    createClass(CliApplication, [{
+        key: 'generate',
+
+        /**
+         * Run compodoc from the command line.
+         */
+        value: function generate() {
+            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
+            var outputHelp = function outputHelp() {
+                program.outputHelp();
                 process.exit(1);
-            } else {
-                logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + defaultPort);
-                runWebServer(program.output);
+            };
+            if (program.output) {
+                this.configuration.mainData.output = program.output;
             }
-        } else if (program.serve && !program.tsconfig && !program.output) {
-            // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!fs.existsSync(defaultFolder)) {
-                logger.error('Provide output generated folder with -d flag');
-                process.exit(1);
-            } else {
-                logger.info('Serving documentation from ' + defaultFolder + ' at http://127.0.0.1:' + defaultPort);
-                runWebServer(defaultFolder);
+            if (program.base) {
+                this.configuration.mainData.base = program.base;
             }
-        } else {
+            if (program.extTheme) {
+                this.configuration.mainData.extTheme = program.extTheme;
+            }
+            if (program.theme) {
+                this.configuration.mainData.theme = program.theme;
+            }
+            if (program.name) {
+                this.configuration.mainData.documentationMainName = program.name;
+            }
+            if (program.open) {
+                this.configuration.mainData.open = program.open;
+            }
+            if (program.includes) {
+                this.configuration.mainData.includes = program.includes;
+            }
+            if (program.includesName) {}
+            if (program.silent) {
+                logger.silent = false;
+            }
+            if (program.serve) {
+                this.configuration.mainData.serve = program.serve;
+            }
+            if (program.port) {
+                this.configuration.mainData.port = program.port;
+            }
             if (program.hideGenerator) {
-                $configuration.mainData.hideGenerator = true;
+                this.configuration.mainData.hideGenerator = program.hideGenerator;
             }
-            if (program.tsconfig) {
-                if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
+            if (program.serve && !program.tsconfig && program.output) {
+                // if -s & -d, serve it
+                if (!fs.existsSync(program.output)) {
+                    logger.error(program.output + ' folder doesn\'t exist');
                     process.exit(1);
                 } else {
-                    _file = path.join(path.join(process.cwd(), path.dirname(program.tsconfig)), path.basename(program.tsconfig));
-                    logger.info('Using tsconfig', _file);
-                    files = require(_file).files;
-                    // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-                    if (!files) {
-                        var _walk;
-
-                        (function () {
-                            var exclude = require(_file).exclude || [];
-
-                            _walk = function walk(dir) {
-                                var results = [];
-                                var list = fs.readdirSync(dir);
-                                list.forEach(function (file) {
-                                    if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                        file = path.join(dir, file);
-                                        var stat = fs.statSync(file);
-                                        if (stat && stat.isDirectory()) {
-                                            results = results.concat(_walk(file));
-                                        } else if (/(spec|\.d)\.ts/.test(file)) {
-                                            logger.debug('Ignoring', file);
-                                        } else if (path.extname(file) === '.ts') {
-                                            logger.debug('Including', file);
-                                            results.push(file);
-                                        }
-                                    }
-                                });
-                                return results;
-                            };
-
-                            files = _walk(cwd || '.');
-                        })();
-                    }
-                    $htmlengine.init().then(function () {
-                        processPackageJson();
-                    });
+                    logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + program.port);
+                    get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
+                }
+            } else if (program.serve && !program.tsconfig && !program.output) {
+                // if only -s find ./documentation, if ok serve, else error provide -d
+                if (!fs.existsSync(program.output)) {
+                    logger.error('Provide output generated folder with -d flag');
+                    process.exit(1);
+                } else {
+                    logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + program.port);
+                    get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
                 }
             } else {
-                logger.error('Entry file was not found');
-                outputHelp();
+                if (program.hideGenerator) {
+                    this.configuration.mainData.hideGenerator = true;
+                }
+                if (program.tsconfig) {
+                    this.configuration.mainData.tsconfig = program.tsconfig;
+                    if (!fs.existsSync(program.tsconfig)) {
+                        logger.error('"tsconfig.json" file was not found in the current directory');
+                        process.exit(1);
+                    } else {
+                        var _file = path.join(path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)), path.basename(this.configuration.mainData.tsconfig));
+                        logger.info('Using tsconfig', _file);
+                        files = require(_file).files;
+                        // use the current directory of tsconfig.json as a working directory
+                        cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
+                        if (!files) {
+                            var _walk;
+
+                            (function () {
+                                var exclude = require(_file).exclude || [];
+
+                                _walk = function walk(dir) {
+                                    var results = [];
+                                    var list = fs.readdirSync(dir);
+                                    list.forEach(function (file) {
+                                        if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                                            file = path.join(dir, file);
+                                            var stat = fs.statSync(file);
+                                            if (stat && stat.isDirectory()) {
+                                                results = results.concat(_walk(file));
+                                            } else if (/(spec|\.d)\.ts/.test(file)) {
+                                                logger.debug('Ignoring', file);
+                                            } else if (path.extname(file) === '.ts') {
+                                                logger.debug('Including', file);
+                                                results.push(file);
+                                            }
+                                        }
+                                    });
+                                    return results;
+                                };
+
+                                files = _walk(cwd$1 || '.');
+                            })();
+                        }
+                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', this).call(this, files);
+                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', this).call(this);
+                    }
+                } else {
+                    logger.error('Entry file was not found');
+                    outputHelp();
+                }
             }
         }
-    };
-})(Application$1 || (Application$1 = {}));
+    }]);
+    return CliApplication;
+}(Application);
 
-var Application$$1 = Application$1;
-
-exports.Application = Application$$1;
+exports.Application = Application;
+exports.CliApplication = CliApplication;
