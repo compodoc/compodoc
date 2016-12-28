@@ -15,6 +15,10 @@ interface Page {
 interface IMainData {
     defaultFolder: string;
     theme: string;
+    extTheme: string;
+    serve: boolean;
+    port: number;
+    open: boolean;
     documentationMainName: string;
     documentationMainDescription: string;
     base: string;
@@ -29,6 +33,8 @@ interface IMainData {
     directives: any;
     injectables: any;
     routes: any;
+    tsconfig: string;
+    includes: boolean;
 }
 
 export interface IConfiguration {
@@ -44,6 +50,10 @@ export class Configuration implements IConfiguration {
     private _mainData: IMainData = {
         defaultFolder: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
+        extTheme: '',
+        serve: false,
+        port: COMPODOC_DEFAULTS.port,
+        open: false,
         documentationMainName: COMPODOC_DEFAULTS.title,
         documentationMainDescription: '',
         base: COMPODOC_DEFAULTS.base,
@@ -57,7 +67,9 @@ export class Configuration implements IConfiguration {
         components: [],
         directives: [],
         injectables: [],
-        routes: []
+        routes: [],
+        tsconfig: '',
+        includes: false
     };
 
     constructor() {

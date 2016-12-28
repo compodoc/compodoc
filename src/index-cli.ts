@@ -16,7 +16,7 @@ export class CliApplication extends Application
     /**
      * Run compodoc from the command line.
      */
-    protected bootstrap(options?:Object) {
+    protected generate() {
 
         program
             .version(pkg.version)
@@ -31,7 +31,7 @@ export class CliApplication extends Application
             //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
             .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
-            .option('-r, --port [port]', 'Change default serving port')
+            .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .parse(process.argv);
 
@@ -40,31 +40,53 @@ export class CliApplication extends Application
             process.exit(1);
         }
 
+        if (program.output) {
+            this.configuration.mainData.defaultFolder = program.output;
+        }
+
+        if (program.base) {
+            this.configuration.mainData.base = program.base;
+        }
+
+        if (program.extTheme) {
+            this.configuration.mainData.extTheme = program.extTheme;
+        }
+
+        if (program.theme) {
+            this.configuration.mainData.theme = program.theme;
+        }
+
+        if (program.name) {
+            this.configuration.mainData.documentationMainName = program.name;
+        }
+
+        if (program.open) {
+            this.configuration.mainData.open = program.open;
+        }
+
+        if (program.includes) {
+            this.configuration.mainData.includes  = program.includes;
+        }
+
+        if (program.includesName) {
+            //this.configuration.mainData.includesName  = program.includesName;
+        }
+
         if (program.silent) {
             logger.silent = false;
         }
 
-        if (program.output) {
-            COMPODOC_DEFAULTS.folder = program.output;
-            this.configuration.mainData.defaultFolder = COMPODOC_DEFAULTS.folder;
-        }
-
-        if (program.includesName) {
-            COMPODOC_DEFAULTS.additionalEntryName = program.includesName;
-        }
-
-        if (program.theme) {
-            COMPODOC_DEFAULTS.theme = program.theme;
-            this.configuration.mainData.theme = COMPODOC_DEFAULTS.theme;
+        if (program.serve) {
+            this.configuration.mainData.serve  = program.serve;
         }
 
         if (program.port) {
-            COMPODOC_DEFAULTS.port = program.port;
+            this.configuration.mainData.port = program.port;
         }
 
-        this.configuration.mainData.documentationMainName = program.name; //default commander value
-
-        this.configuration.mainData.base = program.base;
+        if (program.hideGenerator) {
+            this.configuration.mainData.hideGenerator = program.hideGenerator;
+        }
 
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
@@ -72,17 +94,17 @@ export class CliApplication extends Application
                 logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${COMPODOC_DEFAULTS.port}`);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
                 super.runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!fs.existsSync(COMPODOC_DEFAULTS.folder)) {
+            if (!fs.existsSync(program.output)) {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${COMPODOC_DEFAULTS.folder} at http://127.0.0.1:${COMPODOC_DEFAULTS.port}`);
-                super.runWebServer(COMPODOC_DEFAULTS.folder);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
+                super.runWebServer(program.output);
             }
         } else {
             if (program.hideGenerator) {
@@ -90,11 +112,12 @@ export class CliApplication extends Application
             }
 
             if (program.tsconfig) {
+                this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
                     logger.error('"tsconfig.json" file was not found in the current directory');
                     process.exit(1);
                 } else {
-                    super.bootstrap(options);
+                    super.generate();
                 }
             } else {
                 logger.error('Entry file was not found');

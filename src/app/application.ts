@@ -20,7 +20,6 @@ import { Dependencies } from './compiler/dependencies';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 let pkg = require('../package.json'),
-    program = require('commander'),
     files = [],
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
@@ -43,8 +42,6 @@ export class Application {
      */
     constructor(options?:Object) {
         this.configuration = Configuration.getInstance();
-
-        this.bootstrap(options);
     }
 
     /**
@@ -52,12 +49,12 @@ export class Application {
      *
      * @param options  The desired options to set.
      */
-    protected bootstrap(options?:Object) {
+    protected generate(options?:Object) {
         this.options = options;
 
         let _file = path.join(
-          path.join(process.cwd(), path.dirname(program.tsconfig)),
-          path.basename(program.tsconfig)
+          path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+          path.basename(this.configuration.mainData.tsconfig)
         );
         logger.info('Using tsconfig', _file);
 
@@ -103,7 +100,7 @@ export class Application {
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
-            if (typeof parsedData.name !== 'undefined' && program.name === COMPODOC_DEFAULTS.title) {
+            if (typeof parsedData.name !== 'undefined' && this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
                 this.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
             }
             if (typeof parsedData.description !== 'undefined') {
@@ -181,7 +178,7 @@ export class Application {
                 this.prepareInterfaces();
             }
 
-            if (program.includes) {
+            if (this.configuration.mainData.includes) {
                 this.processAddtionalDocumentation().then(() => {
                     this.processPages();
                 }, (err) => {
@@ -196,13 +193,13 @@ export class Application {
     }
 
     processAddtionalDocumentation() {
-        logger.info('Process additional documentation: ', program.includes, path.resolve(process.cwd() + path.sep + program.includes + '/**/*'));
+        logger.info('Process additional documentation: ', this.configuration.mainData.includes, path.resolve(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*'));
         this.configuration.mainData.additionalpages = {
             entryName: COMPODOC_DEFAULTS.additionalEntryName,
             pages: []
         };
         return new Promise(function(resolve, reject) {
-            glob( process.cwd() + path.sep + program.includes + '/**/*', {
+            glob( process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*', {
                 dot: false,
                 cwd: __dirname
             }, function(err, files) {
@@ -410,8 +407,8 @@ export class Application {
                 if( i <= len-1) {
                     logger.info('Process page', pages[i].name);
                     $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = COMPODOC_DEFAULTS.folder;
-                        if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+                        let finalPath = this.configuration.mainData.defaultFolder;
+                        if(this.configuration.mainData.defaultFolder.lastIndexOf('/') === -1) {
                             finalPath += '/';
                         }
                         if (pages[i].path) {
@@ -435,7 +432,7 @@ export class Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    $searchEngine.generateSearchIndexJson(COMPODOC_DEFAULTS.folder);
+                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.defaultFolder);
                     this.processResources();
                 }
             };
@@ -445,13 +442,13 @@ export class Application {
     processResources() {
         logger.info('Copy main resources');
         let that = this;
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + COMPODOC_DEFAULTS.folder), function (err) {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.defaultFolder), function (err) {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
-                if (program.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + program.extTheme), path.resolve(process.cwd() + path.sep + COMPODOC_DEFAULTS.folder + '/styles/'), function (err) {
+                if (that.configuration.mainData.extTheme) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.defaultFolder + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
@@ -475,8 +472,8 @@ export class Application {
             loop = () => {
                 if( i <= len-1) {
                     logger.info('Process module graph', modules[i].name);
-                    let finalPath = COMPODOC_DEFAULTS.folder;
-                    if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+                    let finalPath = this.configuration.mainData.defaultFolder;
+                    if(this.configuration.mainData.defaultFolder.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     finalPath += 'modules/' + modules[i].name;
@@ -488,10 +485,10 @@ export class Application {
                     });
                 } else {
                     let finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + COMPODOC_DEFAULTS.folder + ' in ' + finalTime + ' seconds');
-                    if (program.serve) {
-                        logger.info(`Serving documentation from ${COMPODOC_DEFAULTS.folder} at http://127.0.0.1:${COMPODOC_DEFAULTS.port}`);
-                        this.runWebServer(COMPODOC_DEFAULTS.folder);
+                    logger.info('Documentation generated in ' + this.configuration.mainData.defaultFolder + ' in ' + finalTime + ' seconds');
+                    if (this.configuration.mainData.serve) {
+                        logger.info(`Serving documentation from ${this.configuration.mainData.defaultFolder} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                        this.runWebServer(this.configuration.mainData.defaultFolder);
                     }
                 }
             };
@@ -500,7 +497,7 @@ export class Application {
             finalMainGraphPath += '/';
         }
         finalMainGraphPath += 'graph';
-        $ngdengine.renderGraph(program.tsconfig, finalMainGraphPath, 'p').then(() => {
+        $ngdengine.renderGraph(this.configuration.mainData.tsconfig, finalMainGraphPath, 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);
