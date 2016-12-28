@@ -1,3 +1,14 @@
+<a name="0.0.24"></a>
+## 0.0.24 (2016-12-28)
+
+### Bug Fixes
+
+* **dependencies:** handle @injectable and @component at the same time for metadata ([f4d5ce8](https://github.com/compodoc/compodoc/commit/f4d5ce8)), closes [#41](https://github.com/compodoc/compodoc/issues/41)
+
+### Features
+
+* **app:** library mode support, for gulp-compodoc ([5a65d87](https://github.com/compodoc/compodoc/commit/5a65d87))
+
 <a name="0.0.23"></a>
 ## 0.0.23 (2016-12-15)
 

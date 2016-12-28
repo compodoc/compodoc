@@ -152,7 +152,7 @@ var toConsumableArray = function (arr) {
 
 var gutil = require('gulp-util');
 var c = gutil.colors;
-var pkg$1 = require('../package.json');
+var pkg$2 = require('../package.json');
 var LEVEL;
 (function (LEVEL) {
     LEVEL[LEVEL["INFO"] = 0] = "INFO";
@@ -164,8 +164,8 @@ var Logger = function () {
     function Logger() {
         classCallCheck(this, Logger);
 
-        this.name = pkg$1.name;
-        this.version = pkg$1.version;
+        this.name = pkg$2.name;
+        this.version = pkg$2.version;
         this.logger = gutil.log;
         this.silent = true;
     }
@@ -1961,8 +1961,8 @@ var Dependencies = function () {
 }();
 
 var glob = require('glob');
-var pkg = require('../package.json');
-var cwd = process.cwd();
+var pkg$1 = require('../package.json');
+var cwd$1 = process.cwd();
 var $htmlengine = new HtmlEngine();
 var $fileengine = new FileEngine();
 var $markdownengine = new MarkdownEngine();
@@ -2107,7 +2107,7 @@ var Application = function () {
 
             logger.info('Get dependencies data');
             var crawler = new Dependencies(this.files, {
-                tsconfigDirectory: cwd
+                tsconfigDirectory: cwd$1
             });
             var dependenciesData = crawler.getDependencies();
             $dependenciesEngine = new DependenciesEngine(dependenciesData);
@@ -2442,10 +2442,10 @@ var Application = function () {
     return Application;
 }();
 
-var pkg$2 = require('../package.json');
+var pkg = require('../package.json');
 var program = require('commander');
 var files = [];
-var cwd$1 = process.cwd();
+var cwd = process.cwd();
 
 var CliApplication = function (_Application) {
     inherits(CliApplication, _Application);
@@ -2462,7 +2462,7 @@ var CliApplication = function (_Application) {
          * Run compodoc from the command line.
          */
         value: function generate() {
-            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
+            program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2533,7 +2533,7 @@ var CliApplication = function (_Application) {
                         logger.info('Using tsconfig', _file);
                         files = require(_file).files;
                         // use the current directory of tsconfig.json as a working directory
-                        cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
+                        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                         if (!files) {
                             var _walk;
 
@@ -2560,7 +2560,7 @@ var CliApplication = function (_Application) {
                                     return results;
                                 };
 
-                                files = _walk(cwd$1 || '.');
+                                files = _walk(cwd || '.');
                             })();
                         }
                         get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', this).call(this, files);
@@ -2576,5 +2576,4 @@ var CliApplication = function (_Application) {
     return CliApplication;
 }(Application);
 
-exports.Application = Application;
 exports.CliApplication = CliApplication;

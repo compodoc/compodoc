@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 /**
- * The about component
+ * The home component
  */
 @Component({
     selector: 'home',

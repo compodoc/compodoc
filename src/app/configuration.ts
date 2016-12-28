@@ -1,13 +1,76 @@
+import { COMPODOC_DEFAULTS } from '../utils/defaults';
+
 interface Page {
     name: string;
     context: string;
+    path?: string;
+    module?: any;
+    pipe?: any;
+    class?: any;
+    interface?: any;
+    directive?: any;
+    injectable?: any;
 }
 
-export class Configuration {
+interface IMainData {
+    output: string;
+    theme: string;
+    extTheme: string;
+    serve: boolean;
+    port: number;
+    open: boolean;
+    documentationMainName: string;
+    documentationMainDescription: string;
+    base: string;
+    hideGenerator: boolean;
+    modules: any;
+    readme: string;
+    additionalpages: Object;
+    pipes: any;
+    classes: any;
+    interfaces: any;
+    components: any;
+    directives: any;
+    injectables: any;
+    routes: any;
+    tsconfig: string;
+    includes: boolean;
+}
+
+export interface IConfiguration {
+    mainData: IMainData;
+    pages:Array<Page>;
+    addPage(page: Page): void;
+}
+
+export class Configuration implements IConfiguration {
     private static _instance:Configuration = new Configuration();
 
     private _pages:Array<Page> = [];
-    private _mainData: Object = {};
+    private _mainData: IMainData = {
+        output: COMPODOC_DEFAULTS.folder,
+        theme: COMPODOC_DEFAULTS.theme,
+        extTheme: '',
+        serve: false,
+        port: COMPODOC_DEFAULTS.port,
+        open: false,
+        documentationMainName: COMPODOC_DEFAULTS.title,
+        documentationMainDescription: '',
+        base: COMPODOC_DEFAULTS.base,
+        hideGenerator: false,
+        modules: [],
+        readme: '',
+        additionalpages: {},
+        pipes: [],
+        classes: [],
+        interfaces: [],
+        components: [],
+        directives: [],
+        injectables: [],
+        routes: [],
+        tsconfig: '',
+        includes: false
+    };
 
     constructor() {
         if(Configuration._instance){
@@ -32,10 +95,10 @@ export class Configuration {
         this._pages = [];
     }
 
-    get mainData():Object {
+    get mainData():IMainData {
         return this._mainData;
     }
-    set mainData(data:Object) {
+    set mainData(data:IMainData) {
         Object.assign(this._mainData, data);
     }
 };
