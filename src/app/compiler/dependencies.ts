@@ -179,6 +179,7 @@ export class Dependencies {
                         outputSymbols['modules'].push(deps);
                     }
                     else if (this.isComponent(metadata)) {
+                        if(props.length === 0) return;
                         //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
                         deps = {
                             name,
