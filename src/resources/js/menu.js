@@ -11,6 +11,26 @@ document.addEventListener('DOMContentLoaded', function() {
         menuCollapsed = !menuCollapsed;
     });
 
+    // collapse menu
+    var classnameMenuToggler = document.getElementsByClassName('menu-toggler'),
+        faAngleUpClass = 'fa-angle-up',
+        faAngleDownClass = 'fa-angle-down',
+        toggleItemMenu = function(e) {
+            e.preventDefault();
+            var element = $(e.target);
+            if (element.hasClass(faAngleUpClass)) {
+                element.addClass(faAngleDownClass);
+                element.removeClass(faAngleUpClass);
+            } else {
+                element.addClass(faAngleUpClass);
+                element.removeClass(faAngleDownClass);
+            }
+        };
+
+    for (var i = 0; i < classnameMenuToggler.length; i++) {
+        classnameMenuToggler[i].addEventListener('click', toggleItemMenu, false);
+    }
+
     // Scroll to active link
     var menus = document.querySelectorAll('.menu'),
         i = 0,

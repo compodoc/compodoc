@@ -285,6 +285,7 @@ h4, h5 {
 
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
+    position: relative;
 }
 
 .menu .panel-group {
@@ -336,6 +337,15 @@ h4, h5 {
 }
 .menu .title {
     padding: 8px 0;
+}
+
+.menu-toggler {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    position: absolute;
+    right: 0;
+    top: 7px;
 }
 
 .overview .card-title .fa {
