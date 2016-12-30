@@ -1,13 +1,9 @@
 import * as ts from 'typescript';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as util from 'util';
 
 import { logger } from './logger';
-
-export function d(node) {
-    console.log(util.inspect(node, { showHidden: true, depth: 10 }));
-}
 
 const carriageReturnLineFeed = '\r\n';
 const lineFeed = '\n';
