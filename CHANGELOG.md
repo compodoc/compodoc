@@ -1,3 +1,11 @@
+<a name="0.0.25"></a>
+## 0.0.25 (2016-12-31)
+
+### Features
+
+* **app:** source code tab ([8824e75](https://github.com/compodoc/compodoc/commit/8824e75))
+* **app:** toggle buttons for menu ([4037259](https://github.com/compodoc/compodoc/commit/4037259))
+
 <a name="0.0.24"></a>
 ## 0.0.24 (2016-12-28)
 
