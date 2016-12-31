@@ -11,7 +11,7 @@ describe('CLI', () => {
         let command = null;
         beforeEach(() => {
             tmp.create();
-            command = shell('node', ['../bin/index.js'], { cwd: tmp.name });
+            command = shell('node', ['../bin/index-cli.js'], { cwd: tmp.name });
         });
         afterEach(() => tmp.clean());
 
@@ -30,7 +30,7 @@ describe('CLI', () => {
         let command = null;
         beforeEach(() => {
             tmp.create();
-            command = shell('node', ['../bin/index.js', '-p', '../test.json'], { cwd: tmp.name });
+            command = shell('node', ['../bin/index-cli.js', '-p', '../test.json'], { cwd: tmp.name });
         });
         afterEach(() => tmp.clean());
 
@@ -49,7 +49,7 @@ describe('CLI', () => {
         let command = null;
         beforeEach(() => {
             tmp.create();
-            command = shell('node', ['../bin/index.js', '-s'], { cwd: tmp.name });
+            command = shell('node', ['../bin/index-cli.js', '-s'], { cwd: tmp.name });
         });
         afterEach(() => tmp.clean());
 
@@ -63,7 +63,7 @@ describe('CLI', () => {
         let command = null;
         beforeEach(() => {
             tmp.create();
-            command = shell('node', ['../bin/index.js', '-s', '-d', 'doc'], { cwd: tmp.name });
+            command = shell('node', ['../bin/index-cli.js', '-s', '-d', 'doc'], { cwd: tmp.name });
         });
         afterEach(() => tmp.clean());
 
@@ -76,7 +76,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -127,7 +127,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -173,7 +173,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index.js -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -227,7 +227,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -251,7 +251,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -276,7 +276,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -h ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -h ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -301,7 +301,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -325,7 +325,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -349,7 +349,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -374,7 +374,7 @@ describe('CLI', () => {
             child;
         before(function (done) {
             tmp.create();
-            child = exec('node ./bin/index.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child = exec('node ./bin/index-cli.js -s -r ' + port + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
                 stdoutString += data;
             });
@@ -399,7 +399,7 @@ describe('CLI', () => {
             child;
         before(function (done) {
             tmp.create();
-            child = exec('node ./bin/index.js -s -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child = exec('node ./bin/index-cli.js -s -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
                 stdoutString += data;
             });
@@ -422,7 +422,7 @@ describe('CLI', () => {
         let stdoutString = null,
             child;
         before(function (done) {
-            child = exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child = exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
                 stdoutString += data;
             });
