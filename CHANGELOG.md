@@ -1,3 +1,10 @@
+<a name="0.0.26"></a>
+## 0.0.26 (2016-12-31)
+
+### Bug Fixes
+
+* **app:** bin renaming ([557a0d1](https://github.com/compodoc/compodoc/commit/557a0d1))
+
 <a name="0.0.25"></a>
 ## 0.0.25 (2016-12-31)
 
