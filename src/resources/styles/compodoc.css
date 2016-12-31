@@ -285,6 +285,7 @@ h4, h5 {
 
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
+    position: relative;
 }
 
 .menu .panel-group {
@@ -338,6 +339,15 @@ h4, h5 {
     padding: 8px 0;
 }
 
+.menu-toggler {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    position: absolute;
+    right: 0;
+    top: 7px;
+}
+
 .overview .card-title .fa {
     font-size: 50px;
 }
@@ -386,6 +396,10 @@ h4, h5 {
 .xs-menu .copyright {
     margin-top: 20px;
     position: relative;
+}
+
+.tab-source-code {
+    padding: 10px 0;
 }
 
 pre {
@@ -468,4 +482,16 @@ code {
 .search-results ul.search-results-list li p em {
   background-color: rgba(255, 220, 0, 0.4);
   font-style: normal;
+}
+
+.hljs-line-numbers {
+    text-align: right;
+    border-right: 1px solid #ccc;
+    color: #999;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

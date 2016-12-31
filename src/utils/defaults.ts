@@ -5,5 +5,6 @@ export const COMPODOC_DEFAULTS = {
     folder: './documentation/',
     port: 8080,
     theme: 'gitbook',
-    base: '/'
+    base: '/',
+    disableSourceCode: false
 }

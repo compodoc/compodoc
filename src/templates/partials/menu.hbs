@@ -39,8 +39,23 @@
         </li>
 
         <li class="chapter">
-            <a data-type="chapter-link" href="./modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}><span class="fa fa-archive"></span>Modules</a>
-            <ul class="links">
+            <a data-type="chapter-link" href="./modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
+                <span class="fa fa-archive"></span>
+                <span>Modules</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#modules-links"
+                    {{else}}
+                        data-target="#xs-modules-links"
+                    {{/compare}}
+                ></span>
+            </a>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="modules-links"
+                {{else}}
+                    id="xs-modules-links"
+                {{/compare}}>
                 {{#each modules}}
                     <li class="link">
                         <a href="./modules/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -51,8 +66,22 @@
 
         {{#if components}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-cogs"></span>Components</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-cogs"></span>
+                <span>Components</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#components-links"
+                    {{else}}
+                        data-target="#xs-components-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="components-links"
+                {{else}}
+                    id="xs-components-links"
+                {{/compare}}>
                 {{#each components}}
                     <li class="link">
                         <a href="./components/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -64,8 +93,22 @@
 
         {{#if directives}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-code"></span>Directives</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-code"></span>
+                <span>Directives</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#directives-links"
+                    {{else}}
+                        data-target="#xs-directives-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="directives-links"
+                {{else}}
+                    id="xs-directives-links"
+                {{/compare}}>
                 {{#each directives}}
                     <li class="link">
                         <a href="./directives/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -77,8 +120,22 @@
 
         {{#if classes}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-file-code-o"></span>Classes</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-file-code-o"></span>
+                <span>Classes</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#classes-links"
+                    {{else}}
+                        data-target="#xs-classes-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="classes-links"
+                {{else}}
+                    id="xs-classes-links"
+                {{/compare}}>
                 {{#each classes}}
                     <li class="link">
                         <a href="./classes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -96,8 +153,22 @@
 
         {{#if injectables}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-long-arrow-down"></span>Injectables</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-long-arrow-down"></span>
+                <span>Injectables</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#injectables-links"
+                    {{else}}
+                        data-target="#xs-injectables-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="injectables-links"
+                {{else}}
+                    id="xs-injectables-links"
+                {{/compare}}>
                 {{#each injectables}}
                     <li class="link">
                         <a href="./injectables/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -109,8 +180,22 @@
 
         {{#if interfaces}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-info"></span>Interfaces</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-info"></span>
+                <span>Interfaces</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#interfaces-links"
+                    {{else}}
+                        data-target="#xs-interfaces-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="interfaces-links"
+                {{else}}
+                    id="xs-interfaces-links"
+                {{/compare}}>
                 {{#each interfaces}}
                     <li class="link">
                         <a href="./interfaces/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
@@ -122,8 +207,22 @@
 
         {{#if pipes}}
         <li class="chapter">
-            <div class="simple"><span class="fa fa-plus"></span>Pipes</div>
-            <ul class="links">
+            <div class="simple">
+                <span class="fa fa-plus"></span>
+                <span>Pipes</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#pipes-links"
+                    {{else}}
+                        data-target="#xs-pipes-links"
+                    {{/compare}}></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="pipes-links"
+                {{else}}
+                    id="xs-pipes-links"
+                {{/compare}}>
                 {{#each pipes}}
                     <li class="link">
                         <a href="./pipes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>

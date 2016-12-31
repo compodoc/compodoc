@@ -44,8 +44,10 @@ README page             |  Overview page
 ![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
 ![screenshot-3](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
-Component page             |  Search page
-![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png)
+Component page             |  Source code tab
+![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/7.png)
+Search page             |  
+![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png)  |
 
 # Table of Contents
 
@@ -101,7 +103,8 @@ Options:
   -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
   -r, --port [port]         Change default serving port
-  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
+  --hideGenerator       Do not print the Compodoc link at the bottom of the page
+  --disableSourceCode       Do not add source code tab
 ```
 
 ### Local installation

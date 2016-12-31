@@ -3,18 +3,38 @@
   <li>{{name}}</li>
 </ol>
 
-<p class="comment">
-    <h3>File</h3>
-</p>
-<p class="comment">
-    <code>{{pipe.file}}</code>
-</p>
+{{#unless disableSourceCode}}
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active">
+        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
+    </li>
+    <li>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
+    </li>
+</ul>
 
-{{#if pipe.description}}
-    <p class="comment">
-        <h3>Description</h3>
-    </p>
-    <p class="comment">
-        {{{pipe.description}}}
-    </p>
-{{/if}}
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="infos">
+        {{/unless}}
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>{{pipe.file}}</code>
+        </p>
+
+        {{#if pipe.description}}
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                {{{pipe.description}}}
+            </p>
+        {{/if}}
+    {{#unless disableSourceCode}}
+    </div>
+    <div class="tab-pane fade tab-source-code" id="source">
+        <pre><code class="hljs javascript">{{breaklines pipe.sourceCode}}</code></pre>
+    </div>
+</div>
+{{/unless}}

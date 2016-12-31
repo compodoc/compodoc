@@ -11,5 +11,17 @@ export default {
             typescript: require('typescript')
         }),
         babel()
+    ],
+    external: [
+        'handlebars',
+        'marked',
+        'lodash',
+        'path',
+        'util',
+        'fs-extra',
+        'live-server',
+        'shelljs',
+        'typescript',
+        'highlight.js'
     ]
 }

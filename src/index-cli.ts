@@ -32,7 +32,8 @@ export class CliApplication extends Application
             .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
-            .option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
+            .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
+            .option('--disableSourceCode', 'Do not add source code tab', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -86,6 +87,10 @@ export class CliApplication extends Application
 
         if (program.hideGenerator) {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
+        }
+
+        if (program.disableSourceCode) {
+            this.configuration.mainData.disableSourceCode = program.disableSourceCode;
         }
 
         if (program.serve && !program.tsconfig && program.output) {

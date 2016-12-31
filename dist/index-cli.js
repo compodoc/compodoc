@@ -14,8 +14,6 @@ var highlightjs = _interopDefault(require('highlight.js'));
 var _ = require('lodash');
 var Shelljs = require('shelljs');
 var ts = require('typescript');
-var fs$1 = require('fs');
-var util = require('util');
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -454,7 +452,7 @@ var FileEngine = function () {
 
     createClass(FileEngine, [{
         key: 'get',
-        value: function get(filepath) {
+        value: function get$$1(filepath) {
             return new Promise(function (resolve$$1, reject) {
                 fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', function (err, data) {
                     if (err) {
@@ -476,7 +474,8 @@ var COMPODOC_DEFAULTS = {
     folder: './documentation/',
     port: 8080,
     theme: 'gitbook',
-    base: '/'
+    base: '/',
+    disableSourceCode: false
 };
 
 var Configuration = function () {
@@ -506,7 +505,8 @@ var Configuration = function () {
             injectables: [],
             routes: [],
             tsconfig: '',
-            includes: false
+            includes: false,
+            disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode
         };
         if (Configuration._instance) {
             throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
@@ -521,18 +521,18 @@ var Configuration = function () {
         }
     }, {
         key: 'pages',
-        get: function get() {
+        get: function get$$1() {
             return this._pages;
         },
-        set: function set(pages) {
+        set: function set$$1(pages) {
             this._pages = [];
         }
     }, {
         key: 'mainData',
-        get: function get() {
+        get: function get$$1() {
             return this._mainData;
         },
-        set: function set(data) {
+        set: function set$$1(data) {
             Object.assign(this._mainData, data);
         }
     }], [{
@@ -760,7 +760,7 @@ function compilerHost(transpileOptions) {
                 }
                 var libSource = '';
                 try {
-                    libSource = fs$1.readFileSync(fileName).toString();
+                    libSource = fs.readFileSync(fileName).toString();
                 } catch (e) {
                     logger.debug(e, fileName);
                 }
@@ -787,7 +787,7 @@ function compilerHost(transpileOptions) {
         fileExists: function fileExists(fileName) {
             return fileName === inputFileName;
         },
-        readFile: function readFile() {
+        readFile: function readFile$$1() {
             return '';
         },
         directoryExists: function directoryExists() {
@@ -1038,7 +1038,8 @@ var Dependencies = function () {
                                 exports: _this2.getModuleExports(props),
                                 bootstrap: _this2.getModuleBootstrap(props),
                                 type: 'module',
-                                description: _this2.breakLines(IO.description)
+                                description: _this2.breakLines(IO.description),
+                                sourceCode: sourceFile.getText()
                             };
                             outputSymbols['modules'].push(deps);
                         } else if (_this2.isComponent(metadata)) {
@@ -1070,7 +1071,8 @@ var Dependencies = function () {
                                 propertiesClass: IO.properties,
                                 methodsClass: IO.methods,
                                 description: _this2.breakLines(IO.description),
-                                type: 'component'
+                                type: 'component',
+                                sourceCode: sourceFile.getText()
                             };
                             outputSymbols['components'].push(deps);
                         } else if (_this2.isInjectable(metadata)) {
@@ -1080,7 +1082,8 @@ var Dependencies = function () {
                                 type: 'injectable',
                                 properties: IO.properties,
                                 methods: IO.methods,
-                                description: _this2.breakLines(IO.description)
+                                description: _this2.breakLines(IO.description),
+                                sourceCode: sourceFile.getText()
                             };
                             outputSymbols['injectables'].push(deps);
                         } else if (_this2.isPipe(metadata)) {
@@ -1088,7 +1091,8 @@ var Dependencies = function () {
                                 name: name,
                                 file: file,
                                 type: 'pipe',
-                                description: _this2.breakLines(IO.description)
+                                description: _this2.breakLines(IO.description),
+                                sourceCode: sourceFile.getText()
                             };
                             outputSymbols['pipes'].push(deps);
                         } else if (_this2.isDirective(metadata)) {
@@ -1096,7 +1100,8 @@ var Dependencies = function () {
                                 name: name,
                                 file: file,
                                 type: 'directive',
-                                description: _this2.breakLines(IO.description)
+                                description: _this2.breakLines(IO.description),
+                                sourceCode: sourceFile.getText()
                             };
                             outputSymbols['directives'].push(deps);
                         }
@@ -1118,7 +1123,8 @@ var Dependencies = function () {
                         deps = {
                             name: name,
                             file: file,
-                            type: 'class'
+                            type: 'class',
+                            sourceCode: sourceFile.getText()
                         };
                         if (IO.properties) {
                             deps.properties = IO.properties;
@@ -1137,7 +1143,8 @@ var Dependencies = function () {
                         deps = {
                             name: _name,
                             file: file,
-                            type: 'interface'
+                            type: 'interface',
+                            sourceCode: sourceFile.getText()
                         };
                         if (_IO.properties) {
                             deps.properties = _IO.properties;
@@ -1172,7 +1179,8 @@ var Dependencies = function () {
                         deps = {
                             name: _name2,
                             file: file,
-                            type: 'class'
+                            type: 'class',
+                            sourceCode: sourceFile.getText()
                         };
                         if (_IO3.properties) {
                             deps.properties = _IO3.properties;
@@ -1198,8 +1206,8 @@ var Dependencies = function () {
                     logger.debug('', '- ' + symbols + ':');
                     deps[symbols].map(function (i) {
                         return i.name;
-                    }).forEach(function (d$$1) {
-                        logger.debug('', '\t- ' + d$$1);
+                    }).forEach(function (d) {
+                        logger.debug('', '\t- ' + d);
                     });
                 }
             });
@@ -2395,7 +2403,7 @@ var Application = function () {
                     });
                 } else {
                     var finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds');
+                    logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
                     if (_this7.configuration.mainData.serve) {
                         logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
                         _this7.runWebServer(_this7.configuration.mainData.output);
@@ -2430,12 +2438,12 @@ var Application = function () {
 
     }, {
         key: 'application',
-        get: function get() {
+        get: function get$$1() {
             return this;
         }
     }, {
         key: 'isCLI',
-        get: function get() {
+        get: function get$$1() {
             return false;
         }
     }]);
@@ -2462,7 +2470,7 @@ var CliApplication = function (_Application) {
          * Run compodoc from the command line.
          */
         value: function generate() {
-            program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('-g, --hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).parse(process.argv);
+            program.version(pkg.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2500,6 +2508,9 @@ var CliApplication = function (_Application) {
             }
             if (program.hideGenerator) {
                 this.configuration.mainData.hideGenerator = program.hideGenerator;
+            }
+            if (program.disableSourceCode) {
+                this.configuration.mainData.disableSourceCode = program.disableSourceCode;
             }
             if (program.serve && !program.tsconfig && program.output) {
                 // if -s & -d, serve it

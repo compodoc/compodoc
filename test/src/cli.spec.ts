@@ -319,13 +319,13 @@ describe('CLI', () => {
         });
     });
 
-    describe('when generation with -g flag', () => {
+    describe('when generation with --hideGenerator flag', () => {
 
         let stdoutString = null,
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json -g -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -340,6 +340,30 @@ describe('CLI', () => {
         it('should not contain compodoc logo', () => {
             index = read(`${tmp.name}/index.html`);
             expect(index).to.not.contain('src="./images/compodoc-vectorise.svg"');
+        });
+    });
+
+    describe('when generation with --disableSourceCode flag', () => {
+
+        let stdoutString = null,
+            index = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        //after(() => tmp.clean(tmp.name));
+
+        it('should not contain compodoc logo', () => {
+            index = read(`${tmp.name}/modules/AppModule.html`);
+            expect(index).to.not.contain('nav nav-tabs');
         });
     });
 
