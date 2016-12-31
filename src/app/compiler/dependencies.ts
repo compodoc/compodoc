@@ -33,6 +33,7 @@ interface Deps {
     type: string;
     label?: string;
     file?: string;
+    sourceCode?: string;
     description?: string;
 
     //Component
@@ -174,7 +175,8 @@ export class Dependencies {
                             exports: this.getModuleExports(props),
                             bootstrap: this.getModuleBootstrap(props),
                             type: 'module',
-                            description: this.breakLines(IO.description)
+                            description: this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
                         };
                         outputSymbols['modules'].push(deps);
                     }
@@ -207,7 +209,8 @@ export class Dependencies {
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
                             description: this.breakLines(IO.description),
-                            type: 'component'
+                            type: 'component',
+                            sourceCode: sourceFile.getText()
                         };
                         outputSymbols['components'].push(deps);
                     }
@@ -218,7 +221,8 @@ export class Dependencies {
                             type: 'injectable',
                             properties: IO.properties,
                             methods: IO.methods,
-                            description: this.breakLines(IO.description)
+                            description: this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
                         };
                         outputSymbols['injectables'].push(deps);
                     }
@@ -227,7 +231,8 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'pipe',
-                            description: this.breakLines(IO.description)
+                            description: this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
                         };
                         outputSymbols['pipes'].push(deps);
                     }
@@ -236,7 +241,8 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'directive',
-                            description: this.breakLines(IO.description)
+                            description: this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
                         };
                         outputSymbols['directives'].push(deps);
                     }
@@ -264,7 +270,8 @@ export class Dependencies {
                     deps = {
                         name,
                         file: file,
-                        type: 'class'
+                        type: 'class',
+                        sourceCode: sourceFile.getText()
                     };
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -283,7 +290,8 @@ export class Dependencies {
                     deps = {
                         name,
                         file: file,
-                        type: 'interface'
+                        type: 'interface',
+                        sourceCode: sourceFile.getText()
                     };
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -318,7 +326,8 @@ export class Dependencies {
                     deps = {
                         name,
                         file: file,
-                        type: 'class'
+                        type: 'class',
+                        sourceCode: sourceFile.getText()
                     };
                     if(IO.properties) {
                         deps.properties = IO.properties;

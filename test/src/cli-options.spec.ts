@@ -76,9 +76,14 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Change default serving port');
         });
 
-        it(`-g`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-g, --hideGenerator');
+        it(`--hideGenerator`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--hideGenerator');
             expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
+        });
+
+        it(`--disableSourceCode`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableSourceCode');
+            expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
         });
 
 
