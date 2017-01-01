@@ -84,7 +84,7 @@ export class Application {
 
     processMarkdown() {
         logger.info('Searching README.md file');
-        $markdownengine.getReadmeFile().then((readmeData) => {
+        $markdownengine.getReadmeFile().then((readmeData: string) => {
             this.configuration.addPage({
                 name: 'index',
                 context: 'readme'
@@ -145,68 +145,9 @@ export class Application {
                 this.prepareInterfaces();
             }
 
-            if (this.configuration.mainData.includes) {
-                this.processAddtionalDocumentation().then(() => {
-                    this.processPages();
-                }, (err) => {
-                    logger.error('Error during additional documentation generation: ', err);
-                });
-            } else {
-                this.processPages();
-            }
+            this.processPages();
         }, (errorMessage) => {
             logger.error(errorMessage);
-        });
-    }
-
-    processAddtionalDocumentation() {
-        logger.info('Process additional documentation: ', this.configuration.mainData.includes, path.resolve(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*'));
-        this.configuration.mainData.additionalpages = {
-            entryName: COMPODOC_DEFAULTS.additionalEntryName,
-            pages: []
-        };
-        return new Promise(function(resolve, reject) {
-            glob( process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*', {
-                dot: false,
-                cwd: __dirname
-            }, function(err, files) {
-                let i = 0,
-                    f,
-                    basename,
-                    len = files.length;
-                let loop = function() {
-                    if (i < len) {
-                        f = files[i];
-                        basename = path.basename(f);
-                        if( i === 0) {
-                            this.configuration.mainData.additionalpages.pages.push({
-                                name: 'Index'
-                            });
-                            this.configuration.addPage({
-                                path: COMPODOC_DEFAULTS.additionalEntryPath,
-                                name: 'index',
-                                context: 'additionalpages',
-                                page: 'toto'
-                            });
-                        } else {
-                            this.configuration.mainData.additionalpages.pages.push({
-                                name: basename
-                            });
-                            this.configuration.addPage({
-                                path: COMPODOC_DEFAULTS.additionalEntryPath,
-                                name: basename,
-                                context: 'additionalpage',
-                                page: 'toto'
-                            });
-                        }
-                        i++
-                        loop();
-                    } else {
-                        resolve();
-                    }
-                };
-                loop();
-            });
         });
     }
 

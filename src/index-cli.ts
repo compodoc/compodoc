@@ -70,7 +70,7 @@ export class CliApplication extends Application
         }
 
         if (program.includesName) {
-            //this.configuration.mainData.includesName  = program.includesName;
+            this.configuration.mainData.includesName  = program.includesName;
         }
 
         if (program.silent) {
