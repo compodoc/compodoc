@@ -16,7 +16,7 @@ describe('CLI', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('Entry file was not found');
+            expect(command.stdout.toString()).to.contain('tsconfig.json file was not found, please use -p flag');
         });
 
         it(`should not create a "documentation" directory`, () => {
@@ -297,7 +297,7 @@ describe('CLI', () => {
     describe('when generation with -n flag', () => {
 
         let stdoutString = null,
-            name = 'TodoMVC-Angular-2-documentation',
+            name = 'TodoMVC',
             index = null;
         before(function (done) {
             tmp.create();
