@@ -21,7 +21,7 @@ describe('CLI Options', () => {
     });
 
     it(`should display help message`, () => {
-        expect(runHelp.stdout.toString()).to.contain('Usage: index [options]');
+        expect(runHelp.stdout.toString()).to.contain('Usage: index-cli [options]');
     });
 
     describe('should display options in help', () => {
