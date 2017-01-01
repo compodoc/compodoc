@@ -164,7 +164,7 @@ export class CliApplication extends Application
                     super.generate();
                 }
             } else {
-                logger.error('Entry file was not found');
+                logger.error('tsconfig.json file was not found, please use -p flag');
                 outputHelp();
             }
         }
