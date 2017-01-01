@@ -297,7 +297,7 @@ describe('CLI', () => {
     describe('when generation with -n flag', () => {
 
         let stdoutString = null,
-            name = 'TodoMVC Angular 2 documentation',
+            name = 'TodoMVC-Angular-2-documentation',
             index = null;
         before(function (done) {
             tmp.create();
