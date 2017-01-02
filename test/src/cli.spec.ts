@@ -297,7 +297,7 @@ describe('CLI', () => {
     describe('when generation with -n flag', () => {
 
         let stdoutString = null,
-            name = 'TodoMVC',
+            name = 'TodoMVC-angular2-application',
             index = null;
         before(function (done) {
             tmp.create();
@@ -315,7 +315,7 @@ describe('CLI', () => {
 
         it('should edit name', () => {
             index = read(`${tmp.name}/index.html`);
-            expect(index).to.contain('<a href="./">' + name + '</a>');
+            expect(index).to.contain(name);
         });
     });
 

@@ -2139,69 +2139,9 @@ var Application = function () {
                 if ($dependenciesEngine.interfaces.length > 0) {
                     _this5.prepareInterfaces();
                 }
-                if (_this5.configuration.mainData.includes) {
-                    _this5.processAddtionalDocumentation().then(function () {
-                        _this5.processPages();
-                    }, function (err) {
-                        logger.error('Error during additional documentation generation: ', err);
-                    });
-                } else {
-                    _this5.processPages();
-                }
+                _this5.processPages();
             }, function (errorMessage) {
                 logger.error(errorMessage);
-            });
-        }
-    }, {
-        key: 'processAddtionalDocumentation',
-        value: function processAddtionalDocumentation() {
-            logger.info('Process additional documentation: ', this.configuration.mainData.includes, path.resolve(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*'));
-            this.configuration.mainData.additionalpages = {
-                entryName: COMPODOC_DEFAULTS.additionalEntryName,
-                pages: []
-            };
-            return new Promise(function (resolve$$1, reject) {
-                glob(process.cwd() + path.sep + this.configuration.mainData.includes + '/**/*', {
-                    dot: false,
-                    cwd: __dirname
-                }, function (err, files) {
-                    var i = 0,
-                        f = void 0,
-                        basename$$1 = void 0,
-                        len = files.length;
-                    var loop = function loop() {
-                        if (i < len) {
-                            f = files[i];
-                            basename$$1 = path.basename(f);
-                            if (i === 0) {
-                                this.configuration.mainData.additionalpages.pages.push({
-                                    name: 'Index'
-                                });
-                                this.configuration.addPage({
-                                    path: COMPODOC_DEFAULTS.additionalEntryPath,
-                                    name: 'index',
-                                    context: 'additionalpages',
-                                    page: 'toto'
-                                });
-                            } else {
-                                this.configuration.mainData.additionalpages.pages.push({
-                                    name: basename$$1
-                                });
-                                this.configuration.addPage({
-                                    path: COMPODOC_DEFAULTS.additionalEntryPath,
-                                    name: basename$$1,
-                                    context: 'additionalpage',
-                                    page: 'toto'
-                                });
-                            }
-                            i++;
-                            loop();
-                        } else {
-                            resolve$$1();
-                        }
-                    };
-                    loop();
-                });
             });
         }
     }, {
@@ -2496,7 +2436,9 @@ var CliApplication = function (_Application) {
             if (program.includes) {
                 this.configuration.mainData.includes = program.includes;
             }
-            if (program.includesName) {}
+            if (program.includesName) {
+                this.configuration.mainData.includesName = program.includesName;
+            }
             if (program.silent) {
                 logger.silent = false;
             }
@@ -2578,7 +2520,7 @@ var CliApplication = function (_Application) {
                         get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', this).call(this);
                     }
                 } else {
-                    logger.error('Entry file was not found');
+                    logger.error('tsconfig.json file was not found, please use -p flag');
                     outputHelp();
                 }
             }
