@@ -13,7 +13,7 @@
 <p align="center">The missing documentation tool for your Angular application</p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
 Features
@@ -41,13 +41,13 @@ Using [SoundCloud API client / Angular2 project](https://github.com/r-park/sound
 
 README page             |  Overview page
 :-------------------------:|:-------------------------:
-![screenshot-1](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png)
+![screenshot-1](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/2.png)
 Modules page             |  Single module page
-![screenshot-3](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png)
+![screenshot-3](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png)
 Component page             |  Source code tab
-![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/7.png)
+![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
 Search page             |  
-![screenshot-5](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png)  |
+![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |
 
 # Table of Contents
 
@@ -131,13 +131,13 @@ npm run compodoc
 
 Default (gitbook)             |  Laravel
 :-------------------------:|:-------------------------:
-![theme-gitbook](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-gitbook.png)  | ![theme-laravel](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-laravel.png)
+![theme-gitbook](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-gitbook.png)  | ![theme-laravel](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-laravel.png)
 Readthedocs             |  Stripe
-![theme-readthedocs](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-readthedocs.png)  | ![theme-stripe](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-stripe.png)
+![theme-readthedocs](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-readthedocs.png)  | ![theme-stripe](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-stripe.png)
 Vagrant             |  Postmark
-![theme-vagrant](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-vagrant.png)  | ![theme-postmark](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-postmark.png)
+![theme-vagrant](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-vagrant.png)  | ![theme-postmark](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-postmark.png)
 Original             |  
-![theme-original](https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-original.png)  |
+![theme-original](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-original.png)  |
 
 ## Common use cases
 
