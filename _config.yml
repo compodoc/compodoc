@@ -1,0 +1,8 @@
+title: Compodoc
+description: The missing documentation tool for your Angular 2 application
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
