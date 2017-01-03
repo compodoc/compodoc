@@ -12,7 +12,7 @@
   <body>
     <section class="page-header">
       <h1 class="project-name">Compodoc</h1>
-      <h2 class="project-tagline">The missing documentation tool for your Angular 2 application</h2>
+      <h2 class="project-tagline">The missing documentation tool for your Angular application</h2>
       <a href="https://github.com/compodoc/compodoc" class="btn">View on GitHub</a>
       <a href="https://github.com/compodoc/compodoc/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/compodoc/compodoc/tarball/master" class="btn">Download .tar.gz</a>
@@ -34,7 +34,7 @@
 <p align="center">The missing documentation tool for your Angular application</p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
 <h2>
@@ -46,6 +46,7 @@
 <li><p><strong>Search</strong> — Compodoc include a powerful search engine (<a href="http://lunrjs.com/">lunr.js</a>) for easily finding your information</p></li>
 <li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
 <li><p><strong>Compodoc is open-source and on npm</strong> - Use it directly in your project using npm and one script, that's it !</p></li>
+<li><p><strong>Compodoc is a local tool</strong> - No server needed, no sources uploaded online</p></li>
 </ul>
 
 <h2>
@@ -67,24 +68,30 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png" alt="screenshot-1"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png" alt="screenshot-2"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/1.png" alt="screenshot-1"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/2.png" alt="screenshot-2"></td>
 </tr>
 <tr>
 <td align="center">Modules page</td>
 <td align="center">Single module page</td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png" alt="screenshot-3"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png" alt="screenshot-4"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png" alt="screenshot-3"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png" alt="screenshot-4"></td>
 </tr>
 <tr>
 <td align="center">Component page</td>
+<td align="center">Source code tab</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png" alt="screenshot-5"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png" alt="screenshot-7"></td>
+</tr>
+<tr>
 <td align="center">Search page</td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png" alt="screenshot-5"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png" alt="screenshot-5"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png" alt="screenshot-5"></td>
 </tr>
 </tbody>
 </table>
@@ -115,6 +122,7 @@
 <li><a href="#syntax-highlighting-in-markdown-files">Syntax highlighting in markdown files</a></li>
 </ul>
 </li>
+<li><a href="#remark-for-comments">Remark for comments</a></li>
 <li><a href="#remark-for-routes">Remark for routes</a></li>
 <li><a href="#why-this-tool-">Why this tool ?</a></li>
 <li><a href="#why-not-a-spa-for-outputed-documentation-">Why not a SPA for outputed documentation ?</a></li>
@@ -156,7 +164,8 @@ Options:
   -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
   -r, --port [port]         Change default serving port
-  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
+  --hideGenerator           Do not print the Compodoc link at the bottom of the page
+  --disableSourceCode       Do not add source code tab
 </code></pre>
 
 <h3>
@@ -189,31 +198,31 @@ Options:
 </thead>
 <tbody>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-gitbook.png" alt="theme-gitbook"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-laravel.png" alt="theme-laravel"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-gitbook.png" alt="theme-gitbook"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-laravel.png" alt="theme-laravel"></td>
 </tr>
 <tr>
 <td align="center">Readthedocs</td>
 <td align="center">Stripe</td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-readthedocs.png" alt="theme-readthedocs"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-stripe.png" alt="theme-stripe"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-readthedocs.png" alt="theme-readthedocs"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-stripe.png" alt="theme-stripe"></td>
 </tr>
 <tr>
 <td align="center">Vagrant</td>
 <td align="center">Postmark</td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-vagrant.png" alt="theme-vagrant"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-postmark.png" alt="theme-postmark"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-vagrant.png" alt="theme-vagrant"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-postmark.png" alt="theme-postmark"></td>
 </tr>
 <tr>
 <td align="center">Original</td>
 <td align="center"></td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-original.png" alt="theme-original"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/theme-original.png" alt="theme-original"></td>
 <td align="center"></td>
 </tr>
 </tbody>
@@ -292,18 +301,28 @@ compodoc -s -d ./doc
 <p>The live demo as a component documented in that way : <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html">TodoMVC Angular Compodoc demo / todo component</a></p>
 
 <h2>
-<a id="remark-for-routes" class="anchor" href="#remark-for-routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for routes</h2>
+<a id="remark-for-comments" class="anchor" href="#remark-for-comments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for comments</h2>
 
-<p>Follow the style guide and provide a const of type 'Routes' :</p>
+<p>Compodoc use Typescript AST parser and it's internal APIs, so the comments have to be JSDoc comments :</p>
 
-<pre><code>const APP_ROUTES: Routes = [
-    { path: 'about', component: AboutComponent },
-    { path: '', component: HomeComponent}
-];
+<pre><code>
+/**
+ * Supported comment
+ */
+</code></pre>
 
-...
+<p>These ones are not supported :</p>
 
-RouterModule.forRoot(APP_ROUTES)
+<pre><code>
+/*
+ * unsupported comment
+ */
+
+/*
+  unsupported comment
+ */
+
+// unsupported comment
 </code></pre>
 
 <h3>
@@ -388,6 +407,6 @@ RouterModule.forRoot(APP_ROUTES)
 
     </section>
 
-  
+
   </body>
 </html>
