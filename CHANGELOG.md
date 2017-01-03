@@ -1,3 +1,11 @@
+<a name="0.0.28"></a>
+## 0.0.28 (2017-01-03)
+
+### Bug Fixes
+
+* **app:** open and port flag ([a34b39a](https://github.com/compodoc/compodoc/commit/a34b39a)), closes [#45](https://github.com/compodoc/compodoc/issues/45)
+* **design:** search input color ([a0fd0fe](https://github.com/compodoc/compodoc/commit/a0fd0fe))
+
 <a name="0.0.27"></a>
 ## 0.0.27 (2017-01-03)
 

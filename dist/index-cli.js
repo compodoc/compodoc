@@ -2348,10 +2348,10 @@ var Application = function () {
         value: function runWebServer(folder) {
             LiveServer.start({
                 root: folder,
-                open: false,
+                open: this.configuration.mainData.open,
                 quiet: true,
                 logLevel: 0,
-                port: COMPODOC_DEFAULTS.port
+                port: this.configuration.mainData.port
             });
         }
         /**
