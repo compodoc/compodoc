@@ -54,7 +54,7 @@ describe('CLI', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('Provide output generated folder with -d flag');
+            expect(command.stdout.toString()).to.contain('./documentation/ folder doesn');
         });
     });
 
@@ -71,6 +71,23 @@ describe('CLI', () => {
             expect(command.stdout.toString()).to.contain('folder doesn\'t exist');
         });
     });
+
+    describe('when no README/package.json files available', () => {
+
+        let command = null;
+        beforeEach(() => {
+            tmp.create();
+            tmp.copy('./test/src/sample-files/', tmp.name);
+            command = shell('node', ['../bin/index-cli.js', '-p', 'tsconfig.simple.json', '-d', tmp.name], { cwd: tmp.name });
+        });
+        afterEach(() => tmp.clean());
+
+        it('should display error message', () => {
+            expect(command.stdout.toString()).to.contain('Error during README.md file reading');
+            expect(command.stdout.toString()).to.contain('Error during package.json read');
+        });
+    });
+
     describe('when generation with d flag', () => {
 
         let stdoutString = null;
@@ -431,7 +448,51 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 25000);
+            }, 40000);
+        });
+
+        it('should display message', () => {
+            expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
+        });
+    });
+
+    describe('when serving with default directory and without doc generation', () => {
+
+        let stdoutString = null,
+            child;
+        before(function (done) {
+            child = exec('node ./bin/index-cli.js -s -d ./documentation/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child.stdout.on('data', function(data) {
+                stdoutString += data;
+            });
+            child.on('exit', (code, signal) => {
+                done();
+            });
+            setTimeout(() => {
+                child.kill();
+            }, 5000);
+        });
+
+        it('should display message', () => {
+            expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
+        });
+    });
+
+    describe('when serving with default directory, without -d and without doc generation', () => {
+
+        let stdoutString = null,
+            child;
+        before(function (done) {
+            child = exec('node ./bin/index-cli.js -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child.stdout.on('data', function(data) {
+                stdoutString += data;
+            });
+            child.on('exit', (code, signal) => {
+                done();
+            });
+            setTimeout(() => {
+                child.kill();
+            }, 5000);
         });
         after(() => tmp.clean('documentation'));
 

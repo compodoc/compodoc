@@ -400,12 +400,12 @@ export class Application {
                     }
                 }
             };
-        let finalMainGraphPath = COMPODOC_DEFAULTS.folder;
-        if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+        let finalMainGraphPath = this.configuration.mainData.output;
+        if(finalMainGraphPath.lastIndexOf('/') === -1) {
             finalMainGraphPath += '/';
         }
         finalMainGraphPath += 'graph';
-        $ngdengine.renderGraph(this.configuration.mainData.tsconfig, finalMainGraphPath, 'p').then(() => {
+        $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
             loop();
         }, (err) => {
             logger.error('Error during graph generation: ', err);

@@ -251,35 +251,17 @@ var HtmlEngine = function () {
             }
             var result;
             switch (operator) {
-                case '==':
-                    result = a == b;
-                    break;
                 case 'indexof':
                     result = b.indexOf(a) !== -1;
                     break;
                 case '===':
                     result = a === b;
                     break;
-                case '!=':
-                    result = a != b;
-                    break;
                 case '!==':
                     result = a !== b;
                     break;
-                case '<':
-                    result = a < b;
-                    break;
                 case '>':
                     result = a > b;
-                    break;
-                case '<=':
-                    result = a <= b;
-                    break;
-                case '>=':
-                    result = a >= b;
-                    break;
-                case 'typeof':
-                    result = (typeof a === 'undefined' ? 'undefined' : _typeof(a)) === b;
                     break;
                 default:
                     {
@@ -2350,12 +2332,12 @@ var Application = function () {
                     }
                 }
             };
-            var finalMainGraphPath = COMPODOC_DEFAULTS.folder;
-            if (COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+            var finalMainGraphPath = this.configuration.mainData.output;
+            if (finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, finalMainGraphPath, 'p').then(function () {
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
                 loop();
             }, function (err) {
                 logger.error('Error during graph generation: ', err);
@@ -2410,7 +2392,7 @@ var CliApplication = function (_Application) {
          * Run compodoc from the command line.
          */
         value: function generate() {
-            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)').option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
+            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);

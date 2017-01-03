@@ -14,35 +14,17 @@ export class HtmlEngine {
 
           var result;
           switch (operator) {
-            case '==':
-              result = a == b;
-              break;
             case 'indexof':
                 result = (b.indexOf(a) !== -1);
                 break;
             case '===':
               result = a === b;
               break;
-            case '!=':
-              result = a != b;
-              break;
             case '!==':
               result = a !== b;
               break;
-            case '<':
-              result = a < b;
-              break;
             case '>':
               result = a > b;
-              break;
-            case '<=':
-              result = a <= b;
-              break;
-            case '>=':
-              result = a >= b;
-              break;
-            case 'typeof':
-              result = typeof a === b;
               break;
             default: {
               throw new Error('helper {{compare}}: invalid operator: `' + operator + '`');
