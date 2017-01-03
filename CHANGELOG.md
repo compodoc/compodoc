@@ -1,3 +1,10 @@
+<a name="0.0.27"></a>
+## 0.0.27 (2017-01-03)
+
+### Bug Fixes
+
+* **app:** graph generation with path with spaces ([e833251](https://github.com/compodoc/compodoc/commit/e833251)), closes [#43](https://github.com/compodoc/compodoc/issues/43), [#44](https://github.com/compodoc/compodoc/issues/44)
+
 <a name="0.0.26"></a>
 ## 0.0.26 (2016-12-31)
 

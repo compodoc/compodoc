@@ -2337,7 +2337,7 @@ var Application = function () {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, finalMainGraphPath, 'p').then(function () {
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
                 loop();
             }, function (err) {
                 logger.error('Error during graph generation: ', err);
