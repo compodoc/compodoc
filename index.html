@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Compodoc by compodoc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Compodoc</h1>
+      <h2 class="project-tagline">The missing documentation tool for your Angular 2 application</h2>
+      <a href="https://github.com/compodoc/compodoc" class="btn">View on GitHub</a>
+      <a href="https://github.com/compodoc/compodoc/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/compodoc/compodoc/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p align="center">
+  <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular application" width="226">
+  <br>
+  <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"></a>
+  <a href="https://www.npmjs.com/package/compodoc"><img src="https://badge.fury.io/js/compodoc.svg" alt="npm badge"></a>
+  <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
+  <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
+  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
+</p>
+
+<p align="center">The missing documentation tool for your Angular application</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li><p><strong>Clean, simple design</strong> — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side</p></li>
+<li><p><strong>Beautiful themes</strong> — 7 themes are available from famous documentation tools like <a href="https://www.gitbook.com">Gitbook</a>, <a href="https://readthedocs.org/">Read the Docs</a> or projects like <a href="https://www.vagrantup.com/docs/">Vagrant</a>, <a href="https://laravel.com/docs/5.3">Laravel</a>, <a href="http://developer.postmarkapp.com/">Postmark</a> and <a href="https://stripe.com/docs/api">Stripe</a>.</p></li>
+<li><p><strong>Search</strong> — Compodoc include a powerful search engine (<a href="http://lunrjs.com/">lunr.js</a>) for easily finding your information</p></li>
+<li><p><strong>Automatic table of contents</strong> - API table of contents is generated using elements found during files parsing</p></li>
+<li><p><strong>Compodoc is open-source and on npm</strong> - Use it directly in your project using npm and one script, that's it !</p></li>
+</ul>
+
+<h2>
+<a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
+
+<p><a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/">Demo</a> : documentation generated for <a href="https://github.com/compodoc/compodoc-demo-todomvc-angular2">TodoMVC Angular Compodoc demo</a></p>
+
+<h2>
+<a id="static-demo" class="anchor" href="#static-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Demo</h2>
+
+<p>Using <a href="https://github.com/r-park/soundcloud-ngrx">SoundCloud API client / Angular2 project</a> and default theme (gitbook)</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">README page</th>
+<th align="center">Overview page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/1.png" alt="screenshot-1"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/2.png" alt="screenshot-2"></td>
+</tr>
+<tr>
+<td align="center">Modules page</td>
+<td align="center">Single module page</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/3.png" alt="screenshot-3"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/4.png" alt="screenshot-4"></td>
+</tr>
+<tr>
+<td align="center">Component page</td>
+<td align="center">Search page</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/5.png" alt="screenshot-5"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/6.png" alt="screenshot-5"></td>
+</tr>
+</tbody>
+</table>
+
+<h1>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of Contents</h1>
+
+<ul>
+<li>
+<a href="#getting-started-with-compodoc">Getting Started with compodoc</a>
+
+<ul>
+<li><a href="#install">Install</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#local-installation">Local installation</a></li>
+</ul>
+</li>
+<li><a href="#themes">Themes</a></li>
+<li>
+<a href="#common-use-cases">Common use cases</a>
+
+<ul>
+<li><a href="#render-documentation">Render documentation</a></li>
+<li><a href="#serve-generated-documentation-with-compodoc">Serve generated documentation with compodoc</a></li>
+<li><a href="#render-documentation-and-serve-it-with-compodoc">Render documentation, and serve it with compodoc</a></li>
+<li><a href="#styling-hte-documentation">Styling the documentation</a></li>
+<li><a href="#documentation-of-each-component">Documentation of each component</a></li>
+<li><a href="#syntax-highlighting-in-markdown-files">Syntax highlighting in markdown files</a></li>
+</ul>
+</li>
+<li><a href="#remark-for-routes">Remark for routes</a></li>
+<li><a href="#why-this-tool-">Why this tool ?</a></li>
+<li><a href="#why-not-a-spa-for-outputed-documentation-">Why not a SPA for outputed documentation ?</a></li>
+<li><a href="#roadmap">Roadmap</a></li>
+<li><a href="#contributors">Contributors</a></li>
+<li><a href="#resources">Resources</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+
+<h2>
+<a id="getting-started-with-compodoc" class="anchor" href="#getting-started-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started with compodoc</h2>
+
+<h3>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h3>
+
+<p>Install from npm :</p>
+
+<pre><code>npm install -g compodoc
+</code></pre>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<pre><code>$ compodoc --help
+
+Usage: compodoc [options]
+
+Options:
+
+  -h, --help                output usage information
+  -V, --version             output the version number
+  -p, --tsconfig [config]   A tsconfig.json file
+  -d, --output [folder]     Where to store the generated documentation
+  -b, --base [base]         Base reference of html tag &lt;base&gt;
+  -y, --extTheme [file]     External styling theme
+  -h, --theme [theme]       Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
+  -n, --name [name]         Title documentation
+  -o, --open                Open the generated documentation
+  -t, --silent              In silent mode, log messages aren't logged in the console
+  -s, --serve               Serve generated documentation (default http://localhost:8080/)
+  -r, --port [port]         Change default serving port
+  -g, --hideGenerator       Do not print the Compodoc link at the bottom of the page
+</code></pre>
+
+<h3>
+<a id="local-installation" class="anchor" href="#local-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Local installation</h3>
+
+<pre><code>npm install --save-dev compodoc
+</code></pre>
+
+<p>Define a script task for it in your package.json :</p>
+
+<pre><code>"scripts": {
+  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
+}
+</code></pre>
+
+<p>and run it like a normal npm script :</p>
+
+<pre><code>npm run compodoc
+</code></pre>
+
+<h2>
+<a id="themes" class="anchor" href="#themes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Themes</h2>
+
+<table>
+<thead>
+<tr>
+<th align="center">Default (gitbook)</th>
+<th align="center">Laravel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-gitbook.png" alt="theme-gitbook"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-laravel.png" alt="theme-laravel"></td>
+</tr>
+<tr>
+<td align="center">Readthedocs</td>
+<td align="center">Stripe</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-readthedocs.png" alt="theme-readthedocs"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-stripe.png" alt="theme-stripe"></td>
+</tr>
+<tr>
+<td align="center">Vagrant</td>
+<td align="center">Postmark</td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-vagrant.png" alt="theme-vagrant"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-postmark.png" alt="theme-postmark"></td>
+</tr>
+<tr>
+<td align="center">Original</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><img src="https://raw.githubusercontent.com/groupe-sii/compodoc/master/screenshots/theme-original.png" alt="theme-original"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="common-use-cases" class="anchor" href="#common-use-cases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common use cases</h2>
+
+<h3>
+<a id="render-documentation" class="anchor" href="#render-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Render documentation</h3>
+
+<p>Documentation is generated in default output folder, then run your HTTP server in that folder.</p>
+
+<pre><code>compodoc -p src/tsconfig.json
+</code></pre>
+
+<h3>
+<a id="serve-generated-documentation-with-compodoc" class="anchor" href="#serve-generated-documentation-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Serve generated documentation with compodoc</h3>
+
+<p>Documentation was generated in default output folder or a specific one, the local HTTP server is launched at <a href="http://localhost:8080">http://localhost:8080</a></p>
+
+<pre><code>compodoc -s
+
+or
+
+compodoc -s -d ./doc
+</code></pre>
+
+<h3>
+<a id="render-documentation-and-serve-it-with-compodoc" class="anchor" href="#render-documentation-and-serve-it-with-compodoc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Render documentation, and serve it with compodoc</h3>
+
+<p>Documentation is generated in default output folder, and a local HTTP server is available at <a href="http://localhost:8080">http://localhost:8080</a></p>
+
+<pre><code>compodoc -p src/tsconfig.json -s
+</code></pre>
+
+<h3>
+<a id="styling-the-documentation" class="anchor" href="#styling-the-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Styling the documentation</h3>
+
+<pre><code>compodoc -p src/tsconfig.json -y your_theme_styles/
+</code></pre>
+
+<p>Inside your folder you need to provide at least a style.css file with these 5 imports as below.</p>
+
+<pre><code>@import "./reset.css";
+@import "./bootstrap.min.css";
+@import "./bootstrap-card.css";
+@import "./font-awesome.min.css";
+@import "./compodoc.css";
+</code></pre>
+
+<p>Compodoc use <a href="http://getbootstrap.com/">bootstrap</a> 3.3.7. You can customize Compodoc easily.</p>
+
+<p><a href="http://bootswatch.com/">bootswatch.com</a> can be a good starting point. If you want to override the default theme, just provide a bootstrap.min.css file, and it will override the default one.</p>
+
+<pre><code>└── your_theme_styles/
+    ├── style.css // the main css file with default imports
+    └── bootstrap.min.css // your bootstrap theme
+</code></pre>
+
+<h3>
+<a id="documentation-of-each-component" class="anchor" href="#documentation-of-each-component" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation of each component</h3>
+
+<p>A comment description in xxx.component.ts file, between JSDoc comments can be a little short.</p>
+
+<p>Compodoc search for a default README.md file inside the root folder of each component, and add it inside a tab in the component page.</p>
+
+<pre><code>└── my-component/
+    ├── my.component.ts
+    ├── my.component.spec.ts
+    ├── my.component.scss|css
+    ├── my.component.html
+    └── README.md
+</code></pre>
+
+<p>The live demo as a component documented in that way : <a href="https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html">TodoMVC Angular Compodoc demo / todo component</a></p>
+
+<h2>
+<a id="remark-for-routes" class="anchor" href="#remark-for-routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remark for routes</h2>
+
+<p>Follow the style guide and provide a const of type 'Routes' :</p>
+
+<pre><code>const APP_ROUTES: Routes = [
+    { path: 'about', component: AboutComponent },
+    { path: '', component: HomeComponent}
+];
+
+...
+
+RouterModule.forRoot(APP_ROUTES)
+</code></pre>
+
+<h3>
+<a id="syntax-highlighting-in-markdown-files" class="anchor" href="#syntax-highlighting-in-markdown-files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Syntax highlighting in markdown files</h3>
+
+<p>Compodoc use <a href="https://github.com/chjj/marked">Marked</a> for markdown parsing and compiling to html. <a href="highlightjs.org">highlight.js</a> has been added for supporting syntax highlighting.</p>
+
+<p>Just use a normal code block in your markdown with correct language : <a href="https://help.github.com/articles/creating-and-highlighting-code-blocks/">Github help</a></p>
+
+<p>The integrated languages are : json, bash, javascript, markdown, html, typescript</p>
+
+<h2>
+<a id="why-this-tool-" class="anchor" href="#why-this-tool-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why this tool ?</h2>
+
+<p>Because we doesn't find our needs on existing tools. We want to have a single place where there is :</p>
+
+<ul>
+<li>api documentation of code</li>
+<li>component(s), directive(s), pipe(s), ... documentation</li>
+<li>general documentation (*.md files)</li>
+</ul>
+
+<h2>
+<a id="why-not-a-spa-for-outputed-documentation-" class="anchor" href="#why-not-a-spa-for-outputed-documentation-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why not a SPA for outputed documentation ?</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/KISS_principle">KISS principle</a> or shortly <strong>"Keep it simple"</strong>. We think static html files are simpler than another SPA inside an "SPA documentation".</p>
+
+<h2>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<ul>
+<li>[ ] handle external markdown files as "functional" documentation</li>
+<li>[ ] watch/recompile feature while serving documentation</li>
+<li>[ ] support for Angular 1.5+ projects written in Typescript</li>
+<li>[x] routes</li>
+<li>[x] classes</li>
+<li>[x] module(s) page(s) with comments</li>
+<li>[x] component(s) page(s) with comments, API, class</li>
+<li>[x] directives</li>
+<li>[x] injectables</li>
+<li>[x] interfaces</li>
+<li>[x] pipes</li>
+</ul>
+
+<h2>
+<a id="contributors" class="anchor" href="#contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributors</h2>
+
+<table>
+<thead>
+<tr>
+<th align="center"><a href="https://github.com/vogloblinsky"><img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&amp;s=117" width="117"></a></th>
+<th align="center"><a href="https://github.com/daniele-zurico"><img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&amp;s=117" width="117"></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a href="https://github.com/vogloblinsky">vogloblinsky</a></td>
+<td align="center"><a href="https://github.com/daniele-zurico">daniele-zurico</a></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h2>
+
+<p>Inspired by stuff from <a href="https://github.com/manekinekko/angular2-dependencies-graph">angular2-dependencies-graph</a>, <a href="https://ng-bootstrap.github.io">ng-bootstrap</a></p>
+
+<p>Logo designed using <a href="http://www.freepik.com/free-photos-vectors/book">Book vector designed by Freepik</a></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Everything in this repo is MIT License unless otherwise specified.</p>
+
+<p>MIT © 2016 - <a href="http://www.vincentogloblinsky.com">Vincent Ogloblinsky</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/compodoc/compodoc">Compodoc</a> is maintained by <a href="https://github.com/compodoc">compodoc</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
