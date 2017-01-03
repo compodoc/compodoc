@@ -448,7 +448,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 25000);
+            }, 40000);
         });
 
         it('should display message', () => {
@@ -470,7 +470,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 1000);
+            }, 5000);
         });
 
         it('should display message', () => {
@@ -492,7 +492,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 1000);
+            }, 5000);
         });
         after(() => tmp.clean('documentation'));
 
