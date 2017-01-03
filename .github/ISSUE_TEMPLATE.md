@@ -7,7 +7,7 @@
 
 <!-- explain the issue or feature request, if an error is being thrown a stack trace helps -->
 
-##### **Operating System, Node.js, npm Version(s)**
+##### **Operating System, Node.js, npm, compodoc version(s)**
 
 <!-- provide all information we need -->
 
