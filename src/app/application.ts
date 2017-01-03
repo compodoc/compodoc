@@ -400,8 +400,8 @@ export class Application {
                     }
                 }
             };
-        let finalMainGraphPath = COMPODOC_DEFAULTS.folder;
-        if(COMPODOC_DEFAULTS.folder.lastIndexOf('/') === -1) {
+        let finalMainGraphPath = this.configuration.mainData.output;
+        if(finalMainGraphPath.lastIndexOf('/') === -1) {
             finalMainGraphPath += '/';
         }
         finalMainGraphPath += 'graph';

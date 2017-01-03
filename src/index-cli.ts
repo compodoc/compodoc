@@ -21,7 +21,7 @@ export class CliApplication extends Application
         program
             .version(pkg.version)
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
-            .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)')
+            .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
             .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
