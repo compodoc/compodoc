@@ -301,7 +301,7 @@ There is a JHipster module available to run Compodoc with JHipster. You can find
 ## Contributing
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
-Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/.github/CONTRIBUTING.md).
+Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/.github/CONTRIBUTING.md).
 
 ## Contributors
 
