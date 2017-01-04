@@ -68,6 +68,8 @@ Search page             |
 - [Why this tool ?](#why-this-tool-)
 - [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
 - [Roadmap](#roadmap)
+- [Extensions](#extensions)
+- [Contributing](#contributing)
 - [Contributors](#contributors)
 - [Resources](#resources)
 - [License](#license)
@@ -282,6 +284,24 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 - [x] injectables
 - [x] interfaces
 - [x] pipes
+
+## Extensions
+
+### Gulp
+
+There is a plugin available to run Compodoc with Gulp. You can find it on NPM:<br>
+[https://www.npmjs.com/package/gulp-compodoc](https://www.npmjs.com/package/gulp-compodoc)
+
+### JHispter
+
+There is a JHipster module available to run Compodoc with JHipster. You can find it on NPM:<br>
+[https://www.npmjs.com/package/generator-jhipster-compodoc](https://www.npmjs.com/package/generator-jhipster-compodoc)
+
+
+## Contributing
+
+Want to file a bug, contribute some code, or improve documentation? Excellent!
+Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/.github/CONTRIBUTING.md).
 
 ## Contributors
 
