@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -67,7 +67,7 @@
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
     "@types/mocha": "^2.2.35",
-    "@types/node": "6.0.55",
+    "@types/node": "6.0.56",
     "babel-preset-es2015-rollup": "^3.0.0",
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
@@ -76,7 +76,7 @@
     "nodemon": "^1.11.0",
     "nyc": "^10.0.0",
     "rimraf": "^2.5.4",
-    "rollup": "^0.39.0",
+    "rollup": "^0.40.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.0.0",

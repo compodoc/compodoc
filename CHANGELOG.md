@@ -1,3 +1,15 @@
+<a name="0.0.29"></a>
+## 0.0.29 (2017-01-07)
+
+### Bug Fixes
+
+* **app:** handlebars breaking comments and highlightjs ([1347b74](https://github.com/compodoc/compodoc/commit/1347b74)), closes [#49](https://github.com/compodoc/compodoc/issues/49)
+* **app:** Syntax highlighting issue with tabs ([54edaa0](https://github.com/compodoc/compodoc/commit/54edaa0)), closes [#50](https://github.com/compodoc/compodoc/issues/50)
+
+### Features
+
+* **cli:** Source folder option handling ([c3e86c6](https://github.com/compodoc/compodoc/commit/c3e86c6)), closes [#48](https://github.com/compodoc/compodoc/issues/48)
+
 <a name="0.0.28"></a>
 ## 0.0.28 (2017-01-03)
 

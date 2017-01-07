@@ -49,6 +49,17 @@ Component page             |  Source code tab
 Search page             |  
 ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |
 
+## Why this tool ?
+
+Because we doesn't find our needs on existing tools. We want to have a single place where there is :
+- api documentation of code
+- component(s), directive(s), pipe(s), ... documentation
+- general documentation (\*.md files)
+
+## Why not a SPA for outputed documentation ?
+
+[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
+
 # Table of Contents
 
 - [Getting Started with compodoc](#getting-started-with-compodoc)
@@ -65,8 +76,6 @@ Search page             |
   - [Syntax highlighting in markdown files](#syntax-highlighting-in-markdown-files)
 - [Remark for comments](#remark-for-comments)
 - [Remark for routes](#remark-for-routes)
-- [Why this tool ?](#why-this-tool-)
-- [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
 - [Roadmap](#roadmap)
 - [Extensions](#extensions)
 - [Contributing](#contributing)
@@ -89,7 +98,7 @@ npm install -g compodoc
 ```
 $ compodoc --help
 
-Usage: compodoc [options]
+Usage: compodoc <src> [options]
 
 Options:
 
@@ -99,12 +108,12 @@ Options:
   -d, --output [folder]     Where to store the generated documentation
   -b, --base [base]         Base reference of html tag <base>
   -y, --extTheme [file]     External styling theme
-  -h, --theme [theme]       Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   -n, --name [name]         Title documentation
   -o, --open                Open the generated documentation
   -t, --silent              In silent mode, log messages aren't logged in the console
   -s, --serve               Serve generated documentation (default http://localhost:8080/)
   -r, --port [port]         Change default serving port
+  --theme [theme]           Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator           Do not print the Compodoc link at the bottom of the page
   --disableSourceCode       Do not add source code tab
 ```
@@ -149,6 +158,12 @@ Documentation is generated in default output folder, then run your HTTP server i
 
 ```
 compodoc -p src/tsconfig.json
+```
+
+### Render documentation while providing source folder
+
+```
+compodoc src -p src/tsconfig.json
 ```
 
 ### Serve generated documentation with compodoc
@@ -259,17 +274,6 @@ Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and c
 Just use a normal code block in your markdown with correct language : [Github help](https://help.github.com/articles/creating-and-highlighting-code-blocks/)
 
 The integrated languages are : json, bash, javascript, markdown, html, typescript
-
-## Why this tool ?
-
-Because we doesn't find our needs on existing tools. We want to have a single place where there is :
-- api documentation of code
-- component(s), directive(s), pipe(s), ... documentation
-- general documentation (\*.md files)
-
-## Why not a SPA for outputed documentation ?
-
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Roadmap
 

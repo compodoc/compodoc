@@ -72,6 +72,7 @@ export class HtmlEngine {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
             text = text.replace(/ /gm, '&nbsp;');
+            text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('breakComma', function(text) {

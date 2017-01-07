@@ -20,11 +20,11 @@ export class CliApplication extends Application
 
         program
             .version(pkg.version)
+            .usage('<src> [options]')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
             .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
             .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
             .option('-y, --extTheme [file]', 'External styling theme file')
-            .option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option('-o, --open', 'Open the generated documentation', false)
             //.option('-i, --includes [path]', 'Path of external markdown files to include')
@@ -32,6 +32,7 @@ export class CliApplication extends Application
             .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
+            .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .parse(process.argv);
@@ -116,7 +117,30 @@ export class CliApplication extends Application
                 this.configuration.mainData.hideGenerator = true;
             }
 
-            if (program.tsconfig) {
+            let defaultWalkFOlder = cwd || '.',
+                walk = (dir, exclude) => {
+                    let results = [];
+                    let list = fs.readdirSync(dir);
+                    list.forEach((file) => {
+                        if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                            file = path.join(dir, file);
+                            let stat = fs.statSync(file);
+                            if (stat && stat.isDirectory()) {
+                                results = results.concat(walk(file, exclude));
+                            }
+                            else if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.debug('Ignoring', file);
+                            }
+                            else if (path.extname(file) === '.ts') {
+                                logger.debug('Including', file);
+                                results.push(file);
+                            }
+                        }
+                    });
+                    return results;
+                };
+
+            if (program.tsconfig && program.args.length === 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
                     logger.error('"tsconfig.json" file was not found in the current directory');
@@ -136,30 +160,22 @@ export class CliApplication extends Application
                     if (!files) {
                         let exclude = require(_file).exclude || [];
 
-                        var walk = (dir) => {
-                            let results = [];
-                            let list = fs.readdirSync(dir);
-                            list.forEach((file) => {
-                                if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                    file = path.join(dir, file);
-                                    let stat = fs.statSync(file);
-                                    if (stat && stat.isDirectory()) {
-                                        results = results.concat(walk(file));
-                                    }
-                                    else if (/(spec|\.d)\.ts/.test(file)) {
-                                        logger.debug('Ignoring', file);
-                                    }
-                                    else if (path.extname(file) === '.ts') {
-                                        logger.debug('Including', file);
-                                        results.push(file);
-                                    }
-                                }
-                            });
-                            return results;
-                        };
-
-                        files = walk(cwd || '.');
+                        files = walk(defaultWalkFOlder, exclude);
                     }
+
+                    super.setFiles(files);
+                    super.generate();
+                }
+            }  else if (program.args.length > 0) {
+                let sourceFolder = program.args[0];
+                if (!fs.existsSync(sourceFolder)) {
+                    logger.error(`Provided source folder ${sourceFolder} was not found in the current directory`);
+                    process.exit(1);
+                } else {
+                    logger.info('Using provided source folder');
+
+                    files = walk(sourceFolder, []);
+
                     super.setFiles(files);
                     super.generate();
                 }
