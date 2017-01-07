@@ -505,19 +505,24 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return ((member.flags & ts.NodeFlags.Private) !== 0);
+        return ((member.flags & ts.NodeFlags.Private) !== 0) || this.isInternalMember(member);
     }
 
     private isInternalMember(member) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let comment = [];
-        if (member.symbol) {
-            comment = member.symbol.getDocumentationComment();
+        const jsDocTags: string[] = [];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        jsDocTags.push(tag.tagName.text);
+                    }
+                }
+            }
         }
-        const jsDoc = ts.displayPartsToString(comment);
-        return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+        return jsDocTags.indexOf('internal') > -1;
     }
 
     private isAngularLifecycleHook(methodName) {
