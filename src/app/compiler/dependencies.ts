@@ -501,23 +501,36 @@ export class Dependencies {
         };
     }
 
-    private isPrivateOrInternal(member) {
+    private isPrivateOrInternal(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return ((member.flags & ts.NodeFlags.Private) !== 0);
+        if (member.modifiers) {
+            const isPrivate: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword);
+            if (isPrivate) {
+                return true;
+            }
+        }
+        return this.isInternalMember(member);
     }
 
-    private isInternalMember(member) {
+    private isInternalMember(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let comment = [];
-        if (member.symbol) {
-            comment = member.symbol.getDocumentationComment();
+        const internalTags: string[] = ['internal', 'private', 'hidden'];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
-        const jsDoc = ts.displayPartsToString(comment);
-        return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+        return false;
     }
 
     private isAngularLifecycleHook(methodName) {

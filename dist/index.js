@@ -1369,7 +1369,15 @@ var Dependencies = function () {
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
-            return (member.flags & ts.NodeFlags.Private) !== 0;
+            if (member.modifiers) {
+                var isPrivate = member.modifiers.some(function (modifier) {
+                    return modifier.kind === ts.SyntaxKind.PrivateKeyword;
+                });
+                if (isPrivate) {
+                    return true;
+                }
+            }
+            return this.isInternalMember(member);
         }
     }, {
         key: 'isInternalMember',
@@ -1377,12 +1385,61 @@ var Dependencies = function () {
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
-            var comment = [];
-            if (member.symbol) {
-                comment = member.symbol.getDocumentationComment();
+            var internalTags = ['internal', 'private', 'hidden'];
+            if (member.jsDoc) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = member.jsDoc[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var doc = _step.value;
+
+                        if (doc.tags) {
+                            var _iteratorNormalCompletion2 = true;
+                            var _didIteratorError2 = false;
+                            var _iteratorError2 = undefined;
+
+                            try {
+                                for (var _iterator2 = doc.tags[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                    var tag = _step2.value;
+
+                                    if (internalTags.indexOf(tag.tagName.text) > -1) {
+                                        return true;
+                                    }
+                                }
+                            } catch (err) {
+                                _didIteratorError2 = true;
+                                _iteratorError2 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                        _iterator2.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError2) {
+                                        throw _iteratorError2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             }
-            var jsDoc = ts.displayPartsToString(comment);
-            return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+            return false;
         }
     }, {
         key: 'isAngularLifecycleHook',
