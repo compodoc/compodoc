@@ -286,14 +286,14 @@ describe('CLI', () => {
         });
     });
 
-    describe('when generation with -h flag', () => {
+    describe('when generation with --theme flag', () => {
 
         let stdoutString = null,
             baseTheme = 'laravel',
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -h ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -448,7 +448,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 40000);
+            }, 60000);
         });
 
         it('should display message', () => {
