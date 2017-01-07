@@ -303,6 +303,7 @@ var HtmlEngine = function () {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
             text = text.replace(/ /gm, '&nbsp;');
+            text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('breakComma', function (text) {
@@ -1150,7 +1151,7 @@ var Dependencies = function () {
                         try {
                             newRoutes = JSON.parse(_IO2.routes.replace(/ /gm, ''));
                         } catch (e) {
-                            logger.error('Routes parsing error, maybe a trailing comma ?');
+                            logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
                             return true;
                         }
                         outputSymbols['routes'] = [].concat(toConsumableArray(outputSymbols['routes']), toConsumableArray(newRoutes));
@@ -2392,7 +2393,9 @@ var CliApplication = function (_Application) {
          * Run compodoc from the command line.
          */
         value: function generate() {
-            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
+            var _this2 = this;
+
+            program.version(pkg$2.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2455,56 +2458,64 @@ var CliApplication = function (_Application) {
                     get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
                 }
             } else {
-                if (program.hideGenerator) {
-                    this.configuration.mainData.hideGenerator = true;
-                }
-                if (program.tsconfig) {
-                    this.configuration.mainData.tsconfig = program.tsconfig;
-                    if (!fs.existsSync(program.tsconfig)) {
-                        logger.error('"tsconfig.json" file was not found in the current directory');
-                        process.exit(1);
-                    } else {
-                        var _file = path.join(path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)), path.basename(this.configuration.mainData.tsconfig));
-                        logger.info('Using tsconfig', _file);
-                        files = require(_file).files;
-                        // use the current directory of tsconfig.json as a working directory
-                        cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
-                        if (!files) {
-                            var _walk;
-
-                            (function () {
-                                var exclude = require(_file).exclude || [];
-
-                                _walk = function walk(dir) {
-                                    var results = [];
-                                    var list = fs.readdirSync(dir);
-                                    list.forEach(function (file) {
-                                        if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                            file = path.join(dir, file);
-                                            var stat = fs.statSync(file);
-                                            if (stat && stat.isDirectory()) {
-                                                results = results.concat(_walk(file));
-                                            } else if (/(spec|\.d)\.ts/.test(file)) {
-                                                logger.debug('Ignoring', file);
-                                            } else if (path.extname(file) === '.ts') {
-                                                logger.debug('Including', file);
-                                                results.push(file);
-                                            }
-                                        }
-                                    });
-                                    return results;
-                                };
-
-                                files = _walk(cwd$1 || '.');
-                            })();
-                        }
-                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', this).call(this, files);
-                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', this).call(this);
+                (function () {
+                    if (program.hideGenerator) {
+                        _this2.configuration.mainData.hideGenerator = true;
                     }
-                } else {
-                    logger.error('tsconfig.json file was not found, please use -p flag');
-                    outputHelp();
-                }
+                    var defaultWalkFOlder = cwd$1 || '.',
+                        walk = function walk(dir, exclude) {
+                        var results = [];
+                        var list = fs.readdirSync(dir);
+                        list.forEach(function (file) {
+                            if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                                file = path.join(dir, file);
+                                var stat = fs.statSync(file);
+                                if (stat && stat.isDirectory()) {
+                                    results = results.concat(walk(file, exclude));
+                                } else if (/(spec|\.d)\.ts/.test(file)) {
+                                    logger.debug('Ignoring', file);
+                                } else if (path.extname(file) === '.ts') {
+                                    logger.debug('Including', file);
+                                    results.push(file);
+                                }
+                            }
+                        });
+                        return results;
+                    };
+                    if (program.tsconfig && program.args.length === 0) {
+                        _this2.configuration.mainData.tsconfig = program.tsconfig;
+                        if (!fs.existsSync(program.tsconfig)) {
+                            logger.error('"tsconfig.json" file was not found in the current directory');
+                            process.exit(1);
+                        } else {
+                            var _file = path.join(path.join(process.cwd(), path.dirname(_this2.configuration.mainData.tsconfig)), path.basename(_this2.configuration.mainData.tsconfig));
+                            logger.info('Using tsconfig', _file);
+                            files = require(_file).files;
+                            // use the current directory of tsconfig.json as a working directory
+                            cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
+                            if (!files) {
+                                var exclude = require(_file).exclude || [];
+                                files = walk(defaultWalkFOlder, exclude);
+                            }
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
+                        }
+                    } else if (program.args.length > 0) {
+                        var sourceFolder = program.args[0];
+                        if (!fs.existsSync(sourceFolder)) {
+                            logger.error('Provided source folder ' + sourceFolder + ' was not found in the current directory');
+                            process.exit(1);
+                        } else {
+                            logger.info('Using provided source folder');
+                            files = walk(sourceFolder, []);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
+                        }
+                    } else {
+                        logger.error('tsconfig.json file was not found, please use -p flag');
+                        outputHelp();
+                    }
+                })();
             }
         }
     }]);
