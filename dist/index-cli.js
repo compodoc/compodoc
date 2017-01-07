@@ -458,7 +458,8 @@ var COMPODOC_DEFAULTS = {
     port: 8080,
     theme: 'gitbook',
     base: '/',
-    disableSourceCode: false
+    disableSourceCode: false,
+    disableGraph: false
 };
 
 var Configuration = function () {
@@ -489,7 +490,8 @@ var Configuration = function () {
             routes: [],
             tsconfig: '',
             includes: false,
-            disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode
+            disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
+            disableGraph: COMPODOC_DEFAULTS.disableGraph
         };
         if (Configuration._instance) {
             throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
@@ -2306,43 +2308,53 @@ var Application = function () {
         value: function processGraphs() {
             var _this7 = this;
 
-            logger.info('Process main graph');
-            var modules = this.configuration.mainData.modules,
-                i = 0,
-                len = modules.length,
-                loop = function loop() {
-                if (i <= len - 1) {
-                    logger.info('Process module graph', modules[i].name);
-                    var finalPath = _this7.configuration.mainData.output;
-                    if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
-                    }
-                    finalPath += 'modules/' + modules[i].name;
-                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
-                        i++;
-                        loop();
-                    }, function (errorMessage) {
-                        logger.error(errorMessage);
-                    });
-                } else {
-                    var finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
-                    if (_this7.configuration.mainData.serve) {
-                        logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
-                        _this7.runWebServer(_this7.configuration.mainData.output);
-                    }
+            var onComplete = function onComplete() {
+                var finalTime = (new Date() - startTime) / 1000;
+                logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
+                if (_this7.configuration.mainData.serve) {
+                    logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
+                    _this7.runWebServer(_this7.configuration.mainData.output);
                 }
             };
-            var finalMainGraphPath = this.configuration.mainData.output;
-            if (finalMainGraphPath.lastIndexOf('/') === -1) {
-                finalMainGraphPath += '/';
+            if (this.configuration.mainData.disableGraph) {
+                logger.info('Graph generation disabled');
+                onComplete();
+            } else {
+                (function () {
+                    logger.info('Process main graph');
+                    var modules = _this7.configuration.mainData.modules,
+                        i = 0,
+                        len = modules.length,
+                        loop = function loop() {
+                        if (i <= len - 1) {
+                            logger.info('Process module graph', modules[i].name);
+                            var finalPath = _this7.configuration.mainData.output;
+                            if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
+                                finalPath += '/';
+                            }
+                            finalPath += 'modules/' + modules[i].name;
+                            $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
+                                i++;
+                                loop();
+                            }, function (errorMessage) {
+                                logger.error(errorMessage);
+                            });
+                        } else {
+                            onComplete();
+                        }
+                    };
+                    var finalMainGraphPath = _this7.configuration.mainData.output;
+                    if (finalMainGraphPath.lastIndexOf('/') === -1) {
+                        finalMainGraphPath += '/';
+                    }
+                    finalMainGraphPath += 'graph';
+                    $ngdengine.renderGraph(_this7.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
+                        loop();
+                    }, function (err) {
+                        logger.error('Error during graph generation: ', err);
+                    });
+                })();
             }
-            finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
-                loop();
-            }, function (err) {
-                logger.error('Error during graph generation: ', err);
-            });
         }
     }, {
         key: 'runWebServer',
@@ -2395,7 +2407,7 @@ var CliApplication = function (_Application) {
         value: function generate() {
             var _this2 = this;
 
-            program.version(pkg.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
+            program.version(pkg.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).option('--disableGraph', 'Do not add the dependency graph', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2438,6 +2450,9 @@ var CliApplication = function (_Application) {
             }
             if (program.disableSourceCode) {
                 this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+            }
+            if (program.disableGraph) {
+                this.configuration.mainData.disableGraph = program.disableGraph;
             }
             if (program.serve && !program.tsconfig && program.output) {
                 // if -s & -d, serve it

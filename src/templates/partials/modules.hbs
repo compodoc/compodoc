@@ -8,11 +8,13 @@
                     <h4 class="card-title">{{name}}</h4>
                 </div>
                 <div class="card-block">
+                    {{#unless ../disableGraph}}
                     <p>
                         <object id="demo-svg" type="image/svg+xml" data="./modules/{{name}}/dependencies.svg" style="width: 100%; height: 175px;">
                                 Your browser does not support SVG
                         </object>
                     </p>
+                    {{/unless}}
                     <footer class="text-center">
                         <a href="./modules/{{name}}.html" class="btn btn-default">Browse</a>
                     </footer>

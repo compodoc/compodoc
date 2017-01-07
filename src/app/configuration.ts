@@ -37,6 +37,7 @@ interface IMainData {
     includes: boolean;
     includesName: string;
     disableSourceCode: boolean;
+    disableGraph: boolean;
 }
 
 export interface IConfiguration {
@@ -72,7 +73,8 @@ export class Configuration implements IConfiguration {
         routes: [],
         tsconfig: '',
         includes: false,
-        disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode
+        disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
+        disableGraph: COMPODOC_DEFAULTS.disableGraph
     };
 
     constructor() {

@@ -35,6 +35,7 @@ export class CliApplication extends Application
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--disableSourceCode', 'Do not add source code tab', false)
+            .option('--disableGraph', 'Do not add the dependency graph', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -92,6 +93,10 @@ export class CliApplication extends Application
 
         if (program.disableSourceCode) {
             this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+        }
+
+        if (program.disableGraph) {
+            this.configuration.mainData.disableGraph = program.disableGraph;
         }
 
         if (program.serve && !program.tsconfig && program.output) {

@@ -1,4 +1,5 @@
 <h3>Overview</h3>
+{{#unless disableGraph}}
 <div class="text-center">
     <object id="demo-svg" type="image/svg+xml" data="graph/dependencies.svg" style="width: 100%; height: 250px;">
             Your browser does not support SVG
@@ -9,6 +10,7 @@
         <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
     </div>
 </div>
+{{/unless}}
 <div class="container-fluid overview">
     <div class="row">
         {{#if modules}}
@@ -97,5 +99,7 @@
         {{/if}}
     </div>
 </div>
+{{#unless disableGraph}}
 <script src="js/libs/svg-pan-zoom.min.js"></script>
 <script src="js/svg-pan-zoom.controls.js"></script>
+{{/unless}}
