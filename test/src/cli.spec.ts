@@ -384,6 +384,48 @@ describe('CLI', () => {
         });
     });
 
+    describe('when generation with --disableGraph flag', () => {
+
+        let stdoutString = null,
+          fileContents = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean(tmp.name));
+
+        it('should not generate any graph data', () => {
+            expect(stdoutString).to.contain('Graph generation disabled');
+            expect(stdoutString).not.to.contain('Process main graph');
+        });
+
+        it('should not include the graph on the modules page', () => {
+            fileContents = read(`${tmp.name}/modules.html`);
+            expect(fileContents).to.not.contain('dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the overview page', () => {
+            fileContents = read(`${tmp.name}/overview.html`);
+            expect(fileContents).to.not.contain('graph/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the individual modules pages', () => {
+            fileContents = read(`${tmp.name}/modules/AboutModule.html`);
+            expect(fileContents).to.not.contain('modules/AboutModule/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+    });
+
     describe('when generation with -r flag', () => {
 
         let stdoutString = '',

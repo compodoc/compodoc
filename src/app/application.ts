@@ -373,43 +373,57 @@ export class Application {
     }
 
     processGraphs() {
-        logger.info('Process main graph');
-        let modules = this.configuration.mainData.modules,
-            i = 0,
-            len = modules.length,
-            loop = () => {
-                if( i <= len-1) {
-                    logger.info('Process module graph', modules[i].name);
-                    let finalPath = this.configuration.mainData.output;
-                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
-                    }
-                    finalPath += 'modules/' + modules[i].name;
-                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
-                        i++;
-                        loop();
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
-                    });
-                } else {
-                    let finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
-                    if (this.configuration.mainData.serve) {
-                        logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
-                        this.runWebServer(this.configuration.mainData.output);
-                    }
-                }
-            };
-        let finalMainGraphPath = this.configuration.mainData.output;
-        if(finalMainGraphPath.lastIndexOf('/') === -1) {
-            finalMainGraphPath += '/';
+
+        const onComplete = () => {
+            let finalTime = (new Date() - startTime) / 1000;
+            logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
+            if (this.configuration.mainData.serve) {
+                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                this.runWebServer(this.configuration.mainData.output);
+            }
+        };
+
+        if (this.configuration.mainData.disableGraph) {
+
+            logger.info('Graph generation disabled');
+            onComplete();
+
+        } else {
+
+            logger.info('Process main graph');
+            let modules = this.configuration.mainData.modules,
+              i = 0,
+              len = modules.length,
+              loop = () => {
+                  if( i <= len-1) {
+                      logger.info('Process module graph', modules[i].name);
+                      let finalPath = this.configuration.mainData.output;
+                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                          finalPath += '/';
+                      }
+                      finalPath += 'modules/' + modules[i].name;
+                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
+                          i++;
+                          loop();
+                      }, (errorMessage) => {
+                          logger.error(errorMessage);
+                      });
+                  } else {
+                      onComplete();
+                  }
+              };
+            let finalMainGraphPath = this.configuration.mainData.output;
+            if(finalMainGraphPath.lastIndexOf('/') === -1) {
+                finalMainGraphPath += '/';
+            }
+            finalMainGraphPath += 'graph';
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                loop();
+            }, (err) => {
+                logger.error('Error during graph generation: ', err);
+            });
+
         }
-        finalMainGraphPath += 'graph';
-        $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-            loop();
-        }, (err) => {
-            logger.error('Error during graph generation: ', err);
-        });
     }
 
     runWebServer(folder) {
