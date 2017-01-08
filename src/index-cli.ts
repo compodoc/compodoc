@@ -171,7 +171,8 @@ export class CliApplication extends Application
                     super.setFiles(files);
                     super.generate();
                 }
-            }  else if (program.args.length > 0) {
+            }  else if (program.tsconfig && program.args.length > 0) {
+                this.configuration.mainData.tsconfig = program.tsconfig;
                 let sourceFolder = program.args[0];
                 if (!fs.existsSync(sourceFolder)) {
                     logger.error(`Provided source folder ${sourceFolder} was not found in the current directory`);
@@ -179,7 +180,7 @@ export class CliApplication extends Application
                 } else {
                     logger.info('Using provided source folder');
 
-                    files = walk(sourceFolder, []);
+                    files = walk(path.resolve(sourceFolder), []);
 
                     super.setFiles(files);
                     super.generate();
