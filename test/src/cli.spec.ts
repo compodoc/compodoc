@@ -404,7 +404,7 @@ describe('CLI', () => {
         });
         after(() => tmp.clean(tmp.name));
 
-        it('should countain port ' + port, () => {
+        it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');
             expect(stdoutString).to.contain(port);
         });
@@ -499,6 +499,46 @@ describe('CLI', () => {
         it('should display message', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
+    });
+
+    describe('excluding methods', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/BarComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('include methods not marked as internal, private or hidden', () => {
+            expect(componentFile).to.contain('<code>normalMethod</code>');
+        });
+
+        it('should exclude methods marked as internal', () => {
+            expect(componentFile).not.to.contain('<code>internalMethod</code>');
+        });
+
+        it('should exclude methods marked as hidden', () => {
+            expect(componentFile).not.to.contain('<code>hiddenMethod</code>');
+        });
+
+        it('should exclude methods marked as private', () => {
+            expect(componentFile).not.to.contain('<code>privateCommentMethod</code>');
+        });
+
+        it('should exclude private methods', () => {
+            expect(componentFile).not.to.contain('<code>privateMethod</code>');
+        });
+
     });
 
 });
