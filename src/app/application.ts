@@ -12,7 +12,7 @@ import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
 import { Configuration, IConfiguration } from './configuration';
-import { DependenciesEngine } from './engines/dependencies.engine';
+import { $dependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
@@ -26,7 +26,6 @@ let pkg = require('../package.json'),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $searchEngine = new SearchEngine(),
-    $dependenciesEngine,
     startTime = new Date();
 
 export class Application {
@@ -118,7 +117,7 @@ export class Application {
 
         let dependenciesData = crawler.getDependencies();
 
-        $dependenciesEngine = new DependenciesEngine(dependenciesData);
+        $dependenciesEngine.init(dependenciesData);
 
         this.prepareModules();
 
