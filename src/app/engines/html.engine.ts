@@ -113,6 +113,7 @@ export class HtmlEngine {
             'module',
             'components',
             'component',
+            'component-detail',
             'directives',
             'directive',
             'injectables',
