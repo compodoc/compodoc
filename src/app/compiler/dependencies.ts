@@ -559,13 +559,16 @@ export class Dependencies {
     private visitConstructorDeclaration(method) {
         var that = this;
         if (method.parameters) {
-            return method.parameters.map(function(prop) {
-                if (that.isPublic(prop)) {
-                    return that.visitArgument(prop);
-                } else {
-                    return {}
+            var _parameters = [],
+                i = 0,
+                len = method.parameters;
+            for(i; i < len; i++) {
+                if (that.isPublic(method.parameters[i])) {
+                    _parameters.push(that.visitArgument(method.parameters[i]));
                 }
-            });
+            }
+            console.log(_parameters);
+            return _parameters;
         } else {
             return [];
         }
@@ -643,6 +646,7 @@ export class Dependencies {
     }
 
     private visitMembers(members) {
+        console.log('visitMembers')
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -678,12 +682,16 @@ export class Dependencies {
                 } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                     properties.push(this.visitIndexDeclaration(members[i]));
                 } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                    console.log('Constructor')
                     let _constructorProperties = this.visitConstructorDeclaration(members[i]),
                         j = 0,
                         len = _constructorProperties.length;
+                    console.log('for');
+                    console.log(_constructorProperties);
                     for(j; j<len; j++) {
                         properties.push(_constructorProperties[j]);
                     }
+                    console.log('end for')
                 }
             }
         }
@@ -691,6 +699,8 @@ export class Dependencies {
         inputs.sort(this.getNamesCompareFn());
         outputs.sort(this.getNamesCompareFn());
         properties.sort(this.getNamesCompareFn());
+
+        console.log(' end visitMembers')
 
         return {
             inputs,
