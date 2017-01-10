@@ -45,7 +45,7 @@
                                     <div><i>Signature : </i><code>{{{functionSignature this}}}</code></div>
                                 {{/if}}
                                 {{#if returnType}}
-                                    <div><i>Return type : </i><code>{{> link-type type=returnType }}</code></div>
+                                    <div><i>Return type : </i>{{> link-type type=returnType }}</div>
                                 {{/if}}
                                 {{#if description}}
                                     <div class="io-description">{{{description}}}</div>
@@ -69,7 +69,7 @@
                                 <td class="col-md-3"><code>{{name}}</code></td>
                                 <td class="col-md-9">
                                     {{#if type}}
-                                        <div><i>Type : </i><code>{{> link-type type=type }}</code></div>
+                                        <div><i>Type : </i>{{> link-type type=type }}</div>
                                     {{/if}}
                                     {{#if defaultValue}}
                                         <div><i>Default value: </i><code>{{defaultValue}}</code></div>
@@ -94,7 +94,7 @@
                                         </div>
                                     {{/if}}
                                     {{#if returnType}}
-                                        <div><i>Return type : </i><code>{{> link-type type=returnType }}</code></div>
+                                        <div><i>Return type : </i>{{> link-type type=returnType }}</div>
                                     {{/if}}
                                     {{#if description}}
                                         <div class="io-description">{{{description}}}</div>
