@@ -10,8 +10,8 @@ var LiveServer = require('live-server');
 var marked = require('marked');
 var marked__default = _interopDefault(marked);
 var Handlebars = require('handlebars');
-var highlightjs = _interopDefault(require('highlight.js'));
 var _ = require('lodash');
+var highlightjs = _interopDefault(require('highlight.js'));
 var Shelljs = require('shelljs');
 var ts = require('typescript');
 
@@ -237,8 +237,95 @@ var Logger = function () {
 
 var logger = new Logger();
 
-//import * as helpers from 'handlebars-helpers';
+var DependenciesEngine = function () {
+    function DependenciesEngine() {
+        classCallCheck(this, DependenciesEngine);
 
+        if (DependenciesEngine._instance) {
+            throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
+        }
+        DependenciesEngine._instance = this;
+    }
+
+    createClass(DependenciesEngine, [{
+        key: 'init',
+        value: function init(data) {
+            this.rawData = data;
+            this.modules = _.sortBy(this.rawData.modules, ['name']);
+            this.components = _.sortBy(this.rawData.components, ['name']);
+            this.directives = _.sortBy(this.rawData.directives, ['name']);
+            this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+            this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
+            this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
+            this.pipes = _.sortBy(this.rawData.pipes, ['name']);
+            this.classes = _.sortBy(this.rawData.classes, ['name']);
+        }
+    }, {
+        key: 'find',
+        value: function find$$1(type) {
+            var finder = function finder(data) {
+                return _.find(data, function (o) {
+                    return type.indexOf(o.name) !== -1;
+                }) || _.find(data, function (o) {
+                    return type.indexOf(o.name) !== -1;
+                });
+            };
+            return finder(this.injectables) || finder(this.classes);
+        }
+    }, {
+        key: 'getModules',
+        value: function getModules() {
+            return this.modules;
+        }
+    }, {
+        key: 'getComponents',
+        value: function getComponents() {
+            return this.components;
+        }
+    }, {
+        key: 'getDirectives',
+        value: function getDirectives() {
+            return this.directives;
+        }
+    }, {
+        key: 'getInjectables',
+        value: function getInjectables() {
+            return this.injectables;
+        }
+    }, {
+        key: 'getInterfaces',
+        value: function getInterfaces() {
+            return this.interfaces;
+        }
+    }, {
+        key: 'getRoutes',
+        value: function getRoutes() {
+            return this.routes;
+        }
+    }, {
+        key: 'getPipes',
+        value: function getPipes() {
+            return this.pipes;
+        }
+    }, {
+        key: 'getClasses',
+        value: function getClasses() {
+            return this.classes;
+        }
+    }], [{
+        key: 'getInstance',
+        value: function getInstance() {
+            return DependenciesEngine._instance;
+        }
+    }]);
+    return DependenciesEngine;
+}();
+
+DependenciesEngine._instance = new DependenciesEngine();
+
+var $dependenciesEngine = DependenciesEngine.getInstance();
+
+//import * as helpers from 'handlebars-helpers';
 var HtmlEngine = function () {
     function HtmlEngine() {
         classCallCheck(this, HtmlEngine);
@@ -313,12 +400,33 @@ var HtmlEngine = function () {
         });
         Handlebars.registerHelper('functionSignature', function (method) {
             var args = method.args.map(function (arg) {
-                return arg.name + ': ' + arg.type;
+                var _result = $dependenciesEngine.find(arg.type);
+                if (_result) {
+                    var _path = _result.type;
+                    if (_result.type === 'class') _path = 'classe';
+                    return arg.name + ': <a href="./' + _path + 's/' + _result.name + '.html" >' + arg.type + '</a>';
+                } else {
+                    return arg.name + ': ' + arg.type;
+                }
             }).join(', ');
             if (method.name) {
                 return method.name + '(' + args + ')';
             } else {
                 return '(' + args + ')';
+            }
+        });
+        Handlebars.registerHelper('linkType', function (name, options) {
+            var _result = $dependenciesEngine.find(name);
+            if (_result) {
+                this.type = {
+                    path: _result.type,
+                    name: _result.name,
+                    raw: name
+                };
+                if (_result.type === 'class') this.type.path = 'classe';
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
             }
         });
         Handlebars.registerHelper('indexableSignature', function (method) {
@@ -343,7 +451,7 @@ var HtmlEngine = function () {
     createClass(HtmlEngine, [{
         key: 'init',
         value: function init() {
-            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input'],
+            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'component-detail', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input', 'link-type'],
                 i = 0,
                 len = partials.length,
                 loop = function loop(resolve$$1, reject) {
@@ -384,10 +492,10 @@ var HtmlEngine = function () {
                         } else {
                             that.cache['page'] = data;
                             var _template = Handlebars.compile(data),
-                                _result = _template({
+                                _result2 = _template({
                                 data: o
                             });
-                            resolve$$1(_result);
+                            resolve$$1(_result2);
                         }
                     });
                 }
@@ -530,65 +638,6 @@ var Configuration = function () {
 }();
 
 Configuration._instance = new Configuration();
-
-var DependenciesEngine = function () {
-    function DependenciesEngine(data) {
-        classCallCheck(this, DependenciesEngine);
-
-        this.rawData = data;
-        this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.components = _.sortBy(this.rawData.components, ['name']);
-        this.directives = _.sortBy(this.rawData.directives, ['name']);
-        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
-        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
-        this.classes = _.sortBy(this.rawData.classes, ['name']);
-    }
-
-    createClass(DependenciesEngine, [{
-        key: 'getModules',
-        value: function getModules() {
-            return this.modules;
-        }
-    }, {
-        key: 'getComponents',
-        value: function getComponents() {
-            return this.components;
-        }
-    }, {
-        key: 'getDirectives',
-        value: function getDirectives() {
-            return this.directives;
-        }
-    }, {
-        key: 'getInjectables',
-        value: function getInjectables() {
-            return this.injectables;
-        }
-    }, {
-        key: 'getInterfaces',
-        value: function getInterfaces() {
-            return this.interfaces;
-        }
-    }, {
-        key: 'getRoutes',
-        value: function getRoutes() {
-            return this.routes;
-        }
-    }, {
-        key: 'getPipes',
-        value: function getPipes() {
-            return this.pipes;
-        }
-    }, {
-        key: 'getClasses',
-        value: function getClasses() {
-            return this.classes;
-        }
-    }]);
-    return DependenciesEngine;
-}();
 
 var isGlobal = require('is-global-exec');
 
@@ -1366,6 +1415,19 @@ var Dependencies = function () {
             };
         }
     }, {
+        key: 'isPublic',
+        value: function isPublic(member) {
+            if (member.modifiers) {
+                var isPublic = member.modifiers.some(function (modifier) {
+                    return modifier.kind === ts.SyntaxKind.PublicKeyword;
+                });
+                if (isPublic) {
+                    return true;
+                }
+            }
+            return this.isInternalMember(member);
+        }
+    }, {
         key: 'isPrivateOrInternal',
         value: function isPrivateOrInternal(member) {
             /**
@@ -1451,6 +1513,22 @@ var Dependencies = function () {
              */
             var ANGULAR_LIFECYCLE_METHODS = ['ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked', 'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'];
             return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+        }
+    }, {
+        key: 'visitConstructorDeclaration',
+        value: function visitConstructorDeclaration(method) {
+            var that = this;
+            if (method.parameters) {
+                return method.parameters.map(function (prop) {
+                    if (that.isPublic(prop)) {
+                        return that.visitArgument(prop);
+                    } else {
+                        return {};
+                    }
+                });
+            } else {
+                return [];
+            }
         }
     }, {
         key: 'visitCallDeclaration',
@@ -1559,6 +1637,7 @@ var Dependencies = function () {
             for (var i = 0; i < members.length; i++) {
                 inputDecorator = this.getDecoratorOfType(members[i], 'Input');
                 outDecorator = this.getDecoratorOfType(members[i], 'Output');
+                kind = members[i].kind;
                 if (inputDecorator) {
                     inputs.push(this.visitInput(members[i], inputDecorator));
                 } else if (outDecorator) {
@@ -1570,10 +1649,15 @@ var Dependencies = function () {
                         properties.push(this.visitProperty(members[i]));
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                         properties.push(this.visitCallDeclaration(members[i]));
-                        kind = members[i].kind;
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                         properties.push(this.visitIndexDeclaration(members[i]));
-                        kind = members[i].kind;
+                    } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                        var _constructorProperties = this.visitConstructorDeclaration(members[i]),
+                            j = 0,
+                            len = _constructorProperties.length;
+                        for (j; j < len; j++) {
+                            properties.push(_constructorProperties[j]);
+                        }
                     }
                 }
             }
@@ -2018,7 +2102,6 @@ var $fileengine = new FileEngine();
 var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
-var $dependenciesEngine = void 0;
 var startTime = new Date();
 
 var Application = function () {
@@ -2160,7 +2243,7 @@ var Application = function () {
                 tsconfigDirectory: cwd$1
             });
             var dependenciesData = crawler.getDependencies();
-            $dependenciesEngine = new DependenciesEngine(dependenciesData);
+            $dependenciesEngine.init(dependenciesData);
             this.prepareModules();
             this.prepareComponents().then(function (readmeData) {
                 if ($dependenciesEngine.directives.length > 0) {
@@ -2572,14 +2655,15 @@ var CliApplication = function (_Application) {
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
                         }
-                    } else if (program.args.length > 0) {
+                    } else if (program.tsconfig && program.args.length > 0) {
+                        _this2.configuration.mainData.tsconfig = program.tsconfig;
                         var sourceFolder = program.args[0];
                         if (!fs.existsSync(sourceFolder)) {
                             logger.error('Provided source folder ' + sourceFolder + ' was not found in the current directory');
                             process.exit(1);
                         } else {
                             logger.info('Using provided source folder');
-                            files = walk(sourceFolder, []);
+                            files = walk(path.resolve(sourceFolder), []);
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
                         }
