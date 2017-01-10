@@ -4,6 +4,7 @@ import * as ts from 'typescript';
 import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
+import { RouterParser } from '../../utils/router.parser';
 import { generate } from './codegen';
 
 interface NodeObject {
