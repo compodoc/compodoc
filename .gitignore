@@ -21,3 +21,6 @@ test/dist/
 coverage
 .nyc_output
 coverage.*
+
+# Angular Api json
+src/data/ 

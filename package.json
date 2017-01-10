@@ -9,6 +9,7 @@
   "scripts": {
     "build": "./node_modules/.bin/rollup -c rollup/rollup.config.js && ./node_modules/.bin/rollup -c rollup/rollup-cli.config.js",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "download-api-list": "node tools/download-api-list.js",
     "start": "npm run tsc",
     "pretest": "tsc -p test/tsconfig.json",
     "test": "nyc mocha --opts test/mocha.opts",
