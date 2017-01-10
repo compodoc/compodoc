@@ -102,11 +102,17 @@ export class HtmlEngine {
             var _result = $dependenciesEngine.find(name);
             if (_result) {
                 this.type = {
-                    path: _result.type,
-                    name: _result.name,
                     raw: name
                 }
-                if (_result.type === 'class') this.type.path = 'classe';
+                if (_result.source === 'internal') {
+                    if (_result.data.type === 'class') _result.data.type = 'classe';
+                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.target = '_self';
+                } else {
+                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.target = '_blank';
+                }
+
                 return options.fn(this);
             } else {
                 return options.inverse(this);
