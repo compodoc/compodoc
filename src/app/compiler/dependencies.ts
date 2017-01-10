@@ -645,7 +645,6 @@ export class Dependencies {
     }
 
     private visitMembers(members) {
-        console.log('visitMembers')
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -681,16 +680,12 @@ export class Dependencies {
                 } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                     properties.push(this.visitIndexDeclaration(members[i]));
                 } else if (members[i].kind === ts.SyntaxKind.Constructor) {
-                    console.log('Constructor')
                     let _constructorProperties = this.visitConstructorDeclaration(members[i]),
                         j = 0,
                         len = _constructorProperties.length;
-                    console.log('for');
-                    console.log(_constructorProperties);
                     for(j; j<len; j++) {
                         properties.push(_constructorProperties[j]);
                     }
-                    console.log('end for')
                 }
             }
         }
@@ -698,8 +693,6 @@ export class Dependencies {
         inputs.sort(this.getNamesCompareFn());
         outputs.sort(this.getNamesCompareFn());
         properties.sort(this.getNamesCompareFn());
-
-        console.log(' end visitMembers')
 
         return {
             inputs,
