@@ -501,6 +501,18 @@ export class Dependencies {
         };
     }
 
+    private isPublic(member): boolean {
+        if (member.modifiers) {
+            const isPublic: boolean = member.modifiers.some(function(modifier) {
+                return modifier.kind === ts.SyntaxKind.PublicKeyword;
+            });
+            if (isPublic) {
+                return true;
+            }
+        }
+        return this.isInternalMember(member);
+    }
+
     private isPrivateOrInternal(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -542,6 +554,21 @@ export class Dependencies {
             'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'
         ];
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+    }
+
+    private visitConstructorDeclaration(method) {
+        var that = this;
+        if (method.parameters) {
+            return method.parameters.map(function(prop) {
+                if (that.isPublic(prop)) {
+                    return that.visitArgument(prop);
+                } else {
+                    return {}
+                }
+            });
+        } else {
+            return [];
+        }
     }
 
     private visitCallDeclaration(method) {
@@ -631,12 +658,12 @@ export class Dependencies {
             inputDecorator = this.getDecoratorOfType(members[i], 'Input');
             outDecorator = this.getDecoratorOfType(members[i], 'Output');
 
+            kind = members[i].kind;
+
             if (inputDecorator) {
                 inputs.push(this.visitInput(members[i], inputDecorator));
-
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(members[i], outDecorator));
-
             } else if (!this.isPrivateOrInternal(members[i])) {
                 if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
                     members[i].kind === ts.SyntaxKind.MethodSignature) &&
@@ -648,10 +675,15 @@ export class Dependencies {
                     properties.push(this.visitProperty(members[i]));
                 } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                     properties.push(this.visitCallDeclaration(members[i]));
-                    kind = members[i].kind;
                 } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                     properties.push(this.visitIndexDeclaration(members[i]));
-                    kind = members[i].kind;
+                } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                    let _constructorProperties = this.visitConstructorDeclaration(members[i]),
+                        j = 0,
+                        len = _constructorProperties.length;
+                    for(j; j<len; j++) {
+                        properties.push(_constructorProperties[j]);
+                    }
                 }
             }
         }
