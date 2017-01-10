@@ -561,13 +561,12 @@ export class Dependencies {
         if (method.parameters) {
             var _parameters = [],
                 i = 0,
-                len = method.parameters;
+                len = method.parameters.length;
             for(i; i < len; i++) {
                 if (that.isPublic(method.parameters[i])) {
                     _parameters.push(that.visitArgument(method.parameters[i]));
                 }
             }
-            console.log(_parameters);
             return _parameters;
         } else {
             return [];
