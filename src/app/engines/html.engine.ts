@@ -85,9 +85,14 @@ export class HtmlEngine {
             const args = method.args.map(function(arg) {
                 var _result = $dependenciesEngine.find(arg.type);
                 if (_result) {
-                    let path = _result.type;
-                    if (_result.type === 'class') path = 'classe';
-                    return `${arg.name}: <a href="./${path}s/${_result.name}.html" >${arg.type}</a>`;
+                    if (_result.source === 'internal') {
+                        let path = _result.data.type;
+                        if (_result.data.type === 'class') path = 'classe';
+                        return `${arg.name}: <a href="./${path}s/${_result.data.name}.html" >${arg.type}</a>`;
+                    } else {
+                        let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                        return `${arg.name}: <a href="${path}" target="_blank" >${arg.type}</a>`;
+                    }
                 } else {
                     return `${arg.name}: ${arg.type}`;
                 }
