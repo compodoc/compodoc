@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 
-export class DependenciesEngine {
+class DependenciesEngine {
+    private static _instance:DependenciesEngine = new DependenciesEngine();
     rawData: Object;
     modules: Object[];
     components: Object[];
@@ -10,7 +11,17 @@ export class DependenciesEngine {
     routes: Object[];
     pipes: Object[];
     classes: Object[];
-    constructor(data: Object) {
+    constructor() {
+        if(DependenciesEngine._instance){
+            throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
+        }
+        DependenciesEngine._instance = this;
+    }
+    public static getInstance():DependenciesEngine
+    {
+        return DependenciesEngine._instance;
+    }
+    init(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
@@ -20,6 +31,12 @@ export class DependenciesEngine {
         this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
+    }
+    find(type: string) {
+        let finder = function(data) {
+            return _.find(data, function(o) {return type.indexOf(o.name) !== -1;}) || _.find(data, function(o) { return type.indexOf(o.name) !== -1;});
+        }
+        return finder(this.injectables) || finder(this.classes);
     }
     getModules() {
         return this.modules;
@@ -46,3 +63,5 @@ export class DependenciesEngine {
         return this.classes;
     }
 };
+
+export const $dependenciesEngine = DependenciesEngine.getInstance();

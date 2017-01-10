@@ -93,7 +93,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -144,7 +144,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -190,7 +190,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index-cli.js -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/todomvc-ng2 -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -244,7 +244,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -268,7 +268,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -293,7 +293,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -318,7 +318,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -342,7 +342,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -366,7 +366,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -381,6 +381,48 @@ describe('CLI', () => {
         it('should not contain compodoc logo', () => {
             index = read(`${tmp.name}/modules/AppModule.html`);
             expect(index).to.not.contain('nav nav-tabs');
+        });
+    });
+
+    describe('when generation with --disableGraph flag', () => {
+
+        let stdoutString = null,
+          fileContents = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean(tmp.name));
+
+        it('should not generate any graph data', () => {
+            expect(stdoutString).to.contain('Graph generation disabled');
+            expect(stdoutString).not.to.contain('Process main graph');
+        });
+
+        it('should not include the graph on the modules page', () => {
+            fileContents = read(`${tmp.name}/modules.html`);
+            expect(fileContents).to.not.contain('dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the overview page', () => {
+            fileContents = read(`${tmp.name}/overview.html`);
+            expect(fileContents).to.not.contain('graph/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the individual modules pages', () => {
+            fileContents = read(`${tmp.name}/modules/AppModule.html`);
+            expect(fileContents).to.not.contain('modules/AppModule/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
         });
     });
 
@@ -404,7 +446,7 @@ describe('CLI', () => {
         });
         after(() => tmp.clean(tmp.name));
 
-        it('should countain port ' + port, () => {
+        it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');
             expect(stdoutString).to.contain(port);
         });
@@ -439,7 +481,7 @@ describe('CLI', () => {
         let stdoutString = null,
             child;
         before(function (done) {
-            child = exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child = exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
                 stdoutString += data;
             });
@@ -499,6 +541,46 @@ describe('CLI', () => {
         it('should display message', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
+    });
+
+    describe('excluding methods', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/BarComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('include methods not marked as internal, private or hidden', () => {
+            expect(componentFile).to.contain('<code>normalMethod</code>');
+        });
+
+        it('should exclude methods marked as internal', () => {
+            expect(componentFile).not.to.contain('<code>internalMethod</code>');
+        });
+
+        it('should exclude methods marked as hidden', () => {
+            expect(componentFile).not.to.contain('<code>hiddenMethod</code>');
+        });
+
+        it('should exclude methods marked as private', () => {
+            expect(componentFile).not.to.contain('<code>privateCommentMethod</code>');
+        });
+
+        it('should exclude private methods', () => {
+            expect(componentFile).not.to.contain('<code>privateMethod</code>');
+        });
+
     });
 
 });

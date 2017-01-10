@@ -35,6 +35,7 @@ export class CliApplication extends Application
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--disableSourceCode', 'Do not add source code tab', false)
+            .option('--disableGraph', 'Do not add the dependency graph', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -92,6 +93,10 @@ export class CliApplication extends Application
 
         if (program.disableSourceCode) {
             this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+        }
+
+        if (program.disableGraph) {
+            this.configuration.mainData.disableGraph = program.disableGraph;
         }
 
         if (program.serve && !program.tsconfig && program.output) {
@@ -166,7 +171,8 @@ export class CliApplication extends Application
                     super.setFiles(files);
                     super.generate();
                 }
-            }  else if (program.args.length > 0) {
+            }  else if (program.tsconfig && program.args.length > 0) {
+                this.configuration.mainData.tsconfig = program.tsconfig;
                 let sourceFolder = program.args[0];
                 if (!fs.existsSync(sourceFolder)) {
                     logger.error(`Provided source folder ${sourceFolder} was not found in the current directory`);
@@ -174,7 +180,7 @@ export class CliApplication extends Application
                 } else {
                     logger.info('Using provided source folder');
 
-                    files = walk(sourceFolder, []);
+                    files = walk(path.resolve(sourceFolder), []);
 
                     super.setFiles(files);
                     super.generate();

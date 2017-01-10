@@ -116,6 +116,7 @@ Options:
   --theme [theme]           Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator           Do not print the Compodoc link at the bottom of the page
   --disableSourceCode       Do not add source code tab
+  --disableGraph            Disable rendering of the dependency graph
 ```
 
 ### Local installation

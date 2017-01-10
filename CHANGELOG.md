@@ -1,3 +1,17 @@
+<a name="0.0.30"></a>
+## 0.0.30 (2017-01-10)
+
+### Bug Fixes
+
+* **app:** exclude internal members from generated documentation ([fc795c8](https://github.com/compodoc/compodoc/commit/fc795c8))
+* **app:** passing src and ngd error ([c0cfb2f](https://github.com/compodoc/compodoc/commit/c0cfb2f))
+
+### Features
+
+* **app:** add an option to disable the graph ([927ed12](https://github.com/compodoc/compodoc/commit/927ed12))
+* **app:** Link to others types ([10f72f7](https://github.com/compodoc/compodoc/commit/10f72f7)), closes [#58](https://github.com/compodoc/compodoc/issues/58)
+* **app:** support TS shorthand for properties defined in constructor ([2965762](https://github.com/compodoc/compodoc/commit/2965762)), closes [#56](https://github.com/compodoc/compodoc/issues/56)
+
 <a name="0.0.29"></a>
 ## 0.0.29 (2017-01-07)
 
