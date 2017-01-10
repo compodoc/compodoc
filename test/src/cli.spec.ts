@@ -93,7 +93,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -144,7 +144,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -190,7 +190,7 @@ describe('CLI', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec('node ./bin/index-cli.js -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/todomvc-ng2 -p ./test/src/todomvc-ng2/tsconfig.json', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -244,7 +244,7 @@ describe('CLI', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -268,7 +268,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -293,7 +293,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -318,7 +318,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -342,7 +342,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -366,7 +366,7 @@ describe('CLI', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -390,7 +390,7 @@ describe('CLI', () => {
           fileContents = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     done('error');
@@ -420,8 +420,8 @@ describe('CLI', () => {
         });
 
         it('should not include the graph on the individual modules pages', () => {
-            fileContents = read(`${tmp.name}/modules/AboutModule.html`);
-            expect(fileContents).to.not.contain('modules/AboutModule/dependencies.svg');
+            fileContents = read(`${tmp.name}/modules/AppModule.html`);
+            expect(fileContents).to.not.contain('modules/AppModule/dependencies.svg');
             expect(fileContents).to.not.contain('svg-pan-zoom');
         });
     });
@@ -481,7 +481,7 @@ describe('CLI', () => {
         let stdoutString = null,
             child;
         before(function (done) {
-            child = exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
+            child = exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -s', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {});
             child.stdout.on('data', function(data) {
                 stdoutString += data;
             });
@@ -548,7 +548,7 @@ describe('CLI', () => {
         let stdoutString = null, componentFile;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js ./test/src/sample-files -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     done('error');
