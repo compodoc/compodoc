@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 
+import { finderInAngularAPIs } from '../../utils/angular-api';
+
 class DependenciesEngine {
     private static _instance:DependenciesEngine = new DependenciesEngine();
     rawData: Object;
@@ -33,10 +35,31 @@ class DependenciesEngine {
         this.classes = _.sortBy(this.rawData.classes, ['name']);
     }
     find(type: string) {
-        let finder = function(data) {
-            return _.find(data, function(o) {return type.indexOf(o.name) !== -1;}) || _.find(data, function(o) { return type.indexOf(o.name) !== -1;});
+        let finderInCompodocDependencies = function(data) {
+            let _result = {
+                    source: 'internal',
+                    data: null
+                },
+                i = 0,
+                len = data.length;
+            for (i; i<len; i++) {
+                if (type.indexOf(data[i].name) !== -1) {
+                    _result.data = data[i]
+                }
+            }
+            return _result;
+        },
+            resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
+            resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+            resultInAngularAPIs = finderInAngularAPIs(type)
+
+        if (resultInCompodocInjectables.data !== null) {
+            return resultInCompodocInjectables
+        } else if (resultInCompodocClasses.data !== null) {
+            return resultInCompodocClasses
+        } else if (resultInAngularAPIs.data !== null) {
+            return resultInAngularAPIs
         }
-        return finder(this.injectables) || finder(this.classes);
     }
     getModules() {
         return this.modules;

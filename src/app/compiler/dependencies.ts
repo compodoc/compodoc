@@ -4,6 +4,7 @@ import * as ts from 'typescript';
 import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
+import { RouterParser } from '../../utils/router.parser';
 import { generate } from './codegen';
 
 interface NodeObject {
@@ -559,13 +560,15 @@ export class Dependencies {
     private visitConstructorDeclaration(method) {
         var that = this;
         if (method.parameters) {
-            return method.parameters.map(function(prop) {
-                if (that.isPublic(prop)) {
-                    return that.visitArgument(prop);
-                } else {
-                    return {}
+            var _parameters = [],
+                i = 0,
+                len = method.parameters.length;
+            for(i; i < len; i++) {
+                if (that.isPublic(method.parameters[i])) {
+                    _parameters.push(that.visitArgument(method.parameters[i]));
                 }
-            });
+            }
+            return _parameters;
         } else {
             return [];
         }
