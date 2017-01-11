@@ -27,9 +27,9 @@ Features
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
-* **Compodoc is open-source and on npm** - Use it directly in your project using npm and one script, that's it !
+* **Open-source and on npm** - Use it directly in your project using npm and one script, that's it !
 
-* **Compodoc is a local tool** - No server needed, no sources uploaded online
+* **A local tool** - No server needed, no sources uploaded online
 
 ## Live Demo
 

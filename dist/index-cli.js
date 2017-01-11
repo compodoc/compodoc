@@ -237,6 +237,24 @@ var Logger = function () {
 
 var logger = new Logger();
 
+var AngularAPIs = require('../src/data/api-list.json');
+function finderInAngularAPIs(type) {
+    var _result = {
+        source: 'external',
+        data: null
+    };
+    _.forEach(AngularAPIs, function (angularModuleAPIs, angularModule) {
+        var i = 0,
+            len = angularModuleAPIs.length;
+        for (i; i < len; i++) {
+            if (angularModuleAPIs[i].title === type) {
+                _result.data = angularModuleAPIs[i];
+            }
+        }
+    });
+    return _result;
+}
+
 var DependenciesEngine = function () {
     function DependenciesEngine() {
         classCallCheck(this, DependenciesEngine);
@@ -262,15 +280,31 @@ var DependenciesEngine = function () {
         }
     }, {
         key: 'find',
-        value: function find$$1(type) {
-            var finder = function finder(data) {
-                return _.find(data, function (o) {
-                    return type.indexOf(o.name) !== -1;
-                }) || _.find(data, function (o) {
-                    return type.indexOf(o.name) !== -1;
-                });
-            };
-            return finder(this.injectables) || finder(this.classes);
+        value: function find(type) {
+            var finderInCompodocDependencies = function finderInCompodocDependencies(data) {
+                var _result = {
+                    source: 'internal',
+                    data: null
+                },
+                    i = 0,
+                    len = data.length;
+                for (i; i < len; i++) {
+                    if (type.indexOf(data[i].name) !== -1) {
+                        _result.data = data[i];
+                    }
+                }
+                return _result;
+            },
+                resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
+                resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+                resultInAngularAPIs = finderInAngularAPIs(type);
+            if (resultInCompodocInjectables.data !== null) {
+                return resultInCompodocInjectables;
+            } else if (resultInCompodocClasses.data !== null) {
+                return resultInCompodocClasses;
+            } else if (resultInAngularAPIs.data !== null) {
+                return resultInAngularAPIs;
+            }
         }
     }, {
         key: 'getModules',
@@ -402,9 +436,14 @@ var HtmlEngine = function () {
             var args = method.args.map(function (arg) {
                 var _result = $dependenciesEngine.find(arg.type);
                 if (_result) {
-                    var _path = _result.type;
-                    if (_result.type === 'class') _path = 'classe';
-                    return arg.name + ': <a href="./' + _path + 's/' + _result.name + '.html" >' + arg.type + '</a>';
+                    if (_result.source === 'internal') {
+                        var _path = _result.data.type;
+                        if (_result.data.type === 'class') _path = 'classe';
+                        return arg.name + ': <a href="./' + _path + 's/' + _result.data.name + '.html" >' + arg.type + '</a>';
+                    } else {
+                        var _path2 = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                        return arg.name + ': <a href="' + _path2 + '" target="_blank" >' + arg.type + '</a>';
+                    }
                 } else {
                     return arg.name + ': ' + arg.type;
                 }
@@ -419,11 +458,16 @@ var HtmlEngine = function () {
             var _result = $dependenciesEngine.find(name);
             if (_result) {
                 this.type = {
-                    path: _result.type,
-                    name: _result.name,
                     raw: name
                 };
-                if (_result.type === 'class') this.type.path = 'classe';
+                if (_result.source === 'internal') {
+                    if (_result.data.type === 'class') _result.data.type = 'classe';
+                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.target = '_self';
+                } else {
+                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.target = '_blank';
+                }
                 return options.fn(this);
             } else {
                 return options.inverse(this);
@@ -1519,13 +1563,15 @@ var Dependencies = function () {
         value: function visitConstructorDeclaration(method) {
             var that = this;
             if (method.parameters) {
-                return method.parameters.map(function (prop) {
-                    if (that.isPublic(prop)) {
-                        return that.visitArgument(prop);
-                    } else {
-                        return {};
+                var _parameters = [],
+                    i = 0,
+                    len = method.parameters.length;
+                for (i; i < len; i++) {
+                    if (that.isPublic(method.parameters[i])) {
+                        _parameters.push(that.visitArgument(method.parameters[i]));
                     }
-                });
+                }
+                return _parameters;
             } else {
                 return [];
             }
