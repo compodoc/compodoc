@@ -165,7 +165,7 @@ export class CliApplication extends Application
                     if (!files) {
                         let exclude = require(_file).exclude || [];
 
-                        files = walk(defaultWalkFOlder, exclude);
+                        files = walk(cwd || '.', exclude);
                     }
 
                     super.setFiles(files);
