@@ -42,10 +42,10 @@
                             <td class="col-md-3"><code>{{name}}</code></td>
                             <td class="col-md-9">
                                 {{#if args}}
-                                    <div><i>Signature: </i><code>{{functionSignature this}}</code></div>
+                                    <div><i>Signature: </i><code>{{{functionSignature this}}}</code></div>
                                 {{/if}}
                                 {{#if returnType}}
-                                    <div><i>Return type: </i><code>{{returnType}}</code></div>
+                                    <div><i>Return type: </i>{{> link-type type=returnType }}<code></code></div>
                                 {{/if}}
                                 {{#if description}}
                                     <div class="io-description">{{{description}}}</div>
@@ -68,7 +68,7 @@
                             <td class="col-md-3"><code>{{name}}</code></td>
                             <td class="col-md-9">
                                 {{#if type}}
-                                    <div><i>Type: </i><code>{{type}}</code></div>
+                                    <div><i>Type: </i>{{> link-type type=type }}</div>
                                 {{/if}}
                                 {{#if defaultValue}}
                                     <div><i>Default value: </i><code>{{defaultValue}}</code></div>
@@ -86,7 +86,7 @@
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{breaklines injectable.sourceCode}}</code></pre>
+        <pre><code class="hljs javascript">{{injectable.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

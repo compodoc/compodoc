@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.28",
+  "version": "0.0.32",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -9,6 +9,7 @@
   "scripts": {
     "build": "./node_modules/.bin/rollup -c rollup/rollup.config.js && ./node_modules/.bin/rollup -c rollup/rollup-cli.config.js",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "download-api-list": "node tools/download-api-list.js",
     "start": "npm run tsc",
     "pretest": "tsc -p test/tsconfig.json",
     "test": "nyc mocha --opts test/mocha.opts",
@@ -63,11 +64,11 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/es6-promise": "0.0.32",
-    "@types/fs-extra": "0.0.35",
+    "@types/fs-extra": "0.0.37",
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
     "@types/mocha": "^2.2.35",
-    "@types/node": "6.0.55",
+    "@types/node": "6.0.59",
     "babel-preset-es2015-rollup": "^3.0.0",
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
@@ -76,7 +77,7 @@
     "nodemon": "^1.11.0",
     "nyc": "^10.0.0",
     "rimraf": "^2.5.4",
-    "rollup": "^0.39.0",
+    "rollup": "^0.41.1",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.0.0",

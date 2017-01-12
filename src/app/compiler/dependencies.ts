@@ -4,6 +4,7 @@ import * as ts from 'typescript';
 import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
+import { RouterParser } from '../../utils/router.parser';
 import { generate } from './codegen';
 
 interface NodeObject {
@@ -141,6 +142,10 @@ export class Dependencies {
 
         });
 
+        RouterParser.linkModulesAndRoutes();
+        RouterParser.constructModulesTree();
+        RouterParser.constructRoutesTree();
+
         return deps;
     }
 
@@ -178,6 +183,10 @@ export class Dependencies {
                             description: this.breakLines(IO.description),
                             sourceCode: sourceFile.getText()
                         };
+                        if (RouterParser.hasRouterModuleInImports(deps.imports)) {
+                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props));
+                        }
+                        RouterParser.addModule(name, deps.imports);
                         outputSymbols['modules'].push(deps);
                     }
                     else if (this.isComponent(metadata)) {
@@ -315,7 +324,7 @@ export class Dependencies {
                     try {
                         newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
                     } catch (e) {
-                        logger.error('Routes parsing error, maybe a trailing comma ?');
+                        logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
                         return true;
                     }
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
@@ -432,6 +441,10 @@ export class Dependencies {
         });
     }
 
+    private getModuleImportsRaw(props: NodeObject[]): Deps[] {
+        return this.getSymbolDepsRaw(props, 'imports');
+    }
+
     private getModuleImports(props: NodeObject[]): Deps[] {
         return this.getSymbolDeps(props, 'imports').map((name) => {
             return this.parseDeepIndentifier(name);
@@ -501,23 +514,48 @@ export class Dependencies {
         };
     }
 
-    private isPrivateOrInternal(member) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        return ((member.flags & ts.NodeFlags.Private) !== 0);
+    private isPublic(member): boolean {
+        if (member.modifiers) {
+            const isPublic: boolean = member.modifiers.some(function(modifier) {
+                return modifier.kind === ts.SyntaxKind.PublicKeyword;
+            });
+            if (isPublic) {
+                return true;
+            }
+        }
+        return this.isInternalMember(member);
     }
 
-    private isInternalMember(member) {
+    private isPrivateOrInternal(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let comment = [];
-        if (member.symbol) {
-            comment = member.symbol.getDocumentationComment();
+        if (member.modifiers) {
+            const isPrivate: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword);
+            if (isPrivate) {
+                return true;
+            }
         }
-        const jsDoc = ts.displayPartsToString(comment);
-        return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+        return this.isInternalMember(member);
+    }
+
+    private isInternalMember(member): boolean {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const internalTags: string[] = ['internal', 'private', 'hidden'];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private isAngularLifecycleHook(methodName) {
@@ -529,6 +567,23 @@ export class Dependencies {
             'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'
         ];
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+    }
+
+    private visitConstructorDeclaration(method) {
+        var that = this;
+        if (method.parameters) {
+            var _parameters = [],
+                i = 0,
+                len = method.parameters.length;
+            for(i; i < len; i++) {
+                if (that.isPublic(method.parameters[i])) {
+                    _parameters.push(that.visitArgument(method.parameters[i]));
+                }
+            }
+            return _parameters;
+        } else {
+            return [];
+        }
     }
 
     private visitCallDeclaration(method) {
@@ -618,12 +673,12 @@ export class Dependencies {
             inputDecorator = this.getDecoratorOfType(members[i], 'Input');
             outDecorator = this.getDecoratorOfType(members[i], 'Output');
 
+            kind = members[i].kind;
+
             if (inputDecorator) {
                 inputs.push(this.visitInput(members[i], inputDecorator));
-
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(members[i], outDecorator));
-
             } else if (!this.isPrivateOrInternal(members[i])) {
                 if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
                     members[i].kind === ts.SyntaxKind.MethodSignature) &&
@@ -635,10 +690,15 @@ export class Dependencies {
                     properties.push(this.visitProperty(members[i]));
                 } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                     properties.push(this.visitCallDeclaration(members[i]));
-                    kind = members[i].kind;
                 } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                     properties.push(this.visitIndexDeclaration(members[i]));
-                    kind = members[i].kind;
+                } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                    let _constructorProperties = this.visitConstructorDeclaration(members[i]),
+                        j = 0,
+                        len = _constructorProperties.length;
+                    for(j; j<len; j++) {
+                        properties.push(_constructorProperties[j]);
+                    }
                 }
             }
         }
@@ -780,6 +840,10 @@ export class Dependencies {
             for(i; i<len; i++) {
                 if(node.declarationList.declarations[i].type) {
                     if(node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        RouterParser.addRoute({
+                            name: node.declarationList.declarations[i].name.text,
+                            data: generate(node.declarationList.declarations[i].initializer)
+                        });
                         return [{
                             routes: generate(node.declarationList.declarations[i].initializer)
                         }];
@@ -942,6 +1006,13 @@ export class Dependencies {
         };
 
         return deps.map(parseProperties).pop();
+    }
+
+    private getSymbolDepsRaw(props: NodeObject[], type: string, multiLine?: boolean): any {
+        let deps = props.filter((node: NodeObject) => {
+            return node.name.text === type;
+        });
+        return deps || [];
     }
 
     private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {

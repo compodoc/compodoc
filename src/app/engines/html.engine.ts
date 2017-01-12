@@ -2,9 +2,10 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
 //import * as helpers from 'handlebars-helpers';
+import { $dependenciesEngine } from './dependencies.engine';
 
 export class HtmlEngine {
-    cache: object = {};
+    cache: Object = {};
     constructor() {
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
         Handlebars.registerHelper( "compare", function(a, operator, b, options) {
@@ -72,6 +73,7 @@ export class HtmlEngine {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
             text = text.replace(/ /gm, '&nbsp;');
+            text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('breakComma', function(text) {
@@ -80,11 +82,45 @@ export class HtmlEngine {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('functionSignature', function(method) {
-            const args = method.args.map(arg => `${arg.name}: ${arg.type}`).join(', ');
+            const args = method.args.map(function(arg) {
+                var _result = $dependenciesEngine.find(arg.type);
+                if (_result) {
+                    if (_result.source === 'internal') {
+                        let path = _result.data.type;
+                        if (_result.data.type === 'class') path = 'classe';
+                        return `${arg.name}: <a href="./${path}s/${_result.data.name}.html" >${arg.type}</a>`;
+                    } else {
+                        let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                        return `${arg.name}: <a href="${path}" target="_blank" >${arg.type}</a>`;
+                    }
+                } else {
+                    return `${arg.name}: ${arg.type}`;
+                }
+            }).join(', ');
             if (method.name) {
                 return `${method.name}(${args})`;
             } else {
                 return `(${args})`;
+            }
+        });
+        Handlebars.registerHelper('linkType', function(name, options) {
+            var _result = $dependenciesEngine.find(name);
+            if (_result) {
+                this.type = {
+                    raw: name
+                }
+                if (_result.source === 'internal') {
+                    if (_result.data.type === 'class') _result.data.type = 'classe';
+                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.target = '_self';
+                } else {
+                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.target = '_blank';
+                }
+
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
             }
         });
         Handlebars.registerHelper('indexableSignature', function(method) {
@@ -112,6 +148,7 @@ export class HtmlEngine {
             'module',
             'components',
             'component',
+            'component-detail',
             'directives',
             'directive',
             'injectables',
@@ -123,7 +160,8 @@ export class HtmlEngine {
 	        'interface',
             'routes',
             'search-results',
-            'search-input'
+            'search-input',
+            'link-type'
         ],
             i = 0,
             len = partials.length,

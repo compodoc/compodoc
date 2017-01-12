@@ -12,10 +12,11 @@ import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
 import { Configuration, IConfiguration } from './configuration';
-import { DependenciesEngine } from './engines/dependencies.engine';
+import { $dependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
+import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
@@ -26,7 +27,6 @@ let pkg = require('../package.json'),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $searchEngine = new SearchEngine(),
-    $dependenciesEngine,
     startTime = new Date();
 
 export class Application {
@@ -118,7 +118,9 @@ export class Application {
 
         let dependenciesData = crawler.getDependencies();
 
-        $dependenciesEngine = new DependenciesEngine(dependenciesData);
+        $dependenciesEngine.init(dependenciesData);
+
+        //RouterParser.printRoutes();
 
         this.prepareModules();
 
@@ -373,43 +375,57 @@ export class Application {
     }
 
     processGraphs() {
-        logger.info('Process main graph');
-        let modules = this.configuration.mainData.modules,
-            i = 0,
-            len = modules.length,
-            loop = () => {
-                if( i <= len-1) {
-                    logger.info('Process module graph', modules[i].name);
-                    let finalPath = this.configuration.mainData.output;
-                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
-                    }
-                    finalPath += 'modules/' + modules[i].name;
-                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
-                        i++;
-                        loop();
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
-                    });
-                } else {
-                    let finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
-                    if (this.configuration.mainData.serve) {
-                        logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
-                        this.runWebServer(this.configuration.mainData.output);
-                    }
-                }
-            };
-        let finalMainGraphPath = this.configuration.mainData.output;
-        if(finalMainGraphPath.lastIndexOf('/') === -1) {
-            finalMainGraphPath += '/';
+
+        const onComplete = () => {
+            let finalTime = (new Date() - startTime) / 1000;
+            logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
+            if (this.configuration.mainData.serve) {
+                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                this.runWebServer(this.configuration.mainData.output);
+            }
+        };
+
+        if (this.configuration.mainData.disableGraph) {
+
+            logger.info('Graph generation disabled');
+            onComplete();
+
+        } else {
+
+            logger.info('Process main graph');
+            let modules = this.configuration.mainData.modules,
+              i = 0,
+              len = modules.length,
+              loop = () => {
+                  if( i <= len-1) {
+                      logger.info('Process module graph', modules[i].name);
+                      let finalPath = this.configuration.mainData.output;
+                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                          finalPath += '/';
+                      }
+                      finalPath += 'modules/' + modules[i].name;
+                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
+                          i++;
+                          loop();
+                      }, (errorMessage) => {
+                          logger.error(errorMessage);
+                      });
+                  } else {
+                      onComplete();
+                  }
+              };
+            let finalMainGraphPath = this.configuration.mainData.output;
+            if(finalMainGraphPath.lastIndexOf('/') === -1) {
+                finalMainGraphPath += '/';
+            }
+            finalMainGraphPath += 'graph';
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                loop();
+            }, (err) => {
+                logger.error('Error during graph generation: ', err);
+            });
+
         }
-        finalMainGraphPath += 'graph';
-        $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-            loop();
-        }, (err) => {
-            logger.error('Error during graph generation: ', err);
-        });
     }
 
     runWebServer(folder) {

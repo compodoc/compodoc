@@ -140,6 +140,42 @@ describe('CLI', () => {
         });
     });
 
+    describe('when generation with d flag and src arg', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js ./test/src/sample-files/ -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
+        });
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists(`${tmp.name}`);
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists(`${tmp.name}/index.html`);
+            expect(isIndexExists).to.be.true;
+            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            expect(isModulesExists).to.be.true;
+            const isOverviewExists = exists(`${tmp.name}/overview.html`);
+            expect(isOverviewExists).to.be.true;
+        });
+    });
+
     describe('when generation without d flag', () => {
 
         let stdoutString = null;
@@ -286,14 +322,14 @@ describe('CLI', () => {
         });
     });
 
-    describe('when generation with -h flag', () => {
+    describe('when generation with --theme flag', () => {
 
         let stdoutString = null,
             baseTheme = 'laravel',
             index = null;
         before(function (done) {
             tmp.create();
-            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -h ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -384,6 +420,48 @@ describe('CLI', () => {
         });
     });
 
+    describe('when generation with --disableGraph flag', () => {
+
+        let stdoutString = null,
+          fileContents = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean(tmp.name));
+
+        it('should not generate any graph data', () => {
+            expect(stdoutString).to.contain('Graph generation disabled');
+            expect(stdoutString).not.to.contain('Process main graph');
+        });
+
+        it('should not include the graph on the modules page', () => {
+            fileContents = read(`${tmp.name}/modules.html`);
+            expect(fileContents).to.not.contain('dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the overview page', () => {
+            fileContents = read(`${tmp.name}/overview.html`);
+            expect(fileContents).to.not.contain('graph/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the individual modules pages', () => {
+            fileContents = read(`${tmp.name}/modules/AppModule.html`);
+            expect(fileContents).to.not.contain('modules/AppModule/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+    });
+
     describe('when generation with -r flag', () => {
 
         let stdoutString = '',
@@ -404,7 +482,7 @@ describe('CLI', () => {
         });
         after(() => tmp.clean(tmp.name));
 
-        it('should countain port ' + port, () => {
+        it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');
             expect(stdoutString).to.contain(port);
         });
@@ -448,7 +526,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 40000);
+            }, 60000);
         });
 
         it('should display message', () => {
@@ -499,6 +577,46 @@ describe('CLI', () => {
         it('should display message', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
+    });
+
+    describe('excluding methods', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/BarComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('include methods not marked as internal, private or hidden', () => {
+            expect(componentFile).to.contain('<code>normalMethod</code>');
+        });
+
+        it('should exclude methods marked as internal', () => {
+            expect(componentFile).not.to.contain('<code>internalMethod</code>');
+        });
+
+        it('should exclude methods marked as hidden', () => {
+            expect(componentFile).not.to.contain('<code>hiddenMethod</code>');
+        });
+
+        it('should exclude methods marked as private', () => {
+            expect(componentFile).not.to.contain('<code>privateCommentMethod</code>');
+        });
+
+        it('should exclude private methods', () => {
+            expect(componentFile).not.to.contain('<code>privateMethod</code>');
+        });
+
     });
 
 });

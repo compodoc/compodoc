@@ -1,0 +1,3540 @@
+{
+  "@angular/common" : [
+    {
+      "title": "APP_BASE_HREF",
+      "path": "common/index/APP_BASE_HREF-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "AsyncPipe",
+      "path": "common/index/AsyncPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "CommonModule",
+      "path": "common/index/CommonModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "CurrencyPipe",
+      "path": "common/index/CurrencyPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "DatePipe",
+      "path": "common/index/DatePipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "DecimalPipe",
+      "path": "common/index/DecimalPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "HashLocationStrategy",
+      "path": "common/index/HashLocationStrategy-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "I18nPluralPipe",
+      "path": "common/index/I18nPluralPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "I18nSelectPipe",
+      "path": "common/index/I18nSelectPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "JsonPipe",
+      "path": "common/index/JsonPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "Location",
+      "path": "common/index/Location-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "LocationChangeEvent",
+      "path": "common/index/LocationChangeEvent-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "LocationChangeListener",
+      "path": "common/index/LocationChangeListener-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "LocationStrategy",
+      "path": "common/index/LocationStrategy-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "LowerCasePipe",
+      "path": "common/index/LowerCasePipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgClass",
+      "path": "common/index/NgClass-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgFor",
+      "path": "common/index/NgFor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgIf",
+      "path": "common/index/NgIf-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgLocalization",
+      "path": "common/index/NgLocalization-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgPlural",
+      "path": "common/index/NgPlural-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgPluralCase",
+      "path": "common/index/NgPluralCase-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgStyle",
+      "path": "common/index/NgStyle-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgSwitch",
+      "path": "common/index/NgSwitch-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgSwitchCase",
+      "path": "common/index/NgSwitchCase-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgSwitchDefault",
+      "path": "common/index/NgSwitchDefault-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "NgTemplateOutlet",
+      "path": "common/index/NgTemplateOutlet-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "PathLocationStrategy",
+      "path": "common/index/PathLocationStrategy-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "PercentPipe",
+      "path": "common/index/PercentPipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "PlatformLocation",
+      "path": "common/index/PlatformLocation-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "SlicePipe",
+      "path": "common/index/SlicePipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "UpperCasePipe",
+      "path": "common/index/UpperCasePipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "common/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common"
+    }
+  ],
+
+  "@angular/common/testing" : [
+    {
+      "title": "MockLocationStrategy",
+      "path": "common/testing/index/MockLocationStrategy-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/common/testing"
+    },
+  
+    {
+      "title": "SpyLocation",
+      "path": "common/testing/index/SpyLocation-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/common/testing"
+    }
+  ],
+
+  "@angular/core" : [
+    {
+      "title": "ANALYZE_FOR_ENTRY_COMPONENTS",
+      "path": "core/index/ANALYZE_FOR_ENTRY_COMPONENTS-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "APP_BOOTSTRAP_LISTENER",
+      "path": "core/index/APP_BOOTSTRAP_LISTENER-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "APP_ID",
+      "path": "core/index/APP_ID-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "APP_INITIALIZER",
+      "path": "core/index/APP_INITIALIZER-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AUTO_STYLE",
+      "path": "core/index/AUTO_STYLE-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AfterContentChecked",
+      "path": "core/index/AfterContentChecked-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AfterContentInit",
+      "path": "core/index/AfterContentInit-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AfterViewChecked",
+      "path": "core/index/AfterViewChecked-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AfterViewInit",
+      "path": "core/index/AfterViewInit-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationAnimateMetadata",
+      "path": "core/index/AnimationAnimateMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationEntryMetadata",
+      "path": "core/index/AnimationEntryMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationGroupMetadata",
+      "path": "core/index/AnimationGroupMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationKeyframesSequenceMetadata",
+      "path": "core/index/AnimationKeyframesSequenceMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationMetadata",
+      "path": "core/index/AnimationMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationPlayer",
+      "path": "core/index/AnimationPlayer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationSequenceMetadata",
+      "path": "core/index/AnimationSequenceMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationStateDeclarationMetadata",
+      "path": "core/index/AnimationStateDeclarationMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationStateMetadata",
+      "path": "core/index/AnimationStateMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationStateTransitionMetadata",
+      "path": "core/index/AnimationStateTransitionMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationStyleMetadata",
+      "path": "core/index/AnimationStyleMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationTransitionEvent",
+      "path": "core/index/AnimationTransitionEvent-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "AnimationWithStepsMetadata",
+      "path": "core/index/AnimationWithStepsMetadata-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ApplicationInitStatus",
+      "path": "core/index/ApplicationInitStatus-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ApplicationModule",
+      "path": "core/index/ApplicationModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ApplicationRef",
+      "path": "core/index/ApplicationRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Attribute",
+      "path": "core/index/Attribute-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "COMPILER_OPTIONS",
+      "path": "core/index/COMPILER_OPTIONS-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "CUSTOM_ELEMENTS_SCHEMA",
+      "path": "core/index/CUSTOM_ELEMENTS_SCHEMA-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ChangeDetectionStrategy",
+      "path": "core/index/ChangeDetectionStrategy-enum.html",
+      "docType": "enum",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ChangeDetectorRef",
+      "path": "core/index/ChangeDetectorRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Class",
+      "path": "core/index/Class-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ClassDefinition",
+      "path": "core/index/ClassDefinition-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ClassProvider",
+      "path": "core/index/ClassProvider-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "CollectionChangeRecord",
+      "path": "core/index/CollectionChangeRecord-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Compiler",
+      "path": "core/index/Compiler-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "CompilerFactory",
+      "path": "core/index/CompilerFactory-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "CompilerOptions",
+      "path": "core/index/CompilerOptions-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Component",
+      "path": "core/index/Component-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ComponentFactory",
+      "path": "core/index/ComponentFactory-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ComponentFactoryResolver",
+      "path": "core/index/ComponentFactoryResolver-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ComponentRef",
+      "path": "core/index/ComponentRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ContentChild",
+      "path": "core/index/ContentChild-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ContentChildren",
+      "path": "core/index/ContentChildren-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "DebugElement",
+      "path": "core/index/DebugElement-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "DebugNode",
+      "path": "core/index/DebugNode-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "DefaultIterableDiffer",
+      "path": "core/index/DefaultIterableDiffer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Directive",
+      "path": "core/index/Directive-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "DoCheck",
+      "path": "core/index/DoCheck-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ElementRef",
+      "path": "core/index/ElementRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "Permitting direct access to the DOM can make your application more vulnerable to XSS attacks. Carefully review any use of `ElementRef` in your code. For more detail, see the [Security Guide](http://g.co/ng/security). ",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "EmbeddedViewRef",
+      "path": "core/index/EmbeddedViewRef-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ErrorHandler",
+      "path": "core/index/ErrorHandler-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "EventEmitter",
+      "path": "core/index/EventEmitter-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ExistingProvider",
+      "path": "core/index/ExistingProvider-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "FactoryProvider",
+      "path": "core/index/FactoryProvider-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ForwardRefFn",
+      "path": "core/index/ForwardRefFn-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "GetTestability",
+      "path": "core/index/GetTestability-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Host",
+      "path": "core/index/Host-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "HostBinding",
+      "path": "core/index/HostBinding-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "HostListener",
+      "path": "core/index/HostListener-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Inject",
+      "path": "core/index/Inject-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Injectable",
+      "path": "core/index/Injectable-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Injector",
+      "path": "core/index/Injector-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Input",
+      "path": "core/index/Input-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "IterableDiffer",
+      "path": "core/index/IterableDiffer-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "IterableDifferFactory",
+      "path": "core/index/IterableDifferFactory-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "IterableDiffers",
+      "path": "core/index/IterableDiffers-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "KeyValueChangeRecord",
+      "path": "core/index/KeyValueChangeRecord-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "KeyValueDiffer",
+      "path": "core/index/KeyValueDiffer-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "KeyValueDifferFactory",
+      "path": "core/index/KeyValueDifferFactory-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "KeyValueDiffers",
+      "path": "core/index/KeyValueDiffers-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "LOCALE_ID",
+      "path": "core/index/LOCALE_ID-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ModuleWithComponentFactories",
+      "path": "core/index/ModuleWithComponentFactories-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ModuleWithProviders",
+      "path": "core/index/ModuleWithProviders-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NO_ERRORS_SCHEMA",
+      "path": "core/index/NO_ERRORS_SCHEMA-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgModule",
+      "path": "core/index/NgModule-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgModuleFactory",
+      "path": "core/index/NgModuleFactory-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgModuleFactoryLoader",
+      "path": "core/index/NgModuleFactoryLoader-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgModuleRef",
+      "path": "core/index/NgModuleRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgProbeToken",
+      "path": "core/index/NgProbeToken-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "NgZone",
+      "path": "core/index/NgZone-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "OnChanges",
+      "path": "core/index/OnChanges-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "OnDestroy",
+      "path": "core/index/OnDestroy-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "OnInit",
+      "path": "core/index/OnInit-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "OpaqueToken",
+      "path": "core/index/OpaqueToken-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Optional",
+      "path": "core/index/Optional-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Output",
+      "path": "core/index/Output-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "PACKAGE_ROOT_URL",
+      "path": "core/index/PACKAGE_ROOT_URL-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "PLATFORM_INITIALIZER",
+      "path": "core/index/PLATFORM_INITIALIZER-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Pipe",
+      "path": "core/index/Pipe-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "PipeTransform",
+      "path": "core/index/PipeTransform-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "PlatformRef",
+      "path": "core/index/PlatformRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Provider",
+      "path": "core/index/Provider-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Query",
+      "path": "core/index/Query-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "QueryList",
+      "path": "core/index/QueryList-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ReflectiveInjector",
+      "path": "core/index/ReflectiveInjector-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ReflectiveKey",
+      "path": "core/index/ReflectiveKey-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "RenderComponentType",
+      "path": "core/index/RenderComponentType-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Renderer",
+      "path": "core/index/Renderer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ResolvedReflectiveFactory",
+      "path": "core/index/ResolvedReflectiveFactory-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ResolvedReflectiveProvider",
+      "path": "core/index/ResolvedReflectiveProvider-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "RootRenderer",
+      "path": "core/index/RootRenderer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Sanitizer",
+      "path": "core/index/Sanitizer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SchemaMetadata",
+      "path": "core/index/SchemaMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SecurityContext",
+      "path": "core/index/SecurityContext-enum.html",
+      "docType": "enum",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Self",
+      "path": "core/index/Self-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SimpleChange",
+      "path": "core/index/SimpleChange-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SimpleChanges",
+      "path": "core/index/SimpleChanges-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SkipSelf",
+      "path": "core/index/SkipSelf-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SystemJsNgModuleLoader",
+      "path": "core/index/SystemJsNgModuleLoader-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "SystemJsNgModuleLoaderConfig",
+      "path": "core/index/SystemJsNgModuleLoaderConfig-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TRANSLATIONS",
+      "path": "core/index/TRANSLATIONS-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TRANSLATIONS_FORMAT",
+      "path": "core/index/TRANSLATIONS_FORMAT-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TemplateRef",
+      "path": "core/index/TemplateRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Testability",
+      "path": "core/index/Testability-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TestabilityRegistry",
+      "path": "core/index/TestabilityRegistry-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TrackByFn",
+      "path": "core/index/TrackByFn-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Type",
+      "path": "core/index/Type-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "TypeProvider",
+      "path": "core/index/TypeProvider-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "core/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ValueProvider",
+      "path": "core/index/ValueProvider-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "Version",
+      "path": "core/index/Version-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ViewChild",
+      "path": "core/index/ViewChild-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ViewChildren",
+      "path": "core/index/ViewChildren-decorator.html",
+      "docType": "decorator",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ViewContainerRef",
+      "path": "core/index/ViewContainerRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ViewEncapsulation",
+      "path": "core/index/ViewEncapsulation-enum.html",
+      "docType": "enum",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "ViewRef",
+      "path": "core/index/ViewRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "WrappedValue",
+      "path": "core/index/WrappedValue-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "WtfScopeFn",
+      "path": "core/index/WtfScopeFn-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "animate",
+      "path": "core/index/animate-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "asNativeElements",
+      "path": "core/index/asNativeElements-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "assertPlatform",
+      "path": "core/index/assertPlatform-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "createPlatform",
+      "path": "core/index/createPlatform-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "createPlatformFactory",
+      "path": "core/index/createPlatformFactory-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "destroyPlatform",
+      "path": "core/index/destroyPlatform-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "enableProdMode",
+      "path": "core/index/enableProdMode-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "forwardRef",
+      "path": "core/index/forwardRef-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "getDebugNode",
+      "path": "core/index/getDebugNode-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "getModuleFactory",
+      "path": "core/index/getModuleFactory-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "getPlatform",
+      "path": "core/index/getPlatform-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "group",
+      "path": "core/index/group-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "isDevMode",
+      "path": "core/index/isDevMode-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "keyframes",
+      "path": "core/index/keyframes-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "platformCore",
+      "path": "core/index/platformCore-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "resolveForwardRef",
+      "path": "core/index/resolveForwardRef-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "sequence",
+      "path": "core/index/sequence-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "setTestabilityGetter",
+      "path": "core/index/setTestabilityGetter-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "state",
+      "path": "core/index/state-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "style",
+      "path": "core/index/style-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "transition",
+      "path": "core/index/transition-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "trigger",
+      "path": "core/index/trigger-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "wtfCreateScope",
+      "path": "core/index/wtfCreateScope-var.html",
+      "docType": "var",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "wtfEndTimeRange",
+      "path": "core/index/wtfEndTimeRange-var.html",
+      "docType": "var",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "wtfLeave",
+      "path": "core/index/wtfLeave-var.html",
+      "docType": "var",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    },
+  
+    {
+      "title": "wtfStartTimeRange",
+      "path": "core/index/wtfStartTimeRange-var.html",
+      "docType": "var",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core"
+    }
+  ],
+
+  "@angular/core/testing" : [
+    {
+      "title": "ComponentFixture",
+      "path": "core/testing/index/ComponentFixture-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "ComponentFixtureAutoDetect",
+      "path": "core/testing/index/ComponentFixtureAutoDetect-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "ComponentFixtureNoNgZone",
+      "path": "core/testing/index/ComponentFixtureNoNgZone-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "InjectSetupWrapper",
+      "path": "core/testing/index/InjectSetupWrapper-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "MetadataOverride",
+      "path": "core/testing/index/MetadataOverride-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "TestBed",
+      "path": "core/testing/index/TestBed-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "TestComponentRenderer",
+      "path": "core/testing/index/TestComponentRenderer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "TestModuleMetadata",
+      "path": "core/testing/index/TestModuleMetadata-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "async",
+      "path": "core/testing/index/async-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "discardPeriodicTasks",
+      "path": "core/testing/index/discardPeriodicTasks-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "fakeAsync",
+      "path": "core/testing/index/fakeAsync-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "flushMicrotasks",
+      "path": "core/testing/index/flushMicrotasks-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "getTestBed",
+      "path": "core/testing/index/getTestBed-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "inject",
+      "path": "core/testing/index/inject-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "resetFakeAsyncZone",
+      "path": "core/testing/index/resetFakeAsyncZone-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "tick",
+      "path": "core/testing/index/tick-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    },
+  
+    {
+      "title": "withModule",
+      "path": "core/testing/index/withModule-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/core/testing"
+    }
+  ],
+
+  "@angular/forms" : [
+    {
+      "title": "AbstractControl",
+      "path": "forms/index/AbstractControl-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "AbstractControlDirective",
+      "path": "forms/index/AbstractControlDirective-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "AbstractFormGroupDirective",
+      "path": "forms/index/AbstractFormGroupDirective-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "AsyncValidatorFn",
+      "path": "forms/index/AsyncValidatorFn-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "CheckboxControlValueAccessor",
+      "path": "forms/index/CheckboxControlValueAccessor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "CheckboxRequiredValidator",
+      "path": "forms/index/CheckboxRequiredValidator-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "ControlContainer",
+      "path": "forms/index/ControlContainer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "ControlValueAccessor",
+      "path": "forms/index/ControlValueAccessor-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "DefaultValueAccessor",
+      "path": "forms/index/DefaultValueAccessor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "Form",
+      "path": "forms/index/Form-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormArray",
+      "path": "forms/index/FormArray-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormArrayName",
+      "path": "forms/index/FormArrayName-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormBuilder",
+      "path": "forms/index/FormBuilder-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormControl",
+      "path": "forms/index/FormControl-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormControlDirective",
+      "path": "forms/index/FormControlDirective-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormControlName",
+      "path": "forms/index/FormControlName-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormGroup",
+      "path": "forms/index/FormGroup-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormGroupDirective",
+      "path": "forms/index/FormGroupDirective-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormGroupName",
+      "path": "forms/index/FormGroupName-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "FormsModule",
+      "path": "forms/index/FormsModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "MaxLengthValidator",
+      "path": "forms/index/MaxLengthValidator-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "MinLengthValidator",
+      "path": "forms/index/MinLengthValidator-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NG_ASYNC_VALIDATORS",
+      "path": "forms/index/NG_ASYNC_VALIDATORS-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NG_VALIDATORS",
+      "path": "forms/index/NG_VALIDATORS-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NG_VALUE_ACCESSOR",
+      "path": "forms/index/NG_VALUE_ACCESSOR-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgControl",
+      "path": "forms/index/NgControl-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgControlStatus",
+      "path": "forms/index/NgControlStatus-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgControlStatusGroup",
+      "path": "forms/index/NgControlStatusGroup-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgForm",
+      "path": "forms/index/NgForm-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgModel",
+      "path": "forms/index/NgModel-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgModelGroup",
+      "path": "forms/index/NgModelGroup-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "NgSelectOption",
+      "path": "forms/index/NgSelectOption-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "PatternValidator",
+      "path": "forms/index/PatternValidator-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "RadioControlValueAccessor",
+      "path": "forms/index/RadioControlValueAccessor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "ReactiveFormsModule",
+      "path": "forms/index/ReactiveFormsModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "RequiredValidator",
+      "path": "forms/index/RequiredValidator-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "SelectControlValueAccessor",
+      "path": "forms/index/SelectControlValueAccessor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "SelectMultipleControlValueAccessor",
+      "path": "forms/index/SelectMultipleControlValueAccessor-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "forms/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "Validator",
+      "path": "forms/index/Validator-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "ValidatorFn",
+      "path": "forms/index/ValidatorFn-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    },
+  
+    {
+      "title": "Validators",
+      "path": "forms/index/Validators-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/forms"
+    }
+  ],
+
+  "@angular/http" : [
+    {
+      "title": "BaseRequestOptions",
+      "path": "http/index/BaseRequestOptions-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "BaseResponseOptions",
+      "path": "http/index/BaseResponseOptions-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "BrowserXhr",
+      "path": "http/index/BrowserXhr-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Connection",
+      "path": "http/index/Connection-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ConnectionBackend",
+      "path": "http/index/ConnectionBackend-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "CookieXSRFStrategy",
+      "path": "http/index/CookieXSRFStrategy-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Headers",
+      "path": "http/index/Headers-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Http",
+      "path": "http/index/Http-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "HttpModule",
+      "path": "http/index/HttpModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "JSONPBackend",
+      "path": "http/index/JSONPBackend-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "JSONPConnection",
+      "path": "http/index/JSONPConnection-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Jsonp",
+      "path": "http/index/Jsonp-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "JsonpModule",
+      "path": "http/index/JsonpModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "QueryEncoder",
+      "path": "http/index/QueryEncoder-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ReadyState",
+      "path": "http/index/ReadyState-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Request",
+      "path": "http/index/Request-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "RequestMethod",
+      "path": "http/index/RequestMethod-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "RequestOptions",
+      "path": "http/index/RequestOptions-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "RequestOptionsArgs",
+      "path": "http/index/RequestOptionsArgs-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "Response",
+      "path": "http/index/Response-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ResponseContentType",
+      "path": "http/index/ResponseContentType-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ResponseOptions",
+      "path": "http/index/ResponseOptions-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ResponseOptionsArgs",
+      "path": "http/index/ResponseOptionsArgs-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "ResponseType",
+      "path": "http/index/ResponseType-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "URLSearchParams",
+      "path": "http/index/URLSearchParams-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "http/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "XHRBackend",
+      "path": "http/index/XHRBackend-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "XHRConnection",
+      "path": "http/index/XHRConnection-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    },
+  
+    {
+      "title": "XSRFStrategy",
+      "path": "http/index/XSRFStrategy-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http"
+    }
+  ],
+
+  "@angular/http/testing" : [
+    {
+      "title": "MockBackend",
+      "path": "http/testing/index/MockBackend-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http/testing"
+    },
+  
+    {
+      "title": "MockConnection",
+      "path": "http/testing/index/MockConnection-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/http/testing"
+    }
+  ],
+
+  "@angular/platform-browser" : [
+    {
+      "title": "AnimationDriver",
+      "path": "platform-browser/index/AnimationDriver-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "BrowserModule",
+      "path": "platform-browser/index/BrowserModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "By",
+      "path": "platform-browser/index/By-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "DOCUMENT",
+      "path": "platform-browser/index/DOCUMENT-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "DomSanitizer",
+      "path": "platform-browser/index/DomSanitizer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "Calling any of the `bypassSecurityTrust...` APIs disables Angular's built-in sanitization for the value passed in. Carefully check and audit all values and code paths going into this call. Make sure any user data is appropriately escaped for this security context. For more detail, see the [Security Guide](http://g.co/ng/security). ",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "EVENT_MANAGER_PLUGINS",
+      "path": "platform-browser/index/EVENT_MANAGER_PLUGINS-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "EventManager",
+      "path": "platform-browser/index/EventManager-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "HAMMER_GESTURE_CONFIG",
+      "path": "platform-browser/index/HAMMER_GESTURE_CONFIG-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "HammerGestureConfig",
+      "path": "platform-browser/index/HammerGestureConfig-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "NgProbeToken",
+      "path": "platform-browser/index/NgProbeToken-class.html",
+      "docType": "class",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "SafeHtml",
+      "path": "platform-browser/index/SafeHtml-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "SafeResourceUrl",
+      "path": "platform-browser/index/SafeResourceUrl-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "SafeScript",
+      "path": "platform-browser/index/SafeScript-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "SafeStyle",
+      "path": "platform-browser/index/SafeStyle-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "SafeUrl",
+      "path": "platform-browser/index/SafeUrl-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "Title",
+      "path": "platform-browser/index/Title-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "platform-browser/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "disableDebugTools",
+      "path": "platform-browser/index/disableDebugTools-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "enableDebugTools",
+      "path": "platform-browser/index/enableDebugTools-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    },
+  
+    {
+      "title": "platformBrowser",
+      "path": "platform-browser/index/platformBrowser-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser"
+    }
+  ],
+
+  "@angular/platform-browser/testing" : [
+    {
+      "title": "BrowserTestingModule",
+      "path": "platform-browser/testing/index/BrowserTestingModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser/testing"
+    },
+  
+    {
+      "title": "platformBrowserTesting",
+      "path": "platform-browser/testing/index/platformBrowserTesting-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser/testing"
+    }
+  ],
+
+  "@angular/platform-browser-dynamic" : [
+    {
+      "title": "RESOURCE_CACHE_PROVIDER",
+      "path": "platform-browser-dynamic/index/RESOURCE_CACHE_PROVIDER-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser-dynamic"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "platform-browser-dynamic/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser-dynamic"
+    },
+  
+    {
+      "title": "platformBrowserDynamic",
+      "path": "platform-browser-dynamic/index/platformBrowserDynamic-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser-dynamic"
+    }
+  ],
+
+  "@angular/platform-browser-dynamic/testing" : [
+    {
+      "title": "BrowserDynamicTestingModule",
+      "path": "platform-browser-dynamic/testing/index/BrowserDynamicTestingModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser-dynamic/testing"
+    },
+  
+    {
+      "title": "platformBrowserDynamicTesting",
+      "path": "platform-browser-dynamic/testing/index/platformBrowserDynamicTesting-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-browser-dynamic/testing"
+    }
+  ],
+
+  "@angular/platform-server" : [
+    {
+      "title": "ServerModule",
+      "path": "platform-server/index/ServerModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-server"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "platform-server/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-server"
+    },
+  
+    {
+      "title": "platformDynamicServer",
+      "path": "platform-server/index/platformDynamicServer-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-server"
+    },
+  
+    {
+      "title": "platformServer",
+      "path": "platform-server/index/platformServer-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-server"
+    }
+  ],
+
+  "@angular/platform-server/testing" : [
+    {
+      "title": "ServerTestingModule",
+      "path": "platform-server/testing/index/ServerTestingModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-server/testing"
+    },
+  
+    {
+      "title": "platformServerTesting",
+      "path": "platform-server/testing/index/platformServerTesting-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-server/testing"
+    }
+  ],
+
+  "@angular/platform-webworker" : [
+    {
+      "title": "ClientMessageBroker",
+      "path": "platform-webworker/index/ClientMessageBroker-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "ClientMessageBrokerFactory",
+      "path": "platform-webworker/index/ClientMessageBrokerFactory-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "FnArg",
+      "path": "platform-webworker/index/FnArg-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "MessageBus",
+      "path": "platform-webworker/index/MessageBus-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "MessageBusSink",
+      "path": "platform-webworker/index/MessageBusSink-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "MessageBusSource",
+      "path": "platform-webworker/index/MessageBusSource-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "PRIMITIVE",
+      "path": "platform-webworker/index/PRIMITIVE-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "ReceivedMessage",
+      "path": "platform-webworker/index/ReceivedMessage-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "ServiceMessageBroker",
+      "path": "platform-webworker/index/ServiceMessageBroker-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "ServiceMessageBrokerFactory",
+      "path": "platform-webworker/index/ServiceMessageBrokerFactory-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "UiArguments",
+      "path": "platform-webworker/index/UiArguments-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "platform-webworker/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "WORKER_APP_LOCATION_PROVIDERS",
+      "path": "platform-webworker/index/WORKER_APP_LOCATION_PROVIDERS-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "WORKER_UI_LOCATION_PROVIDERS",
+      "path": "platform-webworker/index/WORKER_UI_LOCATION_PROVIDERS-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "WorkerAppModule",
+      "path": "platform-webworker/index/WorkerAppModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "bootstrapWorkerUi",
+      "path": "platform-webworker/index/bootstrapWorkerUi-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "platformWorkerApp",
+      "path": "platform-webworker/index/platformWorkerApp-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    },
+  
+    {
+      "title": "platformWorkerUi",
+      "path": "platform-webworker/index/platformWorkerUi-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker"
+    }
+  ],
+
+  "@angular/platform-webworker-dynamic" : [
+    {
+      "title": "VERSION",
+      "path": "platform-webworker-dynamic/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker-dynamic"
+    },
+  
+    {
+      "title": "platformWorkerAppDynamic",
+      "path": "platform-webworker-dynamic/index/platformWorkerAppDynamic-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/platform-webworker-dynamic"
+    }
+  ],
+
+  "@angular/router" : [
+    {
+      "title": "ActivatedRoute",
+      "path": "router/index/ActivatedRoute-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "ActivatedRouteSnapshot",
+      "path": "router/index/ActivatedRouteSnapshot-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "CanActivate",
+      "path": "router/index/CanActivate-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "CanActivateChild",
+      "path": "router/index/CanActivateChild-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "CanDeactivate",
+      "path": "router/index/CanDeactivate-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "CanLoad",
+      "path": "router/index/CanLoad-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Data",
+      "path": "router/index/Data-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "DefaultUrlSerializer",
+      "path": "router/index/DefaultUrlSerializer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "DetachedRouteHandle",
+      "path": "router/index/DetachedRouteHandle-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Event",
+      "path": "router/index/Event-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "ExtraOptions",
+      "path": "router/index/ExtraOptions-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "LoadChildren",
+      "path": "router/index/LoadChildren-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "LoadChildrenCallback",
+      "path": "router/index/LoadChildrenCallback-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NavigationCancel",
+      "path": "router/index/NavigationCancel-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NavigationEnd",
+      "path": "router/index/NavigationEnd-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NavigationError",
+      "path": "router/index/NavigationError-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NavigationExtras",
+      "path": "router/index/NavigationExtras-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NavigationStart",
+      "path": "router/index/NavigationStart-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "NoPreloading",
+      "path": "router/index/NoPreloading-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "PRIMARY_OUTLET",
+      "path": "router/index/PRIMARY_OUTLET-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Params",
+      "path": "router/index/Params-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "PreloadAllModules",
+      "path": "router/index/PreloadAllModules-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "PreloadingStrategy",
+      "path": "router/index/PreloadingStrategy-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "ROUTER_CONFIGURATION",
+      "path": "router/index/ROUTER_CONFIGURATION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "ROUTER_INITIALIZER",
+      "path": "router/index/ROUTER_INITIALIZER-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Resolve",
+      "path": "router/index/Resolve-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "ResolveData",
+      "path": "router/index/ResolveData-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Route",
+      "path": "router/index/Route-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouteReuseStrategy",
+      "path": "router/index/RouteReuseStrategy-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Router",
+      "path": "router/index/Router-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterLink",
+      "path": "router/index/RouterLink-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterLinkActive",
+      "path": "router/index/RouterLinkActive-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterLinkWithHref",
+      "path": "router/index/RouterLinkWithHref-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterModule",
+      "path": "router/index/RouterModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterOutlet",
+      "path": "router/index/RouterOutlet-directive.html",
+      "docType": "directive",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterOutletMap",
+      "path": "router/index/RouterOutletMap-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterPreloader",
+      "path": "router/index/RouterPreloader-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterState",
+      "path": "router/index/RouterState-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RouterStateSnapshot",
+      "path": "router/index/RouterStateSnapshot-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "Routes",
+      "path": "router/index/Routes-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "RoutesRecognized",
+      "path": "router/index/RoutesRecognized-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "UrlHandlingStrategy",
+      "path": "router/index/UrlHandlingStrategy-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "UrlSegment",
+      "path": "router/index/UrlSegment-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "UrlSegmentGroup",
+      "path": "router/index/UrlSegmentGroup-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "UrlSerializer",
+      "path": "router/index/UrlSerializer-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "UrlTree",
+      "path": "router/index/UrlTree-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "router/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    },
+  
+    {
+      "title": "provideRoutes",
+      "path": "router/index/provideRoutes-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router"
+    }
+  ],
+
+  "@angular/router/testing" : [
+    {
+      "title": "RouterTestingModule",
+      "path": "router/testing/index/RouterTestingModule-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router/testing"
+    },
+  
+    {
+      "title": "SpyNgModuleFactoryLoader",
+      "path": "router/testing/index/SpyNgModuleFactoryLoader-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router/testing"
+    },
+  
+    {
+      "title": "setupTestingRouter",
+      "path": "router/testing/index/setupTestingRouter-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/router/testing"
+    }
+  ],
+
+  "@angular/upgrade" : [
+    {
+      "title": "UpgradeAdapter",
+      "path": "upgrade/index/UpgradeAdapter-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/upgrade"
+    },
+  
+    {
+      "title": "UpgradeAdapterRef",
+      "path": "upgrade/index/UpgradeAdapterRef-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/upgrade"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "upgrade/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "@angular/upgrade"
+    }
+  ],
+
+  "@angular/upgrade/static" : [
+    {
+      "title": "UpgradeComponent",
+      "path": "upgrade/static/UpgradeComponent-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/upgrade/static"
+    },
+  
+    {
+      "title": "UpgradeModule",
+      "path": "upgrade/static/UpgradeModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/upgrade/static"
+    },
+  
+    {
+      "title": "downgradeComponent",
+      "path": "upgrade/static/downgradeComponent-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/upgrade/static"
+    },
+  
+    {
+      "title": "downgradeInjectable",
+      "path": "upgrade/static/downgradeInjectable-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "@angular/upgrade/static"
+    }
+  ]
+}

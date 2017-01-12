@@ -6,5 +6,6 @@ export const COMPODOC_DEFAULTS = {
     port: 8080,
     theme: 'gitbook',
     base: '/',
-    disableSourceCode: false
+    disableSourceCode: false,
+    disableGraph: false
 }

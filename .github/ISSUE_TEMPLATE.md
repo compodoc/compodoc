@@ -1,6 +1,7 @@
 <!--
 > Please follow the issue template below for bug reports and queries.
-> For feature requests, label the title with [FEATURE] and explain your use case and ideas clearly below, you can remove sections which are not relevant.
+> For issue, start the label of the title with [BUG]
+> For feature requests, start the label of the title with [FEATURE] and explain your use case and ideas clearly below, you can remove sections which are not relevant.
 -->
 
 ##### **Overview of the issue**

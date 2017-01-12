@@ -3,6 +3,7 @@
   <li>{{name}}</li>
 </ol>
 
+{{#unless disableGraph}}
 <div class="text-center">
     <object id="demo-svg" type="image/svg+xml" data="modules/{{name}}/dependencies.svg" style="width: 100%; height: 250px;">
             Your browser does not support SVG
@@ -15,6 +16,7 @@
 </div>
 <script src="js/libs/svg-pan-zoom.min.js"></script>
 <script src="js/svg-pan-zoom.controls.js"></script>
+{{/unless}}
 
 {{#unless disableSourceCode}}
 <ul class="nav nav-tabs" role="tablist">
@@ -120,7 +122,7 @@
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{breaklines module.sourceCode}}</code></pre>
+        <pre><code class="hljs javascript">{{ module.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

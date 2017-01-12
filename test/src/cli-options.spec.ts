@@ -21,7 +21,7 @@ describe('CLI Options', () => {
     });
 
     it(`should display help message`, () => {
-        expect(runHelp.stdout.toString()).to.contain('Usage: index-cli [options]');
+        expect(runHelp.stdout.toString()).to.contain('Usage: index-cli <src> [options]');
     });
 
     describe('should display options in help', () => {
@@ -46,8 +46,8 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('External styling theme');
         });
 
-        it(`-h`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-h, --theme [theme]');
+        it(`--theme`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--theme [theme]');
             expect(runHelp.stdout.toString()).to.contain('Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)');
         });
 
@@ -86,6 +86,10 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
         });
 
+        it(`--disableGraph`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableGraph');
+            expect(runHelp.stdout.toString()).to.contain('Do not add the dependency graph');
+        });
 
     });
 

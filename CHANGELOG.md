@@ -1,3 +1,48 @@
+<a name="0.0.32"></a>
+## 0.0.32 (2017-01-12)
+
+### Bug Fix
+
+* **app:** src argument handling ([14550f3](https://github.com/compodoc/compodoc/commit/14550f3)), closes [#63](https://github.com/compodoc/compodoc/issues/63)
+
+<a name="0.0.31"></a>
+## 0.0.31 (2017-01-11)
+
+### Bug Fixes
+
+* **app:** private properties in constructors ([2222446](https://github.com/compodoc/compodoc/commit/2222446)), closes [#61](https://github.com/compodoc/compodoc/issues/61)
+* **app:** functionSignature with Angular APIs ([58316dd](https://github.com/compodoc/compodoc/commit/58316dd))
+
+### Features
+
+* **app:** link to Angular types ([0b33f74](https://github.com/compodoc/compodoc/commit/0b33f74)), closes [#57](https://github.com/compodoc/compodoc/issues/57)
+
+<a name="0.0.30"></a>
+## 0.0.30 (2017-01-10)
+
+### Bug Fixes
+
+* **app:** exclude internal members from generated documentation ([fc795c8](https://github.com/compodoc/compodoc/commit/fc795c8))
+* **app:** passing src and ngd error ([c0cfb2f](https://github.com/compodoc/compodoc/commit/c0cfb2f))
+
+### Features
+
+* **app:** add an option to disable the graph ([927ed12](https://github.com/compodoc/compodoc/commit/927ed12))
+* **app:** Link to others types ([10f72f7](https://github.com/compodoc/compodoc/commit/10f72f7)), closes [#58](https://github.com/compodoc/compodoc/issues/58)
+* **app:** support TS shorthand for properties defined in constructor ([2965762](https://github.com/compodoc/compodoc/commit/2965762)), closes [#56](https://github.com/compodoc/compodoc/issues/56)
+
+<a name="0.0.29"></a>
+## 0.0.29 (2017-01-07)
+
+### Bug Fixes
+
+* **app:** handlebars breaking comments and highlightjs ([1347b74](https://github.com/compodoc/compodoc/commit/1347b74)), closes [#49](https://github.com/compodoc/compodoc/issues/49)
+* **app:** Syntax highlighting issue with tabs ([54edaa0](https://github.com/compodoc/compodoc/commit/54edaa0)), closes [#50](https://github.com/compodoc/compodoc/issues/50)
+
+### Features
+
+* **cli:** Source folder option handling ([c3e86c6](https://github.com/compodoc/compodoc/commit/c3e86c6)), closes [#48](https://github.com/compodoc/compodoc/issues/48)
+
 <a name="0.0.28"></a>
 ## 0.0.28 (2017-01-03)
 

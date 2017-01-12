@@ -7,4 +7,29 @@ import { BarService } from './bar.service';
 	providers: [BarService]
 
 })
-export class BarComponent { }
+export class BarComponent {
+
+	/**
+	 * foo method
+	 */
+	normalMethod() {}
+
+	/**
+	 * bar method
+	 * @internal
+	 */
+	internalMethod() {}
+
+	/**
+	 * @hidden
+	 */
+	hiddenMethod() {}
+
+	/**
+	 * @private
+	 */
+	privateCommentMethod() {}
+
+	private privateMethod() {}
+
+}

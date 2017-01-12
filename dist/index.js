@@ -10,8 +10,8 @@ var LiveServer = require('live-server');
 var marked = require('marked');
 var marked__default = _interopDefault(marked);
 var Handlebars = require('handlebars');
-var highlightjs = _interopDefault(require('highlight.js'));
 var _ = require('lodash');
+var highlightjs = _interopDefault(require('highlight.js'));
 var Shelljs = require('shelljs');
 var ts = require('typescript');
 
@@ -237,8 +237,129 @@ var Logger = function () {
 
 var logger = new Logger();
 
-//import * as helpers from 'handlebars-helpers';
+var AngularAPIs = require('../src/data/api-list.json');
+function finderInAngularAPIs(type) {
+    var _result = {
+        source: 'external',
+        data: null
+    };
+    _.forEach(AngularAPIs, function (angularModuleAPIs, angularModule) {
+        var i = 0,
+            len = angularModuleAPIs.length;
+        for (i; i < len; i++) {
+            if (angularModuleAPIs[i].title === type) {
+                _result.data = angularModuleAPIs[i];
+            }
+        }
+    });
+    return _result;
+}
 
+var DependenciesEngine = function () {
+    function DependenciesEngine() {
+        classCallCheck(this, DependenciesEngine);
+
+        if (DependenciesEngine._instance) {
+            throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
+        }
+        DependenciesEngine._instance = this;
+    }
+
+    createClass(DependenciesEngine, [{
+        key: 'init',
+        value: function init(data) {
+            this.rawData = data;
+            this.modules = _.sortBy(this.rawData.modules, ['name']);
+            this.components = _.sortBy(this.rawData.components, ['name']);
+            this.directives = _.sortBy(this.rawData.directives, ['name']);
+            this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+            this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
+            this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
+            this.pipes = _.sortBy(this.rawData.pipes, ['name']);
+            this.classes = _.sortBy(this.rawData.classes, ['name']);
+        }
+    }, {
+        key: 'find',
+        value: function find(type) {
+            var finderInCompodocDependencies = function finderInCompodocDependencies(data) {
+                var _result = {
+                    source: 'internal',
+                    data: null
+                },
+                    i = 0,
+                    len = data.length;
+                for (i; i < len; i++) {
+                    if (type.indexOf(data[i].name) !== -1) {
+                        _result.data = data[i];
+                    }
+                }
+                return _result;
+            },
+                resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
+                resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+                resultInAngularAPIs = finderInAngularAPIs(type);
+            if (resultInCompodocInjectables.data !== null) {
+                return resultInCompodocInjectables;
+            } else if (resultInCompodocClasses.data !== null) {
+                return resultInCompodocClasses;
+            } else if (resultInAngularAPIs.data !== null) {
+                return resultInAngularAPIs;
+            }
+        }
+    }, {
+        key: 'getModules',
+        value: function getModules() {
+            return this.modules;
+        }
+    }, {
+        key: 'getComponents',
+        value: function getComponents() {
+            return this.components;
+        }
+    }, {
+        key: 'getDirectives',
+        value: function getDirectives() {
+            return this.directives;
+        }
+    }, {
+        key: 'getInjectables',
+        value: function getInjectables() {
+            return this.injectables;
+        }
+    }, {
+        key: 'getInterfaces',
+        value: function getInterfaces() {
+            return this.interfaces;
+        }
+    }, {
+        key: 'getRoutes',
+        value: function getRoutes() {
+            return this.routes;
+        }
+    }, {
+        key: 'getPipes',
+        value: function getPipes() {
+            return this.pipes;
+        }
+    }, {
+        key: 'getClasses',
+        value: function getClasses() {
+            return this.classes;
+        }
+    }], [{
+        key: 'getInstance',
+        value: function getInstance() {
+            return DependenciesEngine._instance;
+        }
+    }]);
+    return DependenciesEngine;
+}();
+
+DependenciesEngine._instance = new DependenciesEngine();
+
+var $dependenciesEngine = DependenciesEngine.getInstance();
+
+//import * as helpers from 'handlebars-helpers';
 var HtmlEngine = function () {
     function HtmlEngine() {
         classCallCheck(this, HtmlEngine);
@@ -303,6 +424,7 @@ var HtmlEngine = function () {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
             text = text.replace(/ /gm, '&nbsp;');
+            text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('breakComma', function (text) {
@@ -312,12 +434,43 @@ var HtmlEngine = function () {
         });
         Handlebars.registerHelper('functionSignature', function (method) {
             var args = method.args.map(function (arg) {
-                return arg.name + ': ' + arg.type;
+                var _result = $dependenciesEngine.find(arg.type);
+                if (_result) {
+                    if (_result.source === 'internal') {
+                        var _path = _result.data.type;
+                        if (_result.data.type === 'class') _path = 'classe';
+                        return arg.name + ': <a href="./' + _path + 's/' + _result.data.name + '.html" >' + arg.type + '</a>';
+                    } else {
+                        var _path2 = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                        return arg.name + ': <a href="' + _path2 + '" target="_blank" >' + arg.type + '</a>';
+                    }
+                } else {
+                    return arg.name + ': ' + arg.type;
+                }
             }).join(', ');
             if (method.name) {
                 return method.name + '(' + args + ')';
             } else {
                 return '(' + args + ')';
+            }
+        });
+        Handlebars.registerHelper('linkType', function (name, options) {
+            var _result = $dependenciesEngine.find(name);
+            if (_result) {
+                this.type = {
+                    raw: name
+                };
+                if (_result.source === 'internal') {
+                    if (_result.data.type === 'class') _result.data.type = 'classe';
+                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.target = '_self';
+                } else {
+                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.target = '_blank';
+                }
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
             }
         });
         Handlebars.registerHelper('indexableSignature', function (method) {
@@ -342,7 +495,7 @@ var HtmlEngine = function () {
     createClass(HtmlEngine, [{
         key: 'init',
         value: function init() {
-            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input'],
+            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'component-detail', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input', 'link-type'],
                 i = 0,
                 len = partials.length,
                 loop = function loop(resolve$$1, reject) {
@@ -383,10 +536,10 @@ var HtmlEngine = function () {
                         } else {
                             that.cache['page'] = data;
                             var _template = Handlebars.compile(data),
-                                _result = _template({
+                                _result2 = _template({
                                 data: o
                             });
-                            resolve$$1(_result);
+                            resolve$$1(_result2);
                         }
                     });
                 }
@@ -457,7 +610,8 @@ var COMPODOC_DEFAULTS = {
     port: 8080,
     theme: 'gitbook',
     base: '/',
-    disableSourceCode: false
+    disableSourceCode: false,
+    disableGraph: false
 };
 
 var Configuration = function () {
@@ -488,7 +642,8 @@ var Configuration = function () {
             routes: [],
             tsconfig: '',
             includes: false,
-            disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode
+            disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
+            disableGraph: COMPODOC_DEFAULTS.disableGraph
         };
         if (Configuration._instance) {
             throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
@@ -527,65 +682,6 @@ var Configuration = function () {
 }();
 
 Configuration._instance = new Configuration();
-
-var DependenciesEngine = function () {
-    function DependenciesEngine(data) {
-        classCallCheck(this, DependenciesEngine);
-
-        this.rawData = data;
-        this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.components = _.sortBy(this.rawData.components, ['name']);
-        this.directives = _.sortBy(this.rawData.directives, ['name']);
-        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
-        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
-        this.classes = _.sortBy(this.rawData.classes, ['name']);
-    }
-
-    createClass(DependenciesEngine, [{
-        key: 'getModules',
-        value: function getModules() {
-            return this.modules;
-        }
-    }, {
-        key: 'getComponents',
-        value: function getComponents() {
-            return this.components;
-        }
-    }, {
-        key: 'getDirectives',
-        value: function getDirectives() {
-            return this.directives;
-        }
-    }, {
-        key: 'getInjectables',
-        value: function getInjectables() {
-            return this.injectables;
-        }
-    }, {
-        key: 'getInterfaces',
-        value: function getInterfaces() {
-            return this.interfaces;
-        }
-    }, {
-        key: 'getRoutes',
-        value: function getRoutes() {
-            return this.routes;
-        }
-    }, {
-        key: 'getPipes',
-        value: function getPipes() {
-            return this.pipes;
-        }
-    }, {
-        key: 'getClasses',
-        value: function getClasses() {
-            return this.classes;
-        }
-    }]);
-    return DependenciesEngine;
-}();
 
 var isGlobal = require('is-global-exec');
 
@@ -781,6 +877,123 @@ function compilerHost(transpileOptions) {
     };
     return compilerHost;
 }
+
+var RouterParser = function () {
+    var routes = [],
+        modules = [],
+        modulesTree,
+        modulesWithRoutes = [];
+    return {
+        addRoute: function addRoute(route) {
+            routes.push(route);
+            routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
+        },
+        addModuleWithRoutes: function addModuleWithRoutes(moduleName, moduleImports) {
+            modulesWithRoutes.push({
+                name: moduleName,
+                importsNode: moduleImports
+            });
+            modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
+        },
+        addModule: function addModule(moduleName, moduleImports) {
+            modules.push({
+                name: moduleName,
+                importsNode: moduleImports
+            });
+            modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
+        },
+        printRoutes: function printRoutes() {
+            //console.log('');
+            //console.log(routes);
+        },
+        hasRouterModuleInImports: function hasRouterModuleInImports(imports) {
+            var result = false,
+                i = 0,
+                len = imports.length;
+            for (i; i < len; i++) {
+                if (imports[i].name.indexOf('RouterModule.forChild') !== -1 || imports[i].name.indexOf('RouterModule.forRoot') !== -1) {
+                    result = true;
+                }
+            }
+            return result;
+        },
+        linkModulesAndRoutes: function linkModulesAndRoutes() {
+            //scan each module imports AST for each routes, and link routes with module
+            var i = 0,
+                len = modulesWithRoutes.length;
+            for (i; i < len; i++) {
+                _.forEach(modulesWithRoutes[i].importsNode, function (node) {
+                    if (node.initializer) {
+                        if (node.initializer.elements) {
+                            _.forEach(node.initializer.elements, function (element) {
+                                //find element with arguments
+                                if (element.arguments) {
+                                    _.forEach(element.arguments, function (argument) {
+                                        _.forEach(routes, function (route) {
+                                            if (argument.text && route.name === argument.text) {
+                                                route.module = modulesWithRoutes[i].name;
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        },
+        constructRoutesTree: function constructRoutesTree() {
+            //console.log('constructRoutesTree');
+            // routes[] contains routes with module link
+            // modulesTree contains modules tree
+            // make a final routes tree with that
+            var cleanModulesTree = _.cloneDeep(modulesTree),
+                modulesCleaner = function modulesCleaner(arr) {
+                for (var i in arr) {
+                    if (arr[i].importsNode) {
+                        delete arr[i].importsNode;
+                    }
+                    if (arr[i].parent) {
+                        delete arr[i].parent;
+                    }
+                    if (arr[i].children) {
+                        modulesCleaner(arr[i].children);
+                    }
+                }
+            };
+            //console.log('cleanModulesTree: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            modulesCleaner(cleanModulesTree);
+            //console.log('');
+            //console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+        },
+        constructModulesTree: function constructModulesTree() {
+            var getNestedChildren = function getNestedChildren(arr, parent) {
+                var out = [];
+                for (var i in arr) {
+                    if (arr[i].parent === parent) {
+                        var children = getNestedChildren(arr, arr[i].name);
+                        if (children.length) {
+                            arr[i].children = children;
+                        }
+                        out.push(arr[i]);
+                    }
+                }
+                return out;
+            };
+            //Scan each module and add parent property
+            _.forEach(modules, function (firstLoopModule) {
+                _.forEach(firstLoopModule.importsNode, function (importNode) {
+                    _.forEach(modules, function (module) {
+                        if (module.name === importNode.name) {
+                            module.parent = firstLoopModule.name;
+                        }
+                    });
+                });
+            });
+            modulesTree = getNestedChildren(modules);
+        }
+    };
+}();
 
 var code = [];
 var gen = function () {
@@ -990,6 +1203,9 @@ var Dependencies = function () {
                 }
                 return deps;
             });
+            RouterParser.linkModulesAndRoutes();
+            RouterParser.constructModulesTree();
+            RouterParser.constructRoutesTree();
             return deps;
         }
     }, {
@@ -1023,6 +1239,10 @@ var Dependencies = function () {
                                 description: _this2.breakLines(IO.description),
                                 sourceCode: sourceFile.getText()
                             };
+                            if (RouterParser.hasRouterModuleInImports(deps.imports)) {
+                                RouterParser.addModuleWithRoutes(name, _this2.getModuleImportsRaw(props));
+                            }
+                            RouterParser.addModule(name, deps.imports);
                             outputSymbols['modules'].push(deps);
                         } else if (_this2.isComponent(metadata)) {
                             if (props.length === 0) return;
@@ -1150,7 +1370,7 @@ var Dependencies = function () {
                         try {
                             newRoutes = JSON.parse(_IO2.routes.replace(/ /gm, ''));
                         } catch (e) {
-                            logger.error('Routes parsing error, maybe a trailing comma ?');
+                            logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
                             return true;
                         }
                         outputSymbols['routes'] = [].concat(toConsumableArray(outputSymbols['routes']), toConsumableArray(newRoutes));
@@ -1281,6 +1501,11 @@ var Dependencies = function () {
             });
         }
     }, {
+        key: 'getModuleImportsRaw',
+        value: function getModuleImportsRaw(props) {
+            return this.getSymbolDepsRaw(props, 'imports');
+        }
+    }, {
         key: 'getModuleImports',
         value: function getModuleImports(props) {
             var _this5 = this;
@@ -1363,12 +1588,33 @@ var Dependencies = function () {
             };
         }
     }, {
+        key: 'isPublic',
+        value: function isPublic(member) {
+            if (member.modifiers) {
+                var isPublic = member.modifiers.some(function (modifier) {
+                    return modifier.kind === ts.SyntaxKind.PublicKeyword;
+                });
+                if (isPublic) {
+                    return true;
+                }
+            }
+            return this.isInternalMember(member);
+        }
+    }, {
         key: 'isPrivateOrInternal',
         value: function isPrivateOrInternal(member) {
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
-            return (member.flags & ts.NodeFlags.Private) !== 0;
+            if (member.modifiers) {
+                var isPrivate = member.modifiers.some(function (modifier) {
+                    return modifier.kind === ts.SyntaxKind.PrivateKeyword;
+                });
+                if (isPrivate) {
+                    return true;
+                }
+            }
+            return this.isInternalMember(member);
         }
     }, {
         key: 'isInternalMember',
@@ -1376,12 +1622,61 @@ var Dependencies = function () {
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
-            var comment = [];
-            if (member.symbol) {
-                comment = member.symbol.getDocumentationComment();
+            var internalTags = ['internal', 'private', 'hidden'];
+            if (member.jsDoc) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = member.jsDoc[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var doc = _step.value;
+
+                        if (doc.tags) {
+                            var _iteratorNormalCompletion2 = true;
+                            var _didIteratorError2 = false;
+                            var _iteratorError2 = undefined;
+
+                            try {
+                                for (var _iterator2 = doc.tags[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                    var tag = _step2.value;
+
+                                    if (internalTags.indexOf(tag.tagName.text) > -1) {
+                                        return true;
+                                    }
+                                }
+                            } catch (err) {
+                                _didIteratorError2 = true;
+                                _iteratorError2 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                        _iterator2.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError2) {
+                                        throw _iteratorError2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             }
-            var jsDoc = ts.displayPartsToString(comment);
-            return jsDoc.trim().length === 0 || jsDoc.indexOf('@internal') > -1;
+            return false;
         }
     }, {
         key: 'isAngularLifecycleHook',
@@ -1391,6 +1686,24 @@ var Dependencies = function () {
              */
             var ANGULAR_LIFECYCLE_METHODS = ['ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked', 'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'];
             return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+        }
+    }, {
+        key: 'visitConstructorDeclaration',
+        value: function visitConstructorDeclaration(method) {
+            var that = this;
+            if (method.parameters) {
+                var _parameters = [],
+                    i = 0,
+                    len = method.parameters.length;
+                for (i; i < len; i++) {
+                    if (that.isPublic(method.parameters[i])) {
+                        _parameters.push(that.visitArgument(method.parameters[i]));
+                    }
+                }
+                return _parameters;
+            } else {
+                return [];
+            }
         }
     }, {
         key: 'visitCallDeclaration',
@@ -1499,6 +1812,7 @@ var Dependencies = function () {
             for (var i = 0; i < members.length; i++) {
                 inputDecorator = this.getDecoratorOfType(members[i], 'Input');
                 outDecorator = this.getDecoratorOfType(members[i], 'Output');
+                kind = members[i].kind;
                 if (inputDecorator) {
                     inputs.push(this.visitInput(members[i], inputDecorator));
                 } else if (outDecorator) {
@@ -1510,10 +1824,15 @@ var Dependencies = function () {
                         properties.push(this.visitProperty(members[i]));
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                         properties.push(this.visitCallDeclaration(members[i]));
-                        kind = members[i].kind;
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                         properties.push(this.visitIndexDeclaration(members[i]));
-                        kind = members[i].kind;
+                    } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                        var _constructorProperties = this.visitConstructorDeclaration(members[i]),
+                            j = 0,
+                            len = _constructorProperties.length;
+                        for (j; j < len; j++) {
+                            properties.push(_constructorProperties[j]);
+                        }
                     }
                 }
             }
@@ -1654,6 +1973,10 @@ var Dependencies = function () {
                 for (i; i < len; i++) {
                     if (node.declarationList.declarations[i].type) {
                         if (node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                            RouterParser.addRoute({
+                                name: node.declarationList.declarations[i].name.text,
+                                data: generate(node.declarationList.declarations[i].initializer)
+                            });
                             return [{
                                 routes: generate(node.declarationList.declarations[i].initializer)
                             }];
@@ -1835,6 +2158,14 @@ var Dependencies = function () {
             return deps.map(parseProperties).pop();
         }
     }, {
+        key: 'getSymbolDepsRaw',
+        value: function getSymbolDepsRaw(props, type, multiLine) {
+            var deps = props.filter(function (node) {
+                return node.name.text === type;
+            });
+            return deps || [];
+        }
+    }, {
         key: 'getSymbolDeps',
         value: function getSymbolDeps(props, type, multiLine) {
             var _this17 = this;
@@ -1958,7 +2289,6 @@ var $fileengine = new FileEngine();
 var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
-var $dependenciesEngine = void 0;
 var startTime = new Date();
 
 var Application = function () {
@@ -2100,7 +2430,8 @@ var Application = function () {
                 tsconfigDirectory: cwd
             });
             var dependenciesData = crawler.getDependencies();
-            $dependenciesEngine = new DependenciesEngine(dependenciesData);
+            $dependenciesEngine.init(dependenciesData);
+            //RouterParser.printRoutes();
             this.prepareModules();
             this.prepareComponents().then(function (readmeData) {
                 if ($dependenciesEngine.directives.length > 0) {
@@ -2305,43 +2636,53 @@ var Application = function () {
         value: function processGraphs() {
             var _this7 = this;
 
-            logger.info('Process main graph');
-            var modules = this.configuration.mainData.modules,
-                i = 0,
-                len = modules.length,
-                loop = function loop() {
-                if (i <= len - 1) {
-                    logger.info('Process module graph', modules[i].name);
-                    var finalPath = _this7.configuration.mainData.output;
-                    if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
-                    }
-                    finalPath += 'modules/' + modules[i].name;
-                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
-                        i++;
-                        loop();
-                    }, function (errorMessage) {
-                        logger.error(errorMessage);
-                    });
-                } else {
-                    var finalTime = (new Date() - startTime) / 1000;
-                    logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
-                    if (_this7.configuration.mainData.serve) {
-                        logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
-                        _this7.runWebServer(_this7.configuration.mainData.output);
-                    }
+            var onComplete = function onComplete() {
+                var finalTime = (new Date() - startTime) / 1000;
+                logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
+                if (_this7.configuration.mainData.serve) {
+                    logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
+                    _this7.runWebServer(_this7.configuration.mainData.output);
                 }
             };
-            var finalMainGraphPath = this.configuration.mainData.output;
-            if (finalMainGraphPath.lastIndexOf('/') === -1) {
-                finalMainGraphPath += '/';
+            if (this.configuration.mainData.disableGraph) {
+                logger.info('Graph generation disabled');
+                onComplete();
+            } else {
+                (function () {
+                    logger.info('Process main graph');
+                    var modules = _this7.configuration.mainData.modules,
+                        i = 0,
+                        len = modules.length,
+                        loop = function loop() {
+                        if (i <= len - 1) {
+                            logger.info('Process module graph', modules[i].name);
+                            var finalPath = _this7.configuration.mainData.output;
+                            if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
+                                finalPath += '/';
+                            }
+                            finalPath += 'modules/' + modules[i].name;
+                            $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
+                                i++;
+                                loop();
+                            }, function (errorMessage) {
+                                logger.error(errorMessage);
+                            });
+                        } else {
+                            onComplete();
+                        }
+                    };
+                    var finalMainGraphPath = _this7.configuration.mainData.output;
+                    if (finalMainGraphPath.lastIndexOf('/') === -1) {
+                        finalMainGraphPath += '/';
+                    }
+                    finalMainGraphPath += 'graph';
+                    $ngdengine.renderGraph(_this7.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
+                        loop();
+                    }, function (err) {
+                        logger.error('Error during graph generation: ', err);
+                    });
+                })();
             }
-            finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
-                loop();
-            }, function (err) {
-                logger.error('Error during graph generation: ', err);
-            });
         }
     }, {
         key: 'runWebServer',
@@ -2392,7 +2733,9 @@ var CliApplication = function (_Application) {
          * Run compodoc from the command line.
          */
         value: function generate() {
-            program.version(pkg$2.version).option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-h, --theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).parse(process.argv);
+            var _this2 = this;
+
+            program.version(pkg$2.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).option('--disableGraph', 'Do not add the dependency graph', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2436,6 +2779,9 @@ var CliApplication = function (_Application) {
             if (program.disableSourceCode) {
                 this.configuration.mainData.disableSourceCode = program.disableSourceCode;
             }
+            if (program.disableGraph) {
+                this.configuration.mainData.disableGraph = program.disableGraph;
+            }
             if (program.serve && !program.tsconfig && program.output) {
                 // if -s & -d, serve it
                 if (!fs.existsSync(program.output)) {
@@ -2455,56 +2801,65 @@ var CliApplication = function (_Application) {
                     get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
                 }
             } else {
-                if (program.hideGenerator) {
-                    this.configuration.mainData.hideGenerator = true;
-                }
-                if (program.tsconfig) {
-                    this.configuration.mainData.tsconfig = program.tsconfig;
-                    if (!fs.existsSync(program.tsconfig)) {
-                        logger.error('"tsconfig.json" file was not found in the current directory');
-                        process.exit(1);
-                    } else {
-                        var _file = path.join(path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)), path.basename(this.configuration.mainData.tsconfig));
-                        logger.info('Using tsconfig', _file);
-                        files = require(_file).files;
-                        // use the current directory of tsconfig.json as a working directory
-                        cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
-                        if (!files) {
-                            var _walk;
-
-                            (function () {
-                                var exclude = require(_file).exclude || [];
-
-                                _walk = function walk(dir) {
-                                    var results = [];
-                                    var list = fs.readdirSync(dir);
-                                    list.forEach(function (file) {
-                                        if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                            file = path.join(dir, file);
-                                            var stat = fs.statSync(file);
-                                            if (stat && stat.isDirectory()) {
-                                                results = results.concat(_walk(file));
-                                            } else if (/(spec|\.d)\.ts/.test(file)) {
-                                                logger.debug('Ignoring', file);
-                                            } else if (path.extname(file) === '.ts') {
-                                                logger.debug('Including', file);
-                                                results.push(file);
-                                            }
-                                        }
-                                    });
-                                    return results;
-                                };
-
-                                files = _walk(cwd$1 || '.');
-                            })();
-                        }
-                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', this).call(this, files);
-                        get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', this).call(this);
+                (function () {
+                    if (program.hideGenerator) {
+                        _this2.configuration.mainData.hideGenerator = true;
                     }
-                } else {
-                    logger.error('tsconfig.json file was not found, please use -p flag');
-                    outputHelp();
-                }
+                    var defaultWalkFOlder = cwd$1 || '.',
+                        walk = function walk(dir, exclude) {
+                        var results = [];
+                        var list = fs.readdirSync(dir);
+                        list.forEach(function (file) {
+                            if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                                file = path.join(dir, file);
+                                var stat = fs.statSync(file);
+                                if (stat && stat.isDirectory()) {
+                                    results = results.concat(walk(file, exclude));
+                                } else if (/(spec|\.d)\.ts/.test(file)) {
+                                    logger.debug('Ignoring', file);
+                                } else if (path.extname(file) === '.ts') {
+                                    logger.debug('Including', file);
+                                    results.push(file);
+                                }
+                            }
+                        });
+                        return results;
+                    };
+                    if (program.tsconfig && program.args.length === 0) {
+                        _this2.configuration.mainData.tsconfig = program.tsconfig;
+                        if (!fs.existsSync(program.tsconfig)) {
+                            logger.error('"tsconfig.json" file was not found in the current directory');
+                            process.exit(1);
+                        } else {
+                            var _file = path.join(path.join(process.cwd(), path.dirname(_this2.configuration.mainData.tsconfig)), path.basename(_this2.configuration.mainData.tsconfig));
+                            logger.info('Using tsconfig', _file);
+                            files = require(_file).files;
+                            // use the current directory of tsconfig.json as a working directory
+                            cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
+                            if (!files) {
+                                var exclude = require(_file).exclude || [];
+                                files = walk(cwd$1 || '.', exclude);
+                            }
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
+                        }
+                    } else if (program.tsconfig && program.args.length > 0) {
+                        _this2.configuration.mainData.tsconfig = program.tsconfig;
+                        var sourceFolder = program.args[0];
+                        if (!fs.existsSync(sourceFolder)) {
+                            logger.error('Provided source folder ' + sourceFolder + ' was not found in the current directory');
+                            process.exit(1);
+                        } else {
+                            logger.info('Using provided source folder');
+                            files = walk(path.resolve(sourceFolder), []);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
+                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
+                        }
+                    } else {
+                        logger.error('tsconfig.json file was not found, please use -p flag');
+                        outputHelp();
+                    }
+                })();
             }
         }
     }]);
