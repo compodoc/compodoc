@@ -1,3 +1,10 @@
+<a name="0.0.32"></a>
+## 0.0.32 (2017-01-12)
+
+### Bug Fix
+
+* **app:** src argument handling ([14550f3](https://github.com/compodoc/compodoc/commit/14550f3)), closes [#63](https://github.com/compodoc/compodoc/issues/63)
+
 <a name="0.0.31"></a>
 ## 0.0.31 (2017-01-11)
 

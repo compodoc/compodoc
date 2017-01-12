@@ -878,6 +878,123 @@ function compilerHost(transpileOptions) {
     return compilerHost;
 }
 
+var RouterParser = function () {
+    var routes = [],
+        modules = [],
+        modulesTree,
+        modulesWithRoutes = [];
+    return {
+        addRoute: function addRoute(route) {
+            routes.push(route);
+            routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
+        },
+        addModuleWithRoutes: function addModuleWithRoutes(moduleName, moduleImports) {
+            modulesWithRoutes.push({
+                name: moduleName,
+                importsNode: moduleImports
+            });
+            modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
+        },
+        addModule: function addModule(moduleName, moduleImports) {
+            modules.push({
+                name: moduleName,
+                importsNode: moduleImports
+            });
+            modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
+        },
+        printRoutes: function printRoutes() {
+            //console.log('');
+            //console.log(routes);
+        },
+        hasRouterModuleInImports: function hasRouterModuleInImports(imports) {
+            var result = false,
+                i = 0,
+                len = imports.length;
+            for (i; i < len; i++) {
+                if (imports[i].name.indexOf('RouterModule.forChild') !== -1 || imports[i].name.indexOf('RouterModule.forRoot') !== -1) {
+                    result = true;
+                }
+            }
+            return result;
+        },
+        linkModulesAndRoutes: function linkModulesAndRoutes() {
+            //scan each module imports AST for each routes, and link routes with module
+            var i = 0,
+                len = modulesWithRoutes.length;
+            for (i; i < len; i++) {
+                _.forEach(modulesWithRoutes[i].importsNode, function (node) {
+                    if (node.initializer) {
+                        if (node.initializer.elements) {
+                            _.forEach(node.initializer.elements, function (element) {
+                                //find element with arguments
+                                if (element.arguments) {
+                                    _.forEach(element.arguments, function (argument) {
+                                        _.forEach(routes, function (route) {
+                                            if (argument.text && route.name === argument.text) {
+                                                route.module = modulesWithRoutes[i].name;
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        },
+        constructRoutesTree: function constructRoutesTree() {
+            //console.log('constructRoutesTree');
+            // routes[] contains routes with module link
+            // modulesTree contains modules tree
+            // make a final routes tree with that
+            var cleanModulesTree = _.cloneDeep(modulesTree),
+                modulesCleaner = function modulesCleaner(arr) {
+                for (var i in arr) {
+                    if (arr[i].importsNode) {
+                        delete arr[i].importsNode;
+                    }
+                    if (arr[i].parent) {
+                        delete arr[i].parent;
+                    }
+                    if (arr[i].children) {
+                        modulesCleaner(arr[i].children);
+                    }
+                }
+            };
+            //console.log('cleanModulesTree: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            modulesCleaner(cleanModulesTree);
+            //console.log('');
+            //console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+        },
+        constructModulesTree: function constructModulesTree() {
+            var getNestedChildren = function getNestedChildren(arr, parent) {
+                var out = [];
+                for (var i in arr) {
+                    if (arr[i].parent === parent) {
+                        var children = getNestedChildren(arr, arr[i].name);
+                        if (children.length) {
+                            arr[i].children = children;
+                        }
+                        out.push(arr[i]);
+                    }
+                }
+                return out;
+            };
+            //Scan each module and add parent property
+            _.forEach(modules, function (firstLoopModule) {
+                _.forEach(firstLoopModule.importsNode, function (importNode) {
+                    _.forEach(modules, function (module) {
+                        if (module.name === importNode.name) {
+                            module.parent = firstLoopModule.name;
+                        }
+                    });
+                });
+            });
+            modulesTree = getNestedChildren(modules);
+        }
+    };
+}();
+
 var code = [];
 var gen = function () {
     var tmp = [];
@@ -1086,6 +1203,9 @@ var Dependencies = function () {
                 }
                 return deps;
             });
+            RouterParser.linkModulesAndRoutes();
+            RouterParser.constructModulesTree();
+            RouterParser.constructRoutesTree();
             return deps;
         }
     }, {
@@ -1119,6 +1239,10 @@ var Dependencies = function () {
                                 description: _this2.breakLines(IO.description),
                                 sourceCode: sourceFile.getText()
                             };
+                            if (RouterParser.hasRouterModuleInImports(deps.imports)) {
+                                RouterParser.addModuleWithRoutes(name, _this2.getModuleImportsRaw(props));
+                            }
+                            RouterParser.addModule(name, deps.imports);
                             outputSymbols['modules'].push(deps);
                         } else if (_this2.isComponent(metadata)) {
                             if (props.length === 0) return;
@@ -1375,6 +1499,11 @@ var Dependencies = function () {
                 }
                 return _this4.parseDeepIndentifier(name);
             });
+        }
+    }, {
+        key: 'getModuleImportsRaw',
+        value: function getModuleImportsRaw(props) {
+            return this.getSymbolDepsRaw(props, 'imports');
         }
     }, {
         key: 'getModuleImports',
@@ -1844,6 +1973,10 @@ var Dependencies = function () {
                 for (i; i < len; i++) {
                     if (node.declarationList.declarations[i].type) {
                         if (node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                            RouterParser.addRoute({
+                                name: node.declarationList.declarations[i].name.text,
+                                data: generate(node.declarationList.declarations[i].initializer)
+                            });
                             return [{
                                 routes: generate(node.declarationList.declarations[i].initializer)
                             }];
@@ -2023,6 +2156,14 @@ var Dependencies = function () {
                 return obj;
             };
             return deps.map(parseProperties).pop();
+        }
+    }, {
+        key: 'getSymbolDepsRaw',
+        value: function getSymbolDepsRaw(props, type, multiLine) {
+            var deps = props.filter(function (node) {
+                return node.name.text === type;
+            });
+            return deps || [];
         }
     }, {
         key: 'getSymbolDeps',
@@ -2290,6 +2431,7 @@ var Application = function () {
             });
             var dependenciesData = crawler.getDependencies();
             $dependenciesEngine.init(dependenciesData);
+            //RouterParser.printRoutes();
             this.prepareModules();
             this.prepareComponents().then(function (readmeData) {
                 if ($dependenciesEngine.directives.length > 0) {
@@ -2696,7 +2838,7 @@ var CliApplication = function (_Application) {
                             cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
                             if (!files) {
                                 var exclude = require(_file).exclude || [];
-                                files = walk(defaultWalkFOlder, exclude);
+                                files = walk(cwd$1 || '.', exclude);
                             }
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
                             get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
