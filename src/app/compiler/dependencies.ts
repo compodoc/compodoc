@@ -142,6 +142,10 @@ export class Dependencies {
 
         });
 
+        RouterParser.linkModulesAndRoutes();
+        RouterParser.constructModulesTree();
+        RouterParser.constructRoutesTree();
+
         return deps;
     }
 
@@ -179,6 +183,10 @@ export class Dependencies {
                             description: this.breakLines(IO.description),
                             sourceCode: sourceFile.getText()
                         };
+                        if (RouterParser.hasRouterModuleInImports(deps.imports)) {
+                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props));
+                        }
+                        RouterParser.addModule(name, deps.imports);
                         outputSymbols['modules'].push(deps);
                     }
                     else if (this.isComponent(metadata)) {
@@ -431,6 +439,10 @@ export class Dependencies {
 
             return this.parseDeepIndentifier(name);
         });
+    }
+
+    private getModuleImportsRaw(props: NodeObject[]): Deps[] {
+        return this.getSymbolDepsRaw(props, 'imports');
     }
 
     private getModuleImports(props: NodeObject[]): Deps[] {
@@ -828,6 +840,10 @@ export class Dependencies {
             for(i; i<len; i++) {
                 if(node.declarationList.declarations[i].type) {
                     if(node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        RouterParser.addRoute({
+                            name: node.declarationList.declarations[i].name.text,
+                            data: generate(node.declarationList.declarations[i].initializer)
+                        });
                         return [{
                             routes: generate(node.declarationList.declarations[i].initializer)
                         }];
@@ -990,6 +1006,13 @@ export class Dependencies {
         };
 
         return deps.map(parseProperties).pop();
+    }
+
+    private getSymbolDepsRaw(props: NodeObject[], type: string, multiLine?: boolean): any {
+        let deps = props.filter((node: NodeObject) => {
+            return node.name.text === type;
+        });
+        return deps || [];
     }
 
     private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {

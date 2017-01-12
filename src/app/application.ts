@@ -16,6 +16,7 @@ import { $dependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { Dependencies } from './compiler/dependencies';
+import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
@@ -118,6 +119,8 @@ export class Application {
         let dependenciesData = crawler.getDependencies();
 
         $dependenciesEngine.init(dependenciesData);
+
+        //RouterParser.printRoutes();
 
         this.prepareModules();
 
