@@ -33,7 +33,7 @@ Features
 
 ## Live Demo
 
-[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
 ## Static Demo
 
@@ -59,6 +59,12 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 ## Why not a SPA for outputed documentation ?
 
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
+
+# Who's using Compodoc ?
+
+- [angular-seed](https://github.com/mgechev/angular-seed)
+
+These are some that we know of. Want your project listed here ? Drop us a line.
 
 # Table of Contents
 
@@ -310,9 +316,9 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 
 ## Contributors
 
-[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|
+[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/daniele-zurico)|
 :---: |:---: |:---: |:---: |:---: |:---: |
-[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico)|
+[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico)|[mattlewis92](https://github.com/mattlewis92)
 
 ## Resources
 
