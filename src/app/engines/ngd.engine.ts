@@ -13,6 +13,9 @@ export class NgdEngine {
            if (process.env.MODE && process.env.MODE === 'TESTING') {
                ngdPath = __dirname + '/../node_modules/.bin/ngd';
            }
+           if (/ /g.test(ngdPath)) {
+               ngdPath = ngdPath.replace(/ /g, '^ ');
+           }
            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg'
            Shelljs.exec(finalPath, {
                silent: true
