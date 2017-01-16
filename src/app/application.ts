@@ -358,7 +358,7 @@ export class Application {
             }
             else {
                 if (that.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
