@@ -287,6 +287,7 @@ The integrated languages are : json, bash, javascript, markdown, html, typescrip
 - [ ] handle external markdown files as "functional" documentation
 - [ ] watch/recompile feature while serving documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
+- [ ] documentation coverage
 - [x] routes
 - [x] classes
 - [x] module(s) page(s) with comments
