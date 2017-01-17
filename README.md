@@ -31,6 +31,8 @@ Features
 
 * **A local tool** - No server needed, no sources uploaded online
 
+* **JSDoc light support** - Support of @param & @returns tags
+
 ## Live Demo
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
@@ -257,6 +259,19 @@ These ones are not supported :
  */
 
 // unsupported comment
+```
+
+Currently Compodoc only support these two JSDoc tags :
+
+- ```@param <param name>```
+- ```@returns```
+
+```
+/**
+ * @param {string} target  The target to process
+ * @returns      The processed target number
+ */
+function processTarget(target:string):number;
 ```
 
 ## Remark for routes

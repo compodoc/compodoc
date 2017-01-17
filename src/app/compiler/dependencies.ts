@@ -1,6 +1,8 @@
+import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
+import * as _ts from '../../utils/ts-internal';
 import marked from 'marked';
 import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -142,9 +144,9 @@ export class Dependencies {
 
         });
 
-        RouterParser.linkModulesAndRoutes();
-        RouterParser.constructModulesTree();
-        RouterParser.constructRoutesTree();
+        //RouterParser.linkModulesAndRoutes();
+        //RouterParser.constructModulesTree();
+        //RouterParser.constructRoutesTree();
 
         return deps;
     }
@@ -350,6 +352,22 @@ export class Dependencies {
                     this.debug(deps);
                     outputSymbols['classes'].push(deps);
                 }
+                if (node.kind === ts.SyntaxKind.ExpressionStatement) {
+                    //Find the root module with bootstrapModule call
+                    //Find recusively in expression nodes one with name 'bootstrapModule'
+                    let rootModule,
+                        resultNode = this.findExpressionByName(node, 'bootstrapModule');
+                    if(resultNode.arguments && resultNode.arguments.length > 0) {
+                        _.forEach(resultNode.arguments, function(argument) {
+                            if(argument.text) {
+                                rootModule = argument.text;
+                            }
+                        });
+                    }
+                    if (rootModule) {
+                        RouterParser.setRootModule(rootModule);
+                    }
+                }
             }
         });
 
@@ -367,6 +385,22 @@ export class Dependencies {
 
             }
         });
+    }
+
+    private findExpressionByName(entryNode, name) {
+        let result,
+            loop = function(node, name) {
+                if(node.expression && !node.expression.name) {
+                    loop(node.expression, name);
+                }
+                if(node.expression && node.expression.name) {
+                    if(node.expression.name.text === name) {
+                        result = node;
+                    }
+                }
+            }
+        loop(entryNode, name);
+        return result;
     }
 
     private isComponent(metadata) {
@@ -606,12 +640,19 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return {
+        var result = {
             name: method.name.text,
             description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
+        },
+            jsdoctags = _ts.getJSDocs(method);
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = jsdoctags[0].tags;
+            }
         }
+        return result;
     }
 
     private visitArgument(arg) {

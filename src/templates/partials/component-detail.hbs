@@ -213,53 +213,9 @@
 {{/if}}
 
 {{#if component.methodsClass}}
-<section>
-    <h3 id="methods">Methods</h3>
-    <table class="table table-sm table-hover">
-        <tbody>
-            {{#each component.methodsClass}}
-                <tr>
-                    <td class="col-md-3"><code>{{name}}</code></td>
-                    <td class="col-md-9">
-                        {{#if args}}
-                            <div><i>Signature: </i><code>{{{functionSignature this}}}</code></div>
-                        {{/if}}
-                        {{#if returnType}}
-                            <div><i>Return type: </i><code>{{returnType}}</code></div>
-                        {{/if}}
-                        {{#if description}}
-                            <div class="io-description">{{{description}}}</div>
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</section>
+    {{> block-method properties=component.methodsClass }}
 {{/if}}
 
 {{#if component.propertiesClass}}
-<section>
-    <h3 id="inputs">Properties</h3>
-    <table class="table table-sm table-hover">
-        <tbody>
-            {{#each component.propertiesClass}}
-                <tr>
-                    <td class="col-md-3"><code>{{name}}</code></td>
-                    <td class="col-md-9">
-                        {{#if type}}
-                            <div><i>Type: </i>{{> link-type type=type }}</div>
-                        {{/if}}
-                        {{#if defaultValue}}
-                            <div><i>Default value: </i><code>{{defaultValue}}</code></div>
-                        {{/if}}
-                        {{#if description}}
-                            <div class="io-description">{{{description}}}</div>
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</section>
+    {{> block-property properties=component.propertiesClass }}
 {{/if}}

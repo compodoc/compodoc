@@ -495,3 +495,12 @@ code {
     -ms-user-select: none;
     user-select: none;
 }
+
+.jsdoc-params {
+    list-style: square;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+.jsdoc-params li {
+    padding-bottom: 10px;
+}
