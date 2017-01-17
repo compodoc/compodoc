@@ -161,55 +161,77 @@
 </section>
 
 {{#if component.inputsClass}}
-<section>
-    <h3>Inputs</h3>
-    <table class="table table-sm table-hover">
-        <tbody>
-            {{#each component.inputsClass}}
-                <tr>
-                    <td class="col-md-3"><code>{{name}}</code></td>
-                    <td class="col-md-9">
-                        {{#if type}}
-                            <div><i>Type: </i>{{> link-type type=type }}</div>
-                        {{/if}}
-                        {{#if defaultValue}}
-                            <div><i>Default value: </i><code>{{defaultValue}}</code></div>
-                        {{/if}}
-                        {{#if description}}
+    <section>
+        <h3 id="inputs">Inputs</h3>
+        {{#each component.inputsClass}}
+            <table class="table table-sm table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <b>{{name}}</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <code>{{name}}: {{> link-type type=type }}</bcode>
+                        </td>
+                    </tr>
+                    {{#if defaultValue}}
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Default value: </i><code>{{defaultValue}}</code>
+                            </td>
+                        </tr>
+                    {{/if}}
+                    {{#if description}}
+                    <tr>
+                        <td class="col-md-4">
                             <div class="io-description">{{{description}}}</div>
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</section>
+                        </td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        {{/each}}
+    </section>
 {{/if}}
 
 {{#if component.outputsClass}}
-<section>
-    <h3>Outputs</h3>
-    <table class="table table-sm table-hover">
-        <tbody>
-            {{#each component.outputsClass}}
-                <tr>
-                    <td class="col-md-3"><code>{{name}}</code></td>
-                    <td class="col-md-9">
-                        {{#if type}}
-                            <div><i>Type: </i>{{> link-type type=type }}</div>
-                        {{/if}}
-                        {{#if defaultValue}}
-                            <div><i>Default value: </i><code>{{defaultValue}}</code></div>
-                        {{/if}}
-                        {{#if description}}
+    <section>
+        <h3 id="inputs">Outputs</h3>
+        {{#each component.outputsClass}}
+            <table class="table table-sm table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <b>{{name}}</b>
+                        </td>
+                    </tr>
+                    {{#if type}}
+                    <tr>
+                        <td class="col-md-4">
+                            <code>{{name}}: {{> link-type type=type }}</bcode>
+                        </td>
+                    </tr>
+                    {{/if}}
+                    {{#if defaultValue}}
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Default value: </i><code>{{defaultValue}}</code>
+                            </td>
+                        </tr>
+                    {{/if}}
+                    {{#if description}}
+                    <tr>
+                        <td class="col-md-4">
                             <div class="io-description">{{{description}}}</div>
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</section>
+                        </td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        {{/each}}
+    </section>
 {{/if}}
 
 {{#if component.methodsClass}}
