@@ -51,7 +51,7 @@ Modules page             |  Single module page
 Component page             |  Source code tab
 ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
 Search page             |  Coverage report
-![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
+![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/8.png)
 
 ## Why this tool ?
 
