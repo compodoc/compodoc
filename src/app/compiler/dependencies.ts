@@ -357,15 +357,17 @@ export class Dependencies {
                     //Find recusively in expression nodes one with name 'bootstrapModule'
                     let rootModule,
                         resultNode = this.findExpressionByName(node, 'bootstrapModule');
-                    if(resultNode.arguments && resultNode.arguments.length > 0) {
-                        _.forEach(resultNode.arguments, function(argument) {
-                            if(argument.text) {
-                                rootModule = argument.text;
-                            }
-                        });
-                    }
-                    if (rootModule) {
-                        RouterParser.setRootModule(rootModule);
+                    if(resultNode) {
+                        if(resultNode.arguments.length > 0) {
+                            _.forEach(resultNode.arguments, function(argument) {
+                                if(argument.text) {
+                                    rootModule = argument.text;
+                                }
+                            });
+                        }
+                        if (rootModule) {
+                            RouterParser.setRootModule(rootModule);
+                        }
                     }
                 }
             }
@@ -394,6 +396,7 @@ export class Dependencies {
                     loop(node.expression, name);
                 }
                 if(node.expression && node.expression.name) {
+                    console.log(node.expression.name.text)
                     if(node.expression.name.text === name) {
                         result = node;
                     }
