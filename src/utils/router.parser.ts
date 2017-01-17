@@ -1,11 +1,13 @@
 import * as _ from 'lodash';
 import * as util from 'util';
+import * as fs from 'fs-extra';
 
 export let RouterParser = (function() {
 
     var routes = [],
         modules = [],
         modulesTree,
+        rootModule,
         modulesWithRoutes = [];
 
     return {
@@ -20,12 +22,15 @@ export let RouterParser = (function() {
             });
             modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
         },
-        addModule: function(moduleName, moduleImports) {
+        addModule: function(moduleName: string, moduleImports) {
             modules.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
+        },
+        setRootModule: function(module: string) {
+            rootModule = module;
         },
         printRoutes: function() {
             //console.log('');
@@ -73,7 +78,6 @@ export let RouterParser = (function() {
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
-
             let cleanModulesTree = _.cloneDeep(modulesTree),
                 modulesCleaner = function(arr) {
                     for(var i in arr) {
@@ -89,10 +93,58 @@ export let RouterParser = (function() {
                     }
                 };
 
-            //console.log('cleanModulesTree: ', util.inspect(cleanModulesTree, { depth: 10 }));
             modulesCleaner(cleanModulesTree);
-            //console.log('');
-            //console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //fs.outputJson('./modules.json', cleanModulesTree);
+            console.log('');
+            console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            console.log('');
+            var routesTree = {
+                tag: '<root>',
+                kind: 'ngModule',
+                name: rootModule,
+                children: []
+            };
+
+            let foundRouteWithModuleName = function(moduleName) {
+                return _.find(routes, {'module': moduleName});
+            }
+
+            let loopModulesParser = function(node) {
+                for(var i in node.children) {
+                    let route = foundRouteWithModuleName(node.children[i].name);
+                    if (route) {
+                        route.routes = JSON.parse(route.data);
+                        delete route.data;
+                        route.kind = 'ngModule';
+                        routesTree.children.push(route);
+                    }
+                    if (node.children[i].children) {
+                        loopModulesParser(node.children[i]);
+                    }
+                }
+            }
+            loopModulesParser(_.find(cleanModulesTree, {'name': rootModule}));
+
+            console.log('');
+            console.log('routesTree: ', routesTree);
+            console.log('');
+
+            //fs.outputJson('./routes-tree.json', routesTree);
+
+            var cleanedRoutesTree;
+
+            var cleanRoutesTree = function(route) {
+                for(var i in route.children) {
+                    var routes = route.children[i].routes;
+                    console.log(routes);
+                }
+                return route;
+            }
+
+            cleanedRoutesTree = cleanRoutesTree(routesTree);
+
+            console.log('');
+            console.log('cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
         },
         constructModulesTree: function() {
             let getNestedChildren = function(arr, parent?) {
@@ -108,7 +160,6 @@ export let RouterParser = (function() {
                 }
                 return out;
             }
-
             //Scan each module and add parent property
             _.forEach(modules, function(firstLoopModule) {
                 _.forEach(firstLoopModule.importsNode, function(importNode) {
@@ -119,7 +170,6 @@ export let RouterParser = (function() {
                     });
                 });
             });
-
             modulesTree = getNestedChildren(modules);
         }
     }
