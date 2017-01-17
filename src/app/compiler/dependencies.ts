@@ -396,7 +396,6 @@ export class Dependencies {
                     loop(node.expression, name);
                 }
                 if(node.expression && node.expression.name) {
-                    console.log(node.expression.name.text)
                     if(node.expression.name.text === name) {
                         result = node;
                     }
