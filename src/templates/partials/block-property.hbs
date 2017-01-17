@@ -20,11 +20,13 @@
                         </td>
                     </tr>
                 {{/if}}
+                {{#if description}}
                 <tr>
                     <td class="col-md-4">
                         <div class="io-description">{{{description}}}</div>
                     </td>
                 </tr>
+                {{/if}}
             </tbody>
         </table>
     {{/each}}

@@ -33,33 +33,50 @@
         {{/if}}
 
         {{#if interface.methods}}
-            {{> block-method properties=interface.methods }}
+            {{> block-method methods=interface.methods }}
         {{/if}}
 
         {{#if interface.properties}}
+
             <section>
-            <h3 id="inputs">Properties</h3>
-            <table class="table table-sm table-hover">
-                <tbody>
-                    {{#each interface.properties}}
-                        <tr>
+                <h3 id="inputs">Properties</h3>
+                {{#each interface.properties}}
+                    <table class="table table-sm table-bordered">
+                        <tbody>
                             {{#if name}}
-                                <td class="col-md-3"><code>{{name}}</code></td>
-                                <td class="col-md-9">
-                                    {{#if type}}
-                                        <div><i>Type : </i>{{> link-type type=type }}</div>
-                                    {{/if}}
-                                    {{#if defaultValue}}
-                                        <div><i>Default value: </i><code>{{defaultValue}}</code></div>
-                                    {{/if}}
-                                    {{#if description}}
-                                        <div class="io-description">{{{description}}}</div>
-                                    {{/if}}
-                                </td>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <b>{{name}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>{{name}}: {{> link-type type=type }}</bcode>
+                                    </td>
+                                </tr>
+
+
+                                {{#if type}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>{{> link-type type=type }}
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
+                                {{#if defaultValue}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Default value: </i><code>{{defaultValue}}</code>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
                             {{else}}
-                                <td class="col-md-12">
-                                    {{#if args}}
-                                        <div>
+
+                                {{#if args}}
+                                    <tr>
+                                        <td class="col-md-4">
                                             <i>Signature :</i>
                                             <code>
                                                 <!--ts.SyntaxKind.CallSignature-->
@@ -69,22 +86,32 @@
                                                     {{indexableSignature this}}
                                                 {{/compare}}
                                             </code>
-                                        </div>
-                                    {{/if}}
-                                    {{#if returnType}}
-                                        <div><i>Return type : </i>{{> link-type type=returnType }}</div>
-                                    {{/if}}
-                                    {{#if description}}
-                                        <div class="io-description">{{{description}}}</div>
-                                    {{/if}}
-                                </td>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
+
+                                {{#if returnType}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Returns : </i>{{> link-type type=returnType }}
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
                             {{/if}}
 
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </section>
+                            {{#if description}}
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description">{{{description}}}</div>
+                                </td>
+                            </tr>
+                            {{/if}}
+                        </tbody>
+                    </table>
+                {{/each}}
+            </section>
         {{/if}}
     {{#unless disableSourceCode}}
     </div>
