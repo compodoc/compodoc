@@ -31,9 +31,13 @@ Features
 
 * **A local tool** - No server needed, no sources uploaded online
 
+* **JSDoc light support** - Support of @param & @returns tags
+
+* **Documentation coverage** - Get the documentation coverage report of your project
+
 ## Live Demo
 
-[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
 ## Static Demo
 
@@ -45,9 +49,9 @@ README page             |  Overview page
 Modules page             |  Single module page
 ![screenshot-3](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png)
 Component page             |  Source code tab
-![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
-Search page             |  
-![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |
+![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
+Search page             |  Coverage report
+![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
 
 ## Why this tool ?
 
@@ -59,6 +63,12 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 ## Why not a SPA for outputed documentation ?
 
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
+
+# Who's using Compodoc ?
+
+- [angular-seed](https://github.com/mgechev/angular-seed)
+
+These are some that we know of. Want your project listed here ? Drop us a line.
 
 # Table of Contents
 
@@ -117,6 +127,7 @@ Options:
   --hideGenerator           Do not print the Compodoc link at the bottom of the page
   --disableSourceCode       Do not add source code tab
   --disableGraph            Disable rendering of the dependency graph
+  --disableCoverage         Do not add the documentation coverage report
 ```
 
 ### Local installation
@@ -253,6 +264,19 @@ These ones are not supported :
 // unsupported comment
 ```
 
+Currently Compodoc only support these two JSDoc tags :
+
+- ```@param <param name>```
+- ```@returns```
+
+```
+/**
+ * @param {string} target  The target to process
+ * @returns      The processed target number
+ */
+function processTarget(target:string):number;
+```
+
 ## Remark for routes
 
 Follow the style guide and provide a const of type 'Routes' :
@@ -281,6 +305,7 @@ The integrated languages are : json, bash, javascript, markdown, html, typescrip
 - [ ] handle external markdown files as "functional" documentation
 - [ ] watch/recompile feature while serving documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
+- [ ] documentation coverage
 - [x] routes
 - [x] classes
 - [x] module(s) page(s) with comments
@@ -310,9 +335,9 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 
 ## Contributors
 
-[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|
+[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/daniele-zurico)|
 :---: |:---: |:---: |:---: |:---: |:---: |
-[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico)|
+[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico)|[mattlewis92](https://github.com/mattlewis92)
 
 ## Resources
 

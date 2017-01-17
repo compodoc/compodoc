@@ -495,3 +495,71 @@ code {
     -ms-user-select: none;
     user-select: none;
 }
+
+.jsdoc-params {
+    list-style: square;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+.jsdoc-params li {
+    padding-bottom: 10px;
+}
+
+.coverage a {
+    color: #333;
+    text-decoration: underline;
+}
+
+.coverage tr.low {
+    background: rgba(216, 96, 75, 0.75);
+}
+.coverage tr.medium {
+    background: rgba(218, 178, 38, 0.75);
+}
+.coverage tr.good {
+    background: rgba(143, 189, 8, 0.75);
+}
+.coverage tr.very-good {
+    background: rgba(77, 199, 31, 0.75);
+}
+
+.coverage-header {
+    background: #fafafa;
+}
+thead.coverage-header >tr>td, thead.coverage-header>tr>th {
+    border-bottom-width: 0;
+}
+.coverage-count {
+    color: grey;
+    font-size: 12px;
+    margin-left: 10px;
+    display: inline-block;
+    width: 50px;
+}
+.coverage-badge {
+    background: #5d5d5d;
+    border-radius: 4px;
+    display: inline-block;
+    color: white;
+    padding: 4px;
+    padding-right: 0;
+    padding-left: 8px;
+}
+.coverage-badge .count{
+    padding: 6px;
+    margin-left: 5px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.coverage-badge .count.low {
+    background: #d8624c;
+}
+.coverage-badge .count.medium {
+    background: #dab226;
+}
+.coverage-badge .count.good {
+    background: #8fbd08;
+}
+.coverage-badge .count.very-good {
+    background: #4dc71f;
+}

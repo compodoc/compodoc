@@ -232,6 +232,12 @@
         </li>
         {{/if}}
 
+        {{#unless disableCoverage}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-tasks"></span>Documentation coverage</a>
+        </li>
+        {{/unless}}
+
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">

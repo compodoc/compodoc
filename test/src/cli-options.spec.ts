@@ -91,6 +91,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not add the dependency graph');
         });
 
+        it(`--disableCoverage`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableCoverage');
+            expect(runHelp.stdout.toString()).to.contain('Do not add the documentation coverage report');
+        });
+
     });
 
 });

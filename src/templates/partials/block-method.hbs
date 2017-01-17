@@ -1,0 +1,60 @@
+<section>
+    <h3 id="methods">Methods</h3>
+    {{#each methods}}
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <b>{{name}}</b>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <code>{{{functionSignature this}}}</code>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        {{#if description}}
+                            <div class="io-description">{{{description}}}</div>
+                        {{/if}}
+                        {{#if jsdoctags}}
+                            <div class="io-description">
+                                {{#jsdoc-params jsdoctags}}
+                                    <b>Parameters :</b>
+                                    <ul class="jsdoc-params">
+                                        {{#each tags}}
+                                            <li>
+                                                <div>
+                                                    <b>{{name}}</b>
+                                                    {{#if type}}
+                                                        : {{> link-type type=type }}
+                                                    {{/if}}
+                                                </div>
+                                                <div>
+                                                    {{comment}}
+                                                </div>
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                {{/jsdoc-params}}
+                            </div>
+                        {{/if}}
+                        {{#if returnType}}
+                            <div class="io-description">
+                                <b>Returns: </b>{{> link-type type=returnType }}
+                            </div>
+                            {{#if jsdoctags}}
+                                <div class="io-description">
+                                    {{jsdoc-returns-comment jsdoctags}}
+                                </div>
+                            {{/if}}
+                        {{/if}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {{/each}}
+</section>

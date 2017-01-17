@@ -6,14 +6,15 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var fs = require('fs-extra');
 var path = require('path');
+var _ = require('lodash');
 var LiveServer = require('live-server');
 var marked = require('marked');
 var marked__default = _interopDefault(marked);
 var Handlebars = require('handlebars');
-var _ = require('lodash');
 var highlightjs = _interopDefault(require('highlight.js'));
 var Shelljs = require('shelljs');
 var ts = require('typescript');
+var util = require('util');
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -280,7 +281,7 @@ var DependenciesEngine = function () {
         }
     }, {
         key: 'find',
-        value: function find(type) {
+        value: function find$$1(type) {
             var finderInCompodocDependencies = function finderInCompodocDependencies(data) {
                 var _result = {
                     source: 'internal',
@@ -454,6 +455,46 @@ var HtmlEngine = function () {
                 return '(' + args + ')';
             }
         });
+        Handlebars.registerHelper('jsdoc-returns-comment', function (jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                result;
+            for (i; i < len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'returns') {
+                        result = jsdocTags[i].comment;
+                        break;
+                    }
+                }
+            }
+            return result;
+        });
+        Handlebars.registerHelper('jsdoc-params', function (jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [];
+            for (i; i < len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'param') {
+                        var tag = {};
+                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
+                            tag.type = jsdocTags[i].typeExpression.type.name.text;
+                        }
+                        if (jsdocTags[i].comment) {
+                            tag.comment = jsdocTags[i].comment;
+                        }
+                        if (jsdocTags[i].parameterName) {
+                            tag.name = jsdocTags[i].parameterName.text;
+                        }
+                        tags.push(tag);
+                    }
+                }
+            }
+            if (tags.length >= 1) {
+                this.tags = tags;
+                return options.fn(this);
+            }
+        });
         Handlebars.registerHelper('linkType', function (name, options) {
             var _result = $dependenciesEngine.find(name);
             if (_result) {
@@ -495,7 +536,7 @@ var HtmlEngine = function () {
     createClass(HtmlEngine, [{
         key: 'init',
         value: function init() {
-            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'component-detail', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input', 'link-type'],
+            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'component-detail', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input', 'link-type', 'block-method', 'block-property', 'coverage'],
                 i = 0,
                 len = partials.length,
                 loop = function loop(resolve$$1, reject) {
@@ -611,7 +652,8 @@ var COMPODOC_DEFAULTS = {
     theme: 'gitbook',
     base: '/',
     disableSourceCode: false,
-    disableGraph: false
+    disableGraph: false,
+    disableCoverage: false
 };
 
 var Configuration = function () {
@@ -643,7 +685,8 @@ var Configuration = function () {
             tsconfig: '',
             includes: false,
             disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
-            disableGraph: COMPODOC_DEFAULTS.disableGraph
+            disableGraph: COMPODOC_DEFAULTS.disableGraph,
+            disableCoverage: COMPODOC_DEFAULTS.disableCoverage
         };
         if (Configuration._instance) {
             throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
@@ -683,7 +726,51 @@ var Configuration = function () {
 
 Configuration._instance = new Configuration();
 
-var isGlobal = require('is-global-exec');
+function isGlobal() {
+    var binPath,
+        globalBinPath = function globalBinPath() {
+        if (binPath) return binPath;
+        if (process.platform === 'win32') {
+            var pathnames = process.env.PATH.split(path.delimiter);
+            var len = pathnames.length;
+            for (var i = 0; i < len; i++) {
+                if (path.basename(pathnames[i]) === 'npm' || path.basename(pathnames[i]) === 'nodejs') {
+                    binPath = pathnames[i];
+                    break;
+                }
+            }
+        } else {
+            binPath = path.dirname(process.execPath);
+        }
+        return binPath;
+    },
+        stripTrailingSep = function stripTrailingSep(thePath) {
+        if (thePath[thePath.length - 1] === path.sep) {
+            return thePath.slice(0, -1);
+        }
+        return thePath;
+    },
+        pathIsInside = function pathIsInside(thePath, potentialParent) {
+        // For inside-directory checking, we want to allow trailing slashes, so normalize.
+        thePath = stripTrailingSep(thePath);
+        potentialParent = stripTrailingSep(potentialParent);
+        // Node treats only Windows as case-insensitive in its path module; we follow those conventions.
+        if (process.platform === "win32") {
+            thePath = thePath.toLowerCase();
+            potentialParent = potentialParent.toLowerCase();
+        }
+        return thePath.lastIndexOf(potentialParent, 0) === 0 && (thePath[potentialParent.length] === path.sep || thePath[potentialParent.length] === undefined);
+    },
+        isPathInside = function isPathInside(a, b) {
+        a = path.resolve(a);
+        b = path.resolve(b);
+        if (a === b) {
+            return false;
+        }
+        return pathIsInside(a, b);
+    };
+    return isPathInside(process.argv[1] || '', globalBinPath() || '');
+}
 
 var NgdEngine = function () {
     function NgdEngine() {
@@ -697,6 +784,9 @@ var NgdEngine = function () {
                 var ngdPath = isGlobal() ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
                 if (process.env.MODE && process.env.MODE === 'TESTING') {
                     ngdPath = __dirname + '/../node_modules/.bin/ngd';
+                }
+                if (/ /g.test(ngdPath)) {
+                    ngdPath = ngdPath.replace(/ /g, '^ ');
                 }
                 var finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
                 Shelljs.exec(finalPath, {
@@ -771,6 +861,12 @@ var SearchEngine = function () {
     }]);
     return SearchEngine;
 }();
+
+var tsany = ts;
+// https://github.com/Microsoft/TypeScript/blob/2.1/src/compiler/utilities.ts#L1507
+function getJSDocs(node) {
+    return tsany.getJSDocs.apply(this, arguments);
+}
 
 // get default new line break
 
@@ -882,6 +978,7 @@ var RouterParser = function () {
     var routes = [],
         modules = [],
         modulesTree,
+        rootModule,
         modulesWithRoutes = [];
     return {
         addRoute: function addRoute(route) {
@@ -901,6 +998,9 @@ var RouterParser = function () {
                 importsNode: moduleImports
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
+        },
+        setRootModule: function setRootModule(module) {
+            rootModule = module;
         },
         printRoutes: function printRoutes() {
             //console.log('');
@@ -961,10 +1061,50 @@ var RouterParser = function () {
                     }
                 }
             };
-            //console.log('cleanModulesTree: ', util.inspect(cleanModulesTree, { depth: 10 }));
             modulesCleaner(cleanModulesTree);
-            //console.log('');
-            //console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //fs.outputJson('./modules.json', cleanModulesTree);
+            console.log('');
+            console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            console.log('');
+            var routesTree = {
+                tag: '<root>',
+                kind: 'ngModule',
+                name: rootModule,
+                children: []
+            };
+            var foundRouteWithModuleName = function foundRouteWithModuleName(moduleName) {
+                return _.find(routes, { 'module': moduleName });
+            };
+            var loopModulesParser = function loopModulesParser(node) {
+                for (var i in node.children) {
+                    var route = foundRouteWithModuleName(node.children[i].name);
+                    if (route) {
+                        route.routes = JSON.parse(route.data);
+                        delete route.data;
+                        route.kind = 'ngModule';
+                        routesTree.children.push(route);
+                    }
+                    if (node.children[i].children) {
+                        loopModulesParser(node.children[i]);
+                    }
+                }
+            };
+            loopModulesParser(_.find(cleanModulesTree, { 'name': rootModule }));
+            console.log('');
+            console.log('routesTree: ', routesTree);
+            console.log('');
+            //fs.outputJson('./routes-tree.json', routesTree);
+            var cleanedRoutesTree;
+            var cleanRoutesTree = function cleanRoutesTree(route) {
+                for (var i in route.children) {
+                    var routes = route.children[i].routes;
+                    console.log(routes);
+                }
+                return route;
+            };
+            cleanedRoutesTree = cleanRoutesTree(routesTree);
+            console.log('');
+            console.log('cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
         },
         constructModulesTree: function constructModulesTree() {
             var getNestedChildren = function getNestedChildren(arr, parent) {
@@ -1203,9 +1343,9 @@ var Dependencies = function () {
                 }
                 return deps;
             });
-            RouterParser.linkModulesAndRoutes();
-            RouterParser.constructModulesTree();
-            RouterParser.constructRoutesTree();
+            //RouterParser.linkModulesAndRoutes();
+            //RouterParser.constructModulesTree();
+            //RouterParser.constructRoutesTree();
             return deps;
         }
     }, {
@@ -1396,6 +1536,24 @@ var Dependencies = function () {
                         _this2.debug(deps);
                         outputSymbols['classes'].push(deps);
                     }
+                    if (node.kind === ts.SyntaxKind.ExpressionStatement) {
+                        //Find the root module with bootstrapModule call
+                        //Find recusively in expression nodes one with name 'bootstrapModule'
+                        var rootModule = void 0,
+                            resultNode = _this2.findExpressionByName(node, 'bootstrapModule');
+                        if (resultNode) {
+                            if (resultNode.arguments.length > 0) {
+                                _.forEach(resultNode.arguments, function (argument) {
+                                    if (argument.text) {
+                                        rootModule = argument.text;
+                                    }
+                                });
+                            }
+                            if (rootModule) {
+                                RouterParser.setRootModule(rootModule);
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -1413,6 +1571,23 @@ var Dependencies = function () {
                     });
                 }
             });
+        }
+    }, {
+        key: 'findExpressionByName',
+        value: function findExpressionByName(entryNode, name) {
+            var result = void 0,
+                loop = function loop(node, name) {
+                if (node.expression && !node.expression.name) {
+                    loop(node.expression, name);
+                }
+                if (node.expression && node.expression.name) {
+                    if (node.expression.name.text === name) {
+                        result = node;
+                    }
+                }
+            };
+            loop(entryNode, name);
+            return result;
         }
     }, {
         key: 'isComponent',
@@ -1739,14 +1914,21 @@ var Dependencies = function () {
             /**
              * Copyright https://github.com/ng-bootstrap/ng-bootstrap
              */
-            return {
+            var result = {
                 name: method.name.text,
                 description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
                 args: method.parameters ? method.parameters.map(function (prop) {
                     return _this10.visitArgument(prop);
                 }) : [],
                 returnType: this.visitType(method.type)
-            };
+            },
+                jsdoctags = getJSDocs(method);
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    result.jsdoctags = jsdoctags[0].tags;
+                }
+            }
+            return result;
         }
     }, {
         key: 'visitArgument',
@@ -2452,6 +2634,9 @@ var Application = function () {
                 if ($dependenciesEngine.interfaces.length > 0) {
                     _this5.prepareInterfaces();
                 }
+                if (!_this5.configuration.mainData.disableCoverage) {
+                    _this5.prepareCoverage();
+                }
                 _this5.processPages();
             }, function (errorMessage) {
                 logger.error(errorMessage);
@@ -2564,6 +2749,176 @@ var Application = function () {
             });
         }
     }, {
+        key: 'prepareCoverage',
+        value: function prepareCoverage() {
+            logger.info('Process documentation coverage report');
+            /*
+             * loop with components, classes, injectables, interfaces, pipes
+             */
+            var files = [],
+                totalProjectStatementDocumented = 0,
+                getStatus = function getStatus(percent) {
+                var status;
+                if (percent <= 25) {
+                    status = 'low';
+                } else if (percent > 25 && percent <= 50) {
+                    status = 'medium';
+                } else if (percent > 50 && percent <= 75) {
+                    status = 'good';
+                } else {
+                    status = 'very-good';
+                }
+                return status;
+            };
+            _.forEach(this.configuration.mainData.components, function (component) {
+                var cl = {
+                    filePath: component.file,
+                    type: component.type,
+                    name: component.name
+                },
+                    totalStatementDocumented = 0,
+                    totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length;
+                _.forEach(component.propertiesClass, function (property) {
+                    if (property.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.methodsClass, function (method) {
+                    if (method.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.inputsClass, function (input) {
+                    if (input.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.outputsClass, function (output) {
+                    if (output.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                if (totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.classes, function (classe) {
+                var cl = {
+                    filePath: classe.file,
+                    type: 'classe',
+                    name: classe.name
+                },
+                    totalStatementDocumented = 0,
+                    totalStatements = classe.properties.length + classe.methods.length;
+                _.forEach(classe.properties, function (property) {
+                    if (property.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(classe.methods, function (method) {
+                    if (method.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                if (totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.injectables, function (injectable) {
+                var cl = {
+                    filePath: injectable.file,
+                    type: injectable.type,
+                    name: injectable.name
+                },
+                    totalStatementDocumented = 0,
+                    totalStatements = injectable.properties.length + injectable.methods.length;
+                _.forEach(injectable.properties, function (property) {
+                    if (property.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(injectable.methods, function (method) {
+                    if (method.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                if (totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.interfaces, function (inter) {
+                var cl = {
+                    filePath: inter.file,
+                    type: inter.type,
+                    name: inter.name
+                },
+                    totalStatementDocumented = 0,
+                    totalStatements = inter.properties.length + inter.methods.length;
+                _.forEach(inter.properties, function (property) {
+                    if (property.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(inter.methods, function (method) {
+                    if (method.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                if (totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.pipes, function (pipe) {
+                var cl = {
+                    filePath: pipe.file,
+                    type: pipe.type,
+                    name: pipe.name
+                },
+                    totalStatementDocumented = 0,
+                    totalStatements = 1;
+                if (pipe.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            files = _.sortBy(files, ['filePath']);
+            var coverageData = {
+                count: Math.floor(totalProjectStatementDocumented / files.length),
+                status: ''
+            };
+            coverageData.status = getStatus(coverageData.count);
+            this.configuration.addPage({
+                name: 'coverage',
+                context: 'coverage',
+                files: files,
+                data: coverageData
+            });
+        }
+    }, {
         key: 'processPages',
         value: function processPages() {
             var _this6 = this;
@@ -2617,7 +2972,7 @@ var Application = function () {
                     logger.error('Error during resources copy ', err);
                 } else {
                     if (that.configuration.mainData.extTheme) {
-                        fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                        fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
                             if (err) {
                                 logger.error('Error during external styling theme copy ', err);
                             } else {
@@ -2735,7 +3090,7 @@ var CliApplication = function (_Application) {
         value: function generate() {
             var _this2 = this;
 
-            program.version(pkg.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).option('--disableGraph', 'Do not add the dependency graph', false).parse(process.argv);
+            program.version(pkg.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).option('--disableGraph', 'Do not add the dependency graph', false).option('--disableCoverage', 'Do not add the documentation coverage report', false).parse(process.argv);
             var outputHelp = function outputHelp() {
                 program.outputHelp();
                 process.exit(1);
@@ -2781,6 +3136,9 @@ var CliApplication = function (_Application) {
             }
             if (program.disableGraph) {
                 this.configuration.mainData.disableGraph = program.disableGraph;
+            }
+            if (program.disableCoverage) {
+                this.configuration.mainData.disableCoverage = program.disableCoverage;
             }
             if (program.serve && !program.tsconfig && program.output) {
                 // if -s & -d, serve it

@@ -103,6 +103,46 @@ export class HtmlEngine {
                 return `(${args})`;
             }
         });
+        Handlebars.registerHelper('jsdoc-returns-comment', function(jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                result;
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'returns') {
+                        result = jsdocTags[i].comment;
+                        break;
+                    }
+                }
+            }
+            return result;
+        });
+        Handlebars.registerHelper('jsdoc-params', function(jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [];
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'param') {
+                        var tag = {};
+                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
+                            tag.type = jsdocTags[i].typeExpression.type.name.text
+                        }
+                        if (jsdocTags[i].comment) {
+                            tag.comment = jsdocTags[i].comment
+                        }
+                        if (jsdocTags[i].parameterName) {
+                            tag.name = jsdocTags[i].parameterName.text
+                        }
+                        tags.push(tag);
+                    }
+                }
+            }
+            if (tags.length >= 1) {
+                this.tags = tags;
+                return options.fn(this);
+            }
+        });
         Handlebars.registerHelper('linkType', function(name, options) {
             var _result = $dependenciesEngine.find(name);
             if (_result) {
@@ -161,7 +201,10 @@ export class HtmlEngine {
             'routes',
             'search-results',
             'search-input',
-            'link-type'
+            'link-type',
+            'block-method',
+            'block-property',
+            'coverage'
         ],
             i = 0,
             len = partials.length,

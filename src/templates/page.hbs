@@ -92,6 +92,10 @@
                         {{~> routes data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'coverage'}}
+                        {{~> coverage data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'additionalpages'}}
                         {{~> readme data ~}}
                    {{/compare}}

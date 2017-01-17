@@ -10,6 +10,8 @@ interface Page {
     interface?: any;
     directive?: any;
     injectable?: any;
+    files?: any;
+    data?: any;
 }
 
 interface IMainData {
@@ -38,6 +40,7 @@ interface IMainData {
     includesName: string;
     disableSourceCode: boolean;
     disableGraph: boolean;
+    disableCoverage: boolean;
 }
 
 export interface IConfiguration {
@@ -74,7 +77,8 @@ export class Configuration implements IConfiguration {
         tsconfig: '',
         includes: false,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
-        disableGraph: COMPODOC_DEFAULTS.disableGraph
+        disableGraph: COMPODOC_DEFAULTS.disableGraph,
+        disableCoverage: COMPODOC_DEFAULTS.disableCoverage
     };
 
     constructor() {

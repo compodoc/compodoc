@@ -36,6 +36,7 @@ export class CliApplication extends Application
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
+            .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -97,6 +98,10 @@ export class CliApplication extends Application
 
         if (program.disableGraph) {
             this.configuration.mainData.disableGraph = program.disableGraph;
+        }
+
+        if (program.disableCoverage) {
+            this.configuration.mainData.disableCoverage = program.disableCoverage;
         }
 
         if (program.serve && !program.tsconfig && program.output) {

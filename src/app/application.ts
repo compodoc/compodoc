@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 import marked from 'marked';
@@ -145,6 +146,10 @@ export class Application {
 
             if ($dependenciesEngine.interfaces.length > 0) {
                 this.prepareInterfaces();
+            }
+
+            if (!this.configuration.mainData.disableCoverage) {
+                this.prepareCoverage();
             }
 
             this.processPages();
@@ -308,6 +313,177 @@ export class Application {
         });
     }
 
+    prepareCoverage() {
+        logger.info('Process documentation coverage report');
+
+        /*
+         * loop with components, classes, injectables, interfaces, pipes
+         */
+        var files = [],
+            totalProjectStatementDocumented = 0,
+            getStatus = function(percent) {
+                var status;
+                if (percent <= 25) {
+                    status = 'low';
+                } else if (percent > 25 && percent <= 50) {
+                    status = 'medium';
+                } else if (percent > 50 && percent <= 75) {
+                    status = 'good';
+                } else {
+                    status = 'very-good';
+                }
+                return status;
+            };
+
+        _.forEach(this.configuration.mainData.components, (component) => {
+            let cl = {
+                    filePath: component.file,
+                    type: component.type,
+                    name: component.name
+                },
+                totalStatementDocumented = 0,
+                totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length;
+            _.forEach(component.propertiesClass, (property) => {
+                if(property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.methodsClass, (method) => {
+                if(method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.inputsClass, (input) => {
+                if(input.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.outputsClass, (output) => {
+                if(output.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if(totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        })
+        _.forEach(this.configuration.mainData.classes, (classe) => {
+            let cl = {
+                    filePath: classe.file,
+                    type: 'classe',
+                    name: classe.name
+                },
+                totalStatementDocumented = 0,
+                totalStatements = classe.properties.length + classe.methods.length;
+            _.forEach(classe.properties, (property) => {
+                if(property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(classe.methods, (method) => {
+                if(method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if(totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.injectables, (injectable) => {
+            let cl = {
+                    filePath: injectable.file,
+                    type: injectable.type,
+                    name: injectable.name
+                },
+                totalStatementDocumented = 0,
+                totalStatements = injectable.properties.length + injectable.methods.length;
+            _.forEach(injectable.properties, (property) => {
+                if(property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(injectable.methods, (method) => {
+                if(method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if(totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.interfaces, (inter) => {
+            let cl = {
+                    filePath: inter.file,
+                    type: inter.type,
+                    name: inter.name
+                },
+                totalStatementDocumented = 0,
+                totalStatements = inter.properties.length + inter.methods.length;
+            _.forEach(inter.properties, (property) => {
+                if(property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(inter.methods, (method) => {
+                if(method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if(totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.pipes, (pipe) => {
+            let cl = {
+                    filePath: pipe.file,
+                    type: pipe.type,
+                    name: pipe.name
+                },
+                totalStatementDocumented = 0,
+                totalStatements = 1;
+            if (pipe.description !== '') {
+                totalStatementDocumented += 1;
+            }
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        files = _.sortBy(files, ['filePath']);
+        var coverageData = {
+            count: Math.floor(totalProjectStatementDocumented / files.length),
+            status: ''
+        };
+        coverageData.status = getStatus(coverageData.count);
+        this.configuration.addPage({
+            name: 'coverage',
+            context: 'coverage',
+            files: files,
+            data: coverageData
+        });
+    }
+
     processPages() {
         logger.info('Process pages');
         let pages = this.configuration.pages,
@@ -358,7 +534,7 @@ export class Application {
             }
             else {
                 if (that.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {

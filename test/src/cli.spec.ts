@@ -88,6 +88,55 @@ describe('CLI', () => {
         });
     });
 
+    describe('test coverage', () => {
+
+        let stdoutString = null, coverageFile;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                coverageFile = read(`${tmp.name}/coverage.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('it should have coverage page', () => {
+            expect(coverageFile).to.contain('Documentation coverage');
+            expect(coverageFile).to.contain('<span class="count low">25%</span>');
+        });
+
+    });
+
+    describe('excluding coverage', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec('node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableCoverage -d ' + tmp.name + '/', {env:{MODE:'TESTING'}}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('it should not have coverage page', () => {
+            const isFileExists = exists(`${tmp.name}/coverage.html`);
+            expect(isFileExists).to.be.false;
+        });
+
+    });
+
     describe('when generation with d flag', () => {
 
         let stdoutString = null;
@@ -548,7 +597,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 5000);
+            }, 15000);
         });
 
         it('should display message', () => {
@@ -570,7 +619,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 5000);
+            }, 15000);
         });
         after(() => tmp.clean('documentation'));
 
@@ -598,25 +647,26 @@ describe('CLI', () => {
         after(() => tmp.clean());
 
         it('include methods not marked as internal, private or hidden', () => {
-            expect(componentFile).to.contain('<code>normalMethod</code>');
+            expect(componentFile).to.contain('<code>normalMethod');
         });
 
         it('should exclude methods marked as internal', () => {
-            expect(componentFile).not.to.contain('<code>internalMethod</code>');
+            expect(componentFile).not.to.contain('<code>internalMethod');
         });
 
         it('should exclude methods marked as hidden', () => {
-            expect(componentFile).not.to.contain('<code>hiddenMethod</code>');
+            expect(componentFile).not.to.contain('<code>hiddenMethod');
         });
 
         it('should exclude methods marked as private', () => {
-            expect(componentFile).not.to.contain('<code>privateCommentMethod</code>');
+            expect(componentFile).not.to.contain('<code>privateCommentMethod');
         });
 
         it('should exclude private methods', () => {
-            expect(componentFile).not.to.contain('<code>privateMethod</code>');
+            expect(componentFile).not.to.contain('<code>privateMethod');
         });
 
     });
+
 
 });

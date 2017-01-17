@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as Shelljs from 'shelljs';
 
-const isGlobal: any = require('is-global-exec');
+import isGlobal from '../../utils/global.path';
 
 export class NgdEngine {
     constructor() {
@@ -12,6 +12,9 @@ export class NgdEngine {
            let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
            if (process.env.MODE && process.env.MODE === 'TESTING') {
                ngdPath = __dirname + '/../node_modules/.bin/ngd';
+           }
+           if (/ /g.test(ngdPath)) {
+               ngdPath = ngdPath.replace(/ /g, '^ ');
            }
            let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg'
            Shelljs.exec(finalPath, {

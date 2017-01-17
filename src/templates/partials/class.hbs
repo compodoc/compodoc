@@ -33,55 +33,11 @@
         {{/if}}
 
         {{#if class.methods}}
-        <section>
-            <h3 id="methods">Methods</h3>
-            <table class="table table-sm table-hover">
-                <tbody>
-                    {{#each class.methods}}
-                        <tr>
-                            <td class="col-md-3"><code>{{name}}</code></td>
-                            <td class="col-md-9">
-                                {{#if args}}
-                                    <div><i>Signature : </i><code>{{{functionSignature this}}}</code></div>
-                                {{/if}}
-                                {{#if returnType}}
-                                    <div><i>Return type : </i>{{> link-type type=returnType }}</div>
-                                {{/if}}
-                                {{#if description}}
-                                    <div class="io-description">{{{description}}}</div>
-                                {{/if}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </section>
+            {{> block-method methods=class.methods }}
         {{/if}}
 
         {{#if class.properties}}
-        <section>
-            <h3 id="inputs">Properties</h3>
-            <table class="table table-sm table-hover">
-                <tbody>
-                    {{#each class.properties}}
-                        <tr>
-                            <td class="col-md-3"><code>{{name}}</code></td>
-                            <td class="col-md-9">
-                                {{#if type}}
-                                    <div><i>Type : </i>{{> link-type type=type }}</div>
-                                {{/if}}
-                                {{#if defaultValue}}
-                                    <div><i>Default value : </i><code>{{defaultValue}}</code></div>
-                                {{/if}}
-                                {{#if description}}
-                                    <div class="io-description">{{{description}}}</div>
-                                {{/if}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </section>
+            {{> block-property properties=class.properties }}
         {{/if}}
     {{#unless disableSourceCode}}
     </div>
