@@ -204,7 +204,7 @@ export class HtmlEngine {
             'link-type',
             'block-method',
             'block-property',
-            'coverage'
+            'coverage-report'
         ],
             i = 0,
             len = partials.length,
