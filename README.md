@@ -33,6 +33,8 @@ Features
 
 * **JSDoc light support** - Support of @param & @returns tags
 
+* **Documentation coverage** - Get the documentation coverage report of your project
+
 ## Live Demo
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
@@ -47,9 +49,9 @@ README page             |  Overview page
 Modules page             |  Single module page
 ![screenshot-3](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png)
 Component page             |  Source code tab
-![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
-Search page             |  
-![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |
+![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
+Search page             |  Coverage report
+![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
 
 ## Why this tool ?
 
@@ -125,6 +127,7 @@ Options:
   --hideGenerator           Do not print the Compodoc link at the bottom of the page
   --disableSourceCode       Do not add source code tab
   --disableGraph            Disable rendering of the dependency graph
+  --disableCoverage         Do not add the documentation coverage report
 ```
 
 ### Local installation

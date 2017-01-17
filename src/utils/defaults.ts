@@ -7,5 +7,6 @@ export const COMPODOC_DEFAULTS = {
     theme: 'gitbook',
     base: '/',
     disableSourceCode: false,
-    disableGraph: false
+    disableGraph: false,
+    disableCoverage: false
 }

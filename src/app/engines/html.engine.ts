@@ -203,7 +203,8 @@ export class HtmlEngine {
             'search-input',
             'link-type',
             'block-method',
-            'block-property'
+            'block-property',
+            'coverage'
         ],
             i = 0,
             len = partials.length,
