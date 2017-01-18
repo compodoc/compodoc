@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "rollup -c rollup/rollup.config.js && rollup -c rollup/rollup-cli.config.js",
-    "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "download-api-list": "node tools/download-api-list.js",
     "start": "npm run tsc",
     "test": "TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
