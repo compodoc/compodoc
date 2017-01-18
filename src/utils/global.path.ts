@@ -10,8 +10,7 @@ export default function isGlobal() {
 
                 for (var i = 0; i < len; i++) {
                     if (path.basename(pathnames[i]) === 'npm' || path.basename(pathnames[i]) === 'nodejs') {
-                        binPath = pathnames[i]
-                        break
+                        binPath = pathnames[i];
                     }
                 }
             } else {
