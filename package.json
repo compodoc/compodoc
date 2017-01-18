@@ -7,7 +7,6 @@
     "compodoc": "./bin/index-cli.js"
   },
   "scripts": {
-    "build:test": "rollup -c rollup/rollup-cli.config.js -m inline",
     "build": "rollup -c rollup/rollup.config.js && rollup -c rollup/rollup-cli.config.js",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "download-api-list": "node tools/download-api-list.js",
@@ -29,7 +28,7 @@
       "extensions": "js,ts",
       "quiet": true
     },
-    "build:test": {
+    "build": {
       "patterns": [
         "src/**/*.ts"
       ],
