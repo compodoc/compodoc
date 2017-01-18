@@ -16,7 +16,7 @@
   <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
-Features
+#Features
 ------------
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
@@ -35,11 +35,11 @@ Features
 
 * **Documentation coverage** - Get the documentation coverage report of your project
 
-## Live Demo
+# Live Demo
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
 
-## Static Demo
+# Static Demo
 
 Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx) and default theme (gitbook)
 
@@ -53,14 +53,14 @@ Component page             |  Source code tab
 Search page             |  Coverage report
 ![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/8.png)
 
-## Why this tool ?
+# Why this tool ?
 
 Because we doesn't find our needs on existing tools. We want to have a single place where there is :
 - api documentation of code
 - component(s), directive(s), pipe(s), ... documentation
 - general documentation (\*.md files)
 
-## Why not a SPA for outputed documentation ?
+# Why not a SPA for outputed documentation ?
 
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
@@ -72,6 +72,7 @@ These are some that we know of. Want your project listed here ? Drop us a line.
 
 # Table of Contents
 
+- [Node.js versions](#node.js-versions)
 - [Getting Started with compodoc](#getting-started-with-compodoc)
   - [Install](#install)
   - [Usage](#usage)
@@ -92,6 +93,10 @@ These are some that we know of. Want your project listed here ? Drop us a line.
 - [Contributors](#contributors)
 - [Resources](#resources)
 - [License](#license)
+
+## Node.js versions
+
+Compodoc is tested with only LTS versions : v6.9.4 & v4.7.1
 
 ## Getting Started with compodoc
 
