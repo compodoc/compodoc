@@ -16,7 +16,20 @@
     "tsc": "tsc --newLine LF --watch",
     "watch-rollup": "rollup -c -w",
     "lint": "tslint src/**/*.ts",
-    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'"
+    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'",
+    "test:watch": "npm-watch"
+  },
+  "watch": {
+    "test": {
+      "patterns": ["dist/index-cli.js", "test/src/**/*.ts"],
+      "extensions": "js,ts",
+      "quiet": true
+    },
+    "build": {
+      "patterns": ["src/**/*.ts"],
+      "extensions": "js,ts",
+      "quiet": true
+    }
   },
   "repository": {
     "type": "git",
@@ -74,6 +87,7 @@
     "conventional-changelog-cli": "^1.2.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
+    "npm-watch": "^0.1.7",
     "nyc": "^10.1.2",
     "rimraf": "^2.5.4",
     "rollup": "^0.41.4",
