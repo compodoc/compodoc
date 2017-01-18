@@ -788,7 +788,7 @@ var NgdEngine = function () {
                 if (/ /g.test(ngdPath)) {
                     ngdPath = ngdPath.replace(/ /g, '^ ');
                 }
-                var finalPath = 'node ' + path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
+                var finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
                 Shelljs.exec(finalPath, {
                     silent: true
                 }, function (code, stdout, stderr) {
