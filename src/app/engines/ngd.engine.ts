@@ -16,7 +16,7 @@ export class NgdEngine {
            if (/ /g.test(ngdPath)) {
                ngdPath = ngdPath.replace(/ /g, '^ ');
            }
-           let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg'
+           let finalPath = 'node ' + path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg'
            Shelljs.exec(finalPath, {
                silent: true
            }, function(code, stdout, stderr) {
