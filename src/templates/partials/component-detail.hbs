@@ -167,29 +167,23 @@
             <table class="table table-sm table-bordered">
                 <tbody>
                     <tr>
-                        <td class="col-md-4">
-                            <b>{{name}}</b>
+                        <td class="col-md-2">
+                            <code>{{name}}</code>
+                        </td>
+                        <td class="col-md-10">
+                          {{#if description}}
+                            <div>{{{description}}}</div>
+                          {{/if}}
+                          <p>
+                            <em>Type:</em>{{> link-type type=type }}
+                          </p>
+                          {{#if defaultValue}}
+                            <p>
+                              <em>Default value: </em><code>{{defaultValue}}</code>
+                            </p>
+                          {{/if}}
                         </td>
                     </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <code>{{name}}: {{> link-type type=type }}</bcode>
-                        </td>
-                    </tr>
-                    {{#if defaultValue}}
-                        <tr>
-                            <td class="col-md-4">
-                                <i>Default value: </i><code>{{defaultValue}}</code>
-                            </td>
-                        </tr>
-                    {{/if}}
-                    {{#if description}}
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-description">{{{description}}}</div>
-                        </td>
-                    </tr>
-                    {{/if}}
                 </tbody>
             </table>
         {{/each}}
@@ -198,36 +192,23 @@
 
 {{#if component.outputsClass}}
     <section>
-        <h3 id="inputs">Outputs</h3>
+        <h3 id="outputs">Outputs</h3>
         {{#each component.outputsClass}}
             <table class="table table-sm table-bordered">
                 <tbody>
                     <tr>
-                        <td class="col-md-4">
-                            <b>{{name}}</b>
+                        <td class="col-md-2">
+                            <code>{{name}}</code>
+                        </td>
+                        <td class="col-md-10">
+                          {{#if description}}
+                            <div>{{{description}}}</div>
+                          {{/if}}
+                          {{#if type}}
+                            <em><code>$event</code> type:</em>{{> link-type type=type }}
+                          {{/if}}
                         </td>
                     </tr>
-                    {{#if type}}
-                    <tr>
-                        <td class="col-md-4">
-                            <code>{{name}}: {{> link-type type=type }}</bcode>
-                        </td>
-                    </tr>
-                    {{/if}}
-                    {{#if defaultValue}}
-                        <tr>
-                            <td class="col-md-4">
-                                <i>Default value: </i><code>{{defaultValue}}</code>
-                            </td>
-                        </tr>
-                    {{/if}}
-                    {{#if description}}
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-description">{{{description}}}</div>
-                        </td>
-                    </tr>
-                    {{/if}}
                 </tbody>
             </table>
         {{/each}}

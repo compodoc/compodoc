@@ -546,7 +546,8 @@ export class Dependencies {
         var outArgs = outDecorator.expression.arguments;
         return {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment())),
+            type: this.visitType(property.type.typeArguments[0])
         };
     }
 

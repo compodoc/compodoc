@@ -654,6 +654,30 @@ describe('CLI', () => {
         });
     });
 
+    describe('showing the output type', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.entry.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/FooComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should show the event output type', () => {
+            expect(componentFile).to.contain('{ foo: string; }');
+        });
+
+    });
+
     describe('excluding methods', () => {
 
         let stdoutString = null, componentFile;
