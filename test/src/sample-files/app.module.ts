@@ -9,7 +9,9 @@ import { FooModule } from './foo.module';
 
 @NgModule({
   declarations: [
-    FooDirective, FooComponent
+    FooDirective,
+    FooComponent,
+    BarComponent
   ],
   providers: [
     FooService

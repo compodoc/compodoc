@@ -113,7 +113,7 @@ export class Application {
 
         let crawler = new Dependencies(
           this.files, {
-            tsconfigDirectory: cwd
+            tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
           }
         );
 
@@ -160,7 +160,32 @@ export class Application {
 
     prepareModules() {
         logger.info('Prepare modules');
-        this.configuration.mainData.modules = $dependenciesEngine.getModules();
+        this.configuration.mainData.modules = $dependenciesEngine.getModules().map(ngModule => {
+            ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
+                ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
+                    switch (metaDataItem.type) {
+                        case 'directive':
+                            return $dependenciesEngine.getDirectives().some(directive => directive.name === metaDataItem.name);
+
+                        case 'component':
+                            return $dependenciesEngine.getComponents().some(component => component.name === metaDataItem.name);
+
+                        case 'module':
+                            return $dependenciesEngine.getModules().some(module => module.name === metaDataItem.name);
+
+                        case 'pipe':
+                            return $dependenciesEngine.getPipes().some(pipe => pipe.name === metaDataItem.name);
+
+                        default:
+                            return true;
+                    }
+                });
+            });
+            ngModule.providers = ngModule.providers.filter(provider => {
+                return $dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name);
+            });
+            return ngModule;
+        });
         this.configuration.addPage({
             name: 'modules',
             context: 'modules'
