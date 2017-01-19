@@ -1,24 +1,40 @@
 {
   "name": "compodoc",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
     "compodoc": "./bin/index-cli.js"
   },
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c rollup/rollup.config.js && ./node_modules/.bin/rollup -c rollup/rollup-cli.config.js",
-    "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "build": "rollup -c rollup/rollup.config.js && rollup -c rollup/rollup-cli.config.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "download-api-list": "node tools/download-api-list.js",
     "start": "npm run tsc",
-    "pretest": "tsc -p test/tsconfig.json",
-    "test": "nyc mocha --opts test/mocha.opts",
-    "posttest": "nyc report --reporter=json",
+    "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
     "codecov": "codecov -f coverage/*.json",
-    "tsc": "./node_modules/.bin/tsc --newLine LF --watch",
-    "watch-rollup": "./node_modules/.bin/rollup -c -w",
-    "lint": "./node_modules/.bin/tslint src/**/*.ts",
-    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'"
+    "tsc": "tsc --newLine LF --watch",
+    "watch-rollup": "rollup -c -w",
+    "lint": "tslint src/**/*.ts",
+    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'",
+    "test:watch": "npm-watch"
+  },
+  "watch": {
+    "test": {
+      "patterns": [
+        "dist/index-cli.js",
+        "test/src/**/*.ts"
+      ],
+      "extensions": "js,ts",
+      "quiet": true
+    },
+    "build": {
+      "patterns": [
+        "src/**/*.ts"
+      ],
+      "extensions": "js,ts",
+      "quiet": true
+    }
   },
   "repository": {
     "type": "git",
@@ -48,7 +64,7 @@
     "cheerio": "^0.22.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
-    "fs-extra": "^1.0.0",
+    "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "gulp-util": "^3.0.8",
     "handlebars": "^4.0.6",
@@ -68,21 +84,42 @@
     "@types/fs-extra": "0.0.37",
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
-    "@types/mocha": "^2.2.37",
+    "@types/mocha": "^2.2.38",
     "@types/node": "7.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
     "conventional-changelog-cli": "^1.2.0",
+    "cross-env": "^3.1.4",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
-    "nyc": "^10.0.0",
+    "npm-watch": "^0.1.7",
+    "nyc": "^10.1.2",
     "rimraf": "^2.5.4",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
+    "ts-node": "^2.0.0",
     "tslint": "^4.3.1",
     "webshot": "^0.18.0"
+  },
+  "nyc": {
+    "include": [
+      "dist/index-cli.js",
+      "bin/*.js"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "json",
+      "html",
+      "text-summary"
+    ],
+    "all": true
   }
 }

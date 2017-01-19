@@ -26,6 +26,7 @@ export class CliApplication extends Application
             .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
+            .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
             .option('-o, --open', 'Open the generated documentation', false)
             //.option('-i, --includes [path]', 'Path of external markdown files to include')
             //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
@@ -62,6 +63,10 @@ export class CliApplication extends Application
 
         if (program.name) {
             this.configuration.mainData.documentationMainName = program.name;
+        }
+
+        if (program.assetsFolder) {
+            this.configuration.mainData.assetsFolder = program.assetsFolder;
         }
 
         if (program.open) {

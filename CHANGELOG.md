@@ -1,3 +1,14 @@
+<a name="0.0.34"></a>
+## 0.0.34 (2017-01-19)
+
+### Bug Fixes
+
+* **app:** nvm or nodejs / windows support ([0512c899](https://github.com/compodoc/compodoc/commit/0512c899)), closes [#44](https://github.com/compodoc/compodoc/issues/44)
+
+### Features
+
+* **app:** support external assets folder ([90ba24d](https://github.com/compodoc/compodoc/commit/90ba24d)), closes [#71](https://github.com/compodoc/compodoc/issues/71)
+
 <a name="0.0.33"></a>
 ## 0.0.33 (2017-01-17)
 

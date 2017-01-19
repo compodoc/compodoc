@@ -10,13 +10,13 @@ describe('CLI Options', () => {
 
     before( () => {
         tmp.create();
-        runHelp = shell('node', ['./bin/index-cli.js', '-h']);
+        runHelp = shell('ts-node', ['./bin/index-cli.js', '-h']);
     });
     after( () => tmp.clean() );
 
 
     it(`should display correct version ${pkg.version}`, () => {
-        let runVersion = shell('node', ['./bin/index-cli.js', '-V']);
+        let runVersion = shell('ts-node', ['./bin/index-cli.js', '-V']);
         expect(runVersion.stdout.toString()).to.contain(pkg.version);
     });
 
@@ -54,6 +54,11 @@ describe('CLI Options', () => {
         it(`-n`, () => {
             expect(runHelp.stdout.toString()).to.contain('-n, --name [name]');
             expect(runHelp.stdout.toString()).to.contain('Title documentation');
+        });
+
+        it(`-a`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-a, --assetsFolder [folder]');
+            expect(runHelp.stdout.toString()).to.contain('External assets folder to copy in generated documentation folder');
         });
 
         it(`-o`, () => {

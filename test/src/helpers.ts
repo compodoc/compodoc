@@ -42,7 +42,9 @@ export function temporaryDir() {
         },
         clean(param?) {
             if (param) name = param;
-            cleanUp(name);
+            try {
+                cleanUp(name);
+            } catch (e) {}
         }
     }
 }

@@ -1,0 +1,38 @@
+<ol class="breadcrumb">
+  <li>Documentation coverage</li> 
+</ol>
+
+<div class="coverage-badge">
+    <span>Project</span>
+    <span class="count {{data.status}}">{{data.count}}%</span>
+</div>
+
+<table class="table table-bordered coverage">
+    <thead class="coverage-header">
+        <tr>
+            <th>File</th>
+            <th>Type</th>
+            <th>Identifier</th>
+            <th style="text-align:right">Statements</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each files}}
+        <tr class="{{status}}">
+            <td>
+                <a href="./{{type}}s/{{name}}.html">{{filePath}}</a>
+            </td>
+            <td>
+                {{type}}
+            </td>
+            <td>
+                {{name}}
+            </td>
+            <td align="right">
+                <span class="coverage-percent">{{coveragePercent}} %</span>
+                <span class="coverage-count">({{coverageCount}})</span>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
