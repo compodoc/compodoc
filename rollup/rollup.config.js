@@ -1,17 +1,13 @@
 // rollup.config.js
 import typescript from 'rollup-plugin-typescript';
-import babel from 'rollup-plugin-babel';
 
 export default {
-    entry: './src/index.ts',
-    dest: 'dist/index.js',
     format: 'cjs',
     sourceMap: 'inline',
     plugins: [
         typescript({
             typescript: require('typescript')
-        }),
-        babel()
+        })
     ],
     external: [
         'handlebars',

@@ -16,138 +16,11 @@ var Shelljs = require('shelljs');
 var ts = require('typescript');
 var util = require('util');
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-
-
-
-
-
-
-
-
-
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
+function __extends(d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
 
 var gutil = require('gulp-util');
 var c = gutil.colors;
@@ -158,84 +31,70 @@ var LEVEL;
     LEVEL[LEVEL["DEBUG"] = 1] = "DEBUG";
     LEVEL[LEVEL["ERROR"] = 2] = "ERROR";
 })(LEVEL || (LEVEL = {}));
-
-var Logger = function () {
+var Logger = (function () {
     function Logger() {
-        classCallCheck(this, Logger);
-
         this.name = pkg$1.name;
         this.version = pkg$1.version;
         this.logger = gutil.log;
         this.silent = true;
     }
-
-    createClass(Logger, [{
-        key: 'info',
-        value: function info() {
-            if (!this.silent) return;
-
-            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-            }
-
-            this.logger(this.format.apply(this, [LEVEL.INFO].concat(args)));
+    Logger.prototype.info = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
         }
-    }, {
-        key: 'error',
-        value: function error() {
-            if (!this.silent) return;
-
-            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                args[_key2] = arguments[_key2];
-            }
-
-            this.logger(this.format.apply(this, [LEVEL.ERROR].concat(args)));
+        if (!this.silent)
+            return;
+        this.logger(this.format.apply(this, [LEVEL.INFO].concat(args)));
+    };
+    Logger.prototype.error = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
         }
-    }, {
-        key: 'debug',
-        value: function debug() {
-            if (!this.silent) return;
-
-            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                args[_key3] = arguments[_key3];
-            }
-
-            this.logger(this.format.apply(this, [LEVEL.DEBUG].concat(args)));
+        if (!this.silent)
+            return;
+        this.logger(this.format.apply(this, [LEVEL.ERROR].concat(args)));
+    };
+    Logger.prototype.debug = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
         }
-    }, {
-        key: 'format',
-        value: function format(level) {
-            var pad = function pad(s, l) {
-                var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-
-                return s + Array(Math.max(0, l - s.length + 1)).join(c);
-            };
-
-            for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-                args[_key4 - 1] = arguments[_key4];
-            }
-
-            var msg = args.join(' ');
-            if (args.length > 1) {
-                msg = pad(args.shift(), 15, ' ') + ': ' + args.join(' ');
-            }
-            switch (level) {
-                case LEVEL.INFO:
-                    msg = c.green(msg);
-                    break;
-                case LEVEL.DEBUG:
-                    msg = c.cyan(msg);
-                    break;
-                case LEVEL.ERROR:
-                    msg = c.red(msg);
-                    break;
-            }
-            return [msg].join('');
+        if (!this.silent)
+            return;
+        this.logger(this.format.apply(this, [LEVEL.DEBUG].concat(args)));
+    };
+    Logger.prototype.format = function (level) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
         }
-    }]);
+        var pad = function (s, l, c) {
+            if (c === void 0) { c = ''; }
+            return s + Array(Math.max(0, l - s.length + 1)).join(c);
+        };
+        var msg = args.join(' ');
+        if (args.length > 1) {
+            msg = pad(args.shift(), 15, ' ') + ": " + args.join(' ');
+        }
+        switch (level) {
+            case LEVEL.INFO:
+                msg = c.green(msg);
+                break;
+            case LEVEL.DEBUG:
+                msg = c.cyan(msg);
+                break;
+            case LEVEL.ERROR:
+                msg = c.red(msg);
+                break;
+        }
+        return [
+            msg
+        ].join('');
+    };
     return Logger;
-}();
-
+}());
 var logger = new Logger();
 
 var AngularAPIs = require('../src/data/api-list.json');
@@ -245,8 +104,7 @@ function finderInAngularAPIs(type) {
         data: null
     };
     _.forEach(AngularAPIs, function (angularModuleAPIs, angularModule) {
-        var i = 0,
-            len = angularModuleAPIs.length;
+        var i = 0, len = angularModuleAPIs.length;
         for (i; i < len; i++) {
             if (angularModuleAPIs[i].title === type) {
                 _result.data = angularModuleAPIs[i];
@@ -256,115 +114,83 @@ function finderInAngularAPIs(type) {
     return _result;
 }
 
-var DependenciesEngine = function () {
+var DependenciesEngine = (function () {
     function DependenciesEngine() {
-        classCallCheck(this, DependenciesEngine);
-
         if (DependenciesEngine._instance) {
             throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
         }
         DependenciesEngine._instance = this;
     }
-
-    createClass(DependenciesEngine, [{
-        key: 'init',
-        value: function init(data) {
-            this.rawData = data;
-            this.modules = _.sortBy(this.rawData.modules, ['name']);
-            this.components = _.sortBy(this.rawData.components, ['name']);
-            this.directives = _.sortBy(this.rawData.directives, ['name']);
-            this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-            this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-            this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
-            this.pipes = _.sortBy(this.rawData.pipes, ['name']);
-            this.classes = _.sortBy(this.rawData.classes, ['name']);
-        }
-    }, {
-        key: 'find',
-        value: function find$$1(type) {
-            var finderInCompodocDependencies = function finderInCompodocDependencies(data) {
-                var _result = {
-                    source: 'internal',
-                    data: null
-                },
-                    i = 0,
-                    len = data.length;
-                for (i; i < len; i++) {
-                    if (type.indexOf(data[i].name) !== -1) {
-                        _result.data = data[i];
-                    }
+    DependenciesEngine.getInstance = function () {
+        return DependenciesEngine._instance;
+    };
+    DependenciesEngine.prototype.init = function (data) {
+        this.rawData = data;
+        this.modules = _.sortBy(this.rawData.modules, ['name']);
+        this.components = _.sortBy(this.rawData.components, ['name']);
+        this.directives = _.sortBy(this.rawData.directives, ['name']);
+        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
+        this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
+        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
+        this.classes = _.sortBy(this.rawData.classes, ['name']);
+    };
+    DependenciesEngine.prototype.find = function (type) {
+        var finderInCompodocDependencies = function (data) {
+            var _result = {
+                source: 'internal',
+                data: null
+            }, i = 0, len = data.length;
+            for (i; i < len; i++) {
+                if (type.indexOf(data[i].name) !== -1) {
+                    _result.data = data[i];
                 }
-                return _result;
-            },
-                resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
-                resultInCompodocClasses = finderInCompodocDependencies(this.classes),
-                resultInAngularAPIs = finderInAngularAPIs(type);
-            if (resultInCompodocInjectables.data !== null) {
-                return resultInCompodocInjectables;
-            } else if (resultInCompodocClasses.data !== null) {
-                return resultInCompodocClasses;
-            } else if (resultInAngularAPIs.data !== null) {
-                return resultInAngularAPIs;
             }
+            return _result;
+        }, resultInCompodocInjectables = finderInCompodocDependencies(this.injectables), resultInCompodocClasses = finderInCompodocDependencies(this.classes), resultInAngularAPIs = finderInAngularAPIs(type);
+        if (resultInCompodocInjectables.data !== null) {
+            return resultInCompodocInjectables;
         }
-    }, {
-        key: 'getModules',
-        value: function getModules() {
-            return this.modules;
+        else if (resultInCompodocClasses.data !== null) {
+            return resultInCompodocClasses;
         }
-    }, {
-        key: 'getComponents',
-        value: function getComponents() {
-            return this.components;
+        else if (resultInAngularAPIs.data !== null) {
+            return resultInAngularAPIs;
         }
-    }, {
-        key: 'getDirectives',
-        value: function getDirectives() {
-            return this.directives;
-        }
-    }, {
-        key: 'getInjectables',
-        value: function getInjectables() {
-            return this.injectables;
-        }
-    }, {
-        key: 'getInterfaces',
-        value: function getInterfaces() {
-            return this.interfaces;
-        }
-    }, {
-        key: 'getRoutes',
-        value: function getRoutes() {
-            return this.routes;
-        }
-    }, {
-        key: 'getPipes',
-        value: function getPipes() {
-            return this.pipes;
-        }
-    }, {
-        key: 'getClasses',
-        value: function getClasses() {
-            return this.classes;
-        }
-    }], [{
-        key: 'getInstance',
-        value: function getInstance() {
-            return DependenciesEngine._instance;
-        }
-    }]);
+    };
+    DependenciesEngine.prototype.getModules = function () {
+        return this.modules;
+    };
+    DependenciesEngine.prototype.getComponents = function () {
+        return this.components;
+    };
+    DependenciesEngine.prototype.getDirectives = function () {
+        return this.directives;
+    };
+    DependenciesEngine.prototype.getInjectables = function () {
+        return this.injectables;
+    };
+    DependenciesEngine.prototype.getInterfaces = function () {
+        return this.interfaces;
+    };
+    DependenciesEngine.prototype.getRoutes = function () {
+        return this.routes;
+    };
+    DependenciesEngine.prototype.getPipes = function () {
+        return this.pipes;
+    };
+    DependenciesEngine.prototype.getClasses = function () {
+        return this.classes;
+    };
     return DependenciesEngine;
-}();
-
+}());
 DependenciesEngine._instance = new DependenciesEngine();
 
 var $dependenciesEngine = DependenciesEngine.getInstance();
 
 //import * as helpers from 'handlebars-helpers';
-var HtmlEngine = function () {
+var HtmlEngine = (function () {
     function HtmlEngine() {
-        classCallCheck(this, HtmlEngine);
-
         this.cache = {};
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
         Handlebars.registerHelper("compare", function (a, operator, b, options) {
@@ -374,7 +200,7 @@ var HtmlEngine = function () {
             var result;
             switch (operator) {
                 case 'indexof':
-                    result = b.indexOf(a) !== -1;
+                    result = (b.indexOf(a) !== -1);
                     break;
                 case '===':
                     result = a === b;
@@ -385,10 +211,9 @@ var HtmlEngine = function () {
                 case '>':
                     result = a > b;
                     break;
-                default:
-                    {
-                        throw new Error('helper {{compare}}: invalid operator: `' + operator + '`');
-                    }
+                default: {
+                    throw new Error('helper {{compare}}: invalid operator: `' + operator + '`');
+                }
             }
             if (result === false) {
                 return options.inverse(this);
@@ -396,10 +221,13 @@ var HtmlEngine = function () {
             return options.fn(this);
         });
         Handlebars.registerHelper("filterAngular2Modules", function (text, options) {
-            var NG2_MODULES = ['BrowserModule', 'FormsModule', 'HttpModule', 'RouterModule'],
-                len = NG2_MODULES.length;
-            var i = 0,
-                result = false;
+            var NG2_MODULES = [
+                'BrowserModule',
+                'FormsModule',
+                'HttpModule',
+                'RouterModule'
+            ], len = NG2_MODULES.length;
+            var i = 0, result = false;
             for (i; i < len; i++) {
                 if (text.indexOf(NG2_MODULES[i]) > -1) {
                     result = true;
@@ -407,7 +235,8 @@ var HtmlEngine = function () {
             }
             if (result) {
                 return options.fn(this);
-            } else {
+            }
+            else {
                 return options.inverse(this);
             }
         });
@@ -438,27 +267,29 @@ var HtmlEngine = function () {
                 var _result = $dependenciesEngine.find(arg.type);
                 if (_result) {
                     if (_result.source === 'internal') {
-                        var _path = _result.data.type;
-                        if (_result.data.type === 'class') _path = 'classe';
-                        return arg.name + ': <a href="./' + _path + 's/' + _result.data.name + '.html" >' + arg.type + '</a>';
-                    } else {
-                        var _path2 = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
-                        return arg.name + ': <a href="' + _path2 + '" target="_blank" >' + arg.type + '</a>';
+                        var path_1 = _result.data.type;
+                        if (_result.data.type === 'class')
+                            path_1 = 'classe';
+                        return arg.name + ": <a href=\"./" + path_1 + "s/" + _result.data.name + ".html\" >" + arg.type + "</a>";
                     }
-                } else {
-                    return arg.name + ': ' + arg.type;
+                    else {
+                        var path_2 = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                        return arg.name + ": <a href=\"" + path_2 + "\" target=\"_blank\" >" + arg.type + "</a>";
+                    }
+                }
+                else {
+                    return arg.name + ": " + arg.type;
                 }
             }).join(', ');
             if (method.name) {
-                return method.name + '(' + args + ')';
-            } else {
-                return '(' + args + ')';
+                return method.name + "(" + args + ")";
+            }
+            else {
+                return "(" + args + ")";
             }
         });
         Handlebars.registerHelper('jsdoc-returns-comment', function (jsdocTags, options) {
-            var i = 0,
-                len = jsdocTags.length,
-                result;
+            var i = 0, len = jsdocTags.length, result;
             for (i; i < len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'returns') {
@@ -470,9 +301,7 @@ var HtmlEngine = function () {
             return result;
         });
         Handlebars.registerHelper('jsdoc-params', function (jsdocTags, options) {
-            var i = 0,
-                len = jsdocTags.length,
-                tags = [];
+            var i = 0, len = jsdocTags.length, tags = [];
             for (i; i < len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'param') {
@@ -502,26 +331,28 @@ var HtmlEngine = function () {
                     raw: name
                 };
                 if (_result.source === 'internal') {
-                    if (_result.data.type === 'class') _result.data.type = 'classe';
+                    if (_result.data.type === 'class')
+                        _result.data.type = 'classe';
                     this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
                     this.type.target = '_self';
-                } else {
+                }
+                else {
                     this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
                     this.type.target = '_blank';
                 }
                 return options.fn(this);
-            } else {
+            }
+            else {
                 return options.inverse(this);
             }
         });
         Handlebars.registerHelper('indexableSignature', function (method) {
-            var args = method.args.map(function (arg) {
-                return arg.name + ': ' + arg.type;
-            }).join(', ');
+            var args = method.args.map(function (arg) { return arg.name + ": " + arg.type; }).join(', ');
             if (method.name) {
-                return method.name + '[' + args + ']';
-            } else {
-                return '[' + args + ']';
+                return method.name + "[" + args + "]";
+            }
+            else {
+                return "[" + args + "]";
             }
         });
         Handlebars.registerHelper('object', function (text) {
@@ -532,116 +363,123 @@ var HtmlEngine = function () {
             return new Handlebars.SafeString(text);
         });
     }
-
-    createClass(HtmlEngine, [{
-        key: 'init',
-        value: function init() {
-            var partials = ['menu', 'overview', 'readme', 'modules', 'module', 'components', 'component', 'component-detail', 'directives', 'directive', 'injectables', 'injectable', 'pipes', 'pipe', 'classes', 'class', 'interface', 'routes', 'search-results', 'search-input', 'link-type', 'block-method', 'block-property', 'coverage-report'],
-                i = 0,
-                len = partials.length,
-                loop = function loop(resolve$$1, reject) {
-                if (i <= len - 1) {
-                    fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', function (err, data) {
-                        if (err) {
-                            reject();
-                        }
-                        Handlebars.registerPartial(partials[i], data);
-                        i++;
-                        loop(resolve$$1, reject);
-                    });
-                } else {
-                    resolve$$1();
-                }
-            };
-            return new Promise(function (resolve$$1, reject) {
-                loop(resolve$$1, reject);
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render(mainData, page) {
-            var o = mainData,
-                that = this;
-            Object.assign(o, page);
-            return new Promise(function (resolve$$1, reject) {
-                if (that.cache['page']) {
-                    var template = Handlebars.compile(that.cache['page']),
-                        result = template({
-                        data: o
-                    });
-                    resolve$$1(result);
-                } else {
-                    fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', function (err, data) {
-                        if (err) {
-                            reject('Error during index ' + page.name + ' generation');
-                        } else {
-                            that.cache['page'] = data;
-                            var _template = Handlebars.compile(data),
-                                _result2 = _template({
-                                data: o
-                            });
-                            resolve$$1(_result2);
-                        }
-                    });
-                }
-            });
-        }
-    }]);
+    HtmlEngine.prototype.init = function () {
+        var partials = [
+            'menu',
+            'overview',
+            'readme',
+            'modules',
+            'module',
+            'components',
+            'component',
+            'component-detail',
+            'directives',
+            'directive',
+            'injectables',
+            'injectable',
+            'pipes',
+            'pipe',
+            'classes',
+            'class',
+            'interface',
+            'routes',
+            'search-results',
+            'search-input',
+            'link-type',
+            'block-method',
+            'block-property',
+            'coverage-report'
+        ], i = 0, len = partials.length, loop = function (resolve$$1, reject) {
+            if (i <= len - 1) {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+                    Handlebars.registerPartial(partials[i], data);
+                    i++;
+                    loop(resolve$$1, reject);
+                });
+            }
+            else {
+                resolve$$1();
+            }
+        };
+        return new Promise(function (resolve$$1, reject) {
+            loop(resolve$$1, reject);
+        });
+    };
+    HtmlEngine.prototype.render = function (mainData, page) {
+        var o = mainData, that = this;
+        Object.assign(o, page);
+        return new Promise(function (resolve$$1, reject) {
+            if (that.cache['page']) {
+                var template = Handlebars.compile(that.cache['page']), result = template({
+                    data: o
+                });
+                resolve$$1(result);
+            }
+            else {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', function (err, data) {
+                    if (err) {
+                        reject('Error during index ' + page.name + ' generation');
+                    }
+                    else {
+                        that.cache['page'] = data;
+                        var template = Handlebars.compile(data), result = template({
+                            data: o
+                        });
+                        resolve$$1(result);
+                    }
+                });
+            }
+        });
+    };
     return HtmlEngine;
-}();
+}());
 
-var MarkdownEngine = function () {
+var MarkdownEngine = (function () {
     function MarkdownEngine() {
-        classCallCheck(this, MarkdownEngine);
-
         var renderer = new marked.Renderer();
         renderer.code = function (code, language) {
             var validLang = !!(language && highlightjs.getLanguage(language));
             var highlighted = validLang ? highlightjs.highlight(language, code).value : code;
             highlighted = highlighted.replace(/(\r\n|\n|\r)/gm, '<br>');
-            return '<pre><code class="hljs ' + language + '">' + highlighted + '</code></pre>';
+            return "<pre><code class=\"hljs " + language + "\">" + highlighted + "</code></pre>";
         };
         marked__default.setOptions({ renderer: renderer });
     }
-
-    createClass(MarkdownEngine, [{
-        key: 'getReadmeFile',
-        value: function getReadmeFile() {
-            return new Promise(function (resolve$$1, reject) {
-                fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', function (err, data) {
-                    if (err) {
-                        reject('Error during README.md file reading');
-                    } else {
-                        resolve$$1(marked__default(data));
-                    }
-                });
+    MarkdownEngine.prototype.getReadmeFile = function () {
+        return new Promise(function (resolve$$1, reject) {
+            fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', function (err, data) {
+                if (err) {
+                    reject('Error during README.md file reading');
+                }
+                else {
+                    resolve$$1(marked__default(data));
+                }
             });
-        }
-    }]);
+        });
+    };
     return MarkdownEngine;
-}();
+}());
 
-var FileEngine = function () {
+var FileEngine = (function () {
     function FileEngine() {
-        classCallCheck(this, FileEngine);
     }
-
-    createClass(FileEngine, [{
-        key: 'get',
-        value: function get$$1(filepath) {
-            return new Promise(function (resolve$$1, reject) {
-                fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', function (err, data) {
-                    if (err) {
-                        reject('Error during ' + filepath + ' read');
-                    } else {
-                        resolve$$1(data);
-                    }
-                });
+    FileEngine.prototype.get = function (filepath) {
+        return new Promise(function (resolve$$1, reject) {
+            fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', function (err, data) {
+                if (err) {
+                    reject('Error during ' + filepath + ' read');
+                }
+                else {
+                    resolve$$1(data);
+                }
             });
-        }
-    }]);
+        });
+    };
     return FileEngine;
-}();
+}());
 
 var COMPODOC_DEFAULTS = {
     title: 'Application documentation',
@@ -656,10 +494,8 @@ var COMPODOC_DEFAULTS = {
     disableCoverage: false
 };
 
-var Configuration = function () {
+var Configuration = (function () {
     function Configuration() {
-        classCallCheck(this, Configuration);
-
         this._pages = [];
         this._mainData = {
             output: COMPODOC_DEFAULTS.folder,
@@ -694,43 +530,40 @@ var Configuration = function () {
         }
         Configuration._instance = this;
     }
-
-    createClass(Configuration, [{
-        key: 'addPage',
-        value: function addPage(page) {
-            this._pages.push(page);
-        }
-    }, {
-        key: 'pages',
-        get: function get$$1() {
+    Configuration.getInstance = function () {
+        return Configuration._instance;
+    };
+    Configuration.prototype.addPage = function (page) {
+        this._pages.push(page);
+    };
+    Object.defineProperty(Configuration.prototype, "pages", {
+        get: function () {
             return this._pages;
         },
-        set: function set$$1(pages) {
+        set: function (pages) {
             this._pages = [];
-        }
-    }, {
-        key: 'mainData',
-        get: function get$$1() {
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Configuration.prototype, "mainData", {
+        get: function () {
             return this._mainData;
         },
-        set: function set$$1(data) {
+        set: function (data) {
             Object.assign(this._mainData, data);
-        }
-    }], [{
-        key: 'getInstance',
-        value: function getInstance() {
-            return Configuration._instance;
-        }
-    }]);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Configuration;
-}();
-
+}());
 Configuration._instance = new Configuration();
 
 function isGlobal() {
-    var binPath,
-        globalBinPath = function globalBinPath() {
-        if (binPath) return binPath;
+    var binPath, globalBinPath = function () {
+        if (binPath)
+            return binPath;
         if (process.platform === 'win32') {
             var pathnames = process.env.PATH.split(path.delimiter);
             var len = pathnames.length;
@@ -739,18 +572,17 @@ function isGlobal() {
                     binPath = pathnames[i];
                 }
             }
-        } else {
+        }
+        else {
             binPath = path.dirname(process.execPath);
         }
         return binPath;
-    },
-        stripTrailingSep = function stripTrailingSep(thePath) {
+    }, stripTrailingSep = function (thePath) {
         if (thePath[thePath.length - 1] === path.sep) {
             return thePath.slice(0, -1);
         }
         return thePath;
-    },
-        pathIsInside = function pathIsInside(thePath, potentialParent) {
+    }, pathIsInside = function (thePath, potentialParent) {
         // For inside-directory checking, we want to allow trailing slashes, so normalize.
         thePath = stripTrailingSep(thePath);
         potentialParent = stripTrailingSep(potentialParent);
@@ -759,9 +591,10 @@ function isGlobal() {
             thePath = thePath.toLowerCase();
             potentialParent = potentialParent.toLowerCase();
         }
-        return thePath.lastIndexOf(potentialParent, 0) === 0 && (thePath[potentialParent.length] === path.sep || thePath[potentialParent.length] === undefined);
-    },
-        isPathInside = function isPathInside(a, b) {
+        return thePath.lastIndexOf(potentialParent, 0) === 0 &&
+            (thePath[potentialParent.length] === path.sep ||
+                thePath[potentialParent.length] === undefined);
+    }, isPathInside = function (a, b) {
         a = path.resolve(a);
         b = path.resolve(b);
         if (a === b) {
@@ -772,95 +605,79 @@ function isGlobal() {
     return isPathInside(process.argv[1] || '', globalBinPath() || '');
 }
 
-var NgdEngine = function () {
+var NgdEngine = (function () {
     function NgdEngine() {
-        classCallCheck(this, NgdEngine);
     }
-
-    createClass(NgdEngine, [{
-        key: 'renderGraph',
-        value: function renderGraph(filepath, outputpath, type) {
-            return new Promise(function (resolve$$1, reject) {
-                var ngdPath = isGlobal() ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
-                if (process.env.MODE && process.env.MODE === 'TESTING') {
-                    ngdPath = __dirname + '/../node_modules/.bin/ngd';
+    NgdEngine.prototype.renderGraph = function (filepath, outputpath, type) {
+        return new Promise(function (resolve$$1, reject) {
+            var ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
+            if (process.env.MODE && process.env.MODE === 'TESTING') {
+                ngdPath = __dirname + '/../node_modules/.bin/ngd';
+            }
+            if (/ /g.test(ngdPath)) {
+                ngdPath = ngdPath.replace(/ /g, '^ ');
+            }
+            var finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
+            Shelljs.exec(finalPath, {
+                silent: true
+            }, function (code, stdout, stderr) {
+                if (code === 0) {
+                    resolve$$1();
                 }
-                if (/ /g.test(ngdPath)) {
-                    ngdPath = ngdPath.replace(/ /g, '^ ');
+                else {
+                    reject(stderr);
                 }
-                var finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d ' + outputpath + ' -s -t svg';
-                Shelljs.exec(finalPath, {
-                    silent: true
-                }, function (code, stdout, stderr) {
-                    if (code === 0) {
-                        resolve$$1();
-                    } else {
-                        reject(stderr);
-                    }
-                });
             });
-        }
-    }]);
+        });
+    };
     return NgdEngine;
-}();
+}());
 
 var lunr = require('lunr');
 var cheerio = require('cheerio');
 var Entities = require('html-entities').AllHtmlEntities;
 var $configuration = Configuration.getInstance();
 var Html = new Entities();
-
-var SearchEngine = function () {
+var SearchEngine = (function () {
     function SearchEngine() {
-        classCallCheck(this, SearchEngine);
-
         this.documentsStore = {};
     }
-
-    createClass(SearchEngine, [{
-        key: 'getSearchIndex',
-        value: function getSearchIndex() {
-            if (!this.searchIndex) {
-                this.searchIndex = lunr(function () {
-                    this.ref('url');
-                    this.field('title', { boost: 10 });
-                    this.field('body');
-                });
-            }
-            return this.searchIndex;
-        }
-    }, {
-        key: 'indexPage',
-        value: function indexPage(page) {
-            var text,
-                $ = cheerio.load(page.rawData);
-            text = $('.content').html();
-            text = Html.decode(text);
-            text = text.replace(/(<([^>]+)>)/ig, '');
-            page.url = page.url.replace($configuration.mainData.output, '');
-            var doc = {
-                url: page.url,
-                title: page.infos.context + ' - ' + page.infos.name,
-                body: text
-            };
-            this.documentsStore[doc.url] = doc;
-            this.getSearchIndex().add(doc);
-        }
-    }, {
-        key: 'generateSearchIndexJson',
-        value: function generateSearchIndexJson(outputFolder) {
-            fs.writeJson(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + 'search_index.json'), {
-                index: this.getSearchIndex(),
-                store: this.documentsStore
-            }, function (err) {
-                if (err) {
-                    logger.error('Error during search index file generation ', err);
-                }
+    SearchEngine.prototype.getSearchIndex = function () {
+        if (!this.searchIndex) {
+            this.searchIndex = lunr(function () {
+                this.ref('url');
+                this.field('title', { boost: 10 });
+                this.field('body');
             });
         }
-    }]);
+        return this.searchIndex;
+    };
+    SearchEngine.prototype.indexPage = function (page) {
+        var text, $ = cheerio.load(page.rawData);
+        text = $('.content').html();
+        text = Html.decode(text);
+        text = text.replace(/(<([^>]+)>)/ig, '');
+        page.url = page.url.replace($configuration.mainData.output, '');
+        var doc = {
+            url: page.url,
+            title: page.infos.context + ' - ' + page.infos.name,
+            body: text
+        };
+        this.documentsStore[doc.url] = doc;
+        this.getSearchIndex().add(doc);
+    };
+    SearchEngine.prototype.generateSearchIndexJson = function (outputFolder) {
+        fs.writeJson(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + 'search_index.json'), {
+            index: this.getSearchIndex(),
+            store: this.documentsStore
+        }, function (err) {
+            if (err) {
+                logger.error('Error during search index file generation ', err);
+            }
+        });
+    };
     return SearchEngine;
-}();
+}());
 
 var tsany = ts;
 // https://github.com/Microsoft/TypeScript/blob/2.1/src/compiler/utilities.ts#L1507
@@ -871,25 +688,22 @@ function getJSDocs(node) {
 // get default new line break
 
 function detectIndent(str, count, indent) {
-    var stripIndent = function stripIndent(str) {
+    var stripIndent = function (str) {
         var match = str.match(/^[ \t]*(?=\S)/gm);
         if (!match) {
             return str;
         }
         // TODO: use spread operator when targeting Node.js 6
-        var indent = Math.min.apply(Math, match.map(function (x) {
-            return x.length;
-        })); // eslint-disable-line
-        var re = new RegExp('^[ \\t]{' + indent + '}', 'gm');
+        var indent = Math.min.apply(Math, match.map(function (x) { return x.length; })); // eslint-disable-line
+        var re = new RegExp("^[ \\t]{" + indent + "}", 'gm');
         return indent > 0 ? str.replace(re, '') : str;
-    },
-        repeating = function repeating(n, str) {
+    }, repeating = function (n, str) {
         str = str === undefined ? ' ' : str;
         if (typeof str !== 'string') {
-            throw new TypeError('Expected `input` to be a `string`, got `' + (typeof str === 'undefined' ? 'undefined' : _typeof(str)) + '`');
+            throw new TypeError("Expected `input` to be a `string`, got `" + typeof str + "`");
         }
         if (n < 0 || !Number.isFinite(n)) {
-            throw new TypeError('Expected `count` to be a positive finite number, got `' + n + '`');
+            throw new TypeError("Expected `count` to be a positive finite number, got `" + n + "`");
         }
         var ret = '';
         do {
@@ -897,20 +711,19 @@ function detectIndent(str, count, indent) {
                 ret += str;
             }
             str += str;
-        } while (n >>= 1);
+        } while ((n >>= 1));
         return ret;
-    },
-        indentString = function indentString(str, count, indent) {
+    }, indentString = function (str, count, indent) {
         indent = indent === undefined ? ' ' : indent;
         count = count === undefined ? 1 : count;
         if (typeof str !== 'string') {
-            throw new TypeError('Expected `input` to be a `string`, got `' + (typeof str === 'undefined' ? 'undefined' : _typeof(str)) + '`');
+            throw new TypeError("Expected `input` to be a `string`, got `" + typeof str + "`");
         }
         if (typeof count !== 'number') {
-            throw new TypeError('Expected `count` to be a `number`, got `' + (typeof count === 'undefined' ? 'undefined' : _typeof(count)) + '`');
+            throw new TypeError("Expected `count` to be a `number`, got `" + typeof count + "`");
         }
         if (typeof indent !== 'string') {
-            throw new TypeError('Expected `indent` to be a `string`, got `' + (typeof indent === 'undefined' ? 'undefined' : _typeof(indent)) + '`');
+            throw new TypeError("Expected `indent` to be a `string`, got `" + typeof indent + "`");
         }
         if (count === 0) {
             return str;
@@ -924,7 +737,7 @@ function detectIndent(str, count, indent) {
 function compilerHost(transpileOptions) {
     var inputFileName = transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
     var compilerHost = {
-        getSourceFile: function getSourceFile(fileName) {
+        getSourceFile: function (fileName) {
             if (fileName.lastIndexOf('.ts') !== -1) {
                 if (fileName === 'lib.d.ts') {
                     return undefined;
@@ -935,92 +748,69 @@ function compilerHost(transpileOptions) {
                 var libSource = '';
                 try {
                     libSource = fs.readFileSync(fileName).toString();
-                } catch (e) {
+                }
+                catch (e) {
                     logger.debug(e, fileName);
                 }
                 return ts.createSourceFile(fileName, libSource, transpileOptions.target, false);
             }
             return undefined;
         },
-        writeFile: function writeFile(name, text) {},
-        getDefaultLibFileName: function getDefaultLibFileName() {
-            return 'lib.d.ts';
-        },
-        useCaseSensitiveFileNames: function useCaseSensitiveFileNames() {
-            return false;
-        },
-        getCanonicalFileName: function getCanonicalFileName(fileName) {
-            return fileName;
-        },
-        getCurrentDirectory: function getCurrentDirectory() {
-            return '';
-        },
-        getNewLine: function getNewLine() {
-            return '\n';
-        },
-        fileExists: function fileExists(fileName) {
-            return fileName === inputFileName;
-        },
-        readFile: function readFile$$1() {
-            return '';
-        },
-        directoryExists: function directoryExists() {
-            return true;
-        },
-        getDirectories: function getDirectories() {
-            return [];
-        }
+        writeFile: function (name, text) { },
+        getDefaultLibFileName: function () { return 'lib.d.ts'; },
+        useCaseSensitiveFileNames: function () { return false; },
+        getCanonicalFileName: function (fileName) { return fileName; },
+        getCurrentDirectory: function () { return ''; },
+        getNewLine: function () { return '\n'; },
+        fileExists: function (fileName) { return fileName === inputFileName; },
+        readFile: function () { return ''; },
+        directoryExists: function () { return true; },
+        getDirectories: function () { return []; }
     };
     return compilerHost;
 }
 
-var RouterParser = function () {
-    var routes = [],
-        modules = [],
-        modulesTree,
-        rootModule,
-        modulesWithRoutes = [];
+var RouterParser = (function () {
+    var routes = [], modules = [], modulesTree, rootModule, modulesWithRoutes = [];
     return {
-        addRoute: function addRoute(route) {
+        addRoute: function (route) {
             routes.push(route);
             routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
         },
-        addModuleWithRoutes: function addModuleWithRoutes(moduleName, moduleImports) {
+        addModuleWithRoutes: function (moduleName, moduleImports) {
             modulesWithRoutes.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
         },
-        addModule: function addModule(moduleName, moduleImports) {
+        addModule: function (moduleName, moduleImports) {
             modules.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
         },
-        setRootModule: function setRootModule(module) {
+        setRootModule: function (module) {
             rootModule = module;
         },
-        printRoutes: function printRoutes() {
+        printRoutes: function () {
             //console.log('');
             //console.log(routes);
         },
-        hasRouterModuleInImports: function hasRouterModuleInImports(imports) {
-            var result = false,
-                i = 0,
-                len = imports.length;
+        hasRouterModuleInImports: function (imports) {
+            var result = false, i = 0, len = imports.length;
             for (i; i < len; i++) {
-                if (imports[i].name.indexOf('RouterModule.forChild') !== -1 || imports[i].name.indexOf('RouterModule.forRoot') !== -1) {
+                if (imports[i].name.indexOf('RouterModule.forChild') !== -1 ||
+                    imports[i].name.indexOf('RouterModule.forRoot') !== -1) {
                     result = true;
                 }
             }
             return result;
         },
-        linkModulesAndRoutes: function linkModulesAndRoutes() {
+        linkModulesAndRoutes: function () {
             //scan each module imports AST for each routes, and link routes with module
-            var i = 0,
-                len = modulesWithRoutes.length;
+            var i = 0, len = modulesWithRoutes.length;
             for (i; i < len; i++) {
                 _.forEach(modulesWithRoutes[i].importsNode, function (node) {
                     if (node.initializer) {
@@ -1042,13 +832,12 @@ var RouterParser = function () {
                 });
             }
         },
-        constructRoutesTree: function constructRoutesTree() {
+        constructRoutesTree: function () {
             //console.log('constructRoutesTree');
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
-            var cleanModulesTree = _.cloneDeep(modulesTree),
-                modulesCleaner = function modulesCleaner(arr) {
+            var cleanModulesTree = _.cloneDeep(modulesTree), modulesCleaner = function (arr) {
                 for (var i in arr) {
                     if (arr[i].importsNode) {
                         delete arr[i].importsNode;
@@ -1072,10 +861,10 @@ var RouterParser = function () {
                 name: rootModule,
                 children: []
             };
-            var foundRouteWithModuleName = function foundRouteWithModuleName(moduleName) {
+            var foundRouteWithModuleName = function (moduleName) {
                 return _.find(routes, { 'module': moduleName });
             };
-            var loopModulesParser = function loopModulesParser(node) {
+            var loopModulesParser = function (node) {
                 for (var i in node.children) {
                     var route = foundRouteWithModuleName(node.children[i].name);
                     if (route) {
@@ -1095,7 +884,7 @@ var RouterParser = function () {
             console.log('');
             //fs.outputJson('./routes-tree.json', routesTree);
             var cleanedRoutesTree;
-            var cleanRoutesTree = function cleanRoutesTree(route) {
+            var cleanRoutesTree = function (route) {
                 for (var i in route.children) {
                     var routes = route.children[i].routes;
                     console.log(routes);
@@ -1106,8 +895,8 @@ var RouterParser = function () {
             console.log('');
             console.log('cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
         },
-        constructModulesTree: function constructModulesTree() {
-            var getNestedChildren = function getNestedChildren(arr, parent) {
+        constructModulesTree: function () {
+            var getNestedChildren = function (arr, parent) {
                 var out = [];
                 for (var i in arr) {
                     if (arr[i].parent === parent) {
@@ -1133,40 +922,38 @@ var RouterParser = function () {
             modulesTree = getNestedChildren(modules);
         }
     };
-}();
+})();
 
 var code = [];
-var gen = function () {
+var gen = (function () {
     var tmp = [];
-    return function () {
-        var token = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
+    return function (token) {
+        if (token === void 0) { token = null; }
         if (!token) {
             //console.log(' ! token');
             return code;
-        } else if (token === '\n') {
+        }
+        else if (token === '\n') {
             //console.log(' \n');
             code.push(tmp.join(''));
             tmp = [];
-        } else {
+        }
+        else {
             code.push(token);
         }
         return code;
     };
-}();
+}());
 function generate(node) {
     code = [];
     visitAndRecognize(node);
     return code.join('');
 }
-function visitAndRecognize(node) {
-    var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
+function visitAndRecognize(node, depth) {
+    if (depth === void 0) { depth = 0; }
     recognize(node);
     depth++;
-    node.getChildren().forEach(function (c) {
-        return visitAndRecognize(c, depth);
-    });
+    node.getChildren().forEach(function (c) { return visitAndRecognize(c, depth); });
 }
 function recognize(node) {
     //console.log('recognizing...', ts.SyntaxKind[node.kind+'']);
@@ -1287,10 +1074,8 @@ function recognize(node) {
     }
 }
 
-var Dependencies = function () {
+var Dependencies = (function () {
     function Dependencies(files, options) {
-        classCallCheck(this, Dependencies);
-
         this.__cache = {};
         this.__nsModule = {};
         this.unknown = '???';
@@ -1302,817 +1087,688 @@ var Dependencies = function () {
         };
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
     }
-
-    createClass(Dependencies, [{
-        key: 'breakLines',
-        value: function breakLines(text) {
-            var _t = text;
-            if (typeof _t !== 'undefined') {
-                _t = _t.replace(/(\n)/gm, '<br>');
-                _t = _t.replace(/(<br>)$/gm, '');
-            }
-            return _t;
+    Dependencies.prototype.breakLines = function (text) {
+        var _t = text;
+        if (typeof _t !== 'undefined') {
+            _t = _t.replace(/(\n)/gm, '<br>');
+            _t = _t.replace(/(<br>)$/gm, '');
         }
-    }, {
-        key: 'getDependencies',
-        value: function getDependencies() {
-            var _this = this;
-
-            var deps = {
-                'modules': [],
-                'components': [],
-                'injectables': [],
-                'pipes': [],
-                'directives': [],
-                'routes': [],
-                'classes': [],
-                'interfaces': []
-            };
-            var sourceFiles = this.program.getSourceFiles() || [];
-            sourceFiles.map(function (file) {
-                var filePath = file.fileName;
-                if (path.extname(filePath) === '.ts') {
-                    if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
-                        logger.info('parsing', filePath);
-                        try {
-                            _this.getSourceFileDecorators(file, deps);
-                        } catch (e) {
-                            logger.error(e, file.fileName);
-                        }
+        return _t;
+    };
+    Dependencies.prototype.getDependencies = function () {
+        var _this = this;
+        var deps = {
+            'modules': [],
+            'components': [],
+            'injectables': [],
+            'pipes': [],
+            'directives': [],
+            'routes': [],
+            'classes': [],
+            'interfaces': []
+        };
+        var sourceFiles = this.program.getSourceFiles() || [];
+        sourceFiles.map(function (file) {
+            var filePath = file.fileName;
+            if (path.extname(filePath) === '.ts') {
+                if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
+                    logger.info('parsing', filePath);
+                    try {
+                        _this.getSourceFileDecorators(file, deps);
+                    }
+                    catch (e) {
+                        logger.error(e, file.fileName);
                     }
                 }
-                return deps;
-            });
-            //RouterParser.linkModulesAndRoutes();
-            //RouterParser.constructModulesTree();
-            //RouterParser.constructRoutesTree();
+            }
             return deps;
-        }
-    }, {
-        key: 'getSourceFileDecorators',
-        value: function getSourceFileDecorators(srcFile, outputSymbols) {
-            var _this2 = this;
-
-            var cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
-            var file = srcFile.fileName.replace(cleaner, '');
-            this.programComponent = ts.createProgram([file], {});
-            var sourceFile = this.programComponent.getSourceFile(file);
-            this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
-            ts.forEachChild(srcFile, function (node) {
-                var deps = {};
-                if (node.decorators) {
-                    var visitNode = function visitNode(visitedNode, index) {
-                        var metadata = node.decorators.pop();
-                        var name = _this2.getSymboleName(node);
-                        var props = _this2.findProps(visitedNode);
-                        var IO = _this2.getComponentIO(file, sourceFile);
-                        if (_this2.isModule(metadata)) {
-                            deps = {
-                                name: name,
-                                file: file,
-                                providers: _this2.getModuleProviders(props),
-                                declarations: _this2.getModuleDeclations(props),
-                                imports: _this2.getModuleImports(props),
-                                exports: _this2.getModuleExports(props),
-                                bootstrap: _this2.getModuleBootstrap(props),
-                                type: 'module',
-                                description: _this2.breakLines(IO.description),
-                                sourceCode: sourceFile.getText()
-                            };
-                            if (RouterParser.hasRouterModuleInImports(deps.imports)) {
-                                RouterParser.addModuleWithRoutes(name, _this2.getModuleImportsRaw(props));
-                            }
-                            RouterParser.addModule(name, deps.imports);
-                            outputSymbols['modules'].push(deps);
-                        } else if (_this2.isComponent(metadata)) {
-                            if (props.length === 0) return;
-                            //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
-                            deps = {
-                                name: name,
-                                file: file,
-                                //animations?: string[]; // TODO
-                                changeDetection: _this2.getComponentChangeDetection(props),
-                                encapsulation: _this2.getComponentEncapsulation(props),
-                                //entryComponents?: string; // TODO waiting doc infos
-                                exportAs: _this2.getComponentExportAs(props),
-                                host: _this2.getComponentHost(props),
-                                inputs: _this2.getComponentInputsMetadata(props),
-                                //interpolation?: string; // TODO waiting doc infos
-                                moduleId: _this2.getComponentModuleId(props),
-                                outputs: _this2.getComponentOutputs(props),
-                                providers: _this2.getComponentProviders(props),
-                                //queries?: Deps[]; // TODO
-                                selector: _this2.getComponentSelector(props),
-                                styleUrls: _this2.getComponentStyleUrls(props),
-                                styles: _this2.getComponentStyles(props),
-                                template: _this2.getComponentTemplate(props),
-                                templateUrl: _this2.getComponentTemplateUrl(props),
-                                viewProviders: _this2.getComponentViewProviders(props),
-                                inputsClass: IO.inputs,
-                                outputsClass: IO.outputs,
-                                propertiesClass: IO.properties,
-                                methodsClass: IO.methods,
-                                description: _this2.breakLines(IO.description),
-                                type: 'component',
-                                sourceCode: sourceFile.getText()
-                            };
-                            outputSymbols['components'].push(deps);
-                        } else if (_this2.isInjectable(metadata)) {
-                            deps = {
-                                name: name,
-                                file: file,
-                                type: 'injectable',
-                                properties: IO.properties,
-                                methods: IO.methods,
-                                description: _this2.breakLines(IO.description),
-                                sourceCode: sourceFile.getText()
-                            };
-                            outputSymbols['injectables'].push(deps);
-                        } else if (_this2.isPipe(metadata)) {
-                            deps = {
-                                name: name,
-                                file: file,
-                                type: 'pipe',
-                                description: _this2.breakLines(IO.description),
-                                sourceCode: sourceFile.getText()
-                            };
-                            outputSymbols['pipes'].push(deps);
-                        } else if (_this2.isDirective(metadata)) {
-                            deps = {
-                                name: name,
-                                file: file,
-                                type: 'directive',
-                                description: _this2.breakLines(IO.description),
-                                sourceCode: sourceFile.getText()
-                            };
-                            outputSymbols['directives'].push(deps);
-                        }
-                        _this2.debug(deps);
-                        _this2.__cache[name] = deps;
-                    };
-                    var filterByDecorators = function filterByDecorators(node) {
-                        if (node.expression && node.expression.expression) {
-                            return (/(NgModule|Component|Injectable|Pipe|Directive)/.test(node.expression.expression.text)
-                            );
-                        }
-                        return false;
-                    };
-                    node.decorators.filter(filterByDecorators).forEach(visitNode);
-                } else if (node.symbol) {
-                    if (node.symbol.flags === ts.SymbolFlags.Class) {
-                        var name = _this2.getSymboleName(node);
-                        var IO = _this2.getComponentIO(file, sourceFile);
+        });
+        //RouterParser.linkModulesAndRoutes();
+        //RouterParser.constructModulesTree();
+        //RouterParser.constructRoutesTree();
+        return deps;
+    };
+    Dependencies.prototype.getSourceFileDecorators = function (srcFile, outputSymbols) {
+        var _this = this;
+        var cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+        var file = srcFile.fileName.replace(cleaner, '');
+        this.programComponent = ts.createProgram([file], {});
+        var sourceFile = this.programComponent.getSourceFile(file);
+        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+        ts.forEachChild(srcFile, function (node) {
+            var deps = {};
+            if (node.decorators) {
+                var visitNode = function (visitedNode, index) {
+                    var metadata = node.decorators.pop();
+                    var name = _this.getSymboleName(node);
+                    var props = _this.findProps(visitedNode);
+                    var IO = _this.getComponentIO(file, sourceFile);
+                    if (_this.isModule(metadata)) {
                         deps = {
                             name: name,
                             file: file,
-                            type: 'class',
+                            providers: _this.getModuleProviders(props),
+                            declarations: _this.getModuleDeclations(props),
+                            imports: _this.getModuleImports(props),
+                            exports: _this.getModuleExports(props),
+                            bootstrap: _this.getModuleBootstrap(props),
+                            type: 'module',
+                            description: _this.breakLines(IO.description),
                             sourceCode: sourceFile.getText()
                         };
-                        if (IO.properties) {
-                            deps.properties = IO.properties;
+                        if (RouterParser.hasRouterModuleInImports(deps.imports)) {
+                            RouterParser.addModuleWithRoutes(name, _this.getModuleImportsRaw(props));
                         }
-                        if (IO.description) {
-                            deps.description = _this2.breakLines(IO.description);
-                        }
-                        if (IO.methods) {
-                            deps.methods = IO.methods;
-                        }
-                        _this2.debug(deps);
-                        outputSymbols['classes'].push(deps);
-                    } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
-                        var _name = _this2.getSymboleName(node);
-                        var _IO = _this2.getInterfaceIO(file, sourceFile, node);
-                        deps = {
-                            name: _name,
-                            file: file,
-                            type: 'interface',
-                            sourceCode: sourceFile.getText()
-                        };
-                        if (_IO.properties) {
-                            deps.properties = _IO.properties;
-                        }
-                        if (_IO.kind) {
-                            deps.kind = _IO.kind;
-                        }
-                        if (_IO.description) {
-                            deps.description = _this2.breakLines(_IO.description);
-                        }
-                        if (_IO.methods) {
-                            deps.methods = _IO.methods;
-                        }
-                        _this2.debug(deps);
-                        outputSymbols['interfaces'].push(deps);
+                        RouterParser.addModule(name, deps.imports);
+                        outputSymbols['modules'].push(deps);
                     }
-                } else {
-                    var _IO2 = _this2.getRouteIO(file, sourceFile);
-                    if (_IO2.routes) {
-                        var newRoutes = void 0;
-                        try {
-                            newRoutes = JSON.parse(_IO2.routes.replace(/ /gm, ''));
-                        } catch (e) {
-                            logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
+                    else if (_this.isComponent(metadata)) {
+                        if (props.length === 0)
+                            return;
+                        //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
+                        deps = {
+                            name: name,
+                            file: file,
+                            //animations?: string[]; // TODO
+                            changeDetection: _this.getComponentChangeDetection(props),
+                            encapsulation: _this.getComponentEncapsulation(props),
+                            //entryComponents?: string; // TODO waiting doc infos
+                            exportAs: _this.getComponentExportAs(props),
+                            host: _this.getComponentHost(props),
+                            inputs: _this.getComponentInputsMetadata(props),
+                            //interpolation?: string; // TODO waiting doc infos
+                            moduleId: _this.getComponentModuleId(props),
+                            outputs: _this.getComponentOutputs(props),
+                            providers: _this.getComponentProviders(props),
+                            //queries?: Deps[]; // TODO
+                            selector: _this.getComponentSelector(props),
+                            styleUrls: _this.getComponentStyleUrls(props),
+                            styles: _this.getComponentStyles(props),
+                            template: _this.getComponentTemplate(props),
+                            templateUrl: _this.getComponentTemplateUrl(props),
+                            viewProviders: _this.getComponentViewProviders(props),
+                            inputsClass: IO.inputs,
+                            outputsClass: IO.outputs,
+                            propertiesClass: IO.properties,
+                            methodsClass: IO.methods,
+                            description: _this.breakLines(IO.description),
+                            type: 'component',
+                            sourceCode: sourceFile.getText()
+                        };
+                        outputSymbols['components'].push(deps);
+                    }
+                    else if (_this.isInjectable(metadata)) {
+                        deps = {
+                            name: name,
+                            file: file,
+                            type: 'injectable',
+                            properties: IO.properties,
+                            methods: IO.methods,
+                            description: _this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
+                        };
+                        outputSymbols['injectables'].push(deps);
+                    }
+                    else if (_this.isPipe(metadata)) {
+                        deps = {
+                            name: name,
+                            file: file,
+                            type: 'pipe',
+                            description: _this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
+                        };
+                        outputSymbols['pipes'].push(deps);
+                    }
+                    else if (_this.isDirective(metadata)) {
+                        deps = {
+                            name: name,
+                            file: file,
+                            type: 'directive',
+                            description: _this.breakLines(IO.description),
+                            sourceCode: sourceFile.getText()
+                        };
+                        outputSymbols['directives'].push(deps);
+                    }
+                    _this.debug(deps);
+                    _this.__cache[name] = deps;
+                };
+                var filterByDecorators = function (node) {
+                    if (node.expression && node.expression.expression) {
+                        return /(NgModule|Component|Injectable|Pipe|Directive)/.test(node.expression.expression.text);
+                    }
+                    return false;
+                };
+                node.decorators
+                    .filter(filterByDecorators)
+                    .forEach(visitNode);
+            }
+            else if (node.symbol) {
+                if (node.symbol.flags === ts.SymbolFlags.Class) {
+                    var name = _this.getSymboleName(node);
+                    var IO = _this.getComponentIO(file, sourceFile);
+                    deps = {
+                        name: name,
+                        file: file,
+                        type: 'class',
+                        sourceCode: sourceFile.getText()
+                    };
+                    if (IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if (IO.description) {
+                        deps.description = _this.breakLines(IO.description);
+                    }
+                    if (IO.methods) {
+                        deps.methods = IO.methods;
+                    }
+                    _this.debug(deps);
+                    outputSymbols['classes'].push(deps);
+                }
+                else if (node.symbol.flags === ts.SymbolFlags.Interface) {
+                    var name = _this.getSymboleName(node);
+                    var IO = _this.getInterfaceIO(file, sourceFile, node);
+                    deps = {
+                        name: name,
+                        file: file,
+                        type: 'interface',
+                        sourceCode: sourceFile.getText()
+                    };
+                    if (IO.properties) {
+                        deps.properties = IO.properties;
+                    }
+                    if (IO.kind) {
+                        deps.kind = IO.kind;
+                    }
+                    if (IO.description) {
+                        deps.description = _this.breakLines(IO.description);
+                    }
+                    if (IO.methods) {
+                        deps.methods = IO.methods;
+                    }
+                    _this.debug(deps);
+                    outputSymbols['interfaces'].push(deps);
+                }
+            }
+            else {
+                var IO = _this.getRouteIO(file, sourceFile);
+                if (IO.routes) {
+                    var newRoutes = void 0;
+                    try {
+                        newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
+                    }
+                    catch (e) {
+                        logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
+                        return true;
+                    }
+                    outputSymbols['routes'] = outputSymbols['routes'].concat(newRoutes);
+                }
+                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                    var name = _this.getSymboleName(node);
+                    var IO_1 = _this.getComponentIO(file, sourceFile);
+                    deps = {
+                        name: name,
+                        file: file,
+                        type: 'class',
+                        sourceCode: sourceFile.getText()
+                    };
+                    if (IO_1.properties) {
+                        deps.properties = IO_1.properties;
+                    }
+                    if (IO_1.description) {
+                        deps.description = _this.breakLines(IO_1.description);
+                    }
+                    if (IO_1.methods) {
+                        deps.methods = IO_1.methods;
+                    }
+                    _this.debug(deps);
+                    outputSymbols['classes'].push(deps);
+                }
+                if (node.kind === ts.SyntaxKind.ExpressionStatement) {
+                    //Find the root module with bootstrapModule call
+                    //Find recusively in expression nodes one with name 'bootstrapModule'
+                    var rootModule_1, resultNode = _this.findExpressionByName(node, 'bootstrapModule');
+                    if (resultNode) {
+                        if (resultNode.arguments.length > 0) {
+                            _.forEach(resultNode.arguments, function (argument) {
+                                if (argument.text) {
+                                    rootModule_1 = argument.text;
+                                }
+                            });
+                        }
+                        if (rootModule_1) {
+                            RouterParser.setRootModule(rootModule_1);
+                        }
+                    }
+                }
+            }
+        });
+    };
+    Dependencies.prototype.debug = function (deps) {
+        logger.debug('debug', deps.name + ":");
+        [
+            'imports', 'exports', 'declarations', 'providers', 'bootstrap'
+        ].forEach(function (symbols) {
+            if (deps[symbols] && deps[symbols].length > 0) {
+                logger.debug('', "- " + symbols + ":");
+                deps[symbols].map(function (i) { return i.name; }).forEach(function (d) {
+                    logger.debug('', "\t- " + d);
+                });
+            }
+        });
+    };
+    Dependencies.prototype.findExpressionByName = function (entryNode, name) {
+        var result, loop = function (node, name) {
+            if (node.expression && !node.expression.name) {
+                loop(node.expression, name);
+            }
+            if (node.expression && node.expression.name) {
+                if (node.expression.name.text === name) {
+                    result = node;
+                }
+            }
+        };
+        loop(entryNode, name);
+        return result;
+    };
+    Dependencies.prototype.isComponent = function (metadata) {
+        return metadata.expression.expression.text === 'Component';
+    };
+    Dependencies.prototype.isPipe = function (metadata) {
+        return metadata.expression.expression.text === 'Pipe';
+    };
+    Dependencies.prototype.isDirective = function (metadata) {
+        return metadata.expression.expression.text === 'Directive';
+    };
+    Dependencies.prototype.isInjectable = function (metadata) {
+        return metadata.expression.expression.text === 'Injectable';
+    };
+    Dependencies.prototype.isModule = function (metadata) {
+        return metadata.expression.expression.text === 'NgModule';
+    };
+    Dependencies.prototype.getType = function (name) {
+        var type;
+        if (name.toLowerCase().indexOf('component') !== -1) {
+            type = 'component';
+        }
+        else if (name.toLowerCase().indexOf('pipe') !== -1) {
+            type = 'pipe';
+        }
+        else if (name.toLowerCase().indexOf('module') !== -1) {
+            type = 'module';
+        }
+        else if (name.toLowerCase().indexOf('directive') !== -1) {
+            type = 'directive';
+        }
+        return type;
+    };
+    Dependencies.prototype.getSymboleName = function (node) {
+        return node.name.text;
+    };
+    Dependencies.prototype.getComponentSelector = function (props) {
+        return this.getSymbolDeps(props, 'selector').pop();
+    };
+    Dependencies.prototype.getComponentExportAs = function (props) {
+        return this.getSymbolDeps(props, 'exportAs').pop();
+    };
+    Dependencies.prototype.getModuleProviders = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'providers').map(function (providerName) {
+            return _this.parseDeepIndentifier(providerName);
+        });
+    };
+    Dependencies.prototype.findProps = function (visitedNode) {
+        if (visitedNode.expression.arguments.length > 0) {
+            return visitedNode.expression.arguments.pop().properties;
+        }
+        else {
+            return '';
+        }
+    };
+    Dependencies.prototype.getModuleDeclations = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'declarations').map(function (name) {
+            var component = _this.findComponentSelectorByName(name);
+            if (component) {
+                return component;
+            }
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getModuleImportsRaw = function (props) {
+        return this.getSymbolDepsRaw(props, 'imports');
+    };
+    Dependencies.prototype.getModuleImports = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'imports').map(function (name) {
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getModuleExports = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'exports').map(function (name) {
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getComponentHost = function (props) {
+        return this.getSymbolDepsObject(props, 'host');
+    };
+    Dependencies.prototype.getModuleBootstrap = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'bootstrap').map(function (name) {
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getComponentInputsMetadata = function (props) {
+        return this.getSymbolDeps(props, 'inputs');
+    };
+    Dependencies.prototype.getDecoratorOfType = function (node, decoratorType) {
+        var decorators = node.decorators || [];
+        for (var i = 0; i < decorators.length; i++) {
+            if (decorators[i].expression.expression.text === decoratorType) {
+                return decorators[i];
+            }
+        }
+        return null;
+    };
+    Dependencies.prototype.visitInput = function (property, inDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inArgs = inDecorator.expression.arguments;
+        return {
+            name: inArgs.length ? inArgs[0].text : property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+        };
+    };
+    Dependencies.prototype.visitType = function (node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return node ? this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node)) : 'void';
+    };
+    Dependencies.prototype.visitOutput = function (property, outDecorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var outArgs = outDecorator.expression.arguments;
+        return {
+            name: outArgs.length ? outArgs[0].text : property.name.text,
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+        };
+    };
+    Dependencies.prototype.isPublic = function (member) {
+        if (member.modifiers) {
+            var isPublic = member.modifiers.some(function (modifier) {
+                return modifier.kind === ts.SyntaxKind.PublicKeyword;
+            });
+            if (isPublic) {
+                return true;
+            }
+        }
+        return this.isInternalMember(member);
+    };
+    Dependencies.prototype.isPrivateOrInternal = function (member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        if (member.modifiers) {
+            var isPrivate = member.modifiers.some(function (modifier) { return modifier.kind === ts.SyntaxKind.PrivateKeyword; });
+            if (isPrivate) {
+                return true;
+            }
+        }
+        return this.isInternalMember(member);
+    };
+    Dependencies.prototype.isInternalMember = function (member) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var internalTags = ['internal', 'private', 'hidden'];
+        if (member.jsDoc) {
+            for (var _i = 0, _a = member.jsDoc; _i < _a.length; _i++) {
+                var doc = _a[_i];
+                if (doc.tags) {
+                    for (var _b = 0, _c = doc.tags; _b < _c.length; _b++) {
+                        var tag = _c[_b];
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
                             return true;
                         }
-                        outputSymbols['routes'] = [].concat(toConsumableArray(outputSymbols['routes']), toConsumableArray(newRoutes));
-                    }
-                    if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-                        var _name2 = _this2.getSymboleName(node);
-                        var _IO3 = _this2.getComponentIO(file, sourceFile);
-                        deps = {
-                            name: _name2,
-                            file: file,
-                            type: 'class',
-                            sourceCode: sourceFile.getText()
-                        };
-                        if (_IO3.properties) {
-                            deps.properties = _IO3.properties;
-                        }
-                        if (_IO3.description) {
-                            deps.description = _this2.breakLines(_IO3.description);
-                        }
-                        if (_IO3.methods) {
-                            deps.methods = _IO3.methods;
-                        }
-                        _this2.debug(deps);
-                        outputSymbols['classes'].push(deps);
-                    }
-                    if (node.kind === ts.SyntaxKind.ExpressionStatement) {
-                        //Find the root module with bootstrapModule call
-                        //Find recusively in expression nodes one with name 'bootstrapModule'
-                        var rootModule = void 0,
-                            resultNode = _this2.findExpressionByName(node, 'bootstrapModule');
-                        if (resultNode) {
-                            if (resultNode.arguments.length > 0) {
-                                _.forEach(resultNode.arguments, function (argument) {
-                                    if (argument.text) {
-                                        rootModule = argument.text;
-                                    }
-                                });
-                            }
-                            if (rootModule) {
-                                RouterParser.setRootModule(rootModule);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }, {
-        key: 'debug',
-        value: function debug(deps) {
-            logger.debug('debug', deps.name + ':');
-            ['imports', 'exports', 'declarations', 'providers', 'bootstrap'].forEach(function (symbols) {
-                if (deps[symbols] && deps[symbols].length > 0) {
-                    logger.debug('', '- ' + symbols + ':');
-                    deps[symbols].map(function (i) {
-                        return i.name;
-                    }).forEach(function (d) {
-                        logger.debug('', '\t- ' + d);
-                    });
-                }
-            });
-        }
-    }, {
-        key: 'findExpressionByName',
-        value: function findExpressionByName(entryNode, name) {
-            var result = void 0,
-                loop = function loop(node, name) {
-                if (node.expression && !node.expression.name) {
-                    loop(node.expression, name);
-                }
-                if (node.expression && node.expression.name) {
-                    if (node.expression.name.text === name) {
-                        result = node;
-                    }
-                }
-            };
-            loop(entryNode, name);
-            return result;
-        }
-    }, {
-        key: 'isComponent',
-        value: function isComponent(metadata) {
-            return metadata.expression.expression.text === 'Component';
-        }
-    }, {
-        key: 'isPipe',
-        value: function isPipe(metadata) {
-            return metadata.expression.expression.text === 'Pipe';
-        }
-    }, {
-        key: 'isDirective',
-        value: function isDirective(metadata) {
-            return metadata.expression.expression.text === 'Directive';
-        }
-    }, {
-        key: 'isInjectable',
-        value: function isInjectable(metadata) {
-            return metadata.expression.expression.text === 'Injectable';
-        }
-    }, {
-        key: 'isModule',
-        value: function isModule(metadata) {
-            return metadata.expression.expression.text === 'NgModule';
-        }
-    }, {
-        key: 'getType',
-        value: function getType(name) {
-            var type = void 0;
-            if (name.toLowerCase().indexOf('component') !== -1) {
-                type = 'component';
-            } else if (name.toLowerCase().indexOf('pipe') !== -1) {
-                type = 'pipe';
-            } else if (name.toLowerCase().indexOf('module') !== -1) {
-                type = 'module';
-            } else if (name.toLowerCase().indexOf('directive') !== -1) {
-                type = 'directive';
-            }
-            return type;
-        }
-    }, {
-        key: 'getSymboleName',
-        value: function getSymboleName(node) {
-            return node.name.text;
-        }
-    }, {
-        key: 'getComponentSelector',
-        value: function getComponentSelector(props) {
-            return this.getSymbolDeps(props, 'selector').pop();
-        }
-    }, {
-        key: 'getComponentExportAs',
-        value: function getComponentExportAs(props) {
-            return this.getSymbolDeps(props, 'exportAs').pop();
-        }
-    }, {
-        key: 'getModuleProviders',
-        value: function getModuleProviders(props) {
-            var _this3 = this;
-
-            return this.getSymbolDeps(props, 'providers').map(function (providerName) {
-                return _this3.parseDeepIndentifier(providerName);
-            });
-        }
-    }, {
-        key: 'findProps',
-        value: function findProps(visitedNode) {
-            if (visitedNode.expression.arguments.length > 0) {
-                return visitedNode.expression.arguments.pop().properties;
-            } else {
-                return '';
-            }
-        }
-    }, {
-        key: 'getModuleDeclations',
-        value: function getModuleDeclations(props) {
-            var _this4 = this;
-
-            return this.getSymbolDeps(props, 'declarations').map(function (name) {
-                var component = _this4.findComponentSelectorByName(name);
-                if (component) {
-                    return component;
-                }
-                return _this4.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getModuleImportsRaw',
-        value: function getModuleImportsRaw(props) {
-            return this.getSymbolDepsRaw(props, 'imports');
-        }
-    }, {
-        key: 'getModuleImports',
-        value: function getModuleImports(props) {
-            var _this5 = this;
-
-            return this.getSymbolDeps(props, 'imports').map(function (name) {
-                return _this5.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getModuleExports',
-        value: function getModuleExports(props) {
-            var _this6 = this;
-
-            return this.getSymbolDeps(props, 'exports').map(function (name) {
-                return _this6.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getComponentHost',
-        value: function getComponentHost(props) {
-            return this.getSymbolDepsObject(props, 'host');
-        }
-    }, {
-        key: 'getModuleBootstrap',
-        value: function getModuleBootstrap(props) {
-            var _this7 = this;
-
-            return this.getSymbolDeps(props, 'bootstrap').map(function (name) {
-                return _this7.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getComponentInputsMetadata',
-        value: function getComponentInputsMetadata(props) {
-            return this.getSymbolDeps(props, 'inputs');
-        }
-    }, {
-        key: 'getDecoratorOfType',
-        value: function getDecoratorOfType(node, decoratorType) {
-            var decorators = node.decorators || [];
-            for (var i = 0; i < decorators.length; i++) {
-                if (decorators[i].expression.expression.text === decoratorType) {
-                    return decorators[i];
-                }
-            }
-            return null;
-        }
-    }, {
-        key: 'visitInput',
-        value: function visitInput(property, inDecorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var inArgs = inDecorator.expression.arguments;
-            return {
-                name: inArgs.length ? inArgs[0].text : property.name.text,
-                defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-                type: this.visitType(property),
-                description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
-            };
-        }
-    }, {
-        key: 'visitType',
-        value: function visitType(node) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return node ? this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node)) : 'void';
-        }
-    }, {
-        key: 'visitOutput',
-        value: function visitOutput(property, outDecorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var outArgs = outDecorator.expression.arguments;
-            return {
-                name: outArgs.length ? outArgs[0].text : property.name.text,
-                description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
-            };
-        }
-    }, {
-        key: 'isPublic',
-        value: function isPublic(member) {
-            if (member.modifiers) {
-                var isPublic = member.modifiers.some(function (modifier) {
-                    return modifier.kind === ts.SyntaxKind.PublicKeyword;
-                });
-                if (isPublic) {
-                    return true;
-                }
-            }
-            return this.isInternalMember(member);
-        }
-    }, {
-        key: 'isPrivateOrInternal',
-        value: function isPrivateOrInternal(member) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            if (member.modifiers) {
-                var isPrivate = member.modifiers.some(function (modifier) {
-                    return modifier.kind === ts.SyntaxKind.PrivateKeyword;
-                });
-                if (isPrivate) {
-                    return true;
-                }
-            }
-            return this.isInternalMember(member);
-        }
-    }, {
-        key: 'isInternalMember',
-        value: function isInternalMember(member) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var internalTags = ['internal', 'private', 'hidden'];
-            if (member.jsDoc) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = member.jsDoc[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var doc = _step.value;
-
-                        if (doc.tags) {
-                            var _iteratorNormalCompletion2 = true;
-                            var _didIteratorError2 = false;
-                            var _iteratorError2 = undefined;
-
-                            try {
-                                for (var _iterator2 = doc.tags[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                    var tag = _step2.value;
-
-                                    if (internalTags.indexOf(tag.tagName.text) > -1) {
-                                        return true;
-                                    }
-                                }
-                            } catch (err) {
-                                _didIteratorError2 = true;
-                                _iteratorError2 = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                        _iterator2.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError2) {
-                                        throw _iteratorError2;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
                     }
                 }
             }
-            return false;
         }
-    }, {
-        key: 'isAngularLifecycleHook',
-        value: function isAngularLifecycleHook(methodName) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var ANGULAR_LIFECYCLE_METHODS = ['ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked', 'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'];
-            return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
-        }
-    }, {
-        key: 'visitConstructorDeclaration',
-        value: function visitConstructorDeclaration(method) {
-            var that = this;
-            if (method.parameters) {
-                var _parameters = [],
-                    i = 0,
-                    len = method.parameters.length;
-                for (i; i < len; i++) {
-                    if (that.isPublic(method.parameters[i])) {
-                        _parameters.push(that.visitArgument(method.parameters[i]));
-                    }
-                }
-                return _parameters;
-            } else {
-                return [];
-            }
-        }
-    }, {
-        key: 'visitCallDeclaration',
-        value: function visitCallDeclaration(method) {
-            var _this8 = this;
-
-            return {
-                description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
-                args: method.parameters ? method.parameters.map(function (prop) {
-                    return _this8.visitArgument(prop);
-                }) : [],
-                returnType: this.visitType(method.type)
-            };
-        }
-    }, {
-        key: 'visitIndexDeclaration',
-        value: function visitIndexDeclaration(method) {
-            var _this9 = this;
-
-            return {
-                description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
-                args: method.parameters ? method.parameters.map(function (prop) {
-                    return _this9.visitArgument(prop);
-                }) : [],
-                returnType: this.visitType(method.type)
-            };
-        }
-    }, {
-        key: 'visitMethodDeclaration',
-        value: function visitMethodDeclaration(method) {
-            var _this10 = this;
-
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var result = {
-                name: method.name.text,
-                description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
-                args: method.parameters ? method.parameters.map(function (prop) {
-                    return _this10.visitArgument(prop);
-                }) : [],
-                returnType: this.visitType(method.type)
-            },
-                jsdoctags = getJSDocs(method);
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
-                    result.jsdoctags = jsdoctags[0].tags;
+        return false;
+    };
+    Dependencies.prototype.isAngularLifecycleHook = function (methodName) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var ANGULAR_LIFECYCLE_METHODS = [
+            'ngOnInit', 'ngOnChanges', 'ngDoCheck', 'ngOnDestroy', 'ngAfterContentInit', 'ngAfterContentChecked',
+            'ngAfterViewInit', 'ngAfterViewChecked', 'writeValue', 'registerOnChange', 'registerOnTouched', 'setDisabledState'
+        ];
+        return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
+    };
+    Dependencies.prototype.visitConstructorDeclaration = function (method) {
+        var that = this;
+        if (method.parameters) {
+            var _parameters = [], i = 0, len = method.parameters.length;
+            for (i; i < len; i++) {
+                if (that.isPublic(method.parameters[i])) {
+                    _parameters.push(that.visitArgument(method.parameters[i]));
                 }
             }
-            return result;
+            return _parameters;
         }
-    }, {
-        key: 'visitArgument',
-        value: function visitArgument(arg) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return {
-                name: arg.name.text,
-                type: this.visitType(arg)
-            };
+        else {
+            return [];
         }
-    }, {
-        key: 'getNamesCompareFn',
-        value: function getNamesCompareFn(name) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            name = name || 'name';
-            return function (a, b) {
-                return a[name].localeCompare(b[name]);
-            };
-        }
-    }, {
-        key: 'stringifyDefaultValue',
-        value: function stringifyDefaultValue(node) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            if (node.text) {
-                return node.text;
-            } else if (node.kind === ts.SyntaxKind.FalseKeyword) {
-                return 'false';
-            } else if (node.kind === ts.SyntaxKind.TrueKeyword) {
-                return 'true';
+    };
+    Dependencies.prototype.visitCallDeclaration = function (method) {
+        var _this = this;
+        return {
+            description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map(function (prop) { return _this.visitArgument(prop); }) : [],
+            returnType: this.visitType(method.type)
+        };
+    };
+    Dependencies.prototype.visitIndexDeclaration = function (method) {
+        var _this = this;
+        return {
+            description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map(function (prop) { return _this.visitArgument(prop); }) : [],
+            returnType: this.visitType(method.type)
+        };
+    };
+    Dependencies.prototype.visitMethodDeclaration = function (method) {
+        var _this = this;
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var result = {
+            name: method.name.text,
+            description: marked__default(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            args: method.parameters ? method.parameters.map(function (prop) { return _this.visitArgument(prop); }) : [],
+            returnType: this.visitType(method.type)
+        }, jsdoctags = getJSDocs(method);
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = jsdoctags[0].tags;
             }
         }
-    }, {
-        key: 'visitProperty',
-        value: function visitProperty(property) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return {
-                name: property.name.text,
-                defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-                type: this.visitType(property),
-                description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
-            };
+        return result;
+    };
+    Dependencies.prototype.visitArgument = function (arg) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: arg.name.text,
+            type: this.visitType(arg)
+        };
+    };
+    Dependencies.prototype.getNamesCompareFn = function (name) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        name = name || 'name';
+        return function (a, b) { return a[name].localeCompare(b[name]); };
+    };
+    Dependencies.prototype.stringifyDefaultValue = function (node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        if (node.text) {
+            return node.text;
         }
-    }, {
-        key: 'visitMembers',
-        value: function visitMembers(members) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var inputs = [];
-            var outputs = [];
-            var methods = [];
-            var properties = [];
-            var kind;
-            var inputDecorator, outDecorator;
-            for (var i = 0; i < members.length; i++) {
-                inputDecorator = this.getDecoratorOfType(members[i], 'Input');
-                outDecorator = this.getDecoratorOfType(members[i], 'Output');
-                kind = members[i].kind;
-                if (inputDecorator) {
-                    inputs.push(this.visitInput(members[i], inputDecorator));
-                } else if (outDecorator) {
-                    outputs.push(this.visitOutput(members[i], outDecorator));
-                } else if (!this.isPrivateOrInternal(members[i])) {
-                    if ((members[i].kind === ts.SyntaxKind.MethodDeclaration || members[i].kind === ts.SyntaxKind.MethodSignature) && !this.isAngularLifecycleHook(members[i].name.text)) {
-                        methods.push(this.visitMethodDeclaration(members[i]));
-                    } else if (members[i].kind === ts.SyntaxKind.PropertyDeclaration || members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
-                        properties.push(this.visitProperty(members[i]));
-                    } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
-                        properties.push(this.visitCallDeclaration(members[i]));
-                    } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
-                        properties.push(this.visitIndexDeclaration(members[i]));
-                    } else if (members[i].kind === ts.SyntaxKind.Constructor) {
-                        var _constructorProperties = this.visitConstructorDeclaration(members[i]),
-                            j = 0,
-                            len = _constructorProperties.length;
-                        for (j; j < len; j++) {
-                            properties.push(_constructorProperties[j]);
-                        }
+        else if (node.kind === ts.SyntaxKind.FalseKeyword) {
+            return 'false';
+        }
+        else if (node.kind === ts.SyntaxKind.TrueKeyword) {
+            return 'true';
+        }
+    };
+    Dependencies.prototype.visitProperty = function (property) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return {
+            name: property.name.text,
+            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            type: this.visitType(property),
+            description: marked__default(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+        };
+    };
+    Dependencies.prototype.visitMembers = function (members) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var inputs = [];
+        var outputs = [];
+        var methods = [];
+        var properties = [];
+        var kind;
+        var inputDecorator, outDecorator;
+        for (var i = 0; i < members.length; i++) {
+            inputDecorator = this.getDecoratorOfType(members[i], 'Input');
+            outDecorator = this.getDecoratorOfType(members[i], 'Output');
+            kind = members[i].kind;
+            if (inputDecorator) {
+                inputs.push(this.visitInput(members[i], inputDecorator));
+            }
+            else if (outDecorator) {
+                outputs.push(this.visitOutput(members[i], outDecorator));
+            }
+            else if (!this.isPrivateOrInternal(members[i])) {
+                if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
+                    members[i].kind === ts.SyntaxKind.MethodSignature) &&
+                    !this.isAngularLifecycleHook(members[i].name.text)) {
+                    methods.push(this.visitMethodDeclaration(members[i]));
+                }
+                else if (members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
+                    members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
+                    properties.push(this.visitProperty(members[i]));
+                }
+                else if (members[i].kind === ts.SyntaxKind.CallSignature) {
+                    properties.push(this.visitCallDeclaration(members[i]));
+                }
+                else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
+                    properties.push(this.visitIndexDeclaration(members[i]));
+                }
+                else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                    var _constructorProperties = this.visitConstructorDeclaration(members[i]), j = 0, len = _constructorProperties.length;
+                    for (j; j < len; j++) {
+                        properties.push(_constructorProperties[j]);
                     }
                 }
             }
-            inputs.sort(this.getNamesCompareFn());
-            outputs.sort(this.getNamesCompareFn());
-            properties.sort(this.getNamesCompareFn());
-            return {
-                inputs: inputs,
-                outputs: outputs,
-                methods: methods,
-                properties: properties,
-                kind: kind
-            };
         }
-    }, {
-        key: 'visitDirectiveDecorator',
-        value: function visitDirectiveDecorator(decorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var selector;
-            var exportAs;
-            var properties = decorator.expression.arguments[0].properties;
-            for (var i = 0; i < properties.length; i++) {
-                if (properties[i].name.text === 'selector') {
-                    // TODO: this will only work if selector is initialized as a string literal
-                    selector = properties[i].initializer.text;
-                }
-                if (properties[i].name.text === 'exportAs') {
-                    // TODO: this will only work if selector is initialized as a string literal
-                    exportAs = properties[i].initializer.text;
-                }
+        inputs.sort(this.getNamesCompareFn());
+        outputs.sort(this.getNamesCompareFn());
+        properties.sort(this.getNamesCompareFn());
+        return {
+            inputs: inputs,
+            outputs: outputs,
+            methods: methods,
+            properties: properties,
+            kind: kind
+        };
+    };
+    Dependencies.prototype.visitDirectiveDecorator = function (decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var selector;
+        var exportAs;
+        var properties = decorator.expression.arguments[0].properties;
+        for (var i = 0; i < properties.length; i++) {
+            if (properties[i].name.text === 'selector') {
+                // TODO: this will only work if selector is initialized as a string literal
+                selector = properties[i].initializer.text;
             }
-            return {
-                selector: selector,
-                exportAs: exportAs
-            };
+            if (properties[i].name.text === 'exportAs') {
+                // TODO: this will only work if selector is initialized as a string literal
+                exportAs = properties[i].initializer.text;
+            }
         }
-    }, {
-        key: 'isPipeDecorator',
-        value: function isPipeDecorator(decorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return decorator.expression.expression.text === 'Pipe';
-        }
-    }, {
-        key: 'isModuleDecorator',
-        value: function isModuleDecorator(decorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return decorator.expression.expression.text === 'NgModule';
-        }
-    }, {
-        key: 'isDirectiveDecorator',
-        value: function isDirectiveDecorator(decorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var decoratorIdentifierText = decorator.expression.expression.text;
-            return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
-        }
-    }, {
-        key: 'isServiceDecorator',
-        value: function isServiceDecorator(decorator) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            return decorator.expression.expression.text === 'Injectable';
-        }
-    }, {
-        key: 'visitClassDeclaration',
-        value: function visitClassDeclaration(fileName, classDeclaration) {
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-            var description = marked__default(ts.displayPartsToString(symbol.getDocumentationComment()));
-            var className = classDeclaration.name.text;
-            var directiveInfo;
-            var members;
-            if (classDeclaration.decorators) {
-                for (var i = 0; i < classDeclaration.decorators.length; i++) {
-                    if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                        directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
-                        members = this.visitMembers(classDeclaration.members);
-                        return {
-                            description: description,
-                            inputs: members.inputs,
-                            outputs: members.outputs,
-                            properties: members.properties,
-                            methods: members.methods,
-                            kind: members.kind
-                        };
-                    } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                        members = this.visitMembers(classDeclaration.members);
-                        return [{
+        return {
+            selector: selector,
+            exportAs: exportAs
+        };
+    };
+    Dependencies.prototype.isPipeDecorator = function (decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return decorator.expression.expression.text === 'Pipe';
+    };
+    Dependencies.prototype.isModuleDecorator = function (decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return decorator.expression.expression.text === 'NgModule';
+    };
+    Dependencies.prototype.isDirectiveDecorator = function (decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var decoratorIdentifierText = decorator.expression.expression.text;
+        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+    };
+    Dependencies.prototype.isServiceDecorator = function (decorator) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        return decorator.expression.expression.text === 'Injectable';
+    };
+    Dependencies.prototype.visitClassDeclaration = function (fileName, classDeclaration) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
+        var description = marked__default(ts.displayPartsToString(symbol.getDocumentationComment()));
+        var className = classDeclaration.name.text;
+        var directiveInfo;
+        var members;
+        if (classDeclaration.decorators) {
+            for (var i = 0; i < classDeclaration.decorators.length; i++) {
+                if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
+                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
+                    members = this.visitMembers(classDeclaration.members);
+                    return {
+                        description: description,
+                        inputs: members.inputs,
+                        outputs: members.outputs,
+                        properties: members.properties,
+                        methods: members.methods,
+                        kind: members.kind
+                    };
+                }
+                else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
+                    members = this.visitMembers(classDeclaration.members);
+                    return [{
                             fileName: fileName,
                             className: className,
                             description: description,
@@ -2120,348 +1776,305 @@ var Dependencies = function () {
                             properties: members.properties,
                             kind: members.kind
                         }];
-                    } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
-                        return [{
+                }
+                else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
+                    return [{
                             fileName: fileName,
                             className: className,
                             description: description
                         }];
-                    }
                 }
-            } else if (description) {
-                members = this.visitMembers(classDeclaration.members);
-                return [{
+            }
+        }
+        else if (description) {
+            members = this.visitMembers(classDeclaration.members);
+            return [{
                     description: description,
                     methods: members.methods,
                     properties: members.properties,
                     kind: members.kind
                 }];
-            } else {
-                members = this.visitMembers(classDeclaration.members);
-                return [{
+        }
+        else {
+            members = this.visitMembers(classDeclaration.members);
+            return [{
                     methods: members.methods,
                     properties: members.properties,
                     kind: members.kind
                 }];
-            }
-            return [];
         }
-    }, {
-        key: 'visitEnumDeclaration',
-        value: function visitEnumDeclaration(fileName, node) {
-            if (node.declarationList.declarations) {
-                var i = 0,
-                    len = node.declarationList.declarations.length;
-                for (i; i < len; i++) {
-                    if (node.declarationList.declarations[i].type) {
-                        if (node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                            RouterParser.addRoute({
-                                name: node.declarationList.declarations[i].name.text,
-                                data: generate(node.declarationList.declarations[i].initializer)
-                            });
-                            return [{
+        return [];
+    };
+    Dependencies.prototype.visitEnumDeclaration = function (fileName, node) {
+        if (node.declarationList.declarations) {
+            var i = 0, len = node.declarationList.declarations.length;
+            for (i; i < len; i++) {
+                if (node.declarationList.declarations[i].type) {
+                    if (node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        RouterParser.addRoute({
+                            name: node.declarationList.declarations[i].name.text,
+                            data: generate(node.declarationList.declarations[i].initializer)
+                        });
+                        return [{
                                 routes: generate(node.declarationList.declarations[i].initializer)
                             }];
-                        }
                     }
                 }
             }
-            return [];
         }
-    }, {
-        key: 'getRouteIO',
-        value: function getRouteIO(filename, sourceFile) {
-            var _this11 = this;
-
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var res = sourceFile.statements.reduce(function (directive, statement) {
-                if (statement.kind === ts.SyntaxKind.VariableStatement) {
-                    return directive.concat(_this11.visitEnumDeclaration(filename, statement));
+        return [];
+    };
+    Dependencies.prototype.getRouteIO = function (filename, sourceFile) {
+        var _this = this;
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce(function (directive, statement) {
+            if (statement.kind === ts.SyntaxKind.VariableStatement) {
+                return directive.concat(_this.visitEnumDeclaration(filename, statement));
+            }
+            return directive;
+        }, []);
+        return res[0] || {};
+    };
+    Dependencies.prototype.getComponentIO = function (filename, sourceFile) {
+        var _this = this;
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce(function (directive, statement) {
+            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+                return directive.concat(_this.visitClassDeclaration(filename, statement));
+            }
+            return directive;
+        }, []);
+        return res[0] || {};
+    };
+    Dependencies.prototype.getInterfaceIO = function (filename, sourceFile, node) {
+        var _this = this;
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce(function (directive, statement) {
+            if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    return directive.concat(_this.visitClassDeclaration(filename, statement));
                 }
-                return directive;
-            }, []);
-            return res[0] || {};
-        }
-    }, {
-        key: 'getComponentIO',
-        value: function getComponentIO(filename, sourceFile) {
-            var _this12 = this;
-
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var res = sourceFile.statements.reduce(function (directive, statement) {
-                if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
-                    return directive.concat(_this12.visitClassDeclaration(filename, statement));
-                }
-                return directive;
-            }, []);
-            return res[0] || {};
-        }
-    }, {
-        key: 'getInterfaceIO',
-        value: function getInterfaceIO(filename, sourceFile, node) {
-            var _this13 = this;
-
-            /**
-             * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-             */
-            var res = sourceFile.statements.reduce(function (directive, statement) {
-                if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
-                    if (statement.pos === node.pos && statement.end === node.end) {
-                        return directive.concat(_this13.visitClassDeclaration(filename, statement));
-                    }
-                }
-                return directive;
-            }, []);
-            return res[0] || {};
-        }
-    }, {
-        key: 'getComponentOutputs',
-        value: function getComponentOutputs(props) {
-            return this.getSymbolDeps(props, 'outputs');
-        }
-    }, {
-        key: 'getComponentProviders',
-        value: function getComponentProviders(props) {
-            var _this14 = this;
-
-            return this.getSymbolDeps(props, 'providers').map(function (name) {
-                return _this14.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getComponentViewProviders',
-        value: function getComponentViewProviders(props) {
-            var _this15 = this;
-
-            return this.getSymbolDeps(props, 'viewProviders').map(function (name) {
-                return _this15.parseDeepIndentifier(name);
-            });
-        }
-    }, {
-        key: 'getComponentDirectives',
-        value: function getComponentDirectives(props) {
-            var _this16 = this;
-
-            return this.getSymbolDeps(props, 'directives').map(function (name) {
-                var identifier = _this16.parseDeepIndentifier(name);
-                identifier.selector = _this16.findComponentSelectorByName(name);
-                identifier.label = '';
-                return identifier;
-            });
-        }
-    }, {
-        key: 'parseDeepIndentifier',
-        value: function parseDeepIndentifier(name) {
-            var nsModule = name.split('.'),
-                type = this.getType(name);
-            if (nsModule.length > 1) {
-                // cache deps with the same namespace (i.e Shared.*)
-                if (this.__nsModule[nsModule[0]]) {
-                    this.__nsModule[nsModule[0]].push(name);
-                } else {
-                    this.__nsModule[nsModule[0]] = [name];
-                }
-                return {
-                    ns: nsModule[0],
-                    name: name,
-                    type: type
-                };
+            }
+            return directive;
+        }, []);
+        return res[0] || {};
+    };
+    Dependencies.prototype.getComponentOutputs = function (props) {
+        return this.getSymbolDeps(props, 'outputs');
+    };
+    Dependencies.prototype.getComponentProviders = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'providers').map(function (name) {
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getComponentViewProviders = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'viewProviders').map(function (name) {
+            return _this.parseDeepIndentifier(name);
+        });
+    };
+    Dependencies.prototype.getComponentDirectives = function (props) {
+        var _this = this;
+        return this.getSymbolDeps(props, 'directives').map(function (name) {
+            var identifier = _this.parseDeepIndentifier(name);
+            identifier.selector = _this.findComponentSelectorByName(name);
+            identifier.label = '';
+            return identifier;
+        });
+    };
+    Dependencies.prototype.parseDeepIndentifier = function (name) {
+        var nsModule = name.split('.'), type = this.getType(name);
+        if (nsModule.length > 1) {
+            // cache deps with the same namespace (i.e Shared.*)
+            if (this.__nsModule[nsModule[0]]) {
+                this.__nsModule[nsModule[0]].push(name);
+            }
+            else {
+                this.__nsModule[nsModule[0]] = [name];
             }
             return {
+                ns: nsModule[0],
                 name: name,
                 type: type
             };
         }
-    }, {
-        key: 'getComponentTemplateUrl',
-        value: function getComponentTemplateUrl(props) {
-            return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
+        return {
+            name: name,
+            type: type
+        };
+    };
+    Dependencies.prototype.getComponentTemplateUrl = function (props) {
+        return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
+    };
+    Dependencies.prototype.getComponentTemplate = function (props) {
+        var t = this.getSymbolDeps(props, 'template', true).pop();
+        if (t) {
+            t = detectIndent(t, 0);
+            t = t.replace(/\n/, '');
+            t = t.replace(/ +$/gm, '');
         }
-    }, {
-        key: 'getComponentTemplate',
-        value: function getComponentTemplate(props) {
-            var t = this.getSymbolDeps(props, 'template', true).pop();
-            if (t) {
-                t = detectIndent(t, 0);
-                t = t.replace(/\n/, '');
-                t = t.replace(/ +$/gm, '');
+        return t;
+    };
+    Dependencies.prototype.getComponentStyleUrls = function (props) {
+        return this.sanitizeUrls(this.getSymbolDeps(props, 'styleUrls'));
+    };
+    Dependencies.prototype.getComponentStyles = function (props) {
+        return this.getSymbolDeps(props, 'styles');
+    };
+    Dependencies.prototype.getComponentModuleId = function (props) {
+        return this.getSymbolDeps(props, 'moduleId').pop();
+    };
+    Dependencies.prototype.getComponentChangeDetection = function (props) {
+        return this.getSymbolDeps(props, 'changeDetection').pop();
+    };
+    Dependencies.prototype.getComponentEncapsulation = function (props) {
+        return this.getSymbolDeps(props, 'encapsulation');
+    };
+    Dependencies.prototype.sanitizeUrls = function (urls) {
+        return urls.map(function (url) { return url.replace('./', ''); });
+    };
+    Dependencies.prototype.getSymbolDepsObject = function (props, type, multiLine) {
+        var deps = props.filter(function (node) {
+            return node.name.text === type;
+        });
+        var parseProperties = function (node) {
+            var obj = {};
+            (node.initializer.properties || []).forEach(function (prop) {
+                obj[prop.name.text] = prop.initializer.text;
+            });
+            return obj;
+        };
+        return deps.map(parseProperties).pop();
+    };
+    Dependencies.prototype.getSymbolDepsRaw = function (props, type, multiLine) {
+        var deps = props.filter(function (node) {
+            return node.name.text === type;
+        });
+        return deps || [];
+    };
+    Dependencies.prototype.getSymbolDeps = function (props, type, multiLine) {
+        var _this = this;
+        var deps = props.filter(function (node) {
+            return node.name.text === type;
+        });
+        var parseSymbolText = function (text) {
+            if (text.indexOf('/') !== -1 && !multiLine) {
+                text = text.split('/').pop();
             }
-            return t;
-        }
-    }, {
-        key: 'getComponentStyleUrls',
-        value: function getComponentStyleUrls(props) {
-            return this.sanitizeUrls(this.getSymbolDeps(props, 'styleUrls'));
-        }
-    }, {
-        key: 'getComponentStyles',
-        value: function getComponentStyles(props) {
-            return this.getSymbolDeps(props, 'styles');
-        }
-    }, {
-        key: 'getComponentModuleId',
-        value: function getComponentModuleId(props) {
-            return this.getSymbolDeps(props, 'moduleId').pop();
-        }
-    }, {
-        key: 'getComponentChangeDetection',
-        value: function getComponentChangeDetection(props) {
-            return this.getSymbolDeps(props, 'changeDetection').pop();
-        }
-    }, {
-        key: 'getComponentEncapsulation',
-        value: function getComponentEncapsulation(props) {
-            return this.getSymbolDeps(props, 'encapsulation');
-        }
-    }, {
-        key: 'sanitizeUrls',
-        value: function sanitizeUrls(urls) {
-            return urls.map(function (url) {
-                return url.replace('./', '');
-            });
-        }
-    }, {
-        key: 'getSymbolDepsObject',
-        value: function getSymbolDepsObject(props, type, multiLine) {
-            var deps = props.filter(function (node) {
-                return node.name.text === type;
-            });
-            var parseProperties = function parseProperties(node) {
-                var obj = {};
-                (node.initializer.properties || []).forEach(function (prop) {
-                    obj[prop.name.text] = prop.initializer.text;
-                });
-                return obj;
-            };
-            return deps.map(parseProperties).pop();
-        }
-    }, {
-        key: 'getSymbolDepsRaw',
-        value: function getSymbolDepsRaw(props, type, multiLine) {
-            var deps = props.filter(function (node) {
-                return node.name.text === type;
-            });
-            return deps || [];
-        }
-    }, {
-        key: 'getSymbolDeps',
-        value: function getSymbolDeps(props, type, multiLine) {
-            var _this17 = this;
-
-            var deps = props.filter(function (node) {
-                return node.name.text === type;
-            });
-            var parseSymbolText = function parseSymbolText(text) {
-                if (text.indexOf('/') !== -1 && !multiLine) {
-                    text = text.split('/').pop();
+            return [
+                text
+            ];
+        };
+        var buildIdentifierName = function (node, name) {
+            if (name === void 0) { name = ''; }
+            if (node.expression) {
+                name = name ? "." + name : name;
+                var nodeName = _this.unknown;
+                if (node.name) {
+                    nodeName = node.name.text;
                 }
-                return [text];
-            };
-            var buildIdentifierName = function buildIdentifierName(node) {
-                var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-                if (node.expression) {
-                    name = name ? '.' + name : name;
-                    var nodeName = _this17.unknown;
-                    if (node.name) {
-                        nodeName = node.name.text;
-                    } else if (node.text) {
-                        nodeName = node.text;
-                    } else if (node.expression) {
-                        if (node.expression.text) {
-                            nodeName = node.expression.text;
-                        } else if (node.expression.elements) {
-                            if (node.expression.kind === ts.SyntaxKind.ArrayLiteralExpression) {
-                                nodeName = node.expression.elements.map(function (el) {
-                                    return el.text;
-                                }).join(', ');
-                                nodeName = '[' + nodeName + ']';
-                            }
+                else if (node.text) {
+                    nodeName = node.text;
+                }
+                else if (node.expression) {
+                    if (node.expression.text) {
+                        nodeName = node.expression.text;
+                    }
+                    else if (node.expression.elements) {
+                        if (node.expression.kind === ts.SyntaxKind.ArrayLiteralExpression) {
+                            nodeName = node.expression.elements.map(function (el) { return el.text; }).join(', ');
+                            nodeName = "[" + nodeName + "]";
                         }
                     }
-                    if (node.kind === ts.SyntaxKind.SpreadElementExpression) {
-                        return '...' + nodeName;
-                    }
-                    return '' + buildIdentifierName(node.expression, nodeName) + name;
                 }
-                return node.text + '.' + name;
-            };
-            var parseProviderConfiguration = function parseProviderConfiguration(o) {
-                // parse expressions such as:
-                // { provide: APP_BASE_HREF, useValue: '/' },
-                // or
-                // { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
-                var _genProviderName = [];
-                var _providerProps = [];
-                (o.properties || []).forEach(function (prop) {
-                    var identifier = prop.initializer.text;
-                    if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
-                        identifier = '\'' + identifier + '\'';
-                    }
-                    // lambda function (i.e useFactory)
-                    if (prop.initializer.body) {
-                        var params = (prop.initializer.parameters || []).map(function (params) {
-                            return params.name.text;
-                        });
-                        identifier = '(' + params.join(', ') + ') => {}';
-                    } else if (prop.initializer.elements) {
-                        var elements = (prop.initializer.elements || []).map(function (n) {
-                            if (n.kind === ts.SyntaxKind.StringLiteral) {
-                                return '\'' + n.text + '\'';
-                            }
-                            return n.text;
-                        });
-                        identifier = '[' + elements.join(', ') + ']';
-                    }
-                    _providerProps.push([
+                if (node.kind === ts.SyntaxKind.SpreadElementExpression) {
+                    return "..." + nodeName;
+                }
+                return "" + buildIdentifierName(node.expression, nodeName) + name;
+            }
+            return node.text + "." + name;
+        };
+        var parseProviderConfiguration = function (o) {
+            // parse expressions such as:
+            // { provide: APP_BASE_HREF, useValue: '/' },
+            // or
+            // { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
+            var _genProviderName = [];
+            var _providerProps = [];
+            (o.properties || []).forEach(function (prop) {
+                var identifier = prop.initializer.text;
+                if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
+                    identifier = "'" + identifier + "'";
+                }
+                // lambda function (i.e useFactory)
+                if (prop.initializer.body) {
+                    var params = (prop.initializer.parameters || []).map(function (params) { return params.name.text; });
+                    identifier = "(" + params.join(', ') + ") => {}";
+                }
+                else if (prop.initializer.elements) {
+                    var elements = (prop.initializer.elements || []).map(function (n) {
+                        if (n.kind === ts.SyntaxKind.StringLiteral) {
+                            return "'" + n.text + "'";
+                        }
+                        return n.text;
+                    });
+                    identifier = "[" + elements.join(', ') + "]";
+                }
+                _providerProps.push([
                     // i.e provide
                     prop.name.text,
                     // i.e OpaqueToken or 'StringToken'
-                    identifier].join(': '));
-                });
-                return '{ ' + _providerProps.join(', ') + ' }';
-            };
-            var parseSymbolElements = function parseSymbolElements(o) {
-                // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
-                if (o.arguments) {
-                    var className = buildIdentifierName(o.expression);
-                    // function arguments could be really complexe. There are so
-                    // many use cases that we can't handle. Just print "args" to indicate
-                    // that we have arguments.
-                    var functionArgs = o.arguments.length > 0 ? 'args' : '';
-                    var text = className + '(' + functionArgs + ')';
-                    return text;
-                } else if (o.expression) {
-                    var identifier = buildIdentifierName(o);
-                    return identifier;
-                }
-                return o.text ? o.text : parseProviderConfiguration(o);
-            };
-            var parseSymbols = function parseSymbols(node) {
-                var text = node.initializer.text;
-                if (text) {
-                    return parseSymbolText(text);
-                } else if (node.initializer.expression) {
-                    var identifier = parseSymbolElements(node.initializer);
-                    return [identifier];
-                } else if (node.initializer.elements) {
-                    return node.initializer.elements.map(parseSymbolElements);
-                }
-            };
-            return deps.map(parseSymbols).pop() || [];
-        }
-    }, {
-        key: 'findComponentSelectorByName',
-        value: function findComponentSelectorByName(name) {
-            return this.__cache[name];
-        }
-    }]);
+                    identifier
+                ].join(': '));
+            });
+            return "{ " + _providerProps.join(', ') + " }";
+        };
+        var parseSymbolElements = function (o) {
+            // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
+            if (o.arguments) {
+                var className = buildIdentifierName(o.expression);
+                // function arguments could be really complexe. There are so
+                // many use cases that we can't handle. Just print "args" to indicate
+                // that we have arguments.
+                var functionArgs = o.arguments.length > 0 ? 'args' : '';
+                var text = className + "(" + functionArgs + ")";
+                return text;
+            }
+            else if (o.expression) {
+                var identifier = buildIdentifierName(o);
+                return identifier;
+            }
+            return o.text ? o.text : parseProviderConfiguration(o);
+        };
+        var parseSymbols = function (node) {
+            var text = node.initializer.text;
+            if (text) {
+                return parseSymbolText(text);
+            }
+            else if (node.initializer.expression) {
+                var identifier = parseSymbolElements(node.initializer);
+                return [
+                    identifier
+                ];
+            }
+            else if (node.initializer.elements) {
+                return node.initializer.elements.map(parseSymbolElements);
+            }
+        };
+        return deps.map(parseSymbols).pop() || [];
+    };
+    Dependencies.prototype.findComponentSelectorByName = function (name) {
+        return this.__cache[name];
+    };
     return Dependencies;
-}();
+}());
 
 var glob = require('glob');
 var pkg = require('../package.json');
@@ -2472,8 +2085,7 @@ var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
 var startTime = new Date();
-
-var Application = function () {
+var Application = (function () {
     /**
      * Create a new compodoc application instance.
      *
@@ -2481,14 +2093,10 @@ var Application = function () {
      */
     function Application(options) {
         var _this = this;
-
-        classCallCheck(this, Application);
-
         this.preparePipes = function () {
             logger.info('Prepare pipes');
             _this.configuration.mainData.pipes = $dependenciesEngine.getPipes();
-            var i = 0,
-                len = _this.configuration.mainData.pipes.length;
+            var i = 0, len = _this.configuration.mainData.pipes.length;
             for (i; i < len; i++) {
                 _this.configuration.addPage({
                     path: 'pipes',
@@ -2501,8 +2109,7 @@ var Application = function () {
         this.prepareClasses = function () {
             logger.info('Prepare classes');
             _this.configuration.mainData.classes = $dependenciesEngine.getClasses();
-            var i = 0,
-                len = _this.configuration.mainData.classes.length;
+            var i = 0, len = _this.configuration.mainData.classes.length;
             for (i; i < len; i++) {
                 _this.configuration.addPage({
                     path: 'classes',
@@ -2515,8 +2122,7 @@ var Application = function () {
         this.prepareDirectives = function () {
             logger.info('Prepare directives');
             _this.configuration.mainData.directives = $dependenciesEngine.getDirectives();
-            var i = 0,
-                len = _this.configuration.mainData.directives.length;
+            var i = 0, len = _this.configuration.mainData.directives.length;
             for (i; i < len; i++) {
                 _this.configuration.addPage({
                     path: 'directives',
@@ -2536,70 +2142,45 @@ var Application = function () {
     /**
      * Start compodoc
      */
-
-
-    createClass(Application, [{
-        key: 'generate',
-        value: function generate() {
-            var _this2 = this;
-
-            $htmlengine.init().then(function () {
-                _this2.processPackageJson();
+    Application.prototype.generate = function () {
+        var _this = this;
+        $htmlengine.init().then(function () {
+            _this.processPackageJson();
+        });
+    };
+    Application.prototype.setFiles = function (files) {
+        this.files = files;
+    };
+    Application.prototype.processPackageJson = function () {
+        var _this = this;
+        logger.info('Searching package.json file');
+        $fileengine.get('package.json').then(function (packageData) {
+            var parsedData = JSON.parse(packageData);
+            if (typeof parsedData.name !== 'undefined' && _this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
+                _this.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
+            }
+            if (typeof parsedData.description !== 'undefined') {
+                _this.configuration.mainData.documentationMainDescription = parsedData.description;
+            }
+            logger.info('package.json file found');
+            _this.processMarkdown();
+        }, function (errorMessage) {
+            logger.error(errorMessage);
+            logger.error('Continuing without package.json file');
+            _this.processMarkdown();
+        });
+    };
+    Application.prototype.processMarkdown = function () {
+        var _this = this;
+        logger.info('Searching README.md file');
+        $markdownengine.getReadmeFile().then(function (readmeData) {
+            _this.configuration.addPage({
+                name: 'index',
+                context: 'readme'
             });
-        }
-    }, {
-        key: 'setFiles',
-        value: function setFiles(files) {
-            this.files = files;
-        }
-    }, {
-        key: 'processPackageJson',
-        value: function processPackageJson() {
-            var _this3 = this;
-
-            logger.info('Searching package.json file');
-            $fileengine.get('package.json').then(function (packageData) {
-                var parsedData = JSON.parse(packageData);
-                if (typeof parsedData.name !== 'undefined' && _this3.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
-                    _this3.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
-                }
-                if (typeof parsedData.description !== 'undefined') {
-                    _this3.configuration.mainData.documentationMainDescription = parsedData.description;
-                }
-                logger.info('package.json file found');
-                _this3.processMarkdown();
-            }, function (errorMessage) {
-                logger.error(errorMessage);
-                logger.error('Continuing without package.json file');
-                _this3.processMarkdown();
-            });
-        }
-    }, {
-        key: 'processMarkdown',
-        value: function processMarkdown() {
-            var _this4 = this;
-
-            logger.info('Searching README.md file');
-            $markdownengine.getReadmeFile().then(function (readmeData) {
-                _this4.configuration.addPage({
-                    name: 'index',
-                    context: 'readme'
-                });
-                _this4.configuration.addPage({
-                    name: 'overview',
-                    context: 'overview'
-                });
-                _this4.configuration.mainData.readme = readmeData;
-                logger.info('README.md file found');
-                _this4.getDependenciesData();
-            }, function (errorMessage) {
-                logger.error(errorMessage);
-                logger.error('Continuing without README.md file');
-                _this4.configuration.addPage({
-                    name: 'index',
-                    context: 'overview'
-                });
-                _this4.getDependenciesData();
+            _this.configuration.addPage({
+                name: 'overview',
+                context: 'overview'
             });
         }
     }, {
@@ -2610,38 +2191,65 @@ var Application = function () {
             logger.info('Get dependencies data');
             var crawler = new Dependencies(this.files, {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+
             });
-            var dependenciesData = crawler.getDependencies();
-            $dependenciesEngine.init(dependenciesData);
-            //RouterParser.printRoutes();
-            this.prepareModules();
-            this.prepareComponents().then(function (readmeData) {
-                if ($dependenciesEngine.directives.length > 0) {
-                    _this5.prepareDirectives();
-                }
-                if ($dependenciesEngine.injectables.length > 0) {
-                    _this5.prepareInjectables();
-                }
-                if ($dependenciesEngine.routes.length > 0) {
-                    _this5.prepareRoutes();
-                }
-                if ($dependenciesEngine.pipes.length > 0) {
-                    _this5.preparePipes();
-                }
-                if ($dependenciesEngine.classes.length > 0) {
-                    _this5.prepareClasses();
-                }
-                if ($dependenciesEngine.interfaces.length > 0) {
-                    _this5.prepareInterfaces();
-                }
-                if (!_this5.configuration.mainData.disableCoverage) {
-                    _this5.prepareCoverage();
-                }
-                _this5.processPages();
-            }, function (errorMessage) {
-                logger.error(errorMessage);
+            _this.getDependenciesData();
+        });
+    };
+    Application.prototype.getDependenciesData = function () {
+        var _this = this;
+        logger.info('Get dependencies data');
+        var crawler = new Dependencies(this.files, {
+            tsconfigDirectory: cwd
+        });
+        var dependenciesData = crawler.getDependencies();
+        $dependenciesEngine.init(dependenciesData);
+        //RouterParser.printRoutes();
+        this.prepareModules();
+        this.prepareComponents().then(function (readmeData) {
+            if ($dependenciesEngine.directives.length > 0) {
+                _this.prepareDirectives();
+            }
+            if ($dependenciesEngine.injectables.length > 0) {
+                _this.prepareInjectables();
+            }
+            if ($dependenciesEngine.routes.length > 0) {
+                _this.prepareRoutes();
+            }
+            if ($dependenciesEngine.pipes.length > 0) {
+                _this.preparePipes();
+            }
+            if ($dependenciesEngine.classes.length > 0) {
+                _this.prepareClasses();
+            }
+            if ($dependenciesEngine.interfaces.length > 0) {
+                _this.prepareInterfaces();
+            }
+            if (!_this.configuration.mainData.disableCoverage) {
+                _this.prepareCoverage();
+            }
+            _this.processPages();
+        }, function (errorMessage) {
+            logger.error(errorMessage);
+        });
+    };
+    Application.prototype.prepareModules = function () {
+        logger.info('Prepare modules');
+        this.configuration.mainData.modules = $dependenciesEngine.getModules();
+        this.configuration.addPage({
+            name: 'modules',
+            context: 'modules'
+        });
+        var i = 0, len = this.configuration.mainData.modules.length;
+        for (i; i < len; i++) {
+            this.configuration.addPage({
+                path: 'modules',
+                name: this.configuration.mainData.modules[i].name,
+                context: 'module',
+                module: this.configuration.mainData.modules[i]
             });
         }
+
     }, {
         key: 'prepareModules',
         value: function prepareModules() {
@@ -2678,65 +2286,28 @@ var Application = function () {
                 });
                 return ngModule;
             });
-            this.configuration.addPage({
-                name: 'modules',
-                context: 'modules'
-            });
-            var i = 0,
-                len = this.configuration.mainData.modules.length;
-            for (i; i < len; i++) {
-                this.configuration.addPage({
-                    path: 'modules',
-                    name: this.configuration.mainData.modules[i].name,
-                    context: 'module',
-                    module: this.configuration.mainData.modules[i]
-                });
-            }
-        }
-    }, {
-        key: 'prepareInterfaces',
-        value: function prepareInterfaces() {
-            logger.info('Prepare interfaces');
-            this.configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
-            var i = 0,
-                len = this.configuration.mainData.interfaces.length;
-            for (i; i < len; i++) {
-                this.configuration.addPage({
-                    path: 'interfaces',
-                    name: this.configuration.mainData.interfaces[i].name,
-                    context: 'interface',
-                    interface: this.configuration.mainData.interfaces[i]
-                });
-            }
-        }
-    }, {
-        key: 'prepareComponents',
-        value: function prepareComponents() {
-            logger.info('Prepare components');
-            var that = this;
-            that.configuration.mainData.components = $dependenciesEngine.getComponents();
-            return new Promise(function (resolve$$1, reject) {
-                var i = 0,
-                    len = that.configuration.mainData.components.length,
-                    loop = function loop() {
-                    if (i <= len - 1) {
-                        var dirname$$1 = path.dirname(that.configuration.mainData.components[i].file),
-                            readmeFile = dirname$$1 + path.sep + 'README.md';
-                        if (fs.existsSync(readmeFile)) {
-                            logger.info('README.md exist for this component, include it');
-                            fs.readFile(readmeFile, 'utf8', function (err, data) {
-                                if (err) throw err;
-                                that.configuration.mainData.components[i].readme = marked__default(data);
-                                that.configuration.addPage({
-                                    path: 'components',
-                                    name: that.configuration.mainData.components[i].name,
-                                    context: 'component',
-                                    component: that.configuration.mainData.components[i]
-                                });
-                                i++;
-                                loop();
-                            });
-                        } else {
+
+    };
+    Application.prototype.prepareInterfaces = function () {
+        logger.info('Prepare interfaces');
+        this.configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
+        var i = 0, len = this.configuration.mainData.interfaces.length;
+        for (i; i < len; i++) {
+    });
+    Application.prototype.prepareComponents = function () {
+        logger.info('Prepare components');
+        var that = this;
+        that.configuration.mainData.components = $dependenciesEngine.getComponents();
+        return new Promise(function (resolve$$1, reject) {
+            var i = 0, len = that.configuration.mainData.components.length, loop = function () {
+                if (i <= len - 1) {
+                    var dirname$$1 = path.dirname(that.configuration.mainData.components[i].file), readmeFile = dirname$$1 + path.sep + 'README.md';
+                    if (fs.existsSync(readmeFile)) {
+                        logger.info('README.md exist for this component, include it');
+                        fs.readFile(readmeFile, 'utf8', function (err, data) {
+                            if (err)
+                                throw err;
+                            that.configuration.mainData.components[i].readme = marked__default(data);
                             that.configuration.addPage({
                                 path: 'components',
                                 name: that.configuration.mainData.components[i].name,
@@ -2745,536 +2316,537 @@ var Application = function () {
                             });
                             i++;
                             loop();
-                        }
-                    } else {
-                        resolve$$1();
-                    }
-                };
-                loop();
-            });
-        }
-    }, {
-        key: 'prepareInjectables',
-        value: function prepareInjectables() {
-            logger.info('Prepare injectables');
-            this.configuration.mainData.injectables = $dependenciesEngine.getInjectables();
-            var i = 0,
-                len = this.configuration.mainData.injectables.length;
-            for (i; i < len; i++) {
-                this.configuration.addPage({
-                    path: 'injectables',
-                    name: this.configuration.mainData.injectables[i].name,
-                    context: 'injectable',
-                    injectable: this.configuration.mainData.injectables[i]
-                });
-            }
-        }
-    }, {
-        key: 'prepareRoutes',
-        value: function prepareRoutes() {
-            logger.info('Process routes');
-            this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
-            this.configuration.addPage({
-                name: 'routes',
-                context: 'routes'
-            });
-        }
-    }, {
-        key: 'prepareCoverage',
-        value: function prepareCoverage() {
-            logger.info('Process documentation coverage report');
-            /*
-             * loop with components, classes, injectables, interfaces, pipes
-             */
-            var files = [],
-                totalProjectStatementDocumented = 0,
-                getStatus = function getStatus(percent) {
-                var status;
-                if (percent <= 25) {
-                    status = 'low';
-                } else if (percent > 25 && percent <= 50) {
-                    status = 'medium';
-                } else if (percent > 50 && percent <= 75) {
-                    status = 'good';
-                } else {
-                    status = 'very-good';
-                }
-                return status;
-            };
-            _.forEach(this.configuration.mainData.components, function (component) {
-                var cl = {
-                    filePath: component.file,
-                    type: component.type,
-                    name: component.name
-                },
-                    totalStatementDocumented = 0,
-                    totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length;
-                _.forEach(component.propertiesClass, function (property) {
-                    if (property.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.methodsClass, function (method) {
-                    if (method.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.inputsClass, function (input) {
-                    if (input.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.outputsClass, function (output) {
-                    if (output.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-            _.forEach(this.configuration.mainData.classes, function (classe) {
-                var cl = {
-                    filePath: classe.file,
-                    type: 'classe',
-                    name: classe.name
-                },
-                    totalStatementDocumented = 0,
-                    totalStatements = classe.properties.length + classe.methods.length;
-                _.forEach(classe.properties, function (property) {
-                    if (property.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(classe.methods, function (method) {
-                    if (method.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-            _.forEach(this.configuration.mainData.injectables, function (injectable) {
-                var cl = {
-                    filePath: injectable.file,
-                    type: injectable.type,
-                    name: injectable.name
-                },
-                    totalStatementDocumented = 0,
-                    totalStatements = injectable.properties.length + injectable.methods.length;
-                _.forEach(injectable.properties, function (property) {
-                    if (property.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(injectable.methods, function (method) {
-                    if (method.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-            _.forEach(this.configuration.mainData.interfaces, function (inter) {
-                var cl = {
-                    filePath: inter.file,
-                    type: inter.type,
-                    name: inter.name
-                },
-                    totalStatementDocumented = 0,
-                    totalStatements = inter.properties.length + inter.methods.length;
-                _.forEach(inter.properties, function (property) {
-                    if (property.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(inter.methods, function (method) {
-                    if (method.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-            _.forEach(this.configuration.mainData.pipes, function (pipe) {
-                var cl = {
-                    filePath: pipe.file,
-                    type: pipe.type,
-                    name: pipe.name
-                },
-                    totalStatementDocumented = 0,
-                    totalStatements = 1;
-                if (pipe.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-            files = _.sortBy(files, ['filePath']);
-            var coverageData = {
-                count: Math.floor(totalProjectStatementDocumented / files.length),
-                status: ''
-            };
-            coverageData.status = getStatus(coverageData.count);
-            this.configuration.addPage({
-                name: 'coverage',
-                context: 'coverage',
-                files: files,
-                data: coverageData
-            });
-        }
-    }, {
-        key: 'processPages',
-        value: function processPages() {
-            var _this6 = this;
-
-            logger.info('Process pages');
-            var pages = this.configuration.pages,
-                i = 0,
-                len = pages.length,
-                loop = function loop() {
-                if (i <= len - 1) {
-                    logger.info('Process page', pages[i].name);
-                    $htmlengine.render(_this6.configuration.mainData, pages[i]).then(function (htmlData) {
-                        var finalPath = _this6.configuration.mainData.output;
-                        if (_this6.configuration.mainData.output.lastIndexOf('/') === -1) {
-                            finalPath += '/';
-                        }
-                        if (pages[i].path) {
-                            finalPath += pages[i].path + '/';
-                        }
-                        finalPath += pages[i].name + '.html';
-                        $searchEngine.indexPage({
-                            infos: pages[i],
-                            rawData: htmlData,
-                            url: finalPath
                         });
-                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                            if (err) {
-                                logger.error('Error during ' + pages[i].name + ' page generation');
-                            } else {
-                                i++;
-                                loop();
-                            }
-                        });
-                    }, function (errorMessage) {
-                        logger.error(errorMessage);
-                    });
-                } else {
-                    $searchEngine.generateSearchIndexJson(_this6.configuration.mainData.output);
-                    if (_this6.configuration.mainData.assetsFolder !== '') {
-                        _this6.processAssetsFolder();
                     }
-                    _this6.processResources();
+                    else {
+                        that.configuration.addPage({
+                            path: 'components',
+                            name: that.configuration.mainData.components[i].name,
+                            context: 'component',
+                            component: that.configuration.mainData.components[i]
+                        });
+                        i++;
+                        loop();
+                    }
+                }
+                else {
+                    resolve$$1();
                 }
             };
             loop();
+        });
+    };
+    Application.prototype.prepareInjectables = function () {
+        logger.info('Prepare injectables');
+        this.configuration.mainData.injectables = $dependenciesEngine.getInjectables();
+        var i = 0, len = this.configuration.mainData.injectables.length;
+        for (i; i < len; i++) {
+            this.configuration.addPage({
+                path: 'injectables',
+                name: this.configuration.mainData.injectables[i].name,
+                context: 'injectable',
+                injectable: this.configuration.mainData.injectables[i]
+            });
         }
-    }, {
-        key: 'processAssetsFolder',
-        value: function processAssetsFolder() {
-            logger.info('Copy assets folder');
-            if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
-                logger.error('Provided assets folder ' + this.configuration.mainData.assetsFolder + ' did not exist');
-            } else {
-                var that = this;
-                fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
-                    if (err) {
-                        logger.error('Error during resources copy ', err);
+    };
+    Application.prototype.prepareRoutes = function () {
+        logger.info('Process routes');
+        this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
+        this.configuration.addPage({
+            name: 'routes',
+            context: 'routes'
+        });
+    };
+    Application.prototype.prepareCoverage = function () {
+        logger.info('Process documentation coverage report');
+        /*
+         * loop with components, classes, injectables, interfaces, pipes
+         */
+        var files = [], totalProjectStatementDocumented = 0, getStatus = function (percent) {
+            var status;
+            if (percent <= 25) {
+                status = 'low';
+            }
+            else if (percent > 25 && percent <= 50) {
+                status = 'medium';
+            }
+            else if (percent > 50 && percent <= 75) {
+                status = 'good';
+            }
+            else {
+                status = 'very-good';
+            }
+            return status;
+        };
+        _.forEach(this.configuration.mainData.components, function (component) {
+            var cl = {
+                filePath: component.file,
+                type: component.type,
+                name: component.name
+            }, totalStatementDocumented = 0, totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length;
+            _.forEach(component.propertiesClass, function (property) {
+                if (property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.methodsClass, function (method) {
+                if (method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.inputsClass, function (input) {
+                if (input.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(component.outputsClass, function (output) {
+                if (output.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if (totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.classes, function (classe) {
+            var cl = {
+                filePath: classe.file,
+                type: 'classe',
+                name: classe.name
+            }, totalStatementDocumented = 0, totalStatements = classe.properties.length + classe.methods.length;
+            _.forEach(classe.properties, function (property) {
+                if (property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(classe.methods, function (method) {
+                if (method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if (totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.injectables, function (injectable) {
+            var cl = {
+                filePath: injectable.file,
+                type: injectable.type,
+                name: injectable.name
+            }, totalStatementDocumented = 0, totalStatements = injectable.properties.length + injectable.methods.length;
+            _.forEach(injectable.properties, function (property) {
+                if (property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(injectable.methods, function (method) {
+                if (method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if (totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.interfaces, function (inter) {
+            var cl = {
+                filePath: inter.file,
+                type: inter.type,
+                name: inter.name
+            }, totalStatementDocumented = 0, totalStatements = inter.properties.length + inter.methods.length;
+            _.forEach(inter.properties, function (property) {
+                if (property.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            _.forEach(inter.methods, function (method) {
+                if (method.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            });
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            if (totalStatements === 0) {
+                cl.coveragePercent = 0;
+            }
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        _.forEach(this.configuration.mainData.pipes, function (pipe) {
+            var cl = {
+                filePath: pipe.file,
+                type: pipe.type,
+                name: pipe.name
+            }, totalStatementDocumented = 0, totalStatements = 1;
+            if (pipe.description !== '') {
+                totalStatementDocumented += 1;
+            }
+            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+            cl.status = getStatus(cl.coveragePercent);
+            totalProjectStatementDocumented += cl.coveragePercent;
+            files.push(cl);
+        });
+        files = _.sortBy(files, ['filePath']);
+        var coverageData = {
+            count: Math.floor(totalProjectStatementDocumented / files.length),
+            status: ''
+        };
+        coverageData.status = getStatus(coverageData.count);
+        this.configuration.addPage({
+            name: 'coverage',
+            context: 'coverage',
+            files: files,
+            data: coverageData
+        });
+    };
+    Application.prototype.processPages = function () {
+        var _this = this;
+        logger.info('Process pages');
+        var pages = this.configuration.pages, i = 0, len = pages.length, loop = function () {
+            if (i <= len - 1) {
+                logger.info('Process page', pages[i].name);
+                $htmlengine.render(_this.configuration.mainData, pages[i]).then(function (htmlData) {
+                    var finalPath = _this.configuration.mainData.output;
+                    if (_this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
                     }
+                    if (pages[i].path) {
+                        finalPath += pages[i].path + '/';
+                    }
+                    finalPath += pages[i].name + '.html';
+                    $searchEngine.indexPage({
+                        infos: pages[i],
+                        rawData: htmlData,
+                        url: finalPath
+                    });
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                        if (err) {
+                            logger.error('Error during ' + pages[i].name + ' page generation');
+                        }
+                        else {
+                            i++;
+                            loop();
+                        }
+                    });
+                }, function (errorMessage) {
+                    logger.error(errorMessage);
                 });
             }
+            else {
+                $searchEngine.generateSearchIndexJson(_this.configuration.mainData.output);
+                if (_this.configuration.mainData.assetsFolder !== '') {
+                    _this.processAssetsFolder();
+                }
+                _this.processResources();
+            }
+        };
+        loop();
+    };
+    Application.prototype.processAssetsFolder = function () {
+        logger.info('Copy assets folder');
+        if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
+            logger.error("Provided assets folder " + this.configuration.mainData.assetsFolder + " did not exist");
         }
-    }, {
-        key: 'processResources',
-        value: function processResources() {
-            logger.info('Copy main resources');
+        else {
             var that = this;
-            fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), function (err) {
+            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
                 if (err) {
                     logger.error('Error during resources copy ', err);
-                } else {
-                    if (that.configuration.mainData.extTheme) {
-                        fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
-                            if (err) {
-                                logger.error('Error during external styling theme copy ', err);
-                            } else {
-                                logger.info('External styling theme copy succeeded');
-                                that.processGraphs();
-                            }
-                        });
-                    } else {
-                        that.processGraphs();
-                    }
                 }
             });
         }
-    }, {
-        key: 'processGraphs',
-        value: function processGraphs() {
-            var _this7 = this;
-
-            var onComplete = function onComplete() {
-                var finalTime = (new Date() - startTime) / 1000;
-                logger.info('Documentation generated in ' + _this7.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this7.configuration.mainData.theme + ' theme');
-                if (_this7.configuration.mainData.serve) {
-                    logger.info('Serving documentation from ' + _this7.configuration.mainData.output + ' at http://127.0.0.1:' + _this7.configuration.mainData.port);
-                    _this7.runWebServer(_this7.configuration.mainData.output);
+    };
+    Application.prototype.processResources = function () {
+        logger.info('Copy main resources');
+        var that = this;
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), function (err) {
+            if (err) {
+                logger.error('Error during resources copy ', err);
+            }
+            else {
+                if (that.configuration.mainData.extTheme) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
+                        if (err) {
+                            logger.error('Error during external styling theme copy ', err);
+                        }
+                        else {
+                            logger.info('External styling theme copy succeeded');
+                            that.processGraphs();
+                        }
+                    });
+                }
+                else {
+                    that.processGraphs();
+                }
+            }
+        });
+    };
+    Application.prototype.processGraphs = function () {
+        var _this = this;
+        var onComplete = function () {
+            var finalTime = (new Date() - startTime) / 1000;
+            logger.info('Documentation generated in ' + _this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + _this.configuration.mainData.theme + ' theme');
+            if (_this.configuration.mainData.serve) {
+                logger.info("Serving documentation from " + _this.configuration.mainData.output + " at http://127.0.0.1:" + _this.configuration.mainData.port);
+                _this.runWebServer(_this.configuration.mainData.output);
+            }
+        };
+        if (this.configuration.mainData.disableGraph) {
+            logger.info('Graph generation disabled');
+            onComplete();
+        }
+        else {
+            logger.info('Process main graph');
+            var modules_1 = this.configuration.mainData.modules, i_1 = 0, len_1 = modules_1.length, loop_1 = function () {
+                if (i_1 <= len_1 - 1) {
+                    logger.info('Process module graph', modules_1[i_1].name);
+                    var finalPath = _this.configuration.mainData.output;
+                    if (_this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    finalPath += 'modules/' + modules_1[i_1].name;
+                    $ngdengine.renderGraph(modules_1[i_1].file, finalPath, 'f').then(function () {
+                        i_1++;
+                        loop_1();
+                    }, function (errorMessage) {
+                        logger.error(errorMessage);
+                    });
+                }
+                else {
+                    onComplete();
                 }
             };
-            if (this.configuration.mainData.disableGraph) {
-                logger.info('Graph generation disabled');
-                onComplete();
-            } else {
-                (function () {
-                    logger.info('Process main graph');
-                    var modules = _this7.configuration.mainData.modules,
-                        i = 0,
-                        len = modules.length,
-                        loop = function loop() {
-                        if (i <= len - 1) {
-                            logger.info('Process module graph', modules[i].name);
-                            var finalPath = _this7.configuration.mainData.output;
-                            if (_this7.configuration.mainData.output.lastIndexOf('/') === -1) {
-                                finalPath += '/';
-                            }
-                            finalPath += 'modules/' + modules[i].name;
-                            $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(function () {
-                                i++;
-                                loop();
-                            }, function (errorMessage) {
-                                logger.error(errorMessage);
-                            });
-                        } else {
-                            onComplete();
-                        }
-                    };
-                    var finalMainGraphPath = _this7.configuration.mainData.output;
-                    if (finalMainGraphPath.lastIndexOf('/') === -1) {
-                        finalMainGraphPath += '/';
-                    }
-                    finalMainGraphPath += 'graph';
-                    $ngdengine.renderGraph(_this7.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
-                        loop();
-                    }, function (err) {
-                        logger.error('Error during graph generation: ', err);
-                    });
-                })();
+            var finalMainGraphPath = this.configuration.mainData.output;
+            if (finalMainGraphPath.lastIndexOf('/') === -1) {
+                finalMainGraphPath += '/';
             }
-        }
-    }, {
-        key: 'runWebServer',
-        value: function runWebServer(folder) {
-            LiveServer.start({
-                root: folder,
-                open: this.configuration.mainData.open,
-                quiet: true,
-                logLevel: 0,
-                port: this.configuration.mainData.port
+            finalMainGraphPath += 'graph';
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(function () {
+                loop_1();
+            }, function (err) {
+                logger.error('Error during graph generation: ', err);
             });
         }
+    };
+    Application.prototype.runWebServer = function (folder) {
+        LiveServer.start({
+            root: folder,
+            open: this.configuration.mainData.open,
+            quiet: true,
+            logLevel: 0,
+            port: this.configuration.mainData.port
+        });
+    };
+    Object.defineProperty(Application.prototype, "application", {
         /**
          * Return the application / root component instance.
          */
-
-    }, {
-        key: 'application',
-        get: function get$$1() {
+        get: function () {
             return this;
-        }
-    }, {
-        key: 'isCLI',
-        get: function get$$1() {
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Application.prototype, "isCLI", {
+        get: function () {
             return false;
-        }
-    }]);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Application;
-}();
+}());
 
 var pkg$2 = require('../package.json');
 var program = require('commander');
 var files = [];
 var cwd$1 = process.cwd();
-
-var CliApplication = function (_Application) {
-    inherits(CliApplication, _Application);
-
+var CliApplication = (function (_super) {
+    __extends(CliApplication, _super);
     function CliApplication() {
-        classCallCheck(this, CliApplication);
-        return possibleConstructorReturn(this, (CliApplication.__proto__ || Object.getPrototypeOf(CliApplication)).apply(this, arguments));
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-
-    createClass(CliApplication, [{
-        key: 'generate',
-
-        /**
-         * Run compodoc from the command line.
-         */
-        value: function generate() {
-            var _this2 = this;
-
-            program.version(pkg$2.version).usage('<src> [options]').option('-p, --tsconfig [config]', 'A tsconfig.json file').option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder).option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base).option('-y, --extTheme [file]', 'External styling theme file').option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title).option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder').option('-o, --open', 'Open the generated documentation', false).option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false).option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false).option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port).option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)').option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false).option('--disableSourceCode', 'Do not add source code tab', false).option('--disableGraph', 'Do not add the dependency graph', false).option('--disableCoverage', 'Do not add the documentation coverage report', false).parse(process.argv);
-            var outputHelp = function outputHelp() {
-                program.outputHelp();
+    /**
+     * Run compodoc from the command line.
+     */
+    CliApplication.prototype.generate = function () {
+        program
+            .version(pkg$2.version)
+            .usage('<src> [options]')
+            .option('-p, --tsconfig [config]', 'A tsconfig.json file')
+            .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
+            .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
+            .option('-y, --extTheme [file]', 'External styling theme file')
+            .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
+            .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
+            .option('-o, --open', 'Open the generated documentation', false)
+            .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
+            .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
+            .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
+            .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
+            .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
+            .option('--disableSourceCode', 'Do not add source code tab', false)
+            .option('--disableGraph', 'Do not add the dependency graph', false)
+            .option('--disableCoverage', 'Do not add the documentation coverage report', false)
+            .parse(process.argv);
+        var outputHelp = function () {
+            program.outputHelp();
+            process.exit(1);
+        };
+        if (program.output) {
+            this.configuration.mainData.output = program.output;
+        }
+        if (program.base) {
+            this.configuration.mainData.base = program.base;
+        }
+        if (program.extTheme) {
+            this.configuration.mainData.extTheme = program.extTheme;
+        }
+        if (program.theme) {
+            this.configuration.mainData.theme = program.theme;
+        }
+        if (program.name) {
+            this.configuration.mainData.documentationMainName = program.name;
+        }
+        if (program.assetsFolder) {
+            this.configuration.mainData.assetsFolder = program.assetsFolder;
+        }
+        if (program.open) {
+            this.configuration.mainData.open = program.open;
+        }
+        if (program.includes) {
+            this.configuration.mainData.includes = program.includes;
+        }
+        if (program.includesName) {
+            this.configuration.mainData.includesName = program.includesName;
+        }
+        if (program.silent) {
+            logger.silent = false;
+        }
+        if (program.serve) {
+            this.configuration.mainData.serve = program.serve;
+        }
+        if (program.port) {
+            this.configuration.mainData.port = program.port;
+        }
+        if (program.hideGenerator) {
+            this.configuration.mainData.hideGenerator = program.hideGenerator;
+        }
+        if (program.disableSourceCode) {
+            this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+        }
+        if (program.disableGraph) {
+            this.configuration.mainData.disableGraph = program.disableGraph;
+        }
+        if (program.disableCoverage) {
+            this.configuration.mainData.disableCoverage = program.disableCoverage;
+        }
+        if (program.serve && !program.tsconfig && program.output) {
+            // if -s & -d, serve it
+            if (!fs.existsSync(program.output)) {
+                logger.error(program.output + " folder doesn't exist");
                 process.exit(1);
-            };
-            if (program.output) {
-                this.configuration.mainData.output = program.output;
             }
-            if (program.base) {
-                this.configuration.mainData.base = program.base;
-            }
-            if (program.extTheme) {
-                this.configuration.mainData.extTheme = program.extTheme;
-            }
-            if (program.theme) {
-                this.configuration.mainData.theme = program.theme;
-            }
-            if (program.name) {
-                this.configuration.mainData.documentationMainName = program.name;
-            }
-            if (program.assetsFolder) {
-                this.configuration.mainData.assetsFolder = program.assetsFolder;
-            }
-            if (program.open) {
-                this.configuration.mainData.open = program.open;
-            }
-            if (program.includes) {
-                this.configuration.mainData.includes = program.includes;
-            }
-            if (program.includesName) {
-                this.configuration.mainData.includesName = program.includesName;
-            }
-            if (program.silent) {
-                logger.silent = false;
-            }
-            if (program.serve) {
-                this.configuration.mainData.serve = program.serve;
-            }
-            if (program.port) {
-                this.configuration.mainData.port = program.port;
-            }
-            if (program.hideGenerator) {
-                this.configuration.mainData.hideGenerator = program.hideGenerator;
-            }
-            if (program.disableSourceCode) {
-                this.configuration.mainData.disableSourceCode = program.disableSourceCode;
-            }
-            if (program.disableGraph) {
-                this.configuration.mainData.disableGraph = program.disableGraph;
-            }
-            if (program.disableCoverage) {
-                this.configuration.mainData.disableCoverage = program.disableCoverage;
-            }
-            if (program.serve && !program.tsconfig && program.output) {
-                // if -s & -d, serve it
-                if (!fs.existsSync(program.output)) {
-                    logger.error(program.output + ' folder doesn\'t exist');
-                    process.exit(1);
-                } else {
-                    logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + program.port);
-                    get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
-                }
-            } else if (program.serve && !program.tsconfig && !program.output) {
-                // if only -s find ./documentation, if ok serve, else error provide -d
-                if (!fs.existsSync(program.output)) {
-                    logger.error('Provide output generated folder with -d flag');
-                    process.exit(1);
-                } else {
-                    logger.info('Serving documentation from ' + program.output + ' at http://127.0.0.1:' + program.port);
-                    get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'runWebServer', this).call(this, program.output);
-                }
-            } else {
-                (function () {
-                    if (program.hideGenerator) {
-                        _this2.configuration.mainData.hideGenerator = true;
-                    }
-                    var defaultWalkFOlder = cwd$1 || '.',
-                        walk = function walk(dir, exclude) {
-                        var results = [];
-                        var list = fs.readdirSync(dir);
-                        list.forEach(function (file) {
-                            if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
-                                file = path.join(dir, file);
-                                var stat = fs.statSync(file);
-                                if (stat && stat.isDirectory()) {
-                                    results = results.concat(walk(file, exclude));
-                                } else if (/(spec|\.d)\.ts/.test(file)) {
-                                    logger.debug('Ignoring', file);
-                                } else if (path.extname(file) === '.ts') {
-                                    logger.debug('Including', file);
-                                    results.push(file);
-                                }
-                            }
-                        });
-                        return results;
-                    };
-                    if (program.tsconfig && program.args.length === 0) {
-                        _this2.configuration.mainData.tsconfig = program.tsconfig;
-                        if (!fs.existsSync(program.tsconfig)) {
-                            logger.error('"tsconfig.json" file was not found in the current directory');
-                            process.exit(1);
-                        } else {
-                            var _file = path.join(path.join(process.cwd(), path.dirname(_this2.configuration.mainData.tsconfig)), path.basename(_this2.configuration.mainData.tsconfig));
-                            logger.info('Using tsconfig', _file);
-                            files = require(_file).files;
-                            // use the current directory of tsconfig.json as a working directory
-                            cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
-                            if (!files) {
-                                var exclude = require(_file).exclude || [];
-                                files = walk(cwd$1 || '.', exclude);
-                            }
-                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
-                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
-                        }
-                    } else if (program.tsconfig && program.args.length > 0) {
-                        _this2.configuration.mainData.tsconfig = program.tsconfig;
-                        var sourceFolder = program.args[0];
-                        if (!fs.existsSync(sourceFolder)) {
-                            logger.error('Provided source folder ' + sourceFolder + ' was not found in the current directory');
-                            process.exit(1);
-                        } else {
-                            logger.info('Using provided source folder');
-                            files = walk(path.resolve(sourceFolder), []);
-                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'setFiles', _this2).call(_this2, files);
-                            get(CliApplication.prototype.__proto__ || Object.getPrototypeOf(CliApplication.prototype), 'generate', _this2).call(_this2);
-                        }
-                    } else {
-                        logger.error('tsconfig.json file was not found, please use -p flag');
-                        outputHelp();
-                    }
-                })();
+            else {
+                logger.info("Serving documentation from " + program.output + " at http://127.0.0.1:" + program.port);
+                _super.prototype.runWebServer.call(this, program.output);
             }
         }
-    }]);
+        else if (program.serve && !program.tsconfig && !program.output) {
+            // if only -s find ./documentation, if ok serve, else error provide -d
+            if (!fs.existsSync(program.output)) {
+                logger.error('Provide output generated folder with -d flag');
+                process.exit(1);
+            }
+            else {
+                logger.info("Serving documentation from " + program.output + " at http://127.0.0.1:" + program.port);
+                _super.prototype.runWebServer.call(this, program.output);
+            }
+        }
+        else {
+            if (program.hideGenerator) {
+                this.configuration.mainData.hideGenerator = true;
+            }
+            var defaultWalkFOlder = cwd$1 || '.', walk_1 = function (dir, exclude) {
+                var results = [];
+                var list = fs.readdirSync(dir);
+                list.forEach(function (file) {
+                    if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                        file = path.join(dir, file);
+                        var stat = fs.statSync(file);
+                        if (stat && stat.isDirectory()) {
+                            results = results.concat(walk_1(file, exclude));
+                        }
+                        else if (/(spec|\.d)\.ts/.test(file)) {
+                            logger.debug('Ignoring', file);
+                        }
+                        else if (path.extname(file) === '.ts') {
+                            logger.debug('Including', file);
+                            results.push(file);
+                        }
+                    }
+                });
+                return results;
+            };
+            if (program.tsconfig && program.args.length === 0) {
+                this.configuration.mainData.tsconfig = program.tsconfig;
+                if (!fs.existsSync(program.tsconfig)) {
+                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    process.exit(1);
+                }
+                else {
+                    var _file = path.join(path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)), path.basename(this.configuration.mainData.tsconfig));
+                    logger.info('Using tsconfig', _file);
+                    files = require(_file).files;
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd$1 = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    if (!files) {
+                        var exclude = require(_file).exclude || [];
+                        files = walk_1(cwd$1 || '.', exclude);
+                    }
+                    _super.prototype.setFiles.call(this, files);
+                    _super.prototype.generate.call(this);
+                }
+            }
+            else if (program.tsconfig && program.args.length > 0) {
+                this.configuration.mainData.tsconfig = program.tsconfig;
+                var sourceFolder = program.args[0];
+                if (!fs.existsSync(sourceFolder)) {
+                    logger.error("Provided source folder " + sourceFolder + " was not found in the current directory");
+                    process.exit(1);
+                }
+                else {
+                    logger.info('Using provided source folder');
+                    files = walk_1(path.resolve(sourceFolder), []);
+                    _super.prototype.setFiles.call(this, files);
+                    _super.prototype.generate.call(this);
+                }
+            }
+            else {
+                logger.error('tsconfig.json file was not found, please use -p flag');
+                outputHelp();
+            }
+        }
+    };
     return CliApplication;
-}(Application);
+}(Application));
 
 exports.Application = Application;
 exports.CliApplication = CliApplication;
