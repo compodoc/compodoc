@@ -56,6 +56,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Title documentation');
         });
 
+        it(`-a`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-a, --assetsFolder [folder]');
+            expect(runHelp.stdout.toString()).to.contain('External assets folder to copy in generated documentation folder');
+        });
+
         it(`-o`, () => {
             expect(runHelp.stdout.toString()).to.contain('-o, --open');
             expect(runHelp.stdout.toString()).to.contain('Open the generated documentation');

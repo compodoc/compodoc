@@ -192,6 +192,29 @@ describe('CLI', () => {
         });
     });
 
+    describe('when generation with d and a flags', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/ -a screenshots', {env}, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                done('error');
+                return;
+              }
+              stdoutString = stdout;
+              done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should have copying assets folder', () => {
+            const isFolderExists = exists(`${tmp.name}/screenshots`);
+            expect(isFolderExists).to.be.true;
+        });
+    });
+
     describe('when generation with d flag and src arg', () => {
 
         let stdoutString = null;

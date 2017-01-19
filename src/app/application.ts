@@ -519,10 +519,28 @@ export class Application {
                     });
                 } else {
                     $searchEngine.generateSearchIndexJson(this.configuration.mainData.output);
+                    if (this.configuration.mainData.assetsFolder !== '') {
+                        this.processAssetsFolder();
+                    }
                     this.processResources();
                 }
             };
         loop();
+    }
+
+    processAssetsFolder() {
+        logger.info('Copy assets folder');
+
+        if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
+            logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
+        } else {
+            let that = this;
+            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
+                if(err) {
+                    logger.error('Error during resources copy ', err);
+                }
+            });
+        }
     }
 
     processResources() {

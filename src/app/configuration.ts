@@ -21,6 +21,7 @@ interface IMainData {
     serve: boolean;
     port: number;
     open: boolean;
+    assetsFolder: string;
     documentationMainName: string;
     documentationMainDescription: string;
     base: string;
@@ -60,6 +61,7 @@ export class Configuration implements IConfiguration {
         serve: false,
         port: COMPODOC_DEFAULTS.port,
         open: false,
+        assetsFolder: '',
         documentationMainName: COMPODOC_DEFAULTS.title,
         documentationMainDescription: '',
         base: COMPODOC_DEFAULTS.base,
