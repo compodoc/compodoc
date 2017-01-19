@@ -13,7 +13,7 @@
     "start": "npm run test:watch",
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
     "codecov": "codecov -f coverage/*.json",
-    "lint": "tslint src/**/*.ts",
+    "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch"
   },
   "watch": {
