@@ -84,7 +84,7 @@
     "@types/fs-extra": "0.0.37",
     "@types/handlebars": "^4.0.31",
     "@types/marked": "0.0.28",
-    "@types/mocha": "^2.2.37",
+    "@types/mocha": "^2.2.38",
     "@types/node": "7.0.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "chai": "^3.5.0",
