@@ -694,5 +694,32 @@ describe('CLI', () => {
 
     });
 
+    describe('when specific files are included in tsconfig', () => {
+
+        let stdoutString = null,
+          moduleFile = null;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.entry.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                moduleFile = read(`${tmp.name}/modules/AppModule.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean(tmp.name));
+
+        it('should only create links to files included via tsconfig', () => {
+            expect(moduleFile).to.contain('components/FooComponent.html');
+            expect(moduleFile).to.contain('modules/FooModule.html');
+            expect(moduleFile).not.to.contain('components/BarComponent.html');
+            expect(moduleFile).not.to.contain('injectables/FooService.html');
+            expect(moduleFile).not.to.contain('modules/BarModule.html');
+        });
+    });
 
 });
