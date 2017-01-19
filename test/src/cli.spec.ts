@@ -578,7 +578,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 2000);
+            }, 60000);
         });
         after(() => tmp.clean(tmp.name));
 
