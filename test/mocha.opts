@@ -3,4 +3,5 @@
 --colors
 --harmony
 --timeout 120000
-test/dist/*.spec.js
+--compilers ts:ts-node/register
+test/src/*.spec.ts

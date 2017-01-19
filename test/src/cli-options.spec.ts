@@ -10,13 +10,13 @@ describe('CLI Options', () => {
 
     before( () => {
         tmp.create();
-        runHelp = shell('node', ['./bin/index-cli.js', '-h']);
+        runHelp = shell('ts-node', ['./bin/index-cli.js', '-h']);
     });
     after( () => tmp.clean() );
 
 
     it(`should display correct version ${pkg.version}`, () => {
-        let runVersion = shell('node', ['./bin/index-cli.js', '-V']);
+        let runVersion = shell('ts-node', ['./bin/index-cli.js', '-V']);
         expect(runVersion.stdout.toString()).to.contain(pkg.version);
     });
 

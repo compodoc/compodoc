@@ -6,6 +6,7 @@ export default {
     entry: './src/index.ts',
     dest: 'dist/index.js',
     format: 'cjs',
+    sourceMap: 'inline',
     plugins: [
         typescript({
             typescript: require('typescript')
