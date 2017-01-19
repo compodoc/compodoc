@@ -111,7 +111,7 @@ describe('CLI', () => {
 
         it('it should have coverage page', () => {
             expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('<span class="count low">25%</span>');
+            expect(coverageFile).to.contain('<span class="count medium">50%</span>');
         });
 
     });
