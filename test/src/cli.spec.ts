@@ -111,7 +111,7 @@ describe('CLI', () => {
 
         it('it should have coverage page', () => {
             expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('<span class="count low">25%</span>');
+            expect(coverageFile).to.contain('<span class="count medium">50%</span>');
         });
 
     });
@@ -652,6 +652,30 @@ describe('CLI', () => {
         it('should display message', () => {
             expect(stdoutString).to.contain('Serving documentation from ./documentation/ at http://127.0.0.1:8080');
         });
+    });
+
+    describe('showing the output type', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.entry.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/FooComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should show the event output type', () => {
+            expect(componentFile).to.contain('{ foo: string; }');
+        });
+
     });
 
     describe('excluding methods', () => {
