@@ -113,7 +113,7 @@ export class Application {
 
         let crawler = new Dependencies(
           this.files, {
-            tsconfigDirectory: cwd
+            tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
           }
         );
 
