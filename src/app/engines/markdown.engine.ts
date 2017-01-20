@@ -24,7 +24,10 @@ export class MarkdownEngine {
                 + '</table>\n';
         }
 
-        marked.setOptions({ renderer });
+        marked.setOptions({
+            renderer: renderer,
+            breaks: true
+        });
     }
     getReadmeFile() {
         return new Promise(function(resolve, reject) {

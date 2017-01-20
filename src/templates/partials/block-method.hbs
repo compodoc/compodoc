@@ -34,7 +34,7 @@
                                                     {{/if}}
                                                 </div>
                                                 <div>
-                                                    {{comment}}
+                                                    {{{comment}}}
                                                 </div>
                                             </li>
                                         {{/each}}
@@ -48,7 +48,7 @@
                             </div>
                             {{#if jsdoctags}}
                                 <div class="io-description">
-                                    {{jsdoc-returns-comment jsdoctags}}
+                                    {{{jsdoc-returns-comment jsdoctags}}}
                                 </div>
                             {{/if}}
                         {{/if}}
