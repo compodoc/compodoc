@@ -528,7 +528,7 @@ export class Dependencies {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(this.breakLines(ts.displayPartsToString(property.symbol.getDocumentationComment())))
         };
     }
 
@@ -546,7 +546,7 @@ export class Dependencies {
         var outArgs = outDecorator.expression.arguments;
         return {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment())),
+            description: marked(this.breakLines(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
             type: this.visitType(property.type.typeArguments[0])
         };
     }
@@ -625,7 +625,7 @@ export class Dependencies {
 
     private visitCallDeclaration(method) {
         return {
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(this.breakLines(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         }
@@ -633,7 +633,7 @@ export class Dependencies {
 
     private visitIndexDeclaration(method) {
         return {
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(this.breakLines(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         }
@@ -645,7 +645,7 @@ export class Dependencies {
          */
         var result = {
             name: method.name.text,
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(this.breakLines(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
@@ -697,7 +697,7 @@ export class Dependencies {
             name: property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(this.breakLines(ts.displayPartsToString(property.symbol.getDocumentationComment())))
         };
     }
 
@@ -819,7 +819,7 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-        var description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
+        var description = marked(this.breakLines(ts.displayPartsToString(symbol.getDocumentationComment())));
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
