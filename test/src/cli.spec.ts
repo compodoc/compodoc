@@ -111,7 +111,7 @@ describe('CLI', () => {
 
         it('it should have coverage page', () => {
             expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('<span class="count low">25%</span>');
+            expect(coverageFile).to.contain('<span class="count medium">50%</span>');
         });
 
     });
@@ -578,7 +578,7 @@ describe('CLI', () => {
             });
             setTimeout(() => {
                 child.kill();
-            }, 2000);
+            }, 60000);
         });
         after(() => tmp.clean(tmp.name));
 
@@ -654,6 +654,30 @@ describe('CLI', () => {
         });
     });
 
+    describe('showing the output type', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.entry.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/FooComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should show the event output type', () => {
+            expect(componentFile).to.contain('{ foo: string; }');
+        });
+
+    });
+
     describe('excluding methods', () => {
 
         let stdoutString = null, componentFile;
@@ -694,5 +718,32 @@ describe('CLI', () => {
 
     });
 
+    describe('when specific files are included in tsconfig', () => {
+
+        let stdoutString = null,
+          moduleFile = null;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.entry.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                moduleFile = read(`${tmp.name}/modules/AppModule.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean(tmp.name));
+
+        it('should only create links to files included via tsconfig', () => {
+            expect(moduleFile).to.contain('components/FooComponent.html');
+            expect(moduleFile).to.contain('modules/FooModule.html');
+            expect(moduleFile).not.to.contain('components/BarComponent.html');
+            expect(moduleFile).not.to.contain('injectables/FooService.html');
+            expect(moduleFile).not.to.contain('modules/BarModule.html');
+        });
+    });
 
 });

@@ -1,22 +1,19 @@
 {
   "name": "compodoc",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
     "compodoc": "./bin/index-cli.js"
   },
   "scripts": {
-    "build": "rollup -c rollup/rollup.config.js && rollup -c rollup/rollup-cli.config.js",
+    "build": "rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js && rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "download-api-list": "node tools/download-api-list.js",
-    "start": "npm run tsc",
+    "start": "npm run test:watch",
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
     "codecov": "codecov -f coverage/*.json",
-    "tsc": "tsc --newLine LF --watch",
-    "watch-rollup": "rollup -c -w",
-    "lint": "tslint src/**/*.ts",
-    "watch": "nodemon --watch src -e ts,hbs --exec 'npm run build'",
+    "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch"
   },
   "watch": {
@@ -86,7 +83,6 @@
     "@types/marked": "0.0.28",
     "@types/mocha": "^2.2.38",
     "@types/node": "7.0.0",
-    "babel-preset-es2015-rollup": "^3.0.0",
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
     "conventional-changelog-cli": "^1.2.0",
@@ -97,7 +93,6 @@
     "nyc": "^10.1.2",
     "rimraf": "^2.5.4",
     "rollup": "^0.41.4",
-    "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
     "ts-node": "^2.0.0",

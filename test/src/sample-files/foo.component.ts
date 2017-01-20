@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-foo',
@@ -13,8 +13,20 @@ import { Component } from '@angular/core';
 	`],
 	template: `
 		<div class="host">
-			<div></div>
+			<div (click)="exampleOutput.emit({foo: 'bar'})"></div>
 		</div>
 	`
 })
-export class FooComponent { }
+export class FooComponent {
+
+	/**
+	 * An example input
+	 */
+	@Input() exampleInput: string = 'foo';
+
+	/**
+	 * An example output
+	 */
+	@Output() exampleOutput: EventEmitter<{foo: string}> = new EventEmitter();
+
+}

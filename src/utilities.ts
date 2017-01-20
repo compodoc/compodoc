@@ -8,17 +8,6 @@ import { logger } from './logger';
 const carriageReturnLineFeed = '\r\n';
 const lineFeed = '\n';
 
-// get default new line break
-export function getNewLineCharacter(options: ts.CompilerOptions): string {
-    if (options.newLine === ts.NewLineKind.CarriageReturnLineFeed) {
-        return carriageReturnLineFeed;
-    }
-    else if (options.newLine === ts.NewLineKind.LineFeed) {
-        return lineFeed;
-    }
-    return carriageReturnLineFeed;
-}
-
 export function detectIndent(str, count, indent?): string {
     let stripIndent = function(str: string) {
         const match = str.match(/^[ \t]*(?=\S)/gm);

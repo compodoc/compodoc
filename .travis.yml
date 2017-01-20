@@ -14,3 +14,6 @@ after_success:
 branches:
   only:
     - develop
+matrix:
+  allow_failures:
+    - os: osx

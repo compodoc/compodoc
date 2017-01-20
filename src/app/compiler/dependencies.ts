@@ -4,7 +4,7 @@ import * as util from 'util';
 import * as ts from 'typescript';
 import * as _ts from '../../utils/ts-internal';
 import marked from 'marked';
-import { getNewLineCharacter, compilerHost, d, detectIndent } from '../../utilities';
+import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { generate } from './codegen';
@@ -99,15 +99,6 @@ export class Dependencies {
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
     }
 
-    private breakLines(text) {
-        var _t = text;
-        if (typeof _t !== 'undefined') {
-            _t = _t.replace(/(\n)/gm, '<br>');
-            _t = _t.replace(/(<br>)$/gm, '');
-        }
-        return _t;
-    }
-
     getDependencies() {
         let deps: Object = {
             'modules': [],
@@ -182,7 +173,7 @@ export class Dependencies {
                             exports: this.getModuleExports(props),
                             bootstrap: this.getModuleBootstrap(props),
                             type: 'module',
-                            description: this.breakLines(IO.description),
+                            description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
                         if (RouterParser.hasRouterModuleInImports(deps.imports)) {
@@ -219,7 +210,7 @@ export class Dependencies {
                             outputsClass: IO.outputs,
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
-                            description: this.breakLines(IO.description),
+                            description: IO.description,
                             type: 'component',
                             sourceCode: sourceFile.getText()
                         };
@@ -232,7 +223,7 @@ export class Dependencies {
                             type: 'injectable',
                             properties: IO.properties,
                             methods: IO.methods,
-                            description: this.breakLines(IO.description),
+                            description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['injectables'].push(deps);
@@ -242,7 +233,7 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'pipe',
-                            description: this.breakLines(IO.description),
+                            description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['pipes'].push(deps);
@@ -252,7 +243,7 @@ export class Dependencies {
                             name,
                             file: file,
                             type: 'directive',
-                            description: this.breakLines(IO.description),
+                            description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['directives'].push(deps);
@@ -288,7 +279,7 @@ export class Dependencies {
                         deps.properties = IO.properties;
                     }
                     if(IO.description) {
-                        deps.description = this.breakLines(IO.description);
+                        deps.description = IO.description;
                     }
                     if(IO.methods) {
                         deps.methods = IO.methods;
@@ -311,7 +302,7 @@ export class Dependencies {
                         deps.kind = IO.kind;
                     }
                     if(IO.description) {
-                        deps.description = this.breakLines(IO.description);
+                        deps.description = IO.description;
                     }
                     if(IO.methods) {
                         deps.methods = IO.methods;
@@ -344,7 +335,7 @@ export class Dependencies {
                         deps.properties = IO.properties;
                     }
                     if(IO.description) {
-                        deps.description = this.breakLines(IO.description);
+                        deps.description = IO.description;
                     }
                     if(IO.methods) {
                         deps.methods = IO.methods;
@@ -546,7 +537,8 @@ export class Dependencies {
         var outArgs = outDecorator.expression.arguments;
         return {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment())),
+            type: this.visitType(property.type.typeArguments[0])
         };
     }
 
@@ -648,10 +640,19 @@ export class Dependencies {
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = _ts.getJSDocs(method);
+            jsdoctags = _ts.getJSDocs(method),
+
+            markedtags = function(tags) {
+                var mtags = tags;
+                _.forEach(mtags, (tag) => {
+                    tag.comment = marked(tag.comment);
+                });
+                return mtags;
+            };
+
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
-                result.jsdoctags = jsdoctags[0].tags;
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
         return result;
