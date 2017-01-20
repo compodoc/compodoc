@@ -373,7 +373,7 @@ export class Application {
                     name: component.name
                 },
                 totalStatementDocumented = 0,
-                totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length;
+                totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
             _.forEach(component.propertiesClass, (property) => {
                 if(property.description !== '') {
                     totalStatementDocumented += 1;
@@ -394,6 +394,9 @@ export class Application {
                     totalStatementDocumented += 1;
                 }
             });
+            if (component.description !== '') {
+                totalStatementDocumented += 1;
+            }
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             if(totalStatements === 0) {
                 cl.coveragePercent = 0;
