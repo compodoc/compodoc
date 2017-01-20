@@ -361,6 +361,12 @@ export class Application {
             };
 
         _.forEach(this.configuration.mainData.components, (component) => {
+            if (!component.propertiesClass ||
+                !component.methodsClass ||
+                !component.inputsClass ||
+                !component.outputsClass) {
+                    return;
+                }
             let cl = {
                     filePath: component.file,
                     type: component.type,
@@ -398,6 +404,10 @@ export class Application {
             files.push(cl);
         })
         _.forEach(this.configuration.mainData.classes, (classe) => {
+            if (!classe.properties ||
+                !classe.methods) {
+                    return;
+                }
             let cl = {
                     filePath: classe.file,
                     type: 'classe',
@@ -425,6 +435,10 @@ export class Application {
             files.push(cl);
         });
         _.forEach(this.configuration.mainData.injectables, (injectable) => {
+            if (!injectable.properties ||
+                !injectable.methods) {
+                    return;
+                }
             let cl = {
                     filePath: injectable.file,
                     type: injectable.type,
@@ -452,6 +466,10 @@ export class Application {
             files.push(cl);
         });
         _.forEach(this.configuration.mainData.interfaces, (inter) => {
+            if (!inter.properties ||
+                !inter.methods) {
+                    return;
+                }
             let cl = {
                     filePath: inter.file,
                     type: inter.type,
