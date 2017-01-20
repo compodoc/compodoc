@@ -13,6 +13,17 @@ export class MarkdownEngine {
             return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
         };
 
+        renderer.table = (header, body) => {
+            return '<table class="table table-bordered compodoc-table">\n'
+                + '<thead>\n'
+                + header
+                + '</thead>\n'
+                + '<tbody>\n'
+                + body
+                + '</tbody>\n'
+                + '</table>\n';
+        }
+
         marked.setOptions({ renderer });
     }
     getReadmeFile() {
