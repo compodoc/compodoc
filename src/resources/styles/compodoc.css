@@ -579,3 +579,29 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .compodoc-table thead {
     font-weight: bold;
 }
+.modifier {
+    background: #9a9a9a;
+    padding: 1px 5px;
+    color: white;
+    border-radius: 4px;
+}
+.modifier-icon {
+    color: #c7254e;
+}
+.modifier-icon.method {
+    color: white;
+    background: #c7254e;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    margin-right: 2px;
+}
+.modifier-icon.method.square {
+    border-radius: 4px;
+}
+.modifier-icon.method .fa-circle, .modifier-icon.method .fa-square {
+    display: none;
+}
+.modifier-icon.method .fa-lock {
+    margin-right: 0;
+}

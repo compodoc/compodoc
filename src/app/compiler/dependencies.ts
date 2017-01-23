@@ -668,6 +668,11 @@ export class Dependencies {
                 return mtags;
             };
 
+        if (method.modifiers) {
+            if (method.modifiers.length > 0) {
+                result.modifierKind = method.modifiers[0].kind;
+            }
+        }
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
@@ -718,12 +723,18 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return {
-            name: property.name.text,
-            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            type: this.visitType(property),
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
-        };
+         var result = {
+             name: property.name.text,
+             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+             type: this.visitType(property),
+             description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+         }
+         if (property.modifiers) {
+             if (property.modifiers.length > 0) {
+                 result.modifierKind = property.modifiers[0].kind;
+             }
+         }
+        return result;
     }
 
     private visitMembers(members) {
