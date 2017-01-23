@@ -91,6 +91,9 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
                 if (path.isAbsolute(fileName) === false) {
                     fileName = path.join(transpileOptions.tsconfigDirectory, fileName);
                 }
+                if (!fs.existsSync(fileName)) {
+                    return undefined;
+                }
 
                 let libSource = '';
 
