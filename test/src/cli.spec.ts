@@ -673,7 +673,7 @@ describe('CLI', () => {
         after(() => tmp.clean());
 
         it('should show the event output type', () => {
-            expect(componentFile).to.contain('{ foo: string; }');
+            expect(componentFile).to.contain('{foo: string}');
         });
 
     });
