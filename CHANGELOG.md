@@ -1,3 +1,24 @@
+<a name="0.0.36"></a>
+## 0.0.36 (2017-01-23)
+
+### Bug Fixes
+
+* **app:** differentiate static members from instance members ([c8460eb](https://github.com/compodoc/compodoc/commit/c8460eb)), closes [#88](https://github.com/compodoc/compodoc/issues/88)
+
+* **app:** modules menu items shows even if no modules ([af72453](https://github.com/compodoc/compodoc/commit/af72453)), closes [#89](https://github.com/compodoc/compodoc/issues/89)
+
+* **app:** Image should resize to fit viewport ([2b24237](https://github.com/compodoc/compodoc/commit/2b24237)), closes [#83](https://github.com/compodoc/compodoc/issues/83)
+
+* **app:** @input without type ([0f92ca4](https://github.com/compodoc/compodoc/commit/0f92ca4))
+
+* **app:** file parsed doesn't exist ([eda183d](https://github.com/compodoc/compodoc/commit/eda183d))
+
+* **app:** interface keys sorting with [key: string]: string; ([4e4c5cd](https://github.com/compodoc/compodoc/commit/4e4c5cd))
+
+* **app:** component output type issue with NewExpression ([4e49d22](https://github.com/compodoc/compodoc/commit/4e49d22))
+
+* **app:** parsing .d.ts ([e38b571](https://github.com/compodoc/compodoc/commit/e38b571))
+
 <a name="0.0.35"></a>
 ## 0.0.35 (2017-01-20)
 
