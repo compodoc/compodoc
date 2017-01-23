@@ -38,6 +38,7 @@
             </ul>
         </li>
 
+        {{#if modules}}
         <li class="chapter">
             <a data-type="chapter-link" href="./modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
                 <span class="fa fa-archive"></span>
@@ -63,6 +64,7 @@
                 {{/each}}
             </ul>
         </li>
+        {{/if}}
 
         {{#if components}}
         <li class="chapter">
