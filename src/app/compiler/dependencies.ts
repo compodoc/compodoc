@@ -691,7 +691,14 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         name = name || 'name';
-        return (a, b) => a[name].localeCompare(b[name]);
+        var t = (a, b) => {
+            if (a[name]) {
+                return a[name].localeCompare(b[name])
+            } else {
+                return 0;
+            }
+        };
+        return t;
     }
 
     private stringifyDefaultValue(node) {
