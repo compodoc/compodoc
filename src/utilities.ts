@@ -84,6 +84,9 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
                 if (fileName === 'lib.d.ts') {
                     return undefined;
                 }
+                if (fileName.substr(-5) === '.d.ts') {
+                    return undefined;
+                }
 
                 if (path.isAbsolute(fileName) === false) {
                     fileName = path.join(transpileOptions.tsconfigDirectory, fileName);
