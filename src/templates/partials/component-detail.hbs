@@ -174,9 +174,11 @@
                           {{#if description}}
                             <div>{{{description}}}</div>
                           {{/if}}
-                          <p>
-                            <em>Type:</em>{{> link-type type=type }}
-                          </p>
+                          {{#if type}}
+                              <p>
+                                <em>Type:</em>{{> link-type type=type }}
+                              </p>
+                          {{/if}}
                           {{#if defaultValue}}
                             <p>
                               <em>Default value: </em><code>{{defaultValue}}</code>

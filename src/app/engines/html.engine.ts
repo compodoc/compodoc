@@ -81,6 +81,36 @@ export class HtmlEngine {
             text = text.replace(/,/g, ',<br>');
             return new Handlebars.SafeString(text);
         });
+        Handlebars.registerHelper('modifKind', function(kind) {
+            let _kindText = '';
+            switch(kind) {
+                case 112:
+                    _kindText = 'Protected';
+                    break;
+                case 113:
+                    _kindText = 'Public';
+                    break;
+                case 114:
+                    _kindText = 'Static';
+                    break;
+            }
+            return new Handlebars.SafeString(_kindText);
+        });
+        Handlebars.registerHelper('modifIcon', function(kind) {
+            let _kindText = '';
+            switch(kind) {
+                case 112:
+                    _kindText = 'lock';
+                    break;
+                case 113:
+                    _kindText = 'circle';
+                    break;
+                case 114:
+                    _kindText = 'square';
+                    break;
+            }
+            return _kindText;
+        });
         Handlebars.registerHelper('functionSignature', function(method) {
             const args = method.args.map(function(arg) {
                 var _result = $dependenciesEngine.find(arg.type);

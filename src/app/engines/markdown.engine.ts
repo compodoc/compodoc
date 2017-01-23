@@ -24,6 +24,15 @@ export class MarkdownEngine {
                 + '</table>\n';
         }
 
+        renderer.image = function(href, title, text) {
+          var out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
+          if (title) {
+            out += ' title="' + title + '"';
+          }
+          out += this.options.xhtml ? '/>' : '>';
+          return out;
+        };
+
         marked.setOptions({
             renderer: renderer,
             breaks: true

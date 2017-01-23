@@ -5,13 +5,17 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <b>{{name}}</b>
+                        <b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="col-md-4">
-                        <code>{{{functionSignature this}}}</code>
+                        {{#if modifierKind}}
+                            <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}">
+                                <span class="fa fa-{{modifIcon modifierKind}}"></span>
+                            </span>
+                        {{/if}}<code>{{{functionSignature this}}}</code>
                     </td>
                 </tr>
 

@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -57,7 +57,7 @@
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
-    "angular2-dependencies-graph": "^1.0.0-alpha.12",
+    "angular2-dependencies-graph": "1.0.0-alpha.12",
     "cheerio": "^0.22.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",

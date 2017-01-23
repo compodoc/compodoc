@@ -111,7 +111,7 @@ describe('CLI', () => {
 
         it('it should have coverage page', () => {
             expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('<span class="count medium">50%</span>');
+            expect(coverageFile).to.contain('<span class="count medium">29%</span>');
         });
 
     });
@@ -673,7 +673,7 @@ describe('CLI', () => {
         after(() => tmp.clean());
 
         it('should show the event output type', () => {
-            expect(componentFile).to.contain('{ foo: string; }');
+            expect(componentFile).to.contain('{foo: string}');
         });
 
     });
