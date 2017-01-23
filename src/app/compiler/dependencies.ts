@@ -511,16 +511,25 @@ export class Dependencies {
     }
 
     private visitInput(property, inDecorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        var inArgs = inDecorator.expression.arguments;
-        return {
+        var inArgs = inDecorator.expression.arguments,
+        _return = {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            type: this.visitType(property),
             description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
+        if (property.type) {
+            _return.type = this.visitType(property);
+        } else {
+            // handle NewExpression
+            if (property.initializer) {
+                if (property.initializer.kind === ts.SyntaxKind.NewExpression) {
+                    if (property.initializer.expression) {
+                        _return.type = property.initializer.expression.text;
+                    }
+                }
+            }
+        }
+        return _return;
     }
 
     private visitType(node) {
@@ -531,15 +540,24 @@ export class Dependencies {
     }
 
     private visitOutput(property, outDecorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        var outArgs = outDecorator.expression.arguments;
-        return {
+        var outArgs = outDecorator.expression.arguments,
+        _return = {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment())),
-            type: this.visitType(property.type.typeArguments[0])
+            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         };
+        if (property.type) {
+            _return.type = this.visitType(property);
+        } else {
+            // handle NewExpression
+            if (property.initializer) {
+                if (property.initializer.kind === ts.SyntaxKind.NewExpression) {
+                    if (property.initializer.expression) {
+                        _return.type = property.initializer.expression.text;
+                    }
+                }
+            }
+        }
+        return _return;
     }
 
     private isPublic(member): boolean {
