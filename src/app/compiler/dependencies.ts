@@ -239,12 +239,21 @@ export class Dependencies {
                         outputSymbols['pipes'].push(deps);
                     }
                     else if (this.isDirective(metadata)) {
+                        if(props.length === 0) return;
                         deps = {
                             name,
                             file: file,
                             type: 'directive',
                             description: IO.description,
-                            sourceCode: sourceFile.getText()
+                            sourceCode: sourceFile.getText(),
+                            selector: this.getComponentSelector(props),
+                            providers: this.getComponentProviders(props),
+
+                            inputsClass: IO.inputs,
+                            outputsClass: IO.outputs,
+
+                            propertiesClass: IO.properties,
+                            methodsClass: IO.methods
                         };
                         outputSymbols['directives'].push(deps);
                     }

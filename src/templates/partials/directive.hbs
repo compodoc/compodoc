@@ -31,6 +31,100 @@
                 {{{ directive.description}}}
             </p>
         {{/if}}
+
+        <section>
+            <h3>Metadata</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+                    {{#if directive.providers}}
+                    <tr>
+                        <td class="col-md-3">providers</td>
+                        <td class="col-md-9">
+                            <code>
+                            {{#each directive.providers}}
+                                {{name}}
+                            {{/each}}
+                            </code>
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    {{#if directive.selector}}
+                    <tr>
+                        <td class="col-md-3">selector</td>
+                        <td class="col-md-9"><code>{{directive.selector}}</code></td>
+                    </tr>
+                    {{/if}}
+
+                </tbody>
+            </table>
+        </section>
+
+        {{#if directive.inputsClass}}
+            <section>
+                <h3 id="inputs">Inputs</h3>
+                {{#each directive.inputsClass}}
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class="col-md-2">
+                                    <code>{{name}}</code>
+                                </td>
+                                <td class="col-md-10">
+                                  {{#if description}}
+                                    <div>{{{description}}}</div>
+                                  {{/if}}
+                                  {{#if type}}
+                                      <p>
+                                        <em>Type:</em>{{> link-type type=type }}
+                                      </p>
+                                  {{/if}}
+                                  {{#if defaultValue}}
+                                    <p>
+                                      <em>Default value: </em><code>{{defaultValue}}</code>
+                                    </p>
+                                  {{/if}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {{/each}}
+            </section>
+        {{/if}}
+
+        {{#if directive.outputsClass}}
+            <section>
+                <h3 id="outputs">Outputs</h3>
+                {{#each directive.outputsClass}}
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class="col-md-2">
+                                    <code>{{name}}</code>
+                                </td>
+                                <td class="col-md-10">
+                                  {{#if description}}
+                                    <div>{{{description}}}</div>
+                                  {{/if}}
+                                  {{#if type}}
+                                    <em><code>$event</code> type:</em>{{> link-type type=type }}
+                                  {{/if}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {{/each}}
+            </section>
+        {{/if}}
+
+        {{#if directive.methodsClass}}
+            {{> block-method methods=directive.methodsClass }}
+        {{/if}}
+
+        {{#if directive.propertiesClass}}
+            {{> block-property properties=directive.propertiesClass }}
+        {{/if}}
+
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
