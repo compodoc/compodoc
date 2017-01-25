@@ -274,10 +274,16 @@ Currently Compodoc only support these two JSDoc tags :
 
 - ```@param <param name>```
 - ```@returns```
+- ```@example```
 
 ```
 /**
  * @param {string} target  The target to process
+ *
+ * @example
+ * This is a good example
+ * processTarget('yo')
+ *
  * @returns      The processed target number
  */
 function processTarget(target:string):number;

@@ -44,6 +44,14 @@
                                         {{/each}}
                                     </ul>
                                 {{/jsdoc-params}}
+                                {{#jsdoc-example jsdoctags}}
+                                    <b>Example :</b>
+                                    {{#each tags}}
+                                        <div>
+                                            {{{comment}}}
+                                        </div>
+                                    {{/each}}
+                                {{/jsdoc-example}}
                             </div>
                         {{/if}}
                         {{#if returnType}}

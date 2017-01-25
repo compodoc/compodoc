@@ -147,6 +147,26 @@ export class HtmlEngine {
             }
             return result;
         });
+        Handlebars.registerHelper('jsdoc-example', function(jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [];
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'example') {
+                        var tag = {};
+                        if (jsdocTags[i].comment) {
+                            tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                        }
+                        tags.push(tag);
+                    }
+                }
+            }
+            if (tags.length >= 1) {
+                this.tags = tags;
+                return options.fn(this);
+            }
+        });
         Handlebars.registerHelper('jsdoc-params', function(jsdocTags, options) {
             var i = 0,
                 len = jsdocTags.length,
