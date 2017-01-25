@@ -7,6 +7,7 @@ import marked from 'marked';
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
+import { LinkParser } from '../../utils/link-parser';
 import { generate } from './codegen';
 
 interface NodeObject {
@@ -524,7 +525,7 @@ export class Dependencies {
         _return = {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
         };
         if (property.type) {
             _return.type = this.visitType(property);
@@ -552,7 +553,7 @@ export class Dependencies {
         var outArgs = outDecorator.expression.arguments,
         _return = {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
         };
         if (property.type) {
             _return.type = this.visitType(property);
@@ -643,7 +644,7 @@ export class Dependencies {
 
     private visitCallDeclaration(method) {
         return {
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         }
@@ -651,7 +652,7 @@ export class Dependencies {
 
     private visitIndexDeclaration(method) {
         return {
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         }
@@ -663,7 +664,7 @@ export class Dependencies {
          */
         var result = {
             name: method.name.text,
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
@@ -672,7 +673,7 @@ export class Dependencies {
             markedtags = function(tags) {
                 var mtags = tags;
                 _.forEach(mtags, (tag) => {
-                    tag.comment = marked(tag.comment);
+                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
                 });
                 return mtags;
             };
@@ -736,7 +737,7 @@ export class Dependencies {
              name: property.name.text,
              defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
              type: this.visitType(property),
-             description: marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
          }
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
@@ -864,7 +865,7 @@ export class Dependencies {
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-        var description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
+        var description = marked(LinkParser.resolveLinks(ts.displayPartsToString(symbol.getDocumentationComment())));
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;

@@ -270,15 +270,16 @@ These ones are not supported :
 // unsupported comment
 ```
 
-Currently Compodoc only support these two JSDoc tags :
+Currently Compodoc only support these JSDoc tags :
 
 - ```@param <param name>```
 - ```@returns```
 - ```@example```
+- ```@link```
 
 ```
 /**
- * @param {string} target  The target to process
+ * @param {string} target  The target to process see {@link Todo}
  *
  * @example
  * This is a good example
