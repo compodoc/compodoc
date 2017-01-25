@@ -61,6 +61,11 @@ class DependenciesEngine {
             return resultInAngularAPIs
         }
     }
+    findInCompodoc(name: string) {
+        let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
+            result = _.find(mergedData, {'name': name});
+        return result || false;
+    }
     getModules() {
         return this.modules;
     }
