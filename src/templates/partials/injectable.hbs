@@ -32,6 +32,10 @@
             </p>
         {{/if}}
 
+        {{#if injectable.constructor}}
+            {{> block-constructor constructor=injectable.constructor }}
+        {{/if}}
+
         {{#if injectable.methods}}
             {{> block-method methods=injectable.methods }}
         {{/if}}

@@ -1,33 +1,22 @@
 <section>
-    <h3 id="methods">Methods</h3>
-    {{#each methods}}
+    <h3 id="constructor">Constructor</h3>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b>
+                        <code>{{{functionSignature constructor}}}</code>
                     </td>
                 </tr>
 
+                {{#or constructor.description constructor.jsdoctags}}
                 <tr>
                     <td class="col-md-4">
-                        {{#if modifierKind}}
-                            <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}">
-                                <span class="fa fa-{{modifIcon modifierKind}}"></span>
-                            </span>
-                        {{/if}}<code>{{{functionSignature this}}}</code>
-                    </td>
-                </tr>
-
-                {{#or description jsdoctags returnType}}
-                <tr>
-                    <td class="col-md-4">
-                        {{#if description}}
-                            <div class="io-description">{{{parseDescription description}}}</div>
+                        {{#if constructor.description}}
+                            <div class="io-description">{{{parseDescription constructor.description}}}</div>
                         {{/if}}
-                        {{#if jsdoctags}}
+                        {{#if constructor.jsdoctags}}
                             <div class="io-description">
-                                {{#jsdoc-params jsdoctags}}
+                                {{#jsdoc-params constructor.jsdoctags}}
                                     <b>Parameters :</b>
                                     <ul class="jsdoc-params">
                                         {{#each tags}}
@@ -45,7 +34,7 @@
                                         {{/each}}
                                     </ul>
                                 {{/jsdoc-params}}
-                                {{#jsdoc-example jsdoctags}}
+                                {{#jsdoc-example constructor.jsdoctags}}
                                     <b>Example :</b>
                                     {{#each tags}}
                                         <div>
@@ -55,20 +44,9 @@
                                 {{/jsdoc-example}}
                             </div>
                         {{/if}}
-                        {{#if returnType}}
-                            <div class="io-description">
-                                <b>Returns: </b>{{> link-type type=returnType }}
-                            </div>
-                            {{#if jsdoctags}}
-                                <div class="io-description">
-                                    {{{jsdoc-returns-comment jsdoctags}}}
-                                </div>
-                            {{/if}}
-                        {{/if}}
                     </td>
                 </tr>
                 {{/or}}
             </tbody>
         </table>
-    {{/each}}
 </section>

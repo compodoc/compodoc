@@ -38,6 +38,18 @@ export class HtmlEngine {
           }
           return options.fn(this);
         });
+        Handlebars.registerHelper("or", function(/* any, any, ..., options */) {
+            var len = arguments.length - 1;
+          var options = arguments[len];
+
+          for (var i = 0; i < len; i++) {
+            if (arguments[i]) {
+              return options.fn(this);
+            }
+          }
+
+          return options.inverse(this);
+        });
         Handlebars.registerHelper("filterAngular2Modules", function(text, options) {
             const NG2_MODULES:string[] = [
                 'BrowserModule',
@@ -319,6 +331,7 @@ export class HtmlEngine {
             'link-type',
             'block-method',
             'block-property',
+            'block-constructor',
             'coverage-report'
         ],
             i = 0,

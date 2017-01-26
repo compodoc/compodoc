@@ -213,6 +213,7 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
+                            constructor: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['components'].push(deps);
@@ -225,6 +226,7 @@ export class Dependencies {
                             properties: IO.properties,
                             methods: IO.methods,
                             description: IO.description,
+                            constructor: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['injectables'].push(deps);
@@ -252,6 +254,8 @@ export class Dependencies {
 
                             inputsClass: IO.inputs,
                             outputsClass: IO.outputs,
+
+                            constructor: IO.constructor,
 
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
@@ -285,6 +289,9 @@ export class Dependencies {
                         type: 'class',
                         sourceCode: sourceFile.getText()
                     };
+                    if(IO.constructor) {
+                        deps.constructor = IO.constructor;
+                    }
                     if(IO.properties) {
                         deps.properties = IO.properties;
                     }
@@ -341,6 +348,9 @@ export class Dependencies {
                         type: 'class',
                         sourceCode: sourceFile.getText()
                     };
+                    if(IO.constructor) {
+                        deps.constructor = IO.constructor;
+                    }
                     if(IO.properties) {
                         deps.properties = IO.properties;
                     }
@@ -626,6 +636,38 @@ export class Dependencies {
     }
 
     private visitConstructorDeclaration(method) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var result = {
+            name: 'constructor',
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
+        },
+            jsdoctags = _ts.getJSDocs(method),
+
+            markedtags = function(tags) {
+                var mtags = tags;
+                _.forEach(mtags, (tag) => {
+                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
+                });
+                return mtags;
+            };
+
+        if (method.modifiers) {
+            if (method.modifiers.length > 0) {
+                result.modifierKind = method.modifiers[0].kind;
+            }
+        }
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
+            }
+        }
+        return result;
+    }
+
+    private visitConstructorProperties(method) {
         var that = this;
         if (method.parameters) {
             var _parameters = [],
@@ -751,12 +793,14 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        var inputs = [];
-        var outputs = [];
-        var methods = [];
-        var properties = [];
-        var kind;
-        var inputDecorator, outDecorator;
+        var inputs = [],
+            outputs = [],
+            methods = [],
+            properties = [],
+            kind,
+            inputDecorator,
+            constructor,
+            outDecorator;
 
 
         for (var i = 0; i < members.length; i++) {
@@ -783,12 +827,13 @@ export class Dependencies {
                 } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                     properties.push(this.visitIndexDeclaration(members[i]));
                 } else if (members[i].kind === ts.SyntaxKind.Constructor) {
-                    let _constructorProperties = this.visitConstructorDeclaration(members[i]),
+                    let _constructorProperties = this.visitConstructorProperties(members[i]),
                         j = 0,
                         len = _constructorProperties.length;
                     for(j; j<len; j++) {
                         properties.push(_constructorProperties[j]);
                     }
+                    constructor = this.visitConstructorDeclaration(members[i]);
                 }
             }
         }
@@ -802,7 +847,8 @@ export class Dependencies {
             outputs,
             methods,
             properties,
-            kind
+            kind,
+            constructor
         };
     }
 
@@ -881,7 +927,8 @@ export class Dependencies {
                         outputs: members.outputs,
                         properties: members.properties,
                         methods: members.methods,
-                        kind: members.kind
+                        kind: members.kind,
+                        constructor: members.constructor
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
@@ -891,7 +938,8 @@ export class Dependencies {
                     description,
                     methods: members.methods,
                     properties: members.properties,
-                    kind: members.kind
+                    kind: members.kind,
+                    constructor: members.constructor
                   }];
               } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
@@ -908,7 +956,8 @@ export class Dependencies {
                 description,
                 methods: members.methods,
                 properties: members.properties,
-                kind: members.kind
+                kind: members.kind,
+                constructor: members.constructor
             }];
         } else {
             members = this.visitMembers(classDeclaration.members);
@@ -916,7 +965,8 @@ export class Dependencies {
             return [{
                 methods: members.methods,
                 properties: members.properties,
-                kind: members.kind
+                kind: members.kind,
+                constructor: members.constructor
             }];
         }
 

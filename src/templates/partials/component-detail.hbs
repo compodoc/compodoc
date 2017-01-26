@@ -217,6 +217,10 @@
     </section>
 {{/if}}
 
+{{#if component.constructor}}
+    {{> block-constructor constructor=component.constructor }}
+{{/if}}
+
 {{#if component.methodsClass}}
     {{> block-method methods=component.methodsClass }}
 {{/if}}
