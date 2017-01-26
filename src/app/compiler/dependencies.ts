@@ -213,9 +213,11 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            constructorObj: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['components'].push(deps);
                     }
                     else if (this.isInjectable(metadata)) {
@@ -226,9 +228,11 @@ export class Dependencies {
                             properties: IO.properties,
                             methods: IO.methods,
                             description: IO.description,
-                            constructorObj: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
@@ -255,11 +259,12 @@ export class Dependencies {
                             inputsClass: IO.inputs,
                             outputsClass: IO.outputs,
 
-                            constructorObj: IO.constructor,
-
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['directives'].push(deps);
                     }
 
@@ -290,7 +295,7 @@ export class Dependencies {
                         sourceCode: sourceFile.getText()
                     };
                     if(IO.constructor) {
-                        deps.constructor = IO.constructor;
+                        deps.constructorObj = IO.constructor;
                     }
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -349,7 +354,7 @@ export class Dependencies {
                         sourceCode: sourceFile.getText()
                     };
                     if(IO.constructor) {
-                        deps.constructor = IO.constructor;
+                        deps.constructorObj = IO.constructor;
                     }
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -928,7 +933,7 @@ export class Dependencies {
                         properties: members.properties,
                         methods: members.methods,
                         kind: members.kind,
-                        constructorObj: members.constructor
+                        constructor: members.constructor
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
@@ -939,7 +944,7 @@ export class Dependencies {
                     methods: members.methods,
                     properties: members.properties,
                     kind: members.kind,
-                    constructorObj: members.constructor
+                    constructor: members.constructor
                   }];
               } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
@@ -957,7 +962,7 @@ export class Dependencies {
                 methods: members.methods,
                 properties: members.properties,
                 kind: members.kind,
-                constructorObj: members.constructor
+                constructor: members.constructor
             }];
         } else {
             members = this.visitMembers(classDeclaration.members);
@@ -966,7 +971,7 @@ export class Dependencies {
                 methods: members.methods,
                 properties: members.properties,
                 kind: members.kind,
-                constructorObj: members.constructor
+                constructor: members.constructor
             }];
         }
 
