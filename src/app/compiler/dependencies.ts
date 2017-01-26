@@ -213,7 +213,7 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            constructor: IO.constructor,
+                            constructorObj: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['components'].push(deps);
@@ -226,7 +226,7 @@ export class Dependencies {
                             properties: IO.properties,
                             methods: IO.methods,
                             description: IO.description,
-                            constructor: IO.constructor,
+                            constructorObj: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
                         outputSymbols['injectables'].push(deps);
@@ -255,7 +255,7 @@ export class Dependencies {
                             inputsClass: IO.inputs,
                             outputsClass: IO.outputs,
 
-                            constructor: IO.constructor,
+                            constructorObj: IO.constructor,
 
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
@@ -928,7 +928,7 @@ export class Dependencies {
                         properties: members.properties,
                         methods: members.methods,
                         kind: members.kind,
-                        constructor: members.constructor
+                        constructorObj: members.constructor
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
@@ -939,7 +939,7 @@ export class Dependencies {
                     methods: members.methods,
                     properties: members.properties,
                     kind: members.kind,
-                    constructor: members.constructor
+                    constructorObj: members.constructor
                   }];
               } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
@@ -957,7 +957,7 @@ export class Dependencies {
                 methods: members.methods,
                 properties: members.properties,
                 kind: members.kind,
-                constructor: members.constructor
+                constructorObj: members.constructor
             }];
         } else {
             members = this.visitMembers(classDeclaration.members);
@@ -966,7 +966,7 @@ export class Dependencies {
                 methods: members.methods,
                 properties: members.properties,
                 kind: members.kind,
-                constructor: members.constructor
+                constructorObj: members.constructor
             }];
         }
 
