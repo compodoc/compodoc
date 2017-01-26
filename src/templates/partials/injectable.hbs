@@ -28,8 +28,12 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                {{{ injectable.description}}}
+                {{{parseDescription injectable.description}}}
             </p>
+        {{/if}}
+
+        {{#if injectable.constructor}}
+            {{> block-constructor constructor=injectable.constructor }}
         {{/if}}
 
         {{#if injectable.methods}}

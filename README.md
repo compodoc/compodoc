@@ -31,7 +31,7 @@
 
 * **A local tool** - No server needed, no sources uploaded online
 
-* **JSDoc light support** - Support of @param & @returns tags
+* **JSDoc light support** - Support of @param, @returns, @link and @example tags
 
 * **Documentation coverage** - Get the documentation coverage report of your project
 
@@ -67,8 +67,9 @@ Because we doesn't find our needs on existing tools. We want to have a single pl
 # Who's using Compodoc ?
 
 - [angular-seed](https://github.com/mgechev/angular-seed)
+- [angular-calendar](https://github.com/mattlewis92/angular-calendar)
 
-These are some that we know of. Want your project listed here ? Drop us a line.
+These are some that [we know of](https://github.com/search?q=compodoc+filename%3Apackage.json+-user%3Acompodoc&ref=searchresults&type=Code&utf8=%E2%9C%93). Want your project listed here ? Drop us a line.
 
 # Table of Contents
 
@@ -270,18 +271,35 @@ These ones are not supported :
 // unsupported comment
 ```
 
-Currently Compodoc only support these two JSDoc tags :
+Currently Compodoc only support these JSDoc tags :
 
 - ```@param <param name>```
 - ```@returns```
+- ```@example```
+- ```@link```
 
 ```
 /**
- * @param {string} target  The target to process
+ * @param {string} target  The target to process see {@link Todo}
+ *
+ * @example
+ * This is a good example
+ * processTarget('yo')
+ *
  * @returns      The processed target number
  */
 function processTarget(target:string):number;
 ```
+
+For @link you can use this three syntax like JSDoc:
+
+- for an internal reference
+
+```{@link Todo} or [Todo]{@link Todo} or {@link Todo|TodoClass}```
+
+- for an external link
+
+```[Google]{@link http://www.google.com} & {@link http://www.apple.com|Apple} & {@link https://github.com GitHub}```
 
 ## Remark for routes
 
@@ -311,7 +329,7 @@ The integrated languages are : json, bash, javascript, markdown, html, typescrip
 - [ ] handle external markdown files as "functional" documentation
 - [ ] watch/recompile feature while serving documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
-- [ ] documentation coverage
+- [x] documentation coverage
 - [x] routes
 - [x] classes
 - [x] module(s) page(s) with comments

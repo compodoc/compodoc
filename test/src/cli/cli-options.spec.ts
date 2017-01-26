@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import {temporaryDir, shell, pkg} from './helpers';
+import {temporaryDir, shell, pkg} from '../helpers';
 const tmp = temporaryDir();
 
 describe('CLI Options', () => {

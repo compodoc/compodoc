@@ -1,6 +1,6 @@
 {
   "name": "compodoc",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -17,14 +17,6 @@
     "test:watch": "npm-watch"
   },
   "watch": {
-    "test": {
-      "patterns": [
-        "dist/index-cli.js",
-        "test/src/**/*.ts"
-      ],
-      "extensions": "js,ts",
-      "quiet": true
-    },
     "build": {
       "patterns": [
         "src/**/*.ts"

@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as Handlebars from 'handlebars';
 //import * as helpers from 'handlebars-helpers';
 import { $dependenciesEngine } from './dependencies.engine';
+import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
 
 export class HtmlEngine {
     cache: Object = {};
@@ -36,6 +37,18 @@ export class HtmlEngine {
             return options.inverse(this);
           }
           return options.fn(this);
+        });
+        Handlebars.registerHelper("or", function(/* any, any, ..., options */) {
+            var len = arguments.length - 1;
+          var options = arguments[len];
+
+          for (var i = 0; i < len; i++) {
+            if (arguments[i]) {
+              return options.fn(this);
+            }
+          }
+
+          return options.inverse(this);
         });
         Handlebars.registerHelper("filterAngular2Modules", function(text, options) {
             const NG2_MODULES:string[] = [
@@ -111,6 +124,70 @@ export class HtmlEngine {
             }
             return _kindText;
         });
+        /**
+         * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
+         */
+        Handlebars.registerHelper('parseDescription', function(description) {
+            let tagRegExp = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                matches,
+                previousString,
+                tagInfo = []
+
+            var processTheLink = function(string, tagInfo) {
+                var leading = extractLeadingText(string, tagInfo.completeTag),
+                    split,
+                    result,
+                    newLink,
+                    stringtoReplace;
+
+                split = splitLinkText(tagInfo.text);
+
+                if (typeof split.linkText !== 'undefined') {
+                    result = $dependenciesEngine.findInCompodoc(split.target);
+                } else {
+                    result = $dependenciesEngine.findInCompodoc(tagInfo.text);
+                }
+
+                if (result) {
+                    if (leading.leadingText !== null) {
+                        stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
+                    } else if (typeof split.linkText !== 'undefined') {
+                        stringtoReplace = tagInfo.completeTag;
+                    } else {
+                        stringtoReplace = tagInfo.completeTag;
+                    }
+
+                    if (result.type === 'class') result.type = 'classe';
+
+                    newLink = `<a href="./${result.type}s/${result.name}.html" >${result.name}</a>`;
+                    return string.replace(stringtoReplace, newLink);
+                } else {
+                    return string;
+                }
+            }
+
+            function replaceMatch(replacer, tag, match, text) {
+                var matchedTag = {
+                    completeTag: match,
+                    tag: tag,
+                    text: text
+                };
+                tagInfo.push(matchedTag);
+
+                return replacer(description, matchedTag);
+            }
+
+            do {
+                matches = tagRegExp.exec(description);
+                if (matches) {
+                    previousString = description;
+                    description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                }
+            } while (matches && previousString !== description);
+
+            return description;
+        });
+
         Handlebars.registerHelper('functionSignature', function(method) {
             const args = method.args.map(function(arg) {
                 var _result = $dependenciesEngine.find(arg.type);
@@ -146,6 +223,26 @@ export class HtmlEngine {
                 }
             }
             return result;
+        });
+        Handlebars.registerHelper('jsdoc-example', function(jsdocTags, options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [];
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'example') {
+                        var tag = {};
+                        if (jsdocTags[i].comment) {
+                            tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                        }
+                        tags.push(tag);
+                    }
+                }
+            }
+            if (tags.length >= 1) {
+                this.tags = tags;
+                return options.fn(this);
+            }
         });
         Handlebars.registerHelper('jsdoc-params', function(jsdocTags, options) {
             var i = 0,
@@ -234,6 +331,7 @@ export class HtmlEngine {
             'link-type',
             'block-method',
             'block-property',
+            'block-constructor',
             'coverage-report'
         ],
             i = 0,

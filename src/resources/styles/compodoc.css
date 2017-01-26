@@ -500,9 +500,14 @@ code {
     list-style: square;
     padding-left: 20px;
     margin-top: 10px;
+    margin-bottom: 0 !important;
 }
 .jsdoc-params li {
     padding-bottom: 10px;
+}
+
+i {
+    font-style: italic;
 }
 
 .coverage a {

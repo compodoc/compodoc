@@ -28,8 +28,12 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                {{{ class.description}}}
+                {{{parseDescription class.description}}}
             </p>
+        {{/if}}
+
+        {{#if class.constructor}}
+            {{> block-constructor constructor=class.constructor }}
         {{/if}}
 
         {{#if class.methods}}
