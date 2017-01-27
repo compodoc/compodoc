@@ -35,6 +35,8 @@
 
 * **Documentation coverage** - Get the documentation coverage report of your project
 
+* **Angular-CLI friendly** - Compodoc support out of the box Angular-CLI projects
+
 # Live Demo
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
@@ -74,6 +76,7 @@ These are some that [we know of](https://github.com/search?q=compodoc+filename%3
 # Table of Contents
 
 - [Node.js versions](#node.js-versions)
+- [Angular-CLI](#angular-cli)
 - [Getting Started with compodoc](#getting-started-with-compodoc)
   - [Install](#install)
   - [Usage](#usage)
@@ -98,6 +101,12 @@ These are some that [we know of](https://github.com/search?q=compodoc+filename%3
 ## Node.js versions
 
 Compodoc is tested with only LTS versions : v6.9.4 & v4.7.1
+
+## Angular-CLI
+
+Compodoc supports last Angular-CLI version : [1.0.0-beta-26](https://github.com/angular/angular-cli/blob/master/CHANGELOG.md#100-beta26-2017-01-19)
+
+Just run Compodoc in a fresh or existing project.
 
 ## Getting Started with compodoc
 
@@ -295,11 +304,19 @@ For @link you can use this three syntax like JSDoc:
 
 - for an internal reference
 
-```{@link Todo} or [Todo]{@link Todo} or {@link Todo|TodoClass}```
+```
+{@link Todo}
+[Todo]{@link Todo}
+{@link Todo|TodoClass}
+```
 
 - for an external link
 
-```[Google]{@link http://www.google.com} & {@link http://www.apple.com|Apple} & {@link https://github.com GitHub}```
+```
+[Google]{@link http://www.google.com}
+{@link http://www.apple.com|Apple}
+{@link https://github.com GitHub}
+```
 
 ## Remark for routes
 
@@ -322,7 +339,7 @@ Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and c
 
 Just use a normal code block in your markdown with correct language : [Github help](https://help.github.com/articles/creating-and-highlighting-code-blocks/)
 
-The integrated languages are : json, bash, javascript, markdown, html, typescript
+The integrated languages are : __json, bash, javascript, markdown, html, typescript__
 
 ## Roadmap
 
@@ -354,7 +371,8 @@ There is a JHipster module available to run Compodoc with JHipster. You can find
 
 ## Contributing
 
-Want to file a bug, contribute some code, or improve documentation? Excellent!
+Want to file a bug, contribute some code, or improve documentation? Excellent !
+
 Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/.github/CONTRIBUTING.md).
 
 ## Contributors
