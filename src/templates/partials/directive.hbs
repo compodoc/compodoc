@@ -117,8 +117,8 @@
             </section>
         {{/if}}
 
-        {{#if directive.constructor}}
-            {{> block-constructor constructor=directive.constructor }}
+        {{#if directive.constructorObj}}
+            {{> block-constructor constructor=directive.constructorObj }}
         {{/if}}
 
         {{#if directive.methodsClass}}

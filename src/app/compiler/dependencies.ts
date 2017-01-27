@@ -213,9 +213,11 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            constructor: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['components'].push(deps);
                     }
                     else if (this.isInjectable(metadata)) {
@@ -226,9 +228,11 @@ export class Dependencies {
                             properties: IO.properties,
                             methods: IO.methods,
                             description: IO.description,
-                            constructor: IO.constructor,
                             sourceCode: sourceFile.getText()
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
@@ -255,11 +259,12 @@ export class Dependencies {
                             inputsClass: IO.inputs,
                             outputsClass: IO.outputs,
 
-                            constructor: IO.constructor,
-
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
                         };
+                        if(IO.constructor) {
+                            deps.constructorObj = IO.constructor;
+                        }
                         outputSymbols['directives'].push(deps);
                     }
 
@@ -290,7 +295,7 @@ export class Dependencies {
                         sourceCode: sourceFile.getText()
                     };
                     if(IO.constructor) {
-                        deps.constructor = IO.constructor;
+                        deps.constructorObj = IO.constructor;
                     }
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -349,7 +354,7 @@ export class Dependencies {
                         sourceCode: sourceFile.getText()
                     };
                     if(IO.constructor) {
-                        deps.constructor = IO.constructor;
+                        deps.constructorObj = IO.constructor;
                     }
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -1197,7 +1202,7 @@ export class Dependencies {
                     }
                 }
 
-                if (node.kind ===  ts.SyntaxKind.SpreadElementExpression) {
+                if (node.kind ===  ts.SyntaxKind.SpreadElement) {
                     return `...${nodeName}`;
                 }
                 return `${buildIdentifierName(node.expression, nodeName)}${name}`

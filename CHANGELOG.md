@@ -1,3 +1,12 @@
+<a name="0.0.38"></a>
+## 0.0.38 (2017-01-27)
+
+### Bug Fixes
+
+* **app:** ngd call for output path with spaces ([37fe0a6](https://github.com/compodoc/compodoc/commit/37fe0a6)), closes [#44](https://github.com/compodoc/compodoc/issues/44)
+* **app:** class constructor test ([54b7c8e](https://github.com/compodoc/compodoc/commit/54b7c8e)), closes [#95](https://github.com/compodoc/compodoc/issues/95)
+* **app:** test if constructor available ([bd1cb92](https://github.com/compodoc/compodoc/commit/bd1cb92))
+
 <a name="0.0.37"></a>
 ## 0.0.37 (2017-01-26)
 
