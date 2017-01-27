@@ -1197,7 +1197,7 @@ export class Dependencies {
                     }
                 }
 
-                if (node.kind ===  ts.SyntaxKind.SpreadElementExpression) {
+                if (node.kind ===  ts.SyntaxKind.SpreadElement) {
                     return `...${nodeName}`;
                 }
                 return `${buildIdentifierName(node.expression, nodeName)}${name}`
