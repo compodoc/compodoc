@@ -42,7 +42,6 @@
 
 @media (max-width: 767px) {
 
-	.navbar { padding-top: 0; }
 	.navbar-brand { margin-left: 15px; margin-bottom: 10px; }
 	.navbar-collapse { border: 0; }
 	.navbar-inverse ul.navbar-nav li a:hover, .navbar-inverse ul.navbar-nav li a:focus { padding-bottom: 10px; border-bottom: 1px solid transparent; }
@@ -99,7 +98,7 @@ only screen and (                min-resolution: 2dppx) {
 
 	/* logo */
     .navbar-brand {
-    	background-image: url(../img/logo@2x.png) !important; background-repeat: no-repeat !important;
+    	background-image: url(../img/logo@2x.png) !important; background-repeat: no-repeat !important; background-size: cover;
     }
 
 }
