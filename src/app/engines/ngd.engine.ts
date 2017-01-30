@@ -1,31 +1,44 @@
 import * as path from 'path';
 import * as Shelljs from 'shelljs';
+import * as _ from 'lodash';
+import * as util from 'util';
+
+import { $dependenciesEngine } from './dependencies.engine';
 
 import isGlobal from '../../utils/global.path';
+
+let ngdCr = require('@compodoc/ngd-core');
+let ngdT = require('@compodoc/ngd-transformer');
 
 export class NgdEngine {
     constructor() {
 
     }
-    renderGraph(filepath:String, outputpath: String, type: String) {
+    renderGraph(filepath: String, outputpath: String, type: String, name?: string) {
         return new Promise(function(resolve, reject) {
-           let ngdPath = (isGlobal()) ? __dirname + '/../node_modules/.bin/ngd' : __dirname + '/../../.bin/ngd';
-           if (process.env.MODE && process.env.MODE === 'TESTING') {
-               ngdPath = __dirname + '/../node_modules/.bin/ngd';
-           }
-           if (/ /g.test(ngdPath)) {
-               ngdPath = ngdPath.replace(/ /g, '^ ');
-           }
-           let finalPath = path.resolve(ngdPath) + ' -' + type + ' ' + filepath + ' -d "' + outputpath + '" -s -t svg'
-           Shelljs.exec(finalPath, {
-               silent: true
-           }, function(code, stdout, stderr) {
-               if(code === 0) {
-                   resolve();
-               } else {
-                   reject(stderr);
-               }
-           });
+            ngdCr.logger.silent = false;
+            let engine = new ngdT.DotEngine({
+                output: outputpath,
+                displayLegend: true,
+                outputFormats: 'svg'
+            });
+            if (type === 'f') {
+                engine
+                    .generateGraph([$dependenciesEngine.getModule(name)])
+                    .then(file => {
+                        resolve();
+                    }, error => {
+                        reject(error);
+                    });
+            } else {
+                engine
+                    .generateGraph($dependenciesEngine.modules)
+                    .then(file => {
+                        resolve();
+                    }, error => {
+                        reject(error);
+                    });
+            }
         });
     }
 };

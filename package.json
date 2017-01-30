@@ -49,7 +49,8 @@
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
-    "angular2-dependencies-graph": "1.0.0-alpha.12",
+    "@compodoc/ngd-core": "^2.0.0-alpha.1",
+    "@compodoc/ngd-transformer": "^2.0.0-alpha.2",
     "cheerio": "^0.22.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
@@ -59,7 +60,6 @@
     "handlebars": "^4.0.6",
     "highlight.js": "^9.8.0",
     "html-entities": "^1.2.0",
-    "is-global-exec": "^0.1.3",
     "live-server": "^1.2.0",
     "lodash": "^4.17.3",
     "lunr": "^0.7.2",

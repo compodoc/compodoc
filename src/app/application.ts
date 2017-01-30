@@ -644,7 +644,7 @@ export class Application {
                           finalPath += '/';
                       }
                       finalPath += 'modules/' + modules[i].name;
-                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f').then(() => {
+                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
                           i++;
                           loop();
                       }, (errorMessage) => {

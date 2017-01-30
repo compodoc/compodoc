@@ -66,6 +66,9 @@ class DependenciesEngine {
             result = _.find(mergedData, {'name': name});
         return result || false;
     }
+    getModule(name: string) {
+        return _.find(this.modules, ['name', name]);
+    }
     getModules() {
         return this.modules;
     }

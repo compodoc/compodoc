@@ -11,6 +11,8 @@ let pkg = require('../package.json'),
     files = [],
     cwd = process.cwd();
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 export class CliApplication extends Application
 {
     /**
