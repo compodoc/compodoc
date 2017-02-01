@@ -55,7 +55,7 @@ const webshot = require('webshot'),
 var i = 0;
 
 tmp.create();
-exec('cd ' + tmp.name + ' && git clone https://github.com/compodoc/compodoc-demo-todomvc-angular2.git .', {}, (error, stdout, stderr) => {
+exec('cd ' + tmp.name + ' && git clone https://github.com/compodoc/compodoc-demo-todomvc-angular.git .', {}, (error, stdout, stderr) => {
     if (error) {
         console.error(`exec error: ${error}`);
     } else {

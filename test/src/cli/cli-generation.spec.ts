@@ -244,7 +244,7 @@ describe('CLI simple generation', () => {
     describe('when generation with -b flag', () => {
 
         let stdoutString = null,
-            baseTest = 'https://compodoc.github.io/compodoc-demo-todomvc-angular2/',
+            baseTest = 'https://compodoc.github.io/compodoc-demo-todomvc-angular/',
             index = null;
         before(function (done) {
             tmp.create();
