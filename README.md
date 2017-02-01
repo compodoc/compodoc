@@ -39,7 +39,7 @@
 
 # Live Demo
 
-[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular2/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular2)
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular)
 
 # Static Demo
 
@@ -254,7 +254,7 @@ Compodoc search for a default README.md file inside the root folder of each comp
     └── README.md
 ```
 
-The live demo as a component documented in that way : [TodoMVC Angular Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular2/components/TodoComponent.html)
+The live demo as a component documented in that way : [TodoMVC Angular Compodoc demo / todo component](https://compodoc.github.io/compodoc-demo-todomvc-angular/components/TodoComponent.html)
 
 ## Remark for comments
 
