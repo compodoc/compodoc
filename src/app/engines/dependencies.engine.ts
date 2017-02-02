@@ -6,6 +6,7 @@ class DependenciesEngine {
     private static _instance:DependenciesEngine = new DependenciesEngine();
     rawData: Object;
     modules: Object[];
+    rawModules: Object[];
     components: Object[];
     directives: Object[];
     injectables: Object[];
@@ -26,6 +27,7 @@ class DependenciesEngine {
     init(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
+        this.rawModules = _.sortBy(_.cloneDeep(data.modules), ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
@@ -68,6 +70,9 @@ class DependenciesEngine {
     }
     getModule(name: string) {
         return _.find(this.modules, ['name', name]);
+    }
+    getRawModule(name: string) {
+        return _.find(this.rawModules, ['name', name]);
     }
     getModules() {
         return this.modules;

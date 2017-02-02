@@ -24,7 +24,7 @@ export class NgdEngine {
             });
             if (type === 'f') {
                 engine
-                    .generateGraph([$dependenciesEngine.getModule(name)])
+                    .generateGraph([$dependenciesEngine.getRawModule(name)])
                     .then(file => {
                         resolve();
                     }, error => {
@@ -32,7 +32,7 @@ export class NgdEngine {
                     });
             } else {
                 engine
-                    .generateGraph($dependenciesEngine.modules)
+                    .generateGraph($dependenciesEngine.rawModules)
                     .then(file => {
                         resolve();
                     }, error => {
