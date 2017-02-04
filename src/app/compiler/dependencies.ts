@@ -9,6 +9,7 @@ import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { generate } from './codegen';
+import { Configuration, IConfiguration } from '../configuration';
 
 interface NodeObject {
     kind: Number;
@@ -89,6 +90,7 @@ export class Dependencies {
     private __cache: any = {};
     private __nsModule: any = {};
     private unknown = '???';
+    private configuration = Configuration.getInstance();
 
     constructor(files: string[], options: any) {
         this.files = files;
@@ -594,7 +596,7 @@ export class Dependencies {
                 return true;
             }
         }
-        return this.isInternalMember(member);
+        return this.isHiddenMember(member);
     }
 
     private isPrivateOrInternal(member): boolean {
@@ -607,14 +609,14 @@ export class Dependencies {
                 return true;
             }
         }
-        return this.isInternalMember(member);
+        return this.isHiddenMember(member);
     }
 
-    private isInternalMember(member): boolean {
+    private isHiddenMember(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const internalTags: string[] = ['internal', 'hidden'];
+        const internalTags: string[] = ['hidden'];
         if (member.jsDoc) {
             for (const doc of member.jsDoc) {
                 if (doc.tags) {
@@ -818,27 +820,30 @@ export class Dependencies {
                 inputs.push(this.visitInput(members[i], inputDecorator));
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(members[i], outDecorator));
-            } else if (!this.isInternalMember(members[i])) {
-                if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
-                    members[i].kind === ts.SyntaxKind.MethodSignature) &&
-                    !this.isAngularLifecycleHook(members[i].name.text)) {
-                    methods.push(this.visitMethodDeclaration(members[i]));
-                } else if (
-                    members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
-                    members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
-                    properties.push(this.visitProperty(members[i]));
-                } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
-                    properties.push(this.visitCallDeclaration(members[i]));
-                } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
-                    properties.push(this.visitIndexDeclaration(members[i]));
-                } else if (members[i].kind === ts.SyntaxKind.Constructor) {
-                    let _constructorProperties = this.visitConstructorProperties(members[i]),
-                        j = 0,
-                        len = _constructorProperties.length;
-                    for(j; j<len; j++) {
-                        properties.push(_constructorProperties[j]);
+            } else if (!this.isHiddenMember(members[i])) {
+
+                if (!this.isPrivateOrInternal(members[i]) && this.configuration.mainData.disablePrivateOrInternalSupport) {
+                    if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
+                        members[i].kind === ts.SyntaxKind.MethodSignature) &&
+                        !this.isAngularLifecycleHook(members[i].name.text)) {
+                        methods.push(this.visitMethodDeclaration(members[i]));
+                    } else if (
+                        members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
+                        members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
+                        properties.push(this.visitProperty(members[i]));
+                    } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
+                        properties.push(this.visitCallDeclaration(members[i]));
+                    } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
+                        properties.push(this.visitIndexDeclaration(members[i]));
+                    } else if (members[i].kind === ts.SyntaxKind.Constructor) {
+                        let _constructorProperties = this.visitConstructorProperties(members[i]),
+                            j = 0,
+                            len = _constructorProperties.length;
+                        for(j; j<len; j++) {
+                            properties.push(_constructorProperties[j]);
+                        }
+                        constructor = this.visitConstructorDeclaration(members[i]);
                     }
-                    constructor = this.visitConstructorDeclaration(members[i]);
                 }
             }
         }

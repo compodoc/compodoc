@@ -137,20 +137,8 @@ describe('CLI simple tags', () => {
             expect(componentFile).to.contain('<code>normalMethod');
         });
 
-        it('should exclude methods marked as internal', () => {
-            expect(componentFile).not.to.contain('<code>internalMethod');
-        });
-
         it('should exclude methods marked as hidden', () => {
             expect(componentFile).not.to.contain('<code>hiddenMethod');
-        });
-
-        it('should exclude methods marked as private', () => {
-            expect(componentFile).not.to.contain('<code>privateCommentMethod');
-        });
-
-        it('should exclude private methods', () => {
-            expect(componentFile).not.to.contain('<code>privateMethod');
         });
 
     });
