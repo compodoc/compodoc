@@ -97,6 +97,9 @@ export class HtmlEngine {
         Handlebars.registerHelper('modifKind', function(kind) {
             let _kindText = '';
             switch(kind) {
+                case 111:
+                    _kindText = 'Private';
+                    break;
                 case 112:
                     _kindText = 'Protected';
                     break;
@@ -112,6 +115,9 @@ export class HtmlEngine {
         Handlebars.registerHelper('modifIcon', function(kind) {
             let _kindText = '';
             switch(kind) {
+                case 111:
+                    _kindText = 'lock';
+                    break;
                 case 112:
                     _kindText = 'lock';
                     break;

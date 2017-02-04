@@ -614,7 +614,7 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const internalTags: string[] = ['internal', 'private', 'hidden'];
+        const internalTags: string[] = ['internal', 'hidden'];
         if (member.jsDoc) {
             for (const doc of member.jsDoc) {
                 if (doc.tags) {
@@ -818,7 +818,7 @@ export class Dependencies {
                 inputs.push(this.visitInput(members[i], inputDecorator));
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(members[i], outDecorator));
-            } else if (!this.isPrivateOrInternal(members[i])) {
+            } else if (!this.isInternalMember(members[i])) {
                 if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
                     members[i].kind === ts.SyntaxKind.MethodSignature) &&
                     !this.isAngularLifecycleHook(members[i].name.text)) {
