@@ -101,6 +101,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not add the documentation coverage report');
         });
 
+        it(`--disablePrivateOrInternalSupport`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disablePrivateOrInternalSupport');
+            expect(runHelp.stdout.toString()).to.contain('Do not show private or @internal in generated documentation');
+        });
+
     });
 
 });

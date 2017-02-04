@@ -40,6 +40,7 @@ export class CliApplication extends Application
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
+            .option('--disablePrivateOrInternalSupport', 'Do not show private or @internal in generated documentation', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -109,6 +110,10 @@ export class CliApplication extends Application
 
         if (program.disableCoverage) {
             this.configuration.mainData.disableCoverage = program.disableCoverage;
+        }
+
+        if (program.disablePrivateOrInternalSupport) {
+            this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
         }
 
         if (program.serve && !program.tsconfig && program.output) {

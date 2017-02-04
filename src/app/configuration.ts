@@ -42,6 +42,7 @@ interface IMainData {
     disableSourceCode: boolean;
     disableGraph: boolean;
     disableCoverage: boolean;
+    disablePrivateOrInternalSupport: boolean;
 }
 
 export interface IConfiguration {
@@ -80,7 +81,8 @@ export class Configuration implements IConfiguration {
         includes: false,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
-        disableCoverage: COMPODOC_DEFAULTS.disableCoverage
+        disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
+        disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport
     };
 
     constructor() {
