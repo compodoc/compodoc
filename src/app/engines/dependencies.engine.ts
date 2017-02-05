@@ -47,8 +47,10 @@ class DependenciesEngine {
                 i = 0,
                 len = data.length;
             for (i; i<len; i++) {
-                if (type.indexOf(data[i].name) !== -1) {
-                    _result.data = data[i]
+                if (typeof type !== 'undefined') {
+                    if (type.indexOf(data[i].name) !== -1) {
+                        _result.data = data[i]
+                    }
                 }
             }
             return _result;

@@ -36,6 +36,10 @@
             {{> block-method methods=interface.methods }}
         {{/if}}
 
+        {{#if interface.indexSignatures}}
+            {{> block-index indexables=interface.indexSignatures }}
+        {{/if}}
+
         {{#if interface.properties}}
 
             <section>

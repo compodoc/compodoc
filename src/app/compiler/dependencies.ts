@@ -328,6 +328,9 @@ export class Dependencies {
                     if(IO.properties) {
                         deps.properties = IO.properties;
                     }
+                    if(IO.indexSignatures) {
+                        deps.indexSignatures = IO.indexSignatures;
+                    }
                     if(IO.kind) {
                         deps.kind = IO.kind;
                     }
@@ -367,6 +370,9 @@ export class Dependencies {
                     if(IO.properties) {
                         deps.properties = IO.properties;
                     }
+                    if(IO.indexSignatures) {
+                        deps.indexSignatures = IO.indexSignatures;
+                    }
                     if(IO.description) {
                         deps.description = IO.description;
                     }
@@ -395,7 +401,6 @@ export class Dependencies {
                     }
                 }
                 if (node.kind === ts.SyntaxKind.VariableStatement && !this.isVariableRoutes(node)) {
-                    console.log('VariableStatement');
                     let infos = this.visitVariableDeclaration(node),
                         name = infos.name;
                     deps = {
@@ -412,15 +417,14 @@ export class Dependencies {
                     outputSymbols['miscellaneous'].variables.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-                    console.log('TypeAliasDeclaration');
+                    //console.log('TypeAliasDeclaration');
                 }
                 if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
-                    console.log('FunctionDeclaration');
                     let deps = this.visitFunctionDeclaration(node)
                     outputSymbols['miscellaneous'].functions.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.EnumDeclaration) {
-                    console.log('EnumDeclaration');
+                    //console.log('EnumDeclaration');
                 }
             }
         });
@@ -857,6 +861,7 @@ export class Dependencies {
             outputs = [],
             methods = [],
             properties = [],
+            indexSignatures = [],
             kind,
             inputDecorator,
             constructor,
@@ -887,7 +892,7 @@ export class Dependencies {
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                         properties.push(this.visitCallDeclaration(members[i]));
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
-                        properties.push(this.visitIndexDeclaration(members[i]));
+                        indexSignatures.push(this.visitIndexDeclaration(members[i]));
                     } else if (members[i].kind === ts.SyntaxKind.Constructor) {
                         let _constructorProperties = this.visitConstructorProperties(members[i]),
                             j = 0,
@@ -904,12 +909,14 @@ export class Dependencies {
         inputs.sort(this.getNamesCompareFn());
         outputs.sort(this.getNamesCompareFn());
         properties.sort(this.getNamesCompareFn());
+        indexSignatures.sort(this.getNamesCompareFn());
 
         return {
             inputs,
             outputs,
             methods,
             properties,
+            indexSignatures,
             kind,
             constructor
         };
@@ -990,6 +997,7 @@ export class Dependencies {
                         outputs: members.outputs,
                         properties: members.properties,
                         methods: members.methods,
+                        indexSignatures: members.indexSignatures,
                         kind: members.kind,
                         constructor: members.constructor
                     };
@@ -1000,6 +1008,7 @@ export class Dependencies {
                     className,
                     description,
                     methods: members.methods,
+                    indexSignatures: members.indexSignatures,
                     properties: members.properties,
                     kind: members.kind,
                     constructor: members.constructor
@@ -1018,6 +1027,7 @@ export class Dependencies {
             return [{
                 description,
                 methods: members.methods,
+                indexSignatures: members.indexSignatures,
                 properties: members.properties,
                 kind: members.kind,
                 constructor: members.constructor
@@ -1027,6 +1037,7 @@ export class Dependencies {
 
             return [{
                 methods: members.methods,
+                indexSignatures: members.indexSignatures,
                 properties: members.properties,
                 kind: members.kind,
                 constructor: members.constructor

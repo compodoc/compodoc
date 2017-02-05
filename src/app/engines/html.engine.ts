@@ -339,6 +339,7 @@ export class HtmlEngine {
             'link-type',
             'block-method',
             'block-property',
+            'block-index',
             'block-constructor',
             'coverage-report',
             'miscellaneous'
