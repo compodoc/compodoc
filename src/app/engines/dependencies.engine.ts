@@ -14,6 +14,7 @@ class DependenciesEngine {
     routes: Object[];
     pipes: Object[];
     classes: Object[];
+    miscellaneous: Object[];
     constructor() {
         if(DependenciesEngine._instance){
             throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
@@ -35,6 +36,7 @@ class DependenciesEngine {
         this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
+        this.miscellaneous = this.rawData.miscellaneous;
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
@@ -97,6 +99,9 @@ class DependenciesEngine {
     }
     getClasses() {
         return this.classes;
+    }
+    getMiscellaneous() {
+        return this.miscellaneous;
     }
 };
 

@@ -148,6 +148,13 @@ export class Application {
                 this.prepareInterfaces();
             }
 
+            if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
+                $dependenciesEngine.miscellaneous.functions.length > 0 ||
+                $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
+                $dependenciesEngine.miscellaneous.enumerations.length > 0 ) {
+                this.prepareMiscellaneous();
+            }
+
             if (!this.configuration.mainData.disableCoverage) {
                 this.prepareCoverage();
             }
@@ -248,6 +255,16 @@ export class Application {
                 interface: this.configuration.mainData.interfaces[i]
             });
         }
+    }
+
+    prepareMiscellaneous() {
+        logger.info('Prepare miscellaneous');
+        this.configuration.mainData.miscellaneous = $dependenciesEngine.getMiscellaneous();
+
+        this.configuration.addPage({
+            name: 'miscellaneous',
+            context: 'miscellaneous'
+        });
     }
 
     prepareComponents() {

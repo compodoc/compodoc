@@ -234,6 +234,12 @@
         </li>
         {{/if}}
 
+        {{#if miscellaneous}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="./miscellaneous.html" {{#compare name "===" 'miscellaneous' }} class="active" {{/compare}}><span class="fa fa-cubes"></span>Miscellaneous</a>
+        </li>
+        {{/if}}
+
         {{#unless disableCoverage}}
         <li class="chapter">
             <a data-type="chapter-link" href="./coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-tasks"></span>Documentation coverage</a>

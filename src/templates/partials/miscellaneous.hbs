@@ -1,0 +1,11 @@
+<ol class="breadcrumb">
+  <li>Miscellaneous</li>
+</ol>
+
+{{#if miscellaneous.variables}}
+    {{> block-property properties=miscellaneous.variables title='Variables' }}
+{{/if}}
+
+{{#if miscellaneous.functions}}
+    {{> block-method methods=miscellaneous.functions title='Functions' }}
+{{/if}}

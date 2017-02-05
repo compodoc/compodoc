@@ -92,6 +92,10 @@
                         {{~> routes data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'miscellaneous'}}
+                        {{~> miscellaneous data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'coverage'}}
                         {{~> coverage-report data ~}}
                    {{/compare}}

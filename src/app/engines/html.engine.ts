@@ -126,6 +126,8 @@ export class HtmlEngine {
                     break;
                 case 114:
                     _kindText = 'square';
+                case 83:
+                    _kindText = 'export';
                     break;
             }
             return _kindText;
@@ -338,7 +340,8 @@ export class HtmlEngine {
             'block-method',
             'block-property',
             'block-constructor',
-            'coverage-report'
+            'coverage-report',
+            'miscellaneous'
         ],
             i = 0,
             len = partials.length,

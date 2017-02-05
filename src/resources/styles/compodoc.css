@@ -604,6 +604,9 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .modifier-icon.method.square {
     border-radius: 4px;
 }
+.modifier-icon.method.export {
+    display: none;
+}
 .modifier-icon.method .fa-circle, .modifier-icon.method .fa-square {
     display: none;
 }
