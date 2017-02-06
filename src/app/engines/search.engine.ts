@@ -56,7 +56,7 @@ export class SearchEngine {
                            index: JSON.stringify(this.getSearchIndex()),
                            store: JSON.stringify(this.documentsStore)
                        });
-                   fs.writeFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/search/search_index.js'), result, 'utf8', function (err) {
+                   fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/search/search_index.js'), result, function (err) {
                        if(err) {
                            logger.error('Error during search index file generation ', err);
                            reject(err);

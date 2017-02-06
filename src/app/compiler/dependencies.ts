@@ -653,7 +653,7 @@ export class Dependencies {
         return this.isHiddenMember(member);
     }
 
-    private isPrivateOrInternal(member): boolean {
+    private isPrivate(member): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -664,6 +664,25 @@ export class Dependencies {
             }
         }
         return this.isHiddenMember(member);
+    }
+
+    private isInternal(member): boolean {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const internalTags: string[] = ['internal'];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private isHiddenMember(member): boolean {
@@ -880,7 +899,7 @@ export class Dependencies {
                 outputs.push(this.visitOutput(members[i], outDecorator));
             } else if (!this.isHiddenMember(members[i])) {
 
-                if (this.isPrivateOrInternal(members[i]) && this.configuration.mainData.disablePrivateOrInternalSupport) {} else {
+                if ( (this.isPrivate(members[i]) || this.isInternal(members[i])) && this.configuration.mainData.disablePrivateOrInternalSupport) {} else {
                     if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
                         members[i].kind === ts.SyntaxKind.MethodSignature) &&
                         !this.isAngularLifecycleHook(members[i].name.text)) {

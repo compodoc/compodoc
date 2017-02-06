@@ -136,7 +136,7 @@ export class HtmlEngine {
         /**
          * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
          */
-        Handlebars.registerHelper('parseDescription', function(description) {
+        Handlebars.registerHelper('parseDescription', function(description, depth) {
             let tagRegExp = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
                 matches,
                 previousString,
@@ -147,6 +147,7 @@ export class HtmlEngine {
                     split,
                     result,
                     newLink,
+                    rootPath,
                     stringtoReplace;
 
                 split = splitLinkText(tagInfo.text);
@@ -168,7 +169,10 @@ export class HtmlEngine {
 
                     if (result.type === 'class') result.type = 'classe';
 
-                    newLink = `<a href="./${result.type}s/${result.name}.html" >${result.name}</a>`;
+                    rootPath = '../';
+                    if (depth && depth === 1) rootPath = './';
+
+                    newLink = `<a href="${rootPath}${result.type}s/${result.name}.html" >${result.name}</a>`;
                     return string.replace(stringtoReplace, newLink);
                 } else {
                     return string;
@@ -218,7 +222,7 @@ export class HtmlEngine {
                     if (_result.source === 'internal') {
                         let path = _result.data.type;
                         if (_result.data.type === 'class') path = 'classe';
-                        return `${arg.name}: <a href="./${path}s/${_result.data.name}.html" >${arg.type}</a>`;
+                        return `${arg.name}: <a href="../${path}s/${_result.data.name}.html" >${arg.type}</a>`;
                     } else {
                         let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
                         return `${arg.name}: <a href="${path}" target="_blank" >${arg.type}</a>`;
@@ -301,7 +305,7 @@ export class HtmlEngine {
                 }
                 if (_result.source === 'internal') {
                     if (_result.data.type === 'class') _result.data.type = 'classe';
-                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
                     this.type.target = '_self';
                 } else {
                     this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
