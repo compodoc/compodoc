@@ -9,5 +9,9 @@ export const COMPODOC_DEFAULTS = {
     disableSourceCode: false,
     disableGraph: false,
     disableCoverage: false,
-    disablePrivateOrInternalSupport: false
+    disablePrivateOrInternalSupport: false,
+    PAGE_TYPES: {
+        ROOT: 'root',
+        INTERNAL: 'internal'
+    }
 }

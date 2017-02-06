@@ -4,6 +4,7 @@ import * as Handlebars from 'handlebars';
 //import * as helpers from 'handlebars-helpers';
 import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
+import { COMPODOC_DEFAULTS } from '../../utils/defaults';
 
 export class HtmlEngine {
     cache: Object = {};
@@ -194,6 +195,20 @@ export class HtmlEngine {
             } while (matches && previousString !== description);
 
             return description;
+        });
+
+        Handlebars.registerHelper('relativeURL', function(depth, currentPageType, targetPageType) {
+            //console.log('relativeURL: ', depth, currentPageType, targetPageType);
+            // if depth 2 & type == internal, set on same level, otherwise go up
+            let result = '';
+            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+                result = './';
+            }
+            return result;
         });
 
         Handlebars.registerHelper('functionSignature', function(method) {

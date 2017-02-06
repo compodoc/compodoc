@@ -5,7 +5,7 @@
 
 {{#unless disableGraph}}
 <div class="text-center">
-    <object id="demo-svg" type="image/svg+xml" data="modules/{{name}}/dependencies.svg" style="width: 100%; height: 250px;">
+    <object id="demo-svg" type="image/svg+xml" data="{{relativeURL depth pageType 'root'}}modules/{{name}}/dependencies.svg" style="width: 100%; height: 250px;">
             Your browser does not support SVG
     </object>
     <div class="btn-group">
@@ -14,8 +14,8 @@
         <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
     </div>
 </div>
-<script src="js/libs/svg-pan-zoom.min.js"></script>
-<script src="js/svg-pan-zoom.controls.js"></script>
+<script src="{{relativeURL depth pageType 'root'}}js/libs/svg-pan-zoom.min.js"></script>
+<script src="{{relativeURL depth pageType 'root'}}js/svg-pan-zoom.controls.js"></script>
 {{/unless}}
 
 {{#unless disableSourceCode}}
@@ -55,7 +55,7 @@
                     <ul class="list-group">
                         {{#each module.declarations}}
                             <li class="list-group-item">
-                                <a href="./{{type}}s/{{name}}.html">{{name}}</a>
+                                <a href="{{relativeURL ../depth ../pageType 'root'}}{{type}}s/{{name}}.html">{{name}}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -67,7 +67,7 @@
                     <ul class="list-group">
                         {{#each module.providers}}
                             <li class="list-group-item">
-                                <a href="./injectables/{{name}}.html" >{{name}}</a>
+                                <a href="{{relativeURL ../depth ../pageType 'root'}}injectables/{{name}}.html" >{{name}}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -82,7 +82,7 @@
                                 {{#filterAngular2Modules name}}
                                     {{name}}
                                 {{else}}
-                                    <a href="./modules/{{name}}.html" >{{name}}</a>
+                                    <a href="{{relativeURL ../depth ../pageType 'root'}}modules/{{name}}.html" >{{name}}</a>
                                 {{/filterAngular2Modules}}
                             </li>
                         {{/each}}
@@ -98,7 +98,7 @@
                                 {{#filterAngular2Modules name}}
                                     {{name}}
                                 {{else}}
-                                    <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
+                                    <a href="{{relativeURL ../depth ../pageType 'root'}}{{type}}s/{{name}}.html" >{{name}}</a>
                                 {{/filterAngular2Modules}}
                             </li>
                         {{/each}}
@@ -111,7 +111,7 @@
                     <ul class="list-group">
                         {{#each module.bootstrap}}
                             <li class="list-group-item">
-                                <a href="./{{type}}s/{{name}}.html" >{{name}}</a>
+                                <a href="{{relativeURL ../depth ../pageType 'root'}}{{type}}s/{{name}}.html" >{{name}}</a>
                             </li>
                         {{/each}}
                     </ul>

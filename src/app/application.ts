@@ -88,11 +88,14 @@ export class Application {
         $markdownengine.getReadmeFile().then((readmeData: string) => {
             this.configuration.addPage({
                 name: 'index',
-                context: 'readme'
+                context: 'readme',
+                depth: 1,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             this.configuration.addPage({
                 name: 'overview',
-                context: 'overview'
+                context: 'overview',
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             this.configuration.mainData.readme = readmeData;
             logger.info('README.md file found');
@@ -195,7 +198,9 @@ export class Application {
         });
         this.configuration.addPage({
             name: 'modules',
-            context: 'modules'
+            context: 'modules',
+            depth: 1,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
         let i = 0,
             len = this.configuration.mainData.modules.length;
@@ -205,7 +210,9 @@ export class Application {
                 path: 'modules',
                 name: this.configuration.mainData.modules[i].name,
                 context: 'module',
-                module: this.configuration.mainData.modules[i]
+                module: this.configuration.mainData.modules[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -221,7 +228,9 @@ export class Application {
                 path: 'pipes',
                 name: this.configuration.mainData.pipes[i].name,
                 context: 'pipe',
-                pipe: this.configuration.mainData.pipes[i]
+                pipe: this.configuration.mainData.pipes[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -237,7 +246,9 @@ export class Application {
                 path: 'classes',
                 name: this.configuration.mainData.classes[i].name,
                 context: 'class',
-                class: this.configuration.mainData.classes[i]
+                class: this.configuration.mainData.classes[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -252,7 +263,9 @@ export class Application {
                 path: 'interfaces',
                 name: this.configuration.mainData.interfaces[i].name,
                 context: 'interface',
-                interface: this.configuration.mainData.interfaces[i]
+                interface: this.configuration.mainData.interfaces[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -263,7 +276,9 @@ export class Application {
 
         this.configuration.addPage({
             name: 'miscellaneous',
-            context: 'miscellaneous'
+            context: 'miscellaneous',
+            depth: 1,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
     }
 
@@ -288,7 +303,9 @@ export class Application {
                                     path: 'components',
                                     name: that.configuration.mainData.components[i].name,
                                     context: 'component',
-                                    component: that.configuration.mainData.components[i]
+                                    component: that.configuration.mainData.components[i],
+                                    depth: 2,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                 });
                                 i++;
                                 loop();
@@ -323,7 +340,9 @@ export class Application {
                 path: 'directives',
                 name: this.configuration.mainData.directives[i].name,
                 context: 'directive',
-                directive: this.configuration.mainData.directives[i]
+                directive: this.configuration.mainData.directives[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -340,7 +359,9 @@ export class Application {
                 path: 'injectables',
                 name: this.configuration.mainData.injectables[i].name,
                 context: 'injectable',
-                injectable: this.configuration.mainData.injectables[i]
+                injectable: this.configuration.mainData.injectables[i],
+                depth: 2,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
             });
         }
     }
@@ -351,7 +372,9 @@ export class Application {
 
         this.configuration.addPage({
             name: 'routes',
-            context: 'routes'
+            context: 'routes',
+            depth: 1,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
     }
 
@@ -543,7 +566,9 @@ export class Application {
             name: 'coverage',
             context: 'coverage',
             files: files,
-            data: coverageData
+            data: coverageData,
+            depth: 1,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
     }
 
@@ -581,11 +606,14 @@ export class Application {
                         logger.error(errorMessage);
                     });
                 } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output);
-                    if (this.configuration.mainData.assetsFolder !== '') {
-                        this.processAssetsFolder();
-                    }
-                    this.processResources();
+                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                        if (this.configuration.mainData.assetsFolder !== '') {
+                            this.processAssetsFolder();
+                        }
+                        this.processResources();
+                    }, (e) => {
+                        logger.error(e);
+                    });
                 }
             };
         loop();

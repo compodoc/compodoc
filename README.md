@@ -131,7 +131,6 @@ Options:
   -V, --version                      output the version number
   -p, --tsconfig [config]            A tsconfig.json file
   -d, --output [folder]              Where to store the generated documentation
-  -b, --base [base]                  Base reference of html tag <base>
   -y, --extTheme [file]              External styling theme
   -n, --name [name]                  Title documentation
   -a, --assetsFolder [folder]        External assets folder to copy in generated documentation folder

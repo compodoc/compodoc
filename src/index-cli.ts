@@ -25,7 +25,6 @@ export class CliApplication extends Application
             .usage('<src> [options]')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
             .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
-            .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
@@ -50,10 +49,6 @@ export class CliApplication extends Application
 
         if (program.output) {
             this.configuration.mainData.output = program.output;
-        }
-
-        if (program.base) {
-            this.configuration.mainData.base = program.base;
         }
 
         if (program.extTheme) {

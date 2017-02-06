@@ -12,6 +12,8 @@ interface Page {
     injectable?: any;
     files?: any;
     data?: any;
+    depth?: number;
+    pageType?: string;
 }
 
 interface IMainData {
