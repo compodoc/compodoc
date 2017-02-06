@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as Handlebars from 'handlebars';
 import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 
@@ -45,13 +46,25 @@ export class SearchEngine {
         this.getSearchIndex().add(doc);
     }
     generateSearchIndexJson(outputFolder) {
-        fs.writeJson(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + 'search_index.json'), {
-            index: this.getSearchIndex(),
-            store: this.documentsStore
-        }, function (err) {
-            if(err) {
-                logger.error('Error during search index file generation ', err);
-            }
-        });
+        return new Promise((resolve, reject) => {
+            fs.readFile(path.resolve(__dirname + '/../src/templates/partials/search-index.hbs'), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during search index generation');
+               } else {
+                   let template:any = Handlebars.compile(data),
+                       result = template({
+                           index: JSON.stringify(this.getSearchIndex()),
+                           store: JSON.stringify(this.documentsStore)
+                       });
+                   fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/search/search_index.js'), result, function (err) {
+                       if(err) {
+                           logger.error('Error during search index file generation ', err);
+                           reject(err);
+                       }
+                       resolve();
+                   });
+               }
+           });
+       });
     }
 };

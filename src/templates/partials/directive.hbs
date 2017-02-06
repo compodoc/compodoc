@@ -72,7 +72,7 @@
                                 </td>
                                 <td class="col-md-10">
                                   {{#if description}}
-                                    <div>{{{description}}}</div>
+                                    <div>{{{parseDescription description}}}</div>
                                   {{/if}}
                                   {{#if type}}
                                       <p>
@@ -104,7 +104,7 @@
                                 </td>
                                 <td class="col-md-10">
                                   {{#if description}}
-                                    <div>{{{description}}}</div>
+                                    <div>{{{parseDescription description}}}</div>
                                   {{/if}}
                                   {{#if type}}
                                     <em><code>$event</code> type:</em>{{> link-type type=type }}

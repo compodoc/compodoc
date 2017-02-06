@@ -12,6 +12,8 @@ interface Page {
     injectable?: any;
     files?: any;
     data?: any;
+    depth?: number;
+    pageType?: string;
 }
 
 interface IMainData {
@@ -35,6 +37,7 @@ interface IMainData {
     components: any;
     directives: any;
     injectables: any;
+    miscellaneous: any;
     routes: any;
     tsconfig: string;
     includes: boolean;
@@ -42,6 +45,7 @@ interface IMainData {
     disableSourceCode: boolean;
     disableGraph: boolean;
     disableCoverage: boolean;
+    disablePrivateOrInternalSupport: boolean;
 }
 
 export interface IConfiguration {
@@ -76,11 +80,13 @@ export class Configuration implements IConfiguration {
         directives: [],
         injectables: [],
         routes: [],
+        miscellaneous: [],
         tsconfig: '',
         includes: false,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
-        disableCoverage: COMPODOC_DEFAULTS.disableCoverage
+        disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
+        disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport
     };
 
     constructor() {

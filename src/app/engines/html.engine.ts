@@ -4,6 +4,7 @@ import * as Handlebars from 'handlebars';
 //import * as helpers from 'handlebars-helpers';
 import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
+import { COMPODOC_DEFAULTS } from '../../utils/defaults';
 
 export class HtmlEngine {
     cache: Object = {};
@@ -97,6 +98,9 @@ export class HtmlEngine {
         Handlebars.registerHelper('modifKind', function(kind) {
             let _kindText = '';
             switch(kind) {
+                case 111:
+                    _kindText = 'Private';
+                    break;
                 case 112:
                     _kindText = 'Protected';
                     break;
@@ -112,6 +116,9 @@ export class HtmlEngine {
         Handlebars.registerHelper('modifIcon', function(kind) {
             let _kindText = '';
             switch(kind) {
+                case 111:
+                    _kindText = 'lock';
+                    break;
                 case 112:
                     _kindText = 'lock';
                     break;
@@ -120,6 +127,8 @@ export class HtmlEngine {
                     break;
                 case 114:
                     _kindText = 'square';
+                case 83:
+                    _kindText = 'export';
                     break;
             }
             return _kindText;
@@ -127,7 +136,7 @@ export class HtmlEngine {
         /**
          * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
          */
-        Handlebars.registerHelper('parseDescription', function(description) {
+        Handlebars.registerHelper('parseDescription', function(description, depth) {
             let tagRegExp = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
                 matches,
                 previousString,
@@ -138,6 +147,7 @@ export class HtmlEngine {
                     split,
                     result,
                     newLink,
+                    rootPath,
                     stringtoReplace;
 
                 split = splitLinkText(tagInfo.text);
@@ -159,7 +169,10 @@ export class HtmlEngine {
 
                     if (result.type === 'class') result.type = 'classe';
 
-                    newLink = `<a href="./${result.type}s/${result.name}.html" >${result.name}</a>`;
+                    rootPath = '../';
+                    if (depth && depth === 1) rootPath = './';
+
+                    newLink = `<a href="${rootPath}${result.type}s/${result.name}.html" >${result.name}</a>`;
                     return string.replace(stringtoReplace, newLink);
                 } else {
                     return string;
@@ -188,6 +201,20 @@ export class HtmlEngine {
             return description;
         });
 
+        Handlebars.registerHelper('relativeURL', function(depth, currentPageType, targetPageType) {
+            //console.log('relativeURL: ', depth, currentPageType, targetPageType);
+            // if depth 2 & type == internal, set on same level, otherwise go up
+            let result = '';
+            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+                result = './';
+            }
+            return result;
+        });
+
         Handlebars.registerHelper('functionSignature', function(method) {
             const args = method.args.map(function(arg) {
                 var _result = $dependenciesEngine.find(arg.type);
@@ -195,7 +222,7 @@ export class HtmlEngine {
                     if (_result.source === 'internal') {
                         let path = _result.data.type;
                         if (_result.data.type === 'class') path = 'classe';
-                        return `${arg.name}: <a href="./${path}s/${_result.data.name}.html" >${arg.type}</a>`;
+                        return `${arg.name}: <a href="../${path}s/${_result.data.name}.html" >${arg.type}</a>`;
                     } else {
                         let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
                         return `${arg.name}: <a href="${path}" target="_blank" >${arg.type}</a>`;
@@ -278,7 +305,7 @@ export class HtmlEngine {
                 }
                 if (_result.source === 'internal') {
                     if (_result.data.type === 'class') _result.data.type = 'classe';
-                    this.type.href = './' + _result.data.type + 's/' + _result.data.name + '.html';
+                    this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
                     this.type.target = '_self';
                 } else {
                     this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
@@ -331,8 +358,10 @@ export class HtmlEngine {
             'link-type',
             'block-method',
             'block-property',
+            'block-index',
             'block-constructor',
-            'coverage-report'
+            'coverage-report',
+            'miscellaneous'
         ],
             i = 0,
             len = partials.length,

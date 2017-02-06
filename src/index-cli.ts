@@ -11,6 +11,8 @@ let pkg = require('../package.json'),
     files = [],
     cwd = process.cwd();
 
+process.setMaxListeners(0);
+
 export class CliApplication extends Application
 {
     /**
@@ -23,7 +25,6 @@ export class CliApplication extends Application
             .usage('<src> [options]')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
             .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
-            .option('-b, --base [base]', 'Base reference of html tag <base>', COMPODOC_DEFAULTS.base)
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
@@ -38,6 +39,7 @@ export class CliApplication extends Application
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
+            .option('--disablePrivateOrInternalSupport', 'Do not show private or @internal in generated documentation', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -47,10 +49,6 @@ export class CliApplication extends Application
 
         if (program.output) {
             this.configuration.mainData.output = program.output;
-        }
-
-        if (program.base) {
-            this.configuration.mainData.base = program.base;
         }
 
         if (program.extTheme) {
@@ -107,6 +105,10 @@ export class CliApplication extends Application
 
         if (program.disableCoverage) {
             this.configuration.mainData.disableCoverage = program.disableCoverage;
+        }
+
+        if (program.disablePrivateOrInternalSupport) {
+            this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
         }
 
         if (program.serve && !program.tsconfig && program.output) {

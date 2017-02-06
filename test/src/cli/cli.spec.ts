@@ -115,7 +115,7 @@ describe('CLI simple tags', () => {
 
     });
 
-    describe('excluding methods', () => {
+    describe('supporting internal/private methods', () => {
 
         let stdoutString = null, componentFile;
         before(function (done) {
@@ -133,26 +133,44 @@ describe('CLI simple tags', () => {
         });
         after(() => tmp.clean());
 
-        it('include methods not marked as internal, private or hidden', () => {
-            expect(componentFile).to.contain('<code>normalMethod');
-        });
-
-        it('should exclude methods marked as internal', () => {
-            expect(componentFile).not.to.contain('<code>internalMethod');
+        it('should include by default methods marked as internal', () => {
+            expect(componentFile).to.contain('<code>internalMethod');
         });
 
         it('should exclude methods marked as hidden', () => {
             expect(componentFile).not.to.contain('<code>hiddenMethod');
         });
 
-        it('should exclude methods marked as private', () => {
-            expect(componentFile).not.to.contain('<code>privateCommentMethod');
+        it('should include by default methods marked as private', () => {
+            expect(componentFile).to.contain('<code>privateMethod');
         });
+    });
 
-        it('should exclude private methods', () => {
+    describe('disabling excluding methods with --disablePrivateOrInternalSupport', () => {
+
+        let stdoutString = null, componentFile;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disablePrivateOrInternalSupport -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                componentFile = read(`${tmp.name}/components/BarComponent.html`);
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('should exclude methods marked as private', () => {
             expect(componentFile).not.to.contain('<code>privateMethod');
         });
 
+        it('should exclude methods marked as internal', () => {
+            expect(componentFile).not.to.contain('<code>internalMethod');
+        });
     });
 
     describe('when specific files are included in tsconfig', () => {

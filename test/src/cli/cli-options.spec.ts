@@ -36,11 +36,6 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation (default: ./documentation)');
         });
 
-        it(`-b`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-b, --base [base]');
-            expect(runHelp.stdout.toString()).to.contain('Base reference of html tag');
-        });
-
         it(`-y`, () => {
             expect(runHelp.stdout.toString()).to.contain('-y, --extTheme [file]');
             expect(runHelp.stdout.toString()).to.contain('External styling theme');
@@ -99,6 +94,11 @@ describe('CLI Options', () => {
         it(`--disableCoverage`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableCoverage');
             expect(runHelp.stdout.toString()).to.contain('Do not add the documentation coverage report');
+        });
+
+        it(`--disablePrivateOrInternalSupport`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disablePrivateOrInternalSupport');
+            expect(runHelp.stdout.toString()).to.contain('Do not show private or @internal in generated documentation');
         });
 
     });

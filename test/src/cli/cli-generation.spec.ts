@@ -56,7 +56,7 @@ describe('CLI simple generation', () => {
         });
 
         it('should have generated search index json', () => {
-            const isIndexExists = exists(`${tmp.name}/search_index.json`);
+            const isIndexExists = exists(`${tmp.name}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
     });
@@ -214,7 +214,7 @@ describe('CLI simple generation', () => {
         });
 
         it('should have generated search index json', () => {
-            const isIndexExists = exists(`documentation/search_index.json`);
+            const isIndexExists = exists(`documentation/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
     });
@@ -238,31 +238,6 @@ describe('CLI simple generation', () => {
 
         it('should not display anything', () => {
             expect(stdoutString).to.be.empty;
-        });
-    });
-
-    describe('when generation with -b flag', () => {
-
-        let stdoutString = null,
-            baseTest = 'https://compodoc.github.io/compodoc-demo-todomvc-angular2/',
-            index = null;
-        before(function (done) {
-            tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -b ' + baseTest + ' -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
-                done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
-        });
-        after(() => tmp.clean(tmp.name));
-
-        it('should edit base tag', () => {
-            index = read(`${tmp.name}/index.html`);
-            expect(index).to.contain('<base href="' + baseTest + '">');
         });
     });
 

@@ -1,0 +1,21 @@
+<section>
+    <h3 id="inputs">{{#if title}}{{title}}{{else}}Indexable{{/if}}</h3>
+    {{#each indexables}}
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <code>{{indexableSignature this}}:{{> link-type type=returnType }}</code>
+                    </td>
+                </tr>
+                {{#if description}}
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description">{{{parseDescription description}}}</div>
+                    </td>
+                </tr>
+                {{/if}}
+            </tbody>
+        </table>
+    {{/each}}
+</section>

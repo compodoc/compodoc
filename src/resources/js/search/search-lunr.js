@@ -10,19 +10,9 @@
         var that = this,
             d = new promise.Promise();
 
-        $.ajax({
-            type: 'GET',
-            url: './search_index.json',
-            dataType: 'json',
-            success: function(data){
-                that.index = lunr.Index.load(data.index);
-                that.store = data.store;
-                d.done();
-            },
-            error: function(xhr, type){
-                console.error('Error loading search index json');
-            }
-        });
+        that.index = lunr.Index.load(COMPODOC_SEARCH_INDEX.index);
+        that.store = COMPODOC_SEARCH_INDEX.store;
+        d.done();
 
         return d;
     };

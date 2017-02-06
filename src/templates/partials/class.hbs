@@ -40,6 +40,10 @@
             {{> block-method methods=class.methods }}
         {{/if}}
 
+        {{#if class.indexSignatures}}
+            {{> block-index indexables=class.indexSignatures }}
+        {{/if}}
+
         {{#if class.properties}}
             {{> block-property properties=class.properties }}
         {{/if}}
