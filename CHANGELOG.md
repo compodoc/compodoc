@@ -1,3 +1,25 @@
+<a name="0.0.39"></a>
+## 0.0.39 (2017-02-06)
+
+### Bug Fixes
+
+* **app:** Private methods and properties are skipped / align to typedoc ([8490983](https://github.com/compodoc/compodoc/commit/8490983)), closes [#99](https://github.com/compodoc/compodoc/issues/99)
+* **app:** @link does not seem to be getting parsed for properties ([d1fd592](https://github.com/compodoc/compodoc/commit/d1fd592)), closes [#98](https://github.com/compodoc/compodoc/issues/98)
+* **app:** support indexable object ([cceb933](https://github.com/compodoc/compodoc/commit/cceb933)), closes [#97](https://github.com/compodoc/compodoc/issues/97)
+* **app:** Support @internal in the module level as well ([750cd63](https://github.com/compodoc/compodoc/commit/750cd63)), closes [#87](https://github.com/compodoc/compodoc/issues/87)
+* **app:** miscellaneous support | variables and functions ([d758840](https://github.com/compodoc/compodoc/commit/d758840)), closes [#55](https://github.com/compodoc/compodoc/issues/55)
+* **app:** remove base html tag, file:// support ([0e5227d](https://github.com/compodoc/compodoc/commit/0e5227d)), closes [#47](https://github.com/compodoc/compodoc/issues/47) [#35](https://github.com/compodoc/compodoc/issues/35)
+
+### Features
+
+* **app:** move to @compodoc/ngd ([311facb](https://github.com/compodoc/compodoc/commit/311facb))
+* **app:** disablePrivateOrInternalSupport flag ([294d4e2](https://github.com/compodoc/compodoc/commit/294d4e2))
+
+### Breaking changes
+
+- base tag removed. The documentation can now be opened directly with a browser.
+
+
 <a name="0.0.38"></a>
 ## 0.0.38 (2017-01-27)
 
