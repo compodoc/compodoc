@@ -124,8 +124,6 @@ export class Application {
 
         $dependenciesEngine.init(dependenciesData);
 
-        //RouterParser.printRoutes();
-
         this.prepareModules();
 
         this.prepareComponents().then((readmeData) => {
