@@ -1,3 +1,11 @@
+<a name="0.0.40"></a>
+## 0.0.40 (2017-02-08)
+
+### Bug Fixes
+
+* **app:** ts.getJSDocTags availability ([b3af872](https://github.com/compodoc/compodoc/commit/b3af872)), closes [#104](https://github.com/compodoc/compodoc/issues/104), [#105](https://github.com/compodoc/compodoc/issues/105)
+* **app:** exclude part of the project from documentation generation ([a7374a9](https://github.com/compodoc/compodoc/commit/a7374a9)), closes [#102](https://github.com/compodoc/compodoc/issues/102)
+
 <a name="0.0.39"></a>
 ## 0.0.39 (2017-02-06)
 
