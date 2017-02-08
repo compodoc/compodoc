@@ -144,9 +144,12 @@ export class Dependencies {
 
         });
 
-        //RouterParser.linkModulesAndRoutes();
-        //RouterParser.constructModulesTree();
-        //RouterParser.constructRoutesTree();
+        /*RouterParser.printModulesRoutes();
+        RouterParser.printRoutes();
+
+        RouterParser.linkModulesAndRoutes();
+        RouterParser.constructModulesTree();
+        RouterParser.constructRoutesTree();*/
 
         return deps;
     }

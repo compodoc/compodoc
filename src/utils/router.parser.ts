@@ -33,8 +33,14 @@ export let RouterParser = (function() {
             rootModule = module;
         },
         printRoutes: function() {
-            //console.log('');
-            //console.log(routes);
+            console.log('');
+            console.log('printRoutes: ');
+            console.log(routes);
+        },
+        printModulesRoutes: function() {
+            console.log('');
+            console.log('modulesWithRoutes: ');
+            console.log(modulesWithRoutes);
         },
         hasRouterModuleInImports: function(imports) {
             let result = false,
@@ -72,9 +78,13 @@ export let RouterParser = (function() {
                     }
                 });
             }
+            console.log('');
+            console.log('end linkModulesAndRoutes: ');
+            console.log(routes);
         },
         constructRoutesTree: function() {
-            //console.log('constructRoutesTree');
+            console.log('');
+            console.log('constructRoutesTree');
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
@@ -96,7 +106,7 @@ export let RouterParser = (function() {
             modulesCleaner(cleanModulesTree);
             //fs.outputJson('./modules.json', cleanModulesTree);
             console.log('');
-            console.log('cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
             console.log('');
             var routesTree = {
                 tag: '<root>',
@@ -110,23 +120,33 @@ export let RouterParser = (function() {
             }
 
             let loopModulesParser = function(node) {
-                for(var i in node.children) {
-                    let route = foundRouteWithModuleName(node.children[i].name);
-                    if (route) {
-                        route.routes = JSON.parse(route.data);
-                        delete route.data;
-                        route.kind = 'ngModule';
-                        routesTree.children.push(route);
+                if (node.children && node.children.length > 0) {
+                    //If module has child modules
+                    console.log('   If module has child modules');
+                    for(var i in node.children) {
+                        let route = foundRouteWithModuleName(node.children[i].name);
+                        if (route) {
+                            route.routes = JSON.parse(route.data);
+                            delete route.data;
+                            route.kind = 'ngModule';
+                            routesTree.children.push(route);
+                        }
+                        if (node.children[i].children) {
+                            loopModulesParser(node.children[i]);
+                        }
                     }
-                    if (node.children[i].children) {
-                        loopModulesParser(node.children[i]);
-                    }
+                } else {
+                    //else routes are directly inside the module
+                    console.log('   else routes are directly inside the module');
                 }
             }
+            console.log('');
+            console.log('  rootModule: ', rootModule);
+            console.log('');
             loopModulesParser(_.find(cleanModulesTree, {'name': rootModule}));
 
             console.log('');
-            console.log('routesTree: ', routesTree);
+            console.log('  routesTree: ', routesTree);
             console.log('');
 
             //fs.outputJson('./routes-tree.json', routesTree);
@@ -144,9 +164,11 @@ export let RouterParser = (function() {
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
             console.log('');
-            console.log('cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
         },
         constructModulesTree: function() {
+            console.log('');
+            console.log('constructModulesTree');
             let getNestedChildren = function(arr, parent?) {
                 var out = []
                 for(var i in arr) {
@@ -171,6 +193,9 @@ export let RouterParser = (function() {
                 });
             });
             modulesTree = getNestedChildren(modules);
+            console.log('');
+            console.log('end constructModulesTree');
+            console.log(modulesTree);
         }
     }
 })();

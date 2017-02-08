@@ -89,6 +89,7 @@ These are some that [we know of](https://github.com/search?q=compodoc+filename%3
   - [Styling the documentation](#styling-hte-documentation)
   - [Documentation of each component](#documentation-of-each-component)
   - [Syntax highlighting in markdown files](#syntax-highlighting-in-markdown-files)
+  - [Excluding files](#excluding-files)
 - [Remark for comments](#remark-for-comments)
 - [Remark for routes](#remark-for-routes)
 - [Roadmap](#roadmap)
@@ -340,6 +341,10 @@ Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and c
 Just use a normal code block in your markdown with correct language : [Github help](https://help.github.com/articles/creating-and-highlighting-code-blocks/)
 
 The integrated languages are : __json, bash, javascript, markdown, html, typescript__
+
+### Excluding files
+
+For excluding files from the documentation, simply use the __exports__ property of [__tsconfig.json__](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file.
 
 ## Roadmap
 

@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as _ from 'lodash';
 
 import { Application } from './app/application';
 
@@ -139,7 +140,10 @@ export class CliApplication extends Application
                     let results = [];
                     let list = fs.readdirSync(dir);
                     list.forEach((file) => {
-                        if (exclude.indexOf(file) < 0 && dir.indexOf('node_modules') < 0) {
+                        var excludeTest = _.find(exclude, function(o) {
+                            return path.basename(o) === file;
+                        });
+                        if (typeof excludeTest === 'undefined' && dir.indexOf('node_modules') < 0) {
                             file = path.join(dir, file);
                             let stat = fs.statSync(file);
                             if (stat && stat.isDirectory()) {
