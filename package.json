@@ -65,7 +65,7 @@
     "lunr": "^0.7.2",
     "marked": "^0.3.6",
     "shelljs": "^0.7.6",
-    "typescript": "2.1.5"
+    "typescript": "2.2.0"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",

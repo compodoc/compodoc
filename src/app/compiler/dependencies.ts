@@ -2,12 +2,12 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import * as _ts from '../../utils/ts-internal';
 import marked from 'marked';
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
+import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
 import { Configuration, IConfiguration } from '../configuration';
 
@@ -727,7 +727,7 @@ export class Dependencies {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
@@ -792,7 +792,7 @@ export class Dependencies {
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
@@ -867,6 +867,7 @@ export class Dependencies {
              type: this.visitType(property),
              description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
          }
+
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
                  result.modifierKind = property.modifiers[0].kind;
@@ -1108,7 +1109,7 @@ export class Dependencies {
             args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
