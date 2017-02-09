@@ -226,6 +226,9 @@ export class Dependencies {
                             type: 'component',
                             sourceCode: sourceFile.getText()
                         };
+                        if (IO.jsdoctags.length > 0) {
+                            deps.jsdoctags = IO.jsdoctags[0].tags
+                        }
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
@@ -1008,6 +1011,11 @@ export class Dependencies {
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
+        var jsdoctags = [];
+
+        if (symbol.valueDeclaration) {
+            jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+        }
 
         if (classDeclaration.decorators) {
             for (var i = 0; i < classDeclaration.decorators.length; i++) {
@@ -1022,7 +1030,8 @@ export class Dependencies {
                         methods: members.methods,
                         indexSignatures: members.indexSignatures,
                         kind: members.kind,
-                        constructor: members.constructor
+                        constructor: members.constructor,
+                        jsdoctags: jsdoctags
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
