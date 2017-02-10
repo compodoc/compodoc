@@ -219,6 +219,7 @@ describe('CLI simple generation', () => {
         });
     });
 
+    /*
     describe('when generation with -t flag', () => {
 
         let stdoutString = null;
@@ -240,7 +241,8 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.be.empty;
         });
     });
-
+    */
+    
     describe('when generation with --theme flag', () => {
 
         let stdoutString = null,
