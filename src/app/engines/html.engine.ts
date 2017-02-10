@@ -260,7 +260,16 @@ export class HtmlEngine {
                 if (comment.charAt(0) === '*') {
                     comment = comment.substring(1, comment.length);
                 }
+                if (comment.charAt(0) === ' ') {
+                    comment = comment.substring(1, comment.length);
+                }
                 return comment;
+            }
+
+            let type = 'html';
+
+            if (options.hash.type) {
+                type = options.hash.type;
             }
 
             function htmlEntities(str) {
@@ -272,7 +281,7 @@ export class HtmlEngine {
                     if (jsdocTags[i].tagName.text === 'example') {
                         var tag = {};
                         if (jsdocTags[i].comment) {
-                            tag.comment = '<pre><code class="hljs html">' + htmlEntities(cleanTag(jsdocTags[i].comment)) + '</code></pre>';
+                            tag.comment = `<pre><code class="hljs ${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
                         }
                         tags.push(tag);
                     }
