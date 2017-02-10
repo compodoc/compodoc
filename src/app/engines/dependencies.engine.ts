@@ -25,10 +25,30 @@ class DependenciesEngine {
     {
         return DependenciesEngine._instance;
     }
+    cleanModules(modules) {
+        let _m = modules,
+            i = 0,
+            len = modules.length;
+        for(i; i<len; i++) {
+            let j = 0,
+                leng = _m[i].declarations.length;
+            for(j; j<leng; j++) {
+                let k = 0,
+                    lengt;
+                if (_m[i].declarations[j].jsdoctags) {
+                    lengt = _m[i].declarations[j].jsdoctags.length;
+                    for(k; k<lengt; k++) {
+                        delete _m[i].declarations[j].jsdoctags[k].parent;
+                    }
+                }
+            }
+        }
+        return _m;
+    }
     init(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.rawModules = _.sortBy(_.cloneDeep(data.modules), ['name']);
+        this.rawModules = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);

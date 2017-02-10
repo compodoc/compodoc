@@ -251,10 +251,52 @@ export class HtmlEngine {
             }
             return result;
         });
-        Handlebars.registerHelper('jsdoc-example', function(jsdocTags, options) {
-            var i = 0,
+        Handlebars.registerHelper('jsdoc-component-example', function(jsdocTags, options) {
+            let i = 0,
                 len = jsdocTags.length,
                 tags = [];
+
+            let cleanTag = function(comment) {
+                if (comment.charAt(0) === '*') {
+                    comment = comment.substring(1, comment.length);
+                }
+                if (comment.charAt(0) === ' ') {
+                    comment = comment.substring(1, comment.length);
+                }
+                return comment;
+            }
+
+            let type = 'html';
+
+            if (options.hash.type) {
+                type = options.hash.type;
+            }
+
+            function htmlEntities(str) {
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'example') {
+                        var tag = {};
+                        if (jsdocTags[i].comment) {
+                            tag.comment = `<pre><code class="hljs ${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                        }
+                        tags.push(tag);
+                    }
+                }
+            }
+            if (tags.length > 0) {
+                this.tags = tags;
+                return options.fn(this);
+            }
+        });
+        Handlebars.registerHelper('jsdoc-example', function(jsdocTags, options) {
+            let i = 0,
+                len = jsdocTags.length,
+                tags = [];
+
             for(i; i<len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'example') {
@@ -266,7 +308,7 @@ export class HtmlEngine {
                     }
                 }
             }
-            if (tags.length >= 1) {
+            if (tags.length > 0) {
                 this.tags = tags;
                 return options.fn(this);
             }

@@ -14,6 +14,21 @@
     </p>
 {{/if}}
 
+{{#if component.jsdoctags}}
+    <p class="comment">
+        <h3>Example</h3>
+    </p>
+    <div class="io-description">
+        {{#jsdoc-component-example component.jsdoctags}}
+            {{#each tags}}
+                <div>
+                    {{{comment}}}
+                </div>
+            {{/each}}
+        {{/jsdoc-component-example}}
+    </div>
+{{/if}}
+
 <section>
     <h3>Metadata</h3>
     <table class="table table-sm table-hover">

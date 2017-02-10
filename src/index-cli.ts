@@ -112,6 +112,17 @@ export class CliApplication extends Application
             this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
         }
 
+        console.log(`
+                                                _
+                                               | |
+  ___    ___    _ __ ___    _ __     ___     __| |   ___     ___
+ / __|  / _ \\  | '_ \` _ \\  | '_ \\   / _ \\   / _\` |  / _ \\   / __|
+| (__  | (_) | | | | | | | | |_) | | (_) | | (_| | | (_) | | (__   ${pkg.version}
+ \\___|  \\___/  |_| |_| |_| | .__/   \\___/   \\__,_|  \\___/   \\___|
+                           | |
+                           |_|
+                           `);
+
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!fs.existsSync(program.output)) {

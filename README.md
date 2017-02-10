@@ -319,6 +319,33 @@ For @link you can use this three syntax like JSDoc:
 {@link https://github.com GitHub}
 ```
 
+For giving an example on directives, components and pipes decorators, use @example or markdown :
+
+```
+/**
+ * Shows all events on a given day. Example usage:
+ *
+ * ```
+ * &lt;mwl-calendar-day-view
+ *  [viewDate]="viewDate"
+ *  [events]="events"&gt;
+ * &lt;/mwl-calendar-day-view&gt;
+ * ```
+ */
+```
+
+```
+ /**
+  * Shows all events on a given day. Example usage:
+  *
+  * @example
+  * <mwl-calendar-day-view
+  *  [viewDate]="viewDate"
+  *  [events]="events">;
+  * </mwl-calendar-day-view>
+  */
+```
+
 ## Remark for routes
 
 Follow the style guide and provide a const of type 'Routes' :

@@ -1,3 +1,16 @@
+<a name="0.0.41"></a>
+## 0.0.41 (2017-02-10)
+
+### Bug Fixes
+
+* **app:** remove TypeScript dependency for JSDoc tags ([3a30eb7](https://github.com/compodoc/compodoc/commit/3a30eb7))
+* **app:** jsdoc tag example for component decorator ([786aea2](https://github.com/compodoc/compodoc/commit/786aea2)), closes [#100](https://github.com/compodoc/compodoc/issues/100), [#90](https://github.com/compodoc/compodoc/issues/90)
+* **app:** UnhandledPromiseRejectionWarning ([e9fdea5](https://github.com/compodoc/compodoc/commit/e9fdea5)), closes [#100](https://github.com/compodoc/compodoc/issues/100), [#103](https://github.com/compodoc/compodoc/issues/103)
+
+### Features
+
+* **app** @example for pipe, component and directive decorators ([706322d](https://github.com/compodoc/compodoc/commit/706322d))
+
 <a name="0.0.40"></a>
 ## 0.0.40 (2017-02-08)
 

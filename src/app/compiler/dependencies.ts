@@ -2,12 +2,12 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import * as _ts from '../../utils/ts-internal';
 import marked from 'marked';
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
+import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
 import { Configuration, IConfiguration } from '../configuration';
 
@@ -226,6 +226,9 @@ export class Dependencies {
                             type: 'component',
                             sourceCode: sourceFile.getText()
                         };
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                            deps.jsdoctags = IO.jsdoctags[0].tags
+                        }
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
@@ -254,6 +257,9 @@ export class Dependencies {
                             description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                            deps.jsdoctags = IO.jsdoctags[0].tags
+                        }
                         outputSymbols['pipes'].push(deps);
                     }
                     else if (this.isDirective(metadata)) {
@@ -273,6 +279,9 @@ export class Dependencies {
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
                         };
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                            deps.jsdoctags = IO.jsdoctags[0].tags
+                        }
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
@@ -414,7 +423,7 @@ export class Dependencies {
                     if (infos.defaultValue) {
                         deps.defaultValue = infos.defaultValue;
                     }
-                    if (node.jsDoc && node.jsDoc.length > 0) {
+                    if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                         deps.description = marked(node.jsDoc[0].comment);
                     }
                     outputSymbols['miscellaneous'].variables.push(deps);
@@ -727,7 +736,7 @@ export class Dependencies {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
@@ -792,7 +801,7 @@ export class Dependencies {
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
@@ -867,6 +876,7 @@ export class Dependencies {
              type: this.visitType(property),
              description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
          }
+
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
                  result.modifierKind = property.modifiers[0].kind;
@@ -1007,6 +1017,11 @@ export class Dependencies {
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
+        var jsdoctags = [];
+
+        if (symbol.valueDeclaration) {
+            jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+        }
 
         if (classDeclaration.decorators) {
             for (var i = 0; i < classDeclaration.decorators.length; i++) {
@@ -1021,7 +1036,8 @@ export class Dependencies {
                         methods: members.methods,
                         indexSignatures: members.indexSignatures,
                         kind: members.kind,
-                        constructor: members.constructor
+                        constructor: members.constructor,
+                        jsdoctags: jsdoctags
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members);
@@ -1039,7 +1055,8 @@ export class Dependencies {
                   return [{
                     fileName,
                     className,
-                    description
+                    description,
+                    jsdoctags: jsdoctags
                   }];
                 }
             }
@@ -1108,7 +1125,7 @@ export class Dependencies {
             args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = _ts.getJSDocs(method),
+            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
             markedtags = function(tags) {
                 var mtags = tags;
