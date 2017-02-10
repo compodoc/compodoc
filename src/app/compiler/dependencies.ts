@@ -226,7 +226,7 @@ export class Dependencies {
                             type: 'component',
                             sourceCode: sourceFile.getText()
                         };
-                        if (IO.jsdoctags.length > 0) {
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
                         if(IO.constructor) {
@@ -257,7 +257,7 @@ export class Dependencies {
                             description: IO.description,
                             sourceCode: sourceFile.getText()
                         };
-                        if (IO.jsdoctags.length > 0) {
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
                         outputSymbols['pipes'].push(deps);
@@ -279,7 +279,7 @@ export class Dependencies {
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods
                         };
-                        if (IO.jsdoctags.length > 0) {
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
                         if(IO.constructor) {
