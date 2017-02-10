@@ -417,7 +417,7 @@ export class Dependencies {
                     if (infos.defaultValue) {
                         deps.defaultValue = infos.defaultValue;
                     }
-                    if (node.jsDoc && node.jsDoc.length > 0) {
+                    if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                         deps.description = marked(node.jsDoc[0].comment);
                     }
                     outputSymbols['miscellaneous'].variables.push(deps);
