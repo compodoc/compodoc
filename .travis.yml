@@ -14,6 +14,7 @@ after_success:
 branches:
   only:
     - develop
+    - /^greenkeeper/.*$/
 matrix:
   allow_failures:
     - os: osx
