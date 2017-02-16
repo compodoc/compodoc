@@ -432,6 +432,7 @@ export class Dependencies {
                     //console.log('TypeAliasDeclaration');
                 }
                 if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
+                    //console.log('FunctionDeclaration');
                     let deps = this.visitFunctionDeclaration(node)
                     outputSymbols['miscellaneous'].functions.push(deps);
                 }
@@ -629,7 +630,15 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return node ? this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node)) : 'void';
+        let _return = 'void';
+        if (node) {
+            try {
+                _return = this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node))
+            } catch (e) {
+                _return = '';
+            }
+        }
+        return _return;
     }
 
     private visitOutput(property, outDecorator) {
@@ -1120,14 +1129,16 @@ export class Dependencies {
             }
             return result;
         }
+
         var result = {
             name: method.name.text,
             args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : [],
             returnType: this.visitType(method.type)
         },
-            jsdoctags = JSDocTagsParser.getJSDocs(method),
 
-            markedtags = function(tags) {
+        jsdoctags = JSDocTagsParser.getJSDocs(method),
+
+        markedtags = function(tags) {
                 var mtags = tags;
                 _.forEach(mtags, (tag) => {
                     tag.comment = marked(LinkParser.resolveLinks(tag.comment));
