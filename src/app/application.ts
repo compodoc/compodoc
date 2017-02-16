@@ -130,10 +130,12 @@ export class Application {
             if ($dependenciesEngine.directives.length > 0) {
                 this.prepareDirectives();
             }
+
             if ($dependenciesEngine.injectables.length > 0) {
                 this.prepareInjectables();
             }
-            if ($dependenciesEngine.routes.length > 0) {
+
+            if ($dependenciesEngine.routes) {
                 this.prepareRoutes();
             }
 
@@ -374,6 +376,10 @@ export class Application {
             depth: 1,
             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
+
+        let finaltRoutesJsonPath = path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + 'routes/routes.json');
+
+        fs.outputJson(finaltRoutesJsonPath, this.configuration.mainData.routes);
     }
 
     prepareCoverage() {

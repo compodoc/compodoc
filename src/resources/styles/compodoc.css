@@ -613,3 +613,23 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .modifier-icon.method .fa-lock {
     margin-right: 0;
 }
+
+/* Routes graph */
+
+.node text {
+    font-size: 11px;
+}
+
+.node .icon {
+    font-size: 15px;
+    cursor: default;
+}
+.node .icon.has-children {
+    cursor: pointer;
+}
+
+path.link {
+    fill: none;
+    stroke: #9ecae1;
+    stroke-width: 1.5px;
+}

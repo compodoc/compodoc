@@ -39,7 +39,7 @@ export let RouterParser = (function() {
         },
         printModulesRoutes: function() {
             console.log('');
-            console.log('modulesWithRoutes: ');
+            console.log('printModulesRoutes: ');
             console.log(modulesWithRoutes);
         },
         hasRouterModuleInImports: function(imports) {
@@ -55,6 +55,8 @@ export let RouterParser = (function() {
             return result;
         },
         linkModulesAndRoutes: function() {
+            //console.log('');
+            //console.log('linkModulesAndRoutes: ');
             //scan each module imports AST for each routes, and link routes with module
             let i = 0,
                 len = modulesWithRoutes.length;
@@ -78,13 +80,13 @@ export let RouterParser = (function() {
                     }
                 });
             }
-            console.log('');
-            console.log('end linkModulesAndRoutes: ');
-            console.log(routes);
+            //console.log('');
+            //console.log('end linkModulesAndRoutes: ');
+            //console.log(routes);
         },
         constructRoutesTree: function() {
-            console.log('');
-            console.log('constructRoutesTree');
+            //console.log('');
+            //console.log('constructRoutesTree: ', modulesTree);
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
@@ -104,14 +106,13 @@ export let RouterParser = (function() {
                 };
 
             modulesCleaner(cleanModulesTree);
-            //fs.outputJson('./modules.json', cleanModulesTree);
-            console.log('');
-            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            console.log('');
+            //console.log('');
+            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //console.log('');
             var routesTree = {
-                tag: '<root>',
-                kind: 'ngModule',
-                name: rootModule,
+                name: '<root>',
+                kind: 'module',
+                className: rootModule,
                 children: []
             };
 
@@ -122,13 +123,13 @@ export let RouterParser = (function() {
             let loopModulesParser = function(node) {
                 if (node.children && node.children.length > 0) {
                     //If module has child modules
-                    console.log('   If module has child modules');
+                    //console.log('   If module has child modules');
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
                         if (route) {
                             route.routes = JSON.parse(route.data);
                             delete route.data;
-                            route.kind = 'ngModule';
+                            route.kind = 'module';
                             routesTree.children.push(route);
                         }
                         if (node.children[i].children) {
@@ -137,38 +138,57 @@ export let RouterParser = (function() {
                     }
                 } else {
                     //else routes are directly inside the module
-                    console.log('   else routes are directly inside the module');
+                    //console.log('   else routes are directly inside the root module');
+                    let routes = JSON.parse(foundRouteWithModuleName(node.name).data);
+                    if (routes) {
+                        let i = 0,
+                            len = routes.length;
+                        for(i; i<len; i++) {
+                            let route = routes[i];
+                            if (routes[i].component) {
+                                routesTree.children.push({
+                                    kind: 'component',
+                                    className: routes[i].component,
+                                    name: routes[i].path
+                                });
+                            }
+                        }
+                    }
                 }
             }
-            console.log('');
+            /*console.log('');
             console.log('  rootModule: ', rootModule);
-            console.log('');
-            loopModulesParser(_.find(cleanModulesTree, {'name': rootModule}));
+            console.log('');*/
 
-            console.log('');
+            let startModule = _.find(cleanModulesTree, {'name': rootModule});
+
+            if (startModule) {
+                loopModulesParser(startModule);
+            }
+
+            /*console.log('');
             console.log('  routesTree: ', routesTree);
-            console.log('');
+            console.log('');*/
 
-            //fs.outputJson('./routes-tree.json', routesTree);
-
-            var cleanedRoutesTree;
+            var cleanedRoutesTree = null;
 
             var cleanRoutesTree = function(route) {
                 for(var i in route.children) {
                     var routes = route.children[i].routes;
-                    console.log(routes);
                 }
                 return route;
             }
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            console.log('');
-            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            //console.log('');
+            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+
+            return cleanedRoutesTree;
         },
         constructModulesTree: function() {
-            console.log('');
-            console.log('constructModulesTree');
+            //console.log('');
+            //console.log('constructModulesTree');
             let getNestedChildren = function(arr, parent?) {
                 var out = []
                 for(var i in arr) {
@@ -193,9 +213,9 @@ export let RouterParser = (function() {
                 });
             });
             modulesTree = getNestedChildren(modules);
-            console.log('');
+            /*console.log('');
             console.log('end constructModulesTree');
-            console.log(modulesTree);
+            console.log(modulesTree);*/
         }
     }
 })();

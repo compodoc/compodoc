@@ -72,6 +72,8 @@ interface Deps {
 
     imports?: Deps[];
     exports?: Deps[];
+
+    routesTree?;
 }
 
 interface SymbolDeps {
@@ -144,12 +146,13 @@ export class Dependencies {
 
         });
 
-        /*RouterParser.printModulesRoutes();
-        RouterParser.printRoutes();
+        //RouterParser.printModulesRoutes();
+        //RouterParser.printRoutes();
 
         RouterParser.linkModulesAndRoutes();
         RouterParser.constructModulesTree();
-        RouterParser.constructRoutesTree();*/
+
+        deps.routesTree = RouterParser.constructRoutesTree();
 
         return deps;
     }

@@ -53,10 +53,11 @@ class DependenciesEngine {
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
+        //this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
+        this.routes = this.rawData.routesTree;
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
