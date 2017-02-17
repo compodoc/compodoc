@@ -357,6 +357,17 @@ export class Dependencies {
                     }
                     this.debug(deps);
                     outputSymbols['interfaces'].push(deps);
+                } else if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
+                    let infos = this.visitFunctionDeclaration(node),
+                        name = infos.name;
+                    deps = {
+                        name,
+                        file: file
+                    }
+                    if (infos.args) {
+                        deps.args = infos.args;
+                    }
+                    outputSymbols['miscellaneous'].functions.push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, sourceFile);
