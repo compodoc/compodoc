@@ -398,10 +398,23 @@ export class Dependencies {
                     outputSymbols['classes'].push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.ExpressionStatement) {
+                    console.log('ExpressionStatement');
+                    console.log(util.inspect(node.expression, { showHidden: true, depth: 8 }));
                     //Find the root module with bootstrapModule call
                     //Find recusively in expression nodes one with name 'bootstrapModule'
                     let rootModule,
-                        resultNode = this.findExpressionByName(node, 'bootstrapModule');
+                        resultNode;
+                    if (node.expression) {
+                        resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
+                    }
+                    console.log(resultNode);
+                    if (!resultNode) {
+                        if (node.expression && node.expression.arguments.length > 0) {
+                            resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
+                        }
+                    }
+                    console.log(resultNode);
+                    process.exit(1);
                     if(resultNode) {
                         if(resultNode.arguments.length > 0) {
                             _.forEach(resultNode.arguments, function(argument) {
@@ -410,6 +423,7 @@ export class Dependencies {
                                 }
                             });
                         }
+                        console.log(rootModule);
                         if (rootModule) {
                             RouterParser.setRootModule(rootModule);
                         }
@@ -477,7 +491,7 @@ export class Dependencies {
         return result;
     }
 
-    private findExpressionByName(entryNode, name) {
+    private findExpressionByNameInExpressions(entryNode, name) {
         let result,
             loop = function(node, name) {
                 if(node.expression && !node.expression.name) {
@@ -490,6 +504,28 @@ export class Dependencies {
                 }
             }
         loop(entryNode, name);
+        return result;
+    }
+
+    private findExpressionByNameInExpressionArguments(arg, name) {
+        console.log('findExpressionByNameInExpressionArguments: ', arg.length);
+        let result,
+            i = 0,
+            len = arg.length,
+            loop = function(node, name) {
+                if(node.body) {
+                    if (node.body.statements && node.body.statements.length > 0) {
+                        let j = 0,
+                            leng = node.body.statements.length;
+                        for (j; j<leng; j++) {
+                            result = this.findExpressionByNameInExpressions(node.body.statements[i]);
+                        }
+                    }
+                }
+            }
+        for (i; i < len; i++) {
+            loop(arg[i], name);
+        }
         return result;
     }
 
