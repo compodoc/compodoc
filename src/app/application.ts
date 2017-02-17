@@ -377,9 +377,11 @@ export class Application {
             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
 
-        let finaltRoutesJsonPath = path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + 'routes/routes.json');
-
-        fs.outputJson(finaltRoutesJsonPath, this.configuration.mainData.routes);
+        RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
+            logger.info('Routes index generated');
+        }, (e) => {
+            logger.error(e);
+        });
     }
 
     prepareCoverage() {

@@ -616,7 +616,7 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 /* Routes graph */
 
 .node text {
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .node .icon {
@@ -631,4 +631,8 @@ path.link {
     fill: none;
     stroke: #9ecae1;
     stroke-width: 1.5px;
+}
+
+#body-routes a {
+    text-decoration: underline;
 }

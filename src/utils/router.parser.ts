@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
 import * as util from 'util';
 import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as Handlebars from 'handlebars';
+import { logger } from '../logger';
 
 export let RouterParser = (function() {
 
@@ -107,8 +110,12 @@ export let RouterParser = (function() {
 
             modulesCleaner(cleanModulesTree);
             //console.log('');
-            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            //console.log('');
+            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            console.log('');
+
+            console.log(routes);
+            console.log('');
+
             var routesTree = {
                 name: '<root>',
                 kind: 'module',
@@ -127,7 +134,7 @@ export let RouterParser = (function() {
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
                         if (route) {
-                            route.routes = JSON.parse(route.data);
+                            route.children = JSON.parse(route.data);
                             delete route.data;
                             route.kind = 'module';
                             routesTree.children.push(route);
@@ -148,17 +155,17 @@ export let RouterParser = (function() {
                             if (routes[i].component) {
                                 routesTree.children.push({
                                     kind: 'component',
-                                    className: routes[i].component,
-                                    name: routes[i].path
+                                    component: routes[i].component,
+                                    path: routes[i].path
                                 });
                             }
                         }
                     }
                 }
             }
-            /*console.log('');
+            console.log('');
             console.log('  rootModule: ', rootModule);
-            console.log('');*/
+            console.log('');
 
             let startModule = _.find(cleanModulesTree, {'name': rootModule});
 
@@ -166,9 +173,9 @@ export let RouterParser = (function() {
                 loopModulesParser(startModule);
             }
 
-            /*console.log('');
+            console.log('');
             console.log('  routesTree: ', routesTree);
-            console.log('');*/
+            console.log('');
 
             var cleanedRoutesTree = null;
 
@@ -181,8 +188,8 @@ export let RouterParser = (function() {
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            //console.log('');
-            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            console.log('');
+            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
 
             return cleanedRoutesTree;
         },
@@ -216,6 +223,27 @@ export let RouterParser = (function() {
             /*console.log('');
             console.log('end constructModulesTree');
             console.log(modulesTree);*/
+        },
+        generateRoutesIndex(outputFolder, routes) {
+            return new Promise((resolve, reject) => {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/partials/routes-index.hbs'), 'utf8', (err, data) => {
+                   if (err) {
+                       reject('Error during routes index generation');
+                   } else {
+                       let template:any = Handlebars.compile(data),
+                           result = template({
+                               routes: JSON.stringify(routes)
+                           });
+                       fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
+                           if(err) {
+                               logger.error('Error during routes index file generation ', err);
+                               reject(err);
+                           }
+                           resolve();
+                       });
+                   }
+               });
+           });
         }
     }
 })();

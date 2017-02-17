@@ -18,13 +18,10 @@ var diagonal = d3.svg.diagonal().projection(function(d) {
 
 var vis = d3.select("#body-routes").append("svg:svg").attr("width", w + m[1] + m[3]).attr("height", h + m[0] + m[2]).append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-d3.json("routes/routes.json", function(json) {
-    root = json;
-    root.x0 = 0;
-    root.y0 = 0;
-
-    update(root);
-});
+root = ROUTES_INDEX;
+root.x0 = 0;
+root.y0 = 0;
+update(root);
 
 function update(source) {
     var duration = 750;
@@ -87,11 +84,33 @@ function update(source) {
     .attr("text-anchor", function(d) {
         return "start";
     }).html(function(d) {
-        let _name = '<tspan x="0" dy="1.4em">' + htmlEntities(d.name) + '</tspan>',
-            url = (d.kind === 'module') ? `./modules/${d.className}.html` : `./components/${d.className}.html`,
-            link = `<a href="${url}">${d.className}</a>`;
-        if (d.className) {
-            _name += '<tspan x="0" dy="1.4em">' + link + '</tspan>';
+        // if kind === module name + module
+        // if kind === component component + path
+        let _name = '';
+        if (d.kind === 'module') {
+            if (d.module) {
+                _name += `<tspan x="0" dy="1.4em"><a href="./modules/${d.module}.html">` + d.module + '</a></tspan>';
+                _name += '<tspan x="0" dy="1.4em">' + d.name + '</tspan>';
+            } else {
+                _name += `<tspan x="0" dy="1.4em">` + htmlEntities(d.name) + '</tspan>';
+            }
+        } else if (d.kind === 'component') {
+            _name += '<tspan x="0" dy="1.4em">' + d.path + '</tspan>'
+            _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+        } else {
+            _name += `<tspan x="0" dy="1.4em">/` + d.path + '</tspan>'
+            if (d.component) {
+                _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+            }
+            if (d.loadChildren) {
+                _name += `<tspan x="0" dy="1.4em">` + d.loadChildren + '</tspan>'
+            }
+            if (d.redirectTo) {
+                _name += `<tspan x="0" dy="1.4em">&rarr; ` + d.redirectTo + '</tspan>'
+            }
+            if (d.pathMatch) {
+                _name += `<tspan x="0" dy="1.4em">&gt; ` + d.pathMatch + '</tspan>'
+            }
         }
         return _name;
     }).style("fill-opacity", 1e-6)
@@ -129,7 +148,7 @@ function update(source) {
         return '15px'
     }).text(function(d) {
         var _text = '';
-        if (d.lazy) {
+        if (d.loadChildren) {
             _text = '\uf017';
         }
         if (d.guarded) {

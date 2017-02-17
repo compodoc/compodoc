@@ -398,34 +398,42 @@ export class Dependencies {
                     outputSymbols['classes'].push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.ExpressionStatement) {
-                    console.log('ExpressionStatement');
-                    console.log(util.inspect(node.expression, { showHidden: true, depth: 8 }));
+                    let bootstrapModuleReference = 'bootstrapModule';
                     //Find the root module with bootstrapModule call
+                    //1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
+                    //2. or inside a call :
+                    // () => {
+                    //     platformBrowserDynamic().bootstrapModule(AppModule);
+                    // });
+                    //3. with a catch : platformBrowserDynamic().bootstrapModule(AppModule).catch(error => console.error(error));
+                    //4. with parameters : platformBrowserDynamic().bootstrapModule(AppModule, {}).catch(error => console.error(error));
                     //Find recusively in expression nodes one with name 'bootstrapModule'
                     let rootModule,
                         resultNode;
-                    if (node.expression) {
-                        resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
-                    }
-                    console.log(resultNode);
-                    if (!resultNode) {
-                        if (node.expression && node.expression.arguments.length > 0) {
-                            resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
+                    if (sourceFile.text.indexOf(bootstrapModuleReference) !== -1) {
+                        if (node.expression) {
+                            try {
+                                resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
+                            } catch (e) {
+                                console.log(e);
+                            }
                         }
-                    }
-                    console.log(resultNode);
-                    process.exit(1);
-                    if(resultNode) {
-                        if(resultNode.arguments.length > 0) {
-                            _.forEach(resultNode.arguments, function(argument) {
-                                if(argument.text) {
-                                    rootModule = argument.text;
-                                }
-                            });
+                        if (!resultNode) {
+                            if (node.expression && node.expression.arguments.length > 0) {
+                                resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
+                            }
                         }
-                        console.log(rootModule);
-                        if (rootModule) {
-                            RouterParser.setRootModule(rootModule);
+                        if(resultNode) {
+                            if(resultNode.arguments.length > 0) {
+                                _.forEach(resultNode.arguments, function(argument) {
+                                    if(argument.text) {
+                                        rootModule = argument.text;
+                                    }
+                                });
+                            }
+                            if (rootModule) {
+                                RouterParser.setRootModule(rootModule);
+                            }
                         }
                     }
                 }
@@ -449,8 +457,15 @@ export class Dependencies {
                     //console.log('TypeAliasDeclaration');
                 }
                 if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
-                    //console.log('FunctionDeclaration');
-                    let deps = this.visitFunctionDeclaration(node)
+                    let infos = this.visitFunctionDeclaration(node),
+                        name = infos.name;
+                    deps = {
+                        name,
+                        file: file
+                    }
+                    if (infos.args) {
+                        deps.args = infos.args;
+                    }
                     outputSymbols['miscellaneous'].functions.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.EnumDeclaration) {
@@ -500,6 +515,8 @@ export class Dependencies {
                 if(node.expression && node.expression.name) {
                     if(node.expression.name.text === name) {
                         result = node;
+                    } else {
+                        loop(node.expression, name);
                     }
                 }
             }
@@ -508,8 +525,8 @@ export class Dependencies {
     }
 
     private findExpressionByNameInExpressionArguments(arg, name) {
-        console.log('findExpressionByNameInExpressionArguments: ', arg.length);
         let result,
+            that = this,
             i = 0,
             len = arg.length,
             loop = function(node, name) {
@@ -518,7 +535,7 @@ export class Dependencies {
                         let j = 0,
                             leng = node.body.statements.length;
                         for (j; j<leng; j++) {
-                            result = this.findExpressionByNameInExpressions(node.body.statements[i]);
+                            result = that.findExpressionByNameInExpressions(node.body.statements[j], name);
                         }
                     }
                 }
@@ -1156,14 +1173,16 @@ export class Dependencies {
             }
         }
         let visitArgument = function(arg) {
-            var result = {
-                name: arg.name.text,
-                type: mapTypes(arg.type.kind)
+            var result: any = {
+                name: arg.name.text
             };
-            if (arg.type.kind === 157) {
-                //try replace TypeReference with typeName
-                if (arg.type.typeName) {
-                    result.type = arg.type.typeName.text;
+            if (arg.type) {
+                result.type = mapTypes(arg.type.kind);
+                if (arg.type.kind === 157) {
+                    //try replace TypeReference with typeName
+                    if (arg.type.typeName) {
+                        result.type = arg.type.typeName.text;
+                    }
                 }
             }
             return result;
@@ -1171,19 +1190,21 @@ export class Dependencies {
 
         var result = {
             name: method.name.text,
-            args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : [],
-            returnType: this.visitType(method.type)
+            args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : []
         },
+        jsdoctags = JSDocTagsParser.getJSDocs(method);
 
-        jsdoctags = JSDocTagsParser.getJSDocs(method),
-
-        markedtags = function(tags) {
+        var markedtags = function(tags) {
                 var mtags = tags;
                 _.forEach(mtags, (tag) => {
                     tag.comment = marked(LinkParser.resolveLinks(tag.comment));
                 });
                 return mtags;
             };
+
+        if (typeof method.type !== 'undefined') {
+            result.returnType = this.visitType(method.type);
+        }
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
