@@ -110,11 +110,11 @@ export let RouterParser = (function() {
 
             modulesCleaner(cleanModulesTree);
             //console.log('');
-            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            console.log('');
+            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //console.log('');
 
-            console.log(routes);
-            console.log('');
+            //console.log(routes);
+            //console.log('');
 
             var routesTree = {
                 name: '<root>',
@@ -163,9 +163,9 @@ export let RouterParser = (function() {
                     }
                 }
             }
-            console.log('');
+            /*console.log('');
             console.log('  rootModule: ', rootModule);
-            console.log('');
+            console.log('');*/
 
             let startModule = _.find(cleanModulesTree, {'name': rootModule});
 
@@ -173,9 +173,9 @@ export let RouterParser = (function() {
                 loopModulesParser(startModule);
             }
 
-            console.log('');
+            /*console.log('');
             console.log('  routesTree: ', routesTree);
-            console.log('');
+            console.log('');*/
 
             var cleanedRoutesTree = null;
 
@@ -188,8 +188,8 @@ export let RouterParser = (function() {
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            console.log('');
-            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            //console.log('');
+            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
 
             return cleanedRoutesTree;
         },
