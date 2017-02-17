@@ -172,7 +172,15 @@ export class HtmlEngine {
                     rootPath = '../';
                     if (depth && depth === 1) rootPath = './';
 
-                    newLink = `<a href="${rootPath}${result.type}s/${result.name}.html" >${result.name}</a>`;
+                    let label = result.name;
+                    if (leading.leadingText !== null) {
+                        label = leading.leadingText;
+                    }
+                    if (typeof split.linkText !== 'undefined') {
+                        label = split.linkText;
+                    }
+
+                    newLink = `<a href="${rootPath}${result.type}s/${result.name}.html">${label}</a>`;
                     return string.replace(stringtoReplace, newLink);
                 } else {
                     return string;
@@ -222,10 +230,10 @@ export class HtmlEngine {
                     if (_result.source === 'internal') {
                         let path = _result.data.type;
                         if (_result.data.type === 'class') path = 'classe';
-                        return `${arg.name}: <a href="../${path}s/${_result.data.name}.html" >${arg.type}</a>`;
+                        return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                     } else {
                         let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
-                        return `${arg.name}: <a href="${path}" target="_blank" >${arg.type}</a>`;
+                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     }
                 } else {
                     return `${arg.name}: ${arg.type}`;
