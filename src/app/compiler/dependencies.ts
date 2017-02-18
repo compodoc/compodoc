@@ -368,6 +368,15 @@ export class Dependencies {
                         deps.args = infos.args;
                     }
                     outputSymbols['miscellaneous'].functions.push(deps);
+                } else if (node.kind === ts.SyntaxKind.EnumDeclaration) {
+                    let infos = this.visitEnumDeclaration(node),
+                        name = node.name.text;
+                    deps = {
+                        name,
+                        childs: infos,
+                        file: file
+                    }
+                    outputSymbols['miscellaneous'].enumerations.push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, sourceFile);
@@ -480,7 +489,14 @@ export class Dependencies {
                     outputSymbols['miscellaneous'].functions.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.EnumDeclaration) {
-                    //console.log('EnumDeclaration');
+                    let infos = this.visitEnumDeclaration(node),
+                        name = node.name.text;
+                    deps = {
+                        name,
+                        childs: infos,
+                        file: file
+                    }
+                    outputSymbols['miscellaneous'].enumerations.push(deps);
                 }
             }
         });
@@ -1247,7 +1263,25 @@ export class Dependencies {
         }
     }
 
-    private visitEnumDeclaration(fileName, node) {
+    private visitEnumDeclaration(node) {
+        let result = [],
+        if( node.members ) {
+            let i = 0,
+                len = node.members.length;
+            for(i; i<len; i++) {
+                let member = {
+                    name: node.members[i].name.text
+                }
+                if (node.members[i].initializer) {
+                    member.value = node.members[i].initializer.text;
+                }
+                result.push(member);
+            }
+        }
+        return result;
+    }
+
+    private visitEnumDeclarationForRoutes(fileName, node) {
         if( node.declarationList.declarations ) {
             let i = 0,
                 len = node.declarationList.declarations.length;
@@ -1275,7 +1309,7 @@ export class Dependencies {
         var res = sourceFile.statements.reduce((directive, statement) => {
 
             if (statement.kind === ts.SyntaxKind.VariableStatement) {
-                return directive.concat(this.visitEnumDeclaration(filename, statement));
+                return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
             }
 
             return directive;

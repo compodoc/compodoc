@@ -636,3 +636,12 @@ path.link {
 #body-routes a {
     text-decoration: underline;
 }
+
+/* Miscellaneous */
+
+.content.miscellaneous h2 {
+    margin-bottom: 20px;
+}
+.content.miscellaneous h4 {
+    padding-top: 20px;
+}

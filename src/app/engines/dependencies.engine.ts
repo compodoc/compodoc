@@ -57,6 +57,7 @@ class DependenciesEngine {
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
+        this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
     }
     find(type: string) {
@@ -92,6 +93,12 @@ class DependenciesEngine {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
             result = _.find(mergedData, {'name': name});
         return result || false;
+    }
+    prepareMiscellaneous() {
+        //group each subgoup by file
+        this.miscellaneous.groupedVariables = _.groupBy(this.miscellaneous.variables, 'file');
+        this.miscellaneous.groupedFunctions = _.groupBy(this.miscellaneous.functions, 'file');
+        this.miscellaneous.groupedEnumerations = _.groupBy(this.miscellaneous.enumerations, 'file');
     }
     getModule(name: string) {
         return _.find(this.modules, ['name', name]);
