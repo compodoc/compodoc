@@ -149,6 +149,12 @@ export class Dependencies {
         //RouterParser.printModulesRoutes();
         //RouterParser.printRoutes();
 
+        /*if (RouterParser.incompleteRoutes.length > 0) {
+            if (deps['miscellaneous']['variables'].length > 0) {
+                RouterParser.fixIncompleteRoutes(deps['miscellaneous']['variables']);
+            }
+        }*/
+
         RouterParser.linkModulesAndRoutes();
         RouterParser.constructModulesTree();
 
@@ -385,7 +391,12 @@ export class Dependencies {
                     try {
                         newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
                     } catch (e) {
-                        logger.error('Routes parsing error, maybe a trailing comma or an external variable ?');
+                        logger.error('Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.');
+                        newRoutes = IO.routes.replace(/ /gm, '')
+                        RouterParser.addIncompleteRoute({
+                            data: newRoutes,
+                            file: file
+                        });
                         return true;
                     }
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
@@ -1298,12 +1309,14 @@ export class Dependencies {
             for(i; i<len; i++) {
                 if(node.declarationList.declarations[i].type) {
                     if(node.declarationList.declarations[i].type.typeName && node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        let data = generate(node.declarationList.declarations[i].initializer)
                         RouterParser.addRoute({
                             name: node.declarationList.declarations[i].name.text,
-                            data: generate(node.declarationList.declarations[i].initializer)
+                            data: data,
+                            file: fileName
                         });
                         return [{
-                            routes: generate(node.declarationList.declarations[i].initializer)
+                            routes: data
                         }];
                     }
                 }

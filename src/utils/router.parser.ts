@@ -8,15 +8,21 @@ import { logger } from '../logger';
 export let RouterParser = (function() {
 
     var routes = [],
+        incompleteRoutes = [],
         modules = [],
         modulesTree,
         rootModule,
         modulesWithRoutes = [];
 
     return {
+        incompleteRoutes: incompleteRoutes,
         addRoute: function(route) {
             routes.push(route);
             routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
+        },
+        addIncompleteRoute: function(route) {
+            incompleteRoutes.push(route);
+            incompleteRoutes = _.sortBy(_.uniqWith(incompleteRoutes, _.isEqual), ['name']);
         },
         addModuleWithRoutes: function(moduleName, moduleImports) {
             modulesWithRoutes.push({
@@ -56,6 +62,38 @@ export let RouterParser = (function() {
                 }
             }
             return result;
+        },
+        fixIncompleteRoutes: function(miscellaneousVariables) {
+            console.log('fixIncompleteRoutes');
+            console.log('');
+            console.log(routes);
+            console.log('');
+            //console.log(miscellaneousVariables);
+            //console.log('');
+            let i = 0,
+                len = incompleteRoutes.length,
+                matchingVariables = [];
+            // For each incompleteRoute, scan if one misc variable is in code
+            // if ok, try recreating complete route
+            for (i; i<len; i++) {
+                let j = 0,
+                    leng = miscellaneousVariables.length;
+                for (j; j<leng; j++) {
+                    if (incompleteRoutes[i].data.indexOf(miscellaneousVariables[j].name) !== -1) {
+                        console.log('found one misc var inside incompleteRoute');
+                        console.log(miscellaneousVariables[j].name);
+                        matchingVariables.push(miscellaneousVariables[j]);
+                    }
+                }
+                //Clean incompleteRoute
+                incompleteRoutes[i].data = incompleteRoutes[i].data.replace('[', '');
+                incompleteRoutes[i].data = incompleteRoutes[i].data.replace(']', '');
+            }
+            console.log(incompleteRoutes);
+            console.log('');
+            console.log(matchingVariables);
+            console.log('');
+
         },
         linkModulesAndRoutes: function() {
             //console.log('');
