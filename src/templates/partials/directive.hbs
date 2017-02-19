@@ -101,6 +101,13 @@
                                   {{/if}}
                                 </td>
                             </tr>
+                            {{#if line}}
+                                <tr>
+                                    <td class="col-md-2" colspan="2">
+                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
+                                    </td>
+                                </tr>
+                            {{/if}}
                         </tbody>
                     </table>
                 {{/each}}
@@ -126,6 +133,13 @@
                                   {{/if}}
                                 </td>
                             </tr>
+                            {{#if line}}
+                                <tr>
+                                    <td class="col-md-2" colspan="2">
+                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
+                                    </td>
+                                </tr>
+                            {{/if}}
                         </tbody>
                     </table>
                 {{/each}}
@@ -133,21 +147,21 @@
         {{/if}}
 
         {{#if directive.constructorObj}}
-            {{> block-constructor constructor=directive.constructorObj }}
+            {{> block-constructor constructor=directive.constructorObj file=directive.file }}
         {{/if}}
 
         {{#if directive.methodsClass}}
-            {{> block-method methods=directive.methodsClass }}
+            {{> block-method methods=directive.methodsClass file=directive.file }}
         {{/if}}
 
         {{#if directive.propertiesClass}}
-            {{> block-property properties=directive.propertiesClass }}
+            {{> block-property properties=directive.propertiesClass file=directive.file }}
         {{/if}}
 
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{ directive.sourceCode}}</code></pre>
+        <pre class="line-numbers"><code class="language-typescript">{{ directive.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

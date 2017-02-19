@@ -432,11 +432,7 @@ export class Dependencies {
                         resultNode;
                     if (sourceFile.text.indexOf(bootstrapModuleReference) !== -1) {
                         if (node.expression) {
-                            try {
-                                resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
-                            } catch (e) {
-                                console.log(e);
-                            }
+                            resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
                         }
                         if (!resultNode) {
                             if (node.expression && node.expression.arguments.length > 0) {
@@ -687,12 +683,13 @@ export class Dependencies {
       return null;
     }
 
-    private visitInput(property, inDecorator) {
+    private visitInput(property, inDecorator, sourceFile?) {
         var inArgs = inDecorator.expression.arguments,
         _return = {
             name: inArgs.length ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
+            line: this.getPosition(property, sourceFile).line + 1
         };
         if (property.type) {
             _return.type = this.visitType(property);
@@ -724,11 +721,12 @@ export class Dependencies {
         return _return;
     }
 
-    private visitOutput(property, outDecorator) {
+    private visitOutput(property, outDecorator, sourceFile?) {
         var outArgs = outDecorator.expression.arguments,
         _return = {
             name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
+            line: this.getPosition(property, sourceFile).line + 1
         };
         if (property.type) {
             _return.type = this.visitType(property);
@@ -819,14 +817,15 @@ export class Dependencies {
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
     }
 
-    private visitConstructorDeclaration(method) {
+    private visitConstructorDeclaration(method, sourceFile?) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var result = {
             name: 'constructor',
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
-            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            line: this.getPosition(method, sourceFile).line + 1
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method),
 
@@ -868,30 +867,40 @@ export class Dependencies {
         }
     }
 
-    private visitCallDeclaration(method) {
+    private visitCallDeclaration(method, sourceFile) {
         return {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
-            returnType: this.visitType(method.type)
+            returnType: this.visitType(method.type),
+            line: this.getPosition(method, sourceFile).line + 1
         }
     }
 
-    private visitIndexDeclaration(method) {
+    private visitIndexDeclaration(method, sourceFile?) {
         return {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
-            returnType: this.visitType(method.type)
+            returnType: this.visitType(method.type),
+            line: this.getPosition(method, sourceFile).line + 1
         }
     }
 
-    private visitMethodDeclaration(method) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
+    private getPosition(node, sourceFile): ts.LineAndCharacter {
+        var position:ts.LineAndCharacter;
+        if (node['name'] && node['name'].end) {
+            position = ts.getLineAndCharacterOfPosition(sourceFile, node['name'].end);
+        } else {
+            position = ts.getLineAndCharacterOfPosition(sourceFile, node.pos);
+        }
+        return position;
+    }
+
+    private visitMethodDeclaration(method, sourceFile) {
         var result = {
             name: method.name.text,
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
-            returnType: this.visitType(method.type)
+            returnType: this.visitType(method.type),
+            line: this.getPosition(method, sourceFile).line + 1
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method),
 
@@ -958,7 +967,7 @@ export class Dependencies {
         }
     }
 
-    private visitProperty(property) {
+    private visitProperty(property, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -966,7 +975,8 @@ export class Dependencies {
              name: property.name.text,
              defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
              type: this.visitType(property),
-             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
+             line: this.getPosition(property, sourceFile).line + 1
          }
 
          if (property.modifiers) {
@@ -977,7 +987,7 @@ export class Dependencies {
         return result;
     }
 
-    private visitMembers(members) {
+    private visitMembers(members, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -999,24 +1009,24 @@ export class Dependencies {
             kind = members[i].kind;
 
             if (inputDecorator) {
-                inputs.push(this.visitInput(members[i], inputDecorator));
+                inputs.push(this.visitInput(members[i], inputDecorator, sourceFile));
             } else if (outDecorator) {
-                outputs.push(this.visitOutput(members[i], outDecorator));
+                outputs.push(this.visitOutput(members[i], outDecorator, sourceFile));
             } else if (!this.isHiddenMember(members[i])) {
 
                 if ( (this.isPrivate(members[i]) || this.isInternal(members[i])) && this.configuration.mainData.disablePrivateOrInternalSupport) {} else {
                     if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
                         members[i].kind === ts.SyntaxKind.MethodSignature) &&
                         !this.isAngularLifecycleHook(members[i].name.text)) {
-                        methods.push(this.visitMethodDeclaration(members[i]));
+                        methods.push(this.visitMethodDeclaration(members[i], sourceFile));
                     } else if (
                         members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
                         members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
-                        properties.push(this.visitProperty(members[i]));
+                        properties.push(this.visitProperty(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
-                        properties.push(this.visitCallDeclaration(members[i]));
+                        properties.push(this.visitCallDeclaration(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
-                        indexSignatures.push(this.visitIndexDeclaration(members[i]));
+                        indexSignatures.push(this.visitIndexDeclaration(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.Constructor) {
                         let _constructorProperties = this.visitConstructorProperties(members[i]),
                             j = 0,
@@ -1024,7 +1034,7 @@ export class Dependencies {
                         for(j; j<len; j++) {
                             properties.push(_constructorProperties[j]);
                         }
-                        constructor = this.visitConstructorDeclaration(members[i]);
+                        constructor = this.visitConstructorDeclaration(members[i], sourceFile);
                     }
                 }
             }
@@ -1100,7 +1110,7 @@ export class Dependencies {
          return decorator.expression.expression.text === 'Injectable';
     }
 
-    private visitClassDeclaration(fileName, classDeclaration) {
+    private visitClassDeclaration(fileName, classDeclaration, sourceFile?) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -1119,7 +1129,7 @@ export class Dependencies {
             for (var i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
                     directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
-                    members = this.visitMembers(classDeclaration.members);
+                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return {
                         description,
                         inputs: members.inputs,
@@ -1132,7 +1142,7 @@ export class Dependencies {
                         jsdoctags: jsdoctags
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                  members = this.visitMembers(classDeclaration.members);
+                  members = this.visitMembers(classDeclaration.members, sourceFile);
                   return [{
                     fileName,
                     className,
@@ -1153,7 +1163,7 @@ export class Dependencies {
                 }
             }
         } else if (description) {
-            members = this.visitMembers(classDeclaration.members);
+            members = this.visitMembers(classDeclaration.members, sourceFile);
 
             return [{
                 description,
@@ -1164,7 +1174,7 @@ export class Dependencies {
                 constructor: members.constructor
             }];
         } else {
-            members = this.visitMembers(classDeclaration.members);
+            members = this.visitMembers(classDeclaration.members, sourceFile);
 
             return [{
                 methods: members.methods,
@@ -1325,7 +1335,7 @@ export class Dependencies {
         var res = sourceFile.statements.reduce((directive, statement) => {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
-                return directive.concat(this.visitClassDeclaration(filename, statement));
+                return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
             }
 
             return directive;
@@ -1342,7 +1352,7 @@ export class Dependencies {
 
             if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
                 if (statement.pos === node.pos && statement.end === node.end) {
-                    return directive.concat(this.visitClassDeclaration(filename, statement));
+                    return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
                 }
             }
 

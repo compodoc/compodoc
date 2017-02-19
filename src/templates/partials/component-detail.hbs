@@ -201,6 +201,13 @@
                           {{/if}}
                         </td>
                     </tr>
+                    {{#if line}}
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                            </td>
+                        </tr>
+                    {{/if}}
                 </tbody>
             </table>
         {{/each}}
@@ -226,6 +233,13 @@
                           {{/if}}
                         </td>
                     </tr>
+                    {{#if line}}
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                            </td>
+                        </tr>
+                    {{/if}}
                 </tbody>
             </table>
         {{/each}}
@@ -233,13 +247,13 @@
 {{/if}}
 
 {{#if component.constructorObj}}
-    {{> block-constructor constructor=component.constructorObj }}
+    {{> block-constructor constructor=component.constructorObj file=component.file }}
 {{/if}}
 
 {{#if component.methodsClass}}
-    {{> block-method methods=component.methodsClass }}
+    {{> block-method methods=component.methodsClass file=component.file }}
 {{/if}}
 
 {{#if component.propertiesClass}}
-    {{> block-property properties=component.propertiesClass }}
+    {{> block-property properties=component.propertiesClass file=component.file }}
 {{/if}}

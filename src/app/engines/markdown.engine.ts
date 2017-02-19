@@ -7,10 +7,11 @@ export class MarkdownEngine {
     constructor() {
         const renderer = new Renderer();
         renderer.code = (code, language) => {
-            const validLang = !!(language && highlightjs.getLanguage(language));
-            let highlighted = validLang ? highlightjs.highlight(language, code).value : code;
-            highlighted = highlighted.replace(/(\r\n|\n|\r)/gm, '<br>');
-            return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
+            let highlighted = code;
+            if (!language) {
+                language = 'none';
+            }
+            return `<pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre>`;
         };
 
         renderer.table = (header, body) => {

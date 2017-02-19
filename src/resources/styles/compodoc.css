@@ -484,18 +484,6 @@ code {
   font-style: normal;
 }
 
-.hljs-line-numbers {
-    text-align: right;
-    border-right: 1px solid #ccc;
-    color: #999;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .jsdoc-params {
     list-style: square;
     padding-left: 20px;
@@ -504,6 +492,9 @@ code {
 }
 .jsdoc-params li {
     padding-bottom: 10px;
+}
+.jsdoc-example-ul ul {
+    padding-left: 20px;
 }
 
 i {
@@ -644,4 +635,9 @@ path.link {
 }
 .content.miscellaneous h4 {
     padding-top: 20px;
+}
+
+/* highlight line */
+.line-highlight {
+    background: linear-gradient(to right, hsla(0, 0%, 100%,.1) 70%, hsla(24, 20%, 50%,0));
 }

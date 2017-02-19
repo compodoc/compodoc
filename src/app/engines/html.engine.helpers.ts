@@ -285,7 +285,7 @@ export let HtmlEngineHelpers = (function() {
                     if (jsdocTags[i].tagName.text === 'example') {
                         var tag = {};
                         if (jsdocTags[i].comment) {
-                            tag.comment = `<pre><code class="hljs ${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
                         }
                         tags.push(tag);
                     }
