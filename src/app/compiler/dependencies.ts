@@ -510,7 +510,7 @@ export class Dependencies {
 
     }
     private debug(deps: Deps) {
-        logger.debug('debug', `${deps.name}:`);
+        logger.debug('found', `${deps.name}:`);
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
@@ -1027,8 +1027,7 @@ export class Dependencies {
 
                 if ( (this.isPrivate(members[i]) || this.isInternal(members[i])) && this.configuration.mainData.disablePrivateOrInternalSupport) {} else {
                     if ((members[i].kind === ts.SyntaxKind.MethodDeclaration ||
-                        members[i].kind === ts.SyntaxKind.MethodSignature) &&
-                        !this.isAngularLifecycleHook(members[i].name.text)) {
+                        members[i].kind === ts.SyntaxKind.MethodSignature)) {
                         methods.push(this.visitMethodDeclaration(members[i], sourceFile));
                     } else if (
                         members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
