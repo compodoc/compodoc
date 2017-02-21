@@ -1,5 +1,6 @@
 /**
  * The todo class
+ * See {@link TodoStore} for service using it
  */
 export class Todo {
     /**
@@ -14,15 +15,19 @@ export class Todo {
     /**
      * Title
      */
-    private _title: String;
+    private _title: string;
     get title() {
         return this._title;
     }
-    set title(value: String) {
+    set title(value: string) {
         this._title = value.trim();
     }
 
-    constructor(title: String) {
+    static classMethod() {
+        return 'hello';
+    }
+
+    constructor(title: string) {
         this.completed = false;
         this.editing = false;
         this.title = title.trim();
@@ -30,6 +35,9 @@ export class Todo {
 
     /**
      *  fakeMethod !!
+     *  @example <caption>Usage of fakeMethod</caption>
+     *  returns true;
+     *  fakeMethod()
      */
     fakeMethod(): boolean {
         return true;

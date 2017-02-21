@@ -29,6 +29,9 @@ export class HeaderComponent {
 		this.todoStore = todoStore;
 	}
 
+    /**
+     * Ad a todo to the list
+     */
     addTodo() {
 		if (this.newTodoText.trim().length) {
             this.todoStore.add(this.newTodoText);

@@ -9,6 +9,8 @@ import { DoNothingDirective } from '../../shared/directives/do-nothing.directive
 
 /**
  * The todo module
+ *
+ * Contains the {@link TodoComponent}
  */
 @NgModule({
     imports: [

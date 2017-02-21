@@ -2,26 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { RouterModule, Routes }   from '@angular/router';
 
-import { HeaderModule } from './header/';
-
-import { AboutModule, AboutComponent } from './about/';
-
-import { HomeModule, HomeComponent } from './home/';
-
-import { ListModule } from './list/';
-
-import { FooterModule } from './footer/';
+import { HomeModule } from './home/';
 
 import { AppComponent } from './app.component';
 
 import { TodoStore } from './shared/services/todo.store';
 
-const APP_ROUTES: Routes = [
-    { path: 'about', component: AboutComponent },
-    { path: '', component: HomeComponent}
-];
+/* Routing Module */
+import { AppRoutingModule }   from './app-routing.module';
 
 /**
  * The bootstrapper module
@@ -31,10 +20,8 @@ const APP_ROUTES: Routes = [
         AppComponent
     ],
     imports: [
-        AboutModule,
         HomeModule,
-
-        RouterModule.forRoot(APP_ROUTES)
+        AppRoutingModule
     ],
     providers: [
         TodoStore

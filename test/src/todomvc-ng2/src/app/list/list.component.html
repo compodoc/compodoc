@@ -4,6 +4,6 @@
         (click)="todoStore.setAllTo(toggleall.checked)">
 <div *ngIf="todoStore.todos.length > 0">
     <ul class="todo-list" >
-        <todo *ngFor="let todo of todoStore.todos" [todo]='todo'></todo>
+        <todo *ngFor="let todo of todos" [todo]='todo'></todo>
     </ul>
 </div>

@@ -7,6 +7,14 @@ import { TodoModule } from './todo/';
 
 /**
  * The list of todos module
+ *
+ * Contains list component which can filter types of todos :
+ *
+ * | Type | API |
+ * | --- | --- |
+ * | completed | displayCompleted |
+ * | all | displayAll |
+ * | remaining | displayRemaining |
  */
 @NgModule({
     imports: [
