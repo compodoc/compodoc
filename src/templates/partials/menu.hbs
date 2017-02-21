@@ -38,6 +38,34 @@
             </ul>
         </li>
 
+        {{#if additionalPages}}
+        <li class="chapter">
+            <div class="simple">
+                <span class="fa fa-book"></span>
+                <span>{{includesName}}</span>
+                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                    {{#compare menu "===" 'normal' }}
+                        data-target="#additional-pages"
+                    {{else}}
+                        data-target="#xs-additional-pages"
+                    {{/compare}}
+                ></span>
+            </div>
+            <ul class="links collapse in"
+                {{#compare menu "===" 'normal' }}
+                    id="additional-pages"
+                {{else}}
+                    id="xs-additional-pages"
+                {{/compare}}>
+                {{#each additionalPages}}
+                    <li class="link {{#compare depth "===" 2 }}for-chapter{{/compare}}">
+                        <a href="{{relativeURL ../depth pageType 'internal'}}{{path}}/{{filename}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
         {{#if modules}}
         <li class="chapter">
             <a data-type="chapter-link" href="./{{relativeURL ../depth ../pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>

@@ -283,6 +283,10 @@ h4, h5 {
     padding-left: 20px;
 }
 
+.menu ul.list li.for-chapter {
+    padding-left: 20px;
+}
+
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
     position: relative;
@@ -562,6 +566,7 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 
 .content ul {
     list-style: disc;
+    padding-left: 2em;
     margin-top: 0;
     margin-bottom: 16px;
 }

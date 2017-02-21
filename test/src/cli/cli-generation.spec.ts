@@ -170,7 +170,7 @@ describe('CLI simple generation', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/tsconfig.json', {env}, (error, stdout, stderr) => {
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/src/tsconfig.json', {env}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -242,7 +242,7 @@ describe('CLI simple generation', () => {
         });
     });
     */
-    
+
     describe('when generation with --theme flag', () => {
 
         let stdoutString = null,

@@ -21,6 +21,8 @@ import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
+import { cleanNameWithoutSpaceAndToLowerCase } from '../utilities';
+
 let pkg = require('../package.json'),
     cwd = process.cwd(),
     $htmlengine = new HtmlEngine(),
@@ -162,9 +164,87 @@ export class Application {
                 this.prepareCoverage();
             }
 
-            this.processPages();
+            if (this.configuration.mainData.includes !== '') {
+                this.prepareExternalIncludes().then(() => {
+                    this.processPages();
+                }, (e) => {
+                    logger.error(e);
+                })
+            } else {
+                this.processPages();
+            }
         }, (errorMessage) => {
             logger.error(errorMessage);
+        });
+    }
+
+    prepareExternalIncludes() {
+        logger.info('Adding external markdown files');
+        //Scan include folder for files detailed in summary.json
+        //For each file, add to this.configuration.mainData.additionalPages
+        //Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
+        return new Promise((resolve, reject) => {
+           $fileengine.get(this.configuration.mainData.includes + path.sep + 'summary.json').then((summaryData) => {
+               logger.info('Additional documentation: summary.json file found');
+
+               let parsedSummaryData = JSON.parse(summaryData),
+                   i = 0,
+                   len = parsedSummaryData.length,
+                   loop = () => {
+                      if( i <= len-1) {
+                          $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file).then((markedData) => {
+                              this.configuration.addAdditionalPage({
+                                  name: parsedSummaryData[i].title,
+                                  filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                  context: 'additional-page',
+                                  path: this.configuration.mainData.includesFolder,
+                                  additionalPage: markedData,
+                                  depth: 1,
+                                  pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                              });
+
+                              if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
+                                  let j = 0,
+                                      leng = parsedSummaryData[i].children.length,
+                                    loopChild = () => {
+                                        if( j <= leng-1) {
+                                            $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file).then((markedData) => {
+                                                this.configuration.addAdditionalPage({
+                                                    name: parsedSummaryData[i].children[j].title,
+                                                    filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
+                                                    context: 'additional-page',
+                                                    path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                                    additionalPage: markedData,
+                                                    depth: 2,
+                                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                                });
+                                                j++;
+                                                loopChild();
+                                            }, (e) => {
+                                                logger.error(e);
+                                            });
+                                        } else {
+                                            i++;
+                                            loop();
+                                        }
+                                    }
+                                    loopChild();
+                                } else {
+                                    i++;
+                                    loop();
+                                }
+                          }, (e) => {
+                              logger.error(e);
+                          });
+                      } else {
+                          resolve();
+                      }
+                  };
+               loop();
+           }, (errorMessage) => {
+               logger.error(errorMessage);
+               reject('Error during Additional documentation generation');
+           });
         });
     }
 
@@ -386,7 +466,6 @@ export class Application {
 
     prepareCoverage() {
         logger.info('Process documentation coverage report');
-
         /*
          * loop with components, classes, injectables, interfaces, pipes
          */
@@ -413,7 +492,7 @@ export class Application {
                 !component.outputsClass) {
                     return;
                 }
-            let cl = {
+            let cl:any = {
                     filePath: component.file,
                     type: component.type,
                     name: component.name
@@ -457,7 +536,7 @@ export class Application {
                 !classe.methods) {
                     return;
                 }
-            let cl = {
+            let cl:any = {
                     filePath: classe.file,
                     type: 'classe',
                     name: classe.name
@@ -488,7 +567,7 @@ export class Application {
                 !injectable.methods) {
                     return;
                 }
-            let cl = {
+            let cl:any = {
                     filePath: injectable.file,
                     type: injectable.type,
                     name: injectable.name
@@ -519,7 +598,7 @@ export class Application {
                 !inter.methods) {
                     return;
                 }
-            let cl = {
+            let cl:any = {
                     filePath: inter.file,
                     type: inter.type,
                     name: inter.name
@@ -546,7 +625,7 @@ export class Application {
             files.push(cl);
         });
         _.forEach(this.configuration.mainData.pipes, (pipe) => {
-            let cl = {
+            let cl:any = {
                     filePath: pipe.file,
                     type: pipe.type,
                     name: pipe.name
@@ -595,6 +674,57 @@ export class Application {
                             finalPath += pages[i].path + '/';
                         }
                         finalPath += pages[i].name + '.html';
+                        $searchEngine.indexPage({
+                            infos: pages[i],
+                            rawData: htmlData,
+                            url: finalPath
+                        });
+                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                            if (err) {
+                                logger.error('Error during ' + pages[i].name + ' page generation');
+                            } else {
+                                i++;
+                                loop();
+                            }
+                        });
+                    }, (errorMessage) => {
+                        logger.error(errorMessage);
+                    });
+                } else {
+                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                        if (this.configuration.mainData.additionalPages.length > 0) {
+                            this.processAdditionalPages();
+                        } else {
+                            if (this.configuration.mainData.assetsFolder !== '') {
+                                this.processAssetsFolder();
+                            }
+                            this.processResources();
+                        }
+                    }, (e) => {
+                        logger.error(e);
+                    });
+                }
+            };
+        loop();
+    }
+
+    processAdditionalPages() {
+        logger.info('Process additional pages');
+        let pages = this.configuration.mainData.additionalPages,
+            i = 0,
+            len = pages.length,
+            loop = () => {
+                if( i <= len-1) {
+                    logger.info('Process page', pages[i].name);
+                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
+                        let finalPath = this.configuration.mainData.output;
+                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                            finalPath += '/';
+                        }
+                        if (pages[i].path) {
+                            finalPath += pages[i].path + '/';
+                        }
+                        finalPath += pages[i].filename + '.html';
                         $searchEngine.indexPage({
                             infos: pages[i],
                             rawData: htmlData,

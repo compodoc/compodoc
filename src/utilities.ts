@@ -8,6 +8,10 @@ import { logger } from './logger';
 const carriageReturnLineFeed = '\r\n';
 const lineFeed = '\n';
 
+export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
+    return name.toLowerCase().replace(/ /g, '-');
+}
+
 export function detectIndent(str, count, indent?): string {
     let stripIndent = function(str: string) {
         const match = str.match(/^[ \t]*(?=\S)/gm);

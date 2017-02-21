@@ -16,6 +16,10 @@
   <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
+# Live Demo
+
+[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular)
+
 #Features
 ------------
 
@@ -37,44 +41,12 @@
 
 * **Angular-CLI friendly** - Compodoc support out of the box Angular-CLI projects
 
-# Live Demo
-
-[Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular)
-
-# Static Demo
-
-Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx) and default theme (gitbook)
-
-README page             |  Overview page
-:-------------------------:|:-------------------------:
-![screenshot-1](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/2.png)
-Modules page             |  Single module page
-![screenshot-3](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png)
-Component page             |  Source code tab
-![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
-Search page             |  Coverage report
-![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/8.png)
-
-# Why this tool ?
-
-Because we doesn't find our needs on existing tools. We want to have a single place where there is :
-- api documentation of code
-- component(s), directive(s), pipe(s), ... documentation
-- general documentation (\*.md files)
-
-# Why not a SPA for outputed documentation ?
-
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
-
-# Who's using Compodoc ?
-
-- [angular-seed](https://github.com/mgechev/angular-seed)
-- [angular-calendar](https://github.com/mattlewis92/angular-calendar)
-
-These are some that [we know of](https://github.com/search?q=compodoc+filename%3Apackage.json+-user%3Acompodoc&ref=searchresults&type=Code&utf8=%E2%9C%93). Want your project listed here ? Drop us a line.
-
 # Table of Contents
 
+- [Screenshots](#screenshots)
+- [Why this tool ?](#why-this-tool-)
+- [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
+- [Who's using Compodoc ?](#whos-using-compodoc-)
 - [Node.js versions](#node.js-versions)
 - [Angular-CLI](#angular-cli)
 - [Getting Started with compodoc](#getting-started-with-compodoc)
@@ -92,6 +64,9 @@ These are some that [we know of](https://github.com/search?q=compodoc+filename%3
   - [Excluding files](#excluding-files)
 - [Remark for comments](#remark-for-comments)
 - [Remark for routes](#remark-for-routes)
+- [Additional documentation](#additional-documentation)
+- [Syntax highlighting in markdown files](#syntax-highlighting-in-markdown-files)
+- [Excluding files](#excluding-files)
 - [Roadmap](#roadmap)
 - [Extensions](#extensions)
 - [Contributing](#contributing)
@@ -99,13 +74,45 @@ These are some that [we know of](https://github.com/search?q=compodoc+filename%3
 - [Resources](#resources)
 - [License](#license)
 
+## Screenshots
+
+Using [SoundCloud API client / Angular2 project](https://github.com/r-park/soundcloud-ngrx) and default theme (gitbook)
+
+README page             |  Overview page
+:-------------------------:|:-------------------------:
+![screenshot-1](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/1.png)  | ![screenshot-2](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/2.png)
+Modules page             |  Single module page
+![screenshot-3](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/3.png)  | ![screenshot-4](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/4.png)
+Component page             |  Source code tab
+![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
+Search page             |  Coverage report
+![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/8.png)
+
+## Why this tool ?
+
+Because we doesn't find our needs on existing tools. We want to have a single place where there is :
+- api documentation of code
+- component(s), directive(s), pipe(s), ... documentation
+- general documentation (\*.md files)
+
+## Why not a SPA for outputed documentation ?
+
+[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
+
+## Who's using Compodoc ?
+
+- [angular-seed](https://github.com/mgechev/angular-seed)
+- [angular-calendar](https://github.com/mattlewis92/angular-calendar)
+
+These are some that [we know of](https://github.com/search?q=compodoc+filename%3Apackage.json+-user%3Acompodoc&ref=searchresults&type=Code&utf8=%E2%9C%93). Want your project listed here ? Drop us a line.
+
 ## Node.js versions
 
 Compodoc is tested with only LTS versions : v6.9.4 & v4.7.1
 
 ## Angular-CLI
 
-Compodoc supports last Angular-CLI version : [1.0.0-beta-26](https://github.com/angular/angular-cli/blob/master/CHANGELOG.md#100-beta26-2017-01-19)
+Compodoc supports last Angular-CLI version : [1.0.0-beta-32](https://github.com/angular/angular-cli/blob/master/CHANGELOG.md)
 
 Just run Compodoc in a fresh or existing project.
 
@@ -141,6 +148,8 @@ Options:
   -r, --port [port]                  Change default serving port
   --theme [theme]                    Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator                    Do not print the Compodoc link at the bottom of the page
+  --includes [path]                  Path of external markdown files to include
+  --includesName [name]              Name of item menu of externals markdown files (default "Additional documentation")
   --disableSourceCode                Do not add source code tab
   --disableGraph                     Disable rendering of the dependency graph
   --disableCoverage                  Do not add the documentation coverage report
@@ -361,7 +370,35 @@ const APP_ROUTES: Routes = [
 RouterModule.forRoot(APP_ROUTES)
 ```
 
-### Syntax highlighting in markdown files
+## Additional documentation
+
+Compodoc support the addition of external markdown files for extending the code comments of your application and the main README file.
+
+Create a folder containing markdown files and use ```--includes``` flag to extend the documentation.
+Your folder should contain a __summary.json__ file explaining the structure and files :
+
+```
+summary.json
+
+[
+    {
+        "title": "A TITLE",
+        "file": "a-file.md"
+    },
+    {
+        "title": "A TITLE",
+        "file": "a-file.md",
+        "children": [
+            {
+                "title": "A TITLE",
+                "file": "a-sub-folder/a-file.md"
+            }
+        ]
+    }
+]
+```
+
+## Syntax highlighting in markdown files
 
 Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and compiling to html. [highlight.js](highlightjs.org) has been added for supporting syntax highlighting.
 
@@ -369,15 +406,14 @@ Just use a normal code block in your markdown with correct language : [Github he
 
 The integrated languages are : __json, bash, javascript, markdown, html, typescript__
 
-### Excluding files
+## Excluding files
 
 For excluding files from the documentation, simply use the __exports__ property of [__tsconfig.json__](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file.
 
 ## Roadmap
 
-- [ ] handle external markdown files as "functional" documentation
-- [ ] watch/recompile feature while serving documentation
 - [ ] support for Angular 1.5+ projects written in Typescript
+- [x] handle external markdown files as "functional" documentation
 - [x] documentation coverage
 - [x] routes
 - [x] classes

@@ -81,6 +81,16 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
         });
 
+        it(`--includes`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--includes [path]');
+            expect(runHelp.stdout.toString()).to.contain('Path of external markdown files to include');
+        });
+
+        it(`--includesName`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--includesName [name]');
+            expect(runHelp.stdout.toString()).to.contain('Name of item menu of externals markdown files (default "Additional documentation")');
+        });
+
         it(`--disableSourceCode`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableSourceCode');
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');

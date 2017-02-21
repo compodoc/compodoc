@@ -39,6 +39,17 @@ export class MarkdownEngine {
             breaks: true
         });
     }
+    get(filepath:string) {
+        return new Promise(function(resolve, reject) {
+           fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during ' + filepath + ' read');
+               } else {
+                   resolve(marked(data));
+               }
+           });
+        });
+    }
     getReadmeFile() {
         return new Promise(function(resolve, reject) {
             fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', (err, data) => {

@@ -38,7 +38,8 @@ export class HtmlEngine {
             'block-index',
             'block-constructor',
             'coverage-report',
-            'miscellaneous'
+            'miscellaneous',
+            'additional-page'
         ],
             i = 0,
             len = partials.length,

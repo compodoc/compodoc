@@ -6,7 +6,7 @@ export class FileEngine {
     constructor() {
 
     }
-    get(filepath:String) {
+    get(filepath:string) {
         return new Promise(function(resolve, reject) {
            fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
                if (err) {

@@ -1,0 +1,16 @@
+[
+    {
+        "title": "Introduction",
+        "file": "introduction.md"
+    },
+    {
+        "title": "Edition",
+        "file": "edition.md",
+        "children": [
+            {
+                "title": "Edition of a todo",
+                "file": "edition/edition.md"
+            }
+        ]
+    }
+]

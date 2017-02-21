@@ -209,8 +209,12 @@ export let HtmlEngineHelpers = (function() {
             //console.log('relativeURL: ', depth, currentPageType, targetPageType);
             // if depth 2 & type == internal, set on same level, otherwise go up
             let result = '';
-            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && depth === 2) {
+                result = '../../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
                 result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && depth === 2) {
+                result = '../../';
             } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
                 result = '../';
             } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {

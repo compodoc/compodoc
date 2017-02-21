@@ -30,13 +30,13 @@ export class CliApplication extends Application
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
             .option('-o, --open', 'Open the generated documentation', false)
-            //.option('-i, --includes [path]', 'Path of external markdown files to include')
-            //.option('-j, --includesName [name]', 'Name of item menu of externals markdown file')
             .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
+            .option('--includes [path]', 'Path of external markdown files to include')
+            .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
@@ -94,6 +94,14 @@ export class CliApplication extends Application
 
         if (program.hideGenerator) {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
+        }
+
+        if (program.includes) {
+            this.configuration.mainData.includes = program.includes;
+        }
+
+        if (program.includesName) {
+            this.configuration.mainData.includesName = program.includesName;
         }
 
         if (program.disableSourceCode) {
