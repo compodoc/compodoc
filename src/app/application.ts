@@ -137,7 +137,7 @@ export class Application {
                 this.prepareInjectables();
             }
 
-            if ($dependenciesEngine.routes) {
+            if ($dependenciesEngine.routes && $dependenciesEngine.routes.children.length > 0) {
                 this.prepareRoutes();
             }
 
