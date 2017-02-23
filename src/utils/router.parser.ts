@@ -171,7 +171,7 @@ export let RouterParser = (function() {
                     //console.log('   If module has child modules');
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
-                        if (route) {
+                        if (route && route.data) {
                             route.children = JSON.parse(route.data);
                             delete route.data;
                             route.kind = 'module';
@@ -184,18 +184,21 @@ export let RouterParser = (function() {
                 } else {
                     //else routes are directly inside the module
                     //console.log('   else routes are directly inside the root module');
-                    let routes = JSON.parse(foundRouteWithModuleName(node.name).data);
-                    if (routes) {
-                        let i = 0,
-                            len = routes.length;
-                        for(i; i<len; i++) {
-                            let route = routes[i];
-                            if (routes[i].component) {
-                                routesTree.children.push({
-                                    kind: 'component',
-                                    component: routes[i].component,
-                                    path: routes[i].path
-                                });
+                    let rawRoutes = foundRouteWithModuleName(node.name);
+                    if (rawRoutes) {
+                        let routes = JSON.parse(rawRoutes.data);
+                        if (routes) {
+                            let i = 0,
+                                len = routes.length;
+                            for(i; i<len; i++) {
+                                let route = routes[i];
+                                if (routes[i].component) {
+                                    routesTree.children.push({
+                                        kind: 'component',
+                                        component: routes[i].component,
+                                        path: routes[i].path
+                                    });
+                                }
                             }
                         }
                     }
