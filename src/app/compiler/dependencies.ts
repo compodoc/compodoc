@@ -389,7 +389,7 @@ export class Dependencies {
                 if(IO.routes) {
                     let newRoutes;
                     try {
-                        newRoutes = JSON.parse(IO.routes.replace(/ /gm, ''));
+                        newRoutes = RouterParser.cleanRawRouteParsed(IO.routes);
                     } catch (e) {
                         logger.error('Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.');
                         newRoutes = IO.routes.replace(/ /gm, '')
@@ -1311,7 +1311,7 @@ export class Dependencies {
                         let data = generate(node.declarationList.declarations[i].initializer)
                         RouterParser.addRoute({
                             name: node.declarationList.declarations[i].name.text,
-                            data: data,
+                            data: RouterParser.cleanRawRoute(data),
                             file: fileName
                         });
                         return [{

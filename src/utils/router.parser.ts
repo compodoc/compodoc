@@ -38,6 +38,22 @@ export let RouterParser = (function() {
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
         },
+        cleanRawRouteParsed: function(route: string) {
+            let routesWithoutSpaces = route.replace(/ /gm, ''),
+                testTrailingComma = routesWithoutSpaces.indexOf('},]');
+            if (testTrailingComma != -1) {
+                routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
+            }
+            return JSON.parse(routesWithoutSpaces);
+        },
+        cleanRawRoute: function(route: string) {
+            let routesWithoutSpaces = route.replace(/ /gm, ''),
+                testTrailingComma = routesWithoutSpaces.indexOf('},]');
+            if (testTrailingComma != -1) {
+                routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
+            }
+            return routesWithoutSpaces;
+        },
         setRootModule: function(module: string) {
             rootModule = module;
         },
