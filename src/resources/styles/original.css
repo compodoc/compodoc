@@ -45,3 +45,8 @@
 .menu ul.list li.divider {
     margin: 0;
 }
+
+.hljs-tag {
+    color: #f8f8f2;
+}
+
