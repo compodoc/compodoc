@@ -224,21 +224,24 @@ export let HtmlEngineHelpers = (function() {
         });
 
         Handlebars.registerHelper('functionSignature', function(method) {
-            const args = method.args.map(function(arg) {
-                var _result = $dependenciesEngine.find(arg.type);
-                if (_result) {
-                    if (_result.source === 'internal') {
-                        let path = _result.data.type;
-                        if (_result.data.type === 'class') path = 'classe';
-                        return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
+            let args = [];
+            if (method.args) {
+                args = method.args.map(function(arg) {
+                    var _result = $dependenciesEngine.find(arg.type);
+                    if (_result) {
+                        if (_result.source === 'internal') {
+                            let path = _result.data.type;
+                            if (_result.data.type === 'class') path = 'classe';
+                            return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
+                        } else {
+                            let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                            return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                        }
                     } else {
-                        let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
-                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                        return `${arg.name}: ${arg.type}`;
                     }
-                } else {
-                    return `${arg.name}: ${arg.type}`;
-                }
-            }).join(', ');
+                }).join(', ');
+            }
             if (method.name) {
                 return `${method.name}(${args})`;
             } else {
