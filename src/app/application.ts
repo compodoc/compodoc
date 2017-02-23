@@ -395,7 +395,9 @@ export class Application {
                                 path: 'components',
                                 name: that.configuration.mainData.components[i].name,
                                 context: 'component',
-                                component: that.configuration.mainData.components[i]
+                                component: that.configuration.mainData.components[i],
+                                depth: 2,
+                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                             });
                             i++;
                             loop();
