@@ -106,9 +106,9 @@ const TEST_FOLDER = 'angularexpo-tests',
 tmp.clean(TEST_FOLDER);
 tmp.create(TEST_FOLDER);
 
-var i = 0;
-
-let clone = (repo) => {
+let i = 0,
+    failedRepositories = [],
+    clone = (repo) => {
         return new Promise(function(resolve, reject) {
             exec('git clone https://github.com/' + repo.maintainer + '/' + repo.name, {
                 cwd: TEST_FOLDER
@@ -154,14 +154,17 @@ let loop = () => {
                 console.log('');
                 console.error(`   Compodoc ${GIT_REPOSITORIES[i].name} KO`);
                 console.log('');
+                failedRepositories.push(GIT_REPOSITORIES[i].name);
                 i++;
                 loop();
             });
         });
     } else {
         console.log('END');
+        console.log('');
+        console.log('failedRepositories: ', failedRepositories);
         process.exit(0);
-        //rimraf(TEST_FOLDER);
+        rimraf(TEST_FOLDER);
     }
 }
 
