@@ -42,6 +42,7 @@ interface IMainData {
     miscellaneous: any;
     routes: any;
     tsconfig: string;
+    toggleMenuItems: string[];
     includes: string;
     includesName: string;
     includesFolder: string;
@@ -53,7 +54,7 @@ interface IMainData {
 
 export interface IConfiguration {
     mainData: IMainData;
-    pages:Array<Page>;
+    pages:Page[];
     addPage(page: Page): void;
     addAdditionalPage(page: Page): void;
 }
@@ -61,7 +62,7 @@ export interface IConfiguration {
 export class Configuration implements IConfiguration {
     private static _instance:Configuration = new Configuration();
 
-    private _pages:Array<Page> = [];
+    private _pages:Page[] = [];
     private _mainData: IMainData = {
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
@@ -86,6 +87,7 @@ export class Configuration implements IConfiguration {
         routes: [],
         miscellaneous: [],
         tsconfig: '',
+        toggleMenuItems: [],
         includes: '',
         includesName: COMPODOC_DEFAULTS.additionalEntryName,
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
@@ -115,10 +117,10 @@ export class Configuration implements IConfiguration {
         this._mainData.additionalPages.push(page);
     }
 
-    get pages():Array<Page> {
+    get pages():Page[] {
         return this._pages;
     }
-    set pages(pages:Array<Page>) {
+    set pages(pages:Page[]) {
         this._pages = [];
     }
 

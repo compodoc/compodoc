@@ -44,8 +44,6 @@
 # Table of Contents
 
 - [Screenshots](#screenshots)
-- [Why this tool ?](#why-this-tool-)
-- [Why not a SPA for outputed documentation ?](#why-not-a-spa-for-outputed-documentation-)
 - [Who's using Compodoc ?](#whos-using-compodoc-)
 - [Node.js versions](#node.js-versions)
 - [Angular-CLI](#angular-cli)
@@ -87,17 +85,6 @@ Component page             |  Source code tab
 ![screenshot-5](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/5.png)  | ![screenshot-6](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/7.png)
 Search page             |  Coverage report
 ![screenshot-7](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/6.png)  |![screenshot-8](https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/8.png)
-
-## Why this tool ?
-
-Because we doesn't find our needs on existing tools. We want to have a single place where there is :
-- api documentation of code
-- component(s), directive(s), pipe(s), ... documentation
-- general documentation (\*.md files)
-
-## Why not a SPA for outputed documentation ?
-
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle) or shortly __"Keep it simple"__. We think static html files are simpler than another SPA inside an "SPA documentation".
 
 ## Who's using Compodoc ?
 
@@ -148,6 +135,7 @@ Options:
   -r, --port [port]                  Change default serving port
   --theme [theme]                    Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator                    Do not print the Compodoc link at the bottom of the page
+  --toggleMenuItems <items>          Close by default items in the menu ( example: 'all' or 'modules','components' )
   --includes [path]                  Path of external markdown files to include
   --includesName [name]              Name of item menu of externals markdown files (default "Additional documentation")
   --disableSourceCode                Do not add source code tab

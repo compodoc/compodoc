@@ -21,6 +21,10 @@ export class CliApplication extends Application
      */
     protected generate() {
 
+        function list(val) {
+            return val.split(',');
+        }
+
         program
             .version(pkg.version)
             .usage('<src> [options]')
@@ -35,6 +39,7 @@ export class CliApplication extends Application
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
+            .option('--toggleMenuItems <items>', 'Close by default items in the menu example: \'all\' or \'modules\',\'components\'', list)
             .option('--includes [path]', 'Path of external markdown files to include')
             .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--disableSourceCode', 'Do not add source code tab', false)
@@ -70,6 +75,10 @@ export class CliApplication extends Application
 
         if (program.open) {
             this.configuration.mainData.open = program.open;
+        }
+
+        if (program.toggleMenuItems) {
+            this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
         }
 
         if (program.includes) {

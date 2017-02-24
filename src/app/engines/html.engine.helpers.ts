@@ -2,6 +2,7 @@ import * as Handlebars from 'handlebars';
 import { COMPODOC_DEFAULTS } from '../../utils/defaults';
 import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
+import { Configuration } from '../configuration';
 
 export let HtmlEngineHelpers = (function() {
     let init = function() {
@@ -384,6 +385,18 @@ export let HtmlEngineHelpers = (function() {
             text = text.replace(/,"/, ',<br>&nbsp;&nbsp;&nbsp;&nbsp;"');
             text = text.replace(/}$/, '<br>}');
             return new Handlebars.SafeString(text);
+        });
+
+        Handlebars.registerHelper('isNotToggle', function(type, options) {
+            let configuration = Configuration.getInstance(),
+                result = configuration.mainData.toggleMenuItems.indexOf(type);
+            if (configuration.mainData.toggleMenuItems.indexOf('all') !== -1) {
+                return options.inverse(this);
+            } else if (result === -1) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
         });
     }
     return {

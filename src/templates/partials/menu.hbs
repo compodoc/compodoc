@@ -71,7 +71,7 @@
             <a data-type="chapter-link" href="./{{relativeURL ../depth ../pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
                 <span class="fa fa-archive"></span>
                 <span>Modules</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#modules-links"
                     {{else}}
@@ -79,7 +79,7 @@
                     {{/compare}}
                 ></span>
             </a>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="modules-links"
                 {{else}}
@@ -99,14 +99,14 @@
             <div class="simple">
                 <span class="fa fa-cogs"></span>
                 <span>Components</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#components-links"
                     {{else}}
                         data-target="#xs-components-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="components-links"
                 {{else}}
@@ -126,14 +126,14 @@
             <div class="simple">
                 <span class="fa fa-code"></span>
                 <span>Directives</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#directives-links"
                     {{else}}
                         data-target="#xs-directives-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="directives-links"
                 {{else}}
@@ -153,14 +153,14 @@
             <div class="simple">
                 <span class="fa fa-file-code-o"></span>
                 <span>Classes</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#classes-links"
                     {{else}}
                         data-target="#xs-classes-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="classes-links"
                 {{else}}
@@ -186,14 +186,14 @@
             <div class="simple">
                 <span class="fa fa-long-arrow-down"></span>
                 <span>Injectables</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#injectables-links"
                     {{else}}
                         data-target="#xs-injectables-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="injectables-links"
                 {{else}}
@@ -213,14 +213,14 @@
             <div class="simple">
                 <span class="fa fa-info"></span>
                 <span>Interfaces</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#interfaces-links"
                     {{else}}
                         data-target="#xs-interfaces-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="interfaces-links"
                 {{else}}
@@ -240,14 +240,14 @@
             <div class="simple">
                 <span class="fa fa-plus"></span>
                 <span>Pipes</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#pipes-links"
                     {{else}}
                         data-target="#xs-pipes-links"
                     {{/compare}}></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="pipes-links"
                 {{else}}
