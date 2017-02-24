@@ -100,6 +100,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'angular2-tv-tracker', maintainer: 'mattlewis92', tsconfig_path: './'
     }, {
         name: 'ng2-dribbble', maintainer: 'mohammedzamakhan', tsconfig_path: './'
+    }, {
+        name: 'youtube-trends', maintainer: 'jasodeep', tsconfig_path: './src/'
     }],
     len = GIT_REPOSITORIES.length;
 
