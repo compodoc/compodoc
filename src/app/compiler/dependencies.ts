@@ -320,7 +320,7 @@ export class Dependencies {
             else if (node.symbol) {
                 if(node.symbol.flags === ts.SymbolFlags.Class) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getComponentIO(file, sourceFile);
+                    let IO = this.getClassIO(file, sourceFile, node);
                     deps = {
                         name,
                         file: file,
@@ -407,7 +407,7 @@ export class Dependencies {
                 }
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getComponentIO(file, sourceFile);
+                    let IO = this.getClassIO(file, sourceFile, node);
                     deps = {
                         name,
                         file: file,
@@ -1352,6 +1352,24 @@ export class Dependencies {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
                 return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
+            }
+
+            return directive;
+        }, [])
+
+        return res[0] || {};
+    }
+
+    private getClassIO(filename: string, sourceFile, node) {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        var res = sourceFile.statements.reduce((directive, statement) => {
+
+            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
+                }
             }
 
             return directive;
