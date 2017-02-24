@@ -10,6 +10,7 @@ import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
 import { Configuration, IConfiguration } from '../configuration';
+import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
 interface NodeObject {
     kind: Number;
@@ -155,6 +156,8 @@ export class Dependencies {
             }
         }*/
 
+        //$componentsTreeEngine.createTreesForComponents();
+
         RouterParser.linkModulesAndRoutes();
         RouterParser.constructModulesTree();
 
@@ -241,6 +244,7 @@ export class Dependencies {
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
+                        $componentsTreeEngine.addComponent(deps);
                         outputSymbols['components'].push(deps);
                     }
                     else if (this.isInjectable(metadata)) {
