@@ -68,7 +68,7 @@
 
         {{#if modules}}
         <li class="chapter">
-            <a data-type="chapter-link" href="./{{relativeURL ../depth ../pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
+            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
                 <span class="fa fa-archive"></span>
                 <span>Modules</span>
                 <span class="menu-toggler fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
