@@ -345,7 +345,7 @@ For giving an example on directives, components and pipes decorators, use @examp
 
 ## Remark for routes
 
-Follow the style guide and provide a const of type 'Routes' :
+Follow the style guide, provide a const of type 'Routes' and with an unique name :
 
 ```
 const APP_ROUTES: Routes = [
