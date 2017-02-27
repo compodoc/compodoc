@@ -3,7 +3,7 @@
     "module": "es2015",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es6",
     "noImplicitAny": false,
     "outDir": "./dist",
     "rootDir": "./src",
@@ -16,7 +16,9 @@
       "node"
     ],
     "lib": [
-      "es2015.promise"
+        "es5",
+        "es6",
+        "es2015.promise"
     ]
   },
   "files": [
