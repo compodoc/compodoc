@@ -7,38 +7,41 @@ import { logger } from '../logger';
 
 export let RouterParser = (function() {
 
-    var routes = [],
+    var routes: any[] = [],
         incompleteRoutes = [],
         modules = [],
         modulesTree,
         rootModule,
-        modulesWithRoutes = [];
+        cleanModulesTree,
+        modulesWithRoutes = [],
 
-    return {
-        incompleteRoutes: incompleteRoutes,
-        addRoute: function(route) {
+        _addRoute = function(route) {
             routes.push(route);
             routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
         },
-        addIncompleteRoute: function(route) {
+
+        _addIncompleteRoute = function(route) {
             incompleteRoutes.push(route);
             incompleteRoutes = _.sortBy(_.uniqWith(incompleteRoutes, _.isEqual), ['name']);
         },
-        addModuleWithRoutes: function(moduleName, moduleImports) {
+
+        _addModuleWithRoutes = function(moduleName, moduleImports) {
             modulesWithRoutes.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
         },
-        addModule: function(moduleName: string, moduleImports) {
+
+        _addModule = function(moduleName: string, moduleImports) {
             modules.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
         },
-        cleanRawRouteParsed: function(route: string) {
+
+        _cleanRawRouteParsed = function(route: string) {
             let routesWithoutSpaces = route.replace(/ /gm, ''),
                 testTrailingComma = routesWithoutSpaces.indexOf('},]');
             if (testTrailingComma != -1) {
@@ -46,7 +49,8 @@ export let RouterParser = (function() {
             }
             return JSON.parse(routesWithoutSpaces);
         },
-        cleanRawRoute: function(route: string) {
+
+        _cleanRawRoute = function(route: string) {
             let routesWithoutSpaces = route.replace(/ /gm, ''),
                 testTrailingComma = routesWithoutSpaces.indexOf('},]');
             if (testTrailingComma != -1) {
@@ -54,20 +58,12 @@ export let RouterParser = (function() {
             }
             return routesWithoutSpaces;
         },
-        setRootModule: function(module: string) {
+
+        _setRootModule = function(module: string) {
             rootModule = module;
         },
-        printRoutes: function() {
-            console.log('');
-            console.log('printRoutes: ');
-            console.log(routes);
-        },
-        printModulesRoutes: function() {
-            console.log('');
-            console.log('printModulesRoutes: ');
-            console.log(modulesWithRoutes);
-        },
-        hasRouterModuleInImports: function(imports) {
+
+        _hasRouterModuleInImports = function(imports) {
             let result = false,
                 i = 0,
                 len = imports.length;
@@ -79,7 +75,8 @@ export let RouterParser = (function() {
             }
             return result;
         },
-        fixIncompleteRoutes: function(miscellaneousVariables) {
+
+        _fixIncompleteRoutes = function(miscellaneousVariables) {
             console.log('fixIncompleteRoutes');
             console.log('');
             console.log(routes);
@@ -111,10 +108,13 @@ export let RouterParser = (function() {
             console.log('');
 
         },
-        linkModulesAndRoutes: function() {
+
+        _linkModulesAndRoutes = function() {
             //console.log('');
-            //console.log('linkModulesAndRoutes: ');
+            console.log('linkModulesAndRoutes: ');
             //scan each module imports AST for each routes, and link routes with module
+            console.log('linkModulesAndRoutes routes: ', routes);
+            console.log('');
             let i = 0,
                 len = modulesWithRoutes.length;
             for(i; i<len; i++) {
@@ -137,18 +137,57 @@ export let RouterParser = (function() {
                     }
                 });
             }
+
             //console.log('');
-            //console.log('end linkModulesAndRoutes: ');
-            //console.log(routes);
+            console.log('end linkModulesAndRoutes: ');
+            console.log(util.inspect(routes, { depth: 10 }));
+            console.log('');
         },
-        constructRoutesTree: function() {
+
+        foundRouteWithModuleName = function(moduleName) {
+            return _.find(routes, {'module': moduleName});
+        },
+
+        foundLazyModuleWithPath = function(path) {
+            //path is like app/customers/customers.module#CustomersModule
+            let split = path.split('#'),
+                lazyModulePath = split[0],
+                lazyModuleName = split[1];
+            return lazyModuleName;
+        },
+
+        _constructRoutesTree = function() {
             //console.log('');
-            //console.log('constructRoutesTree: ', modulesTree);
+            console.log('constructRoutesTree modules: ', modules);
+            console.log('');
+            console.log('constructRoutesTree modulesWithRoutes: ', modulesWithRoutes);
+            console.log('');
+            console.log('constructRoutesTree modulesTree: ', util.inspect(modulesTree, { depth: 10 }));
+            console.log('');
+
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
-            let cleanModulesTree = _.cloneDeep(modulesTree),
-                modulesCleaner = function(arr) {
+            cleanModulesTree = _.cloneDeep(modulesTree);
+
+            //Try updating routes with lazy loading
+            _.forEach(routes, function(rawRoute) {
+                rawRoute.data = JSON.parse(rawRoute.data);
+                _.forEach(rawRoute.data, function(route) {
+                    if(route.loadChildren) {
+                        //Lazy loaded module
+                        let child = foundLazyModuleWithPath(route.loadChildren);
+                        console.log(' lazy load: ', child);
+                        route.children = [];
+                        let module = _.find(cleanModulesTree, {'name': child})
+                        console.log(' lazy load module: ', module);
+                        module.kind = 'module';
+                        route.children.push(module);
+                    }
+                });
+            });
+
+            let modulesCleaner = function(arr) {
                     for(var i in arr) {
                         if (arr[i].importsNode) {
                             delete arr[i].importsNode;
@@ -163,9 +202,9 @@ export let RouterParser = (function() {
                 };
 
             modulesCleaner(cleanModulesTree);
-            //console.log('');
-            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            //console.log('');
+            console.log('');
+            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            console.log('');
 
             //console.log(routes);
             //console.log('');
@@ -177,18 +216,14 @@ export let RouterParser = (function() {
                 children: []
             };
 
-            let foundRouteWithModuleName = function(moduleName) {
-                return _.find(routes, {'module': moduleName});
-            }
-
             let loopModulesParser = function(node) {
                 if (node.children && node.children.length > 0) {
                     //If module has child modules
-                    //console.log('   If module has child modules');
+                    console.log('   If module has child modules');
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
                         if (route && route.data) {
-                            route.children = JSON.parse(route.data);
+                            route.children = route.data;
                             delete route.data;
                             route.kind = 'module';
                             routesTree.children.push(route);
@@ -202,7 +237,7 @@ export let RouterParser = (function() {
                     //console.log('   else routes are directly inside the root module');
                     let rawRoutes = foundRouteWithModuleName(node.name);
                     if (rawRoutes) {
-                        let routes = JSON.parse(rawRoutes.data);
+                        let routes = rawRoutes.data;
                         if (routes) {
                             let i = 0,
                                 len = routes.length;
@@ -220,14 +255,16 @@ export let RouterParser = (function() {
                     }
                 }
             }
-            /*console.log('');
+            console.log('');
             console.log('  rootModule: ', rootModule);
-            console.log('');*/
+            console.log('');
 
             let startModule = _.find(cleanModulesTree, {'name': rootModule});
 
             if (startModule) {
                 loopModulesParser(startModule);
+                //Loop twice for routes with lazy loading
+                //loopModulesParser(routesTree);
             }
 
             /*console.log('');
@@ -245,12 +282,13 @@ export let RouterParser = (function() {
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            //console.log('');
-            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            console.log('');
+            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
 
             return cleanedRoutesTree;
         },
-        constructModulesTree: function() {
+
+        _constructModulesTree = function() {
             //console.log('');
             //console.log('constructModulesTree');
             let getNestedChildren = function(arr, parent?) {
@@ -281,7 +319,8 @@ export let RouterParser = (function() {
             console.log('end constructModulesTree');
             console.log(modulesTree);*/
         },
-        generateRoutesIndex(outputFolder, routes) {
+
+        _generateRoutesIndex = function(outputFolder, routes) {
             return new Promise((resolve, reject) => {
                 fs.readFile(path.resolve(__dirname + '/../src/templates/partials/routes-index.hbs'), 'utf8', (err, data) => {
                    if (err) {
@@ -302,5 +341,31 @@ export let RouterParser = (function() {
                });
            });
         }
+
+    return {
+        incompleteRoutes: incompleteRoutes,
+        addRoute: _addRoute,
+        addIncompleteRoute: _addIncompleteRoute,
+        addModuleWithRoutes: _addModuleWithRoutes,
+        addModule: _addModule,
+        cleanRawRouteParsed: _cleanRawRouteParsed,
+        cleanRawRoute: _cleanRawRoute,
+        setRootModule: _setRootModule,
+        printRoutes: function() {
+            console.log('');
+            console.log('printRoutes: ');
+            console.log(routes);
+        },
+        printModulesRoutes: function() {
+            console.log('');
+            console.log('printModulesRoutes: ');
+            console.log(modulesWithRoutes);
+        },
+        hasRouterModuleInImports: _hasRouterModuleInImports,
+        fixIncompleteRoutes: _fixIncompleteRoutes,
+        linkModulesAndRoutes: _linkModulesAndRoutes,
+        constructRoutesTree: _constructRoutesTree,
+        constructModulesTree: _constructModulesTree,
+        generateRoutesIndex: _generateRoutesIndex
     }
 })();
