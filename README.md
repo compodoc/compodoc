@@ -371,7 +371,7 @@ The integrated languages are : __json, bash, javascript, markdown, html, typescr
 
 ### Excluding files
 
-For excluding files from the documentation, simply use the __exports__ property of [__tsconfig.json__](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file.
+For excluding files from the documentation, simply use the __exclude__ property of [__tsconfig.json__](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file.
 
 ## Roadmap
 
