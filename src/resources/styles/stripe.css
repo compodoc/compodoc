@@ -69,3 +69,7 @@ pre code.hljs {
     border: none;
     background: #272b2d;
 }
+
+.hljs-tag {
+    color: #f8f8f2;
+}
