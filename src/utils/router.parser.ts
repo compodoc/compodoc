@@ -77,10 +77,10 @@ export let RouterParser = (function() {
         },
 
         _fixIncompleteRoutes = function(miscellaneousVariables) {
-            console.log('fixIncompleteRoutes');
+            /*console.log('fixIncompleteRoutes');
             console.log('');
             console.log(routes);
-            console.log('');
+            console.log('');*/
             //console.log(miscellaneousVariables);
             //console.log('');
             let i = 0,
@@ -102,19 +102,19 @@ export let RouterParser = (function() {
                 incompleteRoutes[i].data = incompleteRoutes[i].data.replace('[', '');
                 incompleteRoutes[i].data = incompleteRoutes[i].data.replace(']', '');
             }
-            console.log(incompleteRoutes);
+            /*console.log(incompleteRoutes);
             console.log('');
             console.log(matchingVariables);
-            console.log('');
+            console.log('');*/
 
         },
 
         _linkModulesAndRoutes = function() {
-            //console.log('');
+            /*console.log('');
             console.log('linkModulesAndRoutes: ');
             //scan each module imports AST for each routes, and link routes with module
             console.log('linkModulesAndRoutes routes: ', routes);
-            console.log('');
+            console.log('');*/
             let i = 0,
                 len = modulesWithRoutes.length;
             for(i; i<len; i++) {
@@ -138,10 +138,10 @@ export let RouterParser = (function() {
                 });
             }
 
-            //console.log('');
+            /*console.log('');
             console.log('end linkModulesAndRoutes: ');
             console.log(util.inspect(routes, { depth: 10 }));
-            console.log('');
+            console.log('');*/
         },
 
         foundRouteWithModuleName = function(moduleName) {
@@ -158,34 +158,17 @@ export let RouterParser = (function() {
 
         _constructRoutesTree = function() {
             //console.log('');
-            console.log('constructRoutesTree modules: ', modules);
+            /*console.log('constructRoutesTree modules: ', modules);
             console.log('');
             console.log('constructRoutesTree modulesWithRoutes: ', modulesWithRoutes);
             console.log('');
             console.log('constructRoutesTree modulesTree: ', util.inspect(modulesTree, { depth: 10 }));
-            console.log('');
+            console.log('');*/
 
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
             cleanModulesTree = _.cloneDeep(modulesTree);
-
-            //Try updating routes with lazy loading
-            _.forEach(routes, function(rawRoute) {
-                rawRoute.data = JSON.parse(rawRoute.data);
-                _.forEach(rawRoute.data, function(route) {
-                    if(route.loadChildren) {
-                        //Lazy loaded module
-                        let child = foundLazyModuleWithPath(route.loadChildren);
-                        console.log(' lazy load: ', child);
-                        route.children = [];
-                        let module = _.find(cleanModulesTree, {'name': child})
-                        console.log(' lazy load module: ', module);
-                        module.kind = 'module';
-                        route.children.push(module);
-                    }
-                });
-            });
 
             let modulesCleaner = function(arr) {
                     for(var i in arr) {
@@ -202,9 +185,9 @@ export let RouterParser = (function() {
                 };
 
             modulesCleaner(cleanModulesTree);
-            console.log('');
-            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            console.log('');
+            //console.log('');
+            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //console.log('');
 
             //console.log(routes);
             //console.log('');
@@ -219,11 +202,11 @@ export let RouterParser = (function() {
             let loopModulesParser = function(node) {
                 if (node.children && node.children.length > 0) {
                     //If module has child modules
-                    console.log('   If module has child modules');
+                    //console.log('   If module has child modules');
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
                         if (route && route.data) {
-                            route.children = route.data;
+                            route.children = JSON.parse(route.data);
                             delete route.data;
                             route.kind = 'module';
                             routesTree.children.push(route);
@@ -237,7 +220,7 @@ export let RouterParser = (function() {
                     //console.log('   else routes are directly inside the root module');
                     let rawRoutes = foundRouteWithModuleName(node.name);
                     if (rawRoutes) {
-                        let routes = rawRoutes.data;
+                        let routes = JSON.parse(rawRoutes.data);
                         if (routes) {
                             let i = 0,
                                 len = routes.length;
@@ -255,9 +238,9 @@ export let RouterParser = (function() {
                     }
                 }
             }
-            console.log('');
-            console.log('  rootModule: ', rootModule);
-            console.log('');
+            //console.log('');
+            //console.log('  rootModule: ', rootModule);
+            //console.log('');
 
             let startModule = _.find(cleanModulesTree, {'name': rootModule});
 
@@ -282,8 +265,50 @@ export let RouterParser = (function() {
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            console.log('');
-            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            //Try updating routes with lazy loading
+            //console.log('');
+            //console.log('Try updating routes with lazy loading');
+
+            let loopRoutesParser = function(route) {
+                if(route.children) {
+                    for(var i in route.children) {
+                        if (route.children[i].loadChildren) {
+                            let child = foundLazyModuleWithPath(route.children[i].loadChildren),
+                                module = _.find(cleanModulesTree, {'name': child});
+
+                            let _rawModule:any = {};
+                            _rawModule.kind = 'module';
+                            _rawModule.children = [];
+                            _rawModule.module = module.name;
+
+                            let loopInside = function(mod) {
+                                if(mod.children) {
+                                    for(var i in mod.children) {
+                                        let route = foundRouteWithModuleName(mod.children[i].name);
+                                        if (typeof route !== 'undefined') {
+                                            if (route.data) {
+                                                route.children = JSON.parse(route.data);
+                                                delete route.data;
+                                                route.kind = 'module';
+                                                _rawModule.children[i] = route;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            loopInside(module);
+
+                            route.children[i].children = [];
+                            route.children[i].children.push(_rawModule);
+                        }
+                        loopRoutesParser(route.children[i]);
+                    }
+                }
+            }
+            loopRoutesParser(cleanedRoutesTree);
+
+            //console.log('');
+            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
 
             return cleanedRoutesTree;
         },

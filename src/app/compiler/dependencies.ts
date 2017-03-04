@@ -106,7 +106,7 @@ export class Dependencies {
     }
 
     getDependencies() {
-        let deps: Object = {
+        let deps: any = {
             'modules': [],
             'components': [],
             'injectables': [],
