@@ -275,31 +275,31 @@ export let RouterParser = (function() {
                         if (route.children[i].loadChildren) {
                             let child = foundLazyModuleWithPath(route.children[i].loadChildren),
                                 module = _.find(cleanModulesTree, {'name': child});
-
-                            let _rawModule:any = {};
-                            _rawModule.kind = 'module';
-                            _rawModule.children = [];
-                            _rawModule.module = module.name;
-
-                            let loopInside = function(mod) {
-                                if(mod.children) {
-                                    for(var i in mod.children) {
-                                        let route = foundRouteWithModuleName(mod.children[i].name);
-                                        if (typeof route !== 'undefined') {
-                                            if (route.data) {
-                                                route.children = JSON.parse(route.data);
-                                                delete route.data;
-                                                route.kind = 'module';
-                                                _rawModule.children[i] = route;
+                            if (module) {
+                                let _rawModule:any = {};
+                                _rawModule.kind = 'module';
+                                _rawModule.children = [];
+                                _rawModule.module = module.name;
+                                let loopInside = function(mod) {
+                                    if(mod.children) {
+                                        for(var i in mod.children) {
+                                            let route = foundRouteWithModuleName(mod.children[i].name);
+                                            if (typeof route !== 'undefined') {
+                                                if (route.data) {
+                                                    route.children = JSON.parse(route.data);
+                                                    delete route.data;
+                                                    route.kind = 'module';
+                                                    _rawModule.children[i] = route;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            loopInside(module);
+                                loopInside(module);
 
-                            route.children[i].children = [];
-                            route.children[i].children.push(_rawModule);
+                                route.children[i].children = [];
+                                route.children[i].children.push(_rawModule);
+                            }
                         }
                         loopRoutesParser(route.children[i]);
                     }
