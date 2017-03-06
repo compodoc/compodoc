@@ -37,6 +37,7 @@ export class CliApplication extends Application
             .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
+            .option('-w, --watch', 'Watch source files after serve and force documentation rebuild', false)
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--toggleMenuItems <items>', 'Close by default items in the menu example: \'all\' or \'modules\',\'components\'', list)
@@ -101,6 +102,10 @@ export class CliApplication extends Application
             this.configuration.mainData.port = program.port;
         }
 
+        if (program.watch) {
+            this.configuration.mainData.watch = program.watch;
+        }
+
         if (program.hideGenerator) {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
         }
@@ -129,16 +134,18 @@ export class CliApplication extends Application
             this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
         }
 
-        console.log(`
-                                                _
-                                               | |
-  ___    ___    _ __ ___    _ __     ___     __| |   ___     ___
- / __|  / _ \\  | '_ \` _ \\  | '_ \\   / _ \\   / _\` |  / _ \\   / __|
-| (__  | (_) | | | | | | | | |_) | | (_) | | (_| | | (_) | | (__   ${pkg.version}
- \\___|  \\___/  |_| |_| |_| | .__/   \\___/   \\__,_|  \\___/   \\___|
-                           | |
-                           |_|
-                           `);
+        if (!this.isWatching) {
+            console.log(`
+                                                    _
+                                                   | |
+      ___    ___    _ __ ___    _ __     ___     __| |   ___     ___
+     / __|  / _ \\  | '_ \` _ \\  | '_ \\   / _ \\   / _\` |  / _ \\   / __|
+    | (__  | (_) | | | | | | | | |_) | | (_) | | (_| | | (_) | | (__   ${pkg.version}
+     \\___|  \\___/  |_| |_| |_| | .__/   \\___/   \\__,_|  \\___/   \\___|
+                               | |
+                               |_|
+                               `);
+        }
 
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it

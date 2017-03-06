@@ -6,7 +6,8 @@ import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 import marked from 'marked';
 
-const glob: any = require('glob');
+const glob: any = require('glob'),
+      chokidar = require('chokidar');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -21,7 +22,7 @@ import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
-import { cleanNameWithoutSpaceAndToLowerCase } from '../utilities';
+import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 let pkg = require('../package.json'),
     cwd = process.cwd(),
@@ -30,13 +31,26 @@ let pkg = require('../package.json'),
     $markdownengine = new MarkdownEngine(),
     $ngdengine = new NgdEngine(),
     $searchEngine = new SearchEngine(),
-    startTime = new Date();
+    startTime = new Date()
 
 export class Application {
-    options:Object;
+    /**
+     * Files processed during initial scanning
+     */
     files: Array<string>;
-
+    /**
+     * Files processed during watch scanning
+     */
+    updatedFiles: Array<string>;
+    /**
+     * Compodoc configuration local reference
+     */
     configuration:IConfiguration;
+    /**
+     * Boolean for watching status
+     * @type {boolean}
+     */
+    isWatching: boolean = false;
 
     /**
      * Create a new compodoc application instance.
@@ -54,7 +68,7 @@ export class Application {
     }
 
     /**
-     * Start compodoc
+     * Start compodoc process
      */
     protected generate() {
         $htmlengine.init().then(() => {
@@ -62,8 +76,20 @@ export class Application {
         });
     }
 
+    /**
+     * Store files for initial processing
+     * @param  {Array<string>} files Files found during source folder and tsconfig scan
+     */
     setFiles(files:Array<string>) {
         this.files = files;
+    }
+
+    /**
+     * Store files for watch processing
+     * @param  {Array<string>} files Files found during source folder and tsconfig scan
+     */
+    setUpdatedFiles(files:Array<string>) {
+        this.updatedFiles = files;
     }
 
     processPackageJson() {
@@ -111,6 +137,18 @@ export class Application {
             });
             this.getDependenciesData();
         });
+    }
+
+    /**
+     * Get dependency data for small group of updated files during watch process
+     */
+    getMicroDependenciesData() {
+        logger.info('Get dependencies data');
+        let crawler = new Dependencies(
+          this.updatedFiles, {
+            tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+          }
+        );
     }
 
     getDependenciesData() {
@@ -852,13 +890,81 @@ export class Application {
     }
 
     runWebServer(folder) {
-        LiveServer.start({
-            root: folder,
-            open: this.configuration.mainData.open,
-            quiet: true,
-            logLevel: 0,
-            port: this.configuration.mainData.port
-        });
+        if(!this.isWatching) {
+            LiveServer.start({
+                root: folder,
+                open: this.configuration.mainData.open,
+                quiet: true,
+                logLevel: 0,
+                port: this.configuration.mainData.port
+            });
+        }
+        if (this.configuration.mainData.watch && !this.isWatching) {
+            this.runWatch();
+        } else {
+            let srcFolder = findMainSourceFolder(this.files);
+            logger.info(`Already watching sources in ${srcFolder} folder`);
+        }
+    }
+
+    runWatch() {
+        let srcFolder = findMainSourceFolder(this.files),
+            watchChangedFiles = [];
+
+        this.isWatching = true;
+
+        logger.info(`Watching sources in ${srcFolder} folder`);
+        let watcher = chokidar.watch(srcFolder, {
+                awaitWriteFinish: true,
+                ignored: /(spec|\.d)\.ts/
+            }),
+            timerAddAndRemoveRef,
+            timerChangeRef,
+            waiterAddAndRemove = () => {
+                clearTimeout(timerAddAndRemoveRef);
+                timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
+            },
+            runnerAddAndRemove = () => {
+                this.generate();
+            },
+            waiterChange = () => {
+                clearTimeout(timerChangeRef);
+                timerChangeRef = setTimeout(runnerChange, 1000);
+            },
+            runnerChange = () => {
+                console.log('runnerChange');
+                //this.setUpdatedFiles(watchChangedFiles);
+                //this.processPackageJson();
+            };
+        watcher
+            .on('ready', () => {
+                watcher
+                    .on('add', (file) => {
+                        logger.info(`File ${file} has been added`);
+                        // Test extension, if ts
+                        // rescan everything
+                        if (path.extname(file) === '.ts') {
+                            waiterAddAndRemove();
+                        }
+                    })
+                    .on('change', (file) => {
+                        logger.info(`File ${file} has been changed`);
+                        // Test extension, if ts
+                        // rescan only file ?
+                        if (path.extname(file) === '.ts') {
+                            watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                            waiterChange();
+                        }
+                    })
+                    .on('unlink', (file) => {
+                        logger.info(`File ${file} has been removed`);
+                        // Test extension, if ts
+                        // rescan everything
+                        if (path.extname(file) === '.ts') {
+                            waiterAddAndRemove();
+                        }
+                    });
+            });
     }
 
     /**

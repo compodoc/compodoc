@@ -133,6 +133,7 @@ Options:
   -t, --silent                       In silent mode, log messages aren't logged in the console
   -s, --serve                        Serve generated documentation (default http://localhost:8080/)
   -r, --port [port]                  Change default serving port
+  -w, --watch                        Watch source files after serve and force documentation rebuild
   --theme [theme]                    Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator                    Do not print the Compodoc link at the bottom of the page
   --toggleMenuItems <items>          Close by default items in the menu ( example: 'all' or 'modules','components' )
