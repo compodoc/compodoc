@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 
-const deep = require('deep-diff');
+const deep           = require('deep-diff'),
+      observableDiff = require('deep-diff').observableDiff,
+      applyChange    = require('deep-diff').applyChange;
 
 import { finderInAngularAPIs } from '../../utils/angular-api';
 
@@ -94,7 +96,11 @@ class DependenciesEngine {
     update(updatedData) {
         // Diff between updatedData and rawData
         let differences = deep.diff(updatedData, this.rawData);
-        console.log(differences);
+        observableDiff(this.rawData, updatedData, (d) => {
+            if (d.path.length !== 1) {
+                applyChange(this.rawData, updatedData, d);
+            }
+        });
     }
     findInCompodoc(name: string) {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),

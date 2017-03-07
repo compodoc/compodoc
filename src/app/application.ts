@@ -154,29 +154,7 @@ export class Application {
 
         $dependenciesEngine.update(dependenciesData);
 
-        /*
-        let handleOthersFeatures = () => {
-            if ($dependenciesEngine.hasDifferenceForDirectives()) {
-                this.prepareDirectives();
-            }
-        }
-
-        if ($dependenciesEngine.hasDifferenceForModules()) {
-            this.prepareModules();
-        }
-        if ($dependenciesEngine.hasDifferenceForComponents()) {
-            this.prepareComponents().then(handleOthersFeatures, (errorMessage) => {
-                logger.error(errorMessage);
-            });
-        } else {
-            handleOthersFeatures();
-        }
-        */
-
-        //Update dependenciesEngine with this fresh files updated
-        //and rebuild only updated files
-
-        //this.prepareEverything();
+        this.prepareEverything();
     }
 
     getDependenciesData() {
@@ -964,7 +942,6 @@ export class Application {
                 timerChangeRef = setTimeout(runnerChange, 1000);
             },
             runnerChange = () => {
-                console.log('runnerChange');
                 this.setUpdatedFiles(watchChangedFiles);
                 this.getMicroDependenciesData();
             };
@@ -972,7 +949,7 @@ export class Application {
             .on('ready', () => {
                 watcher
                     .on('add', (file) => {
-                        logger.info(`File ${file} has been added`);
+                        logger.debug(`File ${file} has been added`);
                         // Test extension, if ts
                         // rescan everything
                         if (path.extname(file) === '.ts') {
@@ -980,7 +957,7 @@ export class Application {
                         }
                     })
                     .on('change', (file) => {
-                        logger.info(`File ${file} has been changed`);
+                        logger.debug(`File ${file} has been changed`);
                         // Test extension, if ts
                         // rescan only file
                         if (path.extname(file) === '.ts') {
@@ -989,7 +966,7 @@ export class Application {
                         }
                     })
                     .on('unlink', (file) => {
-                        logger.info(`File ${file} has been removed`);
+                        logger.debug(`File ${file} has been removed`);
                         // Test extension, if ts
                         // rescan everything
                         if (path.extname(file) === '.ts') {
