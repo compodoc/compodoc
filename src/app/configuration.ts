@@ -16,6 +16,7 @@ interface Page {
     data?: any;
     depth?: number;
     pageType?: string;
+    component?: any;
 }
 
 interface IMainData {

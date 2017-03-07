@@ -149,6 +149,34 @@ export class Application {
             tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
           }
         );
+
+        let dependenciesData = crawler.getDependencies();
+
+        $dependenciesEngine.update(dependenciesData);
+
+        /*
+        let handleOthersFeatures = () => {
+            if ($dependenciesEngine.hasDifferenceForDirectives()) {
+                this.prepareDirectives();
+            }
+        }
+
+        if ($dependenciesEngine.hasDifferenceForModules()) {
+            this.prepareModules();
+        }
+        if ($dependenciesEngine.hasDifferenceForComponents()) {
+            this.prepareComponents().then(handleOthersFeatures, (errorMessage) => {
+                logger.error(errorMessage);
+            });
+        } else {
+            handleOthersFeatures();
+        }
+        */
+
+        //Update dependenciesEngine with this fresh files updated
+        //and rebuild only updated files
+
+        //this.prepareEverything();
     }
 
     getDependenciesData() {
@@ -164,6 +192,10 @@ export class Application {
 
         $dependenciesEngine.init(dependenciesData);
 
+        this.prepareEverything();
+    }
+
+    prepareEverything() {
         this.prepareModules();
 
         this.prepareComponents().then((readmeData) => {
@@ -933,8 +965,8 @@ export class Application {
             },
             runnerChange = () => {
                 console.log('runnerChange');
-                //this.setUpdatedFiles(watchChangedFiles);
-                //this.processPackageJson();
+                this.setUpdatedFiles(watchChangedFiles);
+                this.getMicroDependenciesData();
             };
         watcher
             .on('ready', () => {
@@ -950,7 +982,7 @@ export class Application {
                     .on('change', (file) => {
                         logger.info(`File ${file} has been changed`);
                         // Test extension, if ts
-                        // rescan only file ?
+                        // rescan only file
                         if (path.extname(file) === '.ts') {
                             watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
                             waiterChange();
