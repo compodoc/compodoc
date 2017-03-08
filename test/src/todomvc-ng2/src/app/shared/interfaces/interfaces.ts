@@ -58,3 +58,8 @@ interface ClockInterface {
      */
     reset(): void;
 }
+
+class Clock implements ClockInterface {
+     currentTime: Date;
+     constructor(h: number, m: number) { }
+}
