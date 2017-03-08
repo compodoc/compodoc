@@ -911,7 +911,7 @@ export class Application {
         }
         if (this.configuration.mainData.watch && !this.isWatching) {
             this.runWatch();
-        } else {
+        } else if (this.configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
             logger.info(`Already watching sources in ${srcFolder} folder`);
         }
