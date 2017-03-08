@@ -634,6 +634,9 @@ path.link {
 #body-routes a {
     text-decoration: underline;
 }
+#body-routes svg {
+    overflow: visible;
+}
 
 /* Miscellaneous */
 

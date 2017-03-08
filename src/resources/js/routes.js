@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    var m = [
+    var offsetWidthSVG = 80,
+        m = [
             0, 120, 20, 20
         ],
         w = document.getElementById('body-routes').offsetWidth - m[1] - m[3],
@@ -18,7 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return [d.y, d.x];
     });
 
-    var vis = d3.select("#body-routes").append("svg:svg").attr("width", w + m[1] + m[3]).attr("height", h + m[0] + m[2]).append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+    var vis = d3.select("#body-routes").append("svg:svg").append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+    setTimeout(function() {
+        var svgWidth = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().width,
+            svgHeight = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().height;
+        document.getElementById('body-routes').querySelector('svg').setAttribute('width', svgWidth + offsetWidthSVG);
+        document.getElementById('body-routes').querySelector('svg').setAttribute('height', svgHeight);
+    }, 800);
 
     root = ROUTES_INDEX;
     root.x0 = 0;
