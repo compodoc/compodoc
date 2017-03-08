@@ -32,6 +32,26 @@
             </p>
         {{/if}}
 
+        {{#if class.extends}}
+            <p class="comment">
+                <h3>Extends</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=class.extends }}
+            </p>
+        {{/if}}
+
+        {{#if class.implements}}
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                {{#each class.implements}}
+                    {{> link-type type=this}}
+                {{/each}}
+            </p>
+        {{/if}}
+
         {{#if class.constructorObj}}
             {{> block-constructor constructor=class.constructorObj file=class.file }}
         {{/if}}

@@ -83,12 +83,15 @@ class DependenciesEngine {
         },
             resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
             resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+            resultInCompodocComponents = finderInCompodocDependencies(this.components),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
         if (resultInCompodocInjectables.data !== null) {
             return resultInCompodocInjectables
         } else if (resultInCompodocClasses.data !== null) {
             return resultInCompodocClasses
+        } else if (resultInCompodocComponents.data !== null) {
+            return resultInCompodocComponents
         } else if (resultInAngularAPIs.data !== null) {
             return resultInAngularAPIs
         }

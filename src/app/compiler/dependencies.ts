@@ -62,6 +62,9 @@ interface Deps {
     templateUrl?: string[];
     viewProviders?: string[];
 
+    implements?;
+    extends?;
+
     inputsClass?: Object[];
 
     //common
@@ -244,6 +247,12 @@ export class Dependencies {
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
+                        if (IO.extends) {
+                            deps.extends = IO.extends;
+                        }
+                        if (IO.implements && IO.implements.length > 0) {
+                            deps.implements = IO.implements;
+                        }
                         $componentsTreeEngine.addComponent(deps);
                         outputSymbols['components'].push(deps);
                     }
@@ -339,6 +348,12 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    if (IO.extends) {
+                        deps.extends = IO.extends;
+                    }
+                    if (IO.implements && IO.implements.length > 0) {
+                        deps.implements = IO.implements;
+                    }
                     this.debug(deps);
                     outputSymbols['classes'].push(deps);
                 } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
@@ -428,6 +443,12 @@ export class Dependencies {
                     }
                     if(IO.methods) {
                         deps.methods = IO.methods;
+                    }
+                    if (IO.extends) {
+                        deps.extends = IO.extends;
+                    }
+                    if (IO.implements && IO.implements.length > 0) {
+                        deps.implements = IO.implements;
                     }
                     this.debug(deps);
                     outputSymbols['classes'].push(deps);
@@ -1133,28 +1154,31 @@ export class Dependencies {
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
+        var implementsElements = [];
+        var extendsElement;
         var jsdoctags = [];
 
         if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
             var implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
             if (implementedTypes) {
-                console.log('implementedTypes: ', implementedTypes);
+                let i = 0,
+                    len = implementedTypes.length;
+                for(i; i<len; i++) {
+                    if (implementedTypes[i].expression) {
+                        implementsElements.push(implementedTypes[i].expression.text);
+                    }
+                }
             }
         }
 
         if (typeof ts.getClassExtendsHeritageClauseElement !== 'undefined') {
             var extendsTypes = ts.getClassExtendsHeritageClauseElement(classDeclaration);
             if (extendsTypes) {
-                console.log('extendsTypes: ', extendsTypes);
+                if (extendsTypes.expression) {
+                    extendsElement = extendsTypes.expression.text
+                }
             }
         }
-        /*
-        if (classDeclaration.heritageClauses && classDeclaration.heritageClauses.length > 0) {
-            for (let i = 0; i < classDeclaration.heritageClauses.length; i++) {
-                console.log(classDeclaration.heritageClauses[i].kind, ts.SyntaxKind[200], ts.SyntaxKind[classDeclaration.heritageClauses[i].kind]);
-                console.log(util.inspect(classDeclaration.heritageClauses[i].types, { showHidden: false, depth: 8 }));
-            }
-        }*/
 
         if (symbol.valueDeclaration) {
             jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
@@ -1174,7 +1198,9 @@ export class Dependencies {
                         indexSignatures: members.indexSignatures,
                         kind: members.kind,
                         constructor: members.constructor,
-                        jsdoctags: jsdoctags
+                        jsdoctags: jsdoctags,
+                        extends: extendsElement,
+                        implements: implementsElements
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                   members = this.visitMembers(classDeclaration.members, sourceFile);
@@ -1186,7 +1212,9 @@ export class Dependencies {
                     indexSignatures: members.indexSignatures,
                     properties: members.properties,
                     kind: members.kind,
-                    constructor: members.constructor
+                    constructor: members.constructor,
+                    extends: extendsElement,
+                    implements: implementsElements
                   }];
               } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                   return [{
@@ -1206,7 +1234,9 @@ export class Dependencies {
                 indexSignatures: members.indexSignatures,
                 properties: members.properties,
                 kind: members.kind,
-                constructor: members.constructor
+                constructor: members.constructor,
+                extends: extendsElement,
+                implements: implementsElements
             }];
         } else {
             members = this.visitMembers(classDeclaration.members, sourceFile);
@@ -1216,7 +1246,9 @@ export class Dependencies {
                 indexSignatures: members.indexSignatures,
                 properties: members.properties,
                 kind: members.kind,
-                constructor: members.constructor
+                constructor: members.constructor,
+                extends: extendsElement,
+                implements: implementsElements
             }];
         }
 
