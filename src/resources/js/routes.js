@@ -122,6 +122,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (d.component) {
                     _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
                 }
+                if (d.canActivate) {
+                    _name += `<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>`
+                }
+                if (d.canDeactivate) {
+                    _name += `<tspan x="0" dy="1.4em">&#215; canDeactivate</tspan>`
+                }
+                if (d.canActivateChild) {
+                    _name += `<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>`
+                }
+                if (d.canLoad) {
+                    _name += `<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>`
+                }
                 if (d.loadChildren) {
                     let moduleName = foundLazyModuleWithPath(d.loadChildren);
                     _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
