@@ -1135,6 +1135,27 @@ export class Dependencies {
         var members;
         var jsdoctags = [];
 
+        if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
+            var implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
+            if (implementedTypes) {
+                console.log('implementedTypes: ', implementedTypes);
+            }
+        }
+
+        if (typeof ts.getClassExtendsHeritageClauseElement !== 'undefined') {
+            var extendsTypes = ts.getClassExtendsHeritageClauseElement(classDeclaration);
+            if (extendsTypes) {
+                console.log('extendsTypes: ', extendsTypes);
+            }
+        }
+        /*
+        if (classDeclaration.heritageClauses && classDeclaration.heritageClauses.length > 0) {
+            for (let i = 0; i < classDeclaration.heritageClauses.length; i++) {
+                console.log(classDeclaration.heritageClauses[i].kind, ts.SyntaxKind[200], ts.SyntaxKind[classDeclaration.heritageClauses[i].kind]);
+                console.log(util.inspect(classDeclaration.heritageClauses[i].types, { showHidden: false, depth: 8 }));
+            }
+        }*/
+
         if (symbol.valueDeclaration) {
             jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
         }
