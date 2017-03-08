@@ -421,7 +421,23 @@ export class Application {
                 loop = () => {
                     if( i <= len-1) {
                         let dirname = path.dirname(that.configuration.mainData.components[i].file),
-                            readmeFile = dirname + path.sep + 'README.md';
+                            readmeFile = dirname + path.sep + 'README.md',
+                            handleTemplateurl = function() {
+                                return new Promise(function(resolve, reject) {
+                                    let templatePath = path.resolve(dirname + path.sep + that.configuration.mainData.components[i].templateUrl);
+                                    if (fs.existsSync(templatePath)) {
+                                        fs.readFile(templatePath, 'utf8', (err, data) => {
+                                            if (err) {
+                                                logger.error(err);
+                                                reject();
+                                            } else {
+                                                that.configuration.mainData.components[i].templateData = data;
+                                                resolve();
+                                            }
+                                        });
+                                    }
+                                });
+                            };
                         if (fs.existsSync(readmeFile)) {
                             logger.info('README.md exist for this component, include it');
                             fs.readFile(readmeFile, 'utf8', (err, data) => {
@@ -435,8 +451,18 @@ export class Application {
                                     depth: 2,
                                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                 });
-                                i++;
-                                loop();
+                                if (that.configuration.mainData.components[i].templateUrl.length > 0) {
+                                    logger.info(`${that.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                                    handleTemplateurl().then(() => {
+                                        i++;
+                                        loop();
+                                    }, (e) => {
+                                        logger.error(e);
+                                    })
+                                } else {
+                                    i++;
+                                    loop();
+                                }
                             });
                         } else {
                             that.configuration.addPage({
@@ -447,8 +473,18 @@ export class Application {
                                 depth: 2,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                             });
-                            i++;
-                            loop();
+                            if (that.configuration.mainData.components[i].templateUrl.length > 0) {
+                                logger.info(`${that.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                                handleTemplateurl().then(() => {
+                                    i++;
+                                    loop();
+                                }, (e) => {
+                                    logger.error(e);
+                                })
+                            } else {
+                                i++;
+                                loop();
+                            }
                         }
                     } else {
                         resolve();
