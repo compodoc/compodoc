@@ -9,11 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
             0, 120, 20, 20
         ],
         w = document.getElementById('body-routes').offsetWidth - m[1] - m[3],
-        h = (document.getElementsByClassName('content')[0].offsetHeight - document.getElementsByClassName('breadcrumb')[0].offsetHeight - 40) - m[0] - m[2],
+        h = (document.getElementsByClassName('content')[0].offsetHeight - document.getElementsByClassName('breadcrumb')[0].offsetHeight - 40),
         i = 0,
         root;
-
-    var tree = d3.layout.tree().size([h, w]);
+    var tree = d3.layout.tree().size([h + 900, w]);
 
     var diagonal = d3.svg.diagonal().projection(function(d) {
         return [d.y, d.x];
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var svgWidth = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().width,
             svgHeight = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().height;
         document.getElementById('body-routes').querySelector('svg').setAttribute('width', svgWidth + offsetWidthSVG);
-        document.getElementById('body-routes').querySelector('svg').setAttribute('height', svgHeight);
+        document.getElementById('body-routes').querySelector('svg').setAttribute('height', svgHeight + offsetWidthSVG);
     }, 800);
 
     root = ROUTES_INDEX;
@@ -122,21 +121,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (d.component) {
                     _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
                 }
+                if (d.loadChildren) {
+                    let moduleName = foundLazyModuleWithPath(d.loadChildren);
+                    _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
+                }
                 if (d.canActivate) {
                     _name += `<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>`
                 }
                 if (d.canDeactivate) {
-                    _name += `<tspan x="0" dy="1.4em">&#215; canDeactivate</tspan>`
+                    _name += `<tspan x="0" dy="1.4em">&#215;&nbsp;&nbsp;canDeactivate</tspan>`
                 }
                 if (d.canActivateChild) {
                     _name += `<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>`
                 }
                 if (d.canLoad) {
                     _name += `<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>`
-                }
-                if (d.loadChildren) {
-                    let moduleName = foundLazyModuleWithPath(d.loadChildren);
-                    _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
                 }
                 if (d.redirectTo) {
                     _name += `<tspan x="0" dy="1.4em">&rarr; ` + d.redirectTo + '</tspan>'
@@ -189,6 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             return _text;
         });
+
+        
 
         // Transition nodes to their new position.
         var nodeUpdate = node.transition().duration(duration).attr("transform", function(d) {

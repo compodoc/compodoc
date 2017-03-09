@@ -1,7 +1,7 @@
 (function() {
     d3.layout = {};
 
-    var offset = 80;
+    var offset = 0;
 
     // Node-link tree diagram using the Reingold-Tilford "tidy" algorithm
     d3.layout.tree = function() {
@@ -32,14 +32,14 @@
                     d3_layout_treeShift(node);
                     var midpoint = .5 * (firstChild._tree.prelim + child._tree.prelim);
                     if (previousSibling) {
-                        layout.prelim = previousSibling._tree.prelim + separation(node, previousSibling) + offset;
+                        layout.prelim = previousSibling._tree.prelim + separation(node, previousSibling);
                         layout.mod = layout.prelim - midpoint;
                     } else {
                         layout.prelim = midpoint;
                     }
                 } else {
                     if (previousSibling) {
-                        layout.prelim = previousSibling._tree.prelim + separation(node, previousSibling) + offset;
+                        layout.prelim = previousSibling._tree.prelim + separation(node, previousSibling);
                     }
                 }
             }
@@ -72,7 +72,7 @@
                         vom = d3_layout_treeLeft(vom);
                         vop = d3_layout_treeRight(vop);
                         vop._tree.ancestor = node;
-                        shift = vim._tree.prelim + sim - vip._tree.prelim - sip + separation(vim, vip) + offset;
+                        shift = vim._tree.prelim + sim - vip._tree.prelim - sip + separation(vim, vip);
                         if (shift > 0) {
                             d3_layout_treeMove(d3_layout_treeAncestor(vim, node, ancestor), node, shift);
                             sip += shift;
