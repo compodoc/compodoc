@@ -98,6 +98,9 @@ class DependenciesEngine {
     }
     update(updatedData) {
         // Diff between updatedData and rawData
+        // components
+        // loop for updatedData components, find each one in rawData, and override it
+        // again for all ng types : interfaces, pipes, modules, directives, classes, injectables, routes ?
         let differences = deep.diff(updatedData, this.rawData);
         observableDiff(this.rawData, updatedData, (d) => {
             if (d.path.length !== 1) {
