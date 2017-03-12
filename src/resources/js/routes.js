@@ -4,255 +4,278 @@ document.addEventListener('DOMContentLoaded', function() {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    var offsetWidthSVG = 80,
-        m = [
-            0, 120, 20, 20
-        ],
-        w = document.getElementById('body-routes').offsetWidth - m[1] - m[3],
-        h = (document.getElementsByClassName('content')[0].offsetHeight - document.getElementsByClassName('breadcrumb')[0].offsetHeight - 40),
-        i = 0,
-        root;
-    var tree = d3.layout.tree().size([h + 900, w]);
+    function foundLazyModuleWithPath(path) {
+        //path is like app/customers/customers.module#CustomersModule
+        let split = path.split('#'),
+            lazyModulePath = split[0],
+            lazyModuleName = split[1];
+        return lazyModuleName;
+    }
 
-    var diagonal = d3.svg.diagonal().projection(function(d) {
-        return [d.y, d.x];
+    function getBB(selection) {
+        selection.each(function(d){d.bbox = this.getBBox();})
+    }
+
+    var test_cases,
+        test_case,
+        test_case_num,
+        engine;
+
+    var tree = ROUTES_INDEX;
+
+    engine = d3.layout.tree().setNodeSizes(true);
+
+    // gap
+    engine.spacing(function(a, b) {
+      return a.parent == b.parent ?
+        0 : engine.rootXSize();
+    })
+
+    // sizing
+    engine.nodeSize(function(d) {
+        return [document.getElementById(d.id).getBBox()["height"] + 70, document.getElementById(d.id).getBBox()["width"] + 30];
     });
 
-    var vis = d3.select("#body-routes").append("svg:svg").append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+    // First get the bag of nodes in the right order
+    var nodes = d3.layout.hierarchy()(tree);
 
-    setTimeout(function() {
-        var svgWidth = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().width,
-            svgHeight = document.getElementById('body-routes').querySelector('g').getBoundingClientRect().height;
-        document.getElementById('body-routes').querySelector('svg').setAttribute('width', svgWidth + offsetWidthSVG);
-        document.getElementById('body-routes').querySelector('svg').setAttribute('height', svgHeight + offsetWidthSVG);
-    }, 800);
+    // Then get started drawing, including, in the case of flare,
+    // the text for each node, which is needed to determine the
+    // node sizes, which are used in the layout algorithm.
+    var svg = d3.select("#body-routes").append('svg'),
+        svg_g = svg.append("g"),
+        svg_p = svg.append("g"),
+        last_id = 0,
 
-    root = ROUTES_INDEX;
-    root.x0 = 0;
-    root.y0 = 0;
-    update(root);
+        node = svg_g.selectAll(".node")
+            .data(nodes, function(d) {
+                return d.id || (d.id = ++last_id);
+            })
+            .enter().append("g")
+            .attr("class", "node");
 
-    function update(source) {
-        var duration = 750;
+        svg
+           .attr('id', 'main')
 
-        var foundLazyModuleWithPath = function(path) {
-            //path is like app/customers/customers.module#CustomersModule
-            let split = path.split('#'),
-                lazyModulePath = split[0],
-                lazyModuleName = split[1];
-            return lazyModuleName;
-        }
+        svg_g
+            .attr("transform", "translate(20,0)")
+            .attr('id', 'main-group')
 
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse();
+        svg_p
+            .attr("transform", "translate(20,0)")
+            .attr('id', 'paths')
 
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) {
-            d.y = d.depth * 180;
-        });
+        var infos_group = node.append("g")
+            .attr({
+                "id": function(d) {
+                    return d.id;
+                },
+                dx: 0,
+                dy: 0,
+            })
 
-        nodes[nodes.length - 1].x = 40;
+        //Node icon
+        infos_group.append("text")
+            .attr('font-family', 'FontAwesome')
+            .attr("y", 5)
+            .attr("x", 0)
+            .attr('class', function(d) {
+                return d.children || d._children
+                    ? "icon has-children"
+                    : "icon";
+            })
+            .attr('font-size', function(d) {
+                return '15px'
+            }).text(function(d) {
+                return '\uf126'
+            });
 
-        // Update the nodes…
-        var node = vis.selectAll("g.node").data(nodes, function(d) {
-            return d.id || (d.id = ++i);
-        });
-
-        // Enter any new nodes at the parent's previous position.
-        var nodeEnter = node.enter().append("svg:g").attr("class", "node").attr("transform", function(d) {
-            return "translate(" + source.y0 + "," + source.x0 + ")";
-        }).on("click", function(d) {
-            toggle(d);
-            update(d);
-        });
-
-        // Node icon
-        nodeEnter.append('svg:text')
-        .attr("y", function(d) {
-            return 5;
-        })
-        .attr("x", function(d) {
-            return 0;
-        })
-        .attr('font-family', 'FontAwesome')
-        .attr('class', function(d) {
-            return d.children || d._children
-                ? "icon has-children"
-                : "icon";
-        })
-        .attr('font-size', function(d) {
-            return '15px'
-        }).text(function(d) {
-            return '\uf126'
-        });
-
-        //
-        // Node description
-        //
-        nodeEnter.append("svg:text")
-        .attr("x", function(d) {
-            return 0;
-        })
-        .attr("y", function(d) {
-            return 10;
-        })
-        .attr("dy", ".35em")
-        .attr('class', 'text')
-        .attr("text-anchor", function(d) {
-            return "start";
-        }).html(function(d) {
-            // if kind === module name + module
-            // if kind === component component + path
-            let _name = '';
-            if (d.kind === 'module') {
-                if (d.module) {
-                    _name += `<tspan x="0" dy="1.4em"><a href="./modules/${d.module}.html">` + d.module + '</a></tspan>';
-                    if (d.name) {
-                        _name += '<tspan x="0" dy="1.4em">' + d.name + '</tspan>';
+        //node infos
+        infos_group.append("svg:text")
+            .attr("x", function(d) {
+                return 0;
+            })
+            .attr("y", function(d) {
+                return 10;
+            })
+            .attr("dy", ".35em")
+            .attr('class', 'text')
+            .attr("text-anchor", function(d) {
+                return "start";
+            }).html(function(d) {
+                // if kind === module name + module
+                // if kind === component component + path
+                let _name = '';
+                if (d.kind === 'module') {
+                    if (d.module) {
+                        _name += `<tspan x="0" dy="1.4em"><a href="./modules/${d.module}.html">` + d.module + '</a></tspan>';
+                        if (d.name) {
+                            _name += '<tspan x="0" dy="1.4em">' + d.name + '</tspan>';
+                        }
+                    } else {
+                        _name += `<tspan x="0" dy="1.4em">` + htmlEntities(d.name) + '</tspan>';
                     }
-                } else {
-                    _name += `<tspan x="0" dy="1.4em">` + htmlEntities(d.name) + '</tspan>';
-                }
-            } else if (d.kind === 'component') {
-                _name += '<tspan x="0" dy="1.4em">' + d.path + '</tspan>'
-                _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
-            } else {
-                _name += `<tspan x="0" dy="1.4em">/` + d.path + '</tspan>'
-                if (d.component) {
+                } else if (d.kind === 'component') {
+                    _name += '<tspan x="0" dy="1.4em">' + d.path + '</tspan>'
                     _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+                } else {
+                    _name += `<tspan x="0" dy="1.4em">/` + d.path + '</tspan>'
+                    if (d.component) {
+                        _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+                    }
+                    if (d.loadChildren) {
+                        let moduleName = foundLazyModuleWithPath(d.loadChildren);
+                        _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
+                    }
+                    if (d.canActivate) {
+                        _name += `<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>`
+                    }
+                    if (d.canDeactivate) {
+                        _name += `<tspan x="0" dy="1.4em">&#215;&nbsp;&nbsp;canDeactivate</tspan>`
+                    }
+                    if (d.canActivateChild) {
+                        _name += `<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>`
+                    }
+                    if (d.canLoad) {
+                        _name += `<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>`
+                    }
+                    if (d.redirectTo) {
+                        _name += `<tspan x="0" dy="1.4em">&rarr; ` + d.redirectTo + '</tspan>'
+                    }
+                    if (d.pathMatch) {
+                        _name += `<tspan x="0" dy="1.4em">&gt; ` + d.pathMatch + '</tspan>'
+                    }
                 }
+                return _name;
+            })
+            .call(getBB);
+
+        //
+        // Node lazy loaded ?
+        //
+        infos_group.append('svg:text')
+            .attr("y", function(d) {
+                return 45;
+            })
+            .attr("x", function(d) {
+                return -18;
+            })
+            .attr('font-family', 'FontAwesome')
+            .attr('class', function(d) {
+                return "icon";
+            })
+            .attr('font-size', function(d) {
+                return '15px'
+            }).text(function(d) {
+                var _text = '';
                 if (d.loadChildren) {
-                    let moduleName = foundLazyModuleWithPath(d.loadChildren);
-                    _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
+                    _text = '\uf017';
                 }
-                if (d.canActivate) {
-                    _name += `<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>`
+                if (d.guarded) {
+                    _text = '\uf023';
                 }
-                if (d.canDeactivate) {
-                    _name += `<tspan x="0" dy="1.4em">&#215;&nbsp;&nbsp;canDeactivate</tspan>`
-                }
-                if (d.canActivateChild) {
-                    _name += `<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>`
-                }
-                if (d.canLoad) {
-                    _name += `<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>`
-                }
-                if (d.redirectTo) {
-                    _name += `<tspan x="0" dy="1.4em">&rarr; ` + d.redirectTo + '</tspan>'
-                }
-                if (d.pathMatch) {
-                    _name += `<tspan x="0" dy="1.4em">&gt; ` + d.pathMatch + '</tspan>'
-                }
-            }
-            return _name;
-        }).style("fill-opacity", 1e-6)
-        .call(getBB);
-        //
-        // Node description background
-        //
-        nodeEnter.insert("rect","text")
-        .attr("width", function(d){return d.bbox.width})
-        .attr("height", function(d){return d.bbox.height})
+                return _text;
+            });
+
+        //Node text background
+        infos_group.insert("rect","text")
+        .attr("width", function(d){
+            return d.bbox.width;
+        })
+        .attr("height", function(d){
+            return d.bbox.height;
+        })
         .attr("y", function(d) {
             return 15;
         })
         .style("fill", "white")
         .style("fill-opacity", 0.75);
-        function getBB(selection) {
-            selection.each(function(d){d.bbox = this.getBBox();})
-        }
 
-        //
-        // Node lazy loaded ?
-        //
-        nodeEnter.append('svg:text')
-        .attr("y", function(d) {
-            return 45;
-        })
-        .attr("x", function(d) {
-            return -18;
-        })
-        .attr('font-family', 'FontAwesome')
-        .attr('class', function(d) {
-            return "icon";
-        })
-        .attr('font-size', function(d) {
-            return '15px'
-        }).text(function(d) {
-            var _text = '';
-            if (d.loadChildren) {
-                _text = '\uf017';
-            }
-            if (d.guarded) {
-                _text = '\uf023';
-            }
-            return _text;
-        });
+    // *Now* do the layout
+    nodes = engine.nodes(tree);
 
-        
+    // Get the extents, average node area, etc.
+    function node_extents(n) {
+        return [n.x - n.x_size / 2, n.y,
+            n.x + n.x_size / 2, n.y + n.y_size
+        ];
+    }
+    var root_extents = node_extents(nodes[0]);
+    var xmin = root_extents[0],
+        ymin = root_extents[1],
+        xmax = root_extents[2],
+        ymax = root_extents[3],
+        area_sum = (xmax - xmin) * (ymax - ymin),
+        x_size_min = nodes[0].x_size,
+        y_size_min = nodes[0].y_size;
 
-        // Transition nodes to their new position.
-        var nodeUpdate = node.transition().duration(duration).attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")";
-        });
+    nodes.slice(1).forEach(function(n) {
+        var ne = node_extents(n);
+        xmin = Math.min(xmin, ne[0]);
+        ymin = Math.min(ymin, ne[1]);
+        xmax = Math.max(xmax, ne[2]);
+        ymax = Math.max(ymax, ne[3]);
+        area_sum += (ne[2] - ne[0]) * (ne[3] - ne[1]);
+        x_size_min = Math.min(x_size_min, n.x_size);
+        y_size_min = Math.min(y_size_min, n.y_size);
+    });
+    var area_ave = area_sum / nodes.length;
+    // scale such that the average node size is 400 px^2
+    var scale = 80 / Math.sqrt(area_ave);
+    // Functions to get the derived svg coordinates given the tree node
+    // coordinates.
+    // Note that the x-y orientations between the svg and the tree drawing
+    // are reversed.
 
-        nodeUpdate.select("circle").attr("r", 4.5).style("fill", function(d) {
-            return d._children
-                ? "lightsteelblue"
-                : "#fff";
-        });
-
-        nodeUpdate.selectAll("text").style("fill-opacity", 1);
-
-        // Transition exiting nodes to the parent's new position.
-        var nodeExit = node.exit().transition().duration(duration).attr("transform", function(d) {
-            return "translate(" + source.y + "," + source.x + ")";
-        }).remove();
-
-        nodeExit.select("circle").attr("r", 1e-6);
-        nodeExit.select("text").style("fill-opacity", 1e-6);
-
-        // Update the links…
-        var link = vis.selectAll("path.link").data(tree.links(nodes), function(d) {
-            return d.target.id;
-        });
-
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("svg:path", "g").attr("class", "link").attr("d", function(d) {
-            var o = {
-                x: source.x0,
-                y: source.y0
-            };
-            return diagonal({source: o, target: o});
-        }).transition().duration(duration).attr("d", diagonal);
-
-        // Transition links to their new position.
-        link.transition().duration(duration).attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        link.exit().transition().duration(duration).attr("d", function(d) {
-            var o = {
-                x: source.x,
-                y: source.y
-            };
-            return diagonal({source: o, target: o});
-        }).remove();
-
-        // Stash the old positions for transition.
-        nodes.forEach(function(d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
+    function svg_x(node_y) {
+        return (node_y - ymin);
     }
 
-    // Toggle children.
-    function toggle(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
-        } else {
-            d.children = d._children;
-            d._children = null;
-        }
+    function svg_y(node_x) {
+        return (node_x - xmin) * scale;
     }
+
+
+    // FIXME: need to implement these -- the max value should not
+    // be scaled.
+
+    // The node box is drawn smaller than the actual node width, to
+    // allow room for the diagonal. Note that these are in units of
+    // svg drawing coordinates (not tree node coordinates)
+    var nodebox_right_margin = Math.min(x_size_min * scale, 10);
+    // And smaller than the actual node height, for spacing
+    var nodebox_vertical_margin = Math.min(y_size_min * scale, 3);
+
+
+    // Reposition everything according to the layout
+    node.attr("transform", function(d) {
+            return "translate(" + svg_x(d.y) + "," + svg_y(d.x) + ")";
+        })
+
+    // This controls the lines between the nodes; see
+    // https://github.com/mbostock/d3/wiki/SVG-Shapes#diagonal_projection
+    var diagonal = d3.svg.diagonal()
+        .projection(function(d) {
+            return [svg_x(d.y), svg_y(d.x)];
+        });
+
+    var links = engine.links(nodes);
+    var links = svg_p.selectAll(".link")
+        .data(links)
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", diagonal);
+
+    var _svg = document.getElementById('main'),
+        main_g = _svg.childNodes[0]
+
+    _svg.removeChild(main_g);
+    _svg.appendChild(main_g);
+
+    // Set the svg drawing size and translation
+    svg.attr({
+        width: document.getElementById('main-group').getBBox()['width'] + 30,
+        height: document.getElementById('main-group').getBBox()['height'] + 50,
+    });
+
 });
