@@ -13,7 +13,7 @@
 <p align="center">The missing documentation tool for your Angular application</p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.png" alt="Compodoc: The missing documentation tool for your Angular application">
+  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.gif" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
 # Live Demo
@@ -48,9 +48,9 @@
 - [Node.js versions](#node.js-versions)
 - [Angular-CLI](#angular-cli)
 - [Getting Started with compodoc](#getting-started-with-compodoc)
-  - [Install](#install)
-  - [Usage](#usage)
+  - [Global installation](#global-installation)
   - [Local installation](#local-installation)
+  - [Usage](#usage)
 - [Themes](#themes)
 - [Common use cases](#common-use-cases)
   - [Render documentation](#render-documentation)
@@ -99,18 +99,38 @@ Compodoc is tested with only LTS versions : v6.9.4 & v4.7.1
 
 ## Angular-CLI
 
-Compodoc supports last Angular-CLI version : [1.0.0-beta-32](https://github.com/angular/angular-cli/blob/master/CHANGELOG.md)
+Compodoc supports last Angular-CLI version : [1.0.0-rc.0](https://github.com/angular/angular-cli/blob/master/CHANGELOG.md)
 
 Just run Compodoc in a fresh or existing project.
 
 ## Getting Started with compodoc
 
-### Install
+### Global installation
 
 Install from npm :
 
 ```
 npm install -g compodoc
+```
+
+### Local installation
+
+```
+npm install --save-dev compodoc
+```
+
+Define a script task for it in your package.json :
+
+```
+"scripts": {
+  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
+}
+```
+
+and run it like a normal npm script :
+
+```
+npm run compodoc
 ```
 
 ### Usage
@@ -136,33 +156,13 @@ Options:
   -w, --watch                        Watch source files after serve and force documentation rebuild
   --theme [theme]                    Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator                    Do not print the Compodoc link at the bottom of the page
-  --toggleMenuItems <items>          Close by default items in the menu ( example: 'all' or 'modules','components' )
+  --toggleMenuItems <items>          Close by default items in the menu ( example: ['all'] or ['modules','components'] )
   --includes [path]                  Path of external markdown files to include
   --includesName [name]              Name of item menu of externals markdown files (default "Additional documentation")
   --disableSourceCode                Do not add source code tab
   --disableGraph                     Disable rendering of the dependency graph
   --disableCoverage                  Do not add the documentation coverage report
   --disablePrivateOrInternalSupport  Do not show private or @internal in generated documentation
-```
-
-### Local installation
-
-```
-npm install --save-dev compodoc
-```
-
-Define a script task for it in your package.json :
-
-```
-"scripts": {
-  "compodoc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
-}
-```
-
-and run it like a normal npm script :
-
-```
-npm run compodoc
 ```
 
 ## Themes
@@ -279,12 +279,13 @@ These ones are not supported :
 // unsupported comment
 ```
 
+### JSDoc tags
+
 Currently Compodoc only support these JSDoc tags :
 
-- ```@param <param name>```
 - ```@returns```
-- ```@example```
-- ```@link```
+
+- ```@param <param name>```
 
 ```
 /**
@@ -299,25 +300,23 @@ Currently Compodoc only support these JSDoc tags :
 function processTarget(target:string):number;
 ```
 
-For @link you can use this three syntax like JSDoc:
-
-- for an internal reference
+- ```@link``` : you can use these three syntax like JSDoc:
 
 ```
+//for an internal reference
+
 {@link Todo}
 [Todo]{@link Todo}
 {@link Todo|TodoClass}
-```
 
-- for an external link
+//for an external link
 
-```
 [Google]{@link http://www.google.com}
 {@link http://www.apple.com|Apple}
 {@link https://github.com GitHub}
 ```
 
-For giving an example on directives, components and pipes decorators, use @example or markdown :
+- ```@example``` : for giving an example on directives, components and pipes decorators, use @example or markdown :
 
 ```
 /**
@@ -330,9 +329,7 @@ For giving an example on directives, components and pipes decorators, use @examp
  * &lt;/mwl-calendar-day-view&gt;
  * ```
  */
-```
 
-```
  /**
   * Shows all events on a given day. Example usage:
   *
@@ -387,9 +384,11 @@ summary.json
 ]
 ```
 
+Links are supported like regular markdown links.
+
 ## Syntax highlighting in markdown files
 
-Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and compiling to html. [highlight.js](highlightjs.org) has been added for supporting syntax highlighting.
+Compodoc use [Marked](https://github.com/chjj/marked) for markdown parsing and compiling to html. [prismjs.js](http://prismjs.com/) has been added for supporting syntax highlighting.
 
 Just use a normal code block in your markdown with correct language : [Github help](https://help.github.com/articles/creating-and-highlighting-code-blocks/)
 
@@ -401,6 +400,7 @@ For excluding files from the documentation, simply use the __exports__ property 
 
 ## Roadmap
 
+- [ ] study [ngast](https://github.com/mgechev/ngast) for replacing internal parser
 - [ ] support for Angular 1.5+ projects written in Typescript
 - [x] handle external markdown files as "functional" documentation
 - [x] documentation coverage
@@ -448,4 +448,4 @@ Logo designed using [Book vector designed by Freepik](http://www.freepik.com/fre
 
 Everything in this repo is MIT License unless otherwise specified.
 
-MIT © 2016 - [Vincent Ogloblinsky](http://www.vincentogloblinsky.com)
+MIT © 2016-2017 - [Vincent Ogloblinsky](http://www.vincentogloblinsky.com)
