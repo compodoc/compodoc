@@ -490,7 +490,6 @@ code {
 
 .jsdoc-params {
     list-style: square;
-    padding-left: 20px;
     margin-top: 10px;
     margin-bottom: 0 !important;
 }
@@ -567,6 +566,7 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .content ul {
     list-style: disc;
     margin-top: 0;
+    padding-left: 20px;
     margin-bottom: 16px;
 }
 .content ul.list-group {
