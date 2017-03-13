@@ -25,24 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     engine = d3.layout.tree().setNodeSizes(true);
 
-    // gap
     engine.spacing(function(a, b) {
       return a.parent == b.parent ?
         0 : engine.rootXSize();
     })
 
-    // sizing
     engine.nodeSize(function(d) {
         return [document.getElementById(d.id).getBBox()["height"] + 70, document.getElementById(d.id).getBBox()["width"] + 30];
     });
 
-    // First get the bag of nodes in the right order
-    var nodes = d3.layout.hierarchy()(tree);
+    var nodes = d3.layout.hierarchy()(tree),
 
-    // Then get started drawing, including, in the case of flare,
-    // the text for each node, which is needed to determine the
-    // node sizes, which are used in the layout algorithm.
-    var svg = d3.select("#body-routes").append('svg'),
+        svg = d3.select("#body-routes").append('svg'),
         svg_g = svg.append("g"),
         svg_p = svg.append("g"),
         last_id = 0,
@@ -118,6 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (d.kind === 'component') {
                     _name += '<tspan x="0" dy="1.4em">' + d.path + '</tspan>'
                     _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+                    if (d.outlet) {
+                        _name += `<tspan x="0" dy="1.4em">&lt;outlet&gt; : ${d.outlet}</tspan>`
+                    }
                 } else {
                     _name += `<tspan x="0" dy="1.4em">/` + d.path + '</tspan>'
                     if (d.component) {
@@ -144,6 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     if (d.pathMatch) {
                         _name += `<tspan x="0" dy="1.4em">&gt; ` + d.pathMatch + '</tspan>'
+                    }
+                    if (d.outlet) {
+                        _name += `<tspan x="0" dy="1.4em">&lt;outlet&gt; : ${d.outlet}</tspan>`
                     }
                 }
                 return _name;
@@ -191,10 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .style("fill", "white")
         .style("fill-opacity", 0.75);
 
-    // *Now* do the layout
     nodes = engine.nodes(tree);
 
-    // Get the extents, average node area, etc.
     function node_extents(n) {
         return [n.x - n.x_size / 2, n.y,
             n.x + n.x_size / 2, n.y + n.y_size
@@ -219,13 +217,9 @@ document.addEventListener('DOMContentLoaded', function() {
         x_size_min = Math.min(x_size_min, n.x_size);
         y_size_min = Math.min(y_size_min, n.y_size);
     });
+
     var area_ave = area_sum / nodes.length;
-    // scale such that the average node size is 400 px^2
     var scale = 80 / Math.sqrt(area_ave);
-    // Functions to get the derived svg coordinates given the tree node
-    // coordinates.
-    // Note that the x-y orientations between the svg and the tree drawing
-    // are reversed.
 
     function svg_x(node_y) {
         return (node_y - ymin);
@@ -236,24 +230,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // FIXME: need to implement these -- the max value should not
-    // be scaled.
-
-    // The node box is drawn smaller than the actual node width, to
-    // allow room for the diagonal. Note that these are in units of
-    // svg drawing coordinates (not tree node coordinates)
     var nodebox_right_margin = Math.min(x_size_min * scale, 10);
-    // And smaller than the actual node height, for spacing
     var nodebox_vertical_margin = Math.min(y_size_min * scale, 3);
 
-
-    // Reposition everything according to the layout
     node.attr("transform", function(d) {
             return "translate(" + svg_x(d.y) + "," + svg_y(d.x) + ")";
         })
 
-    // This controls the lines between the nodes; see
-    // https://github.com/mbostock/d3/wiki/SVG-Shapes#diagonal_projection
     var diagonal = d3.svg.diagonal()
         .projection(function(d) {
             return [svg_x(d.y), svg_y(d.x)];
@@ -272,10 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
     _svg.removeChild(main_g);
     _svg.appendChild(main_g);
 
-    // Set the svg drawing size and translation
     svg.attr({
         width: document.getElementById('main-group').getBBox()['width'] + 30,
         height: document.getElementById('main-group').getBBox()['height'] + 50,
     });
-
 });
