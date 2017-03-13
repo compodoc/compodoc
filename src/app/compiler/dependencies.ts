@@ -122,7 +122,8 @@ export class Dependencies {
                 variables: [],
                 functions: [],
                 typealiases: [],
-                enumerations: []
+                enumerations: [],
+                types: []
             }
         };
         let sourceFiles = this.program.getSourceFiles() || [];
@@ -506,7 +507,13 @@ export class Dependencies {
                     outputSymbols['miscellaneous'].variables.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-                    //console.log('TypeAliasDeclaration');
+                    let infos = this.visitTypeDeclaration(node),
+                        name = infos.name;
+                    deps = {
+                        name,
+                        file: file
+                    }
+                    outputSymbols['miscellaneous'].types.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
                     let infos = this.visitFunctionDeclaration(node),
@@ -1255,6 +1262,28 @@ export class Dependencies {
         return [];
     }
 
+    private visitTypeDeclaration(type) {
+        var result:any = {
+                name: type.name.text
+            },
+            jsdoctags = JSDocTagsParser.getJSDocs(type);
+
+        var markedtags = function(tags) {
+                var mtags = tags;
+                _.forEach(mtags, (tag) => {
+                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
+                });
+                return mtags;
+            };
+
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
+            }
+        }
+        return result;
+    }
+
     private visitFunctionDeclaration(method) {
         let mapTypes = function(type) {
             switch (type) {
@@ -1292,7 +1321,7 @@ export class Dependencies {
             return result;
         }
 
-        var result = {
+        var result:any = {
             name: method.name.text,
             args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : []
         },

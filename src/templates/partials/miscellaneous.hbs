@@ -25,3 +25,14 @@
         {{> block-enum enums=this title='false'}}
     {{/each}}
 {{/if}}
+
+{{#if miscellaneous.types}}
+    <h2 id="inputs"><b>Types</b></h2>
+    {{#each miscellaneous.types}}
+        {{#if this.file}}
+            <i><code>{{this.file}}</code></i>
+        {{/if}}
+        <h3>{{this.name}}</h3>
+        <br/>
+    {{/each}}
+{{/if}}

@@ -204,7 +204,8 @@ export class Application {
             if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
                 $dependenciesEngine.miscellaneous.functions.length > 0 ||
                 $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-                $dependenciesEngine.miscellaneous.enumerations.length > 0 ) {
+                $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
+                $dependenciesEngine.miscellaneous.types.length > 0 ) {
                 this.prepareMiscellaneous();
             }
 
