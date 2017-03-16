@@ -582,33 +582,55 @@ export class Application {
             let cl:any = {
                     filePath: component.file,
                     type: component.type,
+                    linktype: component.type,
                     name: component.name
                 },
                 totalStatementDocumented = 0,
                 totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
+
+            if (component.constructorObj) {
+                totalStatements += 1;
+                if (component.constructorObj.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            }
+            if (component.description !== '') {
+                totalStatementDocumented += 1;
+            }
+
             _.forEach(component.propertiesClass, (property) => {
-                if(property.description !== '') {
+                if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(property.description !== '' && property.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(component.methodsClass, (method) => {
-                if(method.description !== '') {
+                if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(method.description !== '' && method.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(component.inputsClass, (input) => {
-                if(input.description !== '') {
+                if (input.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(input.description !== '' && input.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(component.outputsClass, (output) => {
-                if(output.description !== '') {
+                if (output.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(output.description !== '' && output.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
-            if (component.description !== '') {
-                totalStatementDocumented += 1;
-            }
+
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             if(totalStatements === 0) {
                 cl.coveragePercent = 0;
@@ -626,20 +648,39 @@ export class Application {
             let cl:any = {
                     filePath: classe.file,
                     type: 'class',
+                    linktype: 'classe',
                     name: classe.name
                 },
                 totalStatementDocumented = 0,
-                totalStatements = classe.properties.length + classe.methods.length;
+                totalStatements = classe.properties.length + classe.methods.length + 1; // +1 for class itself
+
+            if (classe.constructorObj) {
+                totalStatements += 1;
+                if (classe.constructorObj.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            }
+            if (classe.description !== '') {
+                totalStatementDocumented += 1;
+            }
+
             _.forEach(classe.properties, (property) => {
-                if(property.description !== '') {
+                if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(property.description !== '' && property.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(classe.methods, (method) => {
-                if(method.description !== '') {
+                if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(method.description !== '' && method.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
+
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             if(totalStatements === 0) {
                 cl.coveragePercent = 0;
@@ -657,20 +698,39 @@ export class Application {
             let cl:any = {
                     filePath: injectable.file,
                     type: injectable.type,
+                    linktype: injectable.type,
                     name: injectable.name
                 },
                 totalStatementDocumented = 0,
-                totalStatements = injectable.properties.length + injectable.methods.length;
+                totalStatements = injectable.properties.length + injectable.methods.length + 1; // +1 for injectable itself
+
+            if (injectable.constructorObj) {
+                totalStatements += 1;
+                if (injectable.constructorObj.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            }
+            if (injectable.description !== '') {
+                totalStatementDocumented += 1;
+            }
+
             _.forEach(injectable.properties, (property) => {
-                if(property.description !== '') {
+                if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(property.description !== '' && property.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(injectable.methods, (method) => {
-                if(method.description !== '') {
+                if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(method.description !== '' && method.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
+
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             if(totalStatements === 0) {
                 cl.coveragePercent = 0;
@@ -688,20 +748,39 @@ export class Application {
             let cl:any = {
                     filePath: inter.file,
                     type: inter.type,
+                    linktype: inter.type,
                     name: inter.name
                 },
                 totalStatementDocumented = 0,
-                totalStatements = inter.properties.length + inter.methods.length;
+                totalStatements = inter.properties.length + inter.methods.length + 1; // +1 for interface itself
+
+            if (inter.constructorObj) {
+                totalStatements += 1;
+                if (inter.constructorObj.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+            }
+            if (inter.description !== '') {
+                totalStatementDocumented += 1;
+            }
+
             _.forEach(inter.properties, (property) => {
-                if(property.description !== '') {
+                if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(property.description !== '' && property.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
             _.forEach(inter.methods, (method) => {
-                if(method.description !== '') {
+                if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    totalStatements -= 1;
+                }
+                if(method.description !== '' && method.modifierKind !== 111) {
                     totalStatementDocumented += 1;
                 }
             });
+
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             if(totalStatements === 0) {
                 cl.coveragePercent = 0;
@@ -715,6 +794,7 @@ export class Application {
             let cl:any = {
                     filePath: pipe.file,
                     type: pipe.type,
+                    linktype: pipe.type,
                     name: pipe.name
                 },
                 totalStatementDocumented = 0,
@@ -722,6 +802,7 @@ export class Application {
             if (pipe.description !== '') {
                 totalStatementDocumented += 1;
             }
+
             cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
             cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
             cl.status = getStatus(cl.coveragePercent);
