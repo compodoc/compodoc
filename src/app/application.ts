@@ -625,7 +625,7 @@ export class Application {
                 }
             let cl:any = {
                     filePath: classe.file,
-                    type: 'classe',
+                    type: 'class',
                     name: classe.name
                 },
                 totalStatementDocumented = 0,
