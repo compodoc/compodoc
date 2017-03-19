@@ -1,24 +1,17 @@
-var webdriver = require('selenium-webdriver'),
-    username = process.env.SAUCE_USERNAME,
-    accessKey = process.env.SAUCE_ACCESS_KEY,
-    driver;
-
-driver = new webdriver.Builder().
-  withCapabilities({
-    'browserName': 'chrome',
-    'platform': 'Windows XP',
-    'version': '43.0',
-    'username': username,
-    'accessKey': accessKey
-  }).
-  usingServer("http://" + username + ":" + accessKey +
-              "@ondemand.saucelabs.com:80/wd/hub").
-  build();
-
-driver.get("http://saucelabs.com/test/guinea-pig");
-
-driver.getTitle().then(function (title) {
-    console.log("title is: " + title);
+var expect = require('chai').expect;
+describe('webdriver.io api page', function() {
+    it('should be able to filter for commands', function() {
+        browser.url('http://webdriver.io/api.html');
+        // filtering property commands
+        $('.searchbar input').setValue('getT');
+        // get all results that are displayed
+        var results = $$('.commands.property a').filter(function(link) {
+            return link.isVisible();
+        });
+        // assert number of results
+        expect(results.length).to.be.equal(3);
+        // check out second result
+        results[1].click();
+        expect($('.doc h1').getText()).to.be.equal('GETTEXT');
+    });
 });
-
-driver.quit();
