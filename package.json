@@ -15,6 +15,7 @@
     "codecov": "codecov -f coverage/*.json",
     "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch",
+    "presaucelabs-test": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s",
     "saucelabs-test": "node test/saucelabs/test.js"
   },
   "watch": {
