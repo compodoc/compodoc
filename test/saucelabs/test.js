@@ -3,7 +3,7 @@ var webdriverio = require('webdriverio'),
         desiredCapabilities: {
             browserName: 'chrome',
             version: '56',
-            platform: 'XP',
+            platform: 'WIN7',
             name: 'Compodoc test',
             'public': true
         },
