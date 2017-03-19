@@ -14,7 +14,8 @@
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
     "codecov": "codecov -f coverage/*.json",
     "lint": "tslint src/**/*.ts test/**/*.ts",
-    "test:watch": "npm-watch"
+    "test:watch": "npm-watch",
+    "saucelabs-test": "node test/saucelabs/test.js"
   },
   "watch": {
     "build": {
@@ -89,6 +90,7 @@
     "rollup": "^0.41.4",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
+    "selenium-webdriver": "^3.3.0",
     "ts-node": "^2.1.0",
     "tslint": "^4.5.1",
     "webshot": "^0.18.0"

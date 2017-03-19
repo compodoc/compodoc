@@ -5,10 +5,16 @@ language: node_js
 node_js:
     - "6"
     - "4"
+addons:
+  sauce_connect:
+    username: "compodoc"
+  jwt:
+    secure: "J9lqx1hhlWhoLC59wzCE+nOGXfEbuXZHL+ulDD3GqT9xWAbQhGtx2LBCDe9Xi1lRFNFOjKbllHaZUj/9C1oo0LOL//UpHLtsMpc2HlVu4OCjfdI95uOchXkxMCNc5PMvTE5oTCP3hqDg/C1qZ5IjOCn177w0e94/zMvQE2SxNwTPOFy3S/I7T7aaKpBgbTf/xnUlKlvuFBDQgN8zNQWphGgKD4Lc5oSOnpk9y5iD6u0cQsUgw1Uorkygh9y9i/CK68Eq0JAEgL54zvYyhF2gI3vd+TUzQlAh0jyyDJEunnNuFq4OzLNjsSaBaZbe7DtJH+PODFd51uqlVg9Dq483xE71Dqy+ZbbKj+VV6NS8TsXOUwrqrcW6DR7qNYAJaxdsbmEFhxy8beNZVGJRTSOuV/NQYhuNeYE6ziGyMdToS/fiuMutvNFO3YFKIrxsmIJH4o/fgJSA41HPczTVi6awnlUCHLAnzemttIZiKoOwDFeBl5CbI7p8uE12iEwdqkwK3WESYiNKQwvem4Oh0SeqdqwBJGmSNW2TFRY8GYLcNFep7PP/78GigMga0kmLcRIb32/TVU60oQ04+GXBpbG53uv6TSIH0LzXfnsWhfwsml7gFhuD4nSnuXbd6P2x+bF8C2s+v4+Qmy3G5zzX579cwz/m0PiAjg+ZvCPuF1eEyxM="
 install:
     - npm install
 script:
     - npm run test
+    - npm run saucelabs-test
 after_success:
     - npm run codecov
 branches:
