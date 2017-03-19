@@ -1,17 +1,25 @@
-var expect = require('chai').expect;
-describe('webdriver.io api page', function() {
-    it('should be able to filter for commands', function() {
-        browser.url('http://webdriver.io/api.html');
-        // filtering property commands
-        $('.searchbar input').setValue('getT');
-        // get all results that are displayed
-        var results = $$('.commands.property a').filter(function(link) {
-            return link.isVisible();
-        });
-        // assert number of results
-        expect(results.length).to.be.equal(3);
-        // check out second result
-        results[1].click();
-        expect($('.doc h1').getText()).to.be.equal('GETTEXT');
-    });
-});
+var webdriverio = require('webdriverio'),
+    client = webdriverio.remote({
+        desiredCapabilities: {
+            browserName: 'chrome',
+            version: '27',
+            platform: 'XP',
+            name: 'This is an example test',
+            'public': true
+        },
+        host: 'ondemand.saucelabs.com',
+        port: 80,
+        user: process.env.SAUCE_USERNAME,
+        key: process.env.SAUCE_ACCESS_KEY,
+        logLevel: 'silent'
+    }).init();
+
+client
+    .url('http://google.com')
+    .setValue('*[name="q"]','webdriverio')
+    .click('*[name="btnG"]')
+    .pause(1000)
+    .getTitle(function(err,title) {
+        console.log(title);
+    })
+    .end();

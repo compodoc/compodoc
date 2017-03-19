@@ -15,8 +15,8 @@ addons:
 install:
     - npm install
 script:
-    - npm run test
     - npm run saucelabs-test
+    - npm run test
 after_success:
     - npm run codecov
 branches:
