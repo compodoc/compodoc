@@ -11,7 +11,7 @@ var webdriverio = require('webdriverio'),
         port: 80,
         user: process.env.SAUCE_USERNAME,
         key: process.env.SAUCE_ACCESS_KEY,
-        logLevel: 'silent'
+        logLevel: 'verbose'
     }).init();
 
 client
