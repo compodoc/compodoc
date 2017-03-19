@@ -87,6 +87,11 @@ export let HtmlEngineHelpers = (function() {
             text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
+        Handlebars.registerHelper('escapeSimpleQuote', function(text) {
+            var _text = text.replace(/'/g, "\\'");
+            _text = _text.replace(/(\r\n|\n|\r)/gm, '');
+            return _text;
+        });
         Handlebars.registerHelper('breakComma', function(text) {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/,/g, ',<br>');
