@@ -88,6 +88,7 @@ export let HtmlEngineHelpers = (function() {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('escapeSimpleQuote', function(text) {
+            if(!text) return;
             var _text = text.replace(/'/g, "\\'");
             _text = _text.replace(/(\r\n|\n|\r)/gm, '');
             return _text;

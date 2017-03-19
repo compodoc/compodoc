@@ -61,6 +61,10 @@
 <script src="{{relativeURL depth pageType 'root'}}js/libs/htmlparser.js"></script>
 <script src="{{relativeURL depth pageType 'root'}}js/libs/deep-iterator.js"></script>
 <script>
-    var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.templateData }}}</div>'
+    {{#if component.template}}
+        var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.template }}}</div>'
+    {{else}}
+        var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.templateData }}}</div>'
+    {{/if}}
 </script>
 <script src="{{relativeURL depth pageType 'root'}}js/tree.js"></script>
