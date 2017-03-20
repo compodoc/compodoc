@@ -15,8 +15,10 @@
     "codecov": "codecov -f coverage/*.json",
     "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch",
-    "presaucelabs-test": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
-    "saucelabs-test": "node test/saucelabs/test.js"
+    "presaucelabs-test-cloud": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
+    "saucelabs-test-cloud": "./node_modules/.bin/wdio wdio.conf.cloud.js",
+    "presaucelabs-test-local": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
+    "saucelabs-test-local": "./node_modules/.bin/wdio wdio.conf.local.js"
   },
   "watch": {
     "build": {
@@ -96,6 +98,7 @@
     "wdio-mocha-framework": "^0.5.9",
     "wdio-phantomjs-service": "^0.2.2",
     "wdio-sauce-service": "^0.3.1",
+    "wdio-spec-reporter": "^0.1.0",
     "webdriverio": "^4.6.2",
     "webshot": "^0.18.0"
   },
