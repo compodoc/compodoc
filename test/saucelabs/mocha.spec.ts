@@ -22,12 +22,8 @@ test.describe('Google Search', function() {
             .build();
         driver.get('http://127.0.0.1:8383');
 
-        var searchBox = driver.findElement(webdriver.By.name('q'));
-
-        searchBox.sendKeys('simple programmer');
-
-        searchBox.getAttribute('value').then(function(value) {
-            expect(value).to.equal('simple programmer');
+        driver.getTitle().then(function(title) {
+            expect(title).to.equal('compodoc documentation');
         });
 
         driver.quit();
