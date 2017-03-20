@@ -11,7 +11,7 @@ install:
 script:
 #    - npm run test
     - if [ $TO_TEST == 'ALL' ];
-      then npm run saucelabs-test-standalone;
+      then npm run saucelabs-test-mocha;
       fi
 after_success:
     - npm run codecov

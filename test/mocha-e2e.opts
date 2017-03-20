@@ -1,0 +1,7 @@
+--reporter spec
+--ui bdd
+--colors
+--harmony
+--timeout 120000
+--compilers ts:ts-node/register
+test/saucelabs/mocha.spec.ts
