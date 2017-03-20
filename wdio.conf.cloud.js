@@ -16,5 +16,13 @@ exports.config = Object.assign(base.config, {
     services: ['sauce'],
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY,
-    tbTunnel: true
+    sauceConnect: true,
+    tbTunnel: true,
+    sauceConnectOpts: {
+        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+        name: 'Compodoc test',
+        'public': true,
+        build: process.env.TRAVIS_BUILD_NUMBER,
+        port: 80
+    }
 });
