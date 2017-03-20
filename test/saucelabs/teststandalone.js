@@ -1,10 +1,6 @@
 var webdriverio = require('webdriverio'),
     expect = require('chai').expect;
-
-describe('Compodoc page', function() {
-    return it('should get the title', function(done) {
-
-        var client = webdriverio.remote({
+var client = webdriverio.remote({
                 desiredCapabilities: {
                     browserName: 'chrome',
                     version: '56',
@@ -21,7 +17,7 @@ describe('Compodoc page', function() {
                 logLevel: 'verbose'
             }).init();
 
-        return client
+        client
             .url('http://127.0.0.1:8383')
             .getTitle(function(err, title) {
                 console.log(title);
@@ -29,5 +25,3 @@ describe('Compodoc page', function() {
                 return done();
             })
             .end();
-    });
-});
