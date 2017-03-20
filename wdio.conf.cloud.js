@@ -32,6 +32,7 @@ exports.config = Object.assign(base.config, {
         build: process.env.TRAVIS_BUILD_NUMBER,
         verboseDebugging: true,
         vv: true,
+        port: 80,
         logger: console.log,
         verbose: true
     }
