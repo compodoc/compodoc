@@ -5,12 +5,18 @@ exports.config = Object.assign(base.config, {
     capabilities: [{
             browserName: 'chrome',
             platform: 'WIN10',
-            version: 'latest'
+            version: 'latest',
+            tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+            build: process.env.TRAVIS_BUILD_NUMBER,
+            name: 'Compodoc test'
         },
         {
             browserName: 'firefox',
             platform: 'WIN10',
-            version: 'latest'
+            version: 'latest',
+            tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+            build: process.env.TRAVIS_BUILD_NUMBER,
+            name: 'Compodoc test'
         }
     ],
     services: ['sauce'],
@@ -24,8 +30,9 @@ exports.config = Object.assign(base.config, {
         username: process.env.SAUCE_USERNAME,
         accessKey: process.env.SAUCE_ACCESS_KEY,
         build: process.env.TRAVIS_BUILD_NUMBER,
-        logger: function (message) {
-            console.log(message);
-        }
+        verboseDebugging: true,
+        vv: true,
+        logger: console.log,
+        verbose: true
     }
 });
