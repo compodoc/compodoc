@@ -13,7 +13,7 @@ addons:
 install:
     - npm install
 script:
-    - npm run saucelabs-test-cloud
+    - npm run saucelabs-test-standalone
 after_success:
     - npm run codecov
 branches:
