@@ -21,6 +21,6 @@ client
     .url('http://127.0.0.1:8383')
     .getTitle(function(err, title) {
         console.log(title);
-        expect(title).to.equal('compodoc documentation');
+        expect(title).to.equal('compodoc documentatione');
     })
     .end();
