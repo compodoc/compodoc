@@ -1,5 +1,6 @@
 os:
   - linux
+language: node_js
 addons:
   sauce_connect:
     username: "compodoc"
@@ -21,7 +22,7 @@ matrix:
   allow_failures:
     - os: osx
   include:
-    - node_js: 4
+    - node_js: "4"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
-    - node_js: 6
+    - node_js: "6"
       env: TO_TEST=ALL SAUCE_USERNAME=compodoc
