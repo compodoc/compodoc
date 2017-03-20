@@ -12,11 +12,15 @@ test.describe('Google Search', function() {
                 'platform': 'Windows XP',
                 'version': '43.0',
                 'username': username,
-                'accessKey': accessKey
+                'accessKey': accessKey,
+                'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+                name: 'Compodoc test',
+                'public': true,
+                build: process.env.TRAVIS_BUILD_NUMBER
             })
             .usingServer("http://" + username + ":" + accessKey + "@ondemand.saucelabs.com:80/wd/hub")
             .build();
-        driver.get('http://www.google.com');
+        driver.get('http://127.0.0.1:8383');
 
         var searchBox = driver.findElement(webdriver.By.name('q'));
 
