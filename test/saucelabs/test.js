@@ -4,8 +4,10 @@ var webdriverio = require('webdriverio'),
             browserName: 'chrome',
             version: '56',
             platform: 'WIN7',
+            'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
             name: 'Compodoc test',
-            'public': true
+            'public': true,
+            build: process.env.TRAVIS_BUILD_NUMBER
         },
         host: 'ondemand.saucelabs.com',
         port: 80,
