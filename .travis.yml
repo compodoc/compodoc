@@ -15,7 +15,9 @@ install:
     - npm install
 script:
 #    - npm run test
-    - if [ "$TO_TEST" = "ALL" ]; npm run saucelabs-test-standalone; fi
+    - if [ $TO_TEST == 'ALL' ];
+      then npm run saucelabs-test-standalone;
+      fi
 after_success:
     - npm run codecov
 branches:
