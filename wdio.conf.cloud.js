@@ -15,7 +15,6 @@ exports.config = Object.assign(base.config, {
     ],
     services: ['sauce'],
     sauceConnect: true,
-    tbTunnel: true,
     sauceConnectOpts: {
         tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
         name: 'Compodoc test',
