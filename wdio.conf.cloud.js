@@ -23,8 +23,6 @@ exports.config = Object.assign(base.config, {
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY,
     sauceConnect: true,
-    host: 'ondemand.saucelabs.com',
-    port: 80,
     sauceConnectOpts: {
         tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
         username: 'compodoc',
