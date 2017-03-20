@@ -30,7 +30,7 @@ var expect = require('chai').expect,
         .usingServer(server)
         .build();
 
-        driver.get('http://127.0.0.1:8686/components/FooComponent.html');
+        driver.get('http://127.0.0.1:8383/components/FooComponent.html');
 
         driver.getTitle().then(function(title) {
             expect(title).to.equal('@compodoc/compodoc documentation');

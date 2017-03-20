@@ -12,7 +12,7 @@ addons:
 install:
     - npm install
 script:
-#    - npm run test
+    - npm run test
     - if [ $TO_TEST == 'ALL' ];
       then npm run saucelabs-test-e2e-mocha;
       fi
