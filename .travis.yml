@@ -21,6 +21,8 @@ branches:
 matrix:
   allow_failures:
     - os: osx
+  exclude:
+    - node_js: "0.10"
   include:
     - node_js: "4"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
