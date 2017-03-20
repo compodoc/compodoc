@@ -4,8 +4,7 @@ var expect = require('chai').expect,
     username = process.env.SAUCE_USERNAME,
     accessKey = process.env.SAUCE_ACCESS_KEY,
     capabilities:any = {
-        'platform': 'Windows XP',
-        'version': '43.0',
+        'platform': 'WIN7',
         'username': username,
         'accessKey': accessKey,
         'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
@@ -32,6 +31,7 @@ var expect = require('chai').expect,
 test.describe('Chrome | Compodoc page', function() {
     test.it('should display title', function() {
         capabilities.browserName = 'chrome';
+        capabilities.version = '56';
         testCode();
     });
 });
@@ -40,6 +40,7 @@ test.describe('Chrome | Compodoc page', function() {
 test.describe('Firefox | Compodoc page', function() {
     test.it('should display title', function() {
         capabilities.browserName = 'firefox';
+        capabilities.version = '51';
         testCode();
     });
 });

@@ -9,6 +9,9 @@
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
+<p align="center">
+    <img src="https://saucelabs.com/browser-matrix/compodoc.svg" alt="saucelabs badge">
+</p>
 
 <p align="center">The missing documentation tool for your Angular application</p>
 
