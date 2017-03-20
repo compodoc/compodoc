@@ -23,7 +23,7 @@
 
 [Demo](https://compodoc.github.io/compodoc-demo-todomvc-angular/) : documentation generated for [TodoMVC Angular Compodoc demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular)
 
-#Features
+# Features
 
 * **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
 
