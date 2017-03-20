@@ -15,7 +15,7 @@ var webdriverio = require('webdriverio'),
     }).init();
 
 client
-    .url('http://localhost:8383')
+    .url('http://127.0.0.1:8383')
     .getTitle(function(err, title) {
         console.log(title);
     })
