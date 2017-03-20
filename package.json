@@ -23,7 +23,7 @@
     "presaucelabs-test-standalone": "npm run test:simple-doc",
     "saucelabs-test-standalone": "node ./test/saucelabs/teststandalone.js",
     "saucelabs-test-webdriver": "node ./test/saucelabs/test-webdriver.js",
-    "saucelabs-test-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts"
+    "saucelabs-test-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts"
   },
   "watch": {
     "build": {
