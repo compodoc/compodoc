@@ -1,3 +1,4 @@
+// RUN webdriver-manager start --standalone & npm run test:simple-doc before starting local test
 var expect = require('chai').expect,
     webdriver = require('selenium-webdriver'),
     test = require('selenium-webdriver/testing'),
@@ -41,7 +42,7 @@ var expect = require('chai').expect,
 test.describe('Chrome | Compodoc page', function() {
     test.it('should display title', function() {
         capabilities.browserName = 'chrome';
-        capabilities.version = '57';
+        capabilities.version = '56';
         testCode();
     });
 });
@@ -50,7 +51,7 @@ test.describe('Chrome | Compodoc page', function() {
 test.describe('Firefox | Compodoc page', function() {
     test.it('should display title', function() {
         capabilities.browserName = 'firefox';
-        capabilities.version = '52';
+        capabilities.version = '51';
         testCode();
     });
 });
