@@ -18,10 +18,10 @@ var expect = require('chai').expect,
             .withCapabilities(capabilities)
             .usingServer("http://" + username + ":" + accessKey + "@ondemand.saucelabs.com:80/wd/hub")
             .build();
-        driver.get('http://127.0.0.1:8383');
+        driver.get('http://127.0.0.1:8383/components/FooComponent.html');
 
         driver.getTitle().then(function(title) {
-            expect(title).to.equal('compodoc documentation');
+            expect(title).to.equal('@compodoc/compodoc documentation');
         });
 
         driver.quit();
