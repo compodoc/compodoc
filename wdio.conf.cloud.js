@@ -16,7 +16,7 @@ exports.config = Object.assign(base.config, {
     services: ['sauce'],
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY,
-    sauceConnect: true,
+    sauceConnect: false,
     sauceConnectOpts: {
         tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
         username: process.env.SAUCE_USERNAME,
