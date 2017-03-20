@@ -21,7 +21,6 @@ exports.config = Object.assign(base.config, {
         name: 'Compodoc test',
         'public': true,
         build: process.env.TRAVIS_BUILD_NUMBER,
-        port: 80,
         username: process.env.SAUCE_USERNAME,
         accessKey: process.env.SAUCE_ACCESS_KEY
     }
