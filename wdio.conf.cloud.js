@@ -28,7 +28,7 @@ exports.config = Object.assign(base.config, {
     sauceConnectOpts: {
         tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
         username: 'compodoc',
-        accessKey: process.env.SAUCE_ACCESS_KEY,
+        accessKey: 'dc96897d-c007-4e78-bee6-a17d20dff52d',
         verboseDebugging: true,
         vv: true,
         port: 80,
