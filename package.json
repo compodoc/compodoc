@@ -21,7 +21,8 @@
     "presaucelabs-test-local": "npm run test:simple-doc",
     "saucelabs-test-local": "./node_modules/.bin/wdio wdio.conf.local.js",
     "presaucelabs-test-standalone": "npm run test:simple-doc",
-    "saucelabs-test-standalone": "node ./test/saucelabs/teststandalone.js"
+    "saucelabs-test-standalone": "node ./test/saucelabs/teststandalone.js",
+    "saucelabs-test-webdriver": "node ./test/saucelabs/test-webdriver.js"
   },
   "watch": {
     "build": {

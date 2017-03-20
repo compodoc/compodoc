@@ -3,6 +3,7 @@ os:
 language: node_js
 node_js:
     - "6"
+    - "4"
 env:
   - SAUCE_USERNAME=compodoc
 addons:
@@ -13,7 +14,8 @@ addons:
 install:
     - npm install
 script:
-    - npm run saucelabs-test-standalone
+#    - npm run test
+    - if [ "$TO_TEST" = "ALL" ]; npm run saucelabs-test-standalone; fi
 after_success:
     - npm run codecov
 branches:
@@ -22,3 +24,8 @@ branches:
 matrix:
   allow_failures:
     - os: osx
+  include:
+    - node_js: 4
+      env: TO_TEST=UNIT
+    - node_js: 6
+      env: TO_TEST=ALL
