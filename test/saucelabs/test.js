@@ -1,5 +1,5 @@
 var webdriverio = require('webdriverio'),
-    expect = rquire('chai').expect:
+    expect = rquire('chai').expect;
 
 describe('Compodoc page', function() {
     return it('should get the title', function(done) {
