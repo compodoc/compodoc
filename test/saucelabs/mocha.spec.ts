@@ -23,6 +23,8 @@ var expect = require('chai').expect,
             server = 'http://localhost:4444/wd/hub';
         }
 
+        console.log(capabilities, server);
+
         driver = new webdriver.Builder()
         .withCapabilities(capabilities)
         .usingServer(server)
