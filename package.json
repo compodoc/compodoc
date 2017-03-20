@@ -16,8 +16,9 @@
     "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch",
     "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
-    "presaucelabs-test-mocha": "npm run test:simple-doc",
-    "saucelabs-test-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts"
+    "test-e2e-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts",
+    "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
+    "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha"
   },
   "watch": {
     "build": {

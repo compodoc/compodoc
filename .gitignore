@@ -17,6 +17,7 @@ node_modules
 test/dist/
 .tmp-compodoc-test/
 documentation
+doc
 
 # Coverage directory used by tools like istanbul
 coverage
