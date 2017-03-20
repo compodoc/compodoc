@@ -19,7 +19,7 @@
     "saucelabs-test-cloud": "./node_modules/.bin/wdio wdio.conf.cloud.js",
     "presaucelabs-test-local": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
     "saucelabs-test-local": "./node_modules/.bin/wdio wdio.conf.local.js",
-    "saucelabs-test-standalone": "node ./test/saucelabs/teststandalone.js",
+    "saucelabs-test-standalone": "node ./test/saucelabs/teststandalone.js"
   },
   "watch": {
     "build": {
