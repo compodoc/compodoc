@@ -660,3 +660,29 @@ path.link {
     width: 100%;
     height: 100%;
 }
+
+#tree {
+    position: relative;
+}
+.tree-legend {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+}
+.tree-legend .title {
+    margin-bottom: 8px;
+}
+.tree-legend .color {
+    width: 20px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 5px;
+}
+.tree-legend .htmlelement {
+    background: #97c2fc;
+}
+.tree-legend .component {
+    background: #fb7e81;
+}

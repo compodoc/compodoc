@@ -54,6 +54,17 @@
 
     <div class="tab-pane fade" id="tree">
         <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -66,5 +77,7 @@
     {{else}}
         var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.templateData }}}</div>'
     {{/if}}
+    var COMPONENTS = [{{#each components}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
+    var ACTUAL_COMPONENT = {'name': '{{ name }}'};
 </script>
 <script src="{{relativeURL depth pageType 'root'}}js/tree.js"></script>
