@@ -60,6 +60,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     newNode.name = COMPONENTS[i].name;
                 }
             }
+            for(var i = 0; i < DIRECTIVES.length; i++) {
+                if (value.attributes) {
+                    for(attr in value.attributes) {
+                        if (DIRECTIVES[i].selector.indexOf(attr) !== -1) {
+                            newNode.font = {
+                                multi: 'html'
+                            };
+                            newNode.label = '<b>' + newNode.label + '</b>';
+                            newNode.color = '#FF9800';
+                            newNode.name = DIRECTIVES[i].name;
+                        }
+                    }
+                }
+            }
             newNodes.push(newNode);
             newEdges.push({
                 from: parentNode._parent._id,

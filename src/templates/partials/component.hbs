@@ -64,6 +64,9 @@
             <div>
                 <div class="color component"></div><span>Component</span>
             </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
         </div>
     </div>
 </div>
@@ -78,6 +81,7 @@
         var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.templateData }}}</div>'
     {{/if}}
     var COMPONENTS = [{{#each components}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
+    var DIRECTIVES = [{{#each directives}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
     var ACTUAL_COMPONENT = {'name': '{{ name }}'};
 </script>
 <script src="{{relativeURL depth pageType 'root'}}js/tree.js"></script>

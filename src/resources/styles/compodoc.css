@@ -686,3 +686,6 @@ path.link {
 .tree-legend .component {
     background: #fb7e81;
 }
+.tree-legend .directive {
+    background: #FF9800;
+}
