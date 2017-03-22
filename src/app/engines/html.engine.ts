@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
+import { logger } from '../../logger';
 //import * as helpers from 'handlebars-helpers';
 import { HtmlEngineHelpers } from './html.engine.helpers';
 
@@ -88,5 +89,26 @@ export class HtmlEngine {
             }
 
         });
+    }
+    generateCoverageBadge(outputFolder, coverageData) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during coverage badge generation');
+               } else {
+                   let template:any = Handlebars.compile(data),
+                       result = template({
+                           data: coverageData
+                       });
+                   fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
+                       if(err) {
+                           logger.error('Error during search index file generation ', err);
+                           reject(err);
+                       }
+                       resolve();
+                   });
+               }
+           });
+       });
     }
 };

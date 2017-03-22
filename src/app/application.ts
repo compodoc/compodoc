@@ -567,7 +567,7 @@ export class Application {
                 } else if (percent > 50 && percent <= 75) {
                     status = 'good';
                 } else {
-                    status = 'very-good';
+                    status = 'low';
                 }
                 return status;
             };
@@ -811,7 +811,7 @@ export class Application {
         });
         files = _.sortBy(files, ['filePath']);
         var coverageData = {
-            count: Math.floor(totalProjectStatementDocumented / files.length),
+            count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
             status: ''
         };
         coverageData.status = getStatus(coverageData.count);
@@ -823,6 +823,7 @@ export class Application {
             depth: 1,
             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
+        $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
     }
 
     processPages() {
