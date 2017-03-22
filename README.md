@@ -158,7 +158,7 @@ Options:
   -w, --watch                        Watch source files after serve and force documentation rebuild
   --theme [theme]                    Choose one of available themes, default is 'gitbook' (laravel, original, postmark, readthedocs, stripe, vagrant)
   --hideGenerator                    Do not print the Compodoc link at the bottom of the page
-  --toggleMenuItems <items>          Close by default items in the menu ( example: ['all'] or ['modules','components'] )
+  --toggleMenuItems <items>          Close by default items in the menu ( example: 'all' or 'modules','components' )
   --includes [path]                  Path of external markdown files to include
   --includesName [name]              Name of item menu of externals markdown files (default "Additional documentation")
   --disableSourceCode                Do not add source code tab

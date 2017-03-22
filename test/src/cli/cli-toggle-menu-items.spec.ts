@@ -39,7 +39,7 @@ describe('CLI toggle menu items', () => {
             fooServiceFile;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/src/tsconfig.json -d ' + tmp.name + '/ --toggleMenuItems=[\'modules\']', {env}, (error, stdout, stderr) => {
+            exec(tsNodePath + " ./bin/index-cli.js -p ./test/src/todomvc-ng2/src/tsconfig.json -d " + tmp.name + "/ --toggleMenuItems 'modules'", {env}, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     done('error');
