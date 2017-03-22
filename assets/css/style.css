@@ -680,8 +680,15 @@ footer {
 .nav>li>a.social-github {
     padding-bottom: 7px;
 }
+.nav>li>a.social-changelog {
+    padding-bottom: 12px;
+}
 .typcn-social-github {
     font-size: 25px;
+    line-height: 10px;
+}
+.typcn-document-text {
+    font-size: 18px;
     line-height: 10px;
 }
 
@@ -760,4 +767,8 @@ code {
 }
 .navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
     background-color: transparent;
+}
+
+.social-changelog .typcn {
+    margin-right: 5px;
 }
