@@ -3,15 +3,16 @@ var expect = require('chai').expect,
     fs = require('fs'),
     webdriver = require('selenium-webdriver'),
     SauceLabs = require('saucelabs'),
+    request = require('request'),
     username = process.env.SAUCE_USERNAME,
     accessKey = process.env.SAUCE_ACCESS_KEY,
     capabilities: any = {
         'platform': 'WIN7'
     },
     saucelabs = new SauceLabs({
-      username: process.env.SAUCE_USERNAME,
-      password: process.env.SAUCE_ACCESS_KEY
-  }),
+        username: process.env.SAUCE_USERNAME,
+        password: process.env.SAUCE_ACCESS_KEY
+    }),
     server = '',
     startDriver = function(cb, pageUrl) {
         if (process.env.MODE_LOCAL === '0') {
@@ -34,16 +35,16 @@ var expect = require('chai').expect,
             .build();
 
         driver.getSession().then(function(sessionid) {
-		    driver.sessionID = sessionid.id_;
-		});
+            driver.sessionID = sessionid.id_;
+        });
 
         driver.get(pageUrl).then(function() {
             cb();
         });
     },
-    handleStatus = function (tests) {
+    handleStatus = function(tests) {
         var status = false;
-        for(var i = 0; i < tests.length; i++) {
+        for (var i = 0; i < tests.length; i++) {
             if (tests[i].state === 'passed') {
                 status = true;
             }
@@ -130,11 +131,23 @@ describe('Chrome | Compodoc page', function() {
             var result = handleStatus(this.test.parent.tests);
             console.log(result);
             console.log(driver.sessionID);
+            /*
             saucelabs.updateJob(driver.sessionID, {
           		passed: result
         	}, function (err, result) {
                 console.log('updateJob cb: ', err, result);
                 console.log(arguments);
+            });*/
+            request({
+                method: 'PUT',
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }, function(error, response, body) {
+                console.log('error:', error);
+                console.log('statusCode:', response && response.statusCode);
+                console.log('body:', body);
             });
         }
         driver.quit().then(done);
