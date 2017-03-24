@@ -132,7 +132,8 @@ describe('Chrome | Compodoc page', function() {
             console.log(driver.sessionID);
             saucelabs.updateJob(driver.sessionID, {
           		passed: result
-        	}, function () {
+        	}, function (err, result) {
+                console.log('updateJob cb: ', err, result);
                 console.log(arguments);
             });
         }
