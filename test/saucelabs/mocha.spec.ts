@@ -126,13 +126,15 @@ describe('Chrome | Compodoc page', function() {
     // test routing
 
     after(function(done) {
-        var result = handleStatus(this.test.parent.tests);
-        console.log(result);
-        console.log(driver.sessionID);
         if (process.env.MODE_LOCAL === '0') {
+            var result = handleStatus(this.test.parent.tests);
+            console.log(result);
+            console.log(driver.sessionID);
             saucelabs.updateJob(driver.sessionID, {
           		passed: result
-        	}, function () {});
+        	}, function () {
+                console.log(arguments);
+            });
         }
         driver.quit().then(done);
     });
