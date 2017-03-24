@@ -178,3 +178,73 @@ describe('Firefox | Compodoc page', function() {
         }
     });
 });
+
+// IE
+describe('IE | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.browserName = 'internet explorer';
+        capabilities.version = '11';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    it('should display title', function(done) {
+        driver.getTitle().then(function(title) {
+            expect(title).to.equal('@compodoc/compodoc documentation');
+            done();
+        });
+    });
+
+    after(function(done) {
+        if (process.env.MODE_LOCAL === '0') {
+            var result = handleStatus(this.test.parent.tests);
+            request({
+                method: 'PUT',
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                json: {
+              		passed: result
+            	}
+            }, function(error, response, body) {
+                driver.quit().then(done);
+            });
+        } else {
+            driver.quit().then(done);
+        }
+    });
+});
+
+// Safari
+describe('Safari | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.browserName = 'safari';
+        capabilities.version = '5';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    it('should display title', function(done) {
+        driver.getTitle().then(function(title) {
+            expect(title).to.equal('@compodoc/compodoc documentation');
+            done();
+        });
+    });
+
+    after(function(done) {
+        if (process.env.MODE_LOCAL === '0') {
+            var result = handleStatus(this.test.parent.tests);
+            request({
+                method: 'PUT',
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                json: {
+              		passed: result
+            	}
+            }, function(error, response, body) {
+                driver.quit().then(done);
+            });
+        } else {
+            driver.quit().then(done);
+        }
+    });
+});
