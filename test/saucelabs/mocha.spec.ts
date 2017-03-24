@@ -2,17 +2,12 @@
 var expect = require('chai').expect,
     fs = require('fs'),
     webdriver = require('selenium-webdriver'),
-    SauceLabs = require('saucelabs'),
     request = require('request'),
     username = process.env.SAUCE_USERNAME,
     accessKey = process.env.SAUCE_ACCESS_KEY,
     capabilities: any = {
         'platform': 'WIN7'
     },
-    saucelabs = new SauceLabs({
-        username: process.env.SAUCE_USERNAME,
-        password: process.env.SAUCE_ACCESS_KEY
-    }),
     server = '',
     startDriver = function(cb, pageUrl) {
         if (process.env.MODE_LOCAL === '0') {
@@ -56,6 +51,65 @@ var expect = require('chai').expect,
             if (err) console.log(err);
         });
     },
+    endTests = function(context, cb) {
+        if (process.env.MODE_LOCAL === '0') {
+            var result = handleStatus(context.test.parent.tests);
+            request({
+                method: 'PUT',
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                json: {
+              		passed: result
+            	}
+            }, function(error, response, body) {
+                driver.quit().then(cb);
+            });
+        } else {
+            driver.quit().then(cb);
+        }
+    },
+    testSearchBarWithResults = function(cb) {
+        var searchBox
+        driver
+            .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
+            .then(function(elems) {
+                searchBox = elems[1]; //First one is the mobile one hidden;
+                searchBox.sendKeys('exampleInput');
+                searchBox.getAttribute('value').then(function(value) {
+                    expect(value).to.equal('exampleInput');
+
+                    /*driver.takeScreenshot().then(function (data) {
+                        writeScreenshot(data, 'test.png');
+                    });*/
+
+                    driver
+                        .findElements(webdriver.By.className('search-results-item'))
+                        .then(function(elems) {
+                            expect(elems.length).to.equal(1);
+                            cb();
+                        });
+                });
+            });
+    },
+    testSearchBarWithNoResults = function(cb) {
+        var searchBox
+        driver
+            .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
+            .then(function(elems) {
+                searchBox = elems[1]; //First one is the mobile one hidden;
+                searchBox.clear();
+                searchBox.sendKeys('waza');
+                searchBox.getAttribute('value').then(function(value) {
+                    expect(value).to.equal('waza');
+
+                    driver
+                        .findElements(webdriver.By.className('search-results-item'))
+                        .then(function(elems) {
+                            expect(elems.length).to.equal(0);
+                            cb();
+                        });
+                });
+            });
+    },
     driver;
 
 // Chrome
@@ -75,72 +129,20 @@ describe('Chrome | Compodoc page', function() {
         });
     });
 
-    // test search bar
+    // Test search bar
 
     it('should have a search bar, and handle results', function(done) {
-        var searchBox
-        driver
-            .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
-            .then(function(elems) {
-                searchBox = elems[1]; //First one is the mobile one hidden;
-                searchBox.sendKeys('exampleInput');
-                searchBox.getAttribute('value').then(function(value) {
-                    expect(value).to.equal('exampleInput');
-
-                    /*driver.takeScreenshot().then(function (data) {
-                        writeScreenshot(data, 'test.png');
-                    });*/
-
-                    driver
-                        .findElements(webdriver.By.className('search-results-item'))
-                        .then(function(elems) {
-                            expect(elems.length).to.equal(1);
-                            done();
-                        });
-                });
-            });
+        testSearchBarWithResults(done);
     });
 
     it('should have a search bar, and handle results empty', function(done) {
-        var searchBox
-        driver
-            .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
-            .then(function(elems) {
-                searchBox = elems[1]; //First one is the mobile one hidden;
-                searchBox.clear();
-                searchBox.sendKeys('waza');
-                searchBox.getAttribute('value').then(function(value) {
-                    expect(value).to.equal('waza');
-
-                    driver
-                        .findElements(webdriver.By.className('search-results-item'))
-                        .then(function(elems) {
-                            expect(elems.length).to.equal(0);
-                            done();
-                        });
-                });
-            });
+        testSearchBarWithNoResults(done);
     });
 
-    // test click sur DOM tree tab, et generation du canvas
-
-    // test routing
+    // TODO : test routing
 
     after(function(done) {
-        if (process.env.MODE_LOCAL === '0') {
-            var result = handleStatus(this.test.parent.tests);
-            request({
-                method: 'PUT',
-                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
-                json: {
-              		passed: result
-            	}
-            }, function(error, response, body) {
-                driver.quit().then(done);
-            });
-        } else {
-            driver.quit().then(done);
-        }
+        endTests(this, done);
     });
 });
 

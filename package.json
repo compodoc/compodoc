@@ -95,7 +95,6 @@
     "rollup": "^0.41.4",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
-    "saucelabs": "^1.4.0",
     "selenium-webdriver": "^3.3.0",
     "ts-node": "^2.1.0",
     "tslint": "^4.5.1",
