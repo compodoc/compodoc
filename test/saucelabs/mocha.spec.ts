@@ -141,10 +141,7 @@ describe('Chrome | Compodoc page', function() {
             request({
                 method: 'PUT',
                 uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: {
+                json: {
               		passed: result
             	}
             }, function(error, response, body) {
