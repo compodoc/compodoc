@@ -129,15 +129,6 @@ describe('Chrome | Compodoc page', function() {
     after(function(done) {
         if (process.env.MODE_LOCAL === '0') {
             var result = handleStatus(this.test.parent.tests);
-            console.log(result);
-            console.log(driver.sessionID);
-            /*
-            saucelabs.updateJob(driver.sessionID, {
-          		passed: result
-        	}, function (err, result) {
-                console.log('updateJob cb: ', err, result);
-                console.log(arguments);
-            });*/
             request({
                 method: 'PUT',
                 uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
@@ -145,10 +136,6 @@ describe('Chrome | Compodoc page', function() {
               		passed: result
             	}
             }, function(error, response, body) {
-                console.log('error:', error);
-                console.log('statusCode:', response && response.statusCode);
-                console.log('body:', body);
-
                 driver.quit().then(done);
             });
         } else {
@@ -157,7 +144,6 @@ describe('Chrome | Compodoc page', function() {
     });
 });
 
-/*
 // Firefox
 describe('Firefox | Compodoc page', function() {
 
@@ -176,8 +162,19 @@ describe('Firefox | Compodoc page', function() {
     });
 
     after(function(done) {
-        // works with promise
-        driver.quit().then(done);
+        if (process.env.MODE_LOCAL === '0') {
+            var result = handleStatus(this.test.parent.tests);
+            request({
+                method: 'PUT',
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                json: {
+              		passed: result
+            	}
+            }, function(error, response, body) {
+                driver.quit().then(done);
+            });
+        } else {
+            driver.quit().then(done);
+        }
     });
 });
-*/
