@@ -2,11 +2,16 @@
 var expect = require('chai').expect,
     fs = require('fs'),
     webdriver = require('selenium-webdriver'),
+    SauceLabs = require('saucelabs'),
     username = process.env.SAUCE_USERNAME,
     accessKey = process.env.SAUCE_ACCESS_KEY,
     capabilities: any = {
         'platform': 'WIN7'
     },
+    saucelabs = new SauceLabs({
+      username: process.env.SAUCE_USERNAME,
+      password: process.env.SAUCE_ACCESS_KEY
+  }),
     server = '',
     startDriver = function(cb, pageUrl) {
         if (process.env.MODE_LOCAL === '0') {
@@ -28,9 +33,22 @@ var expect = require('chai').expect,
             .usingServer(server)
             .build();
 
+        driver.getSession().then(function(sessionid) {
+		    driver.sessionID = sessionid.id_;
+		});
+
         driver.get(pageUrl).then(function() {
             cb();
         });
+    },
+    handleStatus = function (tests) {
+        var status = false;
+        for(var i = 0; i < tests.length; i++) {
+            if (tests[i].state === 'passed') {
+                status = true;
+            }
+        }
+        return status;
     },
     writeScreenshot = function(data, name) {
         fs.writeFile('out.png', data, 'base64', function(err) {
@@ -108,11 +126,19 @@ describe('Chrome | Compodoc page', function() {
     // test routing
 
     after(function(done) {
-        // works with promise
+        var result = handleStatus(this.test.parent.tests);
+        console.log(result);
+        console.log(driver.sessionID);
+        if (process.env.MODE_LOCAL === '0') {
+            saucelabs.updateJob(driver.sessionID, {
+          		passed: result
+        	}, function () {});
+        }
         driver.quit().then(done);
     });
 });
 
+/*
 // Firefox
 describe('Firefox | Compodoc page', function() {
 
@@ -135,3 +161,4 @@ describe('Firefox | Compodoc page', function() {
         driver.quit().then(done);
     });
 });
+*/
