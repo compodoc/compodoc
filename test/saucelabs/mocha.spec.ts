@@ -112,21 +112,13 @@ var expect = require('chai').expect,
     },
     driver;
 
-// Chrome
-describe('Chrome | Compodoc page', function() {
+describe('WIN7 | Chrome | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'chrome';
         capabilities.version = '56';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
-    });
-
-    it('should display title', function(done) {
-        driver.getTitle().then(function(title) {
-            expect(title).to.equal('@compodoc/compodoc documentation');
-            done();
-        });
     });
 
     // Test search bar
@@ -146,8 +138,7 @@ describe('Chrome | Compodoc page', function() {
     });
 });
 
-// Firefox
-describe('Firefox | Compodoc page', function() {
+describe('WIN7 | Firefox | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'firefox';
@@ -156,33 +147,24 @@ describe('Firefox | Compodoc page', function() {
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
 
-    it('should display title', function(done) {
-        driver.getTitle().then(function(title) {
-            expect(title).to.equal('@compodoc/compodoc documentation');
-            done();
-        });
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
     });
 
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
     after(function(done) {
-        if (process.env.MODE_LOCAL === '0') {
-            var result = handleStatus(this.test.parent.tests);
-            request({
-                method: 'PUT',
-                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
-                json: {
-              		passed: result
-            	}
-            }, function(error, response, body) {
-                driver.quit().then(done);
-            });
-        } else {
-            driver.quit().then(done);
-        }
+        endTests(this, done);
     });
 });
 
-// IE
-describe('IE | Compodoc page', function() {
+describe('WIN7 | IE | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'internet explorer';
@@ -191,33 +173,24 @@ describe('IE | Compodoc page', function() {
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
 
-    it('should display title', function(done) {
-        driver.getTitle().then(function(title) {
-            expect(title).to.equal('@compodoc/compodoc documentation');
-            done();
-        });
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
     });
 
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
     after(function(done) {
-        if (process.env.MODE_LOCAL === '0') {
-            var result = handleStatus(this.test.parent.tests);
-            request({
-                method: 'PUT',
-                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
-                json: {
-              		passed: result
-            	}
-            }, function(error, response, body) {
-                driver.quit().then(done);
-            });
-        } else {
-            driver.quit().then(done);
-        }
+        endTests(this, done);
     });
 });
 
-// Safari
-describe('Safari | Compodoc page', function() {
+describe('WIN7 | Safari | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'safari';
@@ -226,27 +199,154 @@ describe('Safari | Compodoc page', function() {
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
 
-    it('should display title', function(done) {
-        driver.getTitle().then(function(title) {
-            expect(title).to.equal('@compodoc/compodoc documentation');
-            done();
-        });
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
     });
 
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
     after(function(done) {
-        if (process.env.MODE_LOCAL === '0') {
-            var result = handleStatus(this.test.parent.tests);
-            request({
-                method: 'PUT',
-                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
-                json: {
-              		passed: result
-            	}
-            }, function(error, response, body) {
-                driver.quit().then(done);
-            });
-        } else {
-            driver.quit().then(done);
-        }
+        endTests(this, done);
+    });
+});
+
+describe('Linux | Firefox | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'linux';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '45';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Linux | Chrome | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'linux';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '48';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac | Firefox | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'Mac 10.11';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '51';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac | Chrome | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'Mac 10.11';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '56';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac | Safari | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'Mac 10.11';
+        capabilities.browserName = 'safari';
+        capabilities.version = '10';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
     });
 });
