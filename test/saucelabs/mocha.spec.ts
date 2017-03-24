@@ -148,9 +148,12 @@ describe('Chrome | Compodoc page', function() {
                 console.log('error:', error);
                 console.log('statusCode:', response && response.statusCode);
                 console.log('body:', body);
+
+                driver.quit().then(done);
             });
+        } else {
+            driver.quit().then(done);
         }
-        driver.quit().then(done);
     });
 });
 
