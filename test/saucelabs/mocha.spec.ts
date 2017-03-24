@@ -142,6 +142,7 @@ describe('WIN7 | Chrome | Compodoc page', function() {
     });
 });
 
+/*
 describe('WIN7 | Firefox | Compodoc page', function() {
 
     before(function(done) {
@@ -193,6 +194,7 @@ describe('WIN7 | IE | Compodoc page', function() {
         endTests(this, done);
     });
 });
+*/
 
 describe('WIN7 | Safari | Compodoc page', function() {
 
@@ -274,6 +276,7 @@ describe('Linux | Chrome | Compodoc page', function() {
     });
 });
 
+/*
 describe('Mac | Firefox | Compodoc page', function() {
 
     before(function(done) {
@@ -300,6 +303,7 @@ describe('Mac | Firefox | Compodoc page', function() {
         endTests(this, done);
     });
 });
+*/
 
 describe('Mac | Chrome | Compodoc page', function() {
 
@@ -328,6 +332,7 @@ describe('Mac | Chrome | Compodoc page', function() {
     });
 });
 
+/*
 describe('Mac | Safari | Compodoc page', function() {
 
     before(function(done) {
@@ -354,3 +359,4 @@ describe('Mac | Safari | Compodoc page', function() {
         endTests(this, done);
     });
 });
+*/
