@@ -143,7 +143,10 @@ describe('Chrome | Compodoc page', function() {
                 uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
                 headers: {
                     'content-type': 'application/json'
-                }
+                },
+                body: {
+              		passed: result
+            	}
             }, function(error, response, body) {
                 console.log('error:', error);
                 console.log('statusCode:', response && response.statusCode);
