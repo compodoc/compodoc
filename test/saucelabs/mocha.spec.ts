@@ -81,6 +81,8 @@ var expect = require('chai').expect,
                         writeScreenshot(data, 'test.png');
                     });*/
 
+                    driver.sleep(2000);
+
                     driver
                         .findElements(webdriver.By.className('search-results-item'))
                         .then(function(elems) {
@@ -100,6 +102,8 @@ var expect = require('chai').expect,
                 searchBox.sendKeys('waza');
                 searchBox.getAttribute('value').then(function(value) {
                     expect(value).to.equal('waza');
+
+                    driver.sleep(2000);
 
                     driver
                         .findElements(webdriver.By.className('search-results-item'))
