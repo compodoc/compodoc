@@ -365,7 +365,28 @@ export let RouterParser = (function() {
                    }
                });
            });
-        }
+       },
+
+       _routesLength = function(): number {
+           var _n = 0;
+
+           let routesParser = function(route) {
+               if (typeof route.path !== 'undefined') {
+                   _n += 1;
+               }
+               if (route.children) {
+                   for(var j in route.children) {
+                       routesParser(route.children[j]);
+                   }
+               }
+           };
+
+           for(var i in routes) {
+               routesParser(routes[i]);
+           }
+
+           return _n;
+       }
 
     return {
         incompleteRoutes: incompleteRoutes,
@@ -386,6 +407,7 @@ export let RouterParser = (function() {
             console.log('printModulesRoutes: ');
             console.log(modulesWithRoutes);
         },
+        routesLength: _routesLength,
         hasRouterModuleInImports: _hasRouterModuleInImports,
         fixIncompleteRoutes: _fixIncompleteRoutes,
         linkModulesAndRoutes: _linkModulesAndRoutes,

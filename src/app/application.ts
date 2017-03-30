@@ -170,6 +170,8 @@ export class Application {
 
         $dependenciesEngine.init(dependenciesData);
 
+        this.configuration.mainData.routesLength = RouterParser.routesLength();
+
         this.prepareEverything();
     }
 
