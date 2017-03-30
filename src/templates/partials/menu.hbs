@@ -175,12 +175,6 @@
         </li>
         {{/if}}
 
-        {{#if routes}}
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
-        </li>
-        {{/if}}
-
         {{#if injectables}}
         <li class="chapter">
             <div class="simple">
@@ -259,6 +253,12 @@
                     </li>
                 {{/each}}
             </ul>
+        </li>
+        {{/if}}
+
+        {{#if routes}}
+        <li class="chapter">
+            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
         </li>
         {{/if}}
 
