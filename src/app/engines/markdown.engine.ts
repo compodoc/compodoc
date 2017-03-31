@@ -1,7 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import marked, { Renderer } from 'marked';
-import highlightjs from 'highlight.js';
 
 export class MarkdownEngine {
     constructor() {

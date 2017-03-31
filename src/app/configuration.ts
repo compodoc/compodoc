@@ -120,6 +120,10 @@ export class Configuration implements IConfiguration {
         this._mainData.additionalPages.push(page);
     }
 
+    resetPages() {
+        this._pages = [];
+    }
+
     get pages():Page[] {
         return this._pages;
     }

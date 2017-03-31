@@ -7,6 +7,7 @@ import * as Shelljs from 'shelljs';
 import marked from 'marked';
 
 const glob: any = require('glob'),
+      sequential = require('promise-sequential'),
       chokidar = require('chokidar');
 
 import { logger } from '../logger';
@@ -143,7 +144,7 @@ export class Application {
      * Get dependency data for small group of updated files during watch process
      */
     getMicroDependenciesData() {
-        logger.info('Get dependencies data');
+        logger.info('Get diff dependencies data');
         let crawler = new Dependencies(
           this.updatedFiles, {
             tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
@@ -154,7 +155,7 @@ export class Application {
 
         $dependenciesEngine.update(dependenciesData);
 
-        this.prepareEverything();
+        this.prepareJustAFewThings(dependenciesData);
     }
 
     getDependenciesData() {
@@ -175,58 +176,112 @@ export class Application {
         this.prepareEverything();
     }
 
-    prepareEverything() {
-        this.prepareModules();
+    prepareJustAFewThings(diffCrawledData) {
+        let actions = [];
 
-        this.prepareComponents().then((readmeData) => {
-            if ($dependenciesEngine.directives.length > 0) {
-                this.prepareDirectives();
-            }
+        this.configuration.resetPages();
 
-            if ($dependenciesEngine.injectables.length > 0) {
-                this.prepareInjectables();
-            }
+        actions.push(() => { return this.prepareRoutes(); });
 
-            if ($dependenciesEngine.routes && $dependenciesEngine.routes.children.length > 0) {
-                this.prepareRoutes();
-            }
+        if (diffCrawledData.modules.length > 0) {
+            actions.push(() => { return this.prepareModules(diffCrawledData.modules); });
+        }
+        if (diffCrawledData.components.length > 0) {
+            actions.push(() => { return this.prepareComponents(diffCrawledData.components); });
+        }
 
-            if ($dependenciesEngine.pipes.length > 0) {
-                this.preparePipes();
-            }
+        if (diffCrawledData.directives.length > 0) {
+            actions.push(() => { return this.prepareDirectives(diffCrawledData.directives); });
+        }
 
-            if ($dependenciesEngine.classes.length > 0) {
-                this.prepareClasses();
-            }
+        if (diffCrawledData.injectables.length > 0) {
+            actions.push(() => { return this.prepareInjectables(diffCrawledData.injectables); });
+        }
 
-            if ($dependenciesEngine.interfaces.length > 0) {
-                this.prepareInterfaces();
-            }
+        if (diffCrawledData.pipes.length > 0) {
+            actions.push(() => { return this.preparePipes(diffCrawledData.pipes); });
+        }
 
-            if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
-                $dependenciesEngine.miscellaneous.functions.length > 0 ||
-                $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-                $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
-                $dependenciesEngine.miscellaneous.types.length > 0 ) {
-                this.prepareMiscellaneous();
-            }
+        if (diffCrawledData.classes.length > 0) {
+            actions.push(() => { return this.prepareClasses(diffCrawledData.classes); });
+        }
 
-            if (!this.configuration.mainData.disableCoverage) {
-                this.prepareCoverage();
-            }
+        if (diffCrawledData.interfaces.length > 0) {
+            actions.push(() => { return this.prepareInterfaces(diffCrawledData.interfaces); });
+        }
 
-            if (this.configuration.mainData.includes !== '') {
-                this.prepareExternalIncludes().then(() => {
-                    this.processPages();
-                }, (e) => {
-                    logger.error(e);
-                })
-            } else {
+        if (diffCrawledData.miscellaneous.variables.length > 0 ||
+            diffCrawledData.miscellaneous.functions.length > 0 ||
+            diffCrawledData.miscellaneous.typealiases.length > 0 ||
+            diffCrawledData.miscellaneous.enumerations.length > 0 ||
+            diffCrawledData.miscellaneous.types.length > 0 ) {
+            actions.push(() => { return this.prepareMiscellaneous(diffCrawledData.miscellaneous); });
+        }
+
+        actions.push(() => { return this.prepareCoverage(); });
+
+        sequential(actions)
+            .then(res => {
                 this.processPages();
-            }
-        }, (errorMessage) => {
-            logger.error(errorMessage);
-        });
+            })
+            .catch(errorMessage => {
+                logger.error(errorMessage);
+            });
+    }
+
+    prepareEverything() {
+        let actions = [];
+
+        actions.push(() => { return this.prepareModules(); });
+        actions.push(() => { return this.prepareComponents(); });
+
+        if ($dependenciesEngine.directives.length > 0) {
+            actions.push(() => { return this.prepareDirectives(); });
+        }
+
+        if ($dependenciesEngine.injectables.length > 0) {
+            actions.push(() => { return this.prepareInjectables(); });
+        }
+
+        if ($dependenciesEngine.routes && $dependenciesEngine.routes.children.length > 0) {
+            actions.push(() => { return this.prepareRoutes(); });
+        }
+
+        if ($dependenciesEngine.pipes.length > 0) {
+            actions.push(() => { return this.preparePipes(); });
+        }
+
+        if ($dependenciesEngine.classes.length > 0) {
+            actions.push(() => { return this.prepareClasses(); });
+        }
+
+        if ($dependenciesEngine.interfaces.length > 0) {
+            actions.push(() => { return this.prepareInterfaces(); });
+        }
+
+        if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
+            $dependenciesEngine.miscellaneous.functions.length > 0 ||
+            $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
+            $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
+            $dependenciesEngine.miscellaneous.types.length > 0 ) {
+            actions.push(() => { return this.prepareMiscellaneous(); });
+        }
+
+        if (!this.configuration.mainData.disableCoverage) {
+            actions.push(() => { return this.prepareCoverage(); });
+        }
+
+        if (this.configuration.mainData.includes !== '') {
+            actions.push(() => { return this.prepareExternalIncludes(); });
+        }
+
+        sequential(actions)
+            .then(res => {
+                this.processPages();
+            })
+            .catch(errorMessage => {
+                logger.error(errorMessage);
+            });
     }
 
     prepareExternalIncludes() {
@@ -299,142 +354,164 @@ export class Application {
         });
     }
 
-    prepareModules() {
+    prepareModules(someModules?) {
         logger.info('Prepare modules');
-        this.configuration.mainData.modules = $dependenciesEngine.getModules().map(ngModule => {
-            ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
-                ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
-                    switch (metaDataItem.type) {
-                        case 'directive':
-                            return $dependenciesEngine.getDirectives().some(directive => directive.name === metaDataItem.name);
+        let i = 0,
+            _modules = (someModules) ? someModules : $dependenciesEngine.getModules();
 
-                        case 'component':
-                            return $dependenciesEngine.getComponents().some(component => component.name === metaDataItem.name);
+        return new Promise((resolve, reject) => {
 
-                        case 'module':
-                            return $dependenciesEngine.getModules().some(module => module.name === metaDataItem.name);
+            this.configuration.mainData.modules = _modules.map(ngModule => {
+                ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
+                    ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
+                        switch (metaDataItem.type) {
+                            case 'directive':
+                                return $dependenciesEngine.getDirectives().some(directive => directive.name === metaDataItem.name);
 
-                        case 'pipe':
-                            return $dependenciesEngine.getPipes().some(pipe => pipe.name === metaDataItem.name);
+                            case 'component':
+                                return $dependenciesEngine.getComponents().some(component => component.name === metaDataItem.name);
 
-                        default:
-                            return true;
-                    }
+                            case 'module':
+                                return $dependenciesEngine.getModules().some(module => module.name === metaDataItem.name);
+
+                            case 'pipe':
+                                return $dependenciesEngine.getPipes().some(pipe => pipe.name === metaDataItem.name);
+
+                            default:
+                                return true;
+                        }
+                    });
                 });
+                ngModule.providers = ngModule.providers.filter(provider => {
+                    return $dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name);
+                });
+                return ngModule;
             });
-            ngModule.providers = ngModule.providers.filter(provider => {
-                return $dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name);
-            });
-            return ngModule;
-        });
-        this.configuration.addPage({
-            name: 'modules',
-            context: 'modules',
-            depth: 1,
-            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-        });
-        let i = 0,
-            len = this.configuration.mainData.modules.length;
-
-        for(i; i<len; i++) {
             this.configuration.addPage({
-                path: 'modules',
-                name: this.configuration.mainData.modules[i].name,
-                context: 'module',
-                module: this.configuration.mainData.modules[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                name: 'modules',
+                context: 'modules',
+                depth: 1,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
-        }
+
+            let len = this.configuration.mainData.modules.length;
+
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'modules',
+                    name: this.configuration.mainData.modules[i].name,
+                    context: 'module',
+                    module: this.configuration.mainData.modules[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+
+            resolve();
+        });
     }
 
-    preparePipes = () => {
+    preparePipes = (somePipes?) => {
         logger.info('Prepare pipes');
-        this.configuration.mainData.pipes = $dependenciesEngine.getPipes();
-        let i = 0,
-            len = this.configuration.mainData.pipes.length;
+        this.configuration.mainData.pipes = (somePipes) ? somePipes : $dependenciesEngine.getPipes();
 
-        for(i; i<len; i++) {
-            this.configuration.addPage({
-                path: 'pipes',
-                name: this.configuration.mainData.pipes[i].name,
-                context: 'pipe',
-                pipe: this.configuration.mainData.pipes[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-            });
-        }
-    }
+        return new Promise((resolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.pipes.length;
 
-    prepareClasses = () => {
-        logger.info('Prepare classes');
-        this.configuration.mainData.classes = $dependenciesEngine.getClasses();
-        let i = 0,
-            len = this.configuration.mainData.classes.length;
-
-        for(i; i<len; i++) {
-            this.configuration.addPage({
-                path: 'classes',
-                name: this.configuration.mainData.classes[i].name,
-                context: 'class',
-                class: this.configuration.mainData.classes[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-            });
-        }
-    }
-
-    prepareInterfaces() {
-        logger.info('Prepare interfaces');
-        this.configuration.mainData.interfaces = $dependenciesEngine.getInterfaces();
-        let i = 0,
-            len = this.configuration.mainData.interfaces.length;
-        for(i; i<len; i++) {
-            this.configuration.addPage({
-                path: 'interfaces',
-                name: this.configuration.mainData.interfaces[i].name,
-                context: 'interface',
-                interface: this.configuration.mainData.interfaces[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-            });
-        }
-    }
-
-    prepareMiscellaneous() {
-        logger.info('Prepare miscellaneous');
-        this.configuration.mainData.miscellaneous = $dependenciesEngine.getMiscellaneous();
-
-        this.configuration.addPage({
-            name: 'miscellaneous',
-            context: 'miscellaneous',
-            depth: 1,
-            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'pipes',
+                    name: this.configuration.mainData.pipes[i].name,
+                    context: 'pipe',
+                    pipe: this.configuration.mainData.pipes[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            resolve();
         });
     }
 
-    prepareComponents() {
-        logger.info('Prepare components');
-        let that = this;
-        that.configuration.mainData.components = $dependenciesEngine.getComponents();
+    prepareClasses = (someClasses?) => {
+        logger.info('Prepare classes');
+        this.configuration.mainData.classes = (someClasses) ? someClasses : $dependenciesEngine.getClasses();
 
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             let i = 0,
-                len = that.configuration.mainData.components.length,
+                len = this.configuration.mainData.classes.length;
+
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'classes',
+                    name: this.configuration.mainData.classes[i].name,
+                    context: 'class',
+                    class: this.configuration.mainData.classes[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            resolve();
+        });
+    }
+
+    prepareInterfaces(someInterfaces?) {
+        logger.info('Prepare interfaces');
+        this.configuration.mainData.interfaces = (someInterfaces) ? someInterfaces : $dependenciesEngine.getInterfaces();
+
+        return new Promise((resolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.interfaces.length;
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'interfaces',
+                    name: this.configuration.mainData.interfaces[i].name,
+                    context: 'interface',
+                    interface: this.configuration.mainData.interfaces[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            resolve();
+        });
+    }
+
+    prepareMiscellaneous(someMisc?) {
+        logger.info('Prepare miscellaneous');
+        this.configuration.mainData.miscellaneous = (someMisc) ? someMisc : $dependenciesEngine.getMiscellaneous();
+
+        return new Promise((resolve, reject) => {
+            this.configuration.addPage({
+                name: 'miscellaneous',
+                context: 'miscellaneous',
+                depth: 1,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+            });
+            resolve();
+        });
+    }
+
+    prepareComponents(someComponents?) {
+        logger.info('Prepare components');
+        this.configuration.mainData.components = (someComponents) ? someComponents : $dependenciesEngine.getComponents();
+
+        return new Promise((mainResolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.components.length,
                 loop = () => {
                     if( i <= len-1) {
-                        let dirname = path.dirname(that.configuration.mainData.components[i].file),
+                        let dirname = path.dirname(this.configuration.mainData.components[i].file),
                             readmeFile = dirname + path.sep + 'README.md',
-                            handleTemplateurl = function() {
-                                return new Promise(function(resolve, reject) {
-                                    let templatePath = path.resolve(dirname + path.sep + that.configuration.mainData.components[i].templateUrl);
+                            handleTemplateurl = () => {
+                                return new Promise((resolve, reject) => {
+                                    let templatePath = path.resolve(dirname + path.sep + this.configuration.mainData.components[i].templateUrl);
                                     if (fs.existsSync(templatePath)) {
                                         fs.readFile(templatePath, 'utf8', (err, data) => {
                                             if (err) {
                                                 logger.error(err);
                                                 reject();
                                             } else {
-                                                that.configuration.mainData.components[i].templateData = data;
+                                                this.configuration.mainData.components[i].templateData = data;
                                                 resolve();
                                             }
                                         });
@@ -445,17 +522,17 @@ export class Application {
                             logger.info('README.md exist for this component, include it');
                             fs.readFile(readmeFile, 'utf8', (err, data) => {
                                 if (err) throw err;
-                                that.configuration.mainData.components[i].readme = marked(data);
-                                that.configuration.addPage({
+                                this.configuration.mainData.components[i].readme = marked(data);
+                                this.configuration.addPage({
                                     path: 'components',
-                                    name: that.configuration.mainData.components[i].name,
+                                    name: this.configuration.mainData.components[i].name,
                                     context: 'component',
-                                    component: that.configuration.mainData.components[i],
+                                    component: this.configuration.mainData.components[i],
                                     depth: 2,
                                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                 });
-                                if (that.configuration.mainData.components[i].templateUrl.length > 0) {
-                                    logger.info(`${that.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                                if (this.configuration.mainData.components[i].templateUrl.length > 0) {
+                                    logger.info(`${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
                                     handleTemplateurl().then(() => {
                                         i++;
                                         loop();
@@ -468,16 +545,16 @@ export class Application {
                                 }
                             });
                         } else {
-                            that.configuration.addPage({
+                            this.configuration.addPage({
                                 path: 'components',
-                                name: that.configuration.mainData.components[i].name,
+                                name: this.configuration.mainData.components[i].name,
                                 context: 'component',
-                                component: that.configuration.mainData.components[i],
+                                component: this.configuration.mainData.components[i],
                                 depth: 2,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                             });
-                            if (that.configuration.mainData.components[i].templateUrl.length > 0) {
-                                logger.info(`${that.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                            if (this.configuration.mainData.components[i].templateUrl.length > 0) {
+                                logger.info(`${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
                                 handleTemplateurl().then(() => {
                                     i++;
                                     loop();
@@ -490,342 +567,360 @@ export class Application {
                             }
                         }
                     } else {
-                        resolve();
+                        mainResolve();
                     }
                 };
             loop();
         });
     }
 
-    prepareDirectives = () => {
+    prepareDirectives = (someDirectives?) => {
         logger.info('Prepare directives');
-        this.configuration.mainData.directives = $dependenciesEngine.getDirectives();
 
-        let i = 0,
-            len = this.configuration.mainData.directives.length;
+        this.configuration.mainData.directives = (someDirectives) ? someDirectives : $dependenciesEngine.getDirectives();
 
-        for(i; i<len; i++) {
-            this.configuration.addPage({
-                path: 'directives',
-                name: this.configuration.mainData.directives[i].name,
-                context: 'directive',
-                directive: this.configuration.mainData.directives[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-            });
-        }
+        return new Promise((resolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.directives.length;
+
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'directives',
+                    name: this.configuration.mainData.directives[i].name,
+                    context: 'directive',
+                    directive: this.configuration.mainData.directives[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            resolve();
+        });
     }
 
-    prepareInjectables() {
+    prepareInjectables(someInjectables?) {
         logger.info('Prepare injectables');
-        this.configuration.mainData.injectables = $dependenciesEngine.getInjectables();
 
-        let i = 0,
-            len = this.configuration.mainData.injectables.length;
+        this.configuration.mainData.injectables = (someInjectables) ? someInjectables : $dependenciesEngine.getInjectables();
 
-        for(i; i<len; i++) {
-            this.configuration.addPage({
-                path: 'injectables',
-                name: this.configuration.mainData.injectables[i].name,
-                context: 'injectable',
-                injectable: this.configuration.mainData.injectables[i],
-                depth: 2,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-            });
-        }
+        return new Promise((resolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.injectables.length;
+
+            for(i; i<len; i++) {
+                this.configuration.addPage({
+                    path: 'injectables',
+                    name: this.configuration.mainData.injectables[i].name,
+                    context: 'injectable',
+                    injectable: this.configuration.mainData.injectables[i],
+                    depth: 2,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            resolve();
+        });
     }
 
     prepareRoutes() {
         logger.info('Process routes');
         this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
 
-        this.configuration.addPage({
-            name: 'routes',
-            context: 'routes',
-            depth: 1,
-            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-        });
+        return new Promise((resolve, reject) => {
 
-        RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
-            logger.info('Routes index generated');
-        }, (e) => {
-            logger.error(e);
+            this.configuration.addPage({
+                name: 'routes',
+                context: 'routes',
+                depth: 1,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+            });
+
+            RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
+                logger.info('Routes index generated');
+                resolve();
+            }, (e) => {
+                logger.error(e);
+                reject();
+            });
+
         });
     }
 
     prepareCoverage() {
         logger.info('Process documentation coverage report');
-        /*
-         * loop with components, classes, injectables, interfaces, pipes
-         */
-        var files = [],
-            totalProjectStatementDocumented = 0,
-            getStatus = function(percent) {
-                var status;
-                if (percent <= 25) {
-                    status = 'low';
-                } else if (percent > 25 && percent <= 50) {
-                    status = 'medium';
-                } else if (percent > 50 && percent <= 75) {
-                    status = 'good';
-                } else {
-                    status = 'low';
+
+        return new Promise((resolve, reject) => {
+            /*
+             * loop with components, classes, injectables, interfaces, pipes
+             */
+            var files = [],
+                totalProjectStatementDocumented = 0,
+                getStatus = function(percent) {
+                    var status;
+                    if (percent <= 25) {
+                        status = 'low';
+                    } else if (percent > 25 && percent <= 50) {
+                        status = 'medium';
+                    } else if (percent > 50 && percent <= 75) {
+                        status = 'good';
+                    } else {
+                        status = 'low';
+                    }
+                    return status;
+                };
+
+            _.forEach(this.configuration.mainData.components, (component) => {
+                if (!component.propertiesClass ||
+                    !component.methodsClass ||
+                    !component.inputsClass ||
+                    !component.outputsClass) {
+                        return;
+                    }
+                let cl:any = {
+                        filePath: component.file,
+                        type: component.type,
+                        linktype: component.type,
+                        name: component.name
+                    },
+                    totalStatementDocumented = 0,
+                    totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
+
+                if (component.constructorObj) {
+                    totalStatements += 1;
+                    if (component.constructorObj.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
                 }
-                return status;
+                if (component.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+
+                _.forEach(component.propertiesClass, (property) => {
+                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(property.description !== '' && property.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.methodsClass, (method) => {
+                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(method.description !== '' && method.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.inputsClass, (input) => {
+                    if (input.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(input.description !== '' && input.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(component.outputsClass, (output) => {
+                    if (output.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(output.description !== '' && output.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                if(totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            })
+            _.forEach(this.configuration.mainData.classes, (classe) => {
+                if (!classe.properties ||
+                    !classe.methods) {
+                        return;
+                    }
+                let cl:any = {
+                        filePath: classe.file,
+                        type: 'class',
+                        linktype: 'classe',
+                        name: classe.name
+                    },
+                    totalStatementDocumented = 0,
+                    totalStatements = classe.properties.length + classe.methods.length + 1; // +1 for class itself
+
+                if (classe.constructorObj) {
+                    totalStatements += 1;
+                    if (classe.constructorObj.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                }
+                if (classe.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+
+                _.forEach(classe.properties, (property) => {
+                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(property.description !== '' && property.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(classe.methods, (method) => {
+                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(method.description !== '' && method.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                if(totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.injectables, (injectable) => {
+                if (!injectable.properties ||
+                    !injectable.methods) {
+                        return;
+                    }
+                let cl:any = {
+                        filePath: injectable.file,
+                        type: injectable.type,
+                        linktype: injectable.type,
+                        name: injectable.name
+                    },
+                    totalStatementDocumented = 0,
+                    totalStatements = injectable.properties.length + injectable.methods.length + 1; // +1 for injectable itself
+
+                if (injectable.constructorObj) {
+                    totalStatements += 1;
+                    if (injectable.constructorObj.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                }
+                if (injectable.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+
+                _.forEach(injectable.properties, (property) => {
+                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(property.description !== '' && property.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(injectable.methods, (method) => {
+                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(method.description !== '' && method.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                if(totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.interfaces, (inter) => {
+                if (!inter.properties ||
+                    !inter.methods) {
+                        return;
+                    }
+                let cl:any = {
+                        filePath: inter.file,
+                        type: inter.type,
+                        linktype: inter.type,
+                        name: inter.name
+                    },
+                    totalStatementDocumented = 0,
+                    totalStatements = inter.properties.length + inter.methods.length + 1; // +1 for interface itself
+
+                if (inter.constructorObj) {
+                    totalStatements += 1;
+                    if (inter.constructorObj.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+                }
+                if (inter.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+
+                _.forEach(inter.properties, (property) => {
+                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(property.description !== '' && property.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+                _.forEach(inter.methods, (method) => {
+                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if(method.description !== '' && method.modifierKind !== 111) {
+                        totalStatementDocumented += 1;
+                    }
+                });
+
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                if(totalStatements === 0) {
+                    cl.coveragePercent = 0;
+                }
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            _.forEach(this.configuration.mainData.pipes, (pipe) => {
+                let cl:any = {
+                        filePath: pipe.file,
+                        type: pipe.type,
+                        linktype: pipe.type,
+                        name: pipe.name
+                    },
+                    totalStatementDocumented = 0,
+                    totalStatements = 1;
+                if (pipe.description !== '') {
+                    totalStatementDocumented += 1;
+                }
+
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cl.status = getStatus(cl.coveragePercent);
+                totalProjectStatementDocumented += cl.coveragePercent;
+                files.push(cl);
+            });
+            files = _.sortBy(files, ['filePath']);
+            var coverageData = {
+                count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
+                status: ''
             };
-
-        _.forEach(this.configuration.mainData.components, (component) => {
-            if (!component.propertiesClass ||
-                !component.methodsClass ||
-                !component.inputsClass ||
-                !component.outputsClass) {
-                    return;
-                }
-            let cl:any = {
-                    filePath: component.file,
-                    type: component.type,
-                    linktype: component.type,
-                    name: component.name
-                },
-                totalStatementDocumented = 0,
-                totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
-
-            if (component.constructorObj) {
-                totalStatements += 1;
-                if (component.constructorObj.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-            }
-            if (component.description !== '') {
-                totalStatementDocumented += 1;
-            }
-
-            _.forEach(component.propertiesClass, (property) => {
-                if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(property.description !== '' && property.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
+            coverageData.status = getStatus(coverageData.count);
+            this.configuration.addPage({
+                name: 'coverage',
+                context: 'coverage',
+                files: files,
+                data: coverageData,
+                depth: 1,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
-            _.forEach(component.methodsClass, (method) => {
-                if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(method.description !== '' && method.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-            _.forEach(component.inputsClass, (input) => {
-                if (input.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(input.description !== '' && input.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-            _.forEach(component.outputsClass, (output) => {
-                if (output.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(output.description !== '' && output.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-
-            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-            if(totalStatements === 0) {
-                cl.coveragePercent = 0;
-            }
-            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-            cl.status = getStatus(cl.coveragePercent);
-            totalProjectStatementDocumented += cl.coveragePercent;
-            files.push(cl);
-        })
-        _.forEach(this.configuration.mainData.classes, (classe) => {
-            if (!classe.properties ||
-                !classe.methods) {
-                    return;
-                }
-            let cl:any = {
-                    filePath: classe.file,
-                    type: 'class',
-                    linktype: 'classe',
-                    name: classe.name
-                },
-                totalStatementDocumented = 0,
-                totalStatements = classe.properties.length + classe.methods.length + 1; // +1 for class itself
-
-            if (classe.constructorObj) {
-                totalStatements += 1;
-                if (classe.constructorObj.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-            }
-            if (classe.description !== '') {
-                totalStatementDocumented += 1;
-            }
-
-            _.forEach(classe.properties, (property) => {
-                if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(property.description !== '' && property.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-            _.forEach(classe.methods, (method) => {
-                if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(method.description !== '' && method.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-
-            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-            if(totalStatements === 0) {
-                cl.coveragePercent = 0;
-            }
-            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-            cl.status = getStatus(cl.coveragePercent);
-            totalProjectStatementDocumented += cl.coveragePercent;
-            files.push(cl);
+            $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
+            resolve();
         });
-        _.forEach(this.configuration.mainData.injectables, (injectable) => {
-            if (!injectable.properties ||
-                !injectable.methods) {
-                    return;
-                }
-            let cl:any = {
-                    filePath: injectable.file,
-                    type: injectable.type,
-                    linktype: injectable.type,
-                    name: injectable.name
-                },
-                totalStatementDocumented = 0,
-                totalStatements = injectable.properties.length + injectable.methods.length + 1; // +1 for injectable itself
-
-            if (injectable.constructorObj) {
-                totalStatements += 1;
-                if (injectable.constructorObj.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-            }
-            if (injectable.description !== '') {
-                totalStatementDocumented += 1;
-            }
-
-            _.forEach(injectable.properties, (property) => {
-                if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(property.description !== '' && property.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-            _.forEach(injectable.methods, (method) => {
-                if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(method.description !== '' && method.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-
-            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-            if(totalStatements === 0) {
-                cl.coveragePercent = 0;
-            }
-            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-            cl.status = getStatus(cl.coveragePercent);
-            totalProjectStatementDocumented += cl.coveragePercent;
-            files.push(cl);
-        });
-        _.forEach(this.configuration.mainData.interfaces, (inter) => {
-            if (!inter.properties ||
-                !inter.methods) {
-                    return;
-                }
-            let cl:any = {
-                    filePath: inter.file,
-                    type: inter.type,
-                    linktype: inter.type,
-                    name: inter.name
-                },
-                totalStatementDocumented = 0,
-                totalStatements = inter.properties.length + inter.methods.length + 1; // +1 for interface itself
-
-            if (inter.constructorObj) {
-                totalStatements += 1;
-                if (inter.constructorObj.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-            }
-            if (inter.description !== '') {
-                totalStatementDocumented += 1;
-            }
-
-            _.forEach(inter.properties, (property) => {
-                if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(property.description !== '' && property.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-            _.forEach(inter.methods, (method) => {
-                if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                    totalStatements -= 1;
-                }
-                if(method.description !== '' && method.modifierKind !== 111) {
-                    totalStatementDocumented += 1;
-                }
-            });
-
-            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-            if(totalStatements === 0) {
-                cl.coveragePercent = 0;
-            }
-            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-            cl.status = getStatus(cl.coveragePercent);
-            totalProjectStatementDocumented += cl.coveragePercent;
-            files.push(cl);
-        });
-        _.forEach(this.configuration.mainData.pipes, (pipe) => {
-            let cl:any = {
-                    filePath: pipe.file,
-                    type: pipe.type,
-                    linktype: pipe.type,
-                    name: pipe.name
-                },
-                totalStatementDocumented = 0,
-                totalStatements = 1;
-            if (pipe.description !== '') {
-                totalStatementDocumented += 1;
-            }
-
-            cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-            cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-            cl.status = getStatus(cl.coveragePercent);
-            totalProjectStatementDocumented += cl.coveragePercent;
-            files.push(cl);
-        });
-        files = _.sortBy(files, ['filePath']);
-        var coverageData = {
-            count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
-            status: ''
-        };
-        coverageData.status = getStatus(coverageData.count);
-        this.configuration.addPage({
-            name: 'coverage',
-            context: 'coverage',
-            files: files,
-            data: coverageData,
-            depth: 1,
-            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-        });
-        $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
     }
 
     processPages() {
@@ -932,7 +1027,6 @@ export class Application {
         if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
-            let that = this;
             fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
                 if(err) {
                     logger.error('Error during resources copy ', err);
@@ -943,24 +1037,23 @@ export class Application {
 
     processResources() {
         logger.info('Copy main resources');
-        let that = this;
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), function (err) {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
-                if (that.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + that.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + that.configuration.mainData.output + '/styles/'), function (err) {
+                if (this.configuration.mainData.extTheme) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
                             logger.info('External styling theme copy succeeded');
-                            that.processGraphs();
+                            this.processGraphs();
                         }
                     });
                 }
                 else {
-                    that.processGraphs();
+                    this.processGraphs();
                 }
             }
         });
@@ -1027,6 +1120,7 @@ export class Application {
                 open: this.configuration.mainData.open,
                 quiet: true,
                 logLevel: 0,
+                wait: 1000,
                 port: this.configuration.mainData.port
             });
         }

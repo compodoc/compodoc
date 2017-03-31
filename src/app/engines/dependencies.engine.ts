@@ -1,9 +1,5 @@
 import * as _ from 'lodash';
 
-const deep           = require('deep-diff'),
-      observableDiff = require('deep-diff').observableDiff,
-      applyChange    = require('deep-diff').applyChange;
-
 import { finderInAngularAPIs } from '../../utils/angular-api';
 
 class DependenciesEngine {
@@ -97,16 +93,48 @@ class DependenciesEngine {
         }
     }
     update(updatedData) {
-        // Diff between updatedData and rawData
-        // components
-        // loop for updatedData components, find each one in rawData, and override it
-        // again for all ng types : interfaces, pipes, modules, directives, classes, injectables, routes ?
-        let differences = deep.diff(updatedData, this.rawData);
-        observableDiff(this.rawData, updatedData, (d) => {
-            if (d.path.length !== 1) {
-                applyChange(this.rawData, updatedData, d);
-            }
-        });
+        if (updatedData.modules.length > 0) {
+            _.forEach(updatedData.modules, (module) => {
+                let _index = _.findIndex(this.modules, {'name': module.name});
+                this.modules[_index] = module;
+            });
+        }
+        if (updatedData.components.length > 0) {
+            _.forEach(updatedData.components, (component) => {
+                let _index = _.findIndex(this.components, {'name': component.name});
+                this.components[_index] = component;
+            });
+        }
+        if (updatedData.directives.length > 0) {
+            _.forEach(updatedData.directives, (directive) => {
+                let _index = _.findIndex(this.directives, {'name': directive.name});
+                this.directives[_index] = directive;
+            });
+        }
+        if (updatedData.injectables.length > 0) {
+            _.forEach(updatedData.injectables, (injectable) => {
+                let _index = _.findIndex(this.injectables, {'name': injectable.name});
+                this.injectables[_index] = injectable;
+            });
+        }
+        if (updatedData.interfaces.length > 0) {
+            _.forEach(updatedData.interfaces, (int) => {
+                let _index = _.findIndex(this.interfaces, {'name': int.name});
+                this.interfaces[_index] = int;
+            });
+        }
+        if (updatedData.pipes.length > 0) {
+            _.forEach(updatedData.pipes, (pipe) => {
+                let _index = _.findIndex(this.pipes, {'name': pipe.name});
+                this.pipes[_index] = pipe;
+            });
+        }
+        if (updatedData.classes.length > 0) {
+            _.forEach(updatedData.classes, (classe) => {
+                let _index = _.findIndex(this.classes, {'name': classe.name});
+                this.classes[_index] = classe;
+            });
+        }
     }
     findInCompodoc(name: string) {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
