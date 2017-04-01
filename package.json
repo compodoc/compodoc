@@ -69,7 +69,6 @@
     "lodash": "^4.17.3",
     "lunr": "^1.0.0",
     "marked": "^0.3.6",
-    "promise-sequential": "^1.1.1",
     "shelljs": "^0.7.7",
     "typescript": "2.2.2"
   },

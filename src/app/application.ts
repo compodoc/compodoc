@@ -7,7 +7,6 @@ import * as Shelljs from 'shelljs';
 import marked from 'marked';
 
 const glob: any = require('glob'),
-      sequential = require('promise-sequential'),
       chokidar = require('chokidar');
 
 import { logger } from '../logger';
@@ -24,6 +23,8 @@ import { RouterParser } from '../utils/router.parser';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
+
+import { promiseSequential } from '../utils/promise-sequential';
 
 let pkg = require('../package.json'),
     cwd = process.cwd(),
@@ -220,7 +221,7 @@ export class Application {
 
         actions.push(() => { return this.prepareCoverage(); });
 
-        sequential(actions)
+        promiseSequential(actions)
             .then(res => {
                 this.processPages();
             })
@@ -275,7 +276,7 @@ export class Application {
             actions.push(() => { return this.prepareExternalIncludes(); });
         }
 
-        sequential(actions)
+        promiseSequential(actions)
             .then(res => {
                 this.processPages();
             })
