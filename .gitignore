@@ -23,3 +23,5 @@ doc
 coverage
 .nyc_output
 coverage.*
+
+.dockerignore
