@@ -212,20 +212,51 @@ export let HtmlEngineHelpers = (function() {
             return description;
         });
 
-        Handlebars.registerHelper('relativeURL', function(depth, currentPageType, targetPageType) {
-            //console.log('relativeURL: ', depth, currentPageType, targetPageType);
+        Handlebars.registerHelper('relativeURL', function(targetDepth, currentPageType, targetPageType, context, currentDepth) {
+            // targetDepth is currentDepth if no currentDepth available, for example for css files
+            //console.log('relativeURL: ', depth, currentPageType, targetPageType, context);
             // if depth 2 & type == internal, set on same level, otherwise go up
             let result = '';
-            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && depth === 2) {
-                result = '../../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+
+            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                && targetDepth === 2) {
                 result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && depth === 2) {
-                result = '../../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
                 result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && currentDepth === 1
+                    && context === 'additional-page') {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && currentDepth === 2
+                    && context === 'additional-page') {
+                result = '../../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                       && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                       && currentDepth === 2) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                       && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                       && currentDepth === 1) {
                 result = './';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetDepth === 2) {
+                result = '../../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
+                result = '../';
+            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
+                result = './';
+            }
+
+            if (typeof context === 'string') {
+                console.log('relativeURL: ', targetDepth, currentPageType, targetPageType, context, currentDepth, result);
             }
             return result;
         });

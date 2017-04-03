@@ -8,10 +8,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth data.pageType 'root'}}images/favicon.ico">
-	    <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root'}}styles/style.css">
+	    <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root' 'styles'}}styles/style.css">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
-                 <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root'}}styles/{{data.theme}}.css">
+                 <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root' 'styles'}}styles/{{data.theme}}.css">
             {{/compare}}
         {{/if}}
     </head>
