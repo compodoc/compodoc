@@ -1,6 +1,6 @@
 {
   "name": "@compodoc/compodoc",
-  "version": "0.0.41",
+  "version": "1.0.0-beta.1",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js && rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
     "download-api-list": "node tools/download-api-list.js",
     "start": "npm run test:watch",
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
