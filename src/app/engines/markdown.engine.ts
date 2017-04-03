@@ -1,16 +1,16 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import marked, { Renderer } from 'marked';
-import highlightjs from 'highlight.js';
 
 export class MarkdownEngine {
     constructor() {
         const renderer = new Renderer();
         renderer.code = (code, language) => {
-            const validLang = !!(language && highlightjs.getLanguage(language));
-            let highlighted = validLang ? highlightjs.highlight(language, code).value : code;
-            highlighted = highlighted.replace(/(\r\n|\n|\r)/gm, '<br>');
-            return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
+            let highlighted = code;
+            if (!language) {
+                language = 'none';
+            }
+            return `<pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre>`;
         };
 
         renderer.table = (header, body) => {
@@ -36,6 +36,17 @@ export class MarkdownEngine {
         marked.setOptions({
             renderer: renderer,
             breaks: true
+        });
+    }
+    get(filepath:string) {
+        return new Promise(function(resolve, reject) {
+           fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during ' + filepath + ' read');
+               } else {
+                   resolve(marked(data));
+               }
+           });
         });
     }
     getReadmeFile() {

@@ -170,7 +170,7 @@ describe('CLI simple generation', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/tsconfig.json', {env}, (error, stdout, stderr) => {
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/src/tsconfig.json', {env}, (error, stdout, stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
                 done('error');
@@ -217,6 +217,17 @@ describe('CLI simple generation', () => {
             const isIndexExists = exists(`documentation/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
+
+        it('should have generated extends information for todo class', () => {
+            const todoModelFile = read(`documentation/classes/Todo.html`);
+            expect(todoModelFile).to.contain('Extends');
+        });
+
+        it('should have generated implements information for clock class', () => {
+            const classFile = read(`documentation/classes/Clock.html`);
+            expect(classFile).to.contain('Implements');
+        });
+
     });
 
     /*
@@ -242,7 +253,7 @@ describe('CLI simple generation', () => {
         });
     });
     */
-    
+
     describe('when generation with --theme flag', () => {
 
         let stdoutString = null,

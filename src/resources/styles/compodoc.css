@@ -283,6 +283,10 @@ h4, h5 {
     padding-left: 20px;
 }
 
+.menu ul.list li.for-chapter {
+    padding-left: 20px;
+}
+
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
     position: relative;
@@ -381,6 +385,10 @@ h4, h5 {
     position: absolute;
     right: 0;
     margin: 10px;
+}
+
+.content ul.nav {
+    padding-left: 0;
 }
 
 .xs-menu {
@@ -484,26 +492,16 @@ code {
   font-style: normal;
 }
 
-.hljs-line-numbers {
-    text-align: right;
-    border-right: 1px solid #ccc;
-    color: #999;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .jsdoc-params {
     list-style: square;
-    padding-left: 20px;
     margin-top: 10px;
     margin-bottom: 0 !important;
 }
 .jsdoc-params li {
     padding-bottom: 10px;
+}
+.jsdoc-example-ul ul {
+    padding-left: 20px;
 }
 
 i {
@@ -571,9 +569,12 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 
 .content ul {
     list-style: disc;
-    padding-left: 2em;
     margin-top: 0;
+    padding-left: 20px;
     margin-bottom: 16px;
+}
+.content ul.list-group {
+    padding-left: 0;
 }
 .content ul ul {
     list-style-type: circle;
@@ -612,4 +613,79 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 }
 .modifier-icon.method .fa-lock {
     margin-right: 0;
+}
+
+/* Routes graph */
+
+.node text {
+    font-size: 12px;
+}
+
+.node .icon {
+    font-size: 15px;
+    cursor: default;
+}
+.node .icon.has-children {
+    cursor: pointer;
+}
+
+path.link {
+    fill: none;
+    stroke: #9ecae1;
+    stroke-width: 1.5px;
+}
+
+#body-routes a {
+    text-decoration: underline;
+}
+#body-routes svg {
+    overflow: visible;
+}
+
+/* Miscellaneous */
+
+.content.miscellaneous h2 {
+    margin-bottom: 20px;
+}
+.content.miscellaneous h4 {
+    padding-top: 20px;
+}
+
+/* highlight line */
+.line-highlight {
+    background: linear-gradient(to right, hsla(0, 0%, 100%,.1) 70%, hsla(24, 20%, 50%,0));
+}
+
+#tree-container {
+    width: 100%;
+    height: 100%;
+}
+
+#tree {
+    position: relative;
+}
+.tree-legend {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+}
+.tree-legend .title {
+    margin-bottom: 8px;
+}
+.tree-legend .color {
+    width: 20px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 5px;
+}
+.tree-legend .htmlelement {
+    background: #97c2fc;
+}
+.tree-legend .component {
+    background: #fb7e81;
+}
+.tree-legend .directive {
+    background: #FF9800;
 }

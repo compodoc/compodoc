@@ -32,25 +32,45 @@
             </p>
         {{/if}}
 
+        {{#if class.extends}}
+            <p class="comment">
+                <h3>Extends</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=class.extends }}
+            </p>
+        {{/if}}
+
+        {{#if class.implements}}
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                {{#each class.implements}}
+                    {{> link-type type=this}}
+                {{/each}}
+            </p>
+        {{/if}}
+
         {{#if class.constructorObj}}
-            {{> block-constructor constructor=class.constructorObj }}
+            {{> block-constructor constructor=class.constructorObj file=class.file }}
         {{/if}}
 
         {{#if class.methods}}
-            {{> block-method methods=class.methods }}
+            {{> block-method methods=class.methods file=class.file }}
         {{/if}}
 
         {{#if class.indexSignatures}}
-            {{> block-index indexables=class.indexSignatures }}
+            {{> block-index indexables=class.indexSignatures file=class.file }}
         {{/if}}
 
         {{#if class.properties}}
-            {{> block-property properties=class.properties }}
+            {{> block-property properties=class.properties file=class.file }}
         {{/if}}
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{ class.sourceCode}}</code></pre>
+        <pre class="line-numbers"><code class="language-typescript">{{ class.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

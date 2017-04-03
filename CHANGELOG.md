@@ -1,3 +1,55 @@
+<a name="1.0.0-beta.1"></a>
+# [1.0.0-beta.1](https://github.com/compodoc/compodoc/compare/0.0.41...v1.0.0-beta.1) (2017-04-03)
+
+### Breaking changes
+
+* @compodoc/compodoc : move compodoc to @compodoc/compodoc
+
+### Features
+
+* **app:** add component DOM tree graph in tab ([318d0c6](https://github.com/compodoc/compodoc/commit/318d0c6)), closes [#108](https://github.com/compodoc/compodoc/issues/108)
+* **app:** add outlet routes detail, cleaning ([a859976](https://github.com/compodoc/compodoc/commit/a859976))
+* **app:** additional documentation support ([8792b3a](https://github.com/compodoc/compodoc/commit/8792b3a))
+* **app:** component DOM tree clickable and link to known components ([ea5df1e](https://github.com/compodoc/compodoc/commit/ea5df1e))
+* **app:** details on unique names for routes ([6d0df01](https://github.com/compodoc/compodoc/commit/6d0df01))
+* **app:** display lazy-loaded modules infos / WIP ([5bc21dc](https://github.com/compodoc/compodoc/commit/5bc21dc))
+* **app:** link component DOM tree with directives founded ([3a8010a](https://github.com/compodoc/compodoc/commit/3a8010a))
+* **app:** misc type first support ([1db6781](https://github.com/compodoc/compodoc/commit/1db6781))
+* **app:** move to prism.js for syntax highlighting + "Defined in" link ([c252d6e](https://github.com/compodoc/compodoc/commit/c252d6e))
+* **app:** new routes page ([169730a](https://github.com/compodoc/compodoc/commit/169730a)), closes [#39](https://github.com/compodoc/compodoc/issues/39) [#17](https://github.com/compodoc/compodoc/issues/17)
+* **app:** routes guards ([aa27e65](https://github.com/compodoc/compodoc/commit/aa27e65))
+* **app:** routes page with modules support ([1a6a390](https://github.com/compodoc/compodoc/commit/1a6a390))
+* **app:** templateUrl file read ([53ceeb8](https://github.com/compodoc/compodoc/commit/53ceeb8))
+* **app:** toggleMenuItems option ([52891da](https://github.com/compodoc/compodoc/commit/52891da))
+* **app:** watch flag ([dbe7cb6](https://github.com/compodoc/compodoc/commit/dbe7cb6)), closes [#20](https://github.com/compodoc/compodoc/issues/20)
+* **app:** watch flag | add/remove support ([a276dac](https://github.com/compodoc/compodoc/commit/a276dac)), closes [#20](https://github.com/compodoc/compodoc/issues/20)
+* **menu:** display routes after all general items ([09a1caf](https://github.com/compodoc/compodoc/commit/09a1caf))
+* **routing:** display lazy loading routes ([075670e](https://github.com/compodoc/compodoc/commit/075670e))
+* **routing:** display routes length in overview ([a713aec](https://github.com/compodoc/compodoc/commit/a713aec))
+
+
+### Bug Fixes
+
+* **app:** [@link](https://github.com/link) parsing ([55564d6](https://github.com/compodoc/compodoc/commit/55564d6))
+* **app:** add support for inheritanceand extends ([97cff59](https://github.com/compodoc/compodoc/commit/97cff59)), closes [#116](https://github.com/compodoc/compodoc/issues/116)
+* **app:** components don't have the correct data depth ([b6f20e5](https://github.com/compodoc/compodoc/commit/b6f20e5)), closes [#111](https://github.com/compodoc/compodoc/issues/111)
+* **app:** doesn't display routes pages if no routes ([d31d634](https://github.com/compodoc/compodoc/commit/d31d634))
+* **app:** functionSignature args 0 ([d93a39d](https://github.com/compodoc/compodoc/commit/d93a39d))
+* **app:** group misc by file, support of enums ([8031223](https://github.com/compodoc/compodoc/commit/8031223)), closes [#101](https://github.com/compodoc/compodoc/issues/101)
+* **app:** menu modules page link ([f92f871](https://github.com/compodoc/compodoc/commit/f92f871))
+* **app:** Multiple classes in the same file get the same description ([516ce47](https://github.com/compodoc/compodoc/commit/516ce47)), closes [#118](https://github.com/compodoc/compodoc/issues/118)
+* **app:** node 4 spread support ([aa53770](https://github.com/compodoc/compodoc/commit/aa53770))
+* **app:** promise sequential & node 4 ([354c0df](https://github.com/compodoc/compodoc/commit/354c0df))
+* **app:** Promise TS support ([8eeccb9](https://github.com/compodoc/compodoc/commit/8eeccb9))
+* **app:** Recognize ngOnInit() as a method | Angular Lifecycle hooks ([2f0d5c0](https://github.com/compodoc/compodoc/commit/2f0d5c0)), closes [#114](https://github.com/compodoc/compodoc/issues/114)
+* **app:** support of functions ([fe4ecf8](https://github.com/compodoc/compodoc/commit/fe4ecf8)), closes [#110](https://github.com/compodoc/compodoc/issues/110)
+* **app:** syntax highlightning / themes ([0822550](https://github.com/compodoc/compodoc/commit/0822550)), closes [#123](https://github.com/compodoc/compodoc/issues/123)
+* **app:** watch changed file strategy details ([3544cd9](https://github.com/compodoc/compodoc/commit/3544cd9))
+* **dependencies:** visitType error ([be6258d](https://github.com/compodoc/compodoc/commit/be6258d)), closes [#103](https://github.com/compodoc/compodoc/issues/103)
+* **doc-coverage:** ignore private, handle constructor ([d4b7274](https://github.com/compodoc/compodoc/commit/d4b7274)), closes [#122](https://github.com/compodoc/compodoc/issues/122)
+* **misc:** display file path ([8cd7a2e](https://github.com/compodoc/compodoc/commit/8cd7a2e)), closes [#101](https://github.com/compodoc/compodoc/issues/101)
+* **routes:** handle no lazy module ([aa85c63](https://github.com/compodoc/compodoc/commit/aa85c63))
+
 <a name="0.0.41"></a>
 ## 0.0.41 (2017-02-10)
 

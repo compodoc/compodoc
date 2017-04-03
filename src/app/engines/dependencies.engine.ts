@@ -53,10 +53,12 @@ class DependenciesEngine {
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
+        //this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
+        this.prepareMiscellaneous();
+        this.routes = this.rawData.routesTree;
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
@@ -77,20 +79,73 @@ class DependenciesEngine {
         },
             resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
             resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+            resultInCompodocComponents = finderInCompodocDependencies(this.components),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
         if (resultInCompodocInjectables.data !== null) {
             return resultInCompodocInjectables
         } else if (resultInCompodocClasses.data !== null) {
             return resultInCompodocClasses
+        } else if (resultInCompodocComponents.data !== null) {
+            return resultInCompodocComponents
         } else if (resultInAngularAPIs.data !== null) {
             return resultInAngularAPIs
+        }
+    }
+    update(updatedData) {
+        if (updatedData.modules.length > 0) {
+            _.forEach(updatedData.modules, (module) => {
+                let _index = _.findIndex(this.modules, {'name': module.name});
+                this.modules[_index] = module;
+            });
+        }
+        if (updatedData.components.length > 0) {
+            _.forEach(updatedData.components, (component) => {
+                let _index = _.findIndex(this.components, {'name': component.name});
+                this.components[_index] = component;
+            });
+        }
+        if (updatedData.directives.length > 0) {
+            _.forEach(updatedData.directives, (directive) => {
+                let _index = _.findIndex(this.directives, {'name': directive.name});
+                this.directives[_index] = directive;
+            });
+        }
+        if (updatedData.injectables.length > 0) {
+            _.forEach(updatedData.injectables, (injectable) => {
+                let _index = _.findIndex(this.injectables, {'name': injectable.name});
+                this.injectables[_index] = injectable;
+            });
+        }
+        if (updatedData.interfaces.length > 0) {
+            _.forEach(updatedData.interfaces, (int) => {
+                let _index = _.findIndex(this.interfaces, {'name': int.name});
+                this.interfaces[_index] = int;
+            });
+        }
+        if (updatedData.pipes.length > 0) {
+            _.forEach(updatedData.pipes, (pipe) => {
+                let _index = _.findIndex(this.pipes, {'name': pipe.name});
+                this.pipes[_index] = pipe;
+            });
+        }
+        if (updatedData.classes.length > 0) {
+            _.forEach(updatedData.classes, (classe) => {
+                let _index = _.findIndex(this.classes, {'name': classe.name});
+                this.classes[_index] = classe;
+            });
         }
     }
     findInCompodoc(name: string) {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
             result = _.find(mergedData, {'name': name});
         return result || false;
+    }
+    prepareMiscellaneous() {
+        //group each subgoup by file
+        this.miscellaneous.groupedVariables = _.groupBy(this.miscellaneous.variables, 'file');
+        this.miscellaneous.groupedFunctions = _.groupBy(this.miscellaneous.functions, 'file');
+        this.miscellaneous.groupedEnumerations = _.groupBy(this.miscellaneous.enumerations, 'file');
     }
     getModule(name: string) {
         return _.find(this.modules, ['name', name]);

@@ -33,11 +33,11 @@
         {{/if}}
 
         {{#if interface.methods}}
-            {{> block-method methods=interface.methods }}
+            {{> block-method methods=interface.methods file=interface.file }}
         {{/if}}
 
         {{#if interface.indexSignatures}}
-            {{> block-index indexables=interface.indexSignatures }}
+            {{> block-index indexables=interface.indexSignatures file=interface.file }}
         {{/if}}
 
         {{#if interface.properties}}
@@ -105,6 +105,14 @@
 
                             {{/if}}
 
+                            {{#if line}}
+                                <tr>
+                                    <td class="col-md-4">
+                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../interface.file}}:{{{line}}}</a></div>
+                                    </td>
+                                </tr>
+                            {{/if}}
+
                             {{#if description}}
                             <tr>
                                 <td class="col-md-4">
@@ -120,7 +128,7 @@
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{ interface.sourceCode}}</code></pre>
+        <pre class="line-numbers"><code class="language-typescript">{{ interface.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

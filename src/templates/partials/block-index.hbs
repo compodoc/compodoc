@@ -8,6 +8,13 @@
                         <code>{{indexableSignature this}}:{{> link-type type=returnType }}</code>
                     </td>
                 </tr>
+                {{#if line}}
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                        </td>
+                    </tr>
+                {{/if}}
                 {{#if description}}
                 <tr>
                     <td class="col-md-4">

@@ -1,48 +1,69 @@
 import * as _ from 'lodash';
 import * as util from 'util';
 import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as Handlebars from 'handlebars';
+import { logger } from '../logger';
 
 export let RouterParser = (function() {
 
-    var routes = [],
+    var routes: any[] = [],
+        incompleteRoutes = [],
         modules = [],
         modulesTree,
         rootModule,
-        modulesWithRoutes = [];
+        cleanModulesTree,
+        modulesWithRoutes = [],
 
-    return {
-        addRoute: function(route) {
+        _addRoute = function(route) {
             routes.push(route);
             routes = _.sortBy(_.uniqWith(routes, _.isEqual), ['name']);
         },
-        addModuleWithRoutes: function(moduleName, moduleImports) {
+
+        _addIncompleteRoute = function(route) {
+            incompleteRoutes.push(route);
+            incompleteRoutes = _.sortBy(_.uniqWith(incompleteRoutes, _.isEqual), ['name']);
+        },
+
+        _addModuleWithRoutes = function(moduleName, moduleImports) {
             modulesWithRoutes.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
         },
-        addModule: function(moduleName: string, moduleImports) {
+
+        _addModule = function(moduleName: string, moduleImports) {
             modules.push({
                 name: moduleName,
                 importsNode: moduleImports
             });
             modules = _.sortBy(_.uniqWith(modules, _.isEqual), ['name']);
         },
-        setRootModule: function(module: string) {
+
+        _cleanRawRouteParsed = function(route: string) {
+            let routesWithoutSpaces = route.replace(/ /gm, ''),
+                testTrailingComma = routesWithoutSpaces.indexOf('},]');
+            if (testTrailingComma != -1) {
+                routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
+            }
+            return JSON.parse(routesWithoutSpaces);
+        },
+
+        _cleanRawRoute = function(route: string) {
+            let routesWithoutSpaces = route.replace(/ /gm, ''),
+                testTrailingComma = routesWithoutSpaces.indexOf('},]');
+            if (testTrailingComma != -1) {
+                routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
+            }
+            return routesWithoutSpaces;
+        },
+
+        _setRootModule = function(module: string) {
             rootModule = module;
         },
-        printRoutes: function() {
-            console.log('');
-            console.log('printRoutes: ');
-            console.log(routes);
-        },
-        printModulesRoutes: function() {
-            console.log('');
-            console.log('modulesWithRoutes: ');
-            console.log(modulesWithRoutes);
-        },
-        hasRouterModuleInImports: function(imports) {
+
+        _hasRouterModuleInImports = function(imports) {
             let result = false,
                 i = 0,
                 len = imports.length;
@@ -54,8 +75,46 @@ export let RouterParser = (function() {
             }
             return result;
         },
-        linkModulesAndRoutes: function() {
+
+        _fixIncompleteRoutes = function(miscellaneousVariables) {
+            /*console.log('fixIncompleteRoutes');
+            console.log('');
+            console.log(routes);
+            console.log('');*/
+            //console.log(miscellaneousVariables);
+            //console.log('');
+            let i = 0,
+                len = incompleteRoutes.length,
+                matchingVariables = [];
+            // For each incompleteRoute, scan if one misc variable is in code
+            // if ok, try recreating complete route
+            for (i; i<len; i++) {
+                let j = 0,
+                    leng = miscellaneousVariables.length;
+                for (j; j<leng; j++) {
+                    if (incompleteRoutes[i].data.indexOf(miscellaneousVariables[j].name) !== -1) {
+                        console.log('found one misc var inside incompleteRoute');
+                        console.log(miscellaneousVariables[j].name);
+                        matchingVariables.push(miscellaneousVariables[j]);
+                    }
+                }
+                //Clean incompleteRoute
+                incompleteRoutes[i].data = incompleteRoutes[i].data.replace('[', '');
+                incompleteRoutes[i].data = incompleteRoutes[i].data.replace(']', '');
+            }
+            /*console.log(incompleteRoutes);
+            console.log('');
+            console.log(matchingVariables);
+            console.log('');*/
+
+        },
+
+        _linkModulesAndRoutes = function() {
+            /*console.log('');
+            console.log('linkModulesAndRoutes: ');
             //scan each module imports AST for each routes, and link routes with module
+            console.log('linkModulesAndRoutes routes: ', routes);
+            console.log('');*/
             let i = 0,
                 len = modulesWithRoutes.length;
             for(i; i<len; i++) {
@@ -78,18 +137,40 @@ export let RouterParser = (function() {
                     }
                 });
             }
-            console.log('');
+
+            /*console.log('');
             console.log('end linkModulesAndRoutes: ');
-            console.log(routes);
+            console.log(util.inspect(routes, { depth: 10 }));
+            console.log('');*/
         },
-        constructRoutesTree: function() {
+
+        foundRouteWithModuleName = function(moduleName) {
+            return _.find(routes, {'module': moduleName});
+        },
+
+        foundLazyModuleWithPath = function(path) {
+            //path is like app/customers/customers.module#CustomersModule
+            let split = path.split('#'),
+                lazyModulePath = split[0],
+                lazyModuleName = split[1];
+            return lazyModuleName;
+        },
+
+        _constructRoutesTree = function() {
+            //console.log('');
+            /*console.log('constructRoutesTree modules: ', modules);
             console.log('');
-            console.log('constructRoutesTree');
+            console.log('constructRoutesTree modulesWithRoutes: ', modulesWithRoutes);
+            console.log('');
+            console.log('constructRoutesTree modulesTree: ', util.inspect(modulesTree, { depth: 10 }));
+            console.log('');*/
+
             // routes[] contains routes with module link
             // modulesTree contains modules tree
             // make a final routes tree with that
-            let cleanModulesTree = _.cloneDeep(modulesTree),
-                modulesCleaner = function(arr) {
+            cleanModulesTree = _.cloneDeep(modulesTree);
+
+            let modulesCleaner = function(arr) {
                     for(var i in arr) {
                         if (arr[i].importsNode) {
                             delete arr[i].importsNode;
@@ -104,31 +185,30 @@ export let RouterParser = (function() {
                 };
 
             modulesCleaner(cleanModulesTree);
-            //fs.outputJson('./modules.json', cleanModulesTree);
-            console.log('');
-            console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-            console.log('');
+            //console.log('');
+            //console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
+            //console.log('');
+
+            //console.log(routes);
+            //console.log('');
+
             var routesTree = {
-                tag: '<root>',
-                kind: 'ngModule',
-                name: rootModule,
+                name: '<root>',
+                kind: 'module',
+                className: rootModule,
                 children: []
             };
-
-            let foundRouteWithModuleName = function(moduleName) {
-                return _.find(routes, {'module': moduleName});
-            }
 
             let loopModulesParser = function(node) {
                 if (node.children && node.children.length > 0) {
                     //If module has child modules
-                    console.log('   If module has child modules');
+                    //console.log('   If module has child modules');
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
-                        if (route) {
-                            route.routes = JSON.parse(route.data);
+                        if (route && route.data) {
+                            route.children = JSON.parse(route.data);
                             delete route.data;
-                            route.kind = 'ngModule';
+                            route.kind = 'module';
                             routesTree.children.push(route);
                         }
                         if (node.children[i].children) {
@@ -137,38 +217,105 @@ export let RouterParser = (function() {
                     }
                 } else {
                     //else routes are directly inside the module
-                    console.log('   else routes are directly inside the module');
+                    //console.log('   else routes are directly inside the root module');
+                    let rawRoutes = foundRouteWithModuleName(node.name);
+                    if (rawRoutes) {
+                        let routes = JSON.parse(rawRoutes.data);
+                        if (routes) {
+                            let i = 0,
+                                len = routes.length;
+                            for(i; i<len; i++) {
+                                let route = routes[i];
+                                if (routes[i].component) {
+                                    routesTree.children.push({
+                                        kind: 'component',
+                                        component: routes[i].component,
+                                        path: routes[i].path
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            console.log('');
-            console.log('  rootModule: ', rootModule);
-            console.log('');
-            loopModulesParser(_.find(cleanModulesTree, {'name': rootModule}));
+            //console.log('');
+            //console.log('  rootModule: ', rootModule);
+            //console.log('');
 
-            console.log('');
+            let startModule = _.find(cleanModulesTree, {'name': rootModule});
+
+            if (startModule) {
+                loopModulesParser(startModule);
+                //Loop twice for routes with lazy loading
+                //loopModulesParser(routesTree);
+            }
+
+            /*console.log('');
             console.log('  routesTree: ', routesTree);
-            console.log('');
+            console.log('');*/
 
-            //fs.outputJson('./routes-tree.json', routesTree);
-
-            var cleanedRoutesTree;
+            var cleanedRoutesTree = null;
 
             var cleanRoutesTree = function(route) {
                 for(var i in route.children) {
                     var routes = route.children[i].routes;
-                    console.log(routes);
                 }
                 return route;
             }
 
             cleanedRoutesTree = cleanRoutesTree(routesTree);
 
-            console.log('');
-            console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+            //Try updating routes with lazy loading
+            //console.log('');
+            //console.log('Try updating routes with lazy loading');
+
+            let loopRoutesParser = function(route) {
+                if(route.children) {
+                    for(var i in route.children) {
+                        if (route.children[i].loadChildren) {
+                            let child = foundLazyModuleWithPath(route.children[i].loadChildren),
+                                module = _.find(cleanModulesTree, {'name': child});
+                            if (module) {
+                                let _rawModule:any = {};
+                                _rawModule.kind = 'module';
+                                _rawModule.children = [];
+                                _rawModule.module = module.name;
+                                let loopInside = function(mod) {
+                                    if(mod.children) {
+                                        for(var i in mod.children) {
+                                            let route = foundRouteWithModuleName(mod.children[i].name);
+                                            if (typeof route !== 'undefined') {
+                                                if (route.data) {
+                                                    route.children = JSON.parse(route.data);
+                                                    delete route.data;
+                                                    route.kind = 'module';
+                                                    _rawModule.children[i] = route;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                loopInside(module);
+
+                                route.children[i].children = [];
+                                route.children[i].children.push(_rawModule);
+                            }
+                        }
+                        loopRoutesParser(route.children[i]);
+                    }
+                }
+            }
+            loopRoutesParser(cleanedRoutesTree);
+
+            //console.log('');
+            //console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
+
+            return cleanedRoutesTree;
         },
-        constructModulesTree: function() {
-            console.log('');
-            console.log('constructModulesTree');
+
+        _constructModulesTree = function() {
+            //console.log('');
+            //console.log('constructModulesTree');
             let getNestedChildren = function(arr, parent?) {
                 var out = []
                 for(var i in arr) {
@@ -193,9 +340,79 @@ export let RouterParser = (function() {
                 });
             });
             modulesTree = getNestedChildren(modules);
-            console.log('');
+            /*console.log('');
             console.log('end constructModulesTree');
-            console.log(modulesTree);
-        }
+            console.log(modulesTree);*/
+        },
+
+        _generateRoutesIndex = function(outputFolder, routes) {
+            return new Promise((resolve, reject) => {
+                fs.readFile(path.resolve(__dirname + '/../src/templates/partials/routes-index.hbs'), 'utf8', (err, data) => {
+                   if (err) {
+                       reject('Error during routes index generation');
+                   } else {
+                       let template:any = Handlebars.compile(data),
+                           result = template({
+                               routes: JSON.stringify(routes)
+                           });
+                       fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
+                           if(err) {
+                               logger.error('Error during routes index file generation ', err);
+                               reject(err);
+                           }
+                           resolve();
+                       });
+                   }
+               });
+           });
+       },
+
+       _routesLength = function(): number {
+           var _n = 0;
+
+           let routesParser = function(route) {
+               if (typeof route.path !== 'undefined') {
+                   _n += 1;
+               }
+               if (route.children) {
+                   for(var j in route.children) {
+                       routesParser(route.children[j]);
+                   }
+               }
+           };
+
+           for(var i in routes) {
+               routesParser(routes[i]);
+           }
+
+           return _n;
+       }
+
+    return {
+        incompleteRoutes: incompleteRoutes,
+        addRoute: _addRoute,
+        addIncompleteRoute: _addIncompleteRoute,
+        addModuleWithRoutes: _addModuleWithRoutes,
+        addModule: _addModule,
+        cleanRawRouteParsed: _cleanRawRouteParsed,
+        cleanRawRoute: _cleanRawRoute,
+        setRootModule: _setRootModule,
+        printRoutes: function() {
+            console.log('');
+            console.log('printRoutes: ');
+            console.log(routes);
+        },
+        printModulesRoutes: function() {
+            console.log('');
+            console.log('printModulesRoutes: ');
+            console.log(modulesWithRoutes);
+        },
+        routesLength: _routesLength,
+        hasRouterModuleInImports: _hasRouterModuleInImports,
+        fixIncompleteRoutes: _fixIncompleteRoutes,
+        linkModulesAndRoutes: _linkModulesAndRoutes,
+        constructRoutesTree: _constructRoutesTree,
+        constructModulesTree: _constructModulesTree,
+        generateRoutesIndex: _generateRoutesIndex
     }
 })();

@@ -2,11 +2,16 @@ import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as util from 'util';
+import * as _ from 'lodash';
 
 import { logger } from './logger';
 
 const carriageReturnLineFeed = '\r\n';
 const lineFeed = '\n';
+
+export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
+    return name.toLowerCase().replace(/ /g, '-');
+}
 
 export function detectIndent(str, count, indent?): string {
     let stripIndent = function(str: string) {
@@ -120,4 +125,34 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
         getDirectories: () => []
     };
     return compilerHost;
+}
+
+export function findMainSourceFolder(files: string[]) {
+    let mainFolder = '',
+        mainFolderCount = 0,
+        rawFolders = files.map((filepath) => {
+            var shortPath = filepath.replace(process.cwd() + path.sep, '');
+            return path.dirname(shortPath);
+        }),
+        folders = {},
+        i = 0;
+    rawFolders = _.uniq(rawFolders);
+    let len = rawFolders.length;
+    for(i; i<len; i++){
+        let sep = rawFolders[i].split(path.sep);
+        sep.map((folder) => {
+            if (folders[folder]) {
+                folders[folder] += 1;
+            } else {
+                folders[folder] = 1;
+            }
+        })
+    }
+    for (let f in folders) {
+        if(folders[f] > mainFolderCount) {
+            mainFolderCount = folders[f];
+            mainFolder = f;
+        }
+    }
+    return mainFolder;
 }

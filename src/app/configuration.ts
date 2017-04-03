@@ -2,6 +2,7 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 interface Page {
     name: string;
+    filename?: string;
     context: string;
     path?: string;
     module?: any;
@@ -10,10 +11,12 @@ interface Page {
     interface?: any;
     directive?: any;
     injectable?: any;
+    additionalPage?: any;
     files?: any;
     data?: any;
     depth?: number;
     pageType?: string;
+    component?: any;
 }
 
 interface IMainData {
@@ -30,7 +33,7 @@ interface IMainData {
     hideGenerator: boolean;
     modules: any;
     readme: string;
-    additionalpages: Object;
+    additionalPages: any;
     pipes: any;
     classes: any;
     interfaces: any;
@@ -40,24 +43,28 @@ interface IMainData {
     miscellaneous: any;
     routes: any;
     tsconfig: string;
-    includes: boolean;
+    toggleMenuItems: string[];
+    includes: string;
     includesName: string;
+    includesFolder: string;
     disableSourceCode: boolean;
     disableGraph: boolean;
     disableCoverage: boolean;
     disablePrivateOrInternalSupport: boolean;
+    watch: boolean;
 }
 
 export interface IConfiguration {
     mainData: IMainData;
-    pages:Array<Page>;
+    pages:Page[];
     addPage(page: Page): void;
+    addAdditionalPage(page: Page): void;
 }
 
 export class Configuration implements IConfiguration {
     private static _instance:Configuration = new Configuration();
 
-    private _pages:Array<Page> = [];
+    private _pages:Page[] = [];
     private _mainData: IMainData = {
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
@@ -72,7 +79,7 @@ export class Configuration implements IConfiguration {
         hideGenerator: false,
         modules: [],
         readme: '',
-        additionalpages: {},
+        additionalPages: [],
         pipes: [],
         classes: [],
         interfaces: [],
@@ -82,11 +89,15 @@ export class Configuration implements IConfiguration {
         routes: [],
         miscellaneous: [],
         tsconfig: '',
-        includes: false,
+        toggleMenuItems: [],
+        includes: '',
+        includesName: COMPODOC_DEFAULTS.additionalEntryName,
+        includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
-        disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport
+        disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport,
+        watch: false
     };
 
     constructor() {
@@ -105,10 +116,18 @@ export class Configuration implements IConfiguration {
         this._pages.push(page);
     }
 
-    get pages():Array<Page> {
+    addAdditionalPage(page: Page) {
+        this._mainData.additionalPages.push(page);
+    }
+
+    resetPages() {
+        this._pages = [];
+    }
+
+    get pages():Page[] {
         return this._pages;
     }
-    set pages(pages:Array<Page>) {
+    set pages(pages:Page[]) {
         this._pages = [];
     }
 

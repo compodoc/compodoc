@@ -1,27 +1,10 @@
-<h3>Routes</h3>
-<table class="table table-sm table-hover">
-    <tbody>
-        <tr>
-            <td class="col-md-3"><b>path</b></td>
-            <td class="col-md-3"><b>pathMatch</b></td>
-            <td class="col-md-3"><b>component</b></td>
-            <td class="col-md-3"><b>redirectTo</b></td>
-        </tr>
+<ol class="breadcrumb">
+    <li>Routes</li>
+</ol>
 
-        {{#each routes}}
-        <tr>
-            <td class="col-md-3">
-                {{#compare path "===" '' }}
-                    " "
-                {{else}}
-                    {{path}}
-                {{/compare}}
-            </td>
-            <td class="col-md-3">{{pathMatch}}</td>
-            <td class="col-md-3"><a href="./components/{{component}}.html">{{component}}</a></td>
-            <td class="col-md-3">{{redirectTo}}</td>
-        </tr>
-        {{/each}}
+<div id="body-routes"></div>
 
-    </tbody>
-</table>
+<script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/d3.v3.min.js"></script>
+
+<script src="{{relativeURL data.depth data.pageType 'root'}}js/routes/routes_index.js"></script>
+<script src="{{relativeURL data.depth data.pageType 'root'}}js/routes.js"></script>

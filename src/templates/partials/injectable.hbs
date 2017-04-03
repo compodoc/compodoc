@@ -33,20 +33,20 @@
         {{/if}}
 
         {{#if injectable.constructorObj}}
-            {{> block-constructor constructor=injectable.constructorObj }}
+            {{> block-constructor constructor=injectable.constructorObj file=injectable.file }}
         {{/if}}
 
         {{#if injectable.methods}}
-            {{> block-method methods=injectable.methods }}
+            {{> block-method methods=injectable.methods file=injectable.file }}
         {{/if}}
 
         {{#if injectable.properties}}
-            {{> block-property properties=injectable.properties }}
+            {{> block-property properties=injectable.properties file=injectable.file }}
         {{/if}}
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
-        <pre><code class="hljs javascript">{{injectable.sourceCode}}</code></pre>
+        <pre class="line-numbers"><code class="language-typescript">{{injectable.sourceCode}}</code></pre>
     </div>
 </div>
 {{/unless}}

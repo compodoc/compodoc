@@ -21,6 +21,7 @@ export class FooComponent {
 
 	/**
 	 * An example input
+	 * {@link BarComponent} or [BarComponent2]{@link BarComponent} or {@link BarComponent|BarComponent3}
 	 */
 	@Input() exampleInput: string = 'foo';
 

@@ -1,0 +1,27 @@
+<section>
+    {{#each enums}}
+        <h3 id="inputs">
+            {{name}}
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                {{#each childs}}
+                    {{#if name}}
+                        <tr>
+                            <td class="col-md-4">
+                                <b>{{name}}</b>
+                            </td>
+                        </tr>
+                    {{/if}}
+                    {{#if value}}
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value: </i><code>{{value}}</code>
+                            </td>
+                        </tr>
+                    {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    {{/each}}
+</section>

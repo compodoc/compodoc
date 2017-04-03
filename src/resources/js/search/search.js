@@ -121,6 +121,7 @@
 
             if (q.length == 0) {
                 closeSearch();
+                window.location.href = window.location.href.replace(window.location.search, '');
             } else {
                 launchSearch(q);
             }
@@ -152,7 +153,9 @@
                 // Update history state
                 if (usePushState) {
                     var uri = updateQueryString('q', $(this).val());
-                    history.pushState({ path: uri }, null, uri);
+                    if ($(this).val() !== '') {
+                        history.pushState({ path: uri }, null, uri);
+                    }
                 }
             });
         });

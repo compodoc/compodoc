@@ -3,63 +3,85 @@
   <li>{{name}}</li>
 </ol>
 
-{{#if disableSourceCode}}
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active">
+        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
+    </li>
+    {{#if component.readme}}
+    <li>
+        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab">README</a>
+    </li>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
+    <li>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
+    </li>
+    {{/unless}}
+
+    {{#if component.templateData}}
+    <li>
+        <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab">Template</a>
+    </li>
+    {{/if}}
+    <li>
+        <a href="#tree" role="tab" id="tree-tab" data-toggle="tab">DOM Tree</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="infos">
+        {{~> component-detail component=component ~}}
+    </div>
 
     {{#if component.readme}}
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
-            <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
-        </li>
-
-        <li>
-            <a href="#readme" role="tab" id="readme-tab" data-toggle="tab">README</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <div class="tab-pane fade active in" id="infos">
-        {{/if}}
-
-        {{~> component-detail component=component ~}}
-
-        {{#if component.readme}}
-        </div>
-        <div class="tab-pane fade" id="readme">
-            <p>{{{component.readme}}}</p>
-        </div>
+    <div class="tab-pane fade" id="readme">
+        <p>{{{component.readme}}}</p>
     </div>
     {{/if}}
 
-{{else}}
+    {{#unless disableSourceCode}}
+    <div class="tab-pane fade tab-source-code" id="source">
+        <pre class="line-numbers"><code class="language-typescript">{{ component.sourceCode}}</code></pre>
+    </div>
+    {{/unless}}
 
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
-            <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
-        </li>
-        {{#if component.readme}}
-        <li>
-            <a href="#readme" role="tab" id="readme-tab" data-toggle="tab">README</a>
-        </li>
-        {{/if}}
-        <li>
-            <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
-        </li>
-    </ul>
+    {{#if component.templateData}}
+    <div class="tab-pane fade" id="templateData">
+        <pre class="line-numbers"><code class="language-html">{{ component.templateData }}</code></pre>
+    </div>
+    {{/if}}
 
-    <div class="tab-content">
-        <div class="tab-pane fade active in" id="infos">
-
-            {{~> component-detail component=component ~}}
-
-        </div>
-        {{#if component.readme}}
-        <div class="tab-pane fade" id="readme">
-            <p>{{{component.readme}}}</p>
-        </div>
-        {{/if}}
-        <div class="tab-pane fade tab-source-code" id="source">
-            <pre><code class="hljs javascript">{{ component.sourceCode}}</code></pre>
+    <div class="tab-pane fade" id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
         </div>
     </div>
+</div>
 
-{{/if}}
+<script src="{{relativeURL depth pageType 'root'}}js/libs/vis.min.js"></script>
+<script src="{{relativeURL depth pageType 'root'}}js/libs/htmlparser.js"></script>
+<script src="{{relativeURL depth pageType 'root'}}js/libs/deep-iterator.js"></script>
+<script>
+    {{#if component.template}}
+        var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.template }}}</div>'
+    {{else}}
+        var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.templateData }}}</div>'
+    {{/if}}
+    var COMPONENTS = [{{#each components}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
+    var DIRECTIVES = [{{#each directives}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
+    var ACTUAL_COMPONENT = {'name': '{{ name }}'};
+</script>
+<script src="{{relativeURL depth pageType 'root'}}js/tree.js"></script>
