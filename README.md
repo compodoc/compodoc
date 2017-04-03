@@ -10,10 +10,10 @@
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
 </p>
 <p align="center">
-    <img src="https://saucelabs.com/browser-matrix/compodoc.svg" alt="saucelabs badge">
+    <img src="https://saucelabs.com/browser-matrix/compodoc.svg" alt="saucelabs badge"><br><br>
 </p>
 
-<p align="center">The missing documentation tool for your Angular application</p>
+<p align="center">The missing documentation tool for your Angular application<br><br></p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.gif" alt="Compodoc: The missing documentation tool for your Angular application">
