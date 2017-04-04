@@ -19,7 +19,7 @@
                 <tr>
                     <td class="col-md-4">
                         {{#if constructor.description}}
-                            <div class="io-description">{{{parseDescription constructor.description}}}</div>
+                            <div class="io-description">{{{parseDescription constructor.description ../depth}}}</div>
                         {{/if}}
                         {{#if constructor.jsdoctags}}
                             <div class="io-description">

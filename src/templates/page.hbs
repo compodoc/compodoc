@@ -7,18 +7,18 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth data.pageType 'root'}}images/favicon.ico">
-	    <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root' 'styles'}}styles/style.css">
+        <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
+	    <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
-                 <link rel="stylesheet" href="{{relativeURL data.depth data.pageType 'root' 'styles'}}styles/{{data.theme}}.css">
+                 <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
             {{/compare}}
         {{/if}}
     </head>
     <body>
 
         <div class="navbar navbar-default navbar-fixed-top visible-xs">
-            <a href="{{relativeURL data.depth data.pageType 'root'}}" class="navbar-brand">{{data.documentationMainName}}</a>
+            <a href="{{relativeURL data.depth }}" class="navbar-brand">{{data.documentationMainName}}</a>
             <button type="button" class="btn btn-default btn-menu fa fa-bars" id="btn-menu"></button>
         </div>
 
@@ -108,23 +108,23 @@
            </div>
        </div>
 
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/bootstrap-native.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
 
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/es6-shim.min.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/EventDispatcher.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/promise.min.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/zepto.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/es6-shim.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/EventDispatcher.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/promise.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/zepto.min.js"></script>
 
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/compodoc.js"></script>
+       <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
 
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/search/search.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/search/lunr.min.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/search/search-lunr.js"></script>
+       <script src="{{relativeURL data.depth }}js/search/search.js"></script>
+       <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/search/search-lunr.js"></script>
 
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/menu.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/libs/prism.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/sourceCode.js"></script>
-       <script src="{{relativeURL data.depth data.pageType 'root'}}js/search/search_index.js"></script>
+       <script src="{{relativeURL data.depth }}js/menu.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/prism.js"></script>
+       <script src="{{relativeURL data.depth }}js/sourceCode.js"></script>
+       <script src="{{relativeURL data.depth }}js/search/search_index.js"></script>
 
     </body>
 </html>

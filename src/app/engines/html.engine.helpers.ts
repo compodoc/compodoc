@@ -172,8 +172,19 @@ export let HtmlEngineHelpers = (function() {
 
                     if (result.type === 'class') result.type = 'classe';
 
-                    rootPath = '../';
-                    if (depth && depth === 1) rootPath = './';
+                    rootPath = '';
+
+                    switch (depth) {
+                        case 0:
+                            rootPath = './';
+                            break;
+                        case 1:
+                            rootPath = '../';
+                            break;
+                        case 2:
+                            rootPath = '../../';
+                            break;
+                    }
 
                     let label = result.name;
                     if (leading.leadingText !== null) {
@@ -212,52 +223,27 @@ export let HtmlEngineHelpers = (function() {
             return description;
         });
 
-        Handlebars.registerHelper('relativeURL', function(targetDepth, currentPageType, targetPageType, context, currentDepth) {
-            // targetDepth is currentDepth if no currentDepth available, for example for css files
-            //console.log('relativeURL: ', depth, currentPageType, targetPageType, context);
-            // if depth 2 & type == internal, set on same level, otherwise go up
+        Handlebars.registerHelper('relativeURL', function(currentDepth, context) {
             let result = '';
 
-            if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                && targetDepth === 2) {
-                result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
-                result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && currentDepth === 1
-                    && context === 'additional-page') {
-                result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && currentDepth === 2
-                    && context === 'additional-page') {
-                result = '../../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                       && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                       && currentDepth === 2) {
-                result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                       && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                       && currentDepth === 1) {
-                result = './';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetDepth === 2) {
-                result = '../../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL) {
-                result = '../';
-            } else if (currentPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                    && targetPageType === COMPODOC_DEFAULTS.PAGE_TYPES.ROOT) {
-                result = './';
+            switch (currentDepth) {
+                case 0:
+                    result = './';
+                    break;
+                case 1:
+                    result = '../';
+                    break;
+                case 2:
+                    result = '../../';
+                    break;
             }
 
-            if (typeof context === 'string') {
-                console.log('relativeURL: ', targetDepth, currentPageType, targetPageType, context, currentDepth, result);
+            /*
+            if (typeof context === 'string' && context == 'additional-page') {
+                console.log('relativeURL: ', currentDepth, result);
             }
+            */
+
             return result;
         });
 
