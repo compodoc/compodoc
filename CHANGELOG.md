@@ -1,5 +1,5 @@
 <a name="1.0.0-beta.2"></a>
-# [1.0.0-beta.2](https://github.com/compodoc/compodoc/compare/1.0.0-beta.1...v1.0.0-beta.2) (2017-04-04)
+# [1.0.0-beta.2](https://github.com/compodoc/compodoc/compare/1.0.0-beta.1...1.0.0-beta.2) (2017-04-04)
 
 ### Bug Fixes
 
@@ -11,7 +11,7 @@
 * **app:** toggleMenuItems for additionalPages ([692cfa0](https://github.com/compodoc/compodoc/commit/692cfa0))
 
 <a name="1.0.0-beta.1"></a>
-# [1.0.0-beta.1](https://github.com/compodoc/compodoc/compare/0.0.41...v1.0.0-beta.1) (2017-04-03)
+# [1.0.0-beta.1](https://github.com/compodoc/compodoc/compare/0.0.41...1.0.0-beta.1) (2017-04-03)
 
 ### Breaking changes
 
