@@ -50,7 +50,7 @@
             var $title = $('<h3>');
 
             var $link = $('<a>', {
-                'href': res.url,
+                'href': res.url.replace(/^\//, ''),
                 'text': res.title
             });
 
