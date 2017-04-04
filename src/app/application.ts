@@ -119,7 +119,7 @@ export class Application {
             this.configuration.addPage({
                 name: 'index',
                 context: 'readme',
-                depth: 1,
+                depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             this.configuration.addPage({
@@ -391,7 +391,7 @@ export class Application {
             this.configuration.addPage({
                 name: 'modules',
                 context: 'modules',
-                depth: 1,
+                depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
@@ -403,7 +403,7 @@ export class Application {
                     name: this.configuration.mainData.modules[i].name,
                     context: 'module',
                     module: this.configuration.mainData.modules[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -426,7 +426,7 @@ export class Application {
                     name: this.configuration.mainData.pipes[i].name,
                     context: 'pipe',
                     pipe: this.configuration.mainData.pipes[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -448,7 +448,7 @@ export class Application {
                     name: this.configuration.mainData.classes[i].name,
                     context: 'class',
                     class: this.configuration.mainData.classes[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -469,7 +469,7 @@ export class Application {
                     name: this.configuration.mainData.interfaces[i].name,
                     context: 'interface',
                     interface: this.configuration.mainData.interfaces[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -485,7 +485,7 @@ export class Application {
             this.configuration.addPage({
                 name: 'miscellaneous',
                 context: 'miscellaneous',
-                depth: 1,
+                depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             resolve();
@@ -529,7 +529,7 @@ export class Application {
                                     name: this.configuration.mainData.components[i].name,
                                     context: 'component',
                                     component: this.configuration.mainData.components[i],
-                                    depth: 2,
+                                    depth: 1,
                                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                 });
                                 if (this.configuration.mainData.components[i].templateUrl.length > 0) {
@@ -551,7 +551,7 @@ export class Application {
                                 name: this.configuration.mainData.components[i].name,
                                 context: 'component',
                                 component: this.configuration.mainData.components[i],
-                                depth: 2,
+                                depth: 1,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                             });
                             if (this.configuration.mainData.components[i].templateUrl.length > 0) {
@@ -590,7 +590,7 @@ export class Application {
                     name: this.configuration.mainData.directives[i].name,
                     context: 'directive',
                     directive: this.configuration.mainData.directives[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -613,7 +613,7 @@ export class Application {
                     name: this.configuration.mainData.injectables[i].name,
                     context: 'injectable',
                     injectable: this.configuration.mainData.injectables[i],
-                    depth: 2,
+                    depth: 1,
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
@@ -630,7 +630,7 @@ export class Application {
             this.configuration.addPage({
                 name: 'routes',
                 context: 'routes',
-                depth: 1,
+                depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
@@ -916,7 +916,7 @@ export class Application {
                 context: 'coverage',
                 files: files,
                 data: coverageData,
-                depth: 1,
+                depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);

@@ -71,9 +71,9 @@
     </div>
 </div>
 
-<script src="{{relativeURL depth pageType 'root'}}js/libs/vis.min.js"></script>
-<script src="{{relativeURL depth pageType 'root'}}js/libs/htmlparser.js"></script>
-<script src="{{relativeURL depth pageType 'root'}}js/libs/deep-iterator.js"></script>
+<script src="{{relativeURL depth 'components'}}js/libs/vis.min.js"></script>
+<script src="{{relativeURL depth 'components'}}js/libs/htmlparser.js"></script>
+<script src="{{relativeURL depth 'components'}}js/libs/deep-iterator.js"></script>
 <script>
     {{#if component.template}}
         var COMPONENT_TEMPLATE = '<div>{{{escapeSimpleQuote component.template }}}</div>'
@@ -84,4 +84,4 @@
     var DIRECTIVES = [{{#each directives}}{'name': '{{name}}', 'selector': '{{selector}}'}{{#unless @last}},{{/unless}}{{/each}}];
     var ACTUAL_COMPONENT = {'name': '{{ name }}'};
 </script>
-<script src="{{relativeURL depth pageType 'root'}}js/tree.js"></script>
+<script src="{{relativeURL depth 'components'}}js/tree.js"></script>

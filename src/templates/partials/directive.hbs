@@ -28,7 +28,7 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                {{{parseDescription directive.description}}}
+                {{{parseDescription directive.description depth}}}
             </p>
         {{/if}}
 
@@ -87,7 +87,7 @@
                                 </td>
                                 <td class="col-md-10">
                                   {{#if description}}
-                                    <div>{{{parseDescription description}}}</div>
+                                    <div>{{{parseDescription description ../depth}}}</div>
                                   {{/if}}
                                   {{#if type}}
                                       <p>
@@ -126,7 +126,7 @@
                                 </td>
                                 <td class="col-md-10">
                                   {{#if description}}
-                                    <div>{{{parseDescription description}}}</div>
+                                    <div>{{{parseDescription description ../depth}}}</div>
                                   {{/if}}
                                   {{#if type}}
                                     <em><code>$event</code> type:</em>{{> link-type type=type }}

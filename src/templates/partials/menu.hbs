@@ -43,7 +43,7 @@
             <div class="simple">
                 <span class="fa fa-book"></span>
                 <span>{{includesName}}</span>
-                <span class="menu-toggler fa fa-angle-up" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#additional-pages"
                     {{else}}
@@ -51,7 +51,7 @@
                     {{/compare}}
                 ></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="additional-pages"
                 {{else}}
@@ -59,7 +59,7 @@
                 {{/compare}}>
                 {{#each additionalPages}}
                     <li class="link {{#compare depth "===" 2 }}for-chapter{{/compare}}">
-                        <a href="{{relativeURL ../depth pageType 'internal'}}{{path}}/{{filename}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -87,7 +87,7 @@
                 {{/compare}}>
                 {{#each modules}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}modules/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -114,7 +114,7 @@
                 {{/compare}}>
                 {{#each components}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}components/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'components'}}components/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -141,7 +141,7 @@
                 {{/compare}}>
                 {{#each directives}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}directives/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'directives'}}directives/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -168,7 +168,7 @@
                 {{/compare}}>
                 {{#each classes}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}classes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'classes'}}classes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -195,7 +195,7 @@
                 {{/compare}}>
                 {{#each injectables}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}injectables/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'injectables'}}injectables/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -222,7 +222,7 @@
                 {{/compare}}>
                 {{#each interfaces}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}interfaces/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -249,7 +249,7 @@
                 {{/compare}}>
                 {{#each pipes}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth ../pageType 'internal'}}pipes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'pipes'}}pipes/{{name}}.html" {{#compare ../name "===" name }} class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -258,34 +258,34 @@
 
         {{#if routes}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
         </li>
         {{/if}}
 
         {{#if miscellaneous}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}miscellaneous.html" {{#compare name "===" 'miscellaneous' }} class="active" {{/compare}}><span class="fa fa-cubes"></span>Miscellaneous</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'miscellaneous'}}miscellaneous.html" {{#compare name "===" 'miscellaneous' }} class="active" {{/compare}}><span class="fa fa-cubes"></span>Miscellaneous</a>
         </li>
         {{/if}}
 
         {{#unless disableCoverage}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-tasks"></span>Documentation coverage</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-tasks"></span>Documentation coverage</a>
         </li>
         {{/unless}}
 
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">
-                Documentation generated using <a href="https://compodoc.github.io/compodoc/" target="_blank">
+                Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postman'}}
-                            <img src="{{relativeURL depth pageType 'root'}}/images/compodoc-vectorise-inverted.svg" class="img-responsive">
+                            <img src="{{relativeURL depth 'logo'}}/images/compodoc-vectorise-inverted.svg" class="img-responsive">
                         {{else}}
-                            <img src="{{relativeURL depth pageType 'root'}}/images/compodoc-vectorise.svg" class="img-responsive">
+                            <img src="{{relativeURL depth 'logo'}}/images/compodoc-vectorise.svg" class="img-responsive">
                         {{/compare}}
                     {{else}}
-                    <img src="{{relativeURL depth pageType 'root'}}/images/compodoc-vectorise.svg" class="img-responsive">
+                    <img src="{{relativeURL depth 'logo'}}/images/compodoc-vectorise.svg" class="img-responsive">
                     {{/if}}
                 </a>
         </li>

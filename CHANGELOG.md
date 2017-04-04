@@ -1,3 +1,15 @@
+<a name="1.0.0-beta.2"></a>
+# [1.0.0-beta.2](https://github.com/compodoc/compodoc/compare/1.0.0-beta.1...v1.0.0-beta.2) (2017-04-04)
+
+### Bug Fixes
+
+* **dom-tree:** Unable to view DOMTree nodes image correctly. ([2b5f275](https://github.com/compodoc/compodoc/commit/2b5f275)), closes [#143](https://github.com/compodoc/compodoc/issues/143)
+* **app:** Links are broken for static doc. ([da2e18e](https://github.com/compodoc/compodoc/commit/da2e18e)), closes [#140](https://github.com/compodoc/compodoc/issues/140)
+
+### Features
+
+* **app:** toggleMenuItems for additionalPages ([692cfa0](https://github.com/compodoc/compodoc/commit/692cfa0))
+
 <a name="1.0.0-beta.1"></a>
 # [1.0.0-beta.1](https://github.com/compodoc/compodoc/compare/0.0.41...v1.0.0-beta.1) (2017-04-03)
 

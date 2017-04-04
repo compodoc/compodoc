@@ -100,9 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
             nodes: {
                 shape: 'ellipse',
                 fixed: true
-            },
-            interaction:{
-                zoomView: false
             }
         },
 
