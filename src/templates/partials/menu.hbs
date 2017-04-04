@@ -43,7 +43,7 @@
             <div class="simple">
                 <span class="fa fa-book"></span>
                 <span>{{includesName}}</span>
-                <span class="menu-toggler fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
+                <span class="menu-toggler fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#additional-pages"
                     {{else}}
@@ -51,7 +51,7 @@
                     {{/compare}}
                 ></span>
             </div>
-            <ul class="links collapse in"
+            <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
                     id="additional-pages"
                 {{else}}
