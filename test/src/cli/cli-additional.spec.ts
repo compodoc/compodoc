@@ -28,7 +28,7 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean());
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile).to.contain('<a href="../additional-documentation/introduction');
+        expect(fooIndexFile).to.contain('<a href="./additional-documentation/introduction');
     });
     it('it should have generated files', () => {
         const isFileExists = exists(`${tmp.name}/additional-documentation/edition.html`);
