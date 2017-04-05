@@ -1,3 +1,11 @@
+<a name="1.0.0-beta.3"></a>
+# [1.0.0-beta.3](https://github.com/compodoc/compodoc/compare/1.0.0-beta.2...1.0.0-beta.3) (2017-04-05)
+
+### Bug Fixes
+
+* **coverage:** Documentation coverage issue. ([a01ee06](https://github.com/compodoc/compodoc/commit/a01ee06)), closes [#143](https://github.com/compodoc/compodoc/issues/148)
+* **search:** Search links are broken. ([e81a0f7](https://github.com/compodoc/compodoc/commit/e81a0f7)), closes [#140](https://github.com/compodoc/compodoc/issues/146)
+
 <a name="1.0.0-beta.2"></a>
 # [1.0.0-beta.2](https://github.com/compodoc/compodoc/compare/1.0.0-beta.1...1.0.0-beta.2) (2017-04-04)
 
