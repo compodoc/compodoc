@@ -663,7 +663,7 @@ export class Application {
                     } else if (percent > 50 && percent <= 75) {
                         status = 'good';
                     } else {
-                        status = 'low';
+                        status = 'good';
                     }
                     return status;
                 };
