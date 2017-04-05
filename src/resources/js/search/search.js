@@ -45,16 +45,31 @@
         res.results.forEach(function(res) {
             var $li = $('<li>', {
                 'class': 'search-results-item'
-            });
+            }),
 
-            var $title = $('<h3>');
+            $title = $('<h3>'),
+
+            content = res.body.trim(),
+
+            link = '';
+
+            switch (COMPODOC_CURRENT_PAGE_DEPTH) {
+                case 0:
+                    link = './';
+                    break;
+                case 1:
+                    link = '../';
+                    break;
+                case 2:
+                    link = '../../';
+                    break;
+            }
 
             var $link = $('<a>', {
-                'href': res.url,
+                'href': link + res.url,
                 'text': res.title
-            });
+            })
 
-            var content = res.body.trim();
             if (content.length > MAX_DESCRIPTION_SIZE) {
                 content = content.slice(0, MAX_DESCRIPTION_SIZE).trim()+'...';
             }
