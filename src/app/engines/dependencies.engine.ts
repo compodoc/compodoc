@@ -59,6 +59,7 @@ class DependenciesEngine {
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
+        this.cleanRawModules();
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
@@ -140,6 +141,12 @@ class DependenciesEngine {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
             result = _.find(mergedData, {'name': name});
         return result || false;
+    }
+    cleanRawModules() {
+        _.forEach(this.rawModules, (module) => {
+            module.declarations = [];
+            module.providers = [];
+        });
     }
     prepareMiscellaneous() {
         //group each subgoup by file
