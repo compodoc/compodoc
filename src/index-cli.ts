@@ -135,16 +135,10 @@ export class CliApplication extends Application
         }
 
         if (!this.isWatching) {
-            console.log(`
-                                                _
-                                               | |
-  ___    ___    _ __ ___    _ __     ___     __| |   ___     ___
- / __|  / _ \\  | '_ \` _ \\  | '_ \\   / _ \\   / _\` |  / _ \\   / __|
-| (__  | (_) | | | | | | | | |_) | | (_) | | (_| | | (_) | | (__   ${pkg.version}
- \\___|  \\___/  |_| |_| |_| | .__/   \\___/   \\__,_|  \\___/   \\___|
-                           | |
-                           |_|
-                           `);
+            console.log(__dirname);
+            console.log(fs.readFileSync(path.join(__dirname, '../src/resources/banner')).toString());
+            console.log(pkg.version);
+            console.log('');
         }
 
         if (program.serve && !program.tsconfig && program.output) {
