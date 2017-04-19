@@ -5,27 +5,27 @@
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="active">
-        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
+        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab" data-link="infos">Infos</a>
     </li>
     {{#if component.readme}}
     <li>
-        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab">README</a>
+        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab" data-link="readme">README</a>
     </li>
     {{/if}}
 
     {{#unless disableSourceCode}}
     <li>
-        <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
     </li>
     {{/unless}}
 
     {{#if component.templateData}}
     <li>
-        <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab">Template</a>
+        <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
     </li>
     {{/if}}
     <li>
-        <a href="#tree" role="tab" id="tree-tab" data-toggle="tab">DOM Tree</a>
+        <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
     </li>
 </ul>
 
