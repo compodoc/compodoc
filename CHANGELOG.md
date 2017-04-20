@@ -1,3 +1,17 @@
+<a name="1.0.0-beta.4"></a>
+# [1.0.0-beta.4](https://github.com/compodoc/compodoc/compare/1.0.0-beta.3...1.0.0-beta.4) (2017-04-20)
+
+### Bug Fixes
+
+* **directives:** "Implements" support for directives. ([6138070](https://github.com/compodoc/compodoc/commit/6138070)), closes [#155](https://github.com/compodoc/compodoc/issues/155)
+* **links:** Link to "Getting started" / "README" should be ./index.html ([8d30fd9](https://github.com/compodoc/compodoc/commit/8d30fd9)), closes [#158](https://github.com/compodoc/compodoc/issues/158)
+* **dependencies:** Main modules graph seems too confuse ([ef7b04f](https://github.com/compodoc/compodoc/commit/ef7b04f)), closes [#150](https://github.com/compodoc/compodoc/issues/150)
+
+### Features
+
+* **app:** Link directly to the README of a component ([3636ce3](https://github.com/compodoc/compodoc/commit/3636ce3)), closes [#154](https://github.com/compodoc/compodoc/issues/154)
+
+
 <a name="1.0.0-beta.3"></a>
 # [1.0.0-beta.3](https://github.com/compodoc/compodoc/compare/1.0.0-beta.2...1.0.0-beta.3) (2017-04-05)
 

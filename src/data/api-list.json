@@ -1,12 +1,232 @@
 {
-  "@angular/common" : [
+  "animations" : [
+    {
+      "title": "AUTO_STYLE",
+      "path": "animations/index/AUTO_STYLE-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimateTimings",
+      "path": "animations/index/AnimateTimings-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationAnimateMetadata",
+      "path": "animations/index/AnimationAnimateMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationEvent",
+      "path": "animations/index/AnimationEvent-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationGroupMetadata",
+      "path": "animations/index/AnimationGroupMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationKeyframesSequenceMetadata",
+      "path": "animations/index/AnimationKeyframesSequenceMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationMetadata",
+      "path": "animations/index/AnimationMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationMetadataType",
+      "path": "animations/index/AnimationMetadataType-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationPlayer",
+      "path": "animations/index/AnimationPlayer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationSequenceMetadata",
+      "path": "animations/index/AnimationSequenceMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationStateMetadata",
+      "path": "animations/index/AnimationStateMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationStyleMetadata",
+      "path": "animations/index/AnimationStyleMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationTransitionMetadata",
+      "path": "animations/index/AnimationTransitionMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "AnimationTriggerMetadata",
+      "path": "animations/index/AnimationTriggerMetadata-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "NoopAnimationPlayer",
+      "path": "animations/index/NoopAnimationPlayer-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "animate",
+      "path": "animations/index/animate-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "group",
+      "path": "animations/index/group-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "keyframes",
+      "path": "animations/index/keyframes-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "sequence",
+      "path": "animations/index/sequence-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "state",
+      "path": "animations/index/state-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "style",
+      "path": "animations/index/style-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "transition",
+      "path": "animations/index/transition-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations"
+    },
+  
+    {
+      "title": "trigger",
+      "path": "animations/index/trigger-function.html",
+      "docType": "function",
+      "stability": "",
+      "secure": "false",
+      "barrel" : "animations"
+    }
+  ],
+
+  "animations/browser" : [
+    {
+      "title": "AnimationDriver",
+      "path": "animations/browser/index/AnimationDriver-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "animations/browser"
+    }
+  ],
+
+  "common" : [
     {
       "title": "APP_BASE_HREF",
       "path": "common/index/APP_BASE_HREF-let.html",
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -15,7 +235,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -24,7 +244,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -33,7 +253,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -42,7 +262,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -51,7 +271,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -60,7 +280,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -69,7 +289,7 @@
       "docType": "pipe",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -78,7 +298,7 @@
       "docType": "pipe",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -87,7 +307,16 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "LOCATION_INITIALIZED",
+      "path": "common/index/LOCATION_INITIALIZED-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
@@ -96,7 +325,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -105,7 +334,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -114,7 +343,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -123,7 +352,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -132,7 +361,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -141,16 +370,43 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "NgComponentOutlet",
+      "path": "common/index/NgComponentOutlet-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
       "title": "NgFor",
-      "path": "common/index/NgFor-directive.html",
+      "path": "common/index/NgFor-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "NgForOf",
+      "path": "common/index/NgForOf-directive.html",
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "NgForOfContext",
+      "path": "common/index/NgForOfContext-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
@@ -159,7 +415,25 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "NgIfContext",
+      "path": "common/index/NgIfContext-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "NgLocaleLocalization",
+      "path": "common/index/NgLocaleLocalization-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
@@ -168,7 +442,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -177,7 +451,7 @@
       "docType": "directive",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -186,7 +460,7 @@
       "docType": "directive",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -195,7 +469,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -204,7 +478,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -213,7 +487,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -222,7 +496,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -231,7 +505,7 @@
       "docType": "directive",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -240,7 +514,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -249,7 +523,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -258,7 +532,16 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "PopStateEvent",
+      "path": "common/index/PopStateEvent-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
@@ -267,7 +550,16 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "TitleCasePipe",
+      "path": "common/index/TitleCasePipe-pipe.html",
+      "docType": "pipe",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "common"
     },
   
     {
@@ -276,7 +568,7 @@
       "docType": "pipe",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
     },
   
     {
@@ -285,18 +577,54 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common"
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "isPlatformBrowser",
+      "path": "common/index/isPlatformBrowser-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "isPlatformServer",
+      "path": "common/index/isPlatformServer-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "isPlatformWorkerApp",
+      "path": "common/index/isPlatformWorkerApp-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
+    },
+  
+    {
+      "title": "isPlatformWorkerUi",
+      "path": "common/index/isPlatformWorkerUi-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "common"
     }
   ],
 
-  "@angular/common/testing" : [
+  "common/testing" : [
     {
       "title": "MockLocationStrategy",
       "path": "common/testing/index/MockLocationStrategy-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/common/testing"
+      "barrel" : "common/testing"
     },
   
     {
@@ -305,18 +633,18 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/common/testing"
+      "barrel" : "common/testing"
     }
   ],
 
-  "@angular/core" : [
+  "core" : [
     {
       "title": "ANALYZE_FOR_ENTRY_COMPONENTS",
       "path": "core/index/ANALYZE_FOR_ENTRY_COMPONENTS-let.html",
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -325,7 +653,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -334,7 +662,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -343,169 +671,187 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AUTO_STYLE",
       "path": "core/index/AUTO_STYLE-let.html",
       "docType": "let",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AfterContentChecked",
-      "path": "core/index/AfterContentChecked-class.html",
-      "docType": "class",
+      "path": "core/index/AfterContentChecked-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AfterContentInit",
-      "path": "core/index/AfterContentInit-class.html",
-      "docType": "class",
+      "path": "core/index/AfterContentInit-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AfterViewChecked",
-      "path": "core/index/AfterViewChecked-class.html",
-      "docType": "class",
+      "path": "core/index/AfterViewChecked-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AfterViewInit",
-      "path": "core/index/AfterViewInit-class.html",
-      "docType": "class",
+      "path": "core/index/AfterViewInit-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationAnimateMetadata",
-      "path": "core/index/AnimationAnimateMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationAnimateMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationEntryMetadata",
-      "path": "core/index/AnimationEntryMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationEntryMetadata-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationGroupMetadata",
-      "path": "core/index/AnimationGroupMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationGroupMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "AnimationKeyframe",
+      "path": "core/index/AnimationKeyframe-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationKeyframesSequenceMetadata",
-      "path": "core/index/AnimationKeyframesSequenceMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationKeyframesSequenceMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationMetadata",
-      "path": "core/index/AnimationMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationPlayer",
-      "path": "core/index/AnimationPlayer-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationPlayer-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationSequenceMetadata",
-      "path": "core/index/AnimationSequenceMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationSequenceMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
-    },
-  
-    {
-      "title": "AnimationStateDeclarationMetadata",
-      "path": "core/index/AnimationStateDeclarationMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
-      "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationStateMetadata",
-      "path": "core/index/AnimationStateMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationStateMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationStateTransitionMetadata",
-      "path": "core/index/AnimationStateTransitionMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationStateTransitionMetadata-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationStyleMetadata",
-      "path": "core/index/AnimationStyleMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationStyleMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "AnimationStyles",
+      "path": "core/index/AnimationStyles-type-alias.html",
+      "docType": "type-alias",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
       "title": "AnimationTransitionEvent",
-      "path": "core/index/AnimationTransitionEvent-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "path": "core/index/AnimationTransitionEvent-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
-      "title": "AnimationWithStepsMetadata",
-      "path": "core/index/AnimationWithStepsMetadata-class.html",
-      "docType": "class",
-      "stability": "experimental",
+      "title": "AnimationTransitionMetadata",
+      "path": "core/index/AnimationTransitionMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "AnimationTriggerMetadata",
+      "path": "core/index/AnimationTriggerMetadata-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -514,7 +860,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -523,7 +869,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -532,7 +878,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -541,7 +887,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -550,7 +896,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -559,7 +905,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -568,7 +914,7 @@
       "docType": "enum",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -577,7 +923,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -586,16 +932,16 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "ClassDefinition",
-      "path": "core/index/ClassDefinition-interface.html",
-      "docType": "interface",
+      "path": "core/index/ClassDefinition-type-alias.html",
+      "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -604,16 +950,16 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "CollectionChangeRecord",
-      "path": "core/index/CollectionChangeRecord-class.html",
-      "docType": "class",
-      "stability": "stable",
+      "path": "core/index/CollectionChangeRecord-interface.html",
+      "docType": "interface",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -622,7 +968,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -631,7 +977,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -640,7 +986,7 @@
       "docType": "type-alias",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -649,7 +995,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -658,7 +1004,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -667,7 +1013,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -676,7 +1022,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -685,7 +1031,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -694,7 +1040,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -703,7 +1049,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -712,16 +1058,16 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "DefaultIterableDiffer",
       "path": "core/index/DefaultIterableDiffer-class.html",
       "docType": "class",
-      "stability": "stable",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -730,16 +1076,16 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "DoCheck",
-      "path": "core/index/DoCheck-class.html",
-      "docType": "class",
+      "path": "core/index/DoCheck-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -748,7 +1094,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "Permitting direct access to the DOM can make your application more vulnerable to XSS attacks. Carefully review any use of `ElementRef` in your code. For more detail, see the [Security Guide](http://g.co/ng/security). ",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -757,7 +1103,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -766,7 +1112,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -775,7 +1121,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -784,7 +1130,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -793,7 +1139,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -802,7 +1148,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -811,7 +1157,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -820,7 +1166,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -829,7 +1175,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -838,7 +1184,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -847,7 +1193,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -856,7 +1202,16 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "InjectionToken",
+      "path": "core/index/InjectionToken-class.html",
+      "docType": "class",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -865,7 +1220,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -874,7 +1229,25 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "IterableChangeRecord",
+      "path": "core/index/IterableChangeRecord-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "IterableChanges",
+      "path": "core/index/IterableChanges-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -883,7 +1256,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -892,7 +1265,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -901,16 +1274,25 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "KeyValueChangeRecord",
-      "path": "core/index/KeyValueChangeRecord-class.html",
-      "docType": "class",
+      "path": "core/index/KeyValueChangeRecord-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "KeyValueChanges",
+      "path": "core/index/KeyValueChanges-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -919,7 +1301,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -928,7 +1310,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -937,7 +1319,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -946,7 +1328,16 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "MissingTranslationStrategy",
+      "path": "core/index/MissingTranslationStrategy-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -955,7 +1346,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -964,7 +1355,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -973,7 +1364,16 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "NgIterable",
+      "path": "core/index/NgIterable-type-alias.html",
+      "docType": "type-alias",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -982,7 +1382,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -991,7 +1391,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1000,7 +1400,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1009,7 +1409,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1018,7 +1418,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1027,43 +1427,43 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "OnChanges",
-      "path": "core/index/OnChanges-class.html",
-      "docType": "class",
+      "path": "core/index/OnChanges-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "OnDestroy",
-      "path": "core/index/OnDestroy-class.html",
-      "docType": "class",
+      "path": "core/index/OnDestroy-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "OnInit",
-      "path": "core/index/OnInit-class.html",
-      "docType": "class",
+      "path": "core/index/OnInit-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "OpaqueToken",
       "path": "core/index/OpaqueToken-class.html",
       "docType": "class",
-      "stability": "stable",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1072,7 +1472,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1081,7 +1481,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1090,7 +1490,16 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "PLATFORM_ID",
+      "path": "core/index/PLATFORM_ID-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -1099,7 +1508,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1108,7 +1517,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1117,7 +1526,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1126,7 +1535,16 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "Predicate",
+      "path": "core/index/Predicate-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -1135,7 +1553,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1144,7 +1562,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1153,7 +1571,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1162,7 +1580,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1171,25 +1589,61 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "RenderComponentType",
       "path": "core/index/RenderComponentType-class.html",
       "docType": "class",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "Renderer",
       "path": "core/index/Renderer-class.html",
       "docType": "class",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "Renderer2",
+      "path": "core/index/Renderer2-class.html",
+      "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "RendererFactory2",
+      "path": "core/index/RendererFactory2-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "RendererStyleFlags2",
+      "path": "core/index/RendererStyleFlags2-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "RendererType2",
+      "path": "core/index/RendererType2-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "core"
     },
   
     {
@@ -1198,7 +1652,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1207,16 +1661,16 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "RootRenderer",
       "path": "core/index/RootRenderer-class.html",
       "docType": "class",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1225,7 +1679,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1234,7 +1688,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1243,7 +1697,7 @@
       "docType": "enum",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1252,7 +1706,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1261,7 +1715,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1270,7 +1724,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1279,7 +1733,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1288,7 +1742,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1297,7 +1751,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1306,7 +1760,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1315,7 +1769,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1324,7 +1778,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1333,7 +1787,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1342,16 +1796,25 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "TrackByFn",
       "path": "core/index/TrackByFn-interface.html",
       "docType": "interface",
+      "stability": "deprecated",
+      "secure": "false",
+      "barrel" : "core"
+    },
+  
+    {
+      "title": "TrackByFunction",
+      "path": "core/index/TrackByFunction-interface.html",
+      "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1360,7 +1823,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1369,7 +1832,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1378,7 +1841,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1387,7 +1850,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1396,7 +1859,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1405,7 +1868,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1414,7 +1877,7 @@
       "docType": "decorator",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1423,7 +1886,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1432,7 +1895,7 @@
       "docType": "enum",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1441,7 +1904,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1450,7 +1913,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1459,16 +1922,16 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "animate",
       "path": "core/index/animate-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1477,7 +1940,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1486,7 +1949,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1495,7 +1958,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1504,7 +1967,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1513,7 +1976,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1522,7 +1985,7 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1531,7 +1994,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1540,7 +2003,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1549,7 +2012,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1558,16 +2021,16 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "group",
       "path": "core/index/group-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1576,16 +2039,16 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "keyframes",
       "path": "core/index/keyframes-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1594,7 +2057,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1603,16 +2066,16 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "sequence",
       "path": "core/index/sequence-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
@@ -1621,90 +2084,90 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "state",
       "path": "core/index/state-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "style",
       "path": "core/index/style-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "transition",
       "path": "core/index/transition-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "trigger",
       "path": "core/index/trigger-function.html",
       "docType": "function",
-      "stability": "experimental",
+      "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "wtfCreateScope",
-      "path": "core/index/wtfCreateScope-var.html",
-      "docType": "var",
+      "path": "core/index/wtfCreateScope-let.html",
+      "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "wtfEndTimeRange",
-      "path": "core/index/wtfEndTimeRange-var.html",
-      "docType": "var",
+      "path": "core/index/wtfEndTimeRange-let.html",
+      "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "wtfLeave",
-      "path": "core/index/wtfLeave-var.html",
-      "docType": "var",
+      "path": "core/index/wtfLeave-let.html",
+      "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     },
   
     {
       "title": "wtfStartTimeRange",
-      "path": "core/index/wtfStartTimeRange-var.html",
-      "docType": "var",
+      "path": "core/index/wtfStartTimeRange-let.html",
+      "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core"
+      "barrel" : "core"
     }
   ],
 
-  "@angular/core/testing" : [
+  "core/testing" : [
     {
       "title": "ComponentFixture",
       "path": "core/testing/index/ComponentFixture-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1713,7 +2176,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1722,7 +2185,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1731,7 +2194,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1740,7 +2203,7 @@
       "docType": "type-alias",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1749,7 +2212,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1758,7 +2221,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1767,7 +2230,7 @@
       "docType": "type-alias",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1776,7 +2239,7 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1785,7 +2248,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1794,7 +2257,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1803,7 +2266,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1812,7 +2275,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1821,7 +2284,7 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1830,7 +2293,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1839,7 +2302,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     },
   
     {
@@ -1848,18 +2311,18 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/core/testing"
+      "barrel" : "core/testing"
     }
   ],
 
-  "@angular/forms" : [
+  "forms" : [
     {
       "title": "AbstractControl",
       "path": "forms/index/AbstractControl-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1868,7 +2331,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1877,7 +2340,16 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
+    },
+  
+    {
+      "title": "AsyncValidator",
+      "path": "forms/index/AsyncValidator-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "forms"
     },
   
     {
@@ -1886,7 +2358,16 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
+    },
+  
+    {
+      "title": "COMPOSITION_BUFFER_MODE",
+      "path": "forms/index/COMPOSITION_BUFFER_MODE-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "forms"
     },
   
     {
@@ -1895,7 +2376,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1904,7 +2385,7 @@
       "docType": "directive",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1913,7 +2394,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1922,7 +2403,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1931,7 +2412,16 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
+    },
+  
+    {
+      "title": "EmailValidator",
+      "path": "forms/index/EmailValidator-directive.html",
+      "docType": "directive",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "forms"
     },
   
     {
@@ -1940,7 +2430,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1949,7 +2439,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1958,7 +2448,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1967,7 +2457,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1976,7 +2466,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1985,7 +2475,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -1994,7 +2484,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2003,7 +2493,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2012,7 +2502,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2021,7 +2511,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2030,7 +2520,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2039,7 +2529,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2048,7 +2538,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2057,7 +2547,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2066,7 +2556,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2075,7 +2565,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2084,7 +2574,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2093,7 +2583,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2102,7 +2592,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2111,7 +2601,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2120,7 +2610,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2129,7 +2619,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2138,7 +2628,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2147,7 +2637,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2156,7 +2646,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2165,7 +2655,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2174,7 +2664,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2183,7 +2673,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2192,7 +2682,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2201,7 +2691,16 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
+    },
+  
+    {
+      "title": "ValidationErrors",
+      "path": "forms/index/ValidationErrors-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "forms"
     },
   
     {
@@ -2210,7 +2709,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2219,7 +2718,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     },
   
     {
@@ -2228,18 +2727,18 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/forms"
+      "barrel" : "forms"
     }
   ],
 
-  "@angular/http" : [
+  "http" : [
     {
       "title": "BaseRequestOptions",
       "path": "http/index/BaseRequestOptions-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2248,7 +2747,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2257,7 +2756,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2266,7 +2765,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2275,7 +2774,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2284,7 +2783,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2293,7 +2792,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2302,7 +2801,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2311,7 +2810,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2320,7 +2819,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2329,7 +2828,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2338,7 +2837,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2347,7 +2846,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2356,7 +2855,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2365,7 +2864,7 @@
       "docType": "enum",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2374,7 +2873,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2383,7 +2882,7 @@
       "docType": "enum",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2392,7 +2891,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2401,7 +2900,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2410,7 +2909,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2419,7 +2918,7 @@
       "docType": "enum",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2428,16 +2927,16 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
       "title": "ResponseOptionsArgs",
-      "path": "http/index/ResponseOptionsArgs-type-alias.html",
-      "docType": "type-alias",
+      "path": "http/index/ResponseOptionsArgs-interface.html",
+      "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2446,7 +2945,7 @@
       "docType": "enum",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2455,7 +2954,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2464,7 +2963,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2473,7 +2972,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2482,7 +2981,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     },
   
     {
@@ -2491,18 +2990,18 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http"
+      "barrel" : "http"
     }
   ],
 
-  "@angular/http/testing" : [
+  "http/testing" : [
     {
       "title": "MockBackend",
       "path": "http/testing/index/MockBackend-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http/testing"
+      "barrel" : "http/testing"
     },
   
     {
@@ -2511,27 +3010,18 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/http/testing"
+      "barrel" : "http/testing"
     }
   ],
 
-  "@angular/platform-browser" : [
-    {
-      "title": "AnimationDriver",
-      "path": "platform-browser/index/AnimationDriver-class.html",
-      "docType": "class",
-      "stability": "experimental",
-      "secure": "false",
-      "barrel" : "@angular/platform-browser"
-    },
-  
+  "platform-browser" : [
     {
       "title": "BrowserModule",
       "path": "platform-browser/index/BrowserModule-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2540,7 +3030,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2549,7 +3039,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2558,7 +3048,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "Calling any of the `bypassSecurityTrust...` APIs disables Angular's built-in sanitization for the value passed in. Carefully check and audit all values and code paths going into this call. Make sure any user data is appropriately escaped for this security context. For more detail, see the [Security Guide](http://g.co/ng/security). ",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2567,7 +3057,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2576,7 +3066,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2585,7 +3075,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2594,7 +3084,25 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
+    },
+  
+    {
+      "title": "Meta",
+      "path": "platform-browser/index/Meta-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-browser"
+    },
+  
+    {
+      "title": "MetaDefinition",
+      "path": "platform-browser/index/MetaDefinition-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2603,7 +3111,7 @@
       "docType": "class",
       "stability": "deprecated",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2612,7 +3120,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2621,7 +3129,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2630,7 +3138,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2639,7 +3147,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2648,7 +3156,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2657,7 +3165,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2666,7 +3174,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2675,7 +3183,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2684,7 +3192,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     },
   
     {
@@ -2693,18 +3201,38 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser"
+      "barrel" : "platform-browser"
     }
   ],
 
-  "@angular/platform-browser/testing" : [
+  "platform-browser/animations" : [
+    {
+      "title": "BrowserAnimationsModule",
+      "path": "platform-browser/animations/index/BrowserAnimationsModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-browser/animations"
+    },
+  
+    {
+      "title": "NoopAnimationsModule",
+      "path": "platform-browser/animations/index/NoopAnimationsModule-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-browser/animations"
+    }
+  ],
+
+  "platform-browser/testing" : [
     {
       "title": "BrowserTestingModule",
       "path": "platform-browser/testing/index/BrowserTestingModule-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser/testing"
+      "barrel" : "platform-browser/testing"
     },
   
     {
@@ -2713,18 +3241,18 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser/testing"
+      "barrel" : "platform-browser/testing"
     }
   ],
 
-  "@angular/platform-browser-dynamic" : [
+  "platform-browser-dynamic" : [
     {
       "title": "RESOURCE_CACHE_PROVIDER",
       "path": "platform-browser-dynamic/index/RESOURCE_CACHE_PROVIDER-let.html",
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-browser-dynamic"
+      "barrel" : "platform-browser-dynamic"
     },
   
     {
@@ -2733,7 +3261,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser-dynamic"
+      "barrel" : "platform-browser-dynamic"
     },
   
     {
@@ -2742,18 +3270,18 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser-dynamic"
+      "barrel" : "platform-browser-dynamic"
     }
   ],
 
-  "@angular/platform-browser-dynamic/testing" : [
+  "platform-browser-dynamic/testing" : [
     {
       "title": "BrowserDynamicTestingModule",
       "path": "platform-browser-dynamic/testing/index/BrowserDynamicTestingModule-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser-dynamic/testing"
+      "barrel" : "platform-browser-dynamic/testing"
     },
   
     {
@@ -2762,18 +3290,45 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-browser-dynamic/testing"
+      "barrel" : "platform-browser-dynamic/testing"
     }
   ],
 
-  "@angular/platform-server" : [
+  "platform-server" : [
+    {
+      "title": "INITIAL_CONFIG",
+      "path": "platform-server/index/INITIAL_CONFIG-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-server"
+    },
+  
+    {
+      "title": "PlatformConfig",
+      "path": "platform-server/index/PlatformConfig-interface.html",
+      "docType": "interface",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-server"
+    },
+  
+    {
+      "title": "PlatformState",
+      "path": "platform-server/index/PlatformState-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-server"
+    },
+  
     {
       "title": "ServerModule",
       "path": "platform-server/index/ServerModule-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-server"
+      "barrel" : "platform-server"
     },
   
     {
@@ -2782,7 +3337,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-server"
+      "barrel" : "platform-server"
     },
   
     {
@@ -2791,7 +3346,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-server"
+      "barrel" : "platform-server"
     },
   
     {
@@ -2800,18 +3355,36 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-server"
+      "barrel" : "platform-server"
+    },
+  
+    {
+      "title": "renderModule",
+      "path": "platform-server/index/renderModule-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-server"
+    },
+  
+    {
+      "title": "renderModuleFactory",
+      "path": "platform-server/index/renderModuleFactory-function.html",
+      "docType": "function",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-server"
     }
   ],
 
-  "@angular/platform-server/testing" : [
+  "platform-server/testing" : [
     {
       "title": "ServerTestingModule",
       "path": "platform-server/testing/index/ServerTestingModule-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-server/testing"
+      "barrel" : "platform-server/testing"
     },
   
     {
@@ -2820,18 +3393,18 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-server/testing"
+      "barrel" : "platform-server/testing"
     }
   ],
 
-  "@angular/platform-webworker" : [
+  "platform-webworker" : [
     {
       "title": "ClientMessageBroker",
       "path": "platform-webworker/index/ClientMessageBroker-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2840,7 +3413,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2849,7 +3422,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2858,7 +3431,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2867,7 +3440,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2876,7 +3449,7 @@
       "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2885,16 +3458,25 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
       "title": "ReceivedMessage",
-      "path": "platform-webworker/index/ReceivedMessage-class.html",
-      "docType": "class",
+      "path": "platform-webworker/index/ReceivedMessage-interface.html",
+      "docType": "interface",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
+    },
+  
+    {
+      "title": "SerializerTypes",
+      "path": "platform-webworker/index/SerializerTypes-enum.html",
+      "docType": "enum",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2903,7 +3485,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2912,7 +3494,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2921,7 +3503,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2930,7 +3512,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2939,7 +3521,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2948,7 +3530,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2957,7 +3539,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2966,7 +3548,7 @@
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2975,7 +3557,7 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     },
   
     {
@@ -2984,18 +3566,18 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker"
+      "barrel" : "platform-webworker"
     }
   ],
 
-  "@angular/platform-webworker-dynamic" : [
+  "platform-webworker-dynamic" : [
     {
       "title": "VERSION",
       "path": "platform-webworker-dynamic/index/VERSION-let.html",
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker-dynamic"
+      "barrel" : "platform-webworker-dynamic"
     },
   
     {
@@ -3004,18 +3586,18 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/platform-webworker-dynamic"
+      "barrel" : "platform-webworker-dynamic"
     }
   ],
 
-  "@angular/router" : [
+  "router" : [
     {
       "title": "ActivatedRoute",
       "path": "router/index/ActivatedRoute-interface.html",
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3024,7 +3606,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3033,7 +3615,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3042,7 +3624,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3051,7 +3633,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3060,7 +3642,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3069,7 +3651,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3078,7 +3660,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3087,7 +3669,7 @@
       "docType": "type-alias",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3096,7 +3678,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3105,7 +3687,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3114,7 +3696,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3123,7 +3705,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3132,7 +3714,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3141,7 +3723,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3150,7 +3732,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3159,7 +3741,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3168,7 +3750,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3177,7 +3759,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3186,7 +3768,16 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "ParamMap",
+      "path": "router/index/ParamMap-interface.html",
+      "docType": "interface",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "router"
     },
   
     {
@@ -3195,7 +3786,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3204,7 +3795,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3213,7 +3804,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3222,7 +3813,7 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3231,7 +3822,16 @@
       "docType": "let",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "ROUTES",
+      "path": "router/index/ROUTES-let.html",
+      "docType": "let",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "router"
     },
   
     {
@@ -3240,7 +3840,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3249,7 +3849,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3258,7 +3858,25 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "RouteConfigLoadEnd",
+      "path": "router/index/RouteConfigLoadEnd-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "RouteConfigLoadStart",
+      "path": "router/index/RouteConfigLoadStart-class.html",
+      "docType": "class",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "router"
     },
   
     {
@@ -3267,7 +3885,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3276,7 +3894,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3285,7 +3903,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3294,7 +3912,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3303,7 +3921,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3312,7 +3930,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3321,7 +3939,7 @@
       "docType": "directive",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3330,7 +3948,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3339,7 +3957,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3348,7 +3966,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3357,7 +3975,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3366,7 +3984,7 @@
       "docType": "type-alias",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3375,7 +3993,16 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "RunGuardsAndResolvers",
+      "path": "router/index/RunGuardsAndResolvers-type-alias.html",
+      "docType": "type-alias",
+      "stability": "experimental",
+      "secure": "false",
+      "barrel" : "router"
     },
   
     {
@@ -3384,7 +4011,7 @@
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3393,7 +4020,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3402,7 +4029,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3411,7 +4038,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3420,7 +4047,7 @@
       "docType": "interface",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     },
   
     {
@@ -3429,7 +4056,16 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
+    },
+  
+    {
+      "title": "convertToParamMap",
+      "path": "router/index/convertToParamMap-function.html",
+      "docType": "function",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "router"
     },
   
     {
@@ -3438,18 +4074,18 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router"
+      "barrel" : "router"
     }
   ],
 
-  "@angular/router/testing" : [
+  "router/testing" : [
     {
       "title": "RouterTestingModule",
       "path": "router/testing/index/RouterTestingModule-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router/testing"
+      "barrel" : "router/testing"
     },
   
     {
@@ -3458,7 +4094,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router/testing"
+      "barrel" : "router/testing"
     },
   
     {
@@ -3467,18 +4103,18 @@
       "docType": "function",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/router/testing"
+      "barrel" : "router/testing"
     }
   ],
 
-  "@angular/upgrade" : [
+  "upgrade" : [
     {
       "title": "UpgradeAdapter",
       "path": "upgrade/index/UpgradeAdapter-class.html",
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/upgrade"
+      "barrel" : "upgrade"
     },
   
     {
@@ -3487,7 +4123,7 @@
       "docType": "class",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/upgrade"
+      "barrel" : "upgrade"
     },
   
     {
@@ -3496,45 +4132,54 @@
       "docType": "let",
       "stability": "stable",
       "secure": "false",
-      "barrel" : "@angular/upgrade"
+      "barrel" : "upgrade"
     }
   ],
 
-  "@angular/upgrade/static" : [
+  "upgrade/static" : [
     {
       "title": "UpgradeComponent",
-      "path": "upgrade/static/UpgradeComponent-class.html",
+      "path": "upgrade/static/index/UpgradeComponent-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/upgrade/static"
+      "barrel" : "upgrade/static"
     },
   
     {
       "title": "UpgradeModule",
-      "path": "upgrade/static/UpgradeModule-class.html",
+      "path": "upgrade/static/index/UpgradeModule-class.html",
       "docType": "class",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/upgrade/static"
+      "barrel" : "upgrade/static"
+    },
+  
+    {
+      "title": "VERSION",
+      "path": "upgrade/static/index/VERSION-let.html",
+      "docType": "let",
+      "stability": "stable",
+      "secure": "false",
+      "barrel" : "upgrade/static"
     },
   
     {
       "title": "downgradeComponent",
-      "path": "upgrade/static/downgradeComponent-function.html",
+      "path": "upgrade/static/index/downgradeComponent-function.html",
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/upgrade/static"
+      "barrel" : "upgrade/static"
     },
   
     {
       "title": "downgradeInjectable",
-      "path": "upgrade/static/downgradeInjectable-function.html",
+      "path": "upgrade/static/index/downgradeInjectable-function.html",
       "docType": "function",
       "stability": "experimental",
       "secure": "false",
-      "barrel" : "@angular/upgrade/static"
+      "barrel" : "upgrade/static"
     }
   ]
 }

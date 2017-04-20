@@ -305,6 +305,9 @@ export class Dependencies {
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
+                        if (IO.implements && IO.implements.length > 0) {
+                            deps.implements = IO.implements;
+                        }
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }

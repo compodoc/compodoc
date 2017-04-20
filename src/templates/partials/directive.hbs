@@ -9,7 +9,7 @@
         <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
     </li>
     <li>
-        <a href="#source" role="tab" id="source-tab" data-toggle="tab">Source</a>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
     </li>
 </ul>
 
@@ -29,6 +29,17 @@
             </p>
             <p class="comment">
                 {{{parseDescription directive.description depth}}}
+            </p>
+        {{/if}}
+
+        {{#if directive.implements}}
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                {{#each directive.implements}}
+                    {{> link-type type=this}}
+                {{/each}}
             </p>
         {{/if}}
 
