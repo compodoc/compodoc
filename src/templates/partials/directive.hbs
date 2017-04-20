@@ -32,6 +32,17 @@
             </p>
         {{/if}}
 
+        {{#if directive.implements}}
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                {{#each directive.implements}}
+                    {{> link-type type=this}}
+                {{/each}}
+            </p>
+        {{/if}}
+
         {{#if directive.jsdoctags}}
             <p class="comment">
                 <h3>Example</h3>
