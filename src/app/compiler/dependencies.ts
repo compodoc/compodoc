@@ -26,7 +26,7 @@ interface NodeObject {
     parserContextFlags?: Number;
     equalsGreaterThanToken?: NodeObject[];
     parameters?: NodeObject[];
-    Component?: String;
+    Component?: string;
     body?: {
         pos: Number;
         end: Number;

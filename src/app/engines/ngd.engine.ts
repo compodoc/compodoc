@@ -11,10 +11,8 @@ let ngdCr = require('@compodoc/ngd-core');
 let ngdT = require('@compodoc/ngd-transformer');
 
 export class NgdEngine {
-    constructor() {
-
-    }
-    renderGraph(filepath: String, outputpath: String, type: String, name?: string) {
+    constructor() {}
+    renderGraph(filepath: string, outputpath: string, type: string, name?: string) {
         return new Promise(function(resolve, reject) {
             ngdCr.logger.silent = false;
             let engine = new ngdT.DotEngine({
