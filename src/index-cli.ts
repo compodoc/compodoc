@@ -136,7 +136,7 @@ export class CliApplication extends Application
 
         if (!this.isWatching) {
             console.log(__dirname);
-            console.log(fs.readFileSync(path.join(__dirname, '../src/resources/banner')).toString());
+            console.log(fs.readFileSync(path.join(__dirname, '../src/resources/images/banner')).toString());
             console.log(pkg.version);
             console.log('');
         }
