@@ -52,6 +52,7 @@ interface IMainData {
     disableCoverage: boolean;
     disablePrivateOrInternalSupport: boolean;
     watch: boolean;
+    mainGraph: string;
 }
 
 export interface IConfiguration {

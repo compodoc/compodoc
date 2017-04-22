@@ -689,3 +689,12 @@ path.link {
 .tree-legend .directive {
     background: #FF9800;
 }
+
+#module-graph-svg {
+    width: 100%;
+    height: 250px;
+}
+
+#module-graph-svg svg {
+    height: 100%;
+}

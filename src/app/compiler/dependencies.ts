@@ -26,7 +26,7 @@ interface NodeObject {
     parserContextFlags?: Number;
     equalsGreaterThanToken?: NodeObject[];
     parameters?: NodeObject[];
-    Component?: String;
+    Component?: string;
     body?: {
         pos: Number;
         end: Number;
@@ -545,7 +545,7 @@ export class Dependencies {
 
     }
     private debug(deps: Deps) {
-        logger.debug('found', `${deps.name}:`);
+        logger.debug('found', `${deps.name}`);
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
@@ -1532,7 +1532,7 @@ export class Dependencies {
     }
 
     private getComponentTemplateUrl(props: NodeObject[]): string[] {
-        return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
+        return this.getSymbolDeps(props, 'templateUrl');
     }
 
     private getComponentTemplate(props: NodeObject[]): string {
@@ -1599,9 +1599,6 @@ export class Dependencies {
         });
 
         let parseSymbolText = (text: string) => {
-            if (text.indexOf('/') !== -1 && !multiLine) {
-                text = text.split('/').pop();
-            }
             return [
                 text
             ];

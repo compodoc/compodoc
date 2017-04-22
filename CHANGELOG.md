@@ -1,3 +1,12 @@
+<a name="1.0.0-beta.5"></a>
+# [1.0.0-beta.5](https://github.com/compodoc/compodoc/compare/1.0.0-beta.4...1.0.0-beta.5) (2017-04-22)
+
+### Bug Fixes
+
+* **modules:** module graph controls JS error with file:// ([6d4be23](https://github.com/compodoc/compodoc/commit/6d4be23)), closes [#153](https://github.com/compodoc/compodoc/issues/153) [#159](https://github.com/compodoc/compodoc/issues/159)
+* **component:** custom treatment of the metadata field `template` ([1bbda74](https://github.com/compodoc/compodoc/commit/1bbda74)), closes [#137](https://github.com/compodoc/compodoc/issues/137)
+* **component:** loading template from another component fails ([1bbda74](https://github.com/compodoc/compodoc/commit/1bbda74)), closes [#147](https://github.com/compodoc/compodoc/issues/147)
+
 <a name="1.0.0-beta.4"></a>
 # [1.0.0-beta.4](https://github.com/compodoc/compodoc/compare/1.0.0-beta.3...1.0.0-beta.4) (2017-04-20)
 
