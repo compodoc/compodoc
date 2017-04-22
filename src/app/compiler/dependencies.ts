@@ -1532,7 +1532,7 @@ export class Dependencies {
     }
 
     private getComponentTemplateUrl(props: NodeObject[]): string[] {
-        return this.sanitizeUrls(this.getSymbolDeps(props, 'templateUrl'));
+        return this.getSymbolDeps(props, 'templateUrl');
     }
 
     private getComponentTemplate(props: NodeObject[]): string {
@@ -1599,9 +1599,6 @@ export class Dependencies {
         });
 
         let parseSymbolText = (text: string) => {
-            if (text.indexOf('/') !== -1 && !multiLine) {
-                text = text.split('/').pop();
-            }
             return [
                 text
             ];
