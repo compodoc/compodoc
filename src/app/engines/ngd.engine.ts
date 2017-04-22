@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import * as Shelljs from 'shelljs';
 import * as _ from 'lodash';
 import * as util from 'util';
@@ -37,6 +38,17 @@ export class NgdEngine {
                         reject(error);
                     });
             }
+        });
+    }
+    readGraph(filepath: string, name: string) {
+        return new Promise(function(resolve, reject) {
+            fs.readFile(path.resolve(filepath), 'utf8', (err, data) => {
+               if (err) {
+                   reject('Error during graph read ' + name);
+               } else {
+                   resolve(data);
+               }
+           });
         });
     }
 };

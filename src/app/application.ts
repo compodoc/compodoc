@@ -223,7 +223,7 @@ export class Application {
 
         promiseSequential(actions)
             .then(res => {
-                this.processPages();
+                this.processGraphs();
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -278,7 +278,7 @@ export class Application {
 
         promiseSequential(actions)
             .then(res => {
-                this.processPages();
+                this.processGraphs();
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -1038,6 +1038,16 @@ export class Application {
 
     processResources() {
         logger.info('Copy main resources');
+
+        const onComplete = () => {
+            let finalTime = (new Date() - startTime) / 1000;
+            logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
+            if (this.configuration.mainData.serve) {
+                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                this.runWebServer(this.configuration.mainData.output);
+            }
+        };
+
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
@@ -1049,12 +1059,12 @@ export class Application {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
                             logger.info('External styling theme copy succeeded');
-                            this.processGraphs();
+                            onComplete();
                         }
                     });
                 }
                 else {
-                    this.processGraphs();
+                    onComplete();
                 }
             }
         });
@@ -1062,19 +1072,10 @@ export class Application {
 
     processGraphs() {
 
-        const onComplete = () => {
-            let finalTime = (new Date() - startTime) / 1000;
-            logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
-            if (this.configuration.mainData.serve) {
-                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
-                this.runWebServer(this.configuration.mainData.output);
-            }
-        };
-
         if (this.configuration.mainData.disableGraph) {
 
             logger.info('Graph generation disabled');
-            onComplete();
+            this.processPages();
 
         } else {
 
@@ -1091,13 +1092,18 @@ export class Application {
                       }
                       finalPath += 'modules/' + modules[i].name;
                       $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                          i++;
-                          loop();
+                          $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                              modules[i].graph = <string>data;
+                              i++;
+                              loop();
+                          }, (err) => {
+                              logger.error('Error during graph read: ', err);
+                          });
                       }, (errorMessage) => {
                           logger.error(errorMessage);
                       });
                   } else {
-                      onComplete();
+                      this.processPages();
                   }
               };
             let finalMainGraphPath = this.configuration.mainData.output;
@@ -1106,7 +1112,12 @@ export class Application {
             }
             finalMainGraphPath += 'graph';
             $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                loop();
+                $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
+                    this.configuration.mainData.mainGraph = <string>data;
+                    loop();
+                }, (err) => {
+                    logger.error('Error during graph read: ', err);
+                });
             }, (err) => {
                 logger.error('Error during graph generation: ', err);
             });

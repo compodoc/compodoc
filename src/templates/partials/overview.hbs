@@ -1,9 +1,9 @@
 <h3>Overview</h3>
 {{#unless disableGraph}}
 <div class="text-center">
-    <object id="demo-svg" type="image/svg+xml" data="graph/dependencies.svg" style="width: 100%; height: 250px;">
-            Your browser does not support SVG
-    </object>
+    <div id="module-graph-svg">
+        {{{ mainGraph }}}
+    </div>
     <div class="btn-group">
         <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
         <button id="reset" class="btn btn-default btn-sm">Reset</button>
