@@ -545,7 +545,7 @@ export class Dependencies {
 
     }
     private debug(deps: Deps) {
-        logger.debug('found', `${deps.name}:`);
+        logger.debug('found', `${deps.name}`);
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
