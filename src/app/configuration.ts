@@ -53,6 +53,8 @@ interface IMainData {
     disablePrivateOrInternalSupport: boolean;
     watch: boolean;
     mainGraph: string;
+    coverageTest: boolean;
+    coverageTestThreshold: number;
 }
 
 export interface IConfiguration {
@@ -98,7 +100,9 @@ export class Configuration implements IConfiguration {
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
         disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport,
-        watch: false
+        watch: false,
+        coverageTest: false,
+        coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold
     };
 
     constructor() {

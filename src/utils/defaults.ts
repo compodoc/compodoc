@@ -6,6 +6,7 @@ export const COMPODOC_DEFAULTS = {
     port: 8080,
     theme: 'gitbook',
     base: '/',
+    defaultCoverageThreshold: 70,
     disableSourceCode: false,
     disableGraph: false,
     disableCoverage: false,

@@ -79,6 +79,13 @@ export class Application {
     }
 
     /**
+     * Start compodoc documentation coverage
+     */
+    protected testCoverage() {
+        this.getDependenciesData();
+    }
+
+    /**
      * Store files for initial processing
      * @param  {Array<string>} files Files found during source folder and tsconfig scan
      */
@@ -920,7 +927,17 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
-            resolve();
+            if (this.configuration.mainData.coverageTest) {
+                if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
+                    logger.info('Documentation coverage is over threshold');
+                    process.exit(0);
+                } else {
+                    logger.error('Documentation coverage is not over threshold');
+                    process.exit(1);
+                }
+            } else {
+                resolve();
+            }
         });
     }
 
