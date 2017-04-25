@@ -502,7 +502,6 @@ export class Application {
                 loop = () => {
                     if( i <= len-1) {
                         let dirname = path.dirname(this.configuration.mainData.components[i].file),
-                            readmeFile = dirname + path.sep + 'README.md',
                             handleTemplateurl = () => {
                                 return new Promise((resolve, reject) => {
                                     let templatePath = path.resolve(dirname + path.sep + this.configuration.mainData.components[i].templateUrl);
@@ -519,8 +518,9 @@ export class Application {
                                     }
                                 });
                             };
-                        if (fs.existsSync(readmeFile)) {
-                            logger.info('README.md exist for this component, include it');
+                        if ($markdownengine.componentHasReadmeFile(this.configuration.mainData.components[i].file)) {
+                            logger.info(`${this.configuration.mainData.components[i].name} has a README file, include it`);
+                            let readmeFile = $markdownengine.componentReadmeFile(this.configuration.mainData.components[i].file);
                             fs.readFile(readmeFile, 'utf8', (err, data) => {
                                 if (err) throw err;
                                 this.configuration.mainData.components[i].readme = marked(data);
