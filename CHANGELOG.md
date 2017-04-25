@@ -1,3 +1,16 @@
+<a name="1.0.0-beta.6"></a>
+# [1.0.0-beta.6](https://github.com/compodoc/compodoc/compare/1.0.0-beta.5...1.0.0-beta.6) (2017-04-25)
+
+### Bug Fixes
+
+* **dependencies:** Unhandled promise rejection with "use strict" ([f56c01a](https://github.com/compodoc/compodoc/commit/f56c01a)), closes [#165](https://github.com/compodoc/compodoc/issues/165)
+* **links:** Interface Linking is wrong ([152c722](https://github.com/compodoc/compodoc/commit/152c722)), closes [#157](https://github.com/compodoc/compodoc/issues/157)
+
+### Features
+
+* **component:** Expand on the Readme.md for component to use component.md (actual name of component) ([c246ffb](https://github.com/compodoc/compodoc/commit/c246ffb)), closes [#164](https://github.com/compodoc/compodoc/issues/164)
+* **coverage:** Coverage test command ([e15f238](https://github.com/compodoc/compodoc/commit/e15f238)), closes [#156](https://github.com/compodoc/compodoc/issues/156)
+
 <a name="1.0.0-beta.5"></a>
 # [1.0.0-beta.5](https://github.com/compodoc/compodoc/compare/1.0.0-beta.4...1.0.0-beta.5) (2017-04-22)
 
