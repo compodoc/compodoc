@@ -60,4 +60,22 @@ export class MarkdownEngine {
             });
         });
     }
+    componentHasReadmeFile(file: string): boolean {
+        let dirname = path.dirname(file),
+            readmeFile = dirname + path.sep + 'README.md',
+            readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+        return fs.existsSync(readmeFile) || fs.existsSync(readmeAlternativeFile);
+    }
+    componentReadmeFile(file: string): string {
+        let dirname = path.dirname(file),
+            readmeFile = dirname + path.sep + 'README.md',
+            readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md',
+            finalPath = '';
+        if (fs.existsSync(readmeFile)) {
+            finalPath = readmeFile;
+        } else {
+            finalPath = readmeAlternativeFile;
+        }
+        return finalPath;
+    }
 };

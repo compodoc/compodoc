@@ -58,4 +58,45 @@ describe('CLI coverage report', () => {
 
     });
 
+    describe('coverage test command above', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 25', {env}, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    done('error');
+                    return;
+                }
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('it should be over threshold', () => {
+            expect(stdoutString).to.contain('Documentation coverage is over threshold');
+        });
+
+    });
+
+    describe('coverage test command under', () => {
+
+        let stdoutString = null;
+        before(function (done) {
+            tmp.create();
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 30', {env}, (error, stdout, stderr) => {
+                stdoutString = stdout;
+                done();
+            });
+        });
+        after(() => tmp.clean());
+
+        it('it should not be over threshold', () => {
+            expect(stdoutString).to.contain('Documentation coverage is not over threshold');
+        });
+
+    });
+
 });

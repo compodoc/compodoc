@@ -43,6 +43,7 @@ export class CliApplication extends Application
             .option('--toggleMenuItems <items>', 'Close by default items in the menu example: \'all\' or \'modules\',\'components\',\'directives\',\'classes\',\'injectables\',\'interfaces\',\'pipes\',\'additionalPages\'', list)
             .option('--includes [path]', 'Path of external markdown files to include')
             .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
+            .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
             .option('--disableSourceCode', 'Do not add source code tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
@@ -118,6 +119,11 @@ export class CliApplication extends Application
             this.configuration.mainData.includesName = program.includesName;
         }
 
+        if (program.coverageTest) {
+            this.configuration.mainData.coverageTest = true;
+            this.configuration.mainData.coverageTestThreshold = (typeof program.coverageTest === 'string') ? parseInt(program.coverageTest) : COMPODOC_DEFAULTS.defaultCoverageThreshold;
+        }
+
         if (program.disableSourceCode) {
             this.configuration.mainData.disableSourceCode = program.disableSourceCode;
         }
@@ -135,7 +141,6 @@ export class CliApplication extends Application
         }
 
         if (!this.isWatching) {
-            console.log(__dirname);
             console.log(fs.readFileSync(path.join(__dirname, '../src/resources/images/banner')).toString());
             console.log(pkg.version);
             console.log('');
@@ -216,7 +221,34 @@ export class CliApplication extends Application
                     super.setFiles(files);
                     super.generate();
                 }
-            }  else if (program.tsconfig && program.args.length > 0) {
+            }  else if (program.tsconfig && program.args.length > 0 && program.coverageTest) {
+                logger.info('Run documentation coverage test');
+                this.configuration.mainData.tsconfig = program.tsconfig;
+                if (!fs.existsSync(program.tsconfig)) {
+                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    process.exit(1);
+                } else {
+                    let _file = path.join(
+                      path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                      path.basename(this.configuration.mainData.tsconfig)
+                    );
+                    logger.info('Using tsconfig', _file);
+
+                    files = require(_file).files;
+
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+
+                    if (!files) {
+                        let exclude = require(_file).exclude || [];
+
+                        files = walk(cwd || '.', exclude);
+                    }
+
+                    super.setFiles(files);
+                    super.testCoverage();
+                }
+            } else if (program.tsconfig && program.args.length > 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 let sourceFolder = program.args[0];
                 if (!fs.existsSync(sourceFolder)) {

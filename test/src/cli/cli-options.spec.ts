@@ -91,6 +91,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Name of item menu of externals markdown files (default "Additional documentation")');
         });
 
+        it(`--coverageTest`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--coverageTest');
+            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage with a threshold');
+        });
+
         it(`--disableSourceCode`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableSourceCode');
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
