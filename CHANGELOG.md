@@ -1,3 +1,10 @@
+<a name="1.0.0-beta.7"></a>
+# [1.0.0-beta.7](https://github.com/compodoc/compodoc/compare/1.0.0-beta.6...1.0.0-beta.7) (2017-04-25)
+
+### Bug Fixes
+
+* **overview:** Main overview graph is shifted on right side ([8fe238d](https://github.com/compodoc/compodoc/commit/8fe238d)), closes [#166](https://github.com/compodoc/compodoc/issues/166)
+
 <a name="1.0.0-beta.6"></a>
 # [1.0.0-beta.6](https://github.com/compodoc/compodoc/compare/1.0.0-beta.5...1.0.0-beta.6) (2017-04-25)
 
