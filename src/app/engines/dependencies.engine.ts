@@ -79,18 +79,21 @@ class DependenciesEngine {
             return _result;
         },
             resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
+            resultInCompodocInterfaces = finderInCompodocDependencies(this.interfaces),
             resultInCompodocClasses = finderInCompodocDependencies(this.classes),
             resultInCompodocComponents = finderInCompodocDependencies(this.components),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
         if (resultInCompodocInjectables.data !== null) {
-            return resultInCompodocInjectables
+            return resultInCompodocInjectables;
+        } else if (resultInCompodocInterfaces.data !== null) {
+            return resultInCompodocInterfaces;
         } else if (resultInCompodocClasses.data !== null) {
-            return resultInCompodocClasses
+            return resultInCompodocClasses;
         } else if (resultInCompodocComponents.data !== null) {
-            return resultInCompodocComponents
+            return resultInCompodocComponents;
         } else if (resultInAngularAPIs.data !== null) {
-            return resultInAngularAPIs
+            return resultInAngularAPIs;
         }
     }
     update(updatedData) {
