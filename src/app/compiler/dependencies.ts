@@ -475,7 +475,7 @@ export class Dependencies {
                             resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
                         }
                         if (!resultNode) {
-                            if (node.expression && node.expression.arguments.length > 0) {
+                            if (node.expression && node.expression.arguments && node.expression.arguments.length > 0) {
                                 resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
                             }
                         }
