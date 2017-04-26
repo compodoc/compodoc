@@ -522,6 +522,8 @@ export class Application {
                                                 resolve();
                                             }
                                         });
+                                    } else {
+                                        logger.error(`Cannot read template for ${this.configuration.mainData.components[i].name}`);
                                     }
                                 });
                             };

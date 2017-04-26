@@ -721,9 +721,11 @@ export class Dependencies {
       var decorators = node.decorators || [];
 
       for (var i = 0; i < decorators.length; i++) {
-        if (decorators[i].expression.expression.text === decoratorType) {
-          return decorators[i];
-        }
+          if (decorators[i].expression.expression) {
+              if (decorators[i].expression.expression.text === decoratorType) {
+                  return decorators[i];
+              }
+          }
       }
 
       return null;

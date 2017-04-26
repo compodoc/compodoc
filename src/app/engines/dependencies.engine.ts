@@ -48,6 +48,7 @@ class DependenciesEngine {
     init(data: Object) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
+        this.rawModulesForOverview = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
         this.rawModules = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
@@ -59,7 +60,7 @@ class DependenciesEngine {
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
-        this.cleanRawModules();
+        this.cleanRawModulesForOverview();
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
@@ -145,8 +146,8 @@ class DependenciesEngine {
             result = _.find(mergedData, {'name': name});
         return result || false;
     }
-    cleanRawModules() {
-        _.forEach(this.rawModules, (module) => {
+    cleanRawModulesForOverview() {
+        _.forEach(this.rawModulesForOverview, (module) => {
             module.declarations = [];
             module.providers = [];
         });

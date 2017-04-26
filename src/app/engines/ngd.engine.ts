@@ -31,7 +31,7 @@ export class NgdEngine {
                     });
             } else {
                 engine
-                    .generateGraph($dependenciesEngine.rawModules)
+                    .generateGraph($dependenciesEngine.rawModulesForOverview)
                     .then(file => {
                         resolve();
                     }, error => {
