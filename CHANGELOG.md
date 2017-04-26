@@ -1,3 +1,16 @@
+<a name="1.0.0-beta.8"></a>
+# [1.0.0-beta.8](https://github.com/compodoc/compodoc/compare/1.0.0-beta.7...1.0.0-beta.8) (2017-04-26)
+
+### Bug Fixes
+
+* **dependencies:** custom decorators breaks ([50578ec](https://github.com/compodoc/compodoc/commit/50578ec)), closes [#169](https://github.com/compodoc/compodoc/issues/169)
+* **UI:** Open menu when item selected ([70d38c7](https://github.com/compodoc/compodoc/commit/70d38c7)), closes [#168](https://github.com/compodoc/compodoc/issues/168)
+* **graph:** No Declarations or Providers being added to module graphs ([bf776f4](https://github.com/compodoc/compodoc/commit/bf776f4)), closes [#167](https://github.com/compodoc/compodoc/issues/167)
+
+### Features
+
+* **files:** Better error reporting for template file reading ([6f2d783](https://github.com/compodoc/compodoc/commit/6f2d783))
+
 <a name="1.0.0-beta.7"></a>
 # [1.0.0-beta.7](https://github.com/compodoc/compodoc/compare/1.0.0-beta.6...1.0.0-beta.7) (2017-04-25)
 
