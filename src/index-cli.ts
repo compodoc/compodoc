@@ -9,6 +9,7 @@ import { logger } from './logger';
 
 let pkg = require('../package.json'),
     program = require('commander'),
+    glob = require('glob'),
     files = [],
     cwd = process.cwd();
 
@@ -175,7 +176,26 @@ export class CliApplication extends Application
                     let list = fs.readdirSync(dir);
                     list.forEach((file) => {
                         var excludeTest = _.find(exclude, function(o) {
-                            return path.basename(o) === file;
+                            let globFiles = glob.sync(o, {
+                                cwd: cwd
+                            });
+                            if (globFiles.length > 0) {
+                                let fileNameForGlobSearch = path.join(dir, file).replace(cwd + path.sep, ''),
+                                    resultGlobSearch = globFiles.findIndex((element) => {
+                                        return element === fileNameForGlobSearch;
+                                    }),
+                                    test = resultGlobSearch !== -1;
+                                if (test) {
+                                    logger.warn('Excluding', path.join(dir, file));
+                                }
+                                return test;
+                            } else {
+                                let test = path.basename(o) === file;
+                                if (test) {
+                                    logger.warn('Excluding', path.join(dir, file));
+                                }
+                                return test;
+                            }
                         });
                         if (typeof excludeTest === 'undefined' && dir.indexOf('node_modules') < 0) {
                             file = path.join(dir, file);
@@ -184,7 +204,7 @@ export class CliApplication extends Application
                                 results = results.concat(walk(file, exclude));
                             }
                             else if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.debug('Ignoring', file);
+                                logger.warn('Ignoring', file);
                             }
                             else if (path.extname(file) === '.ts') {
                                 logger.debug('Including', file);

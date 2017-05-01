@@ -5,7 +5,8 @@ let pkg = require('../package.json');
 enum LEVEL {
 	INFO,
 	DEBUG,
-    ERROR
+    ERROR,
+    WARN
 }
 
 class Logger {
@@ -36,6 +37,13 @@ class Logger {
 		);
 	}
 
+    warn(...args) {
+		if(!this.silent) return;
+		this.logger(
+			this.format(LEVEL.WARN, ...args)
+		);
+	}
+
 	debug(...args) {
 		if(!this.silent) return;
 		this.logger(
@@ -62,6 +70,10 @@ class Logger {
 
 			case LEVEL.DEBUG:
 				msg = c.cyan(msg);
+				break;
+
+            case LEVEL.WARN:
+				msg = c.yellow(msg);
 				break;
 
 			case LEVEL.ERROR:

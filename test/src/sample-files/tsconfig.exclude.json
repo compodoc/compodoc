@@ -3,6 +3,7 @@
         "module": "commonjs"
     },
     "exclude": [
-        "bar.component.ts"
+        "bar.component.ts",
+        "*.module.ts"
     ]
 }
