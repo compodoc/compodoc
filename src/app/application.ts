@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
-import marked from 'marked';
+import marked = require('marked');
 
 const glob: any = require('glob'),
       chokidar = require('chokidar');

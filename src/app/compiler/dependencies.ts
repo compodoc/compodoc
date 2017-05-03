@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import marked from 'marked';
+import marked = require('marked');
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
