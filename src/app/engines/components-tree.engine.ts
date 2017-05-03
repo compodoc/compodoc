@@ -70,7 +70,9 @@ class ComponentsTreeEngine {
                     name: component.name,
                     file: component.file,
                     selector: component.selector,
-                    children: []
+                    children: [],
+                    template: '',
+                    templateUrl: ''
                 }
                 if (typeof component.template !== 'undefined') {
                     _component.template = component.template
