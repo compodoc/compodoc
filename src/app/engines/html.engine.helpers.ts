@@ -4,6 +4,8 @@ import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
 import { Configuration } from '../configuration';
 
+import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
+
 export let HtmlEngineHelpers = (function() {
     let init = function() {
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
@@ -286,7 +288,7 @@ export let HtmlEngineHelpers = (function() {
             }
             return result;
         });
-        Handlebars.registerHelper('jsdoc-component-example', function(jsdocTags, options) {
+        Handlebars.registerHelper('jsdoc-component-example', function(jsdocTags:jsdocTagInterface[], options) {
             let i = 0,
                 len = jsdocTags.length,
                 tags = [];
@@ -314,7 +316,7 @@ export let HtmlEngineHelpers = (function() {
             for(i; i<len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'example') {
-                        var tag = {};
+                        var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].comment) {
                             tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
                         }
@@ -327,7 +329,7 @@ export let HtmlEngineHelpers = (function() {
                 return options.fn(this);
             }
         });
-        Handlebars.registerHelper('jsdoc-example', function(jsdocTags, options) {
+        Handlebars.registerHelper('jsdoc-example', function(jsdocTags:jsdocTagInterface[], options) {
             let i = 0,
                 len = jsdocTags.length,
                 tags = [];
@@ -335,7 +337,7 @@ export let HtmlEngineHelpers = (function() {
             for(i; i<len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'example') {
-                        var tag = {};
+                        var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].comment) {
                             tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
                         }
@@ -348,14 +350,14 @@ export let HtmlEngineHelpers = (function() {
                 return options.fn(this);
             }
         });
-        Handlebars.registerHelper('jsdoc-params', function(jsdocTags, options) {
+        Handlebars.registerHelper('jsdoc-params', function(jsdocTags:jsdocTagInterface[], options) {
             var i = 0,
                 len = jsdocTags.length,
                 tags = [];
             for(i; i<len; i++) {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'param') {
-                        var tag = {};
+                        var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
                             tag.type = jsdocTags[i].typeExpression.type.name.text
                         }

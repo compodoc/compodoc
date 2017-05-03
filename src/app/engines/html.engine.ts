@@ -65,7 +65,7 @@ export class HtmlEngine {
     render(mainData:any, page:any) {
         var o = mainData,
             that = this;
-        Object.assign(o, page);
+        (<any>Object).assign(o, page);
         return new Promise(function(resolve, reject) {
             if(that.cache['page']) {
                 let template:any = Handlebars.compile(that.cache['page']),

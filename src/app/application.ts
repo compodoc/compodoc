@@ -9,7 +9,8 @@ import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
-import { Configuration, IConfiguration } from './configuration';
+import { Configuration } from './configuration';
+import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { $dependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
@@ -47,7 +48,7 @@ export class Application {
     /**
      * Compodoc configuration local reference
      */
-    configuration:IConfiguration;
+    configuration:ConfigurationInterface;
     /**
      * Boolean for watching status
      * @type {boolean}
