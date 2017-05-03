@@ -2,11 +2,16 @@ import * as _ from 'lodash';
 
 import { finderInAngularAPIs } from '../../utils/angular-api';
 
+import { ParsedData } from '../interfaces/parsed-data.interface';
+import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
+
 class DependenciesEngine {
     private static _instance:DependenciesEngine = new DependenciesEngine();
-    rawData: Object;
+
+    rawData: ParsedData;
     modules: Object[];
     rawModules: Object[];
+    rawModulesForOverview: Object[];
     components: Object[];
     directives: Object[];
     injectables: Object[];
@@ -14,7 +19,8 @@ class DependenciesEngine {
     routes: Object[];
     pipes: Object[];
     classes: Object[];
-    miscellaneous: Object[];
+    miscellaneous: MiscellaneousData;
+
     constructor() {
         if(DependenciesEngine._instance){
             throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
@@ -45,7 +51,7 @@ class DependenciesEngine {
         }
         return _m;
     }
-    init(data: Object) {
+    init(data: ParsedData) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
         this.rawModulesForOverview = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
@@ -54,7 +60,6 @@ class DependenciesEngine {
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        //this.routes = _.sortBy(_.uniqWith(this.rawData.routes, _.isEqual), ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
