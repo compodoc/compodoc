@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
-import marked = require('marked');
+
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
@@ -11,6 +11,8 @@ import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
 import { Configuration, IConfiguration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
+
+const marked = require('marked');
 
 interface NodeObject {
     kind: Number;

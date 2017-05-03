@@ -4,10 +4,6 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
-import marked = require('marked');
-
-const glob: any = require('glob'),
-      chokidar = require('chokidar');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -25,6 +21,10 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
+
+const glob: any = require('glob'),
+      marked = require('marked'),
+      chokidar = require('chokidar');
 
 let pkg = require('../package.json'),
     cwd = process.cwd(),

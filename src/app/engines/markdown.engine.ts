@@ -1,11 +1,11 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import marked = require('marked');
-import { Renderer } from 'marked';
+
+const marked = require('marked');
 
 export class MarkdownEngine {
     constructor() {
-        const renderer = new Renderer();
+        const renderer = new marked.Renderer();
         renderer.code = (code, language) => {
             let highlighted = code;
             if (!language) {
