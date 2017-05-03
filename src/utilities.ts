@@ -34,7 +34,7 @@ export function detectIndent(str, count, indent?): string {
             throw new TypeError(`Expected \`input\` to be a \`string\`, got \`${typeof str}\``);
         }
 
-        if (n < 0 || !Number.isFinite(n)) {
+        if (n < 0) {
             throw new TypeError(`Expected \`count\` to be a positive finite number, got \`${n}\``);
         }
 
