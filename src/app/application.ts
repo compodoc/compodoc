@@ -1068,13 +1068,15 @@ export class Application {
             }
         };
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), (err) => {
+        let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
+
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + finalOutput), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (this.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + finalOutput + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {

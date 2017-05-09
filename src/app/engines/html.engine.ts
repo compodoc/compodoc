@@ -100,12 +100,14 @@ export class HtmlEngine {
                        result = template({
                            data: coverageData
                        });
+                   outputFolder = outputFolder.replace(process.cwd(), '');
                    fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
                        if(err) {
-                           logger.error('Error during search index file generation ', err);
+                           logger.error('Error during coverage badge file generation ', err);
                            reject(err);
+                       } else {
+                           resolve();
                        }
-                       resolve();
                    });
                }
            });
