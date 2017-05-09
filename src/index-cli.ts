@@ -225,7 +225,7 @@ export class CliApplication extends Application
             if (program.tsconfig && program.args.length === 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
                     let _file = path.join(
@@ -253,7 +253,7 @@ export class CliApplication extends Application
                 logger.info('Run documentation coverage test');
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
                     let _file = path.join(
