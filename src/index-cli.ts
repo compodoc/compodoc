@@ -11,6 +11,8 @@ import { readConfig } from './utils/utils';
 let pkg = require('../package.json'),
     program = require('commander'),
     glob = require('glob'),
+    os = require('os'),
+    osName = require('os-name'),
     files = [],
     cwd = process.cwd();
 
@@ -145,6 +147,10 @@ export class CliApplication extends Application
         if (!this.isWatching) {
             console.log(fs.readFileSync(path.join(__dirname, '../src/resources/images/banner')).toString());
             console.log(pkg.version);
+            console.log('');
+            console.log(`Node.js version : ${process.version}`);
+            console.log('');
+            console.log(`Operating system : ${osName(os.platform(), os.release())}`);
             console.log('');
         }
 
