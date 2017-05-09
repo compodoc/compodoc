@@ -6,6 +6,7 @@ import { Application } from './app/application';
 
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './logger';
+import { readConfig } from './utils/utils';
 
 let pkg = require('../package.json'),
     program = require('commander'),
@@ -227,13 +228,14 @@ export class CliApplication extends Application
                     );
                     logger.info('Using tsconfig', _file);
 
-                    files = require(_file).files;
+                    let tsConfigFile = readConfig(_file);
+                    files = tsConfigFile.files;
 
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
 
                     if (!files) {
-                        let exclude = require(_file).exclude || [];
+                        let exclude = tsConfigFile.exclude || [];
 
                         files = walk(cwd || '.', exclude);
                     }
@@ -254,13 +256,14 @@ export class CliApplication extends Application
                     );
                     logger.info('Using tsconfig', _file);
 
-                    files = require(_file).files;
+                    let tsConfigFile = readConfig(_file);
+                    files = tsConfigFile.files;
 
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
 
                     if (!files) {
-                        let exclude = require(_file).exclude || [];
+                        let exclude = tsConfigFile.exclude || [];
 
                         files = walk(cwd || '.', exclude);
                     }
