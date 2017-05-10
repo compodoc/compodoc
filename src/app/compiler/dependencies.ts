@@ -186,17 +186,14 @@ export class Dependencies {
 
             let deps: Deps = <Deps>{};
             if (node.decorators) {
-                console.log('node.decorators: ', node.decorators);
                 let visitNode = (visitedNode, index) => {
 
                     let metadata = node.decorators;
                     let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
                     let IO = this.getComponentIO(file, sourceFile);
-                    console.log('after getComponentIO');
 
                     if (this.isModule(metadata)) {
-                        console.log('isModule');
                         deps = {
                             name,
                             file: file,
@@ -216,10 +213,8 @@ export class Dependencies {
                         outputSymbols['modules'].push(deps);
                     }
                     else if (this.isComponent(metadata)) {
-                        console.log('isComponent');
                         if(props.length === 0) return;
                         //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
-                        console.log('before isComponent deps');
                         deps = {
                             name,
                             file: file,
@@ -249,7 +244,6 @@ export class Dependencies {
                             type: 'component',
                             sourceCode: sourceFile.getText()
                         };
-                        console.log('after isComponent deps');
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
@@ -266,7 +260,6 @@ export class Dependencies {
                         outputSymbols['components'].push(deps);
                     }
                     else if (this.isInjectable(metadata)) {
-                        console.log('isInjectable');
                         deps = {
                             name,
                             file: file,
@@ -282,7 +275,6 @@ export class Dependencies {
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
-                        console.log('isPipe');
                         deps = {
                             name,
                             file: file,
@@ -296,7 +288,6 @@ export class Dependencies {
                         outputSymbols['pipes'].push(deps);
                     }
                     else if (this.isDirective(metadata)) {
-                        console.log('isDirective');
                         if(props.length === 0) return;
                         deps = {
                             name,
@@ -324,8 +315,6 @@ export class Dependencies {
                         }
                         outputSymbols['directives'].push(deps);
                     }
-
-                    console.log('after ifs');
 
                     this.debug(deps);
 
@@ -630,8 +619,21 @@ export class Dependencies {
 
     private parseDecorators(decorators, type: string): boolean {
         let result = false;
-        console.log(decorators);
-        // metadata.expression.expression.text === 'Component';
+        if (decorators.length > 1) {
+            _.forEach(decorators, function(decorator) {
+                if (decorator.expression.expression) {
+                    if (decorator.expression.expression.text === type) {
+                        result = true;
+                    }
+                }
+            });
+        } else {
+            if (decorators[0].expression.expression) {
+                if (decorators[0].expression.expression.text === type) {
+                    result = true;
+                }
+            }
+        }
         return result;
     }
 
