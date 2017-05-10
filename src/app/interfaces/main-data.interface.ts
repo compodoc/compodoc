@@ -34,4 +34,5 @@ export interface MainDataInterface {
     mainGraph: string;
     coverageTest: boolean;
     coverageTestThreshold: number;
+    routesLength: number;
 }

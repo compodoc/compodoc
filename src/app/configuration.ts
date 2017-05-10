@@ -45,7 +45,8 @@ export class Configuration implements ConfigurationInterface {
         watch: false,
         mainGraph: '',
         coverageTest: false,
-        coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold
+        coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold,
+        routesLength: 0
     };
 
     constructor() {
@@ -70,6 +71,10 @@ export class Configuration implements ConfigurationInterface {
 
     resetPages() {
         this._pages = [];
+    }
+
+    resetAdditionalPages() {
+        this._mainData.additionalPages = [];
     }
 
     get pages():PageInterface[] {

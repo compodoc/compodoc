@@ -102,6 +102,29 @@ export class Application {
         this.updatedFiles = files;
     }
 
+    /**
+     * Return a boolean indicating presence of one TypeScript file in updatedFiles list
+     * @return {boolean} Result of scan
+     */
+    hasWatchedFilesTSFiles(): boolean {
+        let result = false;
+
+        _.forEach(this.updatedFiles, (file) => {
+            if (path.extname(file) === '.ts') {
+                result = true;
+            }
+        });
+
+        return false;
+    }
+
+    /**
+     * Clear files for watch processing
+     */
+    clearUpdatedFiles() {
+        this.updatedFiles = [];
+    }
+
     processPackageJson() {
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
@@ -167,6 +190,30 @@ export class Application {
         this.prepareJustAFewThings(dependenciesData);
     }
 
+    /**
+     * Rebuild external documentation during watch process
+     */
+    rebuildExternalDocumentation() {
+        logger.info('Rebuild external documentation');
+
+        let actions = [];
+
+        this.configuration.resetAdditionalPages();
+
+        if (this.configuration.mainData.includes !== '') {
+            actions.push(() => { return this.prepareExternalIncludes(); });
+        }
+
+        promiseSequential(actions)
+            .then(res => {
+                this.processPages();
+                this.clearUpdatedFiles();
+            })
+            .catch(errorMessage => {
+                logger.error(errorMessage);
+            });
+    }
+
     getDependenciesData() {
         logger.info('Get dependencies data');
 
@@ -227,11 +274,14 @@ export class Application {
             actions.push(() => { return this.prepareMiscellaneous(diffCrawledData.miscellaneous); });
         }
 
-        actions.push(() => { return this.prepareCoverage(); });
+        if (!this.configuration.mainData.disableCoverage) {
+            actions.push(() => { return this.prepareCoverage(); });
+        }
 
         promiseSequential(actions)
             .then(res => {
                 this.processGraphs();
+                this.clearUpdatedFiles();
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -1173,6 +1223,7 @@ export class Application {
         this.isWatching = true;
 
         logger.info(`Watching sources in ${srcFolder} folder`);
+
         let watcher = chokidar.watch(srcFolder, {
                 awaitWriteFinish: true,
                 ignored: /(spec|\.d)\.ts/
@@ -1192,8 +1243,17 @@ export class Application {
             },
             runnerChange = () => {
                 this.setUpdatedFiles(watchChangedFiles);
-                this.getMicroDependenciesData();
+                if (this.hasWatchedFilesTSFiles()) {
+                    this.getMicroDependenciesData();
+                } else {
+                    this.rebuildExternalDocumentation();
+                }
             };
+
+        if (this.configuration.mainData.includes !== '') {
+            watcher.add(this.configuration.mainData.includes);
+        }
+
         watcher
             .on('ready', () => {
                 watcher
@@ -1210,6 +1270,10 @@ export class Application {
                         // Test extension, if ts
                         // rescan only file
                         if (path.extname(file) === '.ts') {
+                            watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                            waiterChange();
+                        }
+                        if (path.extname(file) === '.md' || path.extname(file) === '.json') {
                             watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
                             waiterChange();
                         }

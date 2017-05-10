@@ -6,4 +6,6 @@ export interface ConfigurationInterface {
     pages:PageInterface[];
     addPage(page: PageInterface): void;
     addAdditionalPage(page: PageInterface): void;
+    resetPages(): void;
+    resetAdditionalPages(): void;
 }
