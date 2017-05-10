@@ -986,6 +986,10 @@ export class Dependencies {
             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
         }
 
+        if (method.decorators) {
+            result.decorators = this.formatDecorators(method.decorators);
+        }
+
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
                 result.modifierKind = method.modifiers[0].kind;
@@ -1037,6 +1041,33 @@ export class Dependencies {
         }
     }
 
+    private formatDecorators(decorators) {
+        let _decorators = [];
+
+        _.forEach(decorators, (decorator) => {
+            if (decorator.expression) {
+                if (decorator.expression.text) {
+                    _decorators.push({
+                        name: decorator.expression.text
+                    });
+                }
+                if (decorator.expression.expression) {
+                    var info = {
+                        name: decorator.expression.expression.text
+                    }
+                    if (decorator.expression.expression.arguments) {
+                        if (decorator.expression.expression.arguments.length > 0) {
+                            info.args = decorator.expression.expression.arguments;
+                        }
+                    }
+                    _decorators.push(info);
+                }
+            }
+        });
+
+        return _decorators;
+    }
+
     private visitProperty(property, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -1049,12 +1080,16 @@ export class Dependencies {
              line: this.getPosition(property, sourceFile).line + 1
          }
 
+         if (property.decorators) {
+             result.decorators = this.formatDecorators(property.decorators);
+         }
+
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
                  result.modifierKind = property.modifiers[0].kind;
              }
          }
-        return result;
+         return result;
     }
 
     private visitMembers(members, sourceFile) {
@@ -1151,32 +1186,24 @@ export class Dependencies {
     }
 
     private isPipeDecorator(decorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-         return decorator.expression.expression.text === 'Pipe';
+        return (decorator.expression.expression) ? decorator.expression.expression.text === 'Pipe' : false;
     }
 
     private isModuleDecorator(decorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-         return decorator.expression.expression.text === 'NgModule';
+        return (decorator.expression.expression) ? decorator.expression.expression.text === 'NgModule' : false;
     }
 
     private isDirectiveDecorator(decorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        var decoratorIdentifierText = decorator.expression.expression.text;
-        return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+        if (decorator.expression.expression) {
+            var decoratorIdentifierText = decorator.expression.expression.text;
+            return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
+        } else {
+            return false;
+        }
     }
 
     private isServiceDecorator(decorator) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-         return decorator.expression.expression.text === 'Injectable';
+        return (decorator.expression.expression) ? decorator.expression.expression.text === 'Injectable' : false;
     }
 
     private visitClassDeclaration(fileName, classDeclaration, sourceFile?) {
@@ -1218,6 +1245,8 @@ export class Dependencies {
             jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
         }
 
+        //console.log(classDeclaration.decorators);
+
         if (classDeclaration.decorators) {
             for (var i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
@@ -1237,26 +1266,28 @@ export class Dependencies {
                         implements: implementsElements
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                  members = this.visitMembers(classDeclaration.members, sourceFile);
-                  return [{
-                    fileName,
-                    className,
-                    description,
-                    methods: members.methods,
-                    indexSignatures: members.indexSignatures,
-                    properties: members.properties,
-                    kind: members.kind,
-                    constructor: members.constructor,
-                    extends: extendsElement,
-                    implements: implementsElements
-                  }];
-              } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
-                  return [{
-                    fileName,
-                    className,
-                    description,
-                    jsdoctags: jsdoctags
-                  }];
+                    members = this.visitMembers(classDeclaration.members, sourceFile);
+                    return [{
+                        fileName,
+                        className,
+                        description,
+                        methods: members.methods,
+                        indexSignatures: members.indexSignatures,
+                        properties: members.properties,
+                        kind: members.kind,
+                        constructor: members.constructor,
+                        extends: extendsElement,
+                        implements: implementsElements
+                    }];
+                } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
+                    return [{
+                        fileName,
+                        className,
+                        description,
+                        jsdoctags: jsdoctags
+                    }];
+                } else {
+                    //console.log('custom decorator');
                 }
             }
         } else if (description) {
