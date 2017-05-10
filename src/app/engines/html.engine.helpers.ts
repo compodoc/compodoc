@@ -214,6 +214,8 @@ export let HtmlEngineHelpers = (function() {
                 return replacer(description, matchedTag);
             }
 
+            description = description.replace(/\n/g, '<br/>');
+
             do {
                 matches = tagRegExp.exec(description);
                 if (matches) {

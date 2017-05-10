@@ -38,7 +38,7 @@ export class MarkdownEngine {
 
         marked.setOptions({
             renderer: renderer,
-            breaks: true
+            breaks: false
         });
     }
     get(filepath: string) {
