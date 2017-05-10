@@ -38,7 +38,7 @@ describe('CLI simple flags', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('"tsconfig.json" file was not found in the current directory');
+            expect(command.stdout.toString()).to.contain('file was not found in the current directory');
         });
 
         it(`should not create a "documentation" directory`, () => {
