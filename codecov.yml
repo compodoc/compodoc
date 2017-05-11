@@ -1,3 +1,6 @@
 codecov:
   ci:
     - !appveyor
+coverage:
+  ignore:
+    - 'dist/index-cli.js'
