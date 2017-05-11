@@ -1,3 +1,21 @@
+<a name="1.0.0-beta.9"></a>
+# [1.0.0-beta.9](https://github.com/compodoc/compodoc/compare/1.0.0-beta.8...1.0.0-beta.9) (2017-05-11)
+
+### Bug Fixes
+
+* **markdown** Fix escaping of html entities in code blocks ([e816cbe](https://github.com/compodoc/compodoc/commit/e816cbe)), thanks Thomas Mair
+* **config** Allow for comments in tsconfig.json ([2796de5](https://github.com/compodoc/compodoc/commit/2796de5)), closes [#177](https://github.com/compodoc/compodoc/issues/177)
+* **chore** Problem with resources file when providing absolute output path ([b52a40e7](https://github.com/compodoc/compodoc/commit/b52a40e7)), closes [#176](https://github.com/compodoc/compodoc/issues/176)
+* **watch** Watch for additional doc too ([52801f4b](https://github.com/compodoc/compodoc/commit/52801f4b)), closes [#163](https://github.com/compodoc/compodoc/issues/163)
+* **dependencies** decorators support ([65bbabc7](https://github.com/compodoc/compodoc/commit/65bbabc7)), closes [#171](https://github.com/compodoc/compodoc/issues/171)
+* **markdown** Set marked break option to false ([0e6ac342](https://github.com/compodoc/compodoc/commit/0e6ac342)), closes [#181](https://github.com/compodoc/compodoc/issues/181)
+* **dependencies** UTF8 Bom support ([a3d5bec7](https://github.com/compodoc/compodoc/commit/a3d5bec7)), closes [#170](https://github.com/compodoc/compodoc/issues/170)
+
+### Features
+
+* **app** exclude with glob patterns ([6310735](https://github.com/compodoc/compodoc/commit/6310735)), closes [#174](https://github.com/compodoc/compodoc/issues/174)
+* **cli** display Node.js and OS infos after banner ([c0f60561](https://github.com/compodoc/compodoc/commit/c0f60561))
+
 <a name="1.0.0-beta.8"></a>
 # [1.0.0-beta.8](https://github.com/compodoc/compodoc/compare/1.0.0-beta.7...1.0.0-beta.8) (2017-04-26)
 

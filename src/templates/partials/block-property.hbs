@@ -27,7 +27,14 @@
                 {{#if defaultValue}}
                     <tr>
                         <td class="col-md-4">
-                            <i>Default value: </i><code>{{defaultValue}}</code>
+                            <i>Default value : </i><code>{{defaultValue}}</code>
+                        </td>
+                    </tr>
+                {{/if}}
+                {{#if decorators}}
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Decorators : </i><code>{{#each decorators}}{{name}}{{/each}}</code>
                         </td>
                     </tr>
                 {{/if}}

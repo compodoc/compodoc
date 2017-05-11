@@ -11,9 +11,9 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'batcave', maintainer: 'hsbalar', tsconfig_path: './'
     }, {
-        name: 'angular2-image-gallery', maintainer: 'BenjaminBrandmeier', tsconfig_path: './src/'
+        name: 'angular2-image-gallery', maintainer: 'BenjaminBrandmeier', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
-        name: 'pinterest', maintainer: 'aviabird', tsconfig_path: './src/'
+        name: 'pinterest', maintainer: 'aviabird', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
         name: 'Movies-Finder', maintainer: 'Lazhari', tsconfig_path: './src/'
     }, {
@@ -126,7 +126,9 @@ let i = 0,
     },
     compodoc = (repo) => {
         return new Promise(function(resolve, reject) {
-            exec('compodoc -p ' + repo.tsconfig_path + 'tsconfig.json', {
+            var tsconfig = '';
+            if (repo.tsconfig_file) { tsconfig = repo.tsconfig_file; }
+            exec('compodoc -p ' + repo.tsconfig_path + tsconfig, {
                 cwd: TEST_FOLDER + '/' + repo.name
             }, (error, stdout, stderr) => {
                 if (error) {

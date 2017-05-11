@@ -1,74 +1,16 @@
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
-interface Page {
-    name: string;
-    filename?: string;
-    context: string;
-    path?: string;
-    module?: any;
-    pipe?: any;
-    class?: any;
-    interface?: any;
-    directive?: any;
-    injectable?: any;
-    additionalPage?: any;
-    files?: any;
-    data?: any;
-    depth?: number;
-    pageType?: string;
-    component?: any;
-}
+import { PageInterface } from './interfaces/page.interface';
 
-interface IMainData {
-    output: string;
-    theme: string;
-    extTheme: string;
-    serve: boolean;
-    port: number;
-    open: boolean;
-    assetsFolder: string;
-    documentationMainName: string;
-    documentationMainDescription: string;
-    base: string;
-    hideGenerator: boolean;
-    modules: any;
-    readme: string;
-    additionalPages: any;
-    pipes: any;
-    classes: any;
-    interfaces: any;
-    components: any;
-    directives: any;
-    injectables: any;
-    miscellaneous: any;
-    routes: any;
-    tsconfig: string;
-    toggleMenuItems: string[];
-    includes: string;
-    includesName: string;
-    includesFolder: string;
-    disableSourceCode: boolean;
-    disableGraph: boolean;
-    disableCoverage: boolean;
-    disablePrivateOrInternalSupport: boolean;
-    watch: boolean;
-    mainGraph: string;
-    coverageTest: boolean;
-    coverageTestThreshold: number;
-}
+import { MainDataInterface } from './interfaces/main-data.interface';
 
-export interface IConfiguration {
-    mainData: IMainData;
-    pages:Page[];
-    addPage(page: Page): void;
-    addAdditionalPage(page: Page): void;
-}
+import { ConfigurationInterface } from './interfaces/configuration.interface';
 
-export class Configuration implements IConfiguration {
+export class Configuration implements ConfigurationInterface {
     private static _instance:Configuration = new Configuration();
 
-    private _pages:Page[] = [];
-    private _mainData: IMainData = {
+    private _pages:PageInterface[] = [];
+    private _mainData: MainDataInterface = {
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
         extTheme: '',
@@ -89,8 +31,8 @@ export class Configuration implements IConfiguration {
         components: [],
         directives: [],
         injectables: [],
-        routes: [],
         miscellaneous: [],
+        routes: [],
         tsconfig: '',
         toggleMenuItems: [],
         includes: '',
@@ -101,8 +43,10 @@ export class Configuration implements IConfiguration {
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
         disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport,
         watch: false,
+        mainGraph: '',
         coverageTest: false,
-        coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold
+        coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold,
+        routesLength: 0
     };
 
     constructor() {
@@ -117,11 +61,11 @@ export class Configuration implements IConfiguration {
         return Configuration._instance;
     }
 
-    addPage(page: Page) {
+    addPage(page: PageInterface) {
         this._pages.push(page);
     }
 
-    addAdditionalPage(page: Page) {
+    addAdditionalPage(page: PageInterface) {
         this._mainData.additionalPages.push(page);
     }
 
@@ -129,17 +73,21 @@ export class Configuration implements IConfiguration {
         this._pages = [];
     }
 
-    get pages():Page[] {
+    resetAdditionalPages() {
+        this._mainData.additionalPages = [];
+    }
+
+    get pages():PageInterface[] {
         return this._pages;
     }
-    set pages(pages:Page[]) {
+    set pages(pages:PageInterface[]) {
         this._pages = [];
     }
 
-    get mainData():IMainData {
+    get mainData():MainDataInterface {
         return this._mainData;
     }
-    set mainData(data:IMainData) {
-        Object.assign(this._mainData, data);
+    set mainData(data:MainDataInterface) {
+        (<any>Object).assign(this._mainData, data);
     }
 };

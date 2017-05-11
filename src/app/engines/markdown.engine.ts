@@ -1,15 +1,18 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import marked, { Renderer } from 'marked';
+
+const marked = require('marked');
 
 export class MarkdownEngine {
     constructor() {
-        const renderer = new Renderer();
+        const renderer = new marked.Renderer();
         renderer.code = (code, language) => {
             let highlighted = code;
             if (!language) {
                 language = 'none';
             }
+
+            highlighted = this.escape(code);
             return `<pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre>`;
         };
 
@@ -24,33 +27,33 @@ export class MarkdownEngine {
                 + '</table>\n';
         }
 
-        renderer.image = function(href, title, text) {
-          var out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
-          if (title) {
-            out += ' title="' + title + '"';
-          }
-          out += this.options.xhtml ? '/>' : '>';
-          return out;
+        renderer.image = function (href, title, text) {
+            var out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
+            if (title) {
+                out += ' title="' + title + '"';
+            }
+            out += this.options.xhtml ? '/>' : '>';
+            return out;
         };
 
         marked.setOptions({
             renderer: renderer,
-            breaks: true
+            breaks: false
         });
     }
-    get(filepath:string) {
-        return new Promise(function(resolve, reject) {
-           fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
-               if (err) {
-                   reject('Error during ' + filepath + ' read');
-               } else {
-                   resolve(marked(data));
-               }
-           });
+    get(filepath: string) {
+        return new Promise(function (resolve, reject) {
+            fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
+                if (err) {
+                    reject('Error during ' + filepath + ' read');
+                } else {
+                    resolve(marked(data));
+                }
+            });
         });
     }
     getReadmeFile() {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during README.md file reading');
@@ -77,5 +80,15 @@ export class MarkdownEngine {
             finalPath = readmeAlternativeFile;
         }
         return finalPath;
+    }
+
+    private escape(html) {
+        return html
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/@/g, '&#40;');
     }
 };

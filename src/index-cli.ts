@@ -6,9 +6,13 @@ import { Application } from './app/application';
 
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './logger';
+import { readConfig, handlePath } from './utils/utils';
 
 let pkg = require('../package.json'),
     program = require('commander'),
+    glob = require('glob'),
+    os = require('os'),
+    osName = require('os-name'),
     files = [],
     cwd = process.cwd();
 
@@ -144,6 +148,10 @@ export class CliApplication extends Application
             console.log(fs.readFileSync(path.join(__dirname, '../src/resources/images/banner')).toString());
             console.log(pkg.version);
             console.log('');
+            console.log(`Node.js version : ${process.version}`);
+            console.log('');
+            console.log(`Operating system : ${osName(os.platform(), os.release())}`);
+            console.log('');
         }
 
         if (program.serve && !program.tsconfig && program.output) {
@@ -175,7 +183,26 @@ export class CliApplication extends Application
                     let list = fs.readdirSync(dir);
                     list.forEach((file) => {
                         var excludeTest = _.find(exclude, function(o) {
-                            return path.basename(o) === file;
+                            let globFiles = glob.sync(o, {
+                                cwd: cwd
+                            });
+                            if (globFiles.length > 0) {
+                                let fileNameForGlobSearch = path.join(dir, file).replace(cwd + path.sep, ''),
+                                    resultGlobSearch = globFiles.findIndex((element) => {
+                                        return element === fileNameForGlobSearch;
+                                    }),
+                                    test = resultGlobSearch !== -1;
+                                if (test) {
+                                    logger.warn('Excluding', path.join(dir, file));
+                                }
+                                return test;
+                            } else {
+                                let test = path.basename(o) === file;
+                                if (test) {
+                                    logger.warn('Excluding', path.join(dir, file));
+                                }
+                                return test;
+                            }
                         });
                         if (typeof excludeTest === 'undefined' && dir.indexOf('node_modules') < 0) {
                             file = path.join(dir, file);
@@ -184,7 +211,7 @@ export class CliApplication extends Application
                                 results = results.concat(walk(file, exclude));
                             }
                             else if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.debug('Ignoring', file);
+                                logger.warn('Ignoring', file);
                             }
                             else if (path.extname(file) === '.ts') {
                                 logger.debug('Including', file);
@@ -198,23 +225,25 @@ export class CliApplication extends Application
             if (program.tsconfig && program.args.length === 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
                     let _file = path.join(
-                      path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
-                      path.basename(this.configuration.mainData.tsconfig)
+                        path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                        path.basename(this.configuration.mainData.tsconfig)
                     );
-                    logger.info('Using tsconfig', _file);
-
-                    files = require(_file).files;
-
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    logger.info('Using tsconfig', _file);
+
+                    let tsConfigFile = readConfig(_file);
+                    files = tsConfigFile.files;
+                    if (files) {
+                        files = handlePath(files, cwd);
+                    }
 
                     if (!files) {
-                        let exclude = require(_file).exclude || [];
-
+                        let exclude = tsConfigFile.exclude || [];
                         files = walk(cwd || '.', exclude);
                     }
 
@@ -225,22 +254,25 @@ export class CliApplication extends Application
                 logger.info('Run documentation coverage test');
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
-                    logger.error('"tsconfig.json" file was not found in the current directory');
+                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
                     let _file = path.join(
                       path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
                       path.basename(this.configuration.mainData.tsconfig)
                     );
-                    logger.info('Using tsconfig', _file);
-
-                    files = require(_file).files;
-
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    logger.info('Using tsconfig', _file);
+
+                    let tsConfigFile = readConfig(_file);
+                    files = tsConfigFile.files;
+                    if (files) {
+                        files = handlePath(files, cwd);
+                    }
 
                     if (!files) {
-                        let exclude = require(_file).exclude || [];
+                        let exclude = tsConfigFile.exclude || [];
 
                         files = walk(cwd || '.', exclude);
                     }

@@ -65,7 +65,7 @@ export class HtmlEngine {
     render(mainData:any, page:any) {
         var o = mainData,
             that = this;
-        Object.assign(o, page);
+        (<any>Object).assign(o, page);
         return new Promise(function(resolve, reject) {
             if(that.cache['page']) {
                 let template:any = Handlebars.compile(that.cache['page']),
@@ -100,12 +100,14 @@ export class HtmlEngine {
                        result = template({
                            data: coverageData
                        });
+                   outputFolder = outputFolder.replace(process.cwd(), '');
                    fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
                        if(err) {
-                           logger.error('Error during search index file generation ', err);
+                           logger.error('Error during coverage badge file generation ', err);
                            reject(err);
+                       } else {
+                           resolve();
                        }
-                       resolve();
                    });
                }
            });

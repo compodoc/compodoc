@@ -54,7 +54,7 @@ describe('CLI jsdoc tags', () => {
 
         it('it should have infos about FooService open function example', () => {
             expect(fooServiceFile).to.contain('<b>Example :</b>');
-            expect(fooServiceFile).to.contain('<li>FooService.open');
+            expect(fooServiceFile).to.contain('FooService.open(');
         });
     });
 

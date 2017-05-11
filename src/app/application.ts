@@ -4,16 +4,13 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
-import marked from 'marked';
-
-const glob: any = require('glob'),
-      chokidar = require('chokidar');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
 import { MarkdownEngine } from './engines/markdown.engine';
 import { FileEngine } from './engines/file.engine';
-import { Configuration, IConfiguration } from './configuration';
+import { Configuration } from './configuration';
+import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { $dependenciesEngine } from './engines/dependencies.engine';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
@@ -25,6 +22,10 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
+
+const glob: any = require('glob'),
+      marked = require('marked'),
+      chokidar = require('chokidar');
 
 let pkg = require('../package.json'),
     cwd = process.cwd(),
@@ -47,7 +48,7 @@ export class Application {
     /**
      * Compodoc configuration local reference
      */
-    configuration:IConfiguration;
+    configuration:ConfigurationInterface;
     /**
      * Boolean for watching status
      * @type {boolean}
@@ -99,6 +100,29 @@ export class Application {
      */
     setUpdatedFiles(files:Array<string>) {
         this.updatedFiles = files;
+    }
+
+    /**
+     * Return a boolean indicating presence of one TypeScript file in updatedFiles list
+     * @return {boolean} Result of scan
+     */
+    hasWatchedFilesTSFiles(): boolean {
+        let result = false;
+
+        _.forEach(this.updatedFiles, (file) => {
+            if (path.extname(file) === '.ts') {
+                result = true;
+            }
+        });
+
+        return false;
+    }
+
+    /**
+     * Clear files for watch processing
+     */
+    clearUpdatedFiles() {
+        this.updatedFiles = [];
     }
 
     processPackageJson() {
@@ -166,6 +190,30 @@ export class Application {
         this.prepareJustAFewThings(dependenciesData);
     }
 
+    /**
+     * Rebuild external documentation during watch process
+     */
+    rebuildExternalDocumentation() {
+        logger.info('Rebuild external documentation');
+
+        let actions = [];
+
+        this.configuration.resetAdditionalPages();
+
+        if (this.configuration.mainData.includes !== '') {
+            actions.push(() => { return this.prepareExternalIncludes(); });
+        }
+
+        promiseSequential(actions)
+            .then(res => {
+                this.processPages();
+                this.clearUpdatedFiles();
+            })
+            .catch(errorMessage => {
+                logger.error(errorMessage);
+            });
+    }
+
     getDependenciesData() {
         logger.info('Get dependencies data');
 
@@ -226,11 +274,14 @@ export class Application {
             actions.push(() => { return this.prepareMiscellaneous(diffCrawledData.miscellaneous); });
         }
 
-        actions.push(() => { return this.prepareCoverage(); });
+        if (!this.configuration.mainData.disableCoverage) {
+            actions.push(() => { return this.prepareCoverage(); });
+        }
 
         promiseSequential(actions)
             .then(res => {
                 this.processGraphs();
+                this.clearUpdatedFiles();
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -1067,13 +1118,15 @@ export class Application {
             }
         };
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output), (err) => {
+        let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
+
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + finalOutput), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (this.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + finalOutput + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
@@ -1170,6 +1223,7 @@ export class Application {
         this.isWatching = true;
 
         logger.info(`Watching sources in ${srcFolder} folder`);
+
         let watcher = chokidar.watch(srcFolder, {
                 awaitWriteFinish: true,
                 ignored: /(spec|\.d)\.ts/
@@ -1189,8 +1243,17 @@ export class Application {
             },
             runnerChange = () => {
                 this.setUpdatedFiles(watchChangedFiles);
-                this.getMicroDependenciesData();
+                if (this.hasWatchedFilesTSFiles()) {
+                    this.getMicroDependenciesData();
+                } else {
+                    this.rebuildExternalDocumentation();
+                }
             };
+
+        if (this.configuration.mainData.includes !== '') {
+            watcher.add(this.configuration.mainData.includes);
+        }
+
         watcher
             .on('ready', () => {
                 watcher
@@ -1207,6 +1270,10 @@ export class Application {
                         // Test extension, if ts
                         // rescan only file
                         if (path.extname(file) === '.ts') {
+                            watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                            waiterChange();
+                        }
+                        if (path.extname(file) === '.md' || path.extname(file) === '.json') {
                             watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
                             waiterChange();
                         }
