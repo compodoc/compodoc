@@ -261,13 +261,15 @@ export class CliApplication extends Application
                       path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
                       path.basename(this.configuration.mainData.tsconfig)
                     );
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig', _file);
 
                     let tsConfigFile = readConfig(_file);
                     files = tsConfigFile.files;
-
-                    // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    if (files) {
+                        files = handlePath(files, cwd);
+                    }
 
                     if (!files) {
                         let exclude = tsConfigFile.exclude || [];
