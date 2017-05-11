@@ -6,7 +6,7 @@ import { Application } from './app/application';
 
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './logger';
-import { readConfig } from './utils/utils';
+import { readConfig, handlePath } from './utils/utils';
 
 let pkg = require('../package.json'),
     program = require('commander'),
@@ -229,20 +229,21 @@ export class CliApplication extends Application
                     process.exit(1);
                 } else {
                     let _file = path.join(
-                      path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
-                      path.basename(this.configuration.mainData.tsconfig)
+                        path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                        path.basename(this.configuration.mainData.tsconfig)
                     );
+                    // use the current directory of tsconfig.json as a working directory
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig', _file);
 
                     let tsConfigFile = readConfig(_file);
                     files = tsConfigFile.files;
-
-                    // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    if (files) {
+                        files = handlePath(files, cwd);
+                    }
 
                     if (!files) {
                         let exclude = tsConfigFile.exclude || [];
-
                         files = walk(cwd || '.', exclude);
                     }
 

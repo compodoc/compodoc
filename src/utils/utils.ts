@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { readConfigFile, formatDiagnostics, FormatDiagnosticsHost, sys } from 'typescript';
 
 const getCurrentDirectory = sys.getCurrentDirectory;
@@ -26,3 +27,24 @@ export function readConfig(configFile: string): any {
     }
     return result.config;
 };
+
+export function stripBom(source: string): string {
+    if (source.charCodeAt(0) === 0xFEFF) {
+		return source.slice(1);
+	}
+	return source;
+}
+
+export function handlePath(files: string[], cwd: string): string[] {
+    let _files = files,
+        i = 0,
+        len = files.length;
+
+    for(i; i<len; i++) {
+        if (files[i].indexOf(cwd) === -1) {
+            files[i] = path.resolve(cwd + path.sep + files[i]);
+        }
+    }
+
+    return _files;
+}

@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
+import { readFileSync } from 'fs-extra';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -9,6 +10,7 @@ import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
+import { stripBom } from '../../utils/utils';
 import { Configuration, IConfiguration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
@@ -128,7 +130,7 @@ export class Dependencies {
                 types: []
             }
         };
-        let sourceFiles = this.program.getSourceFiles() || [];
+        let sourceFiles = this.parseFiles(this.files) || [];
 
         sourceFiles.map((file: ts.SourceFile) => {
 
@@ -170,6 +172,19 @@ export class Dependencies {
         deps.routesTree = RouterParser.constructRoutesTree();
 
         return deps;
+    }
+
+    private parseFiles(fileNames: string[]) {
+
+        let _parsedFiles = [];
+
+        fileNames.forEach(fileName => {
+            let sourceCode = stripBom(readFileSync(fileName).toString()),
+                sourceFile = ts.createSourceFile(fileName, sourceCode, ts.ScriptTarget.ES5, true);
+            _parsedFiles.push(sourceFile);
+        });
+
+        return _parsedFiles;
     }
 
 
@@ -1244,8 +1259,6 @@ export class Dependencies {
         if (symbol.valueDeclaration) {
             jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
         }
-
-        //console.log(classDeclaration.decorators);
 
         if (classDeclaration.decorators) {
             for (var i = 0; i < classDeclaration.decorators.length; i++) {
