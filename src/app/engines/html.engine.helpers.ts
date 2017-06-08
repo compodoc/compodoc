@@ -101,36 +101,35 @@ export let HtmlEngineHelpers = (function() {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('modifKind', function(kind) {
+            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
             let _kindText = '';
             switch(kind) {
-                case 111:
+                case 112:
                     _kindText = 'Private';
                     break;
-                case 112:
+                case 113:
                     _kindText = 'Protected';
                     break;
-                case 113:
+                case 114:
                     _kindText = 'Public';
                     break;
-                case 114:
+                case 115:
                     _kindText = 'Static';
                     break;
             }
             return new Handlebars.SafeString(_kindText);
         });
         Handlebars.registerHelper('modifIcon', function(kind) {
+            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
             let _kindText = '';
             switch(kind) {
-                case 111:
-                    _kindText = 'lock';
-                    break;
                 case 112:
                     _kindText = 'lock';
                     break;
                 case 113:
                     _kindText = 'circle';
                     break;
-                case 114:
+                case 115:
                     _kindText = 'square';
                 case 83:
                     _kindText = 'export';
