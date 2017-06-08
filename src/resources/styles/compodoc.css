@@ -345,6 +345,9 @@ h4, h5 {
 
 .menu-toggler {
     cursor: pointer;
+}
+.menu-toggler .fa-angle-down, .menu-toggler .fa-angle-up {
+    cursor: pointer;
     padding: 5px 10px;
     font-size: 16px;
     position: absolute;

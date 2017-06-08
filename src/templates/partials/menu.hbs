@@ -40,16 +40,15 @@
 
         {{#if additionalPages}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#additional-pages"
+                {{else}}
+                    data-target="#xs-additional-pages"
+                {{/compare}}>
                 <span class="fa fa-book"></span>
                 <span>{{includesName}}</span>
-                <span class="menu-toggler fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#additional-pages"
-                    {{else}}
-                        data-target="#xs-additional-pages"
-                    {{/compare}}
-                ></span>
+                <span class="fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -69,15 +68,17 @@
         {{#if modules}}
         <li class="chapter">
             <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
-                <span class="fa fa-archive"></span>
-                <span>Modules</span>
-                <span class="menu-toggler fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
+                <div class="menu-toggler linked" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#modules-links"
                     {{else}}
                         data-target="#xs-modules-links"
                     {{/compare}}
-                ></span>
+                >
+                    <span class="fa fa-archive"></span>
+                    <span class="link-name">Modules</span>
+                    <span class="fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                </div>
             </a>
             <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -96,15 +97,15 @@
 
         {{#if components}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#components-links"
+                {{else}}
+                    data-target="#xs-components-links"
+                {{/compare}}>
                 <span class="fa fa-cogs"></span>
                 <span>Components</span>
-                <span class="menu-toggler fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#components-links"
-                    {{else}}
-                        data-target="#xs-components-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -123,15 +124,15 @@
 
         {{#if directives}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#directives-links"
+                {{else}}
+                    data-target="#xs-directives-links"
+                {{/compare}}>
                 <span class="fa fa-code"></span>
                 <span>Directives</span>
-                <span class="menu-toggler fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#directives-links"
-                    {{else}}
-                        data-target="#xs-directives-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -150,15 +151,15 @@
 
         {{#if classes}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#classes-links"
+                {{else}}
+                    data-target="#xs-classes-links"
+                {{/compare}}>
                 <span class="fa fa-file-code-o"></span>
                 <span>Classes</span>
-                <span class="menu-toggler fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#classes-links"
-                    {{else}}
-                        data-target="#xs-classes-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -177,15 +178,15 @@
 
         {{#if injectables}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#injectables-links"
+                {{else}}
+                    data-target="#xs-injectables-links"
+                {{/compare}}>
                 <span class="fa fa-long-arrow-down"></span>
                 <span>Injectables</span>
-                <span class="menu-toggler fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#injectables-links"
-                    {{else}}
-                        data-target="#xs-injectables-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -204,15 +205,15 @@
 
         {{#if interfaces}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#interfaces-links"
+                {{else}}
+                    data-target="#xs-interfaces-links"
+                {{/compare}}>
                 <span class="fa fa-info"></span>
                 <span>Interfaces</span>
-                <span class="menu-toggler fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#interfaces-links"
-                    {{else}}
-                        data-target="#xs-interfaces-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
@@ -231,15 +232,15 @@
 
         {{#if pipes}}
         <li class="chapter">
-            <div class="simple">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#pipes-links"
+                {{else}}
+                    data-target="#xs-pipes-links"
+                {{/compare}}>
                 <span class="fa fa-plus"></span>
                 <span>Pipes</span>
-                <span class="menu-toggler fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#pipes-links"
-                    {{else}}
-                        data-target="#xs-pipes-links"
-                    {{/compare}}></span>
+                <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
             <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}"
                 {{#compare menu "===" 'normal' }}
