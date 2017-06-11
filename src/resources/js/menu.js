@@ -86,8 +86,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (parentUl) {
                     parentChapterMenu = parentUl.parentNode;
                     if (parentChapterMenu) {
-                        var toggler = parentChapterMenu.querySelector('.menu-toggler');
-                        if (toggler) {
+                        var toggler = parentChapterMenu.querySelector('.menu-toggler'),
+                            elementIconChild = toggler.getElementsByClassName(faAngleUpClass)[0];
+                        if (toggler && !elementIconChild) {
                             toggler.click();
                         }
                     }
