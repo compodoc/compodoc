@@ -289,10 +289,18 @@ export class CliApplication extends Application
                 } else {
                     logger.info('Using provided source folder');
 
-                    files = walk(path.resolve(sourceFolder), []);
+                    if (!fs.existsSync(program.tsconfig)) {
+                        logger.error(`"${program.tsconfig}" file was not found in the current directory`);
+                        process.exit(1);
+                    } else {
+                        let tsConfigFile = readConfig(program.tsconfig);
+                        let exclude = tsConfigFile.exclude || [];
 
-                    super.setFiles(files);
-                    super.generate();
+                        files = walk(path.resolve(sourceFolder), exclude);
+
+                        super.setFiles(files);
+                        super.generate();
+                    }
                 }
             } else {
                 logger.error('tsconfig.json file was not found, please use -p flag');
