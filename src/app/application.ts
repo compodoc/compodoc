@@ -126,6 +126,7 @@ export class Application {
     }
 
     processPackageJson() {
+        logger.info('');
         logger.info('Searching package.json file');
         $fileengine.get('package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
@@ -145,6 +146,7 @@ export class Application {
     }
 
     processMarkdown() {
+        logger.info('');
         logger.info('Searching README.md file');
         $markdownengine.getReadmeFile().then((readmeData: string) => {
             this.configuration.addPage({
@@ -176,6 +178,7 @@ export class Application {
      * Get dependency data for small group of updated files during watch process
      */
     getMicroDependenciesData() {
+        logger.info('');
         logger.info('Get diff dependencies data');
         let crawler = new Dependencies(
           this.updatedFiles, {
@@ -194,6 +197,7 @@ export class Application {
      * Rebuild external documentation during watch process
      */
     rebuildExternalDocumentation() {
+        logger.info('');
         logger.info('Rebuild external documentation');
 
         let actions = [];
@@ -215,6 +219,7 @@ export class Application {
     }
 
     getDependenciesData() {
+        logger.info('');
         logger.info('Get dependencies data');
 
         let crawler = new Dependencies(
@@ -344,6 +349,7 @@ export class Application {
     }
 
     prepareExternalIncludes() {
+        logger.info('');
         logger.info('Adding external markdown files');
         //Scan include folder for files detailed in summary.json
         //For each file, add to this.configuration.mainData.additionalPages
@@ -414,6 +420,7 @@ export class Application {
     }
 
     prepareModules(someModules?) {
+        logger.info('');
         logger.info('Prepare modules');
         let i = 0,
             _modules = (someModules) ? someModules : $dependenciesEngine.getModules();
@@ -471,6 +478,7 @@ export class Application {
     }
 
     preparePipes = (somePipes?) => {
+        logger.info('');
         logger.info('Prepare pipes');
         this.configuration.mainData.pipes = (somePipes) ? somePipes : $dependenciesEngine.getPipes();
 
@@ -493,6 +501,7 @@ export class Application {
     }
 
     prepareClasses = (someClasses?) => {
+        logger.info('');
         logger.info('Prepare classes');
         this.configuration.mainData.classes = (someClasses) ? someClasses : $dependenciesEngine.getClasses();
 
@@ -515,6 +524,7 @@ export class Application {
     }
 
     prepareInterfaces(someInterfaces?) {
+        logger.info('');
         logger.info('Prepare interfaces');
         this.configuration.mainData.interfaces = (someInterfaces) ? someInterfaces : $dependenciesEngine.getInterfaces();
 
@@ -536,6 +546,7 @@ export class Application {
     }
 
     prepareMiscellaneous(someMisc?) {
+        logger.info('');
         logger.info('Prepare miscellaneous');
         this.configuration.mainData.miscellaneous = (someMisc) ? someMisc : $dependenciesEngine.getMiscellaneous();
 
@@ -551,6 +562,7 @@ export class Application {
     }
 
     prepareComponents(someComponents?) {
+        logger.info('');
         logger.info('Prepare components');
         this.configuration.mainData.components = (someComponents) ? someComponents : $dependenciesEngine.getComponents();
 
@@ -636,6 +648,7 @@ export class Application {
     }
 
     prepareDirectives = (someDirectives?) => {
+        logger.info('');
         logger.info('Prepare directives');
 
         this.configuration.mainData.directives = (someDirectives) ? someDirectives : $dependenciesEngine.getDirectives();
@@ -659,6 +672,7 @@ export class Application {
     }
 
     prepareInjectables(someInjectables?) {
+        logger.info('');
         logger.info('Prepare injectables');
 
         this.configuration.mainData.injectables = (someInjectables) ? someInjectables : $dependenciesEngine.getInjectables();
@@ -682,6 +696,7 @@ export class Application {
     }
 
     prepareRoutes() {
+        logger.info('');
         logger.info('Process routes');
         this.configuration.mainData.routes = $dependenciesEngine.getRoutes();
 
@@ -706,6 +721,7 @@ export class Application {
     }
 
     prepareCoverage() {
+        logger.info('');
         logger.info('Process documentation coverage report');
 
         return new Promise((resolve, reject) => {
@@ -995,6 +1011,7 @@ export class Application {
     }
 
     processPages() {
+        logger.info('');
         logger.info('Process pages');
         let pages = this.configuration.pages,
             i = 0,
@@ -1046,6 +1063,7 @@ export class Application {
     }
 
     processAdditionalPages() {
+        logger.info('');
         logger.info('Process additional pages');
         let pages = this.configuration.mainData.additionalPages,
             i = 0,
@@ -1093,6 +1111,7 @@ export class Application {
     }
 
     processAssetsFolder() {
+        logger.info('');
         logger.info('Copy assets folder');
 
         if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
@@ -1107,10 +1126,12 @@ export class Application {
     }
 
     processResources() {
+        logger.info('');
         logger.info('Copy main resources');
 
         const onComplete = () => {
             let finalTime = (new Date() - startTime) / 1000;
+            logger.info('');
             logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
             if (this.configuration.mainData.serve) {
                 logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
@@ -1146,12 +1167,15 @@ export class Application {
 
         if (this.configuration.mainData.disableGraph) {
 
+            logger.info('');
             logger.info('Graph generation disabled');
             this.processPages();
 
         } else {
 
+            logger.info('');
             logger.info('Process main graph');
+            logger.info('');
             let modules = this.configuration.mainData.modules,
               i = 0,
               len = modules.length,
@@ -1212,6 +1236,7 @@ export class Application {
             this.runWatch();
         } else if (this.configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
+            logger.info('');
             logger.info(`Already watching sources in ${srcFolder} folder`);
         }
     }
@@ -1222,6 +1247,7 @@ export class Application {
 
         this.isWatching = true;
 
+        logger.info('');
         logger.info(`Watching sources in ${srcFolder} folder`);
 
         let watcher = chokidar.watch(srcFolder, {
