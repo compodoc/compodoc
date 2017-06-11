@@ -206,7 +206,7 @@ export class Dependencies {
                     let metadata = node.decorators;
                     let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
-                    let IO = this.getComponentIO(file, sourceFile);
+                    let IO = this.getComponentIO(file, sourceFile, node);
 
                     if (this.isModule(metadata)) {
                         deps = {
@@ -1497,14 +1497,16 @@ export class Dependencies {
         return res[0] || {};
     }
 
-    private getComponentIO(filename: string, sourceFile) {
+    private getComponentIO(filename: string, sourceFile, node) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         var res = sourceFile.statements.reduce((directive, statement) => {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
-                return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    return directive.concat(this.visitClassDeclaration(filename, statement, sourceFile));
+                }
             }
 
             return directive;
