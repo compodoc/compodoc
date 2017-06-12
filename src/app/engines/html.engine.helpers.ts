@@ -3,6 +3,7 @@ import { COMPODOC_DEFAULTS } from '../../utils/defaults';
 import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
 import { Configuration } from '../configuration';
+import { prefixOfficialDoc } from '../../utils/angular-version';
 
 import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
 
@@ -251,7 +252,9 @@ export let HtmlEngineHelpers = (function() {
         });
 
         Handlebars.registerHelper('functionSignature', function(method) {
-            let args = [];
+            let args = [],
+                configuration = Configuration.getInstance(),
+                angularDocPrefix = prefixOfficialDoc(configuration.mainData.angularVersion);
             if (method.args) {
                 args = method.args.map(function(arg) {
                     var _result = $dependenciesEngine.find(arg.type);
@@ -261,7 +264,7 @@ export let HtmlEngineHelpers = (function() {
                             if (_result.data.type === 'class') path = 'classe';
                             return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                         } else {
-                            let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                            let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                             return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                         }
                     } else {
@@ -378,7 +381,9 @@ export let HtmlEngineHelpers = (function() {
             }
         });
         Handlebars.registerHelper('linkType', function(name, options) {
-            var _result = $dependenciesEngine.find(name);
+            var _result = $dependenciesEngine.find(name),
+                configuration = Configuration.getInstance(),
+                angularDocPrefix = prefixOfficialDoc(configuration.mainData.angularVersion);
             if (_result) {
                 this.type = {
                     raw: name
@@ -388,7 +393,7 @@ export let HtmlEngineHelpers = (function() {
                     this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
                     this.type.target = '_self';
                 } else {
-                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.href = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                     this.type.target = '_blank';
                 }
 

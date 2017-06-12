@@ -96,6 +96,7 @@
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^4.0.0",
     "selenium-webdriver": "^3.4.0",
+    "semver": "^5.3.0",
     "ts-node": "^3.0.6",
     "tslint": "^5.4.3",
     "webshot": "^0.18.0"
