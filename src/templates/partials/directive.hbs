@@ -113,11 +113,13 @@
                                 </td>
                             </tr>
                             {{#if line}}
-                                <tr>
-                                    <td class="col-md-2" colspan="2">
-                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
-                                    </td>
-                                </tr>
+                                {{#unless ../disableSourceCode}}
+                                    <tr>
+                                        <td class="col-md-2" colspan="2">
+                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
+                                        </td>
+                                    </tr>
+                                {{/unless}}
                             {{/if}}
                         </tbody>
                     </table>
@@ -145,11 +147,13 @@
                                 </td>
                             </tr>
                             {{#if line}}
-                                <tr>
-                                    <td class="col-md-2" colspan="2">
-                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
-                                    </td>
-                                </tr>
+                                {{#unless ../disableSourceCode}}
+                                    <tr>
+                                        <td class="col-md-2" colspan="2">
+                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
+                                        </td>
+                                    </tr>
+                                {{/unless}}
                             {{/if}}
                         </tbody>
                     </table>

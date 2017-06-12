@@ -106,11 +106,13 @@
                             {{/if}}
 
                             {{#if line}}
-                                <tr>
-                                    <td class="col-md-4">
-                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../interface.file}}:{{{line}}}</a></div>
-                                    </td>
-                                </tr>
+                                {{#unless ../disableSourceCode}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../interface.file}}:{{{line}}}</a></div>
+                                        </td>
+                                    </tr>
+                                {{/unless}}
                             {{/if}}
 
                             {{#if description}}
