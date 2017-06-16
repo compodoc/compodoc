@@ -10,8 +10,8 @@ import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
-import { stripBom } from '../../utils/utils';
-import { Configuration, IConfiguration } from '../configuration';
+import { stripBom, hasBom } from '../../utils/utils';
+import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
 const marked = require('marked');
@@ -130,7 +130,29 @@ export class Dependencies {
                 types: []
             }
         };
-        let sourceFiles = this.parseFiles(this.files) || [];
+        let sourceFiles = this.program.getSourceFiles() || [];
+        sourceFiles.forEach((file, index) => {
+            let filePath = file.fileName;
+
+            if (path.extname(filePath) === '.ts') {
+                if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
+                    if (hasBom(file.text)) {
+                        let text = stripBom(file.text),
+                            tt = file.update(text, {
+                                newLength: text.length,
+                                span: {
+                                    start: 0,
+                                    length: file.text.length
+                                }
+                            });
+                        if (!tt.moduleAugmentations) {
+                            tt.moduleAugmentations = [];
+                        }
+                        sourceFiles[index] = tt;
+                    }
+                }
+            }
+        });
 
         sourceFiles.map((file: ts.SourceFile) => {
 
@@ -143,8 +165,7 @@ export class Dependencies {
 
                     try {
                         this.getSourceFileDecorators(file, deps);
-                    }
-                    catch (e) {
+                    } catch (e) {
                         logger.error(e, file.fileName);
                     }
                 }
@@ -173,20 +194,6 @@ export class Dependencies {
 
         return deps;
     }
-
-    private parseFiles(fileNames: string[]) {
-
-        let _parsedFiles = [];
-
-        fileNames.forEach(fileName => {
-            let sourceCode = stripBom(readFileSync(fileName).toString()),
-                sourceFile = ts.createSourceFile(fileName, sourceCode, ts.ScriptTarget.ES5, true);
-            _parsedFiles.push(sourceFile);
-        });
-
-        return _parsedFiles;
-    }
-
 
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
 

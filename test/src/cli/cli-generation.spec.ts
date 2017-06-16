@@ -11,7 +11,11 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag', () => {
 
-        let stdoutString = null;
+        let stdoutString = null,
+            fooComponentFile,
+            fooServiceFile,
+            componentFile,
+            coverageFile;
         before(function (done) {
             tmp.create();
             exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
@@ -21,6 +25,10 @@ describe('CLI simple generation', () => {
                 return;
               }
               stdoutString = stdout;
+              fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
+              fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
+              coverageFile = read(`${tmp.name}/coverage.html`);
+              componentFile = read(`${tmp.name}/components/BarComponent.html`);
               done();
             });
         });
@@ -59,6 +67,61 @@ describe('CLI simple generation', () => {
             const isIndexExists = exists(`${tmp.name}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
+
+        /**
+         *   JSDOC
+         */
+
+         it('it should have a link with this syntax {@link BarComponent}', () => {
+             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent');
+         });
+
+         it('it should have a link with this syntax [BarComponent2]{@link BarComponent}', () => {
+             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent2');
+         });
+
+         it('it should have a link with this syntax {@link BarComponent|BarComponent3}', () => {
+             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent3');
+         });
+
+
+         it('it should have infos about FooService open function param', () => {
+             expect(fooServiceFile).to.contain('<b>val</b>');
+             expect(fooServiceFile).to.contain('<p>The entry value</p>');
+         });
+
+         it('it should have infos about FooService open function returns', () => {
+             expect(fooServiceFile).to.contain('<p>The string</p>');
+         });
+
+         it('it should have infos about FooService open function example', () => {
+             expect(fooServiceFile).to.contain('<b>Example :</b>');
+             expect(fooServiceFile).to.contain('FooService.open(');
+         });
+
+         /**
+          * Coverage
+          */
+
+          it('it should have coverage page', () => {
+              expect(coverageFile).to.contain('Documentation coverage');
+              expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
+          });
+
+          /**
+           * internal/private methods
+           */
+           it('should include by default methods marked as internal', () => {
+               expect(componentFile).to.contain('<code>internalMethod');
+           });
+
+           it('should exclude methods marked as hidden', () => {
+               expect(componentFile).not.to.contain('<code>hiddenMethod');
+           });
+
+           it('should include by default methods marked as private', () => {
+               expect(componentFile).to.contain('<code>privateMethod');
+           });
     });
 
     describe('when generation with d and a flags', () => {
@@ -228,10 +291,10 @@ describe('CLI simple generation', () => {
             expect(classFile).to.contain('Implements');
         });
 
-        /*it('should have generated interfaces', () => {
+        it('should have generated interfaces', () => {
             const isInterfaceExists = exists('documentation/interfaces/ClockInterface.html');
             expect(isInterfaceExists).to.be.true;
-        });*/
+        });
 
         it('should have generated classes', () => {
             const clockFile = exists('documentation/classes/Clock.html');
@@ -283,7 +346,8 @@ describe('CLI simple generation', () => {
         after(() => tmp.clean(tmp.name));
 
         it('should not display anything', () => {
-            expect(stdoutString).to.be.empty;
+            expect(stdoutString).to.contain('Node.js');
+            expect(stdoutString).to.not.contain('parsing');
         });
     });
 

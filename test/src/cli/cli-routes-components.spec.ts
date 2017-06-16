@@ -9,7 +9,7 @@ const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI routes', () => {
 
-    let stdoutString = null,
+    let stdoutString = null, todoComponentFile, listComponentFile, footerComponentFile,
         routesIndex;
     before(function (done) {
         tmp.create();
@@ -21,10 +21,17 @@ describe('CLI routes', () => {
             }
             stdoutString = stdout;
             routesIndex = read(`${tmp.name}/js/routes/routes_index.js`);
+            todoComponentFile = read(`${tmp.name}/components/TodoComponent.html`);
+            footerComponentFile = read(`${tmp.name}/components/FooterComponent.html`);
+            listComponentFile = read(`${tmp.name}/components/ListComponent.html`);
             done();
         });
     });
     after(() => tmp.clean());
+
+    it('it should not have a toggled item menu', () => {
+        expect(routesIndex).to.not.contain('fa-angle-down');
+    });
 
     it('it should have a route index', () => {
         const isFileExists = exists(`${tmp.name}/js/routes/routes_index.js`);
@@ -34,5 +41,14 @@ describe('CLI routes', () => {
         expect(routesIndex).to.contain('AppModule');
         expect(routesIndex).to.contain('AppRoutingModule');
         expect(routesIndex).to.contain('HomeRoutingModule');
+    });
+
+    it('it should have a readme tab', () => {
+        expect(todoComponentFile).to.contain('readme-tab');
+        expect(listComponentFile).to.contain('readme-tab');
+    });
+
+    it('it should have a decorator listed', () => {
+        expect(footerComponentFile).to.contain('<i>Decorators : </i><code>LogProperty</code>');
     });
 });

@@ -9,31 +9,6 @@ const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI coverage report', () => {
 
-    describe('test coverage', () => {
-
-        let stdoutString = null, coverageFile;
-        before(function (done) {
-            tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    done('error');
-                    return;
-                }
-                stdoutString = stdout;
-                coverageFile = read(`${tmp.name}/coverage.html`);
-                done();
-            });
-        });
-        after(() => tmp.clean());
-
-        it('it should have coverage page', () => {
-            expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
-        });
-
-    });
-
     describe('excluding coverage', () => {
 
         let stdoutString = null;
