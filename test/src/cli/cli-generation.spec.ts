@@ -228,9 +228,43 @@ describe('CLI simple generation', () => {
             expect(classFile).to.contain('Implements');
         });
 
+        /*it('should have generated interfaces', () => {
+            const isInterfaceExists = exists('documentation/interfaces/ClockInterface.html');
+            expect(isInterfaceExists).to.be.true;
+        });*/
+
+        it('should have generated classes', () => {
+            const clockFile = exists('documentation/classes/Clock.html');
+            expect(clockFile).to.be.true;
+        });
+
+        it('should have generated components', () => {
+            const file = exists('documentation/components/AboutComponent.html');
+            expect(file).to.be.true;
+        });
+
+        it('should have generated directives', () => {
+            const file = exists('documentation/directives/DoNothingDirective.html');
+            expect(file).to.be.true;
+        });
+
+        it('should have generated injectables', () => {
+            const file = exists('documentation/injectables/TodoStore.html');
+            expect(file).to.be.true;
+        });
+
+        it('should have generated modules', () => {
+            const file = exists('documentation/modules/AboutModule.html');
+            expect(file).to.be.true;
+        });
+
+        it('should have generated pipes', () => {
+            const file = exists('documentation/pipes/FirstUpperPipe.html');
+            expect(file).to.be.true;
+        });
+
     });
 
-    /*
     describe('when generation with -t flag', () => {
 
         let stdoutString = null;
@@ -252,7 +286,6 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.be.empty;
         });
     });
-    */
 
     describe('when generation with --theme flag', () => {
 
@@ -419,5 +452,4 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.contain(port);
         });
     });
-
 });
