@@ -140,6 +140,10 @@ describe('CLI simple flags', () => {
         it('should exclude methods marked as internal', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
         });
+
+        it('should not display lifecyle hooks', () => {
+            expect(componentFile).not.to.contain('<code>ngOnInit');
+        });
     });
 
     describe('when specific files are included in tsconfig', () => {
@@ -169,5 +173,4 @@ describe('CLI simple flags', () => {
             expect(moduleFile).not.to.contain('modules/BarModule.html');
         });
     });
-
 });

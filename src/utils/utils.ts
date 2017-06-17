@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { readConfigFile, formatDiagnostics, FormatDiagnosticsHost, sys } from 'typescript';
+import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 
 const getCurrentDirectory = sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = sys.useCaseSensitiveFileNames;
@@ -51,4 +52,19 @@ export function handlePath(files: string[], cwd: string): string[] {
     }
 
     return _files;
+}
+
+export function cleanLifecycleHooksFromMethods(methods) {
+    var result = [],
+        i = 0,
+        len = methods.length;
+
+    for(i; i<len; i++) {
+        if (!methods[i].name in AngularLifecycleHooks) {
+            console.log('clean');
+            result.push(methods[i]);
+        }
+    }
+
+    return result;
 }

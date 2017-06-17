@@ -48,10 +48,10 @@ export class CliApplication extends Application
             .option('--includes [path]', 'Path of external markdown files to include')
             .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
-            .option('--disableSourceCode', 'Do not add source code tab', false)
+            .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
-            .option('--disablePrivateOrInternalSupport', 'Do not show private or @internal in generated documentation', false)
+            .option('--disablePrivateOrInternalSupport', 'Do not show private, @internal or Angular lifecycle hooks in generated documentation', false)
             .parse(process.argv);
 
         let outputHelp = () => {

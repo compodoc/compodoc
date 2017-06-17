@@ -10,7 +10,7 @@ import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { generate } from './codegen';
-import { stripBom, hasBom } from '../../utils/utils';
+import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
@@ -269,6 +269,9 @@ export class Dependencies {
                             type: 'component',
                             sourceCode: srcFile.getText()
                         };
+                        if (this.configuration.mainData.disablePrivateOrInternalSupport) {
+                            deps.methodsClass = cleanLifecycleHooksFromMethods(deps.methodsClass);
+                        }
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
                         }
