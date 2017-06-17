@@ -70,6 +70,9 @@ interface Deps {
     extends?;
 
     inputsClass?: Object[];
+    outputsClass?: Object[];
+    propertiesClass?: Object[];
+    methodsClass?: Object[];
 
     //common
     providers?: Deps[];
@@ -93,9 +96,7 @@ export class Dependencies {
 
     private files: string[];
     private program: ts.Program;
-    private programComponent: ts.Program;
     private typeChecker: ts.TypeChecker;
-    private typeCheckerComponent: ts.TypeChecker;
     private engine: any;
     private __cache: any = {};
     private __nsModule: any = {};
@@ -110,6 +111,7 @@ export class Dependencies {
             tsconfigDirectory: options.tsconfigDirectory
         };
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
+        this.typeChecker = this.program.getTypeChecker();
     }
 
     getDependencies() {
@@ -130,7 +132,12 @@ export class Dependencies {
                 types: []
             }
         };
+
         let sourceFiles = this.program.getSourceFiles() || [];
+
+        /**
+         * Clean files with UTF-8 BOM
+         */
         sourceFiles.forEach((file, index) => {
             let filePath = file.fileName;
 
@@ -197,12 +204,8 @@ export class Dependencies {
 
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
 
-        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
-        let file = srcFile.fileName.replace(cleaner, '');
-
-        this.programComponent = ts.createProgram([file], {});
-        let sourceFile = this.programComponent.getSourceFile(file);
-        this.typeCheckerComponent = this.programComponent.getTypeChecker(true);
+        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/'),
+            file = srcFile.fileName.replace(cleaner, '');
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
 
@@ -213,7 +216,7 @@ export class Dependencies {
                     let metadata = node.decorators;
                     let name = this.getSymboleName(node);
                     let props = this.findProps(visitedNode);
-                    let IO = this.getComponentIO(file, sourceFile, node);
+                    let IO = this.getComponentIO(file, srcFile, node);
 
                     if (this.isModule(metadata)) {
                         deps = {
@@ -226,7 +229,7 @@ export class Dependencies {
                             bootstrap: this.getModuleBootstrap(props),
                             type: 'module',
                             description: IO.description,
-                            sourceCode: sourceFile.getText()
+                            sourceCode: srcFile.getText()
                         };
                         if (RouterParser.hasRouterModuleInImports(deps.imports)) {
                             RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props));
@@ -264,7 +267,7 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            sourceCode: sourceFile.getText()
+                            sourceCode: srcFile.getText()
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
@@ -289,7 +292,7 @@ export class Dependencies {
                             properties: IO.properties,
                             methods: IO.methods,
                             description: IO.description,
-                            sourceCode: sourceFile.getText()
+                            sourceCode: srcFile.getText()
                         };
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
@@ -302,7 +305,7 @@ export class Dependencies {
                             file: file,
                             type: 'pipe',
                             description: IO.description,
-                            sourceCode: sourceFile.getText()
+                            sourceCode: srcFile.getText()
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
@@ -316,7 +319,7 @@ export class Dependencies {
                             file: file,
                             type: 'directive',
                             description: IO.description,
-                            sourceCode: sourceFile.getText(),
+                            sourceCode: srcFile.getText(),
                             selector: this.getComponentSelector(props),
                             providers: this.getComponentProviders(props),
 
@@ -357,12 +360,12 @@ export class Dependencies {
             else if (node.symbol) {
                 if(node.symbol.flags === ts.SymbolFlags.Class) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getClassIO(file, sourceFile, node);
+                    let IO = this.getClassIO(file, srcFile, node);
                     deps = {
                         name,
                         file: file,
                         type: 'class',
-                        sourceCode: sourceFile.getText()
+                        sourceCode: srcFile.getText()
                     };
                     if(IO.constructor) {
                         deps.constructorObj = IO.constructor;
@@ -386,12 +389,12 @@ export class Dependencies {
                     outputSymbols['classes'].push(deps);
                 } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getInterfaceIO(file, sourceFile, node);
+                    let IO = this.getInterfaceIO(file, srcFile, node);
                     deps = {
                         name,
                         file: file,
                         type: 'interface',
-                        sourceCode: sourceFile.getText()
+                        sourceCode: srcFile.getText()
                     };
                     if(IO.properties) {
                         deps.properties = IO.properties;
@@ -432,7 +435,7 @@ export class Dependencies {
                     outputSymbols['miscellaneous'].enumerations.push(deps);
                 }
             } else {
-                let IO = this.getRouteIO(file, sourceFile);
+                let IO = this.getRouteIO(file, srcFile);
                 if(IO.routes) {
                     let newRoutes;
                     try {
@@ -450,12 +453,12 @@ export class Dependencies {
                 }
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                     let name = this.getSymboleName(node);
-                    let IO = this.getClassIO(file, sourceFile, node);
+                    let IO = this.getClassIO(file, srcFile, node);
                     deps = {
                         name,
                         file: file,
                         type: 'class',
-                        sourceCode: sourceFile.getText()
+                        sourceCode: srcFile.getText()
                     };
                     if(IO.constructor) {
                         deps.constructorObj = IO.constructor;
@@ -494,7 +497,7 @@ export class Dependencies {
                     //Find recusively in expression nodes one with name 'bootstrapModule'
                     let rootModule,
                         resultNode;
-                    if (sourceFile.text.indexOf(bootstrapModuleReference) !== -1) {
+                    if (srcFile.text.indexOf(bootstrapModuleReference) !== -1) {
                         if (node.expression) {
                             resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
                         }
@@ -805,7 +808,7 @@ export class Dependencies {
         let _return = 'void';
         if (node) {
             try {
-                _return = this.typeCheckerComponent.typeToString(this.typeCheckerComponent.getTypeAtLocation(node))
+                _return = this.typeChecker.typeToString(this.typeChecker.getTypeAtLocation(node))
             } catch (e) {
                 _return = '';
             }
@@ -915,7 +918,7 @@ export class Dependencies {
          */
         var result = {
             name: 'constructor',
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
+            description: '',
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             line: this.getPosition(method, sourceFile).line + 1
         },
@@ -928,6 +931,10 @@ export class Dependencies {
                 });
                 return mtags;
             };
+
+        if (method.symbol) {
+            result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
+        }
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
@@ -1098,8 +1105,12 @@ export class Dependencies {
              name: property.name.text,
              defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
              type: this.visitType(property),
-             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
+             description: '',
              line: this.getPosition(property, sourceFile).line + 1
+         }
+
+         if (property.symbol) {
+             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())));
          }
 
          if (property.decorators) {
@@ -1127,7 +1138,6 @@ export class Dependencies {
             inputDecorator,
             constructor,
             outDecorator;
-
 
         for (var i = 0; i < members.length; i++) {
             inputDecorator = this.getDecoratorOfType(members[i], 'Input');
@@ -1188,16 +1198,20 @@ export class Dependencies {
          */
         var selector;
         var exportAs;
-        var properties = decorator.expression.arguments[0].properties;
+        var properties;
 
-        for (var i = 0; i < properties.length; i++) {
-            if (properties[i].name.text === 'selector') {
-                // TODO: this will only work if selector is initialized as a string literal
-                selector = properties[i].initializer.text;
-            }
-            if (properties[i].name.text === 'exportAs') {
-                // TODO: this will only work if selector is initialized as a string literal
-                exportAs = properties[i].initializer.text;
+        if (decorator.expression.arguments.length > 0) {
+            properties = decorator.expression.arguments[0].properties;
+
+            for (var i = 0; i < properties.length; i++) {
+                if (properties[i].name.text === 'selector') {
+                    // TODO: this will only work if selector is initialized as a string literal
+                    selector = properties[i].initializer.text;
+                }
+                if (properties[i].name.text === 'exportAs') {
+                    // TODO: this will only work if selector is initialized as a string literal
+                    exportAs = properties[i].initializer.text;
+                }
             }
         }
 
@@ -1232,8 +1246,11 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        var symbol = this.program.getTypeChecker().getSymbolAtLocation(classDeclaration.name);
-        var description = marked(LinkParser.resolveLinks(ts.displayPartsToString(symbol.getDocumentationComment())));
+        var symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
+        var description = '';
+        if (symbol) {
+            description = marked(LinkParser.resolveLinks(ts.displayPartsToString(symbol.getDocumentationComment())));
+        }
         var className = classDeclaration.name.text;
         var directiveInfo;
         var members;
@@ -1263,8 +1280,10 @@ export class Dependencies {
             }
         }
 
-        if (symbol.valueDeclaration) {
-            jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+        if (symbol) {
+            if (symbol.valueDeclaration) {
+                jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+            }
         }
 
         if (classDeclaration.decorators) {
