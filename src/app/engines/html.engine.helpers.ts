@@ -214,8 +214,6 @@ export let HtmlEngineHelpers = (function() {
                 return replacer(description, matchedTag);
             }
 
-            description = description.replace(/\n/g, '<br/>');
-
             do {
                 matches = tagRegExp.exec(description);
                 if (matches) {
@@ -241,12 +239,6 @@ export let HtmlEngineHelpers = (function() {
                     result = '../../';
                     break;
             }
-
-            /*
-            if (typeof context === 'string' && context == 'additional-page') {
-                console.log('relativeURL: ', currentDepth, result);
-            }
-            */
 
             return result;
         });
