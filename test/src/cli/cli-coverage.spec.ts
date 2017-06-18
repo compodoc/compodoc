@@ -38,7 +38,7 @@ describe('CLI coverage report', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 25', {env}, (error, stdout, stderr) => {
+            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 15', {env}, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     done('error');
