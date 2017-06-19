@@ -35,4 +35,5 @@ export interface MainDataInterface {
     coverageTest: boolean;
     coverageTestThreshold: number;
     routesLength: number;
+    angularVersion: string;
 }

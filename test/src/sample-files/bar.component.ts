@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BarService } from './bar.service';
 
 @Component({
@@ -7,9 +7,8 @@ import { BarService } from './bar.service';
 	providers: [BarService]
 
 })
-export class BarComponent {
-
-	/**
+export class BarComponent implements OnInit {
+    /**
 	 * foo method
 	 */
 	normalMethod() {}
@@ -31,5 +30,7 @@ export class BarComponent {
 	privateCommentMethod() {}
 
 	private privateMethod() {}
+
+    ngOnInit() {}
 
 }

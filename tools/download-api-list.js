@@ -2,7 +2,7 @@ var https = require('https'),
     fs = require('fs'),
     options = {
         hostname: 'angular.io',
-        path: '/docs/ts/latest/api/api-list.json',
+        path: '/generated/docs/api/api-list.json',
         method: 'GET'
     },
 

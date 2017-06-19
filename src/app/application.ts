@@ -19,6 +19,8 @@ import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
+import { getAngularVersionOfProject } from '../utils/angular-version';
+
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
@@ -135,6 +137,7 @@ export class Application {
             if (typeof parsedData.description !== 'undefined') {
                 this.configuration.mainData.documentationMainDescription = parsedData.description;
             }
+            this.configuration.mainData.angularVersion = getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
             this.processMarkdown();
         }, (errorMessage) => {
@@ -1145,12 +1148,9 @@ export class Application {
     processGraphs() {
 
         if (this.configuration.mainData.disableGraph) {
-
             logger.info('Graph generation disabled');
             this.processPages();
-
         } else {
-
             logger.info('Process main graph');
             let modules = this.configuration.mainData.modules,
               i = 0,

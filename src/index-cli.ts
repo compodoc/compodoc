@@ -48,10 +48,10 @@ export class CliApplication extends Application
             .option('--includes [path]', 'Path of external markdown files to include')
             .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
-            .option('--disableSourceCode', 'Do not add source code tab', false)
+            .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
-            .option('--disablePrivateOrInternalSupport', 'Do not show private or @internal in generated documentation', false)
+            .option('--disablePrivateOrInternalSupport', 'Do not show private, @internal or Angular lifecycle hooks in generated documentation', false)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -289,10 +289,18 @@ export class CliApplication extends Application
                 } else {
                     logger.info('Using provided source folder');
 
-                    files = walk(path.resolve(sourceFolder), []);
+                    if (!fs.existsSync(program.tsconfig)) {
+                        logger.error(`"${program.tsconfig}" file was not found in the current directory`);
+                        process.exit(1);
+                    } else {
+                        let tsConfigFile = readConfig(program.tsconfig);
+                        let exclude = tsConfigFile.exclude || [];
 
-                    super.setFiles(files);
-                    super.generate();
+                        files = walk(path.resolve(sourceFolder), exclude);
+
+                        super.setFiles(files);
+                        super.generate();
+                    }
                 }
             } else {
                 logger.error('tsconfig.json file was not found, please use -p flag');

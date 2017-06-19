@@ -3,6 +3,7 @@ import { COMPODOC_DEFAULTS } from '../../utils/defaults';
 import { $dependenciesEngine } from './dependencies.engine';
 import { extractLeadingText, splitLinkText } from '../../utils/link-parser';
 import { Configuration } from '../configuration';
+import { prefixOfficialDoc } from '../../utils/angular-version';
 
 import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
 
@@ -101,36 +102,35 @@ export let HtmlEngineHelpers = (function() {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('modifKind', function(kind) {
+            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
             let _kindText = '';
             switch(kind) {
-                case 111:
+                case 112:
                     _kindText = 'Private';
                     break;
-                case 112:
+                case 113:
                     _kindText = 'Protected';
                     break;
-                case 113:
+                case 114:
                     _kindText = 'Public';
                     break;
-                case 114:
+                case 115:
                     _kindText = 'Static';
                     break;
             }
             return new Handlebars.SafeString(_kindText);
         });
         Handlebars.registerHelper('modifIcon', function(kind) {
+            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
             let _kindText = '';
             switch(kind) {
-                case 111:
-                    _kindText = 'lock';
-                    break;
                 case 112:
                     _kindText = 'lock';
                     break;
                 case 113:
                     _kindText = 'circle';
                     break;
-                case 114:
+                case 115:
                     _kindText = 'square';
                 case 83:
                     _kindText = 'export';
@@ -214,8 +214,6 @@ export let HtmlEngineHelpers = (function() {
                 return replacer(description, matchedTag);
             }
 
-            description = description.replace(/\n/g, '<br/>');
-
             do {
                 matches = tagRegExp.exec(description);
                 if (matches) {
@@ -242,17 +240,13 @@ export let HtmlEngineHelpers = (function() {
                     break;
             }
 
-            /*
-            if (typeof context === 'string' && context == 'additional-page') {
-                console.log('relativeURL: ', currentDepth, result);
-            }
-            */
-
             return result;
         });
 
         Handlebars.registerHelper('functionSignature', function(method) {
-            let args = [];
+            let args = [],
+                configuration = Configuration.getInstance(),
+                angularDocPrefix = prefixOfficialDoc(configuration.mainData.angularVersion);
             if (method.args) {
                 args = method.args.map(function(arg) {
                     var _result = $dependenciesEngine.find(arg.type);
@@ -262,7 +256,7 @@ export let HtmlEngineHelpers = (function() {
                             if (_result.data.type === 'class') path = 'classe';
                             return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                         } else {
-                            let path = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                            let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                             return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                         }
                     } else {
@@ -379,7 +373,9 @@ export let HtmlEngineHelpers = (function() {
             }
         });
         Handlebars.registerHelper('linkType', function(name, options) {
-            var _result = $dependenciesEngine.find(name);
+            var _result = $dependenciesEngine.find(name),
+                configuration = Configuration.getInstance(),
+                angularDocPrefix = prefixOfficialDoc(configuration.mainData.angularVersion);
             if (_result) {
                 this.type = {
                     raw: name
@@ -389,7 +385,7 @@ export let HtmlEngineHelpers = (function() {
                     this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
                     this.type.target = '_self';
                 } else {
-                    this.type.href = 'https://angular.io/docs/ts/latest/api/' + _result.data.path;
+                    this.type.href = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                     this.type.target = '_blank';
                 }
 

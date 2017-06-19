@@ -22,9 +22,7 @@
                 <tr>
                     <td class="col-md-4">
                         {{#if modifierKind}}
-                            <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}">
-                                <span class="fa fa-{{modifIcon modifierKind}}"></span>
-                            </span>
+                            <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}"></span>
                         {{/if}}<code>{{{functionSignature this}}}</code>
                     </td>
                 </tr>
@@ -38,11 +36,13 @@
                 {{/if}}
 
                 {{#if line}}
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
-                        </td>
-                    </tr>
+                    {{#unless ../disableSourceCode}}
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                            </td>
+                        </tr>
+                    {{/unless}}
                 {{/if}}
 
                 {{#or description jsdoctags returnType}}

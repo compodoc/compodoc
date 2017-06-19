@@ -115,37 +115,6 @@ describe('CLI simple flags', () => {
 
     });
 
-    describe('supporting internal/private methods', () => {
-
-        let stdoutString = null, componentFile;
-        before(function (done) {
-            tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    done('error');
-                    return;
-                }
-                stdoutString = stdout;
-                componentFile = read(`${tmp.name}/components/BarComponent.html`);
-                done();
-            });
-        });
-        after(() => tmp.clean());
-
-        it('should include by default methods marked as internal', () => {
-            expect(componentFile).to.contain('<code>internalMethod');
-        });
-
-        it('should exclude methods marked as hidden', () => {
-            expect(componentFile).not.to.contain('<code>hiddenMethod');
-        });
-
-        it('should include by default methods marked as private', () => {
-            expect(componentFile).to.contain('<code>privateMethod');
-        });
-    });
-
     describe('disabling excluding methods with --disablePrivateOrInternalSupport', () => {
 
         let stdoutString = null, componentFile;
@@ -170,6 +139,10 @@ describe('CLI simple flags', () => {
 
         it('should exclude methods marked as internal', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
+        });
+
+        it('should not display lifecyle hooks', () => {
+            expect(componentFile).not.to.contain('<code>ngOnInit');
         });
     });
 
@@ -200,5 +173,4 @@ describe('CLI simple flags', () => {
             expect(moduleFile).not.to.contain('modules/BarModule.html');
         });
     });
-
 });

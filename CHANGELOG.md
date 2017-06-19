@@ -1,15 +1,37 @@
+<a name="1.0.0-beta.10"></a>
+# [1.0.0-beta.10](https://github.com/compodoc/compodoc/compare/1.0.0-beta.9...1.0.0-beta.10) (2017-06-19)
+
+### Bug Fixes
+
+* **menu:** Make the entire list item clickable for a section toggle ([4f4c1f5](https://github.com/compodoc/compodoc/commit/4f4c1f5)), closes [#194](https://github.com/compodoc/compodoc/issues/194)
+* **chore:** kind icon issue for properties and functions ([4b9f496](https://github.com/compodoc/compodoc/commit/4b9f496))
+* **menu:** Navigation: clicking on a sub element (page) inside the expandable category expands all categories ([86ac1b4](https://github.com/compodoc/compodoc/commit/86ac1b4)), closes [#186](https://github.com/compodoc/compodoc/issues/186)
+* **markdown:** At sign replaced by a brace in markdown code blocks ([41c6b0d](https://github.com/compodoc/compodoc/commit/41c6b0d)), closes [#189](https://github.com/compodoc/compodoc/issues/189)
+* **dependencies:** Multiple classes in the same file get the same description ([8a679f0](https://github.com/compodoc/compodoc/commit/8a679f0)), closes [#118](https://github.com/compodoc/compodoc/issues/118)
+* **exclude:** Not able to exclude files from documentation ([a88023c](https://github.com/compodoc/compodoc/commit/a88023c)), closes [#175](https://github.com/compodoc/compodoc/issues/175)
+* **source:** Hide some elements if source code is disabled ([0e81c15](https://github.com/compodoc/compodoc/commit/0e81c15)), closes [#185](https://github.com/compodoc/compodoc/issues/185)
+* **badge:** Documentation coverage badge size should match common badges ([21f5abe](https://github.com/compodoc/compodoc/commit/21f5abe)), closes [#200](https://github.com/compodoc/compodoc/issues/200)
+* **dependencies:** Interface generation missing w/o errors. ([2b7d4e7](https://github.com/compodoc/compodoc/commit/2b7d4e7)), closes [#198](https://github.com/compodoc/compodoc/issues/198)
+* **dependencies:** Please Support @private JSDoc. ([6c7ce67](https://github.com/compodoc/compodoc/commit/6c7ce67)), closes [#183](https://github.com/compodoc/compodoc/issues/183)
+* **comments:** Newline markdown ([74f64d2](https://github.com/compodoc/compodoc/commit/74f64d2)), closes [#195](https://github.com/compodoc/compodoc/issues/195)
+
+### Features
+
+* **version** Detect angular version and link to the correct version of the documentation ([f270af7](https://github.com/compodoc/compodoc/commit/f270af7)), closes [#180](https://github.com/compodoc/compodoc/issues/180)
+* **dependencies:** Parsing refactoring, huge speed boost +75% ! ([65744ed](https://github.com/compodoc/compodoc/commit/65744ed))
+
 <a name="1.0.0-beta.9"></a>
 # [1.0.0-beta.9](https://github.com/compodoc/compodoc/compare/1.0.0-beta.8...1.0.0-beta.9) (2017-05-11)
 
 ### Bug Fixes
 
-* **markdown** Fix escaping of html entities in code blocks ([e816cbe](https://github.com/compodoc/compodoc/commit/e816cbe)), thanks Thomas Mair
-* **config** Allow for comments in tsconfig.json ([2796de5](https://github.com/compodoc/compodoc/commit/2796de5)), closes [#177](https://github.com/compodoc/compodoc/issues/177)
-* **chore** Problem with resources file when providing absolute output path ([b52a40e7](https://github.com/compodoc/compodoc/commit/b52a40e7)), closes [#176](https://github.com/compodoc/compodoc/issues/176)
-* **watch** Watch for additional doc too ([52801f4b](https://github.com/compodoc/compodoc/commit/52801f4b)), closes [#163](https://github.com/compodoc/compodoc/issues/163)
-* **dependencies** decorators support ([65bbabc7](https://github.com/compodoc/compodoc/commit/65bbabc7)), closes [#171](https://github.com/compodoc/compodoc/issues/171)
-* **markdown** Set marked break option to false ([0e6ac342](https://github.com/compodoc/compodoc/commit/0e6ac342)), closes [#181](https://github.com/compodoc/compodoc/issues/181)
-* **dependencies** UTF8 Bom support ([a3d5bec7](https://github.com/compodoc/compodoc/commit/a3d5bec7)), closes [#170](https://github.com/compodoc/compodoc/issues/170)
+* **markdown:** Fix escaping of html entities in code blocks ([e816cbe](https://github.com/compodoc/compodoc/commit/e816cbe)), thanks Thomas Mair
+* **config:** Allow for comments in tsconfig.json ([2796de5](https://github.com/compodoc/compodoc/commit/2796de5)), closes [#177](https://github.com/compodoc/compodoc/issues/177)
+* **chore:** Problem with resources file when providing absolute output path ([b52a40e7](https://github.com/compodoc/compodoc/commit/b52a40e7)), closes [#176](https://github.com/compodoc/compodoc/issues/176)
+* **watch:** Watch for additional doc too ([52801f4b](https://github.com/compodoc/compodoc/commit/52801f4b)), closes [#163](https://github.com/compodoc/compodoc/issues/163)
+* **dependencies:** decorators support ([65bbabc7](https://github.com/compodoc/compodoc/commit/65bbabc7)), closes [#171](https://github.com/compodoc/compodoc/issues/171)
+* **markdown:** Set marked break option to false ([0e6ac342](https://github.com/compodoc/compodoc/commit/0e6ac342)), closes [#181](https://github.com/compodoc/compodoc/issues/181)
+* **dependencies:** UTF8 Bom support ([a3d5bec7](https://github.com/compodoc/compodoc/commit/a3d5bec7)), closes [#170](https://github.com/compodoc/compodoc/issues/170)
 
 ### Features
 

@@ -113,7 +113,7 @@ describe('CLI Options', () => {
 
         it(`--disablePrivateOrInternalSupport`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disablePrivateOrInternalSupport');
-            expect(runHelp.stdout.toString()).to.contain('Do not show private or @internal in generated documentation');
+            expect(runHelp.stdout.toString()).to.contain('Do not show private, @internal or Angular lifecycle hooks in generated documentation');
         });
 
     });

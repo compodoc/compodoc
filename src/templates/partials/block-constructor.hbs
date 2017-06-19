@@ -8,11 +8,13 @@
                     </td>
                 </tr>
                 {{#if constructor.line}}
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="{{{constructor.line}}}" class="link-to-prism">{{file}}:{{{constructor.line}}}</a></div>
-                        </td>
-                    </tr>
+                    {{#unless disableSourceCode}}
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="{{{constructor.line}}}" class="link-to-prism">{{file}}:{{{constructor.line}}}</a></div>
+                            </td>
+                        </tr>
+                    {{/unless}}
                 {{/if}}
 
                 {{#or constructor.description constructor.jsdoctags}}
