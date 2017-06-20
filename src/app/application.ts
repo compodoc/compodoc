@@ -69,6 +69,14 @@ export class Application {
             if(typeof this.configuration.mainData[option] !== 'undefined') {
                 this.configuration.mainData[option] = options[option];
             }
+            // For documentationMainName, process it outside the loop, for handling conflict with pages name
+            if(option === 'name') {
+                this.configuration.mainData['documentationMainName'] = options[option];
+            }
+            // For documentationMainName, process it outside the loop, for handling conflict with pages name
+            if(option === 'silent') {
+                logger.silent = false;
+            }
         }
     }
 
