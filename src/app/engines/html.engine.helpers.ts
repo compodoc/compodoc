@@ -360,8 +360,8 @@ export let HtmlEngineHelpers = (function() {
                         if (jsdocTags[i].comment) {
                             tag.comment = jsdocTags[i].comment
                         }
-                        if (jsdocTags[i].parameterName) {
-                            tag.name = jsdocTags[i].parameterName.text
+                        if (jsdocTags[i].name) {
+                            tag.name = jsdocTags[i].name.text;
                         }
                         tags.push(tag);
                     }
