@@ -6,7 +6,8 @@ const process = require('process'),
     tmp = helpers.temporaryDir();
 
 const TEST_FOLDER = 'angularexpo-tests',
-    GIT_REPOSITORIES = [{
+    GIT_REPOSITORIES = [
+    {
         name: 'parrot', maintainer: 'anthonynsimon', tsconfig_path: './web-app/src/'
     }, {
         name: 'batcave', maintainer: 'hsbalar', tsconfig_path: './'
@@ -31,7 +32,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'zombie-finder', maintainer: 'hsbalar', tsconfig_path: './'
     }, {
-        name: 'angular-calendar', maintainer: 'mattlewis92', tsconfig_path: './'
+        name: 'angular-calendar', maintainer: 'mattlewis92', tsconfig_path: './', tsconfig_file: 'tsconfig-compodoc.json'
     }, {
         name: 'angular2-hn', maintainer: 'housseindjirdeh', tsconfig_path: './src/'
     }, {
@@ -129,7 +130,8 @@ let i = 0,
             var tsconfig = '';
             if (repo.tsconfig_file) { tsconfig = repo.tsconfig_file; }
             exec('compodoc -p ' + repo.tsconfig_path + tsconfig, {
-                cwd: TEST_FOLDER + '/' + repo.name
+                cwd: TEST_FOLDER + '/' + repo.name,
+                maxBuffer: 1000 * 1024
             }, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`compodoc error: ${error}`);
