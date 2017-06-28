@@ -125,7 +125,7 @@ export class Application {
             }
         });
 
-        return false;
+        return result;
     }
 
     /**
@@ -282,7 +282,7 @@ export class Application {
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
             diffCrawledData.miscellaneous.enumerations.length > 0 ||
             diffCrawledData.miscellaneous.types.length > 0 ) {
-            actions.push(() => { return this.prepareMiscellaneous(diffCrawledData.miscellaneous); });
+            actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
         if (!this.configuration.mainData.disableCoverage) {

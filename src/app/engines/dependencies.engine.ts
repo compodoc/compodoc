@@ -153,6 +153,55 @@ class DependenciesEngine {
                 this.classes[_index] = classe;
             });
         }
+        /**
+         * Miscellaneous update
+         */
+        if (updatedData.miscellaneous.variables.length > 0 ) {
+            _.forEach(updatedData.miscellaneous.variables, (variable) => {
+                let _index = _.findIndex(this.miscellaneous.variables, {
+                    'name': variable.name,
+                    'file': variable.file
+                });
+                this.miscellaneous.variables[_index] = variable;
+            });
+        }
+        if (updatedData.miscellaneous.functions.length > 0 ) {
+            _.forEach(updatedData.miscellaneous.functions, (func) => {
+                let _index = _.findIndex(this.miscellaneous.functions, {
+                    'name': func.name,
+                    'file': func.file
+                });
+                this.miscellaneous.functions[_index] = func;
+            });
+        }
+        if (updatedData.miscellaneous.typealiases.length > 0 ) {
+            _.forEach(updatedData.miscellaneous.typealiases, (typealias) => {
+                let _index = _.findIndex(this.miscellaneous.typealiases, {
+                    'name': typealias.name,
+                    'file': typealias.file
+                });
+                this.miscellaneous.typealiases[_index] = typealias;
+            });
+        }
+        if (updatedData.miscellaneous.enumerations.length > 0 ) {
+            _.forEach(updatedData.miscellaneous.enumerations, (enumeration) => {
+                let _index = _.findIndex(this.miscellaneous.enumerations, {
+                    'name': enumeration.name,
+                    'file': enumeration.file
+                });
+                this.miscellaneous.enumerations[_index] = enumeration;
+            });
+        }
+        if (updatedData.miscellaneous.types.length > 0 ) {
+            _.forEach(updatedData.miscellaneous.types, (typ) => {
+                let _index = _.findIndex(this.miscellaneous.types, {
+                    'name': typ.name,
+                    'file': typ.file
+                });
+                this.miscellaneous.types[_index] = typ;
+            });
+        }
+        this.prepareMiscellaneous();
     }
     findInCompodoc(name: string) {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
