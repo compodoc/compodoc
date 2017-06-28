@@ -47,6 +47,14 @@ class DependenciesEngine {
                         delete _m[i].declarations[j].jsdoctags[k].parent;
                     }
                 }
+                if (_m[i].declarations[j].constructorObj) {
+                    if (_m[i].declarations[j].constructorObj.jsdoctags) {
+                        lengt = _m[i].declarations[j].constructorObj.jsdoctags.length;
+                        for(k; k<lengt; k++) {
+                            delete _m[i].declarations[j].constructorObj.jsdoctags[k].parent;
+                        }
+                    }
+                }
             }
         }
         return _m;
