@@ -55,7 +55,23 @@ class DependenciesEngine {
                         }
                     }
                 }
+                if (_m[i].declarations[j].methodsClass && _m[i].declarations[j].methodsClass.length > 0) {
+                    let l = 0,
+                        length = _m[i].declarations[j].methodsClass.length;
+                    for(l; l<length; l++) {
+                        delete _m[i].declarations[j].methodsClass[l].jsdoctags;
+                    }
+                }
+                if (_m[i].declarations[j].propertiesClass && _m[i].declarations[j].propertiesClass.length > 0) {
+                    let l = 0,
+                        length = _m[i].declarations[j].propertiesClass.length;
+                    for(l; l<length; l++) {
+                        delete _m[i].declarations[j].propertiesClass[l].jsdoctags;
+                    }
+                }
+                delete _m[i].declarations[j].sourceCode;
             }
+            delete _m[i].sourceCode;
         }
         return _m;
     }
