@@ -1031,7 +1031,6 @@ export class Application {
                             logger.error('Error during ' + page.name + ' page generation');
                             reject();
                         } else {
-                            logger.info(`${page.name} generated`);
                             resolve();
                         }
                     });
