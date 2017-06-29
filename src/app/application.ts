@@ -1007,11 +1007,10 @@ export class Application {
 
     processPages() {
         logger.info('Process pages');
-        let pages = this.configuration.pages,
-            i = 0,
-            len = pages.length,
-            loop = () => {
-                if( i <= len-1) {
+        let pages = this.configuration.pages;
+        Promise.all(
+            pages.map((page, i) => {
+                return new Promise((resolve, reject) => {
                     logger.info('Process page', pages[i].name);
                     $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
                         let finalPath = this.configuration.mainData.output;
@@ -1031,38 +1030,40 @@ export class Application {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
                             } else {
-                                i++;
-                                loop();
+                                resolve();
                             }
                         });
                     }, (errorMessage) => {
                         logger.error(errorMessage);
+                        reject();
                     });
+                });
+            })
+        ).then(() => {
+            $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                if (this.configuration.mainData.additionalPages.length > 0) {
+                    this.processAdditionalPages();
                 } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
-                        } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
-                            }
-                            this.processResources();
-                        }
-                    }, (e) => {
-                        logger.error(e);
-                    });
+                    if (this.configuration.mainData.assetsFolder !== '') {
+                        this.processAssetsFolder();
+                    }
+                    this.processResources();
                 }
-            };
-        loop();
+            }, (e) =>  {
+                logger.error(e);
+            });
+        })
+        .catch((e) => {
+            logger.error(e);
+        });
     }
 
     processAdditionalPages() {
         logger.info('Process additional pages');
-        let pages = this.configuration.mainData.additionalPages,
-            i = 0,
-            len = pages.length,
-            loop = () => {
-                if( i <= len-1) {
+        let pages = this.configuration.mainData.additionalPages
+        Promise.all(
+            pages.map((page, i) => {
+                return new Promise((resolve, reject) => {
                     logger.info('Process page', pages[i].name);
                     $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
                         let finalPath = this.configuration.mainData.output;
@@ -1072,7 +1073,7 @@ export class Application {
                         if (pages[i].path) {
                             finalPath += pages[i].path + '/';
                         }
-                        finalPath += pages[i].filename + '.html';
+                        finalPath += pages[i].name + '.html';
                         $searchEngine.indexPage({
                             infos: pages[i],
                             rawData: htmlData,
@@ -1082,25 +1083,28 @@ export class Application {
                             if (err) {
                                 logger.error('Error during ' + pages[i].name + ' page generation');
                             } else {
-                                i++;
-                                loop();
+                                resolve();
                             }
                         });
                     }, (errorMessage) => {
                         logger.error(errorMessage);
+                        reject();
                     });
-                } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                        if (this.configuration.mainData.assetsFolder !== '') {
-                            this.processAssetsFolder();
-                        }
-                        this.processResources();
-                    }, (e) => {
-                        logger.error(e);
-                    });
+                });
+            })
+        ).then(() => {
+            $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                if (this.configuration.mainData.assetsFolder !== '') {
+                    this.processAssetsFolder();
                 }
-            };
-        loop();
+                this.processResources();
+            }, (e) => {
+                logger.error(e);
+            });
+        })
+        .catch((e) => {
+            logger.error(e);
+        });
     }
 
     processAssetsFolder() {
@@ -1122,9 +1126,9 @@ export class Application {
 
         const onComplete = () => {
             let finalTime = (new Date() - startTime) / 1000;
-            console.log('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
+            logger.info('Documentation generated in ' + this.configuration.mainData.output + ' in ' + finalTime + ' seconds using ' + this.configuration.mainData.theme + ' theme');
             if (this.configuration.mainData.serve) {
-                console.log(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
                 this.runWebServer(this.configuration.mainData.output);
             }
         };
@@ -1160,32 +1164,7 @@ export class Application {
             this.processPages();
         } else {
             logger.info('Process main graph');
-            let modules = this.configuration.mainData.modules,
-              i = 0,
-              len = modules.length,
-              loop = () => {
-                  if( i <= len-1) {
-                      logger.info('Process module graph', modules[i].name);
-                      let finalPath = this.configuration.mainData.output;
-                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                          finalPath += '/';
-                      }
-                      finalPath += 'modules/' + modules[i].name;
-                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                          $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
-                              modules[i].graph = <string>data;
-                              i++;
-                              loop();
-                          }, (err) => {
-                              logger.error('Error during graph read: ', err);
-                          });
-                      }, (errorMessage) => {
-                          logger.error(errorMessage);
-                      });
-                  } else {
-                      this.processPages();
-                  }
-              };
+
             let finalMainGraphPath = this.configuration.mainData.output;
             if(finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
@@ -1194,7 +1173,7 @@ export class Application {
             $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
                 $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
                     this.configuration.mainData.mainGraph = <string>data;
-                    loop();
+                    generateModulesGraph();
                 }, (err) => {
                     logger.error('Error during graph read: ', err);
                 });
@@ -1202,6 +1181,37 @@ export class Application {
                 logger.error('Error during graph generation: ', err);
             });
 
+            let modules = this.configuration.mainData.modules,
+                generateModulesGraph = () => {
+                    Promise.all(
+                        modules.map((module, i) => {
+                            return new Promise((resolve, reject) => {
+                                logger.info('Process module graph', modules[i].name);
+                                let finalPath = this.configuration.mainData.output;
+                                if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                                    finalPath += '/';
+                                }
+                                finalPath += 'modules/' + modules[i].name;
+                                $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
+                                    $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                                        modules[i].graph = <string>data;
+                                        resolve();
+                                    }, (err) => {
+                                        logger.error('Error during graph read: ', err);
+                                    });
+                                }, (errorMessage) => {
+                                    logger.error(errorMessage);
+                                    reject();
+                                });
+                            });
+                        })
+                    ).then(() => {
+                        this.processPages();
+                    })
+                    .catch((e) => {
+                        logger.error(e);
+                    });
+                }
         }
     }
 

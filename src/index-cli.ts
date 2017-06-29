@@ -160,7 +160,7 @@ export class CliApplication extends Application
                 logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
-                console.log(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
                 super.runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
@@ -169,7 +169,7 @@ export class CliApplication extends Application
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                console.log(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
+                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
                 super.runWebServer(program.output);
             }
         } else {
