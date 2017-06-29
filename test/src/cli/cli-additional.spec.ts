@@ -31,7 +31,7 @@ describe('CLI Additional documentation', () => {
         expect(fooIndexFile).to.contain('<a href="./additional-documentation/introduction');
     });
     it('it should have generated files', () => {
-        const isFileExists = exists(`${tmp.name}/additional-documentation/edition.html`);
+        const isFileExists = exists(`${tmp.name}/additional-documentation/Edition.html`);
         expect(isFileExists).to.be.true;
     });
 });
