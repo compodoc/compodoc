@@ -1011,31 +1011,29 @@ export class Application {
         Promise.all(
             pages.map((page, i) => {
                 return new Promise((resolve, reject) => {
-                    logger.info('Process page', pages[i].name);
-                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = this.configuration.mainData.output;
-                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                            finalPath += '/';
+                    logger.info('Process page', page.name);
+                    let htmlData = $htmlengine.render(this.configuration.mainData, page)
+                    let finalPath = this.configuration.mainData.output;
+                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    if (page.path) {
+                        finalPath += page.path + '/';
+                    }
+                    finalPath += page.name + '.html';
+                    $searchEngine.indexPage({
+                        infos: page,
+                        rawData: htmlData,
+                        url: finalPath
+                    });
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                        if (err) {
+                            logger.error('Error during ' + page.name + ' page generation');
+                            reject();
+                        } else {
+                            logger.info(`${page.name} generated`);
+                            resolve();
                         }
-                        if (pages[i].path) {
-                            finalPath += pages[i].path + '/';
-                        }
-                        finalPath += pages[i].name + '.html';
-                        $searchEngine.indexPage({
-                            infos: pages[i],
-                            rawData: htmlData,
-                            url: finalPath
-                        });
-                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                            if (err) {
-                                logger.error('Error during ' + pages[i].name + ' page generation');
-                            } else {
-                                resolve();
-                            }
-                        });
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
-                        reject();
                     });
                 });
             })
@@ -1065,30 +1063,27 @@ export class Application {
             pages.map((page, i) => {
                 return new Promise((resolve, reject) => {
                     logger.info('Process page', pages[i].name);
-                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = this.configuration.mainData.output;
-                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                            finalPath += '/';
+                    let htmlData = $htmlengine.render(this.configuration.mainData, pages[i])
+                    let finalPath = this.configuration.mainData.output;
+                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    if (pages[i].path) {
+                        finalPath += pages[i].path + '/';
+                    }
+                    finalPath += pages[i].name + '.html';
+                    $searchEngine.indexPage({
+                        infos: pages[i],
+                        rawData: htmlData,
+                        url: finalPath
+                    });
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                        if (err) {
+                            logger.error('Error during ' + pages[i].name + ' page generation');
+                            reject();
+                        } else {
+                            resolve();
                         }
-                        if (pages[i].path) {
-                            finalPath += pages[i].path + '/';
-                        }
-                        finalPath += pages[i].name + '.html';
-                        $searchEngine.indexPage({
-                            infos: pages[i],
-                            rawData: htmlData,
-                            url: finalPath
-                        });
-                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                            if (err) {
-                                logger.error('Error during ' + pages[i].name + ' page generation');
-                            } else {
-                                resolve();
-                            }
-                        });
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
-                        reject();
                     });
                 });
             })
