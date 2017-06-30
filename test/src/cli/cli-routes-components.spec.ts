@@ -41,6 +41,7 @@ describe('CLI routes', () => {
         expect(routesIndex).to.contain('AppModule');
         expect(routesIndex).to.contain('AppRoutingModule');
         expect(routesIndex).to.contain('HomeRoutingModule');
+        expect(routesIndex).to.contain('AboutComponent');
     });
 
     it('it should have a readme tab', () => {

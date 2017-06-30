@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import { logger } from '../logger';
 
+const JSON5 = require('json5');
+
 export let RouterParser = (function() {
 
     var routes: any[] = [],
@@ -47,7 +49,7 @@ export let RouterParser = (function() {
             if (testTrailingComma != -1) {
                 routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
             }
-            return JSON.parse(routesWithoutSpaces);
+            return JSON5.parse(routesWithoutSpaces);
         },
 
         _cleanRawRoute = function(route: string) {
@@ -286,7 +288,7 @@ export let RouterParser = (function() {
                                             let route = foundRouteWithModuleName(mod.children[i].name);
                                             if (typeof route !== 'undefined') {
                                                 if (route.data) {
-                                                    route.children = JSON.parse(route.data);
+                                                    route.children = JSON5.parse(route.data);
                                                     delete route.data;
                                                     route.kind = 'module';
                                                     _rawModule.children[i] = route;
