@@ -1,22 +1,18 @@
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import {temporaryDir, shell, pkg} from '../helpers';
-const tmp = temporaryDir();
+import {shell, pkg} from '../helpers';
 
 describe('CLI Options', () => {
 
     let runHelp = null;
 
     before( () => {
-        tmp.create();
-        runHelp = shell('ts-node', ['./bin/index-cli.js', '-h']);
+        runHelp = shell('node', ['./bin/index-cli.js', '-h']);
     });
-    after( () => tmp.clean() );
-
 
     it(`should display correct version ${pkg.version}`, () => {
-        let runVersion = shell('ts-node', ['./bin/index-cli.js', '-V']);
+        let runVersion = shell('node', ['./bin/index-cli.js', '-V']);
         expect(runVersion.stdout.toString()).to.contain(pkg.version);
     });
 
