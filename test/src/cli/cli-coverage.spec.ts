@@ -1,11 +1,9 @@
 import * as chai from 'chai';
-const expect = chai.expect;
-
-import {temporaryDir, shell, pkg, exists, exec, read} from '../helpers';
-const tmp = temporaryDir();
-const tsconfigPath = require.resolve('../../../tsconfig.json');
-const tsNodePath = require.resolve('../../../node_modules/.bin/ts-node');
-const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+const expect = chai.expect,
+      tmp = temporaryDir(),
+      tsconfigPath = require.resolve('../../../tsconfig.json'),
+      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI coverage report', () => {
 
@@ -14,15 +12,17 @@ describe('CLI coverage report', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableCoverage -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    done('error');
-                    return;
-                }
-                stdoutString = stdout;
-                done();
-            });
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '--disableCoverage',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
         });
         after(() => tmp.clean());
 
@@ -38,15 +38,18 @@ describe('CLI coverage report', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 15', {env}, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    done('error');
-                    return;
-                }
-                stdoutString = stdout;
-                done();
-            });
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '--coverageTest', '15',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean());
 
@@ -61,10 +64,18 @@ describe('CLI coverage report', () => {
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --coverageTest 30', {env}, (error, stdout, stderr) => {
-                stdoutString = stdout;
-                done();
-            });
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '--coverageTest', '30',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean());
 
