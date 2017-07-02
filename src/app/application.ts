@@ -251,30 +251,30 @@ export class Application {
         actions.push(() => { return this.prepareRoutes(); });
 
         if (diffCrawledData.modules.length > 0) {
-            actions.push(() => { return this.prepareModules(diffCrawledData.modules); });
+            actions.push(() => { return this.prepareModules(); });
         }
         if (diffCrawledData.components.length > 0) {
-            actions.push(() => { return this.prepareComponents(diffCrawledData.components); });
+            actions.push(() => { return this.prepareComponents(); });
         }
 
         if (diffCrawledData.directives.length > 0) {
-            actions.push(() => { return this.prepareDirectives(diffCrawledData.directives); });
+            actions.push(() => { return this.prepareDirectives(); });
         }
 
         if (diffCrawledData.injectables.length > 0) {
-            actions.push(() => { return this.prepareInjectables(diffCrawledData.injectables); });
+            actions.push(() => { return this.prepareInjectables(); });
         }
 
         if (diffCrawledData.pipes.length > 0) {
-            actions.push(() => { return this.preparePipes(diffCrawledData.pipes); });
+            actions.push(() => { return this.preparePipes(); });
         }
 
         if (diffCrawledData.classes.length > 0) {
-            actions.push(() => { return this.prepareClasses(diffCrawledData.classes); });
+            actions.push(() => { return this.prepareClasses(); });
         }
 
         if (diffCrawledData.interfaces.length > 0) {
-            actions.push(() => { return this.prepareInterfaces(diffCrawledData.interfaces); });
+            actions.push(() => { return this.prepareInterfaces(); });
         }
 
         if (diffCrawledData.miscellaneous.variables.length > 0 ||
