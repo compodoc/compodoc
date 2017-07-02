@@ -1,10 +1,15 @@
 import * as path from 'path';
+import * as _ from 'lodash';
+
+import { LinkParser } from './link-parser';
+
 import { readConfigFile, formatDiagnostics, FormatDiagnosticsHost, sys } from 'typescript';
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 
 const getCurrentDirectory = sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = sys.useCaseSensitiveFileNames;
 const newLine = sys.newLine;
+const marked = require('marked');
 
 export function getNewLine(): string {
     return newLine;
@@ -18,6 +23,14 @@ export const formatDiagnosticsHost: FormatDiagnosticsHost = {
     getCurrentDirectory,
     getCanonicalFileName,
     getNewLine
+}
+
+export function markedtags(tags) {
+    var mtags = tags;
+    _.forEach(mtags, (tag) => {
+        tag.comment = marked(LinkParser.resolveLinks(tag.comment));
+    });
+    return mtags;
 };
 
 export function readConfig(configFile: string): any {

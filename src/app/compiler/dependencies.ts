@@ -9,6 +9,7 @@ import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
+import { markedtags } from '../../utils/utils';
 import { generate } from './codegen';
 import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
@@ -418,13 +419,18 @@ export class Dependencies {
                     outputSymbols['interfaces'].push(deps);
                 } else if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
                     let infos = this.visitFunctionDeclaration(node),
+                        tags = this.visitFunctionDeclarationJSDocTags(node),
                         name = infos.name;
                     deps = {
                         name,
-                        file: file
+                        file: file,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
+                    }
+                    if (tags && tags.length > 0) {
+                        deps.jsdoctags = tags;
                     }
                     outputSymbols['miscellaneous'].functions.push(deps);
                 } else if (node.kind === ts.SyntaxKind.EnumDeclaration) {
@@ -433,9 +439,13 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
+                }
+                if (typeof deps !== 'undefined') {
+                    this.debug(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, srcFile);
@@ -553,7 +563,8 @@ export class Dependencies {
                         name = infos.name;
                     deps = {
                         name,
-                        file: file
+                        file: file,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
@@ -566,9 +577,13 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
+                }
+                if (typeof deps !== 'undefined') {
+                    this.debug(deps);
                 }
             }
         });
@@ -927,13 +942,7 @@ export class Dependencies {
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method),
 
-            markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
+
 
         if (method.symbol) {
             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
@@ -1004,15 +1013,7 @@ export class Dependencies {
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         },
-            jsdoctags = JSDocTagsParser.getJSDocs(method),
-
-            markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
+            jsdoctags = JSDocTagsParser.getJSDocs(method);
 
         if (method.symbol) {
             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
@@ -1368,14 +1369,6 @@ export class Dependencies {
             },
             jsdoctags = JSDocTagsParser.getJSDocs(type);
 
-        var markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
-
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
@@ -1427,14 +1420,6 @@ export class Dependencies {
         },
         jsdoctags = JSDocTagsParser.getJSDocs(method);
 
-        var markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
-
         if (typeof method.type !== 'undefined') {
             result.returnType = this.visitType(method.type);
         }
@@ -1467,6 +1452,27 @@ export class Dependencies {
                 return result;
             }
         }
+    }
+
+    private visitFunctionDeclarationJSDocTags(node): string {
+        let jsdoctags = JSDocTagsParser.getJSDocs(node),
+            result;
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result = markedtags(jsdoctags[0].tags);
+            }
+        }
+        return result;
+    }
+
+    private visitEnumAndFunctionDeclarationDescription(node): string {
+        let description:string = '';
+        if (node.jsDoc) {
+            if (node.jsDoc.length > 0) {
+                description = marked(node.jsDoc[0].comment);
+            }
+        }
+        return description;
     }
 
     private visitEnumDeclaration(node) {

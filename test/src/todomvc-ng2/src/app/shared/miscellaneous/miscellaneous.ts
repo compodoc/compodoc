@@ -23,19 +23,22 @@ export interface TOTsdosds<T> {
   [yala: string]: T;
 }
 
+/**
+ * Directions of the app
+ */
+export enum Direction {
+    Up,
+    Down,
+    Left,
+    Right
+}
+
 /*
 export type Something = number | string;
 
 export type Flags = {
     option1: boolean;
     option2: boolean;
-}
-
-export enum Direction {
-    Up,
-    Down,
-    Left,
-    Right
 }
 
 export let yo:{ [index:string] : {message: string} } = {};

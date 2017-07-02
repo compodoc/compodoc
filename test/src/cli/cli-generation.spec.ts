@@ -325,6 +325,18 @@ describe('CLI simple generation', () => {
             expect(file).to.be.true;
         });
 
+        it('should have miscellaneous page', () => {
+            const file = exists('documentation/miscellaneous.html');
+            expect(file).to.be.true;
+        });
+
+        it('miscellaneous page should contain some things', () => {
+            const miscFile = read(`documentation/miscellaneous.html`);
+            expect(miscFile).to.contain('for service using it');
+            expect(miscFile).to.contain('A status');
+            expect(miscFile).to.contain('Directions of the app');
+        });
+
     });
     describe('when generation with -t flag', () => {
 
