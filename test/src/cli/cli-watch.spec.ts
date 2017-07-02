@@ -17,7 +17,7 @@ describe('CLI watch', () => {
             './bin/index-cli.js',
             '-p', './test/src/sample-files/tsconfig.simple.json',
             '-d', tmp.name + '/',
-            '-s', '-w'], { env, timeout: 15000 });
+            '-s', '-w'], { env, timeout: 25000 });
 
          ls.stdout.on('data', function (data) {
            if (data.indexOf('Watching source') !== -1 && !testWatch) {
@@ -55,7 +55,7 @@ describe('CLI watch', () => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
             expect(fooCoverageFile).to.contain('3/6');
             done();
-        }, 8000);
+        }, 12000);
     });
 
 });

@@ -40,7 +40,7 @@ describe('CLI serving', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-s'], { env, timeout: 10000 });
+                '-s'], { env, timeout: 15000 });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -62,7 +62,7 @@ describe('CLI serving', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-s',
-                '-d', './documentation/'], { env, timeout: 10000 });
+                '-d', './documentation/'], { env, timeout: 12000 });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -84,7 +84,7 @@ describe('CLI serving', () => {
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-s'], { env, timeout: 10000 });
+                '-s'], { env, timeout: 12000 });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
