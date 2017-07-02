@@ -1247,6 +1247,7 @@ export class Application {
                 timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
             },
             runnerAddAndRemove = () => {
+                startTime = new Date();
                 this.generate();
             },
             waiterChange = () => {
@@ -1254,6 +1255,7 @@ export class Application {
                 timerChangeRef = setTimeout(runnerChange, 1000);
             },
             runnerChange = () => {
+                startTime = new Date();
                 this.setUpdatedFiles(watchChangedFiles);
                 if (this.hasWatchedFilesTSFiles()) {
                     this.getMicroDependenciesData();
