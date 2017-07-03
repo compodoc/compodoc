@@ -90,6 +90,11 @@ export let HtmlEngineHelpers = (function() {
             text = text.replace(/	/gm, '&nbsp;&nbsp;&nbsp;&nbsp;');
             return new Handlebars.SafeString(text);
         });
+        Handlebars.registerHelper('clean-paragraph', function(text) {
+            text = text.replace(/<p>/gm, '');
+            text = text.replace(/<\/p>/gm, '');
+            return new Handlebars.SafeString(text);
+        });
         Handlebars.registerHelper('escapeSimpleQuote', function(text) {
             if(!text) return;
             var _text = text.replace(/'/g, "\\'");
@@ -370,6 +375,34 @@ export let HtmlEngineHelpers = (function() {
             if (tags.length >= 1) {
                 this.tags = tags;
                 return options.fn(this);
+            }
+        });
+        Handlebars.registerHelper('jsdoc-default', function(jsdocTags:jsdocTagInterface[], options) {
+            if (jsdocTags) {
+                var i = 0,
+                    len = jsdocTags.length,
+                    tag = {} as jsdocTagInterface,
+                    defaultValue = false;
+                for(i; i<len; i++) {
+                    if (jsdocTags[i].tagName) {
+                        if (jsdocTags[i].tagName.text === 'default') {
+                            defaultValue = true;
+                            if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
+                                tag.type = jsdocTags[i].typeExpression.type.name.text
+                            }
+                            if (jsdocTags[i].comment) {
+                                tag.comment = jsdocTags[i].comment
+                            }
+                            if (jsdocTags[i].name) {
+                                tag.name = jsdocTags[i].name.text;
+                            }
+                        }
+                    }
+                }
+                if (defaultValue) {
+                    this.tag = tag;
+                    return options.fn(this);
+                }
             }
         });
         Handlebars.registerHelper('linkType', function(name, options) {

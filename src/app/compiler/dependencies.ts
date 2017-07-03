@@ -973,12 +973,19 @@ export class Dependencies {
     }
 
     private visitCallDeclaration(method, sourceFile) {
-        return {
+        var result = {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
+        },
+        jsdoctags = JSDocTagsParser.getJSDocs(method);
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
+            }
         }
+        return result;
     }
 
     private visitIndexDeclaration(method, sourceFile?) {
@@ -1105,7 +1112,8 @@ export class Dependencies {
              type: this.visitType(property),
              description: '',
              line: this.getPosition(property, sourceFile).line + 1
-         }
+         },
+            jsdoctags = JSDocTagsParser.getJSDocs(property);
 
          if (property.symbol) {
              result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())));
@@ -1118,6 +1126,11 @@ export class Dependencies {
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
                  result.modifierKind = property.modifiers[0].kind;
+             }
+         }
+         if (jsdoctags && jsdoctags.length >= 1) {
+             if (jsdoctags[0].tags) {
+                 result.jsdoctags = markedtags(jsdoctags[0].tags);
              }
          }
          return result;

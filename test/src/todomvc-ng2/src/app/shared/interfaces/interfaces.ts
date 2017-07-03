@@ -24,6 +24,11 @@ interface LabelledTodo {
  * ```
  */
 interface SearchFunc {
+    /**
+     * A function
+     * @param {string} source A string
+     * @param {string} subString A substring
+     */
     (source: string, subString: string): boolean;
 }
 
@@ -48,6 +53,12 @@ interface StringArray {
  * ```
  */
 interface ClockInterface {
+    /**
+     * Activated status
+     *
+     * @default true
+     */
+    activated: boolean;
     /**
      * The current time
      * @type {Date}

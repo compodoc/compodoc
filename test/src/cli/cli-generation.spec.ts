@@ -229,7 +229,9 @@ describe('CLI simple generation', () => {
     });
     describe('when generation with big app', () => {
 
-        let stdoutString = null;
+        let stdoutString = null,
+            clockInterfaceFile,
+            searchFuncFile;
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -240,9 +242,11 @@ describe('CLI simple generation', () => {
                 done('error');
             }
             stdoutString = ls.stdout.toString();
+            clockInterfaceFile = read(`documentation/interfaces/ClockInterface.html`);
+            searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
             done();
         });
-        after(() => tmp.clean('documentation'));
+        //after(() => tmp.clean('documentation'));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
@@ -335,6 +339,14 @@ describe('CLI simple generation', () => {
             expect(miscFile).to.contain('for service using it');
             expect(miscFile).to.contain('A status');
             expect(miscFile).to.contain('Directions of the app');
+        });
+
+        it('it should have infos about SearchFunc interface', () => {
+            expect(searchFuncFile).to.contain('A string');
+        });
+
+        it('it should have infos about ClockInterface interface', () => {
+            expect(clockInterfaceFile).to.contain('Default value');
         });
 
     });

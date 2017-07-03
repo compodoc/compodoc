@@ -59,6 +59,13 @@
                                     </td>
                                 </tr>
 
+                                {{#jsdoc-default jsdoctags}}
+                                <tr>
+                                    <td class="col-md-4">
+                                        <i>Default value : </i><code>{{{clean-paragraph tag.comment}}}</code>
+                                    </td>
+                                </tr>
+                                {{/jsdoc-default}}
 
                                 {{#if type}}
                                     <tr>
@@ -103,6 +110,41 @@
                                     </tr>
                                 {{/if}}
 
+                                {{#if jsdoctags}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                          <div class="io-description">
+                                              {{#jsdoc-params jsdoctags}}
+                                                  <b>Parameters :</b>
+                                                  <ul class="jsdoc-params">
+                                                      {{#each tags}}
+                                                          <li>
+                                                              <div>
+                                                                  <b>{{name}}</b>
+                                                                  {{#if type}}
+                                                                      : {{> link-type type=type }}
+                                                                  {{/if}}
+                                                              </div>
+                                                              <div>
+                                                                  {{{comment}}}
+                                                              </div>
+                                                          </li>
+                                                      {{/each}}
+                                                  </ul>
+                                              {{/jsdoc-params}}
+                                              {{#jsdoc-example jsdoctags}}
+                                                  <b>Example :</b>
+                                                  {{#each tags}}
+                                                      <div class="jsdoc-example-ul">
+                                                          {{{comment}}}
+                                                      </div>
+                                                  {{/each}}
+                                              {{/jsdoc-example}}
+                                          </div>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
                             {{/if}}
 
                             {{#if line}}
@@ -127,6 +169,7 @@
                 {{/each}}
             </section>
         {{/if}}
+
     {{#unless disableSourceCode}}
     </div>
     <div class="tab-pane fade tab-source-code" id="source">
