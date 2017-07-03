@@ -1476,7 +1476,9 @@ export class Dependencies {
         let description:string = '';
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
-                description = marked(node.jsDoc[0].comment);
+                if (typeof node.jsDoc[0].comment !== 'undefined') {
+                    description = marked(node.jsDoc[0].comment);
+                }
             }
         }
         return description;
