@@ -444,9 +444,6 @@ export class Dependencies {
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
                 }
-                if (typeof deps !== 'undefined') {
-                    this.debug(deps);
-                }
             } else {
                 let IO = this.getRouteIO(file, srcFile);
                 if(IO.routes) {
@@ -581,9 +578,6 @@ export class Dependencies {
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
-                }
-                if (typeof deps !== 'undefined') {
-                    this.debug(deps);
                 }
             }
         });
