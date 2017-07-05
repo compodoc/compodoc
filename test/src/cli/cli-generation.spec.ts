@@ -122,6 +122,35 @@ describe('CLI simple generation', () => {
            });
     });
 
+    describe('when generation with d flag without / at the end', () => {
+        before(function (done) {
+            tmp.create();
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '../' + tmp.name], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean());
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists(`${tmp.name}`);
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists(`${tmp.name}/index.html`);
+            expect(isIndexExists).to.be.true;
+            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            expect(isModulesExists).to.be.true;
+        });
+    });
+
     describe('when generation with d and a flags', () => {
 
         before(function (done) {

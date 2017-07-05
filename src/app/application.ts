@@ -84,6 +84,9 @@ export class Application {
      * Start compodoc process
      */
     protected generate() {
+        if (this.configuration.mainData.output.charAt(this.configuration.mainData.output.length - 1) !== '/') {
+            this.configuration.mainData.output += '/';
+        }
         $htmlengine.init().then(() => {
             this.processPackageJson();
         });
