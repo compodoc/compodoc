@@ -71,7 +71,6 @@ class DependenciesEngine {
                 }
                 delete _m[i].declarations[j].sourceCode;
             }
-            delete _m[i].sourceCode;
         }
         return _m;
     }

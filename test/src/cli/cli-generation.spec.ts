@@ -13,6 +13,7 @@ describe('CLI simple generation', () => {
             fooComponentFile,
             fooServiceFile,
             componentFile,
+            moduleFile,
             coverageFile;
         before(function (done) {
             tmp.create();
@@ -29,6 +30,7 @@ describe('CLI simple generation', () => {
             fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
             fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
             coverageFile = read(`${tmp.name}/coverage.html`);
+            moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
             componentFile = read(`${tmp.name}/components/BarComponent.html`);
             done();
         });
@@ -64,6 +66,12 @@ describe('CLI simple generation', () => {
         it('should have generated search index json', () => {
             const isIndexExists = exists(`${tmp.name}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
+        });
+
+        it('should have generated sourceCode for files', () => {
+            expect(moduleFile).to.contain('import { FooDirective } from');
+            expect(fooComponentFile).to.contain('export class FooComponent');
+            expect(fooServiceFile).to.contain('export class FooService');
         });
 
         /**
