@@ -10,6 +10,7 @@ import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { markedtags } from '../../utils/utils';
+import { kindToType } from '../../utils/kind-to-type';
 import { generate } from './codegen';
 import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
@@ -814,15 +815,35 @@ export class Dependencies {
     }
 
     private visitType(node) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
         let _return = 'void';
         if (node) {
-            try {
-                _return = this.typeChecker.typeToString(this.typeChecker.getTypeAtLocation(node))
-            } catch (e) {
+            if (node.typeName) {
+                _return = node.typeName.text;
+            } else if (node.type) {
+                if (node.type.typeName) {
+                    _return = node.type.typeName.text;
+                }
+            } else if (node.elementType) {
+                _return = kindToType(node.elementType.kind) + kindToType(node.kind);
+            } else if (node.types && node.kind === ts.SyntaxKind.UnionType) {
                 _return = '';
+                let i = 0,
+                    len = node.types.length;
+                for (i; i<len; i++) {
+                    _return += kindToType(node.types[i].kind);
+                    if (i<len-1) {
+                        _return += '|';
+                    }
+                }
+            } else {
+                _return = kindToType(node.kind);
+            }
+            if (node.typeArguments) {
+                _return += '<';
+                for (const argument of node.typeArguments) {
+                    _return += kindToType(argument.kind);
+                }
+                _return += '>';
             }
         }
         return _return;
@@ -1044,7 +1065,7 @@ export class Dependencies {
         return {
             name: arg.name.text,
             type: this.visitType(arg)
-        }
+        };
     }
 
     private getNamesCompareFn(name) {

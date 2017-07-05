@@ -349,6 +349,14 @@ describe('CLI simple generation', () => {
             expect(clockInterfaceFile).to.contain('Default value');
         });
 
+        it('should have generated args and return informations for todo store', () => {
+            const file = read('documentation/injectables/TodoStore.html');
+            expect(file).to.contain('Promise&lt;void&gt;');
+            expect(file).to.contain('string|number');
+            expect(file).to.contain('number[]');
+            expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
+        });
+
     });
     describe('when generation with -t flag', () => {
 
