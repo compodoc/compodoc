@@ -18,6 +18,12 @@ let pkg = require('../package.json'),
 
 process.setMaxListeners(0);
 
+process.on('unhandledRejection', (err) => {
+    logger.error(err);
+    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+    process.exit(1);
+});
+
 export class CliApplication extends Application
 {
     /**
