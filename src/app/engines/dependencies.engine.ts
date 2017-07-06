@@ -1,9 +1,9 @@
-import * as _ from 'lodash';
-
 import { finderInAngularAPIs } from '../../utils/angular-api';
 
 import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
+
+const _ = require('lodash');
 
 class DependenciesEngine {
     private static _instance:DependenciesEngine = new DependenciesEngine();

@@ -1,6 +1,5 @@
-import * as _ from 'lodash';
-
-let AngularAPIs = require('../src/data/api-list.json');
+const AngularAPIs = require('../src/data/api-list.json'),
+      _ = require('lodash');
 
 export function finderInAngularAPIs(type: string) {
     let _result = {

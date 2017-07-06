@@ -1,15 +1,15 @@
 import * as path from 'path';
-import * as _ from 'lodash';
 
 import { LinkParser } from './link-parser';
 
 import { readConfigFile, formatDiagnostics, FormatDiagnosticsHost, sys } from 'typescript';
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 
-const getCurrentDirectory = sys.getCurrentDirectory;
-const useCaseSensitiveFileNames = sys.useCaseSensitiveFileNames;
-const newLine = sys.newLine;
-const marked = require('marked');
+const getCurrentDirectory = sys.getCurrentDirectory,
+      useCaseSensitiveFileNames = sys.useCaseSensitiveFileNames,
+      newLine = sys.newLine,
+      marked = require('marked'),
+      _ = require('lodash');
 
 export function getNewLine(): string {
     return newLine;

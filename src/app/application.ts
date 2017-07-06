@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 
@@ -26,6 +25,7 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 import { promiseSequential } from '../utils/promise-sequential';
 
 const glob: any = require('glob'),
+      _ = require('lodash'),
       marked = require('marked'),
       chokidar = require('chokidar');
 

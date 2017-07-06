@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
 import * as ts from 'typescript';
@@ -16,7 +15,8 @@ import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/ut
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
-const marked = require('marked');
+const marked = require('marked'),
+      _ = require('lodash');
 
 interface NodeObject {
     kind: Number;

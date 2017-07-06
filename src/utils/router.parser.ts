@@ -1,11 +1,11 @@
-import * as _ from 'lodash';
 import * as util from 'util';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import { logger } from '../logger';
 
-const JSON5 = require('json5');
+const JSON5 = require('json5'),
+      _ = require('lodash');
 
 export let RouterParser = (function() {
 
