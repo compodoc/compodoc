@@ -24,12 +24,6 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
 });
 
-process.on('uncaughtException', (err) => {
-    logger.error(err);
-    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
-    process.exit(1);
-});
-
 export class CliApplication extends Application
 {
     /**
