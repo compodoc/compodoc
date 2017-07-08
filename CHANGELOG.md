@@ -1,3 +1,22 @@
+<a name="1.0.0-beta.11"></a>
+# [1.0.0-beta.11](https://github.com/compodoc/compodoc/compare/1.0.0-beta.10...1.0.0-beta.11) (2017-07-08)
+
+### Bug Fixes
+
+* **options:** Link correct options with CLI flags ([82af585](https://github.com/compodoc/compodoc/commit/82af585)), closes [#205](https://github.com/compodoc/compodoc/issues/205)
+* **watch:** Watch mode not working properly ([4264b5e](https://github.com/compodoc/compodoc/commit/4264b5e)), closes [#141](https://github.com/compodoc/compodoc/issues/141)
+* **search-engine:** Invalid JSON is creating an issue when rendering the object to the template ([8042af5](https://github.com/compodoc/compodoc/commit/8042af5)), closes [#187](https://github.com/compodoc/compodoc/issues/187)
+* **routes:** Trailing commas throw error when parsing routes ([7bc1e05](https://github.com/compodoc/compodoc/commit/7bc1e05)), closes [#192](https://github.com/compodoc/compodoc/issues/192) [#173](https://github.com/compodoc/compodoc/issues/173)
+* **misc:** Miscellaneous sections Functions not showing documentation ([235f1d0](https://github.com/compodoc/compodoc/commit/235f1d0)), closes [#142](https://github.com/compodoc/compodoc/issues/142)
+* **deps:** add @default support ([78257cc](https://github.com/compodoc/compodoc/commit/78257cc)), closes [#212](https://github.com/compodoc/compodoc/issues/212)
+* **deps:** Bespoke types and Promise being converted to any type in output documentation ([35af038](https://github.com/compodoc/compodoc/commit/35af038)), closes [#208](https://github.com/compodoc/compodoc/issues/208)
+* **output:** Linux unix like environments: Absolute paths generates fonts, images, js and styles in the wrong directory ([e0a3c60](https://github.com/compodoc/compodoc/commit/e0a3c60)), closes [#206](https://github.com/compodoc/compodoc/issues/206)
+
+### Features
+
+* **log:** add more logs on silent mode ([1c858c7](https://github.com/compodoc/compodoc/commit/1c858c7))
+* **chore:** run files generation in // +20% in speed generation :tada: ([832b20d](https://github.com/compodoc/compodoc/commit/832b20d))
+
 <a name="1.0.0-beta.10"></a>
 # [1.0.0-beta.10](https://github.com/compodoc/compodoc/compare/1.0.0-beta.9...1.0.0-beta.10) (2017-06-19)
 
