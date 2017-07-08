@@ -32,7 +32,7 @@ describe('CLI watch', () => {
          });
 
          ls.on('close', function (code) {
-             done();
+             //done();
              //console.log('child process exited with code ' + code);
          });
     });
