@@ -47,7 +47,7 @@ describe('CLI watch', () => {
         expect(fooCoverageFile).to.contain('2/6');
     });
 
-    /*it('it should have updated coverage page', (done) => {
+    it('it should have updated coverage page', (done) => {
         setTimeout(() => {
             copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
         }, 2000);
@@ -56,6 +56,6 @@ describe('CLI watch', () => {
             expect(fooCoverageFile).to.contain('3/6');
             done();
         }, 18000);
-    });*/
+    });
 
 });
