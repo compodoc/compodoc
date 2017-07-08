@@ -1,10 +1,19 @@
 <section>
     {{#each enums}}
-        <h3 id="inputs">
-            {{name}}
-        </h3>
         <table class="table table-sm table-bordered">
             <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <b>{{name}}</b>
+                    </td>
+                </tr>
+                {{#if description}}
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-description">{{{parseDescription description ../depth}}}</div>
+                        </td>
+                    </tr>
+                {{/if}}
                 {{#each childs}}
                     {{#if name}}
                         <tr>

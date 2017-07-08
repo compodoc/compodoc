@@ -1,15 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Shelljs from 'shelljs';
-import * as _ from 'lodash';
 import * as util from 'util';
 
 import { $dependenciesEngine } from './dependencies.engine';
 
 import isGlobal from '../../utils/global.path';
 
-let ngdCr = require('@compodoc/ngd-core');
-let ngdT = require('@compodoc/ngd-transformer');
+const ngdCr = require('@compodoc/ngd-core'),
+      ngdT = require('@compodoc/ngd-transformer'),
+      _ = require('lodash');
 
 export class NgdEngine {
     constructor() {}

@@ -1,7 +1,5 @@
-import * as _ from 'lodash';
 import * as path from 'path';
 import * as util from 'util';
-import * as ts from 'typescript';
 import { readFileSync } from 'fs-extra';
 
 import { compilerHost, detectIndent } from '../../utilities';
@@ -9,12 +7,16 @@ import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
+import { markedtags } from '../../utils/utils';
+import { kindToType } from '../../utils/kind-to-type';
 import { generate } from './codegen';
 import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
-const marked = require('marked');
+const marked = require('marked'),
+      ts = require('typescript'),
+      _ = require('lodash');
 
 interface NodeObject {
     kind: Number;
@@ -418,13 +420,18 @@ export class Dependencies {
                     outputSymbols['interfaces'].push(deps);
                 } else if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
                     let infos = this.visitFunctionDeclaration(node),
+                        tags = this.visitFunctionDeclarationJSDocTags(node),
                         name = infos.name;
                     deps = {
                         name,
-                        file: file
+                        file: file,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
+                    }
+                    if (tags && tags.length > 0) {
+                        deps.jsdoctags = tags;
                     }
                     outputSymbols['miscellaneous'].functions.push(deps);
                 } else if (node.kind === ts.SyntaxKind.EnumDeclaration) {
@@ -433,6 +440,7 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
@@ -553,7 +561,8 @@ export class Dependencies {
                         name = infos.name;
                     deps = {
                         name,
-                        file: file
+                        file: file,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
@@ -566,6 +575,7 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
+                        description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
@@ -805,15 +815,35 @@ export class Dependencies {
     }
 
     private visitType(node) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
         let _return = 'void';
         if (node) {
-            try {
-                _return = this.typeChecker.typeToString(this.typeChecker.getTypeAtLocation(node))
-            } catch (e) {
+            if (node.typeName) {
+                _return = node.typeName.text;
+            } else if (node.type) {
+                if (node.type.typeName) {
+                    _return = node.type.typeName.text;
+                }
+            } else if (node.elementType) {
+                _return = kindToType(node.elementType.kind) + kindToType(node.kind);
+            } else if (node.types && node.kind === ts.SyntaxKind.UnionType) {
                 _return = '';
+                let i = 0,
+                    len = node.types.length;
+                for (i; i<len; i++) {
+                    _return += kindToType(node.types[i].kind);
+                    if (i<len-1) {
+                        _return += '|';
+                    }
+                }
+            } else {
+                _return = kindToType(node.kind);
+            }
+            if (node.typeArguments) {
+                _return += '<';
+                for (const argument of node.typeArguments) {
+                    _return += kindToType(argument.kind);
+                }
+                _return += '>';
             }
         }
         return _return;
@@ -927,13 +957,7 @@ export class Dependencies {
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method),
 
-            markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
+
 
         if (method.symbol) {
             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
@@ -970,12 +994,19 @@ export class Dependencies {
     }
 
     private visitCallDeclaration(method, sourceFile) {
-        return {
+        var result = {
             description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
+        },
+        jsdoctags = JSDocTagsParser.getJSDocs(method);
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
+            }
         }
+        return result;
     }
 
     private visitIndexDeclaration(method, sourceFile?) {
@@ -1004,15 +1035,7 @@ export class Dependencies {
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         },
-            jsdoctags = JSDocTagsParser.getJSDocs(method),
-
-            markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
+            jsdoctags = JSDocTagsParser.getJSDocs(method);
 
         if (method.symbol) {
             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
@@ -1042,7 +1065,7 @@ export class Dependencies {
         return {
             name: arg.name.text,
             type: this.visitType(arg)
-        }
+        };
     }
 
     private getNamesCompareFn(name) {
@@ -1110,7 +1133,8 @@ export class Dependencies {
              type: this.visitType(property),
              description: '',
              line: this.getPosition(property, sourceFile).line + 1
-         }
+         },
+            jsdoctags = JSDocTagsParser.getJSDocs(property);
 
          if (property.symbol) {
              result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())));
@@ -1123,6 +1147,11 @@ export class Dependencies {
          if (property.modifiers) {
              if (property.modifiers.length > 0) {
                  result.modifierKind = property.modifiers[0].kind;
+             }
+         }
+         if (jsdoctags && jsdoctags.length >= 1) {
+             if (jsdoctags[0].tags) {
+                 result.jsdoctags = markedtags(jsdoctags[0].tags);
              }
          }
          return result;
@@ -1368,14 +1397,6 @@ export class Dependencies {
             },
             jsdoctags = JSDocTagsParser.getJSDocs(type);
 
-        var markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
-
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
@@ -1427,14 +1448,6 @@ export class Dependencies {
         },
         jsdoctags = JSDocTagsParser.getJSDocs(method);
 
-        var markedtags = function(tags) {
-                var mtags = tags;
-                _.forEach(mtags, (tag) => {
-                    tag.comment = marked(LinkParser.resolveLinks(tag.comment));
-                });
-                return mtags;
-            };
-
         if (typeof method.type !== 'undefined') {
             result.returnType = this.visitType(method.type);
         }
@@ -1467,6 +1480,29 @@ export class Dependencies {
                 return result;
             }
         }
+    }
+
+    private visitFunctionDeclarationJSDocTags(node): string {
+        let jsdoctags = JSDocTagsParser.getJSDocs(node),
+            result;
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                result = markedtags(jsdoctags[0].tags);
+            }
+        }
+        return result;
+    }
+
+    private visitEnumAndFunctionDeclarationDescription(node): string {
+        let description:string = '';
+        if (node.jsDoc) {
+            if (node.jsDoc.length > 0) {
+                if (typeof node.jsDoc[0].comment !== 'undefined') {
+                    description = marked(node.jsDoc[0].comment);
+                }
+            }
+        }
+        return description;
     }
 
     private visitEnumDeclaration(node) {

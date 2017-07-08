@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as _ from 'lodash';
 
 import { Application } from './app/application';
 
@@ -10,6 +9,7 @@ import { readConfig, handlePath } from './utils/utils';
 
 let pkg = require('../package.json'),
     program = require('commander'),
+    _ = require('lodash'),
     glob = require('glob'),
     os = require('os'),
     osName = require('os-name'),
@@ -17,6 +17,18 @@ let pkg = require('../package.json'),
     cwd = process.cwd();
 
 process.setMaxListeners(0);
+
+process.on('unhandledRejection', (err) => {
+    logger.error(err);
+    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+    process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+    logger.error(err);
+    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+    process.exit(1);
+});
 
 export class CliApplication extends Application
 {

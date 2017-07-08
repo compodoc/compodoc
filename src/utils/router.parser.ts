@@ -1,9 +1,11 @@
-import * as _ from 'lodash';
 import * as util from 'util';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import { logger } from '../logger';
+
+const JSON5 = require('json5'),
+      _ = require('lodash');
 
 export let RouterParser = (function() {
 
@@ -47,7 +49,7 @@ export let RouterParser = (function() {
             if (testTrailingComma != -1) {
                 routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
             }
-            return JSON.parse(routesWithoutSpaces);
+            return JSON5.parse(routesWithoutSpaces);
         },
 
         _cleanRawRoute = function(route: string) {
@@ -206,7 +208,7 @@ export let RouterParser = (function() {
                     for(var i in node.children) {
                         let route = foundRouteWithModuleName(node.children[i].name);
                         if (route && route.data) {
-                            route.children = JSON.parse(route.data);
+                            route.children = JSON5.parse(route.data);
                             delete route.data;
                             route.kind = 'module';
                             routesTree.children.push(route);
@@ -220,7 +222,7 @@ export let RouterParser = (function() {
                     //console.log('   else routes are directly inside the root module');
                     let rawRoutes = foundRouteWithModuleName(node.name);
                     if (rawRoutes) {
-                        let routes = JSON.parse(rawRoutes.data);
+                        let routes = JSON5.parse(rawRoutes.data);
                         if (routes) {
                             let i = 0,
                                 len = routes.length;
@@ -286,7 +288,7 @@ export let RouterParser = (function() {
                                             let route = foundRouteWithModuleName(mod.children[i].name);
                                             if (typeof route !== 'undefined') {
                                                 if (route.data) {
-                                                    route.children = JSON.parse(route.data);
+                                                    route.children = JSON5.parse(route.data);
                                                     delete route.data;
                                                     route.kind = 'module';
                                                     _rawModule.children[i] = route;

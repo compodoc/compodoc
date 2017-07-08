@@ -53,7 +53,14 @@ export class HtmlEngine {
                         loop(resolve, reject);
                     });
                 } else {
-                    resolve();
+                    fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
+                       if (err) {
+                           reject('Error during index generation');
+                       } else {
+                           this.cache['page'] = data;
+                           resolve();
+                       }
+                   });
                 }
             }
 
@@ -66,29 +73,11 @@ export class HtmlEngine {
         var o = mainData,
             that = this;
         (<any>Object).assign(o, page);
-        return new Promise(function(resolve, reject) {
-            if(that.cache['page']) {
-                let template:any = Handlebars.compile(that.cache['page']),
-                    result = template({
-                        data: o
-                    });
-                resolve(result);
-            } else {
-                fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
-                   if (err) {
-                       reject('Error during index ' + page.name + ' generation');
-                   } else {
-                       that.cache['page'] = data;
-                       let template:any = Handlebars.compile(data),
-                           result = template({
-                               data: o
-                           });
-                       resolve(result);
-                   }
-               });
-            }
-
-        });
+        let template:any = Handlebars.compile(that.cache['page']),
+            result = template({
+                data: o
+            });
+        return result;
     }
     generateCoverageBadge(outputFolder, coverageData) {
         return new Promise((resolve, reject) => {

@@ -12,7 +12,7 @@ const ABOUT_ROUTES: Routes = [
             { path: '', redirectTo: 'todomvc', pathMatch: 'full' },
             { path: 'todomvc', component: TodoMVCComponent },
             { path: 'compodoc', component: CompodocComponent }
-        ]
+        ],
     }
 ];
 

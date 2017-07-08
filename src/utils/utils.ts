@@ -1,10 +1,15 @@
 import * as path from 'path';
-import { readConfigFile, formatDiagnostics, FormatDiagnosticsHost, sys } from 'typescript';
+
+import { LinkParser } from './link-parser';
+
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 
-const getCurrentDirectory = sys.getCurrentDirectory;
-const useCaseSensitiveFileNames = sys.useCaseSensitiveFileNames;
-const newLine = sys.newLine;
+const ts = require('typescript'),
+      getCurrentDirectory = ts.sys.getCurrentDirectory,
+      useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames,
+      newLine = ts.sys.newLine,
+      marked = require('marked'),
+      _ = require('lodash');
 
 export function getNewLine(): string {
     return newLine;
@@ -14,16 +19,25 @@ export function getCanonicalFileName(fileName: string): string {
     return useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
 }
 
-export const formatDiagnosticsHost: FormatDiagnosticsHost = {
+export const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
     getCurrentDirectory,
     getCanonicalFileName,
     getNewLine
+}
+
+export function markedtags(tags) {
+    var mtags = tags;
+    _.forEach(mtags, (tag) => {
+        tag.comment = marked(LinkParser.resolveLinks(tag.comment));
+    });
+    return mtags;
 };
 
 export function readConfig(configFile: string): any {
-    let result = readConfigFile(configFile, sys.readFile);
+    console.log(ts.readConfigFile);
+    let result = ts.readConfigFile(configFile, ts.sys.readFile);
     if (result.error) {
-        let message = formatDiagnostics([result.error], formatDiagnosticsHost);
+        let message = ts.formatDiagnostics([result.error], formatDiagnosticsHost);
         throw new Error(message);
     }
     return result.config;

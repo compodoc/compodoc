@@ -6,7 +6,8 @@ const process = require('process'),
     tmp = helpers.temporaryDir();
 
 const TEST_FOLDER = 'angularexpo-tests',
-    GIT_REPOSITORIES = [{
+    GIT_REPOSITORIES = [
+    {
         name: 'parrot', maintainer: 'anthonynsimon', tsconfig_path: './web-app/src/'
     }, {
         name: 'batcave', maintainer: 'hsbalar', tsconfig_path: './'
@@ -31,7 +32,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'zombie-finder', maintainer: 'hsbalar', tsconfig_path: './'
     }, {
-        name: 'angular-calendar', maintainer: 'mattlewis92', tsconfig_path: './'
+        name: 'angular-calendar', maintainer: 'mattlewis92', tsconfig_path: './', tsconfig_file: 'tsconfig-compodoc.json'
     }, {
         name: 'angular2-hn', maintainer: 'housseindjirdeh', tsconfig_path: './src/'
     }, {
@@ -43,13 +44,13 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'Preserver', maintainer: 'hsbalar', tsconfig_path: './'
     }, {
-        name: 'ng2-tic-tac-toe', maintainer: 'rmdias', tsconfig_path: './'
+        name: 'ng2-tic-tac-toe', maintainer: 'rmdias', tsconfig_path: './', failedAccepted: true
     }, {
-        name: 'ng2-2048', maintainer: 'Neil-Ni', tsconfig_path: './'
+        name: 'ng2-2048', maintainer: 'Neil-Ni', tsconfig_path: './', failedAccepted: true
     }, {
-        name: 'angular2-redux-contact-list', maintainer: 'housseindjirdeh', tsconfig_path: './'
+        name: 'angular2-redux-contact-list', maintainer: 'housseindjirdeh', tsconfig_path: './', failedAccepted: true
     }, {
-        name: 'Angular2PianoNoteTrainingGame', maintainer: 'JosephWoodward', tsconfig_path: './'
+        name: 'Angular2PianoNoteTrainingGame', maintainer: 'JosephWoodward', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'ng-logo', maintainer: 'dweitz43', tsconfig_path: './src/'
     }, {
@@ -57,11 +58,11 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'ng2-chess', maintainer: 'shlomiassaf', tsconfig_path: './'
     }, {
-        name: 'primeng', maintainer: 'primefaces', tsconfig_path: './'
+        name: 'primeng', maintainer: 'primefaces', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'sequence-alignment', maintainer: 'radotzki', tsconfig_path: './'
     }, {
-        name: 'ng-go', maintainer: 'lys1030', tsconfig_path: './'
+        name: 'ng-go', maintainer: 'lys1030', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'ngx-uploader', maintainer: 'jkuri', tsconfig_path: './'
     }, {
@@ -69,7 +70,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'programmersguidetothegalaxy-site-angular2', maintainer: 'stuartaroth', tsconfig_path: './'
     }, {
-        name: 'a2gtm', maintainer: 'mrf28', tsconfig_path: './'
+        name: 'a2gtm', maintainer: 'mrf28', tsconfig_path: './src/'
     }, {
         name: 'realtime-twitter-search-angular2', maintainer: 'pusher-community', tsconfig_path: './'
     }, {
@@ -79,7 +80,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'todo-list', maintainer: 'maxcabrera', tsconfig_path: './'
     }, {
-        name: 'rdash-angular2', maintainer: 'ziyasal', tsconfig_path: './'
+        name: 'rdash-angular2', maintainer: 'ziyasal', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'ngconf2015demo', maintainer: 'Microsoft', tsconfig_path: './'
     }, {
@@ -99,9 +100,31 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'angular2-tv-tracker', maintainer: 'mattlewis92', tsconfig_path: './'
     }, {
-        name: 'ng2-dribbble', maintainer: 'mohammedzamakhan', tsconfig_path: './'
+        name: 'ng2-dribbble', maintainer: 'mohammedzamakhan', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'youtube-trends', maintainer: 'jasodeep', tsconfig_path: './src/'
+    }, {
+        name: 'PianoPlay', maintainer: 'deanmalone', tsconfig_path: './src/'
+    }, {
+        name: 'ng-snotify', maintainer: 'artemsky', tsconfig_path: './'
+    }, {
+        name: 'ng-gallery', maintainer: 'MurhafSousli', tsconfig_path: './'
+    }, {
+        name: 'ngx-youtube-player', maintainer: 'SamirHodzic', tsconfig_path: './src/'
+    }, {
+        name: 'angular2-instagram', maintainer: 'JayKan', tsconfig_path: './'
+    }, {
+        name: 'runman', maintainer: 'MurhafSousli', tsconfig_path: './src/'
+    }, {
+        name: 'ng2-finance', maintainer: 'mpetkov', tsconfig_path: './'
+    }, {
+        name: 'ng-math', maintainer: 'coryrylan', tsconfig_path: './'
+    }, {
+        name: 'ng2-minesweeper', maintainer: 'DanielYKPan', tsconfig_path: './'
+    }, {
+        name: 'ngx-snake', maintainer: 'SamirHodzic', tsconfig_path: './src/'
+    }, {
+        name: 'ng-pokedex', maintainer: 'coryrylan', tsconfig_path: './'
     }],
     len = GIT_REPOSITORIES.length;
 
@@ -112,9 +135,7 @@ let i = 0,
     failedRepositories = [],
     clone = (repo) => {
         return new Promise(function(resolve, reject) {
-            exec('git clone https://github.com/' + repo.maintainer + '/' + repo.name, {
-                cwd: TEST_FOLDER
-            }, (error, stdout, stderr) => {
+            exec('git clone https://github.com/' + repo.maintainer + '/' + repo.name, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     reject();
@@ -126,37 +147,55 @@ let i = 0,
     },
     compodoc = (repo) => {
         return new Promise(function(resolve, reject) {
-            var tsconfig = '';
+            var tsconfig = 'tsconfig.json';
             if (repo.tsconfig_file) { tsconfig = repo.tsconfig_file; }
+
+            process.chdir(repo.name);
+
             exec('compodoc -p ' + repo.tsconfig_path + tsconfig, {
-                cwd: TEST_FOLDER + '/' + repo.name
+                maxBuffer: 1000 * 1024
             }, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`compodoc error: ${error}`);
                     reject(stdout, stderr);
                 } else {
+                    process.chdir('../');
                     if (stdout.indexOf('Documentation generated') !== -1) {
-                        resolve();
+                        resolve(stdout, stderr);
                     } else {
-                        reject(stdout, stderr);
+                        if (repo.failedAccepted) {
+                            resolve(stdout, stderr);
+                        } else {
+                            reject(stdout, stderr);
+                        }
                     }
                 }
             });
         });
     }
 
-let loop = () => {
+let reg = /parsing/gm,
+    loop = () => {
     if (i < len) {
         clone(GIT_REPOSITORIES[i]).then(() => {
             console.log(`Repository ${GIT_REPOSITORIES[i].name} cloned`);
-            compodoc(GIT_REPOSITORIES[i]).then(() => {
+            compodoc(GIT_REPOSITORIES[i]).then((stdout, stderr) => {
+                console.log('');
                 console.log(` Compodoc ${GIT_REPOSITORIES[i].name} ok`);
+                if (stdout && stdout.match(reg)) {
+                    console.log(`   ${stdout.match(reg).length} files`);
+                    GIT_REPOSITORIES[i].filesLength = stdout.match(reg).length;
+                }
                 console.log('');
                 i++;
                 loop();
             }, (stdout, stderr) => {
                 console.log('');
                 console.error(`   Compodoc ${GIT_REPOSITORIES[i].name} KO`);
+                if (stdout && stdout.match(reg)) {
+                    console.log(` ${stdout.match(reg).length} files`);
+                    GIT_REPOSITORIES[i].filesLength = stdout.match(reg).length;
+                }
                 console.log('');
                 failedRepositories.push(GIT_REPOSITORIES[i].name);
                 i++;
@@ -166,16 +205,17 @@ let loop = () => {
     } else {
         console.log('END');
         console.log('');
+        console.log('GIT_REPOSITORIES: ', GIT_REPOSITORIES);
         console.log('failedRepositories: ', failedRepositories);
         process.exit(0);
         rimraf(TEST_FOLDER);
     }
 }
 
-exec('cd ' + TEST_FOLDER, {}, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`exec error: ${error}`);
-    } else {
-        loop();
-    }
-});
+try {
+    process.chdir(TEST_FOLDER);
+    console.log(`New directory: ${process.cwd()}`);
+    loop();
+} catch (err) {
+    console.error(`chdir: ${err}`);
+}

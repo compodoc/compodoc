@@ -24,6 +24,13 @@
                         {{#if modifierKind}}<span class="modifier-icon fa fa-{{modifIcon modifierKind}}"></span>{{/if}}<code>{{name}}: {{> link-type type=type }}</bcode>
                     </td>
                 </tr>
+                {{#if type}}
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>{{> link-type type=type }}
+                        </td>
+                    </tr>
+                {{/if}}
                 {{#if defaultValue}}
                     <tr>
                         <td class="col-md-4">
@@ -51,6 +58,40 @@
                 <tr>
                     <td class="col-md-4">
                         <div class="io-description">{{{parseDescription description ../depth}}}</div>
+                    </td>
+                </tr>
+                {{/if}}
+                {{#if jsdoctags}}
+                <tr>
+                    <td class="col-md-4">
+                      <div class="io-description">
+                          {{#jsdoc-params jsdoctags}}
+                              <b>Parameters :</b>
+                              <ul class="jsdoc-params">
+                                  {{#each tags}}
+                                      <li>
+                                          <div>
+                                              <b>{{name}}</b>
+                                              {{#if type}}
+                                                  : {{> link-type type=type }}
+                                              {{/if}}
+                                          </div>
+                                          <div>
+                                              {{{comment}}}
+                                          </div>
+                                      </li>
+                                  {{/each}}
+                              </ul>
+                          {{/jsdoc-params}}
+                          {{#jsdoc-example jsdoctags}}
+                              <b>Example :</b>
+                              {{#each tags}}
+                                  <div class="jsdoc-example-ul">
+                                      {{{comment}}}
+                                  </div>
+                              {{/each}}
+                          {{/jsdoc-example}}
+                      </div>
                     </td>
                 </tr>
                 {{/if}}

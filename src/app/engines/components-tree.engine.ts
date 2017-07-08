@@ -1,9 +1,9 @@
-import * as _ from 'lodash';
 import * as path from 'path';
 import { FileEngine } from './file.engine';
 import { logger } from '../../logger';
 
-const $: any = require('cheerio');
+const $: any = require('cheerio'),
+      _ = require('lodash');
 
 class ComponentsTreeEngine {
     private static _instance: ComponentsTreeEngine = new ComponentsTreeEngine();

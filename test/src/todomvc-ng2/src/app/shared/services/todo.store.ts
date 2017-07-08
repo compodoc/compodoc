@@ -124,4 +124,32 @@ export class TodoStore {
         this.todos.push(new Todo(title));
         this.updateStore();
     }
+
+    firstFx(): string {
+        return '5';
+    }
+
+    firstFx2(): number[] {
+        return [5];
+    }
+
+    getSmallPet(): string | number {
+        return 'E'
+    }
+
+    firstFx3(): LabelledTodo {
+        return '5';
+    }
+
+    /**
+     * Stop monitoring the todo
+     *
+     * @param {LabelledTodo} theTodo A todo
+     * @returns {Promise<void>} promise resolved once we stop monitoring the todo or it is rejected
+     */
+    stopMonitoring(theTodo: LabelledTodo): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            //TODO
+        });
+    }
 }

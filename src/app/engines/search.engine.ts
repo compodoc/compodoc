@@ -41,9 +41,10 @@ export class SearchEngine {
             body: text
         };
 
-        this.documentsStore[doc.url] = doc;
-
-        this.getSearchIndex().add(doc);
+        if (!this.documentsStore.hasOwnProperty(doc.url)) {
+            this.documentsStore[doc.url] = doc;
+            this.getSearchIndex().add(doc);
+        }
     }
     generateSearchIndexJson(outputFolder) {
         return new Promise((resolve, reject) => {

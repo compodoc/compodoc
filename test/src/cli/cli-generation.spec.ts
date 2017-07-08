@@ -1,11 +1,9 @@
 import * as chai from 'chai';
-const expect = chai.expect;
-
-import {temporaryDir, shell, pkg, exists, exec, read} from '../helpers';
-const tmp = temporaryDir();
-const tsconfigPath = require.resolve('../../../tsconfig.json');
-const tsNodePath = require.resolve('../../../node_modules/.bin/ts-node');
-const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+const expect = chai.expect,
+      tmp = temporaryDir(),
+      tsconfigPath = require.resolve('../../../tsconfig.json'),
+      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI simple generation', () => {
 
@@ -15,22 +13,26 @@ describe('CLI simple generation', () => {
             fooComponentFile,
             fooServiceFile,
             componentFile,
+            moduleFile,
             coverageFile;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
-              fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
-              coverageFile = read(`${tmp.name}/coverage.html`);
-              componentFile = read(`${tmp.name}/components/BarComponent.html`);
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
+            fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
+            coverageFile = read(`${tmp.name}/coverage.html`);
+            moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
+            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            done();
         });
         after(() => tmp.clean());
 
@@ -48,8 +50,6 @@ describe('CLI simple generation', () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists(`${tmp.name}/modules.html`);
             expect(isModulesExists).to.be.true;
-            const isOverviewExists = exists(`${tmp.name}/overview.html`);
-            expect(isOverviewExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
@@ -66,6 +66,12 @@ describe('CLI simple generation', () => {
         it('should have generated search index json', () => {
             const isIndexExists = exists(`${tmp.name}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
+        });
+
+        it('should have generated sourceCode for files', () => {
+            expect(moduleFile).to.contain('import { FooDirective } from');
+            expect(fooComponentFile).to.contain('export class FooComponent');
+            expect(fooServiceFile).to.contain('export class FooService');
         });
 
         /**
@@ -124,20 +130,50 @@ describe('CLI simple generation', () => {
            });
     });
 
-    describe('when generation with d and a flags', () => {
-
-        let stdoutString = null;
+    describe('when generation with d flag without / at the end', () => {
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/ -a screenshots', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '../' + tmp.name], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            done();
+        });
+        after(() => tmp.clean());
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists(`${tmp.name}`);
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists(`${tmp.name}/index.html`);
+            expect(isIndexExists).to.be.true;
+            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            expect(isModulesExists).to.be.true;
+        });
+    });
+
+    describe('when generation with d and a flags', () => {
+
+        before(function (done) {
+            tmp.create();
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', './' + tmp.name + '/',
+                '-a', './screenshots/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
         });
         after(() => tmp.clean());
 
@@ -146,21 +182,23 @@ describe('CLI simple generation', () => {
             expect(isFolderExists).to.be.true;
         });
     });
-
     describe('when generation with d flag and src arg', () => {
 
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js ./test/src/sample-files/ -p ./test/src/sample-files/tsconfig.simple.json -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '../test/src/sample-files/',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean());
 
@@ -178,24 +216,22 @@ describe('CLI simple generation', () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists(`${tmp.name}/modules.html`);
             expect(isModulesExists).to.be.true;
-            const isOverviewExists = exists(`${tmp.name}/overview.html`);
-            expect(isOverviewExists).to.be.true;
         });
     });
-
     describe('when generation without d flag', () => {
 
         let stdoutString = null;
         before(function (done) {
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean('documentation'));
 
@@ -228,22 +264,26 @@ describe('CLI simple generation', () => {
             expect(isFontsExists).to.be.true;
         });
     });
-
     describe('when generation with big app', () => {
 
-        let stdoutString = null;
+        let stdoutString = null,
+            clockInterfaceFile,
+            searchFuncFile;
         before(function (done) {
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/todomvc-ng2/src/tsconfig.json', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/todomvc-ng2/src/tsconfig.json'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            clockInterfaceFile = read(`documentation/interfaces/ClockInterface.html`);
+            searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
+            done();
         });
-        after(() => tmp.clean('documentation'));
+        //after(() => tmp.clean('documentation'));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
@@ -326,22 +366,52 @@ describe('CLI simple generation', () => {
             expect(file).to.be.true;
         });
 
-    });
+        it('should have miscellaneous page', () => {
+            const file = exists('documentation/miscellaneous.html');
+            expect(file).to.be.true;
+        });
 
+        it('miscellaneous page should contain some things', () => {
+            const miscFile = read(`documentation/miscellaneous.html`);
+            expect(miscFile).to.contain('for service using it');
+            expect(miscFile).to.contain('A status');
+            expect(miscFile).to.contain('Directions of the app');
+        });
+
+        it('it should have infos about SearchFunc interface', () => {
+            expect(searchFuncFile).to.contain('A string');
+        });
+
+        it('it should have infos about ClockInterface interface', () => {
+            expect(clockInterfaceFile).to.contain('Default value');
+        });
+
+        it('should have generated args and return informations for todo store', () => {
+            const file = read('documentation/injectables/TodoStore.html');
+            expect(file).to.contain('Promise&lt;void&gt;');
+            expect(file).to.contain('string|number');
+            expect(file).to.contain('number[]');
+            expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
+        });
+
+    });
     describe('when generation with -t flag', () => {
 
         let stdoutString = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -t -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-t',
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean(tmp.name));
 
@@ -358,15 +428,18 @@ describe('CLI simple generation', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --theme ' + baseTheme + ' -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--theme', baseTheme,
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean(tmp.name));
 
@@ -383,15 +456,18 @@ describe('CLI simple generation', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -n \'' + name + '\' -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-n', name,
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean(tmp.name));
 
@@ -407,15 +483,18 @@ describe('CLI simple generation', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --hideGenerator -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--hideGenerator',
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean(tmp.name));
 
@@ -431,17 +510,20 @@ describe('CLI simple generation', () => {
             index = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableSourceCode -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableSourceCode',
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
-                return;
-              }
-              stdoutString = stdout;
-              done();
-            });
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
-        //after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(tmp.name));
 
         it('should not contain compodoc logo', () => {
             index = read(`${tmp.name}/modules/AppModule.html`);
@@ -455,17 +537,20 @@ describe('CLI simple generation', () => {
           fileContents = null;
         before(function (done) {
             tmp.create();
-            exec(tsNodePath + ' ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json --disableGraph -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    done('error');
-                    return;
-                }
-                stdoutString = stdout;
-                done();
-            });
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableGraph',
+                '-d', './' + tmp.name + '/'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
-        after(() => tmp.clean(tmp.name));
+        //after(() => tmp.clean(tmp.name));
 
         it('should not generate any graph data', () => {
             expect(stdoutString).to.contain('Graph generation disabled');
@@ -498,16 +583,19 @@ describe('CLI simple generation', () => {
             child;
         before(function (done) {
             tmp.create();
-            child = exec(tsNodePath + ' ./bin/index-cli.js -s -r ' + port + ' -d ' + tmp.name + '/', {env}, (error, stdout, stderr) => {});
-            child.stdout.on('data', function(data) {
-                stdoutString += data;
-            });
-            child.on('exit', (code, signal) => {
-                done();
-            });
-            setTimeout(() => {
-                child.kill();
-            }, 5000);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-s',
+                '-r',
+                '-r', port,
+                '-d', './' + tmp.name + '/'], { env, timeout: 5000});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
         });
         after(() => tmp.clean(tmp.name));
 

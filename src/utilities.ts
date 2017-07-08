@@ -1,13 +1,13 @@
-import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as util from 'util';
-import * as _ from 'lodash';
 
 import { logger } from './logger';
 
-const carriageReturnLineFeed = '\r\n';
-const lineFeed = '\n';
+const carriageReturnLineFeed = '\r\n',
+      lineFeed = '\n',
+      ts = require('typescript'),
+      _ = require('lodash');
 
 export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
     return name.toLowerCase().replace(/ /g, '-');

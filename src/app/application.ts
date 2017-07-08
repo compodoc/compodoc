@@ -1,7 +1,5 @@
-import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as _ from 'lodash';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 
@@ -26,6 +24,8 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 import { promiseSequential } from '../utils/promise-sequential';
 
 const glob: any = require('glob'),
+      ts = require('typescript'),
+      _ = require('lodash'),
       marked = require('marked'),
       chokidar = require('chokidar');
 
@@ -69,6 +69,14 @@ export class Application {
             if(typeof this.configuration.mainData[option] !== 'undefined') {
                 this.configuration.mainData[option] = options[option];
             }
+            // For documentationMainName, process it outside the loop, for handling conflict with pages name
+            if(option === 'name') {
+                this.configuration.mainData['documentationMainName'] = options[option];
+            }
+            // For documentationMainName, process it outside the loop, for handling conflict with pages name
+            if(option === 'silent') {
+                logger.silent = false;
+            }
         }
     }
 
@@ -76,6 +84,9 @@ export class Application {
      * Start compodoc process
      */
     protected generate() {
+        if (this.configuration.mainData.output.charAt(this.configuration.mainData.output.length - 1) !== '/') {
+            this.configuration.mainData.output += '/';
+        }
         $htmlengine.init().then(() => {
             this.processPackageJson();
         });
@@ -117,7 +128,7 @@ export class Application {
             }
         });
 
-        return false;
+        return result;
     }
 
     /**
@@ -243,30 +254,30 @@ export class Application {
         actions.push(() => { return this.prepareRoutes(); });
 
         if (diffCrawledData.modules.length > 0) {
-            actions.push(() => { return this.prepareModules(diffCrawledData.modules); });
+            actions.push(() => { return this.prepareModules(); });
         }
         if (diffCrawledData.components.length > 0) {
-            actions.push(() => { return this.prepareComponents(diffCrawledData.components); });
+            actions.push(() => { return this.prepareComponents(); });
         }
 
         if (diffCrawledData.directives.length > 0) {
-            actions.push(() => { return this.prepareDirectives(diffCrawledData.directives); });
+            actions.push(() => { return this.prepareDirectives(); });
         }
 
         if (diffCrawledData.injectables.length > 0) {
-            actions.push(() => { return this.prepareInjectables(diffCrawledData.injectables); });
+            actions.push(() => { return this.prepareInjectables(); });
         }
 
         if (diffCrawledData.pipes.length > 0) {
-            actions.push(() => { return this.preparePipes(diffCrawledData.pipes); });
+            actions.push(() => { return this.preparePipes(); });
         }
 
         if (diffCrawledData.classes.length > 0) {
-            actions.push(() => { return this.prepareClasses(diffCrawledData.classes); });
+            actions.push(() => { return this.prepareClasses(); });
         }
 
         if (diffCrawledData.interfaces.length > 0) {
-            actions.push(() => { return this.prepareInterfaces(diffCrawledData.interfaces); });
+            actions.push(() => { return this.prepareInterfaces(); });
         }
 
         if (diffCrawledData.miscellaneous.variables.length > 0 ||
@@ -274,7 +285,7 @@ export class Application {
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
             diffCrawledData.miscellaneous.enumerations.length > 0 ||
             diffCrawledData.miscellaneous.types.length > 0 ) {
-            actions.push(() => { return this.prepareMiscellaneous(diffCrawledData.miscellaneous); });
+            actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
         if (!this.configuration.mainData.disableCoverage) {
@@ -999,100 +1010,98 @@ export class Application {
 
     processPages() {
         logger.info('Process pages');
-        let pages = this.configuration.pages,
-            i = 0,
-            len = pages.length,
-            loop = () => {
-                if( i <= len-1) {
-                    logger.info('Process page', pages[i].name);
-                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = this.configuration.mainData.output;
-                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                            finalPath += '/';
-                        }
-                        if (pages[i].path) {
-                            finalPath += pages[i].path + '/';
-                        }
-                        finalPath += pages[i].name + '.html';
-                        $searchEngine.indexPage({
-                            infos: pages[i],
-                            rawData: htmlData,
-                            url: finalPath
-                        });
-                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                            if (err) {
-                                logger.error('Error during ' + pages[i].name + ' page generation');
-                            } else {
-                                i++;
-                                loop();
-                            }
-                        });
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
+        let pages = this.configuration.pages;
+        Promise.all(
+            pages.map((page, i) => {
+                return new Promise((resolve, reject) => {
+                    logger.info('Process page', page.name);
+                    let htmlData = $htmlengine.render(this.configuration.mainData, page)
+                    let finalPath = this.configuration.mainData.output;
+                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    if (page.path) {
+                        finalPath += page.path + '/';
+                    }
+                    finalPath += page.name + '.html';
+                    $searchEngine.indexPage({
+                        infos: page,
+                        rawData: htmlData,
+                        url: finalPath
                     });
-                } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                        if (err) {
+                            logger.error('Error during ' + page.name + ' page generation');
+                            reject();
                         } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
-                            }
-                            this.processResources();
+                            resolve();
                         }
-                    }, (e) => {
-                        logger.error(e);
                     });
+                });
+            })
+        ).then(() => {
+            $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                if (this.configuration.mainData.additionalPages.length > 0) {
+                    this.processAdditionalPages();
+                } else {
+                    if (this.configuration.mainData.assetsFolder !== '') {
+                        this.processAssetsFolder();
+                    }
+                    this.processResources();
                 }
-            };
-        loop();
+            }, (e) =>  {
+                logger.error(e);
+            });
+        })
+        .catch((e) => {
+            logger.error(e);
+        });
     }
 
     processAdditionalPages() {
         logger.info('Process additional pages');
-        let pages = this.configuration.mainData.additionalPages,
-            i = 0,
-            len = pages.length,
-            loop = () => {
-                if( i <= len-1) {
+        let pages = this.configuration.mainData.additionalPages
+        Promise.all(
+            pages.map((page, i) => {
+                return new Promise((resolve, reject) => {
                     logger.info('Process page', pages[i].name);
-                    $htmlengine.render(this.configuration.mainData, pages[i]).then((htmlData) => {
-                        let finalPath = this.configuration.mainData.output;
-                        if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                            finalPath += '/';
-                        }
-                        if (pages[i].path) {
-                            finalPath += pages[i].path + '/';
-                        }
-                        finalPath += pages[i].filename + '.html';
-                        $searchEngine.indexPage({
-                            infos: pages[i],
-                            rawData: htmlData,
-                            url: finalPath
-                        });
-                        fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                            if (err) {
-                                logger.error('Error during ' + pages[i].name + ' page generation');
-                            } else {
-                                i++;
-                                loop();
-                            }
-                        });
-                    }, (errorMessage) => {
-                        logger.error(errorMessage);
+                    let htmlData = $htmlengine.render(this.configuration.mainData, pages[i])
+                    let finalPath = this.configuration.mainData.output;
+                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                        finalPath += '/';
+                    }
+                    if (pages[i].path) {
+                        finalPath += pages[i].path + '/';
+                    }
+                    finalPath += pages[i].name + '.html';
+                    $searchEngine.indexPage({
+                        infos: pages[i],
+                        rawData: htmlData,
+                        url: finalPath
                     });
-                } else {
-                    $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                        if (this.configuration.mainData.assetsFolder !== '') {
-                            this.processAssetsFolder();
+                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
+                        if (err) {
+                            logger.error('Error during ' + pages[i].name + ' page generation');
+                            reject();
+                        } else {
+                            resolve();
                         }
-                        this.processResources();
-                    }, (e) => {
-                        logger.error(e);
                     });
+                });
+            })
+        ).then(() => {
+            $searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                if (this.configuration.mainData.assetsFolder !== '') {
+                    this.processAssetsFolder();
                 }
-            };
-        loop();
+                this.processResources();
+            }, (e) => {
+                logger.error(e);
+            });
+        })
+        .catch((e) => {
+            logger.error(e);
+        });
     }
 
     processAssetsFolder() {
@@ -1152,32 +1161,7 @@ export class Application {
             this.processPages();
         } else {
             logger.info('Process main graph');
-            let modules = this.configuration.mainData.modules,
-              i = 0,
-              len = modules.length,
-              loop = () => {
-                  if( i <= len-1) {
-                      logger.info('Process module graph', modules[i].name);
-                      let finalPath = this.configuration.mainData.output;
-                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                          finalPath += '/';
-                      }
-                      finalPath += 'modules/' + modules[i].name;
-                      $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                          $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
-                              modules[i].graph = <string>data;
-                              i++;
-                              loop();
-                          }, (err) => {
-                              logger.error('Error during graph read: ', err);
-                          });
-                      }, (errorMessage) => {
-                          logger.error(errorMessage);
-                      });
-                  } else {
-                      this.processPages();
-                  }
-              };
+
             let finalMainGraphPath = this.configuration.mainData.output;
             if(finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
@@ -1186,7 +1170,7 @@ export class Application {
             $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
                 $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
                     this.configuration.mainData.mainGraph = <string>data;
-                    loop();
+                    generateModulesGraph();
                 }, (err) => {
                     logger.error('Error during graph read: ', err);
                 });
@@ -1194,6 +1178,37 @@ export class Application {
                 logger.error('Error during graph generation: ', err);
             });
 
+            let modules = this.configuration.mainData.modules,
+                generateModulesGraph = () => {
+                    Promise.all(
+                        modules.map((module, i) => {
+                            return new Promise((resolve, reject) => {
+                                logger.info('Process module graph', modules[i].name);
+                                let finalPath = this.configuration.mainData.output;
+                                if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                                    finalPath += '/';
+                                }
+                                finalPath += 'modules/' + modules[i].name;
+                                $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
+                                    $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                                        modules[i].graph = <string>data;
+                                        resolve();
+                                    }, (err) => {
+                                        logger.error('Error during graph read: ', err);
+                                    });
+                                }, (errorMessage) => {
+                                    logger.error(errorMessage);
+                                    reject();
+                                });
+                            });
+                        })
+                    ).then(() => {
+                        this.processPages();
+                    })
+                    .catch((e) => {
+                        logger.error(e);
+                    });
+                }
         }
     }
 
@@ -1235,6 +1250,7 @@ export class Application {
                 timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
             },
             runnerAddAndRemove = () => {
+                startTime = new Date();
                 this.generate();
             },
             waiterChange = () => {
@@ -1242,6 +1258,7 @@ export class Application {
                 timerChangeRef = setTimeout(runnerChange, 1000);
             },
             runnerChange = () => {
+                startTime = new Date();
                 this.setUpdatedFiles(watchChangedFiles);
                 if (this.hasWatchedFilesTSFiles()) {
                     this.getMicroDependenciesData();
