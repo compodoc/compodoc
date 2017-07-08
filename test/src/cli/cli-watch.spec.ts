@@ -28,12 +28,12 @@ describe('CLI watch', () => {
          });
 
          ls.stderr.on('data', function (data) {
-             console.log('stderr: ' + data);
+             //console.log('stderr: ' + data);
          });
 
          ls.on('close', function (code) {
-             done('error');
-             console.log('child process exited with code ' + code);
+             done();
+             //console.log('child process exited with code ' + code);
          });
     });
     after(() => {
