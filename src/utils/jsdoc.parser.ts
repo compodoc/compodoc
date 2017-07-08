@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+const ts = require('typescript');
 
 export function isVariableLike(node: Node): node is VariableLikeDeclaration {
    if (node) {

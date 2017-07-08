@@ -1,4 +1,3 @@
-import * as ts from 'typescript';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
@@ -25,6 +24,7 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 import { promiseSequential } from '../utils/promise-sequential';
 
 const glob: any = require('glob'),
+      ts = require('typescript'),
       _ = require('lodash'),
       marked = require('marked'),
       chokidar = require('chokidar');

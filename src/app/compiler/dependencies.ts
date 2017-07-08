@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as util from 'util';
-import * as ts from 'typescript';
 import { readFileSync } from 'fs-extra';
 
 import { compilerHost, detectIndent } from '../../utilities';
@@ -16,6 +15,7 @@ import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
 const marked = require('marked'),
+      ts = require('typescript'),
       _ = require('lodash');
 
 interface NodeObject {
