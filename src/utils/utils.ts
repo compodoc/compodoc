@@ -34,7 +34,6 @@ export function markedtags(tags) {
 };
 
 export function readConfig(configFile: string): any {
-    console.log(ts.readConfigFile);
     let result = ts.readConfigFile(configFile, ts.sys.readFile);
     if (result.error) {
         let message = ts.formatDiagnostics([result.error], formatDiagnosticsHost);
