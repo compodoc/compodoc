@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function foundLazyModuleWithPath(path) {
         //path is like app/customers/customers.module#CustomersModule
-        let split = path.split('#'),
+        var split = path.split('#'),
             lazyModulePath = split[0],
             lazyModuleName = split[1];
         return lazyModuleName;
@@ -99,51 +99,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }).html(function(d) {
                 // if kind === module name + module
                 // if kind === component component + path
-                let _name = '';
+                var _name = '';
                 if (d.kind === 'module') {
                     if (d.module) {
-                        _name += `<tspan x="0" dy="1.4em"><a href="./modules/${d.module}.html">` + d.module + '</a></tspan>';
+                        _name += '<tspan x="0" dy="1.4em"><a href="./modules/' + d.module + '.html">' + d.module + '</a></tspan>';
                         if (d.name) {
                             _name += '<tspan x="0" dy="1.4em">' + d.name + '</tspan>';
                         }
                     } else {
-                        _name += `<tspan x="0" dy="1.4em">` + htmlEntities(d.name) + '</tspan>';
+                        _name += '<tspan x="0" dy="1.4em">' + htmlEntities(d.name) + '</tspan>';
                     }
                 } else if (d.kind === 'component') {
                     _name += '<tspan x="0" dy="1.4em">' + d.path + '</tspan>'
-                    _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+                    _name += '<tspan x="0" dy="1.4em"><a href="./components/' + d.component + '.html">' + d.component + '</a></tspan>'
                     if (d.outlet) {
-                        _name += `<tspan x="0" dy="1.4em">&lt;outlet&gt; : ${d.outlet}</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&lt;outlet&gt; : ' + d.outlet + '</tspan>'
                     }
                 } else {
-                    _name += `<tspan x="0" dy="1.4em">/` + d.path + '</tspan>'
+                    _name += '<tspan x="0" dy="1.4em">/' + d.path + '</tspan>'
                     if (d.component) {
-                        _name += `<tspan x="0" dy="1.4em"><a href="./components/${d.component}.html">` + d.component + '</a></tspan>'
+                        _name += '<tspan x="0" dy="1.4em"><a href="./components/' + d.component + '.html">' + d.component + '</a></tspan>'
                     }
                     if (d.loadChildren) {
-                        let moduleName = foundLazyModuleWithPath(d.loadChildren);
-                        _name += `<tspan x="0" dy="1.4em"><a href="./modules/${moduleName}.html">${moduleName}</a></tspan>`
+                        var moduleName = foundLazyModuleWithPath(d.loadChildren);
+                        _name += '<tspan x="0" dy="1.4em"><a href="./modules/' + moduleName + '.html">' + moduleName + '</a></tspan>'
                     }
                     if (d.canActivate) {
-                        _name += `<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>'
                     }
                     if (d.canDeactivate) {
-                        _name += `<tspan x="0" dy="1.4em">&#215;&nbsp;&nbsp;canDeactivate</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&#215;&nbsp;&nbsp;canDeactivate</tspan>'
                     }
                     if (d.canActivateChild) {
-                        _name += `<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&#10003; canActivateChild</tspan>'
                     }
                     if (d.canLoad) {
-                        _name += `<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>'
                     }
                     if (d.redirectTo) {
-                        _name += `<tspan x="0" dy="1.4em">&rarr; ` + d.redirectTo + '</tspan>'
+                        _name += '<tspan x="0" dy="1.4em">&rarr; ' + d.redirectTo + '</tspan>'
                     }
                     if (d.pathMatch) {
-                        _name += `<tspan x="0" dy="1.4em">&gt; ` + d.pathMatch + '</tspan>'
+                        _name += '<tspan x="0" dy="1.4em">&gt; ' + d.pathMatch + '</tspan>'
                     }
                     if (d.outlet) {
-                        _name += `<tspan x="0" dy="1.4em">&lt;outlet&gt; : ${d.outlet}</tspan>`
+                        _name += '<tspan x="0" dy="1.4em">&lt;outlet&gt; : ' + d.outlet + '</tspan>'
                     }
                 }
                 return _name;

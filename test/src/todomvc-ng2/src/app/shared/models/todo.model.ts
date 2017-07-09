@@ -10,11 +10,15 @@ export class Todo extends Tada {
     /**
      * Completed status
      */
-    completed: Boolean;
+    completed: boolean;
     /**
      * Editing status
      */
-    editing: Boolean;
+    editing: boolean;
+
+    testCommentFunction(dig: number, str: string, bool: boolean): object {
+        return {};
+    }
 
     /**
      * Title

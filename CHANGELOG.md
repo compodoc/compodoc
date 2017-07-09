@@ -1,3 +1,11 @@
+<a name="1.0.0-beta.12"></a>
+# [1.0.0-beta.12](https://github.com/compodoc/compodoc/compare/1.0.0-beta.11...1.0.0-beta.12) (2017-07-09)
+
+### Bug Fixes
+
+* **chore:** Cannot find module 'json5' ([04fb75f](https://github.com/compodoc/compodoc/commit/04fb75f)), closes [#219](https://github.com/compodoc/compodoc/issues/219)
+* **dependencies:** All types display in the doc as void (incorrect types) ([c586b32](https://github.com/compodoc/compodoc/commit/c586b32)), closes [#218](https://github.com/compodoc/compodoc/issues/218)
+
 <a name="1.0.0-beta.11"></a>
 # [1.0.0-beta.11](https://github.com/compodoc/compodoc/compare/1.0.0-beta.10...1.0.0-beta.11) (2017-07-08)
 
