@@ -823,6 +823,9 @@ export class Dependencies {
                 if (node.type.typeName) {
                     _return = node.type.typeName.text;
                 }
+                if (node.type.kind) {
+                    _return = kindToType(node.type.kind);
+                }
             } else if (node.elementType) {
                 _return = kindToType(node.elementType.kind) + kindToType(node.kind);
             } else if (node.types && node.kind === ts.SyntaxKind.UnionType) {
