@@ -820,11 +820,23 @@ export class Dependencies {
             if (node.typeName) {
                 _return = node.typeName.text;
             } else if (node.type) {
+                if (node.type.kind) {
+                    _return = kindToType(node.type.kind);
+                }
                 if (node.type.typeName) {
                     _return = node.type.typeName.text;
                 }
-                if (node.type.kind) {
-                    _return = kindToType(node.type.kind);
+                if (node.type.typeArguments) {
+                    _return += '<';
+                    for (const argument of node.type.typeArguments) {
+                        if (argument.kind) {
+                            _return += kindToType(argument.kind);
+                        }
+                        if (argument.typeName) {
+                            _return += argument.typeName.text;
+                        }
+                    }
+                    _return += '>';
                 }
             } else if (node.elementType) {
                 _return = kindToType(node.elementType.kind) + kindToType(node.kind);
