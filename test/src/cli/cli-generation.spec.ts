@@ -394,6 +394,13 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
         });
 
+        it('should have correct types for todo model', () => {
+            const file = read('documentation/classes/Todo.html');
+            expect(file).to.contain('<code>boolean</code>');
+            expect(file).to.contain('<code>object</code>');
+            expect(file).to.contain('<code>testCommentFunction(dig: number, str: string, bool: boolean)</code>');
+        });
+
     });
     describe('when generation with -t flag', () => {
 
