@@ -4,7 +4,7 @@
     "license": "MIT",
     "dependencies": {},
     "scripts": {
-        "doc": "./node_modules/.bin/compodoc -p tsconfig.simple.json"
+        "doc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
     },
     "devDependencies": {
         "@compodoc/compodoc": "https://github.com/compodoc/compodoc/tarball/develop"

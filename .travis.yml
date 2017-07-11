@@ -12,11 +12,13 @@ addons:
 install:
     - npm install
 script:
-    - npm run test
-    - if [ $TO_TEST == 'ALL' ];
-      then npm run saucelabs-test-e2e-mocha;
-      fi
+    #- npm run test
+    #- if [ $TO_TEST == 'ALL' ];
+    #  then npm run saucelabs-test-e2e-mocha;
+    #  fi
+    - sh tools/test-simple-generation.sh
 after_success:
+    - npm install
     - npm run codecov
 branches:
   only:
