@@ -11,6 +11,11 @@
     <li>
         <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
     </li>
+    {{#if directive.exampleUrls}}
+    <li>
+        <a href="#example" role="tab" id="example-tab" data-toggle="tab" data-link="example">Examples</a>
+    </li>
+    {{/if}}
 </ul>
 
 <div class="tab-content">
@@ -178,5 +183,14 @@
     <div class="tab-pane fade tab-source-code" id="source">
         <pre class="line-numbers"><code class="language-typescript">{{ directive.sourceCode}}</code></pre>
     </div>
+    {{#if directive.exampleUrls}}
+    <div class="tab-pane fade" id="example">
+        {{#each component.exampleUrls}}
+            <iframe src="{{this}}" style="height: 100vh; width: 100%;">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+        {{/each}}
+    </div>
+    {{/if}}
 </div>
 {{/unless}}

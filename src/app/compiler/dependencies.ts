@@ -269,7 +269,8 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            sourceCode: srcFile.getText()
+                            sourceCode: srcFile.getText(),
+                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (this.configuration.mainData.disablePrivateOrInternalSupport) {
                             deps.methodsClass = cleanLifecycleHooksFromMethods(deps.methodsClass);
@@ -332,7 +333,8 @@ export class Dependencies {
                             outputsClass: IO.outputs,
 
                             propertiesClass: IO.properties,
-                            methodsClass: IO.methods
+                            methodsClass: IO.methods,
+                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
@@ -1657,6 +1659,17 @@ export class Dependencies {
             identifier.label = '';
             return identifier;
         });
+    }
+
+    private getComponentExampleUrls = function (text) {
+        var exampleUrlsMatches = text.match(/<example-url>(.*?)<\/example-url>/g);
+        var exampleUrls = null;
+        if (exampleUrlsMatches && exampleUrlsMatches.length) {
+            exampleUrls = exampleUrlsMatches.map(function(val){
+                return val.replace(/<\/?example-url>/g,'');
+            });
+        }
+        return exampleUrls;
     }
 
     private parseDeepIndentifier(name: string): any {
