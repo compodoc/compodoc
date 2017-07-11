@@ -544,6 +544,9 @@ export class Dependencies {
                     if (infos.defaultValue) {
                         deps.defaultValue = infos.defaultValue;
                     }
+                    if (infos.initializer) {
+                        deps.initializer = infos.initializer;
+                    }
                     if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                         deps.description = marked(node.jsDoc[0].comment);
                     }
@@ -584,6 +587,35 @@ export class Dependencies {
                 }
             }
         });
+
+        // End of file scanning
+        // Try merging inside the same file declarated variables & modules with imports | exports | declarations | providers
+
+        console.log('End of file scanning');
+        console.log(outputSymbols['miscellaneous']);
+        console.log(outputSymbols['modules']);
+
+        if (outputSymbols['miscellaneous'].variables.length > 0) {
+            outputSymbols['miscellaneous'].variables.forEach(_variable => {
+                outputSymbols['modules'].forEach(mod => {
+                    if (mod.file === _variable.file) {
+                        console.log(`${mod.name} and ${_variable.name} are linked`);
+
+                        let parseArray = (el, index, theArray) => {
+                            console.log(el, index, theArray);
+                            if (el.name === _variable.name) {
+                                console.log(`${_variable.name} found in modules declarations !!`);
+                                // delete theArray[index] or all if > 1
+                                // if _variable is array, add all his elements in theArray
+                                // if _variable is just one element, add it in theArray
+                            }
+                        }
+
+                        mod.imports.forEach(parseArray);
+                    }
+                });
+            });
+        }
 
     }
     private debug(deps: Deps) {
@@ -1493,6 +1525,9 @@ export class Dependencies {
                 var result = {
                     name: node.declarationList.declarations[i].name.text,
                     defaultValue: node.declarationList.declarations[i].initializer ? this.stringifyDefaultValue(node.declarationList.declarations[i].initializer) : undefined
+                }
+                if(node.declarationList.declarations[i].initializer) {
+                    result.initializer = node.declarationList.declarations[i].initializer;
                 }
                 if(node.declarationList.declarations[i].type) {
                     result.type = this.visitType(node.declarationList.declarations[i].type);
