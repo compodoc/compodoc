@@ -10,22 +10,13 @@ addons:
   jwt:
     secure: "Pij3Z+chkGBAHK5S2fTEEmsKlt+5wDkKB2bbKUQ3QWW+WSFg+tTh3KlK6I5qhFC8TC1zqZpaZMZZTEIcIz/hNXdIKQjFUv+91WRqQZRfNJvbnaPV5ZDcK/SN8hSR+Q//dTWlCWTMGGGWGVJwX8AzE0JEphrwSbXq7T1/zdrNFffQ1qqPioqMVRJ/2PAqzNAHMuOo6YfWBze4F2bvHR87bcM9DBhAJSvFjVf1qv0+3aJxo9UPjpBPVo4YgNzwFQzhHyGAvYBOfSBu8g5MMG9Sc4oGjVformPEmglCLCJCxT92wZvU0sopoAedfcTgWgTrdDTNDS/Rx91Xv0vuMg0F1CA/5BRqvcTBGKUB4QLIIWvqLV3NGlJbe0DE0E+Netje8ci+0DSE6EqTeN/v/Up02VKNrjL7Eyz8g2sv6vM8c0roY54+o5xxtyuJQTs5KndXsAHylCGj+SkU+hRYbCxfs++hPMqXUbjDUA6/ezhGvSHIdeTWOMs4BEz6BMgIlZLP+3Z4o2FT3+cWGbEOc0nrawATlbNcexpHNBBW5ihvcpdmFqYdUYtzLPVGPvaIlMhFY+guBqIgKjXxAI0AjV6UruKKeQnfHhONuRw5pQFEb4lDJpVE99gnPLaKs7mpIgEVPbAegZF9T2TsZ7xxYwFjaM17NrS2KkQlk6IgkhxgemE="
 install:
-    #- npm install
-script:
-    #- npm run test
-    #- if [ $TO_TEST == 'ALL' ];
-    #  then npm run saucelabs-test-e2e-mocha;
-    #  fi
-    #- sh tools/test-simple-generation.sh
-    - rm -rf node_modules
-    - rm -rf 'test-simple-generation'
-    - mkdir 'test-simple-generation'
-    - cp -r './test/src/todomvc-ng2/' 'test-simple-generation'
-    - cd 'test-simple-generation'
-    - npm i
-    - npm run doc
-after_success:
     - npm install
+script:
+    - npm run test
+    - if [ $TO_TEST == 'ALL' ];
+      then npm run saucelabs-test-e2e-mocha;
+      fi
+after_success:
     - npm run codecov
 branches:
   only:

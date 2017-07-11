@@ -406,6 +406,12 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('...theArgs');
         });
 
+        it('should have an example tab', () => {
+            const file = read('documentation/components/TodoComponent.html');
+            expect(file).to.contain('data-link="example">Examples</a');
+            expect(file).to.contain('iframe src=');
+        });
+
     });
     describe('when generation with -t flag', () => {
 

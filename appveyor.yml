@@ -7,7 +7,7 @@ environment:
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true
-  #- npm install
+  - npm install
 matrix:
   fast_finish: true
 build: off
@@ -15,5 +15,4 @@ shallow_clone: true
 test_script:
   - node --version
   - npm --version
-  # - npm run test
-  - sh tools/test-simple-generation.sh
+  - npm run test
