@@ -60,9 +60,9 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 
 ## Contributors
 
-[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico) |[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/mattlewis92) |
-:---: |:---: |:---: |
-[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico) |[mattlewis92](https://github.com/mattlewis92) |
+[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico) |[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/mattlewis92) |[<img alt="mattlewis92" src="https://avatars0.githubusercontent.com/u/104502?v=3&s=117" width="117">](https://github.com/mattlewis92) |
+:---: |:---: |:---: |:---: |
+[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico) |[mattlewis92](https://github.com/mattlewis92) |[rprotsyk](https://github.com/rprotsyk) |
 
 
 ## License
