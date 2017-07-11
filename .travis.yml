@@ -16,7 +16,14 @@ script:
     #- if [ $TO_TEST == 'ALL' ];
     #  then npm run saucelabs-test-e2e-mocha;
     #  fi
-    - sh tools/test-simple-generation.sh
+    #- sh tools/test-simple-generation.sh
+    - rm -rf node_modules
+    - rm -rf 'test-simple-generation'
+    - mkdir 'test-simple-generation'
+    - cp -r './test/src/todomvc-ng2/' 'test-simple-generation'
+    - cd 'test-simple-generation'
+    - npm i
+    - npm run doc
 after_success:
     - npm install
     - npm run codecov
