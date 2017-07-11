@@ -264,6 +264,8 @@ export let HtmlEngineHelpers = (function() {
                             let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                             return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                         }
+                    } else if (arg.dotDotDotToken) {
+                        return `...${arg.name}: ${arg.type}`;
                     } else {
                         return `${arg.name}: ${arg.type}`;
                     }

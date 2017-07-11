@@ -401,6 +401,11 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('<code>testCommentFunction(dig: number, str: string, bool: boolean)</code>');
         });
 
+        it('should have correct spread support', () => {
+            const file = read('documentation/injectables/TodoStore.html');
+            expect(file).to.contain('...theArgs');
+        });
+
     });
     describe('when generation with -t flag', () => {
 

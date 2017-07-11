@@ -850,6 +850,8 @@ export class Dependencies {
                         _return += '|';
                     }
                 }
+            } else if (node.dotDotDotToken) {
+                _return = 'any[]';
             } else {
                 _return = kindToType(node.kind);
             }
@@ -1074,13 +1076,14 @@ export class Dependencies {
     }
 
     private visitArgument(arg) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        return {
+        let _result = {
             name: arg.name.text,
             type: this.visitType(arg)
-        };
+        }
+        if (arg.dotDotDotToken) {
+            _result.dotDotDotToken = true
+        }
+        return _result;
     }
 
     private getNamesCompareFn(name) {
