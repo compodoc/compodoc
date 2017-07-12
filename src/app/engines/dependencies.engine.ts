@@ -69,7 +69,6 @@ class DependenciesEngine {
                         delete _m[i].declarations[j].propertiesClass[l].jsdoctags;
                     }
                 }
-                delete _m[i].declarations[j].sourceCode;
             }
         }
         return _m;
