@@ -760,11 +760,11 @@ export class Application {
 
                 if (component.constructorObj) {
                     totalStatements += 1;
-                    if (component.constructorObj.description !== '') {
+                    if (component.constructorObj && component.constructorObj.description && component.constructorObj.description !== '') {
                         totalStatementDocumented += 1;
                     }
                 }
-                if (component.description !== '') {
+                if (component.description && component.description !== '') {
                     totalStatementDocumented += 1;
                 }
 
@@ -772,7 +772,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description !== '' && property.modifierKind !== 111) {
+                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -780,7 +780,7 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description !== '' && method.modifierKind !== 111) {
+                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -788,7 +788,7 @@ export class Application {
                     if (input.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(input.description !== '' && input.modifierKind !== 111) {
+                    if(input.description && input.description !== '' && input.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -796,7 +796,7 @@ export class Application {
                     if (output.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(output.description !== '' && output.modifierKind !== 111) {
+                    if(output.description && output.description !== '' && output.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -826,11 +826,11 @@ export class Application {
 
                 if (classe.constructorObj) {
                     totalStatements += 1;
-                    if (classe.constructorObj.description !== '') {
+                    if (classe.constructorObj && classe.constructorObj.description && classe.constructorObj.description !== '') {
                         totalStatementDocumented += 1;
                     }
                 }
-                if (classe.description !== '') {
+                if (classe.description && classe.description !== '') {
                     totalStatementDocumented += 1;
                 }
 
@@ -838,7 +838,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description !== '' && property.modifierKind !== 111) {
+                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -846,7 +846,7 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description !== '' && method.modifierKind !== 111) {
+                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -876,11 +876,11 @@ export class Application {
 
                 if (injectable.constructorObj) {
                     totalStatements += 1;
-                    if (injectable.constructorObj.description !== '') {
+                    if (injectable.constructorObj && injectable.constructorObj.description && injectable.constructorObj.description !== '') {
                         totalStatementDocumented += 1;
                     }
                 }
-                if (injectable.description !== '') {
+                if (injectable.description && injectable.description !== '') {
                     totalStatementDocumented += 1;
                 }
 
@@ -888,7 +888,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description !== '' && property.modifierKind !== 111) {
+                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -896,7 +896,7 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description !== '' && method.modifierKind !== 111) {
+                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -926,11 +926,11 @@ export class Application {
 
                 if (inter.constructorObj) {
                     totalStatements += 1;
-                    if (inter.constructorObj.description !== '') {
+                    if (inter.constructorObj && inter.constructorObj.description && inter.constructorObj.description !== '') {
                         totalStatementDocumented += 1;
                     }
                 }
-                if (inter.description !== '') {
+                if (inter.description && inter.description !== '') {
                     totalStatementDocumented += 1;
                 }
 
@@ -938,7 +938,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description !== '' && property.modifierKind !== 111) {
+                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -946,7 +946,7 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description !== '' && method.modifierKind !== 111) {
+                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -969,7 +969,7 @@ export class Application {
                     },
                     totalStatementDocumented = 0,
                     totalStatements = 1;
-                if (pipe.description !== '') {
+                if (pipe.description && pipe.description !== '') {
                     totalStatementDocumented += 1;
                 }
 
