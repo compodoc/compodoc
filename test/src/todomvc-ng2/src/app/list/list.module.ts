@@ -5,6 +5,11 @@ import { ListComponent } from './list.component';
 
 import { TodoModule } from './todo/';
 
+const MODULES = [
+    TodoModule,
+    BrowserModule
+]
+
 /**
  * The list of todos module
  *
@@ -18,8 +23,7 @@ import { TodoModule } from './todo/';
  */
 @NgModule({
     imports: [
-        TodoModule,
-        BrowserModule
+        MODULES
     ],
     declarations: [
         ListComponent

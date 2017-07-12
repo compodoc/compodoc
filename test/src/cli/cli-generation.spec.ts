@@ -412,6 +412,13 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('iframe src=');
         });
 
+        it('should have managed array declaration in modules', () => {
+            const file = read('documentation/modules/TodoModule.html');
+            expect(file).to.contain('<title>FirstUpperPipe</title>'); // Inside svg graph
+            const file2 = read('documentation/modules/ListModule.html');
+            expect(file2).to.contain('<title>TodoModule</title>'); // Inside svg graph
+        });
+
     });
     describe('when generation with -t flag', () => {
 
