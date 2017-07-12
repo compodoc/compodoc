@@ -292,7 +292,7 @@ export class Dependencies {
                             sourceCode: srcFile.getText()
                         };
                         if (RouterParser.hasRouterModuleInImports(deps.imports)) {
-                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props));
+                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props), file);
                         }
                         RouterParser.addModule(name, deps.imports);
                         outputSymbols['modules'].push(deps);
@@ -1619,7 +1619,7 @@ export class Dependencies {
                         RouterParser.addRoute({
                             name: node.declarationList.declarations[i].name.text,
                             data: RouterParser.cleanRawRoute(data),
-                            file: fileName
+                            filename: fileName
                         });
                         return [{
                             routes: data

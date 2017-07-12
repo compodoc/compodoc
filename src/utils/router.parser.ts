@@ -27,10 +27,11 @@ export let RouterParser = (function() {
             incompleteRoutes = _.sortBy(_.uniqWith(incompleteRoutes, _.isEqual), ['name']);
         },
 
-        _addModuleWithRoutes = function(moduleName, moduleImports) {
+        _addModuleWithRoutes = function(moduleName, moduleImports, filename) {
             modulesWithRoutes.push({
                 name: moduleName,
-                importsNode: moduleImports
+                importsNode: moduleImports,
+                filename: filename
             });
             modulesWithRoutes = _.sortBy(_.uniqWith(modulesWithRoutes, _.isEqual), ['name']);
         },
@@ -128,7 +129,7 @@ export let RouterParser = (function() {
                                 if (element.arguments) {
                                     _.forEach(element.arguments, function(argument) {
                                         _.forEach(routes, function(route) {
-                                            if(argument.text && route.name === argument.text) {
+                                            if(argument.text && route.name === argument.text && route.filename === modulesWithRoutes[i].filename) {
                                                 route.module = modulesWithRoutes[i].name;
                                             }
                                         });
