@@ -187,6 +187,62 @@ export class Dependencies {
 
         });
 
+        // End of file scanning
+        // Try merging inside the same file declarated variables & modules with imports | exports | declarations | providers
+
+        if (deps['miscellaneous'].variables.length > 0) {
+            deps['miscellaneous'].variables.forEach(_variable => {
+                let newVar = [];
+                ((_var, _newVar) => {
+                    // getType pr reconstruire....
+                    if (_var.initializer) {
+                        if (_var.initializer.elements) {
+                            if (_var.initializer.elements.length > 0) {
+                                _var.initializer.elements.forEach((element) => {
+                                    if (element.text) {
+                                        newVar.push({
+                                            name: element.text,
+                                            type: this.getType(element.text)
+                                        })
+                                    }
+                                });
+                            }
+                        }
+                    }
+                })(_variable, newVar);
+
+                deps['modules'].forEach(mod => {
+                    if (mod.file === _variable.file) {
+                        let process = (initialArray, _var) => {
+                            let indexToClean = 0,
+                                found = false;
+                            let findVariableInArray = (el, index, theArray) => {
+                                if (el.name === _var.name) {
+                                    indexToClean = index;
+                                    found = true;
+                                }
+                            }
+                            initialArray.forEach(findVariableInArray);
+                            // Clean indexes to replace
+                            if (found) {
+                                initialArray.splice(indexToClean, 1);
+                                // Add variable
+                                newVar.forEach((newEle) => {
+                                    if (typeof _.find(initialArray, { 'name': newEle.name}) === 'undefined') {
+                                        initialArray.push(newEle);
+                                    }
+                                });
+                            }
+                        }
+                        process(mod.imports, _variable);
+                        process(mod.exports, _variable);
+                        process(mod.declarations, _variable);
+                        process(mod.providers, _variable);
+                    }
+                });
+            });
+        }
+
         //RouterParser.printModulesRoutes();
         //RouterParser.printRoutes();
 
@@ -590,61 +646,7 @@ export class Dependencies {
             }
         });
 
-        // End of file scanning
-        // Try merging inside the same file declarated variables & modules with imports | exports | declarations | providers
 
-        if (outputSymbols['miscellaneous'].variables.length > 0) {
-            outputSymbols['miscellaneous'].variables.forEach(_variable => {
-                let newVar = [];
-                ((_var, _newVar) => {
-                    // getType pr reconstruire....
-                    if (_var.initializer) {
-                        if (_var.initializer.elements) {
-                            if (_var.initializer.elements.length > 0) {
-                                _var.initializer.elements.forEach((element) => {
-                                    if (element.text) {
-                                        newVar.push({
-                                            name: element.text,
-                                            type: this.getType(element.text)
-                                        })
-                                    }
-                                });
-                            }
-                        }
-                    }
-                })(_variable, newVar);
-
-                outputSymbols['modules'].forEach(mod => {
-                    if (mod.file === _variable.file) {
-                        let process = (initialArray, _var) => {
-                            let indexToClean = 0,
-                                found = false;
-                            let findVariableInArray = (el, index, theArray) => {
-                                if (el.name === _var.name) {
-                                    indexToClean = index;
-                                    found = true;
-                                }
-                            }
-                            initialArray.forEach(findVariableInArray);
-                            // Clean indexes to replace
-                            if (found) {
-                                initialArray.splice(indexToClean, 1);
-                                // Add variable
-                                newVar.forEach((newEle) => {
-                                    if (typeof _.find(initialArray, { 'name': newEle.name}) === 'undefined') {
-                                        initialArray.push(newEle);
-                                    }
-                                });
-                            }
-                        }
-                        process(mod.imports, _variable);
-                        process(mod.exports, _variable);
-                        process(mod.declarations, _variable);
-                        process(mod.providers, _variable);
-                    }
-                });
-            });
-        }
     }
     private debug(deps: Deps) {
         logger.debug('found', `${deps.name}`);
