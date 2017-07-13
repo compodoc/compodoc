@@ -174,12 +174,6 @@ export class Application {
                             depth: 0,
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                         });
-                        this.configuration.mainData.markdowns.push({
-                            name: markdowns[i],
-                            uppername: markdowns[i].toUpperCase(),
-                            depth: 0,
-                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                        })
                         if (markdowns[i] === 'readme') {
                             this.configuration.mainData.readme = true;
                             this.configuration.addPage({
@@ -187,6 +181,13 @@ export class Application {
                                 context: 'overview',
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });
+                        } else {
+                            this.configuration.mainData.markdowns.push({
+                                name: markdowns[i],
+                                uppername: markdowns[i].toUpperCase(),
+                                depth: 0,
+                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                            })
                         }
                         logger.info(`${markdowns[i].toUpperCase()}.md file found`);
                         i++;
