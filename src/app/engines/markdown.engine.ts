@@ -52,9 +52,26 @@ export class MarkdownEngine {
             });
         });
     }
+    getTraditionalMarkdown(filepath: string) {
+        return new Promise(function (resolve, reject) {
+            fs.readFile(path.resolve(process.cwd() + path.sep + filepath + '.md'), 'utf8', (err, data) => {
+                if (err) {
+                    fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
+                        if (err) {
+                            reject('Error during ' + filepath + ' read');
+                        } else {
+                            resolve(marked(data));
+                        }
+                    });
+                } else {
+                    resolve(marked(data));
+                }
+            });
+        });
+    }
     getReadmeFile() {
         return new Promise(function (resolve, reject) {
-            fs.readFile(path.resolve(process.cwd() + '/README.md'), 'utf8', (err, data) => {
+            fs.readFile(path.resolve(process.cwd() + path.sep + 'README.md'), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during README.md file reading');
                 } else {

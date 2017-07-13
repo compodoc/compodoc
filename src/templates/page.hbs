@@ -34,9 +34,11 @@
                </div>
                <div class="content {{data.context}}">
                    <div class="content-data">
-                   {{#compare data.context "===" 'readme'}}
-                        {{~> readme data ~}}
+
+                   {{#compare data.context "===" 'getting-started'}}
+                        {{~> markdown data ~}}
                    {{/compare}}
+
                    {{#compare data.context "===" 'overview'}}
                         {{~> overview data ~}}
                    {{/compare}}
