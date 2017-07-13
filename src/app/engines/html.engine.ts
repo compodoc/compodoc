@@ -14,7 +14,7 @@ export class HtmlEngine {
         let partials = [
             'menu',
             'overview',
-            'readme',
+            'markdown',
             'modules',
             'module',
             'components',

@@ -150,17 +150,67 @@ export class Application {
             }
             this.configuration.mainData.angularVersion = getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
-            this.processMarkdown();
+            this.processMarkdowns();
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without package.json file');
-            this.processMarkdown();
+            this.processMarkdowns();
         });
     }
 
-    processMarkdown() {
-        logger.info('Searching README.md file');
-        $markdownengine.getReadmeFile().then((readmeData: string) => {
+    processMarkdowns() {
+        logger.info('Searching README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md files');
+
+        let i = 0,
+            markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'],
+            numberOfMarkdowns = 5,
+            loop = () => {
+                if (i < numberOfMarkdowns) {
+                    $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then((readmeData: string) => {
+                        this.configuration.addPage({
+                            name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
+                            context: 'getting-started',
+                            markdown: readmeData,
+                            depth: 0,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                        });
+                        this.configuration.mainData.markdowns.push({
+                            name: markdowns[i],
+                            uppername: markdowns[i].toUpperCase(),
+                            depth: 0,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                        })
+                        if (markdowns[i] === 'readme') {
+                            this.configuration.mainData.readme = true;
+                            this.configuration.addPage({
+                                name: 'overview',
+                                context: 'overview',
+                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                            });
+                        }
+                        logger.info(`${markdowns[i].toUpperCase()}.md file found`);
+                        i++;
+                        loop();
+                    }, (errorMessage) => {
+                        logger.error(errorMessage);
+                        logger.error(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
+                        if (markdowns[i] === 'readme') {
+                            this.configuration.addPage({
+                                name: 'index',
+                                context: 'overview'
+                            });
+                        }
+                        i++;
+                        loop();
+                    });
+                } else {
+                    this.getDependenciesData();
+                }
+            };
+
+        loop();
+
+        /*$markdownengine.getReadmeFile().then((readmeData: string) => {
             this.configuration.addPage({
                 name: 'index',
                 context: 'readme',
@@ -183,7 +233,7 @@ export class Application {
                 context: 'overview'
             });
             this.getDependenciesData();
-        });
+        });*/
     }
 
     /**
