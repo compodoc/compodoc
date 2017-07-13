@@ -15,6 +15,26 @@
         <li class="chapter">
             <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}index.html"><span class="fa fa-home"></span>Getting started</a>
             <ul class="links">
+                {{#if readme}}
+                    <li class="link">
+                        <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
+                    </li>
+                    <li class="link">
+                        <a {{#compare context "===" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
+                            {{#compare context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
+                            {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
+                            {{#compare context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
+                            {{#compare name "===" 'overview' }} class="active" {{/compare}}>
+                            <span class="fa fa-th"></span>Overview
+                        </a>
+                    </li>
+                {{else}}
+                    <li class="link">
+                        <a href="{{relativeURL depth pageType 'root'}}" {{#compare name "===" 'overview' }} class="active" {{/compare}}>
+                            <span class="fa fa-th"></span>Overview
+                        </a>
+                    </li>
+                {{/if}}
                 {{#each markdowns}}
                     <li class="link">
                         {{#compare name "!==" 'readme'}}
@@ -27,11 +47,6 @@
                         </a>
                     </li>
                 {{/each}}
-                    <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}overview.html" {{#compare name "===" 'overview' }} class="active" {{/compare}}>
-                            <span class="fa fa-th"></span>Overview
-                        </a>
-                    </li>
             </ul>
         </li>
 
