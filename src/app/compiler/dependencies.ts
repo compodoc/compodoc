@@ -857,12 +857,22 @@ export class Dependencies {
 
     private visitInput(property, inDecorator, sourceFile?) {
         var inArgs = inDecorator.expression.arguments,
-        _return = {
-            name: inArgs.length ? inArgs[0].text : property.name.text,
-            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
-            line: this.getPosition(property, sourceFile).line + 1
-        };
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        if (property.symbol) {
+            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
         if (property.type) {
             _return.type = this.visitType(property);
         } else {
@@ -931,12 +941,24 @@ export class Dependencies {
     }
 
     private visitOutput(property, outDecorator, sourceFile?) {
-        var outArgs = outDecorator.expression.arguments,
-        _return = {
-            name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
-            line: this.getPosition(property, sourceFile).line + 1
-        };
+        var inArgs = outDecorator.expression.arguments,
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        if (property.symbol) {
+            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
+
         if (property.type) {
             _return.type = this.visitType(property);
         } else {
