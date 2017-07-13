@@ -17,9 +17,6 @@
             <ul class="links">
                 {{#if readme}}
                     <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
-                    </li>
-                    <li class="link">
                         <a {{#compare context "===" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
@@ -28,9 +25,15 @@
                             <span class="fa fa-th"></span>Overview
                         </a>
                     </li>
+                    <li class="link">
+                      <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
+                    </li>
                 {{else}}
                     <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}" {{#compare name "===" 'overview' }} class="active" {{/compare}}>
+                        <a href="{{relativeURL depth pageType 'root'}}"
+                            {{#compare name "===" 'overview' }} class="active" {{/compare}}
+                            {{#compare name "===" 'index' }} class="active" {{/compare}}
+                            >
                             <span class="fa fa-th"></span>Overview
                         </a>
                     </li>

@@ -193,8 +193,8 @@ export class Application {
                         i++;
                         loop();
                     }, (errorMessage) => {
-                        logger.error(errorMessage);
-                        logger.error(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
+                        logger.warn(errorMessage);
+                        logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
                         if (markdowns[i] === 'readme') {
                             this.configuration.addPage({
                                 name: 'index',
