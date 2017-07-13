@@ -15,4 +15,5 @@ export interface PageInterface {
     depth?: number;
     pageType?: string;
     component?: any;
+    markdown?: string;
 }
