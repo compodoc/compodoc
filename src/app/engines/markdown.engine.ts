@@ -98,6 +98,52 @@ export class MarkdownEngine {
         }
         return finalPath;
     }
+    hasRootMarkdowns(): boolean {
+        let readmeFile = process.cwd() + path.sep + 'README.md',
+            readmeFileWithoutExtension = process.cwd() + path.sep + 'README',
+            changelogFile = process.cwd() + path.sep + 'CHANGELOG.md',
+            changelogFileWithoutExtension = process.cwd() + path.sep + 'CHANGELOG',
+            licenseFile = process.cwd() + path.sep + 'LICENSE.md',
+            licenseFileWithoutExtension = process.cwd() + path.sep + 'LICENSE',
+            contributingFile = process.cwd() + path.sep + 'CONTRIBUTING.md',
+            contributingFileWithoutExtension = process.cwd() + path.sep + 'CONTRIBUTING',
+            todoFile = process.cwd() + path.sep + 'TODO.md',
+            todoFileWithoutExtension = process.cwd() + path.sep + 'TODO';
+        return fs.existsSync(readmeFile) ||
+               fs.existsSync(readmeFileWithoutExtension) ||
+               fs.existsSync(changelogFile) ||
+               fs.existsSync(changelogFileWithoutExtension) ||
+               fs.existsSync(licenseFile) ||
+               fs.existsSync(licenseFileWithoutExtension) ||
+               fs.existsSync(contributingFile) ||
+               fs.existsSync(contributingFileWithoutExtension) ||
+               fs.existsSync(todoFile) ||
+               fs.existsSync(todoFileWithoutExtension);
+    }
+    listRootMarkdowns(): string[] {
+        let list = [],
+            readme = 'README.md',
+            changelog = 'CHANGELOG.md',
+            contributing = 'CONTRIBUTING.md',
+            license = 'LICENSE.md',
+            todo = 'TODO.md';
+            if (fs.existsSync(process.cwd() + path.sep + readme)) {
+                list.push(readme);
+            }
+            if (fs.existsSync(process.cwd() + path.sep + changelog)) {
+                list.push(changelog);
+            }
+            if (fs.existsSync(process.cwd() + path.sep + contributing)) {
+                list.push(contributing);
+            }
+            if (fs.existsSync(process.cwd() + path.sep + license)) {
+                list.push(license);
+            }
+            if (fs.existsSync(process.cwd() + path.sep + todo)) {
+                list.push(todo);
+            }
+        return list;
+    }
 
     private escape(html) {
         return html

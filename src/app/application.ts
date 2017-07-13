@@ -1322,6 +1322,10 @@ export class Application {
             watcher.add(this.configuration.mainData.includes);
         }
 
+        if ($markdownengine.hasRootMarkdowns()) {
+            watcher.add($markdownengine.listRootMarkdowns());
+        }
+
         watcher
             .on('ready', () => {
                 watcher
