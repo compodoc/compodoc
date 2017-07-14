@@ -55,7 +55,7 @@ describe('CLI watch', () => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
             expect(fooCoverageFile).to.contain('3/6');
             done();
-        }, 18000);
+        }, 25000);
     });
 
 });
