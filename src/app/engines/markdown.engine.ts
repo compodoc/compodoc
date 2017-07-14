@@ -122,25 +122,30 @@ export class MarkdownEngine {
     }
     listRootMarkdowns(): string[] {
         let list = [],
-            readme = 'README.md',
-            changelog = 'CHANGELOG.md',
-            contributing = 'CONTRIBUTING.md',
-            license = 'LICENSE.md',
-            todo = 'TODO.md';
-            if (fs.existsSync(process.cwd() + path.sep + readme)) {
+            readme = 'README',
+            changelog = 'CHANGELOG',
+            contributing = 'CONTRIBUTING',
+            license = 'LICENSE',
+            todo = 'TODO';
+            if (fs.existsSync(process.cwd() + path.sep + readme + '.md') || fs.existsSync(process.cwd() + path.sep + readme)) {
                 list.push(readme);
+                list.push(readme+ '.md');
             }
-            if (fs.existsSync(process.cwd() + path.sep + changelog)) {
+            if (fs.existsSync(process.cwd() + path.sep + changelog + '.md') || fs.existsSync(process.cwd() + path.sep + changelog)) {
                 list.push(changelog);
+                list.push(changelog+ '.md');
             }
-            if (fs.existsSync(process.cwd() + path.sep + contributing)) {
+            if (fs.existsSync(process.cwd() + path.sep + contributing + '.md') || fs.existsSync(process.cwd() + path.sep + contributing)) {
                 list.push(contributing);
+                list.push(contributing+ '.md');
             }
-            if (fs.existsSync(process.cwd() + path.sep + license)) {
+            if (fs.existsSync(process.cwd() + path.sep + license + '.md') || fs.existsSync(process.cwd() + path.sep + license)) {
                 list.push(license);
+                list.push(license+ '.md');
             }
-            if (fs.existsSync(process.cwd() + path.sep + todo)) {
+            if (fs.existsSync(process.cwd() + path.sep + todo + '.md') || fs.existsSync(process.cwd() + path.sep + todo)) {
                 list.push(todo);
+                list.push(todo+ '.md');
             }
         return list;
     }
