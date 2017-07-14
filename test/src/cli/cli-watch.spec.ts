@@ -20,6 +20,7 @@ describe('CLI watch', () => {
             '-s', '-w'], { env, timeout: 30000 });
 
          ls.stdout.on('data', function (data) {
+             console.log('data: ' + data);
            if (data.indexOf('Watching source') !== -1 && !testWatch) {
                fooCoverageFile = read(`${tmp.name}/coverage.html`);
                testWatch = true;
