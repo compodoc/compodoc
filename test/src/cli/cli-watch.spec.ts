@@ -8,6 +8,7 @@ const expect = chai.expect,
 describe('CLI watch', () => {
 
     let stdoutString = null,
+        testCount = 0,
         testWatch = false,
         ls,
         fooCoverageFile;
@@ -17,7 +18,7 @@ describe('CLI watch', () => {
             './bin/index-cli.js',
             '-p', './test/src/sample-files/tsconfig.simple.json',
             '-d', tmp.name + '/',
-            '-s', '-w'], { env, timeout: 30000 });
+            '-s', '-w'], { env, timeout: 40000 });
 
          ls.stdout.on('data', function (data) {
              console.log('' + data);
@@ -36,17 +37,24 @@ describe('CLI watch', () => {
              //done();
              //console.log('child process exited with code ' + code);
          });
-
-         setTimeout(() => {
-             copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
-         }, 8000);
     });
     after(() => {
         tmp.clean();
         copy('./test/src/bar.component.ts', './test/src/sample-files/bar.component.ts');
     });
 
+    beforeEach(function(done) {
+        console.log('testCount: ' + testCount);
+        if (testCount === 1) {
+            setTimeout(() => {
+                copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
+            }, 1000);
+        }
+        done();
+    });
+
     it('it should have coverage page', () => {
+        testCount += 1;
         const isFileExists = exists(`${tmp.name}/coverage.html`);
         expect(isFileExists).to.be.true;
         expect(fooCoverageFile).to.contain('2/6');
