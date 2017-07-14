@@ -48,6 +48,10 @@ export class Application {
      */
     updatedFiles: Array<string>;
     /**
+     * Files changed during watch scanning
+     */
+    watchChangedFiles: Array<string> = [];
+    /**
      * Compodoc configuration local reference
      */
     configuration:ConfigurationInterface;
@@ -132,10 +136,27 @@ export class Application {
     }
 
     /**
+     * Return a boolean indicating presence of one root markdown files in updatedFiles list
+     * @return {boolean} Result of scan
+     */
+    hasWatchedFilesRootMarkdownFiles(): boolean {
+        let result = false;
+
+        _.forEach(this.updatedFiles, (file) => {
+            if (path.extname(file) === '.md' && path.dirname(file) === process.cwd()) {
+                result = true;
+            }
+        });
+
+        return result;
+    }
+
+    /**
      * Clear files for watch processing
      */
     clearUpdatedFiles() {
         this.updatedFiles = [];
+        this.watchChangedFiles = [];
     }
 
     processPackageJson() {
@@ -150,18 +171,27 @@ export class Application {
             }
             this.configuration.mainData.angularVersion = getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
-            this.processMarkdowns();
+            this.processMarkdowns().then(() => {
+                this.getDependenciesData();
+            }, (errorMessage) => {
+                logger.error(errorMessage);
+            });
         }, (errorMessage) => {
             logger.error(errorMessage);
             logger.error('Continuing without package.json file');
-            this.processMarkdowns();
+            this.processMarkdowns().then(() => {
+                this.getDependenciesData();
+            }, (errorMessage) => {
+                logger.error(errorMessage);
+            });
         });
     }
 
     processMarkdowns() {
         logger.info('Searching README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md files');
 
-        let i = 0,
+        return new Promise((resolve, reject) => {
+            let i = 0,
             markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'],
             numberOfMarkdowns = 5,
             loop = () => {
@@ -205,36 +235,30 @@ export class Application {
                         loop();
                     });
                 } else {
-                    this.getDependenciesData();
+                    resolve();
                 }
             };
+            loop();
+        });
+    }
 
-        loop();
+    rebuildRootMarkdowns() {
+        logger.info('Regenerating README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md pages');
 
-        /*$markdownengine.getReadmeFile().then((readmeData: string) => {
-            this.configuration.addPage({
-                name: 'index',
-                context: 'readme',
-                depth: 0,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+        let actions = [];
+
+        this.configuration.resetRootMarkdownPages();
+
+        actions.push(() => { return this.processMarkdowns(); });
+
+        promiseSequential(actions)
+            .then(res => {
+                this.processPages();
+                this.clearUpdatedFiles();
+            })
+            .catch(errorMessage => {
+                logger.error(errorMessage);
             });
-            this.configuration.addPage({
-                name: 'overview',
-                context: 'overview',
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-            });
-            this.configuration.mainData.readme = readmeData;
-            logger.info('README.md file found');
-            this.getDependenciesData();
-        }, (errorMessage) => {
-            logger.error(errorMessage);
-            logger.error('Continuing without README.md file');
-            this.configuration.addPage({
-                name: 'index',
-                context: 'overview'
-            });
-            this.getDependenciesData();
-        });*/
     }
 
     /**
@@ -1283,15 +1307,24 @@ export class Application {
     }
 
     runWatch() {
-        let srcFolder = findMainSourceFolder(this.files),
-            watchChangedFiles = [];
+        let sources = [findMainSourceFolder(this.files)],
+            watcherReady = false;
 
         this.isWatching = true;
 
-        logger.info(`Watching sources in ${srcFolder} folder`);
+        logger.info(`Watching sources in ${findMainSourceFolder(this.files)} folder`);
 
-        let watcher = chokidar.watch(srcFolder, {
+        if ($markdownengine.hasRootMarkdowns()) {
+            sources = sources.concat($markdownengine.listRootMarkdowns());
+        }
+
+        if (this.configuration.mainData.includes !== '') {
+            sources = sources.concat(this.configuration.mainData.includes);
+        }
+
+        let watcher = chokidar.watch(sources, {
                 awaitWriteFinish: true,
+                ignoreInitial: true,
                 ignored: /(spec|\.d)\.ts/
             }),
             timerAddAndRemoveRef,
@@ -1310,50 +1343,47 @@ export class Application {
             },
             runnerChange = () => {
                 startTime = new Date();
-                this.setUpdatedFiles(watchChangedFiles);
+                this.setUpdatedFiles(this.watchChangedFiles);
                 if (this.hasWatchedFilesTSFiles()) {
                     this.getMicroDependenciesData();
+                } else if (this.hasWatchedFilesRootMarkdownFiles()) {
+                    this.rebuildRootMarkdowns();
                 } else {
                     this.rebuildExternalDocumentation();
                 }
             };
 
-        if (this.configuration.mainData.includes !== '') {
-            watcher.add(this.configuration.mainData.includes);
-        }
-
         watcher
             .on('ready', () => {
-                watcher
-                    .on('add', (file) => {
-                        logger.debug(`File ${file} has been added`);
-                        // Test extension, if ts
-                        // rescan everything
-                        if (path.extname(file) === '.ts') {
-                            waiterAddAndRemove();
-                        }
-                    })
-                    .on('change', (file) => {
-                        logger.debug(`File ${file} has been changed`);
-                        // Test extension, if ts
-                        // rescan only file
-                        if (path.extname(file) === '.ts') {
-                            watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
-                            waiterChange();
-                        }
-                        if (path.extname(file) === '.md' || path.extname(file) === '.json') {
-                            watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
-                            waiterChange();
-                        }
-                    })
-                    .on('unlink', (file) => {
-                        logger.debug(`File ${file} has been removed`);
-                        // Test extension, if ts
-                        // rescan everything
-                        if (path.extname(file) === '.ts') {
-                            waiterAddAndRemove();
-                        }
-                    });
+                if (!watcherReady) {
+                    watcherReady = true;
+                    watcher
+                        .on('add', (file) => {
+                            logger.debug(`File ${file} has been added`);
+                            // Test extension, if ts
+                            // rescan everything
+                            if (path.extname(file) === '.ts') {
+                                waiterAddAndRemove();
+                            }
+                        })
+                        .on('change', (file) => {
+                            logger.debug(`File ${file} has been changed`);
+                            // Test extension, if ts
+                            // rescan only file
+                            if (path.extname(file) === '.ts' || path.extname(file) === '.md' || path.extname(file) === '.json') {
+                                this.watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                                waiterChange();
+                            }
+                        })
+                        .on('unlink', (file) => {
+                            logger.debug(`File ${file} has been removed`);
+                            // Test extension, if ts
+                            // rescan everything
+                            if (path.extname(file) === '.ts') {
+                                waiterAddAndRemove();
+                            }
+                        });
+                }
             });
     }
 
