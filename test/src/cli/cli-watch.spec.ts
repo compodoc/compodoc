@@ -48,9 +48,11 @@ describe('CLI watch', () => {
         if (testCount === 1) {
             setTimeout(() => {
                 copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
+                done();
             }, 1000);
+        } else {
+            done();
         }
-        done();
     });
 
     it('it should have coverage page', () => {
