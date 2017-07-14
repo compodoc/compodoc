@@ -51,12 +51,12 @@ describe('CLI watch', () => {
     it('it should have updated coverage page', (done) => {
         setTimeout(() => {
             copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
-        }, 1000);
+        }, 5000);
         setTimeout(() => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
             expect(fooCoverageFile).to.contain('3/6');
             done();
-        }, 15000);
+        }, 25000);
     });
 
 });
