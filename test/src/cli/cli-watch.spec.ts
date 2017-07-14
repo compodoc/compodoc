@@ -20,12 +20,12 @@ describe('CLI watch', () => {
             '-s', '-w'], { env, timeout: 30000 });
 
          ls.stdout.on('data', function (data) {
-             console.log('data: ' + data);
-           if (data.indexOf('Watching source') !== -1 && !testWatch) {
-               fooCoverageFile = read(`${tmp.name}/coverage.html`);
-               testWatch = true;
-               done();
-           }
+             //console.log('' + data);
+             if (data.indexOf('Watching source') !== -1 && !testWatch) {
+                fooCoverageFile = read(`${tmp.name}/coverage.html`);
+                testWatch = true;
+                done();
+             }
          });
 
          ls.stderr.on('data', function (data) {
@@ -51,12 +51,12 @@ describe('CLI watch', () => {
     it('it should have updated coverage page', (done) => {
         setTimeout(() => {
             copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
-        }, 2000);
+        }, 1000);
         setTimeout(() => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
             expect(fooCoverageFile).to.contain('3/6');
             done();
-        }, 25000);
+        }, 15000);
     });
 
 });
