@@ -3,19 +3,32 @@
   <li>{{name}}</li>
 </ol>
 
-{{#unless disableSourceCode}}
 <ul class="nav nav-tabs" role="tablist">
     <li class="active">
-        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
+        <a href="#info" id="info-tab" role="tab" data-toggle="tab" data-link="info">Info</a>
     </li>
+
+    {{#if directive.readme}}
+    <li>
+        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab" data-link="readme">README</a>
+    </li>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
     <li>
         <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
     </li>
+    {{/unless}}
+
+    {{#if directive.exampleUrls}}
+    <li>
+        <a href="#example" role="tab" id="example-tab" data-toggle="tab" data-link="example">Examples</a>
+    </li>
+    {{/if}}
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="infos">
-        {{/unless}}
+    <div class="tab-pane fade active in" id="info">
         <p class="comment">
             <h3>File</h3>
         </p>
@@ -173,10 +186,27 @@
             {{> block-property properties=directive.propertiesClass file=directive.file }}
         {{/if}}
 
-    {{#unless disableSourceCode}}
     </div>
+
+    {{#if directive.readme}}
+    <div class="tab-pane fade" id="readme">
+        <p>{{{directive.readme}}}</p>
+    </div>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
     <div class="tab-pane fade tab-source-code" id="source">
         <pre class="line-numbers"><code class="language-typescript">{{ directive.sourceCode}}</code></pre>
     </div>
+    {{/unless}}
+    
+    {{#if directive.exampleUrls}}
+    <div class="tab-pane fade" id="example">
+        {{#each directive.exampleUrls}}
+            <iframe src="{{this}}" style="height: 100vh; width: 100%;">
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+        {{/each}}
+    </div>
+    {{/if}}
 </div>
-{{/unless}}

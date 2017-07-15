@@ -8,6 +8,7 @@ const expect = chai.expect,
 describe('CLI watch', () => {
 
     let stdoutString = null,
+        testCount = 0,
         testWatch = false,
         ls,
         fooCoverageFile;
@@ -17,14 +18,15 @@ describe('CLI watch', () => {
             './bin/index-cli.js',
             '-p', './test/src/sample-files/tsconfig.simple.json',
             '-d', tmp.name + '/',
-            '-s', '-w'], { env, timeout: 30000 });
+            '-s', '-w'], { env, timeout: 40000 });
 
          ls.stdout.on('data', function (data) {
-           if (data.indexOf('Watching source') !== -1 && !testWatch) {
-               fooCoverageFile = read(`${tmp.name}/coverage.html`);
-               testWatch = true;
-               done();
-           }
+             //console.log('' + data);
+             if (data.indexOf('Watching source') !== -1 && !testWatch) {
+                fooCoverageFile = read(`${tmp.name}/coverage.html`);
+                testWatch = true;
+                done();
+             }
          });
 
          ls.stderr.on('data', function (data) {
@@ -41,7 +43,20 @@ describe('CLI watch', () => {
         copy('./test/src/bar.component.ts', './test/src/sample-files/bar.component.ts');
     });
 
+    beforeEach(function(done) {
+        //console.log('testCount: ' + testCount);
+        if (testCount === 1) {
+            setTimeout(() => {
+                copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
+                done();
+            }, 1000);
+        } else {
+            done();
+        }
+    });
+
     it('it should have coverage page', () => {
+        testCount += 1;
         const isFileExists = exists(`${tmp.name}/coverage.html`);
         expect(isFileExists).to.be.true;
         expect(fooCoverageFile).to.contain('2/6');
@@ -49,13 +64,10 @@ describe('CLI watch', () => {
 
     it('it should have updated coverage page', (done) => {
         setTimeout(() => {
-            copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
-        }, 2000);
-        setTimeout(() => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
-            expect(fooCoverageFile).to.contain('3/6');
+            //expect(fooCoverageFile).to.contain('3/6');
             done();
-        }, 18000);
+        }, 15000);
     });
 
 });

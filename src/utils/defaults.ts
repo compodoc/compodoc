@@ -7,6 +7,7 @@ export const COMPODOC_DEFAULTS = {
     theme: 'gitbook',
     base: '/',
     defaultCoverageThreshold: 70,
+    toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableGraph: false,
     disableCoverage: false,

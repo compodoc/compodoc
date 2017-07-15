@@ -18,19 +18,27 @@
 <script src="{{relativeURL depth 'modules'}}js/svg-pan-zoom.controls.js"></script>
 {{/unless}}
 
-{{#unless disableSourceCode}}
 <ul class="nav nav-tabs" role="tablist">
     <li class="active">
-        <a href="#infos" id="infos-tab" role="tab" data-toggle="tab">Infos</a>
+        <a href="#info" id="info-tab" role="tab" data-toggle="tab" data-link="info">Info</a>
     </li>
+    
+    {{#if module.readme}}
+    <li>
+        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab" data-link="readme">README</a>
+    </li>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
     <li>
         <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
     </li>
+    {{/unless}}
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="infos">
-        {{/unless}}
+    <div class="tab-pane fade active in" id="info">
+
         <p class="comment">
             <h3>File</h3>
         </p>
@@ -119,10 +127,17 @@
                 {{/if}}
             </div>
         </div>
-    {{#unless disableSourceCode}}
     </div>
+
+    {{#if module.readme}}
+    <div class="tab-pane fade" id="readme">
+        <p>{{{module.readme}}}</p>
+    </div>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
     <div class="tab-pane fade tab-source-code" id="source">
         <pre class="line-numbers"><code class="language-typescript">{{ module.sourceCode}}</code></pre>
     </div>
+    {{/unless}}
 </div>
-{{/unless}}

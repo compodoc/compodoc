@@ -8,4 +8,5 @@ export interface ConfigurationInterface {
     addAdditionalPage(page: PageInterface): void;
     resetPages(): void;
     resetAdditionalPages(): void;
+    resetRootMarkdownPages(): void;
 }

@@ -11,7 +11,12 @@ export interface MainDataInterface {
     base: string;
     hideGenerator: boolean;
     modules: any;
-    readme: string;
+    readme: boolean;
+    changelog: string;
+    contributing: string;
+    license: string;
+    todo: string;
+    markdowns: any[];
     additionalPages: any;
     pipes: any;
     classes: any;

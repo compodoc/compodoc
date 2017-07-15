@@ -18,6 +18,8 @@ const marked = require('marked'),
       ts = require('typescript'),
       _ = require('lodash');
 
+// TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
+
 interface NodeObject {
     kind: Number;
     pos: Number;
@@ -185,6 +187,62 @@ export class Dependencies {
 
         });
 
+        // End of file scanning
+        // Try merging inside the same file declarated variables & modules with imports | exports | declarations | providers
+
+        if (deps['miscellaneous'].variables.length > 0) {
+            deps['miscellaneous'].variables.forEach(_variable => {
+                let newVar = [];
+                ((_var, _newVar) => {
+                    // getType pr reconstruire....
+                    if (_var.initializer) {
+                        if (_var.initializer.elements) {
+                            if (_var.initializer.elements.length > 0) {
+                                _var.initializer.elements.forEach((element) => {
+                                    if (element.text) {
+                                        newVar.push({
+                                            name: element.text,
+                                            type: this.getType(element.text)
+                                        })
+                                    }
+                                });
+                            }
+                        }
+                    }
+                })(_variable, newVar);
+
+                deps['modules'].forEach(mod => {
+                    if (mod.file === _variable.file) {
+                        let process = (initialArray, _var) => {
+                            let indexToClean = 0,
+                                found = false;
+                            let findVariableInArray = (el, index, theArray) => {
+                                if (el.name === _var.name) {
+                                    indexToClean = index;
+                                    found = true;
+                                }
+                            }
+                            initialArray.forEach(findVariableInArray);
+                            // Clean indexes to replace
+                            if (found) {
+                                initialArray.splice(indexToClean, 1);
+                                // Add variable
+                                newVar.forEach((newEle) => {
+                                    if (typeof _.find(initialArray, { 'name': newEle.name}) === 'undefined') {
+                                        initialArray.push(newEle);
+                                    }
+                                });
+                            }
+                        }
+                        process(mod.imports, _variable);
+                        process(mod.exports, _variable);
+                        process(mod.declarations, _variable);
+                        process(mod.providers, _variable);
+                    }
+                });
+            });
+        }
+
         //RouterParser.printModulesRoutes();
         //RouterParser.printRoutes();
 
@@ -234,7 +292,7 @@ export class Dependencies {
                             sourceCode: srcFile.getText()
                         };
                         if (RouterParser.hasRouterModuleInImports(deps.imports)) {
-                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props));
+                            RouterParser.addModuleWithRoutes(name, this.getModuleImportsRaw(props), file);
                         }
                         RouterParser.addModule(name, deps.imports);
                         outputSymbols['modules'].push(deps);
@@ -269,7 +327,8 @@ export class Dependencies {
                             methodsClass: IO.methods,
                             description: IO.description,
                             type: 'component',
-                            sourceCode: srcFile.getText()
+                            sourceCode: srcFile.getText(),
+                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (this.configuration.mainData.disablePrivateOrInternalSupport) {
                             deps.methodsClass = cleanLifecycleHooksFromMethods(deps.methodsClass);
@@ -332,7 +391,8 @@ export class Dependencies {
                             outputsClass: IO.outputs,
 
                             propertiesClass: IO.properties,
-                            methodsClass: IO.methods
+                            methodsClass: IO.methods,
+                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
@@ -542,6 +602,9 @@ export class Dependencies {
                     if (infos.defaultValue) {
                         deps.defaultValue = infos.defaultValue;
                     }
+                    if (infos.initializer) {
+                        deps.initializer = infos.initializer;
+                    }
                     if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                         deps.description = marked(node.jsDoc[0].comment);
                     }
@@ -582,6 +645,7 @@ export class Dependencies {
                 }
             }
         });
+
 
     }
     private debug(deps: Deps) {
@@ -793,12 +857,22 @@ export class Dependencies {
 
     private visitInput(property, inDecorator, sourceFile?) {
         var inArgs = inDecorator.expression.arguments,
-        _return = {
-            name: inArgs.length ? inArgs[0].text : property.name.text,
-            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
-            line: this.getPosition(property, sourceFile).line + 1
-        };
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        if (property.symbol) {
+            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
         if (property.type) {
             _return.type = this.visitType(property);
         } else {
@@ -850,6 +924,8 @@ export class Dependencies {
                         _return += '|';
                     }
                 }
+            } else if (node.dotDotDotToken) {
+                _return = 'any[]';
             } else {
                 _return = kindToType(node.kind);
             }
@@ -865,12 +941,24 @@ export class Dependencies {
     }
 
     private visitOutput(property, outDecorator, sourceFile?) {
-        var outArgs = outDecorator.expression.arguments,
-        _return = {
-            name: outArgs.length ? outArgs[0].text : property.name.text,
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment()))),
-            line: this.getPosition(property, sourceFile).line + 1
-        };
+        var inArgs = outDecorator.expression.arguments,
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        if (property.symbol) {
+            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
+
         if (property.type) {
             _return.type = this.visitType(property);
         } else {
@@ -1074,13 +1162,14 @@ export class Dependencies {
     }
 
     private visitArgument(arg) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        return {
+        let _result = {
             name: arg.name.text,
             type: this.visitType(arg)
-        };
+        }
+        if (arg.dotDotDotToken) {
+            _result.dotDotDotToken = true
+        }
+        return _result;
     }
 
     private getNamesCompareFn(name) {
@@ -1489,6 +1578,9 @@ export class Dependencies {
                     name: node.declarationList.declarations[i].name.text,
                     defaultValue: node.declarationList.declarations[i].initializer ? this.stringifyDefaultValue(node.declarationList.declarations[i].initializer) : undefined
                 }
+                if(node.declarationList.declarations[i].initializer) {
+                    result.initializer = node.declarationList.declarations[i].initializer;
+                }
                 if(node.declarationList.declarations[i].type) {
                     result.type = this.visitType(node.declarationList.declarations[i].type);
                 }
@@ -1549,7 +1641,7 @@ export class Dependencies {
                         RouterParser.addRoute({
                             name: node.declarationList.declarations[i].name.text,
                             data: RouterParser.cleanRawRoute(data),
-                            file: fileName
+                            filename: fileName
                         });
                         return [{
                             routes: data
@@ -1654,6 +1746,17 @@ export class Dependencies {
             identifier.label = '';
             return identifier;
         });
+    }
+
+    private getComponentExampleUrls = function (text) {
+        var exampleUrlsMatches = text.match(/<example-url>(.*?)<\/example-url>/g);
+        var exampleUrls = null;
+        if (exampleUrlsMatches && exampleUrlsMatches.length) {
+            exampleUrls = exampleUrlsMatches.map(function(val){
+                return val.replace(/<\/?example-url>/g,'');
+            });
+        }
+        return exampleUrls;
     }
 
     private parseDeepIndentifier(name: string): any {

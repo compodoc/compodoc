@@ -84,7 +84,7 @@ describe('CLI simple flags', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('Error during README.md file reading');
+            expect(command.stdout.toString()).to.contain('Error during README read');
             expect(command.stdout.toString()).to.contain('Error during package.json read');
         });
     });

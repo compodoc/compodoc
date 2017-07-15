@@ -6,6 +6,8 @@ import { MainDataInterface } from './interfaces/main-data.interface';
 
 import { ConfigurationInterface } from './interfaces/configuration.interface';
 
+const _ = require('lodash');
+
 export class Configuration implements ConfigurationInterface {
     private static _instance:Configuration = new Configuration();
 
@@ -23,7 +25,12 @@ export class Configuration implements ConfigurationInterface {
         base: COMPODOC_DEFAULTS.base,
         hideGenerator: false,
         modules: [],
-        readme: '',
+        readme: false,
+        changelog: '',
+        contributing: '',
+        license: '',
+        todo: '',
+        markdowns: [],
         additionalPages: [],
         pipes: [],
         classes: [],
@@ -76,6 +83,20 @@ export class Configuration implements ConfigurationInterface {
 
     resetAdditionalPages() {
         this._mainData.additionalPages = [];
+    }
+
+    resetRootMarkdownPages() {
+        let indexPage = _.findIndex(this._pages, {'name': 'index'});
+        this._pages.splice(indexPage, 1);
+        indexPage = _.findIndex(this._pages, {'name': 'changelog'});
+        this._pages.splice(indexPage, 1);
+        indexPage = _.findIndex(this._pages, {'name': 'contributing'});
+        this._pages.splice(indexPage, 1);
+        indexPage = _.findIndex(this._pages, {'name': 'license'});
+        this._pages.splice(indexPage, 1);
+        indexPage = _.findIndex(this._pages, {'name': 'todo'});
+        this._pages.splice(indexPage, 1);
+        this._mainData.markdowns = [];
     }
 
     get pages():PageInterface[] {
