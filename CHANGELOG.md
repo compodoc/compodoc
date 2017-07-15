@@ -1,3 +1,21 @@
+<a name="1.0.0-beta.13"></a>
+# [1.0.0-beta.13](https://github.com/compodoc/compodoc/compare/1.0.0-beta.12...1.0.0-beta.13) (2017-07-15)
+
+### Bug Fixes
+
+* **deps:** Resolve array declaration in modules ([619842d](https://github.com/compodoc/compodoc/commit/619842d)), closes [#210](https://github.com/compodoc/compodoc/issues/210) [#15](https://github.com/compodoc/compodoc/issues/15)
+* **routes:** Routes names required to be unique ([7f17ecb](https://github.com/compodoc/compodoc/commit/7f17ecb)), closes [#193](https://github.com/compodoc/compodoc/issues/193)
+* **deps:** RangeError: Invalid array length / @input/@output parsing ([048fd20](https://github.com/compodoc/compodoc/commit/048fd20)), closes [#209](https://github.com/compodoc/compodoc/issues/209)
+* **html:** Type in "Infos" tab - should be "Info" ([1ceee52](https://github.com/compodoc/compodoc/commit/1ceee52)), closes [#224](https://github.com/compodoc/compodoc/issues/224)
+* **html:** Source code not rendered ([bfe4708](https://github.com/compodoc/compodoc/commit/bfe4708)), closes [#223](https://github.com/compodoc/compodoc/issues/223)
+
+### Features
+
+* **chore:** Add an interactive examples tab ([34de4f0](https://github.com/compodoc/compodoc/commit/34de4f0)), closes [#188](https://github.com/compodoc/compodoc/issues/188) Thanks rprotsyk.
+* **doc:** support to display the changelog.md, contributing, license, todo ([272a0ad](https://github.com/compodoc/compodoc/commit/272a0ad)), closes [#215](https://github.com/compodoc/compodoc/issues/215)
+* **watch:** Watch README.md, and other root markdown files ([ed05424](https://github.com/compodoc/compodoc/commit/ed05424)), closes [#221](https://github.com/compodoc/compodoc/issues/221)
+* **chore:** Markdown file support for modules, services, etc ([918a521](https://github.com/compodoc/compodoc/commit/918a521)), closes [#204](https://github.com/compodoc/compodoc/issues/204)
+
 <a name="1.0.0-beta.12"></a>
 # [1.0.0-beta.12](https://github.com/compodoc/compodoc/compare/1.0.0-beta.11...1.0.0-beta.12) (2017-07-09)
 
