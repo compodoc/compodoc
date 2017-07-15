@@ -542,20 +542,29 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            let len = this.configuration.mainData.modules.length;
-
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'modules',
-                    name: this.configuration.mainData.modules[i].name,
-                    context: 'module',
-                    module: this.configuration.mainData.modules[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-
-            resolve();
+            let len = this.configuration.mainData.modules.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.modules[i].file)) {
+                            logger.info(` ${this.configuration.mainData.modules[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.modules[i].file);
+                            this.configuration.mainData.modules[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'modules',
+                            name: this.configuration.mainData.modules[i].name,
+                            context: 'module',
+                            module: this.configuration.mainData.modules[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -565,19 +574,29 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-                len = this.configuration.mainData.pipes.length;
-
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'pipes',
-                    name: this.configuration.mainData.pipes[i].name,
-                    context: 'pipe',
-                    pipe: this.configuration.mainData.pipes[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-            resolve();
+                len = this.configuration.mainData.pipes.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.pipes[i].file)) {
+                            logger.info(` ${this.configuration.mainData.pipes[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.pipes[i].file);
+                            this.configuration.mainData.pipes[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'pipes',
+                            name: this.configuration.mainData.pipes[i].name,
+                            context: 'pipe',
+                            pipe: this.configuration.mainData.pipes[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -587,19 +606,29 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-                len = this.configuration.mainData.classes.length;
-
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'classes',
-                    name: this.configuration.mainData.classes[i].name,
-                    context: 'class',
-                    class: this.configuration.mainData.classes[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-            resolve();
+                len = this.configuration.mainData.classes.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.classes[i].file)) {
+                            logger.info(` ${this.configuration.mainData.classes[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.classes[i].file);
+                            this.configuration.mainData.classes[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'classes',
+                            name: this.configuration.mainData.classes[i].name,
+                            context: 'class',
+                            class: this.configuration.mainData.classes[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -609,18 +638,29 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-                len = this.configuration.mainData.interfaces.length;
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'interfaces',
-                    name: this.configuration.mainData.interfaces[i].name,
-                    context: 'interface',
-                    interface: this.configuration.mainData.interfaces[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-            resolve();
+                len = this.configuration.mainData.interfaces.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file)) {
+                            logger.info(` ${this.configuration.mainData.interfaces[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file);
+                            this.configuration.mainData.interfaces[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'interfaces',
+                            name: this.configuration.mainData.interfaces[i].name,
+                            context: 'interface',
+                            interface: this.configuration.mainData.interfaces[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -667,33 +707,30 @@ export class Application {
                                     }
                                 });
                             };
-                        if ($markdownengine.componentHasReadmeFile(this.configuration.mainData.components[i].file)) {
-                            logger.info(`${this.configuration.mainData.components[i].name} has a README file, include it`);
-                            let readmeFile = $markdownengine.componentReadmeFile(this.configuration.mainData.components[i].file);
-                            fs.readFile(readmeFile, 'utf8', (err, data) => {
-                                if (err) throw err;
-                                this.configuration.mainData.components[i].readme = marked(data);
-                                this.configuration.addPage({
-                                    path: 'components',
-                                    name: this.configuration.mainData.components[i].name,
-                                    context: 'component',
-                                    component: this.configuration.mainData.components[i],
-                                    depth: 1,
-                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                                });
-                                if (this.configuration.mainData.components[i].templateUrl.length > 0) {
-                                    logger.info(`${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
-                                    handleTemplateurl().then(() => {
-                                        i++;
-                                        loop();
-                                    }, (e) => {
-                                        logger.error(e);
-                                    })
-                                } else {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.components[i].file)) {
+                            logger.info(` ${this.configuration.mainData.components[i].name} has a README file, include it`);
+                            let readmeFile = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.components[i].file);
+                            this.configuration.mainData.components[i].readme = marked(readmeFile);
+                            this.configuration.addPage({
+                                path: 'components',
+                                name: this.configuration.mainData.components[i].name,
+                                context: 'component',
+                                component: this.configuration.mainData.components[i],
+                                depth: 1,
+                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                            });
+                            if (this.configuration.mainData.components[i].templateUrl.length > 0) {
+                                logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                                handleTemplateurl().then(() => {
                                     i++;
                                     loop();
-                                }
-                            });
+                                }, (e) => {
+                                    logger.error(e);
+                                })
+                            } else {
+                                i++;
+                                loop();
+                            }
                         } else {
                             this.configuration.addPage({
                                 path: 'components',
@@ -704,7 +741,7 @@ export class Application {
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                             });
                             if (this.configuration.mainData.components[i].templateUrl.length > 0) {
-                                logger.info(`${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
+                                logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
                                 handleTemplateurl().then(() => {
                                     i++;
                                     loop();
@@ -731,19 +768,29 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-                len = this.configuration.mainData.directives.length;
-
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'directives',
-                    name: this.configuration.mainData.directives[i].name,
-                    context: 'directive',
-                    directive: this.configuration.mainData.directives[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-            resolve();
+                len = this.configuration.mainData.directives.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.directives[i].file)) {
+                            logger.info(` ${this.configuration.mainData.directives[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.directives[i].file);
+                            this.configuration.mainData.directives[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'directives',
+                            name: this.configuration.mainData.directives[i].name,
+                            context: 'directive',
+                            directive: this.configuration.mainData.directives[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -754,19 +801,29 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-                len = this.configuration.mainData.injectables.length;
-
-            for(i; i<len; i++) {
-                this.configuration.addPage({
-                    path: 'injectables',
-                    name: this.configuration.mainData.injectables[i].name,
-                    context: 'injectable',
-                    injectable: this.configuration.mainData.injectables[i],
-                    depth: 1,
-                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                });
-            }
-            resolve();
+                len = this.configuration.mainData.injectables.length,
+                loop = () => {
+                    if(i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.injectables[i].file)) {
+                            logger.info(` ${this.configuration.mainData.injectables[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.injectables[i].file);
+                            this.configuration.mainData.injectables[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'injectables',
+                            name: this.configuration.mainData.injectables[i].name,
+                            context: 'injectable',
+                            injectable: this.configuration.mainData.injectables[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
         });
     }
 
@@ -784,7 +841,7 @@ export class Application {
             });
 
             RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
-                logger.info('Routes index generated');
+                logger.info(' Routes index generated');
                 resolve();
             }, (e) => {
                 logger.error(e);

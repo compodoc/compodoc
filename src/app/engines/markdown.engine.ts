@@ -80,11 +80,15 @@ export class MarkdownEngine {
             });
         });
     }
-    componentHasReadmeFile(file: string): boolean {
+    readNeighbourReadmeFile(file: string) {
         let dirname = path.dirname(file),
-            readmeFile = dirname + path.sep + 'README.md',
-            readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
-        return fs.existsSync(readmeFile) || fs.existsSync(readmeAlternativeFile);
+            readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+        return fs.readFileSync(readmeFile, 'utf8');
+    }
+    hasNeighbourReadmeFile(file: string): boolean {
+        let dirname = path.dirname(file),
+            readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+        return fs.existsSync(readmeFile);
     }
     componentReadmeFile(file: string): string {
         let dirname = path.dirname(file),

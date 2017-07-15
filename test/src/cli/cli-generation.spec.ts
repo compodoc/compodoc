@@ -383,7 +383,8 @@ describe('CLI simple generation', () => {
         });
 
         it('it should have infos about ClockInterface interface', () => {
-            expect(clockInterfaceFile).to.contain('Default value');
+            const file = read(`documentation/interfaces/ClockInterface.html`);
+            expect(file).to.contain('A simple reset method');
         });
 
         it('should have generated args and return informations for todo store', () => {
@@ -417,6 +418,23 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('<title>FirstUpperPipe</title>'); // Inside svg graph
             const file2 = read('documentation/modules/ListModule.html');
             expect(file2).to.contain('<title>TodoModule</title>'); // Inside svg graph
+        });
+
+        it('should have README tabs for each types', () => {
+            let file = read('documentation/components/TodoComponent.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/modules/AboutModule.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/directives/DoNothingDirective.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/injectables/TodoStore.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/pipes/FirstUpperPipe.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/classes/Todo.html');
+            expect(file).to.contain('id="readme-tab"');
+            file = read('documentation/interfaces/ClockInterface.html');
+            expect(file).to.contain('id="readme-tab"');
         });
 
     });
@@ -550,9 +568,9 @@ describe('CLI simple generation', () => {
         });
         after(() => tmp.clean(tmp.name));
 
-        it('should not contain compodoc logo', () => {
+        it('should not contain sourceCode tab', () => {
             index = read(`${tmp.name}/modules/AppModule.html`);
-            expect(index).to.not.contain('nav nav-tabs');
+            expect(index).to.not.contain('id="source-tab"');
         });
     });
 

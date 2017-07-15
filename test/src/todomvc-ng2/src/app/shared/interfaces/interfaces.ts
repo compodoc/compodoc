@@ -1,3 +1,5 @@
+import { ClockInterface } from './clock.interface';
+
 /**
  * An interface just for documentation purpose
  */
@@ -41,33 +43,6 @@ interface SearchFunc {
  */
 interface StringArray {
     [index: number]: string;
-}
-
-/**
- * A class interface just for documentation purpose
- * ```typescript
- * class Clock implements ClockInterface {
- *     currentTime: Date;
- *     constructor(h: number, m: number) { }
- * }
- * ```
- */
-interface ClockInterface {
-    /**
-     * Activated status
-     *
-     * @default true
-     */
-    activated: boolean;
-    /**
-     * The current time
-     * @type {Date}
-     */
-    currentTime: Date;
-    /**
-     * A simple reset method
-     */
-    reset(): void;
 }
 
 class Clock implements ClockInterface {
