@@ -1205,7 +1205,7 @@ export class Application {
                     if (pages[i].path) {
                         finalPath += pages[i].path + '/';
                     }
-                    finalPath += pages[i].name + '.html';
+                    finalPath += pages[i].filename + '.html';
                     $searchEngine.indexPage({
                         infos: pages[i],
                         rawData: htmlData,
