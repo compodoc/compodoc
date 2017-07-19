@@ -182,6 +182,7 @@ describe('CLI simple generation', () => {
             expect(isFolderExists).to.be.true;
         });
     });
+
     describe('when generation with d flag and src arg', () => {
 
         let stdoutString = null;
@@ -218,6 +219,7 @@ describe('CLI simple generation', () => {
             expect(isModulesExists).to.be.true;
         });
     });
+
     describe('when generation without d flag', () => {
 
         let stdoutString = null;
@@ -264,6 +266,7 @@ describe('CLI simple generation', () => {
             expect(isFontsExists).to.be.true;
         });
     });
+
     describe('when generation with big app', () => {
 
         let stdoutString = null,
@@ -393,6 +396,9 @@ describe('CLI simple generation', () => {
             expect(file).to.contain('string|number');
             expect(file).to.contain('number[]');
             expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
+            expect(file).to.contain('service is a todo store');
+            expect(file).to.contain('all todos status (completed');
+            expect(file).to.contain('Local array of Todos');
         });
 
         it('should have correct types for todo model', () => {
@@ -436,8 +442,8 @@ describe('CLI simple generation', () => {
             file = read('documentation/interfaces/ClockInterface.html');
             expect(file).to.contain('id="readme-tab"');
         });
-
     });
+
     describe('when generation with -t flag', () => {
 
         let stdoutString = null;
