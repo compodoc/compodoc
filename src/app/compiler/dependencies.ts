@@ -139,32 +139,6 @@ export class Dependencies {
 
         let sourceFiles = this.program.getSourceFiles() || [];
 
-        /**
-         * Clean files with UTF-8 BOM
-         */
-        sourceFiles.forEach((file, index) => {
-            let filePath = file.fileName;
-
-            if (path.extname(filePath) === '.ts') {
-                if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
-                    if (hasBom(file.text)) {
-                        let text = stripBom(file.text),
-                            tt = file.update(text, {
-                                newLength: text.length,
-                                span: {
-                                    start: 0,
-                                    length: file.text.length
-                                }
-                            });
-                        if (!tt.moduleAugmentations) {
-                            tt.moduleAugmentations = [];
-                        }
-                        sourceFiles[index] = tt;
-                    }
-                }
-            }
-        });
-
         sourceFiles.map((file: ts.SourceFile) => {
 
             let filePath = file.fileName;
