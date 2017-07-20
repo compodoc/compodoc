@@ -29,6 +29,8 @@ matrix:
   exclude:
     - node_js: "4"
     - node_js: "6"
+    - node_js: "7"
+    - node_js: "8"
   include:
     - node_js: "4"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
