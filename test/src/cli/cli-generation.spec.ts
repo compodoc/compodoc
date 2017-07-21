@@ -7,7 +7,7 @@ const expect = chai.expect,
 
 describe('CLI simple generation', () => {
 
-    describe('when generation with d flag', () => {
+    describe('when generation with d flag - relative folder', () => {
 
         let stdoutString = null,
             fooComponentFile,
@@ -130,7 +130,7 @@ describe('CLI simple generation', () => {
            });
     });
 
-    describe('when generation with d flag without / at the end', () => {
+    describe('when generation with d flag without / at the end - relative folder', () => {
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -156,6 +156,68 @@ describe('CLI simple generation', () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists(`${tmp.name}/modules.html`);
             expect(isModulesExists).to.be.true;
+        });
+    });
+
+    describe('when generation with d flag - absolute folder', () => {
+
+        let stdoutString = null,
+            fooComponentFile,
+            fooServiceFile,
+            componentFile,
+            moduleFile,
+            coverageFile;
+        before(function (done) {
+            tmp.create();
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '/tmp/' + tmp.name + '/'], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            fooComponentFile = read(`/tmp/${tmp.name}/components/FooComponent.html`);
+            fooServiceFile = read(`/tmp/${tmp.name}/injectables/FooService.html`);
+            coverageFile = read(`/tmp/${tmp.name}/coverage.html`);
+            moduleFile  = read(`/tmp/${tmp.name}/modules/AppModule.html`);
+            componentFile = read(`/tmp/${tmp.name}/components/BarComponent.html`);
+            done();
+        });
+        after(() => tmp.clean());
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
+        });
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists(`/tmp/${tmp.name}`);
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists(`/tmp/${tmp.name}/index.html`);
+            expect(isIndexExists).to.be.true;
+            const isModulesExists = exists(`/tmp/${tmp.name}/modules.html`);
+            expect(isModulesExists).to.be.true;
+        });
+
+        it('should have generated resources folder', () => {
+            const isImagesExists = exists(`/tmp/${tmp.name}/images`);
+            expect(isImagesExists).to.be.true;
+            const isJSExists = exists(`/tmp/${tmp.name}/js`);
+            expect(isJSExists).to.be.true;
+            const isStylesExists = exists(`/tmp/${tmp.name}/styles`);
+            expect(isStylesExists).to.be.true;
+            const isFontsExists = exists(`/tmp/${tmp.name}/fonts`);
+            expect(isFontsExists).to.be.true;
+        });
+
+        it('should have generated search index json', () => {
+            const isIndexExists = exists(`/tmp/${tmp.name}/js/search/search_index.js`);
+            expect(isIndexExists).to.be.true;
         });
     });
 

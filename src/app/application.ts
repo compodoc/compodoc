@@ -1242,7 +1242,7 @@ export class Application {
         if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
-            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
+            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
                 if(err) {
                     logger.error('Error during resources copy ', err);
                 }
@@ -1264,13 +1264,13 @@ export class Application {
 
         let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + finalOutput), (err) => {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (this.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + finalOutput + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(finalOutput + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
