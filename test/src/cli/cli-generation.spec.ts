@@ -14,7 +14,8 @@ describe('CLI simple generation', () => {
             fooServiceFile,
             componentFile,
             moduleFile,
-            coverageFile;
+            coverageFile,
+            emptyModuleFile;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -32,6 +33,7 @@ describe('CLI simple generation', () => {
             coverageFile = read(`${tmp.name}/coverage.html`);
             moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
             componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            emptyModuleFile = read(`${tmp.name}/modules/EmptyModule.html`);
             done();
         });
         after(() => tmp.clean());
@@ -128,6 +130,14 @@ describe('CLI simple generation', () => {
            it('should include by default methods marked as private', () => {
                expect(componentFile).to.contain('<code>privateMethod');
            });
+
+           /**
+            * No graph for empty module
+            */
+
+            it('it should not generate graph for empty metadatas module', () => {
+                expect(emptyModuleFile).not.to.contain('module-graph-svg');
+            });
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {

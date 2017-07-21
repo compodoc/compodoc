@@ -1321,17 +1321,29 @@ export class Application {
                                     finalPath += '/';
                                 }
                                 finalPath += 'modules/' + modules[i].name;
-                                $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                                    $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
-                                        modules[i].graph = <string>data;
-                                        resolve();
-                                    }, (err) => {
-                                        logger.error('Error during graph read: ', err);
+
+                                let _rawModule = $dependenciesEngine.getRawModule(modules[i].name);
+
+                                // Empty NgModule decorator, no graph
+                                if (_rawModule.declarations.length > 0 ||
+                                    _rawModule.bootstrap.length > 0 ||
+                                    _rawModule.imports.length > 0 ||
+                                    _rawModule.exports.length > 0 ||
+                                    _rawModule.providers.length > 0) {
+                                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
+                                        $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                                            modules[i].graph = <string>data;
+                                            resolve();
+                                        }, (err) => {
+                                            logger.error('Error during graph read: ', err);
+                                        });
+                                    }, (errorMessage) => {
+                                        logger.error(errorMessage);
+                                        reject();
                                     });
-                                }, (errorMessage) => {
-                                    logger.error(errorMessage);
-                                    reject();
-                                });
+                                } else {
+                                    resolve();
+                                }
                             });
                         })
                     ).then(() => {
