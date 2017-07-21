@@ -835,7 +835,7 @@ export class Dependencies {
         _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
         _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
         if (property.symbol) {
-            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
         }
         if (!_return.description) {
             if (property.jsDoc) {
@@ -920,7 +920,7 @@ export class Dependencies {
         _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
         _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
         if (property.symbol) {
-            _return.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())))
+            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
         }
         if (!_return.description) {
             if (property.jsDoc) {
@@ -1037,7 +1037,7 @@ export class Dependencies {
 
 
         if (method.symbol) {
-            result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
+            result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
         }
 
         if (method.modifiers) {
@@ -1072,7 +1072,7 @@ export class Dependencies {
 
     private visitCallDeclaration(method, sourceFile) {
         var result = {
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -1088,7 +1088,7 @@ export class Dependencies {
 
     private visitIndexDeclaration(method, sourceFile?) {
         return {
-            description: marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment()))),
+            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -1115,7 +1115,7 @@ export class Dependencies {
             jsdoctags = JSDocTagsParser.getJSDocs(method);
 
         if (method.symbol) {
-            result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(method.symbol.getDocumentationComment())));
+            result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
         }
 
         if (method.decorators) {
@@ -1215,7 +1215,7 @@ export class Dependencies {
             jsdoctags = JSDocTagsParser.getJSDocs(property);
 
          if (property.symbol) {
-             result.description = marked(LinkParser.resolveLinks(ts.displayPartsToString(property.symbol.getDocumentationComment())));
+             result.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
          }
 
          if (property.decorators) {
@@ -1359,7 +1359,7 @@ export class Dependencies {
         var symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         var description = '';
         if (symbol) {
-            description = marked(LinkParser.resolveLinks(ts.displayPartsToString(symbol.getDocumentationComment())));
+            description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
         }
         var className = classDeclaration.name.text;
         var directiveInfo;

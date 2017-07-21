@@ -81,15 +81,16 @@ describe('CLI simple generation', () => {
          */
 
          it('it should have a link with this syntax {@link BarComponent}', () => {
-             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent');
+             expect(moduleFile).to.contain('See <a href="../components/BarComponent.html">BarComponent');
          });
 
-         it('it should have a link with this syntax [BarComponent2]{@link BarComponent}', () => {
-             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent2');
+         it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
+             const barModuleFile  = read(`${tmp.name}/modules/BarModule.html`);
+             expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
          });
 
          it('it should have a link with this syntax {@link BarComponent|BarComponent3}', () => {
-             expect(fooComponentFile).to.contain('<a href="../components/BarComponent.html">BarComponent3');
+             expect(fooComponentFile).to.contain('See <a href="../modules/AppModule.html">APP');
          });
 
 

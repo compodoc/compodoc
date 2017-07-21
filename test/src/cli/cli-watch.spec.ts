@@ -62,12 +62,12 @@ describe('CLI watch', () => {
         expect(fooCoverageFile).to.contain('2/6');
     });
 
-    it('it should have updated coverage page', (done) => {
+    /*it('it should have updated coverage page', (done) => {
         setTimeout(() => {
             fooCoverageFile = read(`${tmp.name}/coverage.html`);
             //expect(fooCoverageFile).to.contain('3/6');
             done();
         }, 15000);
-    });
+    });*/
 
 });

@@ -147,12 +147,16 @@ export let HtmlEngineHelpers = (function() {
          * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
          */
         Handlebars.registerHelper('parseDescription', function(description, depth) {
-            let tagRegExp = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+            let tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                tagRegExp,
                 matches,
                 previousString,
-                tagInfo = []
+                tagInfo = [];
 
-            var processTheLink = function(string, tagInfo) {
+            tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
+
+            var processTheLink = function(string, tagInfo, leadingText) {
                 var leading = extractLeadingText(string, tagInfo.completeTag),
                     split,
                     result,
@@ -169,7 +173,11 @@ export let HtmlEngineHelpers = (function() {
                 }
 
                 if (result) {
-                    if (leading.leadingText !== null) {
+
+                    if (leadingText) {
+                        stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                    }
+                    else if (leading.leadingText !== null) {
                         stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
                     } else if (typeof split.linkText !== 'undefined') {
                         stringtoReplace = tagInfo.completeTag;
@@ -208,7 +216,7 @@ export let HtmlEngineHelpers = (function() {
                 }
             }
 
-            function replaceMatch(replacer, tag, match, text) {
+            function replaceMatch(replacer, tag, match, text, linkText?) {
                 var matchedTag = {
                     completeTag: match,
                     tag: tag,
@@ -216,14 +224,23 @@ export let HtmlEngineHelpers = (function() {
                 };
                 tagInfo.push(matchedTag);
 
-                return replacer(description, matchedTag);
+                if (linkText) {
+                    return replacer(description, matchedTag, linkText);
+                } else {
+                    return replacer(description, matchedTag);
+                }
             }
 
             do {
                 matches = tagRegExp.exec(description);
                 if (matches) {
                     previousString = description;
-                    description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                    if (matches.length === 2) {
+                        description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                    }
+                    if (matches.length === 3) {
+                        description = replaceMatch(processTheLink, 'link', matches[0], matches[2], matches[1]);
+                    }
                 }
             } while (matches && previousString !== description);
 

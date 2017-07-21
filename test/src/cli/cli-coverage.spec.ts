@@ -67,7 +67,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 '../bin/index-cli.js',
                 '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '--coverageTest', '30',
+                '--coverageTest', '40',
                 '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
 
             if (ls.stderr.toString() !== '') {

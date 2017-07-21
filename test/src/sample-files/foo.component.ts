@@ -1,5 +1,10 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
+/**
+ * FooComponent description
+ *
+ * See {@link AppModule|APP}
+ */
 @Component({
 	selector: 'app-foo',
 	styles: [`
