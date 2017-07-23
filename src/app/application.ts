@@ -1293,7 +1293,42 @@ export class Application {
             this.processPages();
         } else {
             logger.info('Process main graph');
-
+            let modules = this.configuration.mainData.modules,
+              i = 0,
+              len = modules.length,
+              loop = () => {
+                  if( i <= len-1) {
+                      logger.info('Process module graph', modules[i].name);
+                      let finalPath = this.configuration.mainData.output;
+                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                          finalPath += '/';
+                      }
+                      finalPath += 'modules/' + modules[i].name;
+                      let _rawModule = $dependenciesEngine.getRawModule(modules[i].name);
+                      if (_rawModule.declarations.length > 0 ||
+                          _rawModule.bootstrap.length > 0 ||
+                          _rawModule.imports.length > 0 ||
+                          _rawModule.exports.length > 0 ||
+                          _rawModule.providers.length > 0) {
+                          $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
+                              $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                                  modules[i].graph = <string>data;
+                                  i++;
+                                  loop();
+                              }, (err) => {
+                                  logger.error('Error during graph read: ', err);
+                              });
+                          }, (errorMessage) => {
+                              logger.error(errorMessage);
+                          });
+                      } else {
+                          i++;
+                          loop();
+                      }
+                  } else {
+                      this.processPages();
+                  }
+              };
             let finalMainGraphPath = this.configuration.mainData.output;
             if(finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
@@ -1302,57 +1337,13 @@ export class Application {
             $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
                 $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
                     this.configuration.mainData.mainGraph = <string>data;
-                    generateModulesGraph();
+                    loop();
                 }, (err) => {
                     logger.error('Error during graph read: ', err);
                 });
             }, (err) => {
                 logger.error('Error during graph generation: ', err);
             });
-
-            let modules = this.configuration.mainData.modules,
-                generateModulesGraph = () => {
-                    Promise.all(
-                        modules.map((module, i) => {
-                            return new Promise((resolve, reject) => {
-                                logger.info('Process module graph', modules[i].name);
-                                let finalPath = this.configuration.mainData.output;
-                                if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                                    finalPath += '/';
-                                }
-                                finalPath += 'modules/' + modules[i].name;
-
-                                let _rawModule = $dependenciesEngine.getRawModule(modules[i].name);
-
-                                // Empty NgModule decorator, no graph
-                                if (_rawModule.declarations.length > 0 ||
-                                    _rawModule.bootstrap.length > 0 ||
-                                    _rawModule.imports.length > 0 ||
-                                    _rawModule.exports.length > 0 ||
-                                    _rawModule.providers.length > 0) {
-                                    $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                                        $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
-                                            modules[i].graph = <string>data;
-                                            resolve();
-                                        }, (err) => {
-                                            logger.error('Error during graph read: ', err);
-                                        });
-                                    }, (errorMessage) => {
-                                        logger.error(errorMessage);
-                                        reject();
-                                    });
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        })
-                    ).then(() => {
-                        this.processPages();
-                    })
-                    .catch((e) => {
-                        logger.error(e);
-                    });
-                }
         }
     }
 
