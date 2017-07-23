@@ -292,7 +292,7 @@ export let RouterParser = (function() {
                                                     route.children = JSON5.parse(route.data);
                                                     delete route.data;
                                                     route.kind = 'module';
-                                                    _rawModule.children[i] = route;
+                                                    _rawModule.children.push(route);
                                                 }
                                             }
                                         }
