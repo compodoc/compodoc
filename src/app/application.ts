@@ -200,6 +200,7 @@ export class Application {
                         this.configuration.addPage({
                             name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
                             context: 'getting-started',
+                            id: 'getting-started',
                             markdown: readmeData,
                             depth: 0,
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -208,6 +209,7 @@ export class Application {
                             this.configuration.mainData.readme = true;
                             this.configuration.addPage({
                                 name: 'overview',
+                                id: 'overview',
                                 context: 'overview',
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });
@@ -228,6 +230,7 @@ export class Application {
                         if (markdowns[i] === 'readme') {
                             this.configuration.addPage({
                                 name: 'index',
+                                id: 'index',
                                 context: 'overview'
                             });
                         }
@@ -449,6 +452,7 @@ export class Application {
                           $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file).then((markedData) => {
                               this.configuration.addAdditionalPage({
                                   name: parsedSummaryData[i].title,
+                                  id: parsedSummaryData[i].title,
                                   filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
                                   context: 'additional-page',
                                   path: this.configuration.mainData.includesFolder,
@@ -465,6 +469,7 @@ export class Application {
                                             $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file).then((markedData) => {
                                                 this.configuration.addAdditionalPage({
                                                     name: parsedSummaryData[i].children[j].title,
+                                                    id: parsedSummaryData[i].children[j].title,
                                                     filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
                                                     context: 'additional-page',
                                                     path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
@@ -537,6 +542,7 @@ export class Application {
             });
             this.configuration.addPage({
                 name: 'modules',
+                id: 'modules',
                 context: 'modules',
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -553,6 +559,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'modules',
                             name: this.configuration.mainData.modules[i].name,
+                            id: this.configuration.mainData.modules[i].id,
                             context: 'module',
                             module: this.configuration.mainData.modules[i],
                             depth: 1,
@@ -585,6 +592,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'pipes',
                             name: this.configuration.mainData.pipes[i].name,
+                            id: this.configuration.mainData.pipes[i].id,
                             context: 'pipe',
                             pipe: this.configuration.mainData.pipes[i],
                             depth: 1,
@@ -617,6 +625,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'classes',
                             name: this.configuration.mainData.classes[i].name,
+                            id: this.configuration.mainData.classes[i].id,
                             context: 'class',
                             class: this.configuration.mainData.classes[i],
                             depth: 1,
@@ -649,6 +658,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'interfaces',
                             name: this.configuration.mainData.interfaces[i].name,
+                            id: this.configuration.mainData.interfaces[i].id,
                             context: 'interface',
                             interface: this.configuration.mainData.interfaces[i],
                             depth: 1,
@@ -671,6 +681,7 @@ export class Application {
         return new Promise((resolve, reject) => {
             this.configuration.addPage({
                 name: 'miscellaneous',
+                id: 'miscellaneous',
                 context: 'miscellaneous',
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -714,6 +725,7 @@ export class Application {
                             this.configuration.addPage({
                                 path: 'components',
                                 name: this.configuration.mainData.components[i].name,
+                                id: this.configuration.mainData.components[i].id,
                                 context: 'component',
                                 component: this.configuration.mainData.components[i],
                                 depth: 1,
@@ -735,6 +747,7 @@ export class Application {
                             this.configuration.addPage({
                                 path: 'components',
                                 name: this.configuration.mainData.components[i].name,
+                                id: this.configuration.mainData.components[i].id,
                                 context: 'component',
                                 component: this.configuration.mainData.components[i],
                                 depth: 1,
@@ -779,6 +792,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'directives',
                             name: this.configuration.mainData.directives[i].name,
+                            id: this.configuration.mainData.directives[i].id,
                             context: 'directive',
                             directive: this.configuration.mainData.directives[i],
                             depth: 1,
@@ -812,6 +826,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'injectables',
                             name: this.configuration.mainData.injectables[i].name,
+                            id: this.configuration.mainData.injectables[i].id,
                             context: 'injectable',
                             injectable: this.configuration.mainData.injectables[i],
                             depth: 1,
@@ -835,6 +850,7 @@ export class Application {
 
             this.configuration.addPage({
                 name: 'routes',
+                id: 'routes',
                 context: 'routes',
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -1119,6 +1135,7 @@ export class Application {
             coverageData.status = getStatus(coverageData.count);
             this.configuration.addPage({
                 name: 'coverage',
+                id: 'coverage',
                 context: 'coverage',
                 files: files,
                 data: coverageData,

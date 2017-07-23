@@ -70,7 +70,10 @@ export class Configuration implements ConfigurationInterface {
     }
 
     addPage(page: PageInterface) {
-        this._pages.push(page);
+        let indexPage = _.findIndex(this._pages, {'name': page.name});
+        if (indexPage === -1) {
+            this._pages.push(page);
+        }
     }
 
     addAdditionalPage(page: PageInterface) {

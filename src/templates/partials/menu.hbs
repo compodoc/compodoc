@@ -45,7 +45,7 @@
                         {{else}}
                         <a href="{{relativeURL depth pageType 'root'}}index.html"
                         {{/compare}}
-                            {{#compare ../name "===" name }} class="active" {{/compare}}>
+                            {{#compare ../id "===" id }} class="active" {{/compare}}>
                             <span class="fa fa-file-text-o"></span>{{uppername}}
                         </a>
                     </li>
@@ -73,7 +73,7 @@
                 {{/compare}}>
                 {{#each additionalPages}}
                     <li class="link {{#compare depth "===" 2 }}for-chapter{{/compare}}">
-                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -103,7 +103,7 @@
                 {{/compare}}>
                 {{#each modules}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -130,7 +130,7 @@
                 {{/compare}}>
                 {{#each components}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'components'}}components/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'components'}}components/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -157,7 +157,7 @@
                 {{/compare}}>
                 {{#each directives}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'directives'}}directives/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'directives'}}directives/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -184,7 +184,7 @@
                 {{/compare}}>
                 {{#each classes}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'classes'}}classes/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'classes'}}classes/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -211,7 +211,7 @@
                 {{/compare}}>
                 {{#each injectables}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'injectables'}}injectables/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'injectables'}}injectables/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -238,7 +238,7 @@
                 {{/compare}}>
                 {{#each interfaces}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -265,7 +265,7 @@
                 {{/compare}}>
                 {{#each pipes}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'pipes'}}pipes/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'pipes'}}pipes/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
