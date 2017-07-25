@@ -321,6 +321,8 @@ export class Application {
 
         this.configuration.mainData.routesLength = RouterParser.routesLength();
 
+        this.printStatistics();
+
         this.prepareEverything();
     }
 
@@ -378,6 +380,36 @@ export class Application {
             .catch(errorMessage => {
                 logger.error(errorMessage);
             });
+    }
+
+    printStatistics() {
+        logger.info('-------------------');
+        logger.info('Project statistics ');
+        if ($dependenciesEngine.modules.length > 0) {
+            logger.info(`- module     : ${$dependenciesEngine.modules.length}`);
+        }
+        if ($dependenciesEngine.components.length > 0) {
+            logger.info(`- component  : ${$dependenciesEngine.components.length}`);
+        }
+        if ($dependenciesEngine.directives.length > 0) {
+            logger.info(`- directive  : ${$dependenciesEngine.directives.length}`);
+        }
+        if ($dependenciesEngine.injectables.length > 0) {
+            logger.info(`- injectable : ${$dependenciesEngine.injectables.length}`);
+        }
+        if ($dependenciesEngine.pipes.length > 0) {
+            logger.info(`- pipe       : ${$dependenciesEngine.pipes.length}`);
+        }
+        if ($dependenciesEngine.classes.length > 0) {
+            logger.info(`- class      : ${$dependenciesEngine.classes.length}`);
+        }
+        if ($dependenciesEngine.interfaces.length > 0) {
+            logger.info(`- interface  : ${$dependenciesEngine.interfaces.length}`);
+        }
+        if (this.configuration.mainData.routesLength > 0) {
+            logger.info(`- route      : ${this.configuration.mainData.routesLength}`);
+        }
+        logger.info('-------------------');
     }
 
     prepareEverything() {
