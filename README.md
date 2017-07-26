@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular application" width="226">
   <br>
-  <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://travis-ci.org/compodoc/compodoc.svg?branch=develop" alt="Build Status"></a>
-  <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://ci.appveyor.com/api/projects/status/0wkundlfn3vs6r3m/branch/develop?svg=true" alt="Build Status"></a>
+  <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://img.shields.io/travis/compodoc/compodoc/develop.svg?label=Linux%20build" alt="Linux Build Status"></a>
+  <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://img.shields.io/appveyor/ci/vogloblinsky/compodoc/develop.svg?label=Windows%20build" alt="Windows Build Status"></a>
   <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"/></a>
   <a href="https://www.npmjs.com/package/@compodoc/compodoc"><img src="https://badge.fury.io/js/%40compodoc%2Fcompodoc.svg" alt="npm badge"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
@@ -38,15 +38,15 @@ It is the documentation generated for this demo project which is a simple [TodoM
 
 * **Automatic table of contents** - API table of contents is generated using elements found during files parsing
 
-* **Open-source and on npm** - Use it directly in your project using npm and one script, that's it !
-
-* **A local tool** - No server needed, no sources uploaded online
-
 * **JSDoc light support** - Support of @param, @returns, @link and @example tags
 
 * **Documentation coverage** - Get the documentation coverage report of your project
 
 * **Angular-CLI friendly** - Compodoc support out of the box Angular-CLI projects
+
+* **A local tool** - No server needed, no sources uploaded online
+
+* **Open-source and on npm** - Use it directly in your project using npm and one script, that's it !
 
 # Documentation
 
