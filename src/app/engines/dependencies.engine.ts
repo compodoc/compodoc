@@ -226,6 +226,9 @@ class DependenciesEngine {
         _.forEach(this.rawModulesForOverview, (module) => {
             module.declarations = [];
             module.providers = [];
+            delete module.sourceCode;
+            delete module.description;
+            delete module.id;
         });
     }
     prepareMiscellaneous() {

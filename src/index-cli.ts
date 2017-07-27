@@ -6,11 +6,11 @@ import { Application } from './app/application';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './logger';
 import { readConfig, handlePath } from './utils/utils';
+import { ExcludeParser } from './utils/exclude.parser';
 
 let pkg = require('../package.json'),
     program = require('commander'),
     _ = require('lodash'),
-    glob = require('glob'),
     os = require('os'),
     osName = require('os-name'),
     files = [],
@@ -189,51 +189,6 @@ export class CliApplication extends Application
                 this.configuration.mainData.hideGenerator = true;
             }
 
-            let defaultWalkFOlder = cwd || '.',
-                walk = (dir, exclude) => {
-                    let results = [];
-                    let list = fs.readdirSync(dir);
-                    list.forEach((file) => {
-                        var excludeTest = _.find(exclude, function(o) {
-                            let globFiles = glob.sync(o, {
-                                cwd: cwd
-                            });
-                            if (globFiles.length > 0) {
-                                let fileNameForGlobSearch = path.join(dir, file).replace(cwd + path.sep, ''),
-                                    resultGlobSearch = globFiles.findIndex((element) => {
-                                        return element === fileNameForGlobSearch;
-                                    }),
-                                    test = resultGlobSearch !== -1;
-                                if (test) {
-                                    logger.warn('Excluding', path.join(dir, file));
-                                }
-                                return test;
-                            } else {
-                                let test = path.basename(o) === file;
-                                if (test) {
-                                    logger.warn('Excluding', path.join(dir, file));
-                                }
-                                return test;
-                            }
-                        });
-                        if (typeof excludeTest === 'undefined' && dir.indexOf('node_modules') < 0) {
-                            file = path.join(dir, file);
-                            let stat = fs.statSync(file);
-                            if (stat && stat.isDirectory()) {
-                                results = results.concat(walk(file, exclude));
-                            }
-                            else if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.warn('Ignoring', file);
-                            }
-                            else if (path.extname(file) === '.ts') {
-                                logger.debug('Including', file);
-                                results.push(file);
-                            }
-                        }
-                    });
-                    return results;
-                };
-
             if (program.tsconfig && program.args.length === 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!fs.existsSync(program.tsconfig)) {
@@ -255,12 +210,39 @@ export class CliApplication extends Application
                     }
 
                     if (!files) {
-                        let exclude = tsConfigFile.exclude || [];
-                        files = walk(cwd || '.', exclude);
-                    }
+                        let exclude = tsConfigFile.exclude || [],
+                            files = [];
 
-                    super.setFiles(files);
-                    super.generate();
+                        ExcludeParser.init(exclude, cwd);
+
+                        var finder = require('findit')(cwd || '.');
+
+                        finder.on('directory', function (dir, stat, stop) {
+                            var base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop()
+                        });
+
+                        finder.on('file', (file, stat) => {
+                            if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.warn('Ignoring', file);
+                            }
+                            else if (ExcludeParser.testFile(file)) {
+                                logger.warn('Excluding', file);
+                            }
+                            else if (path.extname(file) === '.ts') {
+                                logger.debug('Including', file);
+                                files.push(file);
+                            }
+                        });
+
+                        finder.on('end', () => {
+                            super.setFiles(files);
+                            super.generate();
+                        });
+                    } else {
+                        super.setFiles(files);
+                        super.generate();
+                    }
                 }
             }  else if (program.tsconfig && program.args.length > 0 && program.coverageTest) {
                 logger.info('Run documentation coverage test');
@@ -286,7 +268,32 @@ export class CliApplication extends Application
                     if (!files) {
                         let exclude = tsConfigFile.exclude || [];
 
-                        files = walk(cwd || '.', exclude);
+                        ExcludeParser.init(exclude, cwd);
+
+                        var finder = require('findit')(cwd || '.');
+
+                        finder.on('directory', function (dir, stat, stop) {
+                            var base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop()
+                        });
+
+                        finder.on('file', (file, stat) => {
+                            if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.warn('Ignoring', file);
+                            }
+                            else if (ExcludeParser.testFile(file)) {
+                                logger.warn('Excluding', file);
+                            }
+                            else if (path.extname(file) === '.ts') {
+                                logger.debug('Including', file);
+                                files.push(file);
+                            }
+                        });
+
+                        finder.on('end', () => {
+                            super.setFiles(files);
+                            super.testCoverage();
+                        });
                     }
 
                     super.setFiles(files);
@@ -308,10 +315,32 @@ export class CliApplication extends Application
                         let tsConfigFile = readConfig(program.tsconfig);
                         let exclude = tsConfigFile.exclude || [];
 
-                        files = walk(path.resolve(sourceFolder), exclude);
+                        ExcludeParser.init(exclude, cwd);
 
-                        super.setFiles(files);
-                        super.generate();
+                        var finder = require('findit')(path.resolve(sourceFolder));
+
+                        finder.on('directory', function (dir, stat, stop) {
+                            var base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop()
+                        });
+
+                        finder.on('file', (file, stat) => {
+                            if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.warn('Ignoring', file);
+                            }
+                            else if (ExcludeParser.testFile(file)) {
+                                logger.warn('Excluding', file);
+                            }
+                            else if (path.extname(file) === '.ts') {
+                                logger.debug('Including', file);
+                                files.push(file);
+                            }
+                        });
+
+                        finder.on('end', () => {
+                            super.setFiles(files);
+                            super.generate();
+                        });
                     }
                 }
             } else {

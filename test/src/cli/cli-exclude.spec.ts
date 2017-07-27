@@ -24,9 +24,9 @@ describe('CLI exclude from tsconfig', () => {
         after(() => tmp.clean(tmp.name));
 
         it('should not create files excluded', () => {
-            let isFileExists = exists(`${tmp.name}/components/BarComponent.js`);
+            let isFileExists = exists(`${tmp.name}/components/BarComponent.html`);
             expect(isFileExists).to.be.false;
-            isFileExists = exists(`${tmp.name}/modules/BarModule.js`);
+            isFileExists = exists(`${tmp.name}/modules/BarModule.html`);
             expect(isFileExists).to.be.false;
         });
     });

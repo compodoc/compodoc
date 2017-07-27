@@ -1383,16 +1383,22 @@ export class Application {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
-                    this.configuration.mainData.mainGraph = <string>data;
-                    loop();
+            if ($dependenciesEngine.rawModulesForOverview.length > 5) {
+                logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
+                this.configuration.mainData.disableMainGraph = true;
+                loop();
+            } else {
+                $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                    $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
+                        this.configuration.mainData.mainGraph = <string>data;
+                        loop();
+                    }, (err) => {
+                        logger.error('Error during graph read: ', err);
+                    });
                 }, (err) => {
-                    logger.error('Error during graph read: ', err);
+                    logger.error('Error during graph generation: ', err);
                 });
-            }, (err) => {
-                logger.error('Error during graph generation: ', err);
-            });
+            }
         }
     }
 
