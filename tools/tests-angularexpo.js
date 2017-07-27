@@ -172,9 +172,28 @@ let i = 0,
                 }
             });
         });
+    },
+    printStat = function(stdout) {
+        let stats = stdout.match(regStat)[0],
+            statModules = stats.match(regStatModules),
+            statComponents = stats.match(regStatComponents);
+
+        console.log(`   ${stdout.match(reg).length} files`);
+        console.log('');
+        if (statModules) {
+            statModules = statModules[2];
+            console.log(`   ${statModules} modules`);
+        }
+        if (statComponents) {
+            statComponents = statComponents[2];
+            console.log(`   ${statComponents} components`);
+        }
     }
 
 let reg = /parsing/gm,
+    regStat = /(statistics)[\s\S]*-----/gm,
+    regStatModules = /(module     : )(\d+)/,
+    regStatComponents = /(component  : )(\d+)/,
     loop = () => {
     if (i < len) {
         clone(GIT_REPOSITORIES[i]).then(() => {
@@ -183,7 +202,7 @@ let reg = /parsing/gm,
                 console.log('');
                 console.log(` Compodoc ${GIT_REPOSITORIES[i].name} ok`);
                 if (stdout && stdout.match(reg)) {
-                    console.log(`   ${stdout.match(reg).length} files`);
+                    printStat(stdout);
                     GIT_REPOSITORIES[i].filesLength = stdout.match(reg).length;
                 }
                 console.log('');
@@ -193,7 +212,7 @@ let reg = /parsing/gm,
                 console.log('');
                 console.error(`   Compodoc ${GIT_REPOSITORIES[i].name} KO`);
                 if (stdout && stdout.match(reg)) {
-                    console.log(` ${stdout.match(reg).length} files`);
+                    printStat(stdout);
                     GIT_REPOSITORIES[i].filesLength = stdout.match(reg).length;
                 }
                 console.log('');
@@ -205,7 +224,8 @@ let reg = /parsing/gm,
     } else {
         console.log('END');
         console.log('');
-        console.log('GIT_REPOSITORIES: ', GIT_REPOSITORIES);
+        //console.log('GIT_REPOSITORIES: ', GIT_REPOSITORIES);
+        //console.log('');
         console.log('failedRepositories: ', failedRepositories);
         process.exit(0);
         rimraf(TEST_FOLDER);
