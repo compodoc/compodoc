@@ -15,7 +15,8 @@ describe('CLI simple generation', () => {
             componentFile,
             moduleFile,
             coverageFile,
-            emptyModuleFile;
+            emptyModuleFile,
+            emptyModuleRawFile;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -34,6 +35,7 @@ describe('CLI simple generation', () => {
             moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
             componentFile = read(`${tmp.name}/components/BarComponent.html`);
             emptyModuleFile = read(`${tmp.name}/modules/EmptyModule.html`);
+            emptyModuleRawFile = read(`${tmp.name}/modules/EmptyRawModule.html`);
             done();
         });
         after(() => tmp.clean());
@@ -138,6 +140,10 @@ describe('CLI simple generation', () => {
 
             it('it should not generate graph for empty metadatas module', () => {
                 expect(emptyModuleFile).not.to.contain('module-graph-svg');
+            });
+
+            it('it should not break for empty raw metadatas module', () => {
+                expect(emptyModuleRawFile).not.to.contain('module-graph-svg');
             });
     });
 

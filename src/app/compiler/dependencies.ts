@@ -1830,6 +1830,8 @@ export class Dependencies {
 
     private getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {
 
+        if (props.length === 0) { return []; }
+
         let deps = props.filter((node: NodeObject) => {
             return node.name.text === type;
         });
