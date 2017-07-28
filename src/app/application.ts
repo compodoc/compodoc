@@ -1383,7 +1383,7 @@ export class Application {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            if ($dependenciesEngine.rawModulesForOverview.length > 5) {
+            if ($dependenciesEngine.rawModulesForOverview.length > 150) {
                 logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
                 this.configuration.mainData.disableMainGraph = true;
                 loop();
