@@ -1,16 +1,18 @@
 <h3>Overview</h3>
 {{#unless disableGraph}}
     {{#unless disableMainGraph}}
-        <div class="text-center">
-            <div id="module-graph-svg">
-                {{{ mainGraph }}}
+        {{#if modules}}
+            <div class="text-center">
+                <div id="module-graph-svg">
+                    {{{ mainGraph }}}
+                </div>
+                <div class="btn-group">
+                    <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+                    <button id="reset" class="btn btn-default btn-sm">Reset</button>
+                    <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+                </div>
             </div>
-            <div class="btn-group">
-                <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
-                <button id="reset" class="btn btn-default btn-sm">Reset</button>
-                <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
-            </div>
-        </div>
+        {{/if}}
     {{/unless}}
 {{/unless}}
 <div class="container-fluid overview">
