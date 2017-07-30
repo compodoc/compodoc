@@ -14,4 +14,8 @@ export class FooService {
     open(val: string): string {
         return 'test';
     }
+
+    close(work: (toto: string) => void): string {
+        return 'test';
+    }
 }

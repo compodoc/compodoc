@@ -1152,6 +1152,13 @@ export class Dependencies {
         if (arg.dotDotDotToken) {
             _result.dotDotDotToken = true
         }
+        if (arg.type) {
+            if (arg.type.kind) {
+                if (arg.type.kind === ts.SyntaxKind.FunctionType) {
+                    _result.function = arg.type.parameters ? arg.type.parameters.map((prop) => this.visitArgument(prop)) : [];
+                }
+            }
+        }
         return _result;
     }
 

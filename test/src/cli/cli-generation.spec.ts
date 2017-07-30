@@ -82,73 +82,80 @@ describe('CLI simple generation', () => {
          *   JSDOC
          */
 
-         it('it should have a link with this syntax {@link BarComponent}', () => {
-             expect(moduleFile).to.contain('See <a href="../components/BarComponent.html">BarComponent');
+        it('it should have a link with this syntax {@link BarComponent}', () => {
+            expect(moduleFile).to.contain('See <a href="../components/BarComponent.html">BarComponent');
+        });
+
+        it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
+            const barModuleFile  = read(`${tmp.name}/modules/BarModule.html`);
+            expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
+        });
+
+        it('it should have a link with this syntax {@link BarComponent|BarComponent3}', () => {
+            expect(fooComponentFile).to.contain('See <a href="../modules/AppModule.html">APP');
+        });
+
+        it('it should have infos about FooService open function param', () => {
+            expect(fooServiceFile).to.contain('td><p>The entry value');
+        });
+
+        it('it should have infos about FooService open function returns', () => {
+            expect(fooServiceFile).to.contain('<p>The string</p>');
+        });
+
+        it('it should have infos about FooService open function example', () => {
+            expect(fooServiceFile).to.contain('<b>Example :</b>');
+            expect(fooServiceFile).to.contain('FooService.open(');
+        });
+
+        it('it should have link to TypeScript doc', () => {
+            expect(fooServiceFile).to.contain('typescriptlang.org');
+        });
+
+        /**
+         * Coverage
+         */
+
+        it('it should have coverage page', () => {
+            expect(coverageFile).to.contain('Documentation coverage');
+            expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
+        });
+
+        /**
+         * internal/private methods
+         */
+         it('should include by default methods marked as internal', () => {
+             expect(componentFile).to.contain('<code>internalMethod');
          });
 
-         it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
-             const barModuleFile  = read(`${tmp.name}/modules/BarModule.html`);
-             expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
+         it('should exclude methods marked as hidden', () => {
+             expect(componentFile).not.to.contain('<code>hiddenMethod');
          });
 
-         it('it should have a link with this syntax {@link BarComponent|BarComponent3}', () => {
-             expect(fooComponentFile).to.contain('See <a href="../modules/AppModule.html">APP');
+         it('should include by default methods marked as private', () => {
+             expect(componentFile).to.contain('<code>privateMethod');
          });
 
+        /**
+         * No graph for empty module
+         */
 
-         it('it should have infos about FooService open function param', () => {
-             expect(fooServiceFile).to.contain('<b>val</b>');
-             expect(fooServiceFile).to.contain('<p>The entry value</p>');
+         it('it should not generate graph for empty metadatas module', () => {
+             expect(emptyModuleFile).not.to.contain('module-graph-svg');
          });
 
-         it('it should have infos about FooService open function returns', () => {
-             expect(fooServiceFile).to.contain('<p>The string</p>');
+         it('it should not break for empty raw metadatas module', () => {
+             expect(emptyModuleRawFile).not.to.contain('module-graph-svg');
          });
 
-         it('it should have infos about FooService open function example', () => {
-             expect(fooServiceFile).to.contain('<b>Example :</b>');
-             expect(fooServiceFile).to.contain('FooService.open(');
+        /**
+         * Support of function type parameters
+         */
+
+         it('it should display function type parameters', () => {
+             expect(fooServiceFile).to.contain('<code>close(work: (toto: ');
          });
 
-         it('it should have link to TypeScript doc', () => {
-             expect(fooServiceFile).to.contain('typescriptlang.org');
-         });
-
-         /**
-          * Coverage
-          */
-
-          it('it should have coverage page', () => {
-              expect(coverageFile).to.contain('Documentation coverage');
-              expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
-          });
-
-          /**
-           * internal/private methods
-           */
-           it('should include by default methods marked as internal', () => {
-               expect(componentFile).to.contain('<code>internalMethod');
-           });
-
-           it('should exclude methods marked as hidden', () => {
-               expect(componentFile).not.to.contain('<code>hiddenMethod');
-           });
-
-           it('should include by default methods marked as private', () => {
-               expect(componentFile).to.contain('<code>privateMethod');
-           });
-
-           /**
-            * No graph for empty module
-            */
-
-            it('it should not generate graph for empty metadatas module', () => {
-                expect(emptyModuleFile).not.to.contain('module-graph-svg');
-            });
-
-            it('it should not break for empty raw metadatas module', () => {
-                expect(emptyModuleRawFile).not.to.contain('module-graph-svg');
-            });
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {
