@@ -15,5 +15,5 @@ shallow_clone: true
 test_script:
   - node --version
   - npm --version
-  #- npm run test
-  - node tools/test-watch.js
+  - npm run test
+  #- node tools/test-watch.js
