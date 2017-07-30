@@ -24,6 +24,7 @@
                             <div class="io-description">{{{parseDescription constructor.description ../depth}}}</div>
                         {{/if}}
                         {{#if constructor.jsdoctags}}
+                            {{#jsdoc-params-valid constructor.jsdoctags}}
                             <div class="io-description">
                                 {{#jsdoc-params constructor.jsdoctags}}
                                     <b>Parameters :</b>
@@ -52,6 +53,7 @@
                                     {{/each}}
                                 {{/jsdoc-example}}
                             </div>
+                            {{/jsdoc-params-valid}}
                         {{/if}}
                     </td>
                 </tr>

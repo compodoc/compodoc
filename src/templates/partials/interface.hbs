@@ -117,6 +117,7 @@
                                 {{/if}}
 
                                 {{#if jsdoctags}}
+                                    {{#jsdoc-params-valid jsdoctags}}
                                     <tr>
                                         <td class="col-md-4">
                                           <div class="io-description">
@@ -149,6 +150,7 @@
                                           </div>
                                         </td>
                                     </tr>
+                                    {{/jsdoc-params-valid}}
                                 {{/if}}
 
                             {{/if}}

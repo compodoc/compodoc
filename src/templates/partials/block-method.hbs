@@ -53,6 +53,7 @@
                         {{/if}}
 
                         {{#if jsdoctags}}
+                            {{#jsdoc-params-valid jsdoctags}}
                             <div class="io-description">
                                 {{#jsdoc-params jsdoctags}}
                                     <b>Parameters :</b>
@@ -81,6 +82,7 @@
                                     {{/each}}
                                 {{/jsdoc-example}}
                             </div>
+                            {{/jsdoc-params-valid}}
                         {{/if}}
                         {{#if returnType}}
                             <div class="io-description">

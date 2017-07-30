@@ -404,6 +404,24 @@ export let HtmlEngineHelpers = (function() {
                 return options.fn(this);
             }
         });
+        Handlebars.registerHelper('jsdoc-params-valid', function(jsdocTags:jsdocTagInterface[], options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [],
+                valid = false;
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'param') {
+                        valid = true;
+                    }
+                }
+            }
+            if (valid) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
         Handlebars.registerHelper('jsdoc-default', function(jsdocTags:jsdocTagInterface[], options) {
             if (jsdocTags) {
                 var i = 0,
