@@ -67,6 +67,7 @@ tmp.clean();
 tmp.create();
 
 ls.stdout.on('data', function(data) {
+    console.log('stdout: ' + data);
     if (data.indexOf('Watching source') !== -1 && !testWatch) {
         fooCoverageFile = read(`${tmp.name}/coverage.html`);
         testWatch = true;
