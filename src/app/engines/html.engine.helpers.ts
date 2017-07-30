@@ -7,6 +7,8 @@ import { prefixOfficialDoc } from '../../utils/angular-version';
 
 import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
 
+import { finderInBasicTypes, finderInTypeScriptBasicTypes } from '../../utils/basic-types';
+
 export let HtmlEngineHelpers = (function() {
     let init = function() {
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
@@ -283,6 +285,12 @@ export let HtmlEngineHelpers = (function() {
                         }
                     } else if (arg.dotDotDotToken) {
                         return `...${arg.name}: ${arg.type}`;
+                    } else if (finderInBasicTypes(arg.type)) {
+                        let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${arg.type}`;
+                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                    } else if (finderInTypeScriptBasicTypes(arg.type)) {
+                        let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
+                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     } else {
                         return `${arg.name}: ${arg.type}`;
                     }
@@ -441,6 +449,20 @@ export let HtmlEngineHelpers = (function() {
                     this.type.target = '_blank';
                 }
 
+                return options.fn(this);
+            } else if (finderInBasicTypes(name)) {
+                this.type = {
+                    raw: name
+                };
+                this.type.target = '_blank';
+                this.type.href = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${name}`;
+                return options.fn(this);
+            } else if (finderInTypeScriptBasicTypes(name)) {
+                this.type = {
+                    raw: name
+                };
+                this.type.target = '_blank';
+                this.type.href = 'https://www.typescriptlang.org/docs/handbook/basic-types.html';
                 return options.fn(this);
             } else {
                 return options.inverse(this);

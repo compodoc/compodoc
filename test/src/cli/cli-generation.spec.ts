@@ -110,6 +110,10 @@ describe('CLI simple generation', () => {
              expect(fooServiceFile).to.contain('FooService.open(');
          });
 
+         it('it should have link to TypeScript doc', () => {
+             expect(fooServiceFile).to.contain('typescriptlang.org');
+         });
+
          /**
           * Coverage
           */
@@ -482,9 +486,8 @@ describe('CLI simple generation', () => {
 
         it('should have correct types for todo model', () => {
             const file = read('documentation/classes/Todo.html');
-            expect(file).to.contain('<code>boolean</code>');
-            expect(file).to.contain('<code>object</code>');
-            expect(file).to.contain('<code>testCommentFunction(dig: number, str: string, bool: boolean)</code>');
+            expect(file).to.contain('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean');
+            expect(file).to.contain('testCommentFunction(dig: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number');
         });
 
         it('should have correct spread support', () => {
