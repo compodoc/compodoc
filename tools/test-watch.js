@@ -1,10 +1,47 @@
-const helpers = require('../test/dist/helpers.js'),
-    exec = helpers.exec,
-    fs = helpers.fs,
-    read = helpers.read,
-    copy = helpers.copy,
+const exec = require('child_process').exec,
+    fs = require('fs-extra'),
+    read = function(file) {
+        return fs.readFileSync(file).toString();
+    },
+    copy = function(source, dest) {
+        return fs.copySync(source, dest);
+    },
     spawn = require('child_process').spawn,
-    tmp = helpers.temporaryDir();
+    tmp = (function() {
+        let name = '.tmp-compodoc-test';
+        let cleanUp = (name) => {
+            if( fs.existsSync(name) ) {
+                fs.readdirSync(name).forEach((file) => {
+                    var curdir = path.join(name, file);
+                    if(fs.statSync(curdir).isDirectory()) {
+                        cleanUp(curdir);
+                    } else {
+                        fs.unlinkSync(curdir);
+                    }
+                });
+                fs.rmdirSync(name);
+            }
+        };
+
+        return {
+            name,
+            copy(source, destination) {
+                fs.copySync(source, destination);
+            },
+            create(param) {
+                if (param) name = param;
+                if (!fs.existsSync(name)){
+                    fs.mkdirSync(name);
+                }
+            },
+            clean(param) {
+                if (param) name = param;
+                try {
+                    cleanUp(name);
+                } catch (e) {}
+            }
+        }
+    })();
 
 let testWatch = false,
     fooCoverageFile,
