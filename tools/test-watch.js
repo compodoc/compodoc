@@ -71,6 +71,7 @@ ls.stdout.on('data', function(data) {
     if (data.indexOf('Watching source') !== -1 && !testWatch) {
         fooCoverageFile = read(`${tmp.name}/coverage.html`);
         testWatch = true;
+        console.log('debug: ', fooCoverageFile.indexOf('2/6'));
         if (fooCoverageFile.indexOf('2/6') !== -1) {
             reload();
         } else {
