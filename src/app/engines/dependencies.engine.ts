@@ -64,7 +64,6 @@ class DependenciesEngine {
         this.modules = _.sortBy(this.rawData.modules, ['name']);
         this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
         this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
-        this.cleanRawModulesForOverview();
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
@@ -207,15 +206,6 @@ class DependenciesEngine {
         let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
             result = _.find(mergedData, {'name': name});
         return result || false;
-    }
-    cleanRawModulesForOverview() {
-        _.forEach(this.rawModulesForOverview, (module) => {
-            module.declarations = [];
-            module.providers = [];
-            delete module.sourceCode;
-            delete module.description;
-            delete module.id;
-        });
     }
     prepareMiscellaneous() {
         //group each subgoup by file
