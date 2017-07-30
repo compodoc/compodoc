@@ -256,7 +256,7 @@ export class Dependencies {
                     if (this.isModule(metadata)) {
                         deps = {
                             name,
-                            id: 'module' + Date.now(),
+                            id: 'module-' + name + '-' + Date.now(),
                             file: file,
                             providers: this.getModuleProviders(props),
                             declarations: this.getModuleDeclations(props),
@@ -278,7 +278,7 @@ export class Dependencies {
                         //console.log(util.inspect(props, { showHidden: true, depth: 10 }));
                         deps = {
                             name,
-                            id: 'component' + Date.now(),
+                            id: 'component-' + name + '-' + Date.now(),
                             file: file,
                             //animations?: string[]; // TODO
                             changeDetection: this.getComponentChangeDetection(props),
@@ -328,7 +328,7 @@ export class Dependencies {
                     else if (this.isInjectable(metadata)) {
                         deps = {
                             name,
-                            id: 'injectable' + Date.now(),
+                            id: 'injectable-' + name + '-' + Date.now(),
                             file: file,
                             type: 'injectable',
                             properties: IO.properties,
@@ -344,7 +344,7 @@ export class Dependencies {
                     else if (this.isPipe(metadata)) {
                         deps = {
                             name,
-                            id: 'pipe' + Date.now(),
+                            id: 'pipe-' + name + '-' + Date.now(),
                             file: file,
                             type: 'pipe',
                             description: IO.description,
@@ -359,7 +359,7 @@ export class Dependencies {
                         if(props.length === 0) return;
                         deps = {
                             name,
-                            id: 'directive' + Date.now(),
+                            id: 'directive-' + name + '-' + Date.now(),
                             file: file,
                             type: 'directive',
                             description: IO.description,
@@ -408,7 +408,7 @@ export class Dependencies {
                     let IO = this.getClassIO(file, srcFile, node);
                     deps = {
                         name,
-                        id: 'class' + Date.now(),
+                        id: 'class-' + name + '-' + Date.now(),
                         file: file,
                         type: 'class',
                         sourceCode: srcFile.getText()
@@ -438,7 +438,7 @@ export class Dependencies {
                     let IO = this.getInterfaceIO(file, srcFile, node);
                     deps = {
                         name,
-                        id: 'interface' + Date.now(),
+                        id: 'interface-' + name + '-' + Date.now(),
                         file: file,
                         type: 'interface',
                         sourceCode: srcFile.getText()
@@ -509,7 +509,7 @@ export class Dependencies {
                     let IO = this.getClassIO(file, srcFile, node);
                     deps = {
                         name,
-                        id: 'class' + Date.now(),
+                        id: 'class-' + name + '-' + Date.now(),
                         file: file,
                         type: 'class',
                         sourceCode: srcFile.getText()
