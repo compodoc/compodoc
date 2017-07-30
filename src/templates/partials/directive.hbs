@@ -61,13 +61,13 @@
                 <h3>Example</h3>
             </p>
             <div class="io-description">
-                {{#jsdoc-component-example directive.jsdoctags}}
+                {{#jsdoc-code-example directive.jsdoctags}}
                     {{#each tags}}
                         <div>
                             {{{comment}}}
                         </div>
                     {{/each}}
-                {{/jsdoc-component-example}}
+                {{/jsdoc-code-example}}
             </div>
         {{/if}}
 
@@ -199,7 +199,7 @@
         <pre class="line-numbers"><code class="language-typescript">{{ directive.sourceCode}}</code></pre>
     </div>
     {{/unless}}
-    
+
     {{#if directive.exampleUrls}}
     <div class="tab-pane fade" id="example">
         {{#each directive.exampleUrls}}

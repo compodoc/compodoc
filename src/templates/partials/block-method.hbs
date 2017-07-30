@@ -80,16 +80,18 @@
                                         </tbody>
                                     </table>
                                 {{/jsdoc-params}}
-                                {{#jsdoc-example jsdoctags}}
+                            </div>
+                            {{/jsdoc-params-valid}}
+                            <div>
+                                {{#jsdoc-code-example jsdoctags}}
                                     <b>Example :</b>
                                     {{#each tags}}
-                                        <div class="jsdoc-example-ul">
+                                        <div>
                                             {{{comment}}}
                                         </div>
                                     {{/each}}
-                                {{/jsdoc-example}}
+                                {{/jsdoc-code-example}}
                             </div>
-                            {{/jsdoc-params-valid}}
                         {{/if}}
                         {{#if returnType}}
                             <div class="io-description">

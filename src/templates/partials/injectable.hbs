@@ -39,6 +39,21 @@
             </p>
         {{/if}}
 
+        {{#if injectable.jsdoctags}}
+            <p class="comment">
+                <h3>Example</h3>
+            </p>
+            <div class="io-description">
+                {{#jsdoc-code-example injectable.jsdoctags}}
+                    {{#each tags}}
+                        <div>
+                            {{{comment}}}
+                        </div>
+                    {{/each}}
+                {{/jsdoc-code-example}}
+            </div>
+        {{/if}}
+
         {{#if injectable.constructorObj}}
             {{> block-constructor constructor=injectable.constructorObj file=injectable.file }}
         {{/if}}

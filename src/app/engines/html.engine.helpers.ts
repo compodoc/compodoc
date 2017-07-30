@@ -347,7 +347,7 @@ export let HtmlEngineHelpers = (function() {
             }
             return result;
         });
-        Handlebars.registerHelper('jsdoc-component-example', function(jsdocTags:jsdocTagInterface[], options) {
+        Handlebars.registerHelper('jsdoc-code-example', function(jsdocTags:jsdocTagInterface[], options) {
             let i = 0,
                 len = jsdocTags.length,
                 tags = [];
@@ -358,6 +358,15 @@ export let HtmlEngineHelpers = (function() {
                 }
                 if (comment.charAt(0) === ' ') {
                     comment = comment.substring(1, comment.length);
+                }
+                if (comment.indexOf('<p>') === 0) {
+                    comment = comment.substring(3, comment.length);
+                }
+                if (comment.substr(-1) === '\n') {
+                    comment = comment.substring(0, comment.length - 1);
+                }
+                if (comment.substr(-4) === '</p>') {
+                    comment = comment.substring(0, comment.length - 4);
                 }
                 return comment;
             }
@@ -377,7 +386,11 @@ export let HtmlEngineHelpers = (function() {
                     if (jsdocTags[i].tagName.text === 'example') {
                         var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].comment) {
-                            tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            if (jsdocTags[i].comment.indexOf('<caption>') !== -1) {
+                                tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                            } else {
+                                tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            }
                         }
                         tags.push(tag);
                     }

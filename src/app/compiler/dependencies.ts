@@ -344,6 +344,9 @@ export class Dependencies {
                         if(IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
+                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                            deps.jsdoctags = IO.jsdoctags[0].tags
+                        }
                         outputSymbols['injectables'].push(deps);
                     }
                     else if (this.isPipe(metadata)) {
@@ -432,6 +435,9 @@ export class Dependencies {
                     }
                     if (IO.extends) {
                         deps.extends = IO.extends;
+                    }
+                    if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                        deps.jsdoctags = IO.jsdoctags[0].tags
                     }
                     if (IO.implements && IO.implements.length > 0) {
                         deps.implements = IO.implements;
@@ -539,6 +545,9 @@ export class Dependencies {
                     }
                     if (IO.implements && IO.implements.length > 0) {
                         deps.implements = IO.implements;
+                    }
+                    if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                        deps.jsdoctags = IO.jsdoctags[0].tags
                     }
                     this.debug(deps);
                     outputSymbols['classes'].push(deps);
@@ -1446,6 +1455,7 @@ export class Dependencies {
                         properties: members.properties,
                         kind: members.kind,
                         constructor: members.constructor,
+                        jsdoctags: jsdoctags,
                         extends: extendsElement,
                         implements: implementsElements
                     }];
@@ -1470,6 +1480,7 @@ export class Dependencies {
                 properties: members.properties,
                 kind: members.kind,
                 constructor: members.constructor,
+                jsdoctags: jsdoctags,
                 extends: extendsElement,
                 implements: implementsElements
             }];
@@ -1482,6 +1493,7 @@ export class Dependencies {
                 properties: members.properties,
                 kind: members.kind,
                 constructor: members.constructor,
+                jsdoctags: jsdoctags,
                 extends: extendsElement,
                 implements: implementsElements
             }];

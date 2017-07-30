@@ -644,6 +644,8 @@ export class Application {
         logger.info('Prepare classes');
         this.configuration.mainData.classes = (someClasses) ? someClasses : $dependenciesEngine.getClasses();
 
+        console.log(this.configuration.mainData.classes[1].methods[1]);
+
         return new Promise((resolve, reject) => {
             let i = 0,
                 len = this.configuration.mainData.classes.length,
@@ -810,6 +812,8 @@ export class Application {
         logger.info('Prepare directives');
 
         this.configuration.mainData.directives = (someDirectives) ? someDirectives : $dependenciesEngine.getDirectives();
+
+        console.log(this.configuration.mainData.directives[0]);
 
         return new Promise((resolve, reject) => {
             let i = 0,
