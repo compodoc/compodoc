@@ -1,4 +1,4 @@
-const exec = require('child_process').exec,
+var exec = require('child_process').exec,
     fs = require('fs-extra'),
     read = function(file) {
         return fs.readFileSync(file).toString();
@@ -8,8 +8,8 @@ const exec = require('child_process').exec,
     },
     spawn = require('child_process').spawn,
     tmp = (function() {
-        let name = '.tmp-compodoc-test';
-        let cleanUp = (name) => {
+        var name = '.tmp-compodoc-test';
+        var cleanUp = (name) => {
             if( fs.existsSync(name) ) {
                 fs.readdirSync(name).forEach((file) => {
                     var curdir = path.join(name, file);
@@ -43,7 +43,7 @@ const exec = require('child_process').exec,
         }
     })();
 
-let testWatch = false,
+var testWatch = false,
     fooCoverageFile,
 
     reload = function() {
