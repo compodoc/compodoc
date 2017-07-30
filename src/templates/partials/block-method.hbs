@@ -57,21 +57,28 @@
                             <div class="io-description">
                                 {{#jsdoc-params jsdoctags}}
                                     <b>Parameters :</b>
-                                    <ul class="jsdoc-params">
-                                        {{#each tags}}
-                                            <li>
-                                                <div>
-                                                    <b>{{name}}</b>
-                                                    {{#if type}}
-                                                        : {{> link-type type=type }}
-                                                    {{/if}}
-                                                </div>
-                                                <div>
-                                                    {{{comment}}}
-                                                </div>
-                                            </li>
-                                        {{/each}}
-                                    </ul>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>Type</td>
+                                                <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each tags}}
+                                                <tr>
+                                                  <td>{{name}}</td>
+                                                  <td>
+                                                  {{#if type}}
+                                                      {{> link-type type=type }}
+                                                  {{/if}}
+                                                  </td>
+                                                  <td>{{{comment}}}</td>
+                                                </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
                                 {{/jsdoc-params}}
                                 {{#jsdoc-example jsdoctags}}
                                     <b>Example :</b>
