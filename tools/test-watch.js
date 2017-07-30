@@ -48,12 +48,13 @@ var testWatch = false,
 
     reload = function() {
         setTimeout(() => {
-            tmp.copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
+            console.log('reload');
+            copy('./test/src/bar.component-watch.ts', './test/src/sample-files/bar.component.ts');
         }, 1000);
     },
 
     end = function() {
-        tmp.copy('./test/src/bar.component.ts', './test/src/sample-files/bar.component.ts');
+        copy('./test/src/bar.component.ts', './test/src/sample-files/bar.component.ts');
     },
 
     ls = spawn('node', [
