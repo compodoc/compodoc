@@ -55,20 +55,6 @@ class DependenciesEngine {
                         }
                     }
                 }
-                if (_m[i].declarations[j].methodsClass && _m[i].declarations[j].methodsClass.length > 0) {
-                    let l = 0,
-                        length = _m[i].declarations[j].methodsClass.length;
-                    for(l; l<length; l++) {
-                        delete _m[i].declarations[j].methodsClass[l].jsdoctags;
-                    }
-                }
-                if (_m[i].declarations[j].propertiesClass && _m[i].declarations[j].propertiesClass.length > 0) {
-                    let l = 0,
-                        length = _m[i].declarations[j].propertiesClass.length;
-                    for(l; l<length; l++) {
-                        delete _m[i].declarations[j].propertiesClass[l].jsdoctags;
-                    }
-                }
             }
         }
         return _m;
@@ -76,8 +62,9 @@ class DependenciesEngine {
     init(data: ParsedData) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.rawModulesForOverview = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
-        this.rawModules = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
+        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
+        this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
+        this.cleanRawModulesForOverview();
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
@@ -87,7 +74,6 @@ class DependenciesEngine {
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
-        this.cleanRawModulesForOverview();
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {

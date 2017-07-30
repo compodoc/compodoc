@@ -1,5 +1,6 @@
 export interface ParsedData {
     modules;
+    modulesForGraph;
     components;
     directives;
     injectables;

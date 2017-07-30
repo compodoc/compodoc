@@ -122,6 +122,7 @@ export class Dependencies {
     getDependencies() {
         let deps: any = {
             'modules': [],
+            'modulesForGraph': [],
             'components': [],
             'injectables': [],
             'pipes': [],
@@ -186,7 +187,7 @@ export class Dependencies {
                     }
                 })(_variable, newVar);
 
-                deps['modules'].forEach(mod => {
+                let onLink = (mod) => {
                     if (mod.file === _variable.file) {
                         let process = (initialArray, _var) => {
                             let indexToClean = 0,
@@ -214,7 +215,10 @@ export class Dependencies {
                         process(mod.declarations, _variable);
                         process(mod.providers, _variable);
                     }
-                });
+                }
+
+                deps['modules'].forEach(onLink);
+                deps['modulesForGraph'].forEach(onLink);
             });
         }
 
@@ -272,6 +276,7 @@ export class Dependencies {
                         }
                         RouterParser.addModule(name, deps.imports);
                         outputSymbols['modules'].push(deps);
+                        outputSymbols['modulesForGraph'].push(deps);
                     }
                     else if (this.isComponent(metadata)) {
                         if(props.length === 0) return;
