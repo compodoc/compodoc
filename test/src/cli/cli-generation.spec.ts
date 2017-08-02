@@ -535,6 +535,11 @@ describe('CLI simple generation', () => {
             file = read('documentation/interfaces/ClockInterface.html');
             expect(file).to.contain('id="readme-tab"');
         });
+
+        it('should support indexable for class', () => {
+            let file = read('documentation/classes/Todo.html');
+            expect(file).to.contain('<code>[index: number]');
+        });
     });
 
     describe('when generation with -t flag', () => {

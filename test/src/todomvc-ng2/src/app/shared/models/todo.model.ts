@@ -16,6 +16,8 @@ export class Todo extends Tada {
      */
     editing: boolean;
 
+    [index: number]: string;
+
     testCommentFunction(dig: number, str: string, bool: boolean): object {
         return {};
     }

@@ -433,6 +433,9 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    if(IO.indexSignatures) {
+                        deps.indexSignatures = IO.indexSignatures;
+                    }
                     if (IO.extends) {
                         deps.extends = IO.extends;
                     }
