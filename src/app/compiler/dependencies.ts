@@ -909,6 +909,9 @@ export class Dependencies {
                     }
                     _return += '>';
                 }
+                if (node.type.elementType) {
+                    _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                }
             } else if (node.elementType) {
                 _return = kindToType(node.elementType.kind) + kindToType(node.kind);
             } else if (node.types && node.kind === ts.SyntaxKind.UnionType) {

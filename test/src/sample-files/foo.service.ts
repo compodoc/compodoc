@@ -5,6 +5,8 @@ export class FooService {
 
     ex: any;
 
+    bar: string[] = [];
+
     /**
      * @param {string} val The entry value
      * @returns {string} The string

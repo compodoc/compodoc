@@ -156,6 +156,10 @@ describe('CLI simple generation', () => {
              expect(fooServiceFile).to.contain('<code>close(work: (toto: ');
          });
 
+         it('it should display c-style typed arrays', () => {
+             expect(fooServiceFile).to.contain('<code>string');
+         });
+
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {
