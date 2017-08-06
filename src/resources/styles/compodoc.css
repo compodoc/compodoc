@@ -724,3 +724,7 @@ table.params td {
 table.params td p {
   margin: 0;
 }
+
+.img-responsive {
+    display: inline-block;
+}
