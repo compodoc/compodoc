@@ -540,6 +540,12 @@ describe('CLI simple generation', () => {
             let file = read('documentation/classes/Todo.html');
             expect(file).to.contain('<code>[index: number]');
         });
+
+        it('should have correct links for {@link into main description and constructor}', () => {
+            let file = read('documentation/classes/Todo.html');
+            expect(file).to.contain('See <a href="../injectables/TodoStore');
+            expect(file).to.contain('Watch <a href="../injectables/TodoStore');
+        });
     });
 
     describe('when generation with -t flag', () => {

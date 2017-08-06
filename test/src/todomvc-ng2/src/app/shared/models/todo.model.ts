@@ -37,6 +37,10 @@ export class Todo extends Tada {
         return 'hello';
     }
 
+    /**
+     * The todo constructor
+     * Watch {@link TodoStore} for service using it
+     */
     constructor(title: string) {
         this.completed = false;
         this.editing = false;
