@@ -1,3 +1,5 @@
+import { Direction } from '../miscellaneous/miscellaneous';
+
 ﻿export class Tada {
 
 }
@@ -21,6 +23,8 @@ export class Todo extends Tada {
     testCommentFunction(dig: number, str: string, bool: boolean): object {
         return {};
     }
+
+    dir: Direction = Direction.Left;
 
     /**
      * Title

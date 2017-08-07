@@ -46,6 +46,9 @@ interface Deps {
     id: string;
     name: string;
     type: string;
+    subtype?: string;
+    rawtype?: any;
+    kind?: string;
     label?: string;
     file?: string;
     sourceCode?: string;
@@ -134,8 +137,7 @@ export class Dependencies {
                 variables: [],
                 functions: [],
                 typealiases: [],
-                enumerations: [],
-                types: []
+                enumerations: []
             }
         };
 
@@ -481,7 +483,9 @@ export class Dependencies {
                     deps = {
                         name,
                         file: file,
-                        description: this.visitEnumAndFunctionDeclarationDescription(node)
+                        type: 'miscellaneous',
+                        subtype: 'function',
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
@@ -496,10 +500,27 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
-                        description: this.visitEnumAndFunctionDeclarationDescription(node),
+                        type: 'miscellaneous',
+                        subtype: 'enum',
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
+                } else if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
+                    let infos = this.visitTypeDeclaration(node),
+                        name = infos.name;
+                    deps = {
+                        name,
+                        type: 'miscellaneous',
+                        subtype: 'typealias',
+                        rawtype: this.visitType(node),
+                        file: file,
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
+                    }
+                    if (node.type) {
+                        deps.kind = node.type.kind;
+                    }
+                    outputSymbols['miscellaneous'].typealiases.push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, srcFile);
@@ -596,6 +617,8 @@ export class Dependencies {
                         name = infos.name;
                     deps = {
                         name,
+                        type: 'miscellaneous',
+                        subtype: 'variable',
                         file: file
                     }
                     deps.type = (infos.type) ? infos.type : '';
@@ -615,17 +638,26 @@ export class Dependencies {
                         name = infos.name;
                     deps = {
                         name,
-                        file: file
+                        type: 'miscellaneous',
+                        subtype: 'typealias',
+                        rawtype: this.visitType(node),
+                        file: file,
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                     }
-                    outputSymbols['miscellaneous'].types.push(deps);
+                    if (node.type) {
+                        deps.kind = node.type.kind;
+                    }
+                    outputSymbols['miscellaneous'].typealiases.push(deps);
                 }
                 if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
                     let infos = this.visitFunctionDeclaration(node),
                         name = infos.name;
                     deps = {
                         name,
+                        type: 'miscellaneous',
+                        subtype: 'function',
                         file: file,
-                        description: this.visitEnumAndFunctionDeclarationDescription(node)
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                     }
                     if (infos.args) {
                         deps.args = infos.args;
@@ -638,7 +670,9 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
-                        description: this.visitEnumAndFunctionDeclarationDescription(node),
+                        type: 'miscellaneous',
+                        subtype: 'enum',
+                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                         file: file
                     }
                     outputSymbols['miscellaneous'].enumerations.push(deps);
@@ -914,6 +948,17 @@ export class Dependencies {
                 }
                 if (node.type.elementType) {
                     _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                }
+                if (node.type.types && node.type.kind === ts.SyntaxKind.UnionType) {
+                    _return = '';
+                    let i = 0,
+                        len = node.type.types.length;
+                    for (i; i<len; i++) {
+                        _return += kindToType(node.type.types[i].kind);
+                        if (i<len-1) {
+                            _return += '|';
+                        }
+                    }
                 }
             } else if (node.elementType) {
                 _return = kindToType(node.elementType.kind) + kindToType(node.kind);
@@ -1508,11 +1553,12 @@ export class Dependencies {
         return [];
     }
 
-    private visitTypeDeclaration(type) {
+    private visitTypeDeclaration(node) {
         var result:any = {
-                name: type.name.text
+                name: node.name.text,
+                kind: node.kind
             },
-            jsdoctags = JSDocTagsParser.getJSDocs(type);
+            jsdoctags = JSDocTagsParser.getJSDocs(node);
 
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
@@ -1613,7 +1659,7 @@ export class Dependencies {
         return result;
     }
 
-    private visitEnumAndFunctionDeclarationDescription(node): string {
+    private visitEnumTypeAliasFunctionDeclarationDescription(node): string {
         let description:string = '';
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {

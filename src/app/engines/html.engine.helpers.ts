@@ -505,6 +505,23 @@ export let HtmlEngineHelpers = (function() {
                 if (_result.source === 'internal') {
                     if (_result.data.type === 'class') _result.data.type = 'classe';
                     this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
+                    if (_result.data.type === 'miscellaneous') {
+                        let mainpage = '';
+                        switch (_result.data.subtype) {
+                            case 'enum':
+                                mainpage = 'enumerations';
+                                break;
+                            case 'function':
+                                mainpage = 'functions';
+                                break;
+                            case 'typealias':
+                                mainpage = 'typealiases';
+                                break;
+                            case 'variable':
+                                mainpage = 'variables';
+                        }
+                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html';
+                    }
                     this.type.target = '_self';
                 } else {
                     this.type.href = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;

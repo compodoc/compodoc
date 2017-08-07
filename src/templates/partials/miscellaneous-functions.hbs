@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+  <li>Miscellaneous - Functions</li>
+</ol>
+
+{{#each miscellaneous.groupedFunctions}}
+    <h4><code>{{@key}}</code></h4>
+    {{> block-method methods=this title='false'}}
+{{/each}}

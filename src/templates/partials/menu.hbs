@@ -272,15 +272,51 @@
         </li>
         {{/if}}
 
-        {{#if routes}}
+        {{#if miscellaneous}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#miscellaneous-links"
+                {{else}}
+                    data-target="#xs-miscellaneous-links"
+                {{/compare}}>
+                <span class="fa fa-cubes"></span>
+                <span>Miscellaneous</span>
+                <span class="fa {{#isNotToggle 'miscellaneous'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+            </div>
+            <ul class="links collapse {{#isNotToggle 'miscellaneous'}}in{{/isNotToggle}}"
+                {{#compare menu "===" 'normal' }}
+                    id="miscellaneous-links"
+                {{else}}
+                    id="xs-miscellaneous-links"
+                {{/compare}}>
+                {{#compare miscellaneous.enumerations.length ">" 0 }}
+                    <li class="link">
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link" {{#compare name "===" 'enumerations' }} class="active" {{/compare}}>Enums</a>
+                    </li>
+                {{/compare}}
+                {{#compare miscellaneous.functions.length ">" 0 }}
+                    <li class="link">
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link" {{#compare name "===" 'functions' }} class="active" {{/compare}}>Functions</a>
+                    </li>
+                {{/compare}}
+                {{#compare miscellaneous.typealiases.length ">" 0 }}
+                    <li class="link">
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link" {{#compare name "===" 'typealiases' }} class="active" {{/compare}}>Type aliases</a>
+                    </li>
+                {{/compare}}
+                {{#compare miscellaneous.variables.length ">" 0 }}
+                    <li class="link">
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link" {{#compare name "===" 'variables' }} class="active" {{/compare}}>Variables</a>
+                    </li>
+                {{/compare}}
+            </ul>
         </li>
         {{/if}}
 
-        {{#if miscellaneous}}
+        {{#if routes}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'miscellaneous'}}miscellaneous.html" {{#compare name "===" 'miscellaneous' }} class="active" {{/compare}}><span class="fa fa-cubes"></span>Miscellaneous</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
         </li>
         {{/if}}
 

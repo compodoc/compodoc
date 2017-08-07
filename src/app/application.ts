@@ -711,13 +711,48 @@ export class Application {
         this.configuration.mainData.miscellaneous = (someMisc) ? someMisc : $dependenciesEngine.getMiscellaneous();
 
         return new Promise((resolve, reject) => {
-            this.configuration.addPage({
-                name: 'miscellaneous',
-                id: 'miscellaneous',
-                context: 'miscellaneous',
-                depth: 0,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-            });
+
+            if (this.configuration.mainData.miscellaneous.functions.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'functions',
+                    id: 'miscellaneous-functions',
+                    context: 'miscellaneous-functions',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.variables.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'variables',
+                    id: 'miscellaneous-variables',
+                    context: 'miscellaneous-variables',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.typealiases.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'typealiases',
+                    id: 'miscellaneous-typealiases',
+                    context: 'miscellaneous-typealiases',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.enumerations.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'enumerations',
+                    id: 'miscellaneous-enumerations',
+                    context: 'miscellaneous-enumerations',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+
             resolve();
         });
     }
