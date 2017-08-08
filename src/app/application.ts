@@ -19,6 +19,8 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 import { getAngularVersionOfProject } from '../utils/angular-version';
 
+import { cleanSourcesForWatch } from '../utils/utils';
+
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
@@ -1469,6 +1471,9 @@ export class Application {
         if (this.configuration.mainData.includes !== '') {
             sources = sources.concat(this.configuration.mainData.includes);
         }
+
+        // Check all elements of sources list exist
+        sources = cleanSourcesForWatch(sources);
 
         let watcher = chokidar.watch(sources, {
                 awaitWriteFinish: true,
