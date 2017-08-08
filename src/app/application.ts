@@ -363,8 +363,7 @@ export class Application {
         if (diffCrawledData.miscellaneous.variables.length > 0 ||
             diffCrawledData.miscellaneous.functions.length > 0 ||
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
-            diffCrawledData.miscellaneous.enumerations.length > 0 ||
-            diffCrawledData.miscellaneous.types.length > 0 ) {
+            diffCrawledData.miscellaneous.enumerations.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
@@ -445,8 +444,7 @@ export class Application {
         if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
             $dependenciesEngine.miscellaneous.functions.length > 0 ||
             $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-            $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
-            $dependenciesEngine.miscellaneous.types.length > 0 ) {
+            $dependenciesEngine.miscellaneous.enumerations.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 

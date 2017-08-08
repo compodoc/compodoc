@@ -73,8 +73,7 @@ export function cleanLifecycleHooksFromMethods(methods) {
         len = methods.length;
 
     for(i; i<len; i++) {
-        if (!methods[i].name in AngularLifecycleHooks) {
-            console.log('clean');
+        if (!(methods[i].name in AngularLifecycleHooks)) {
             result.push(methods[i]);
         }
     }

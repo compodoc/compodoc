@@ -31,6 +31,10 @@ export class BarComponent implements OnInit {
 
 	private privateMethod() {}
 
-    ngOnInit() {}
+  ngOnInit() {}
+
+	public showTab(index) {
+			// TOTO
+	}
 
 }
