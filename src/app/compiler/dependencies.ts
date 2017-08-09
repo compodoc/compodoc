@@ -251,6 +251,9 @@ export class Dependencies {
         ts.forEachChild(srcFile, (node: ts.Node) => {
 
             let deps: Deps = <Deps>{};
+
+            if (this.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disablePrivateOrInternalSupport) { return; }
+
             if (node.decorators) {
                 let visitNode = (visitedNode, index) => {
 
@@ -695,6 +698,37 @@ export class Dependencies {
 
             }
         });
+    }
+
+    private hasJSDocInternalTag(filename: string, sourceFile, node) {
+        let result = false;
+
+        if (typeof sourceFile.statements !== 'undefined') {
+            let i = 0,
+                len = sourceFile.statements.length;
+            for(i; i<len; i++) {
+                let statement = sourceFile.statements[i];
+                if (statement.pos === node.pos && statement.end === node.end) {
+                    if (node.jsDoc && node.jsDoc.length > 0) {
+                        let j = 0,
+                            leng = node.jsDoc.length;
+                        for(j; j<leng; j++) {
+                            if (node.jsDoc[j].tags && node.jsDoc[j].tags.length > 0) {
+                                let k = 0,
+                                    lengt = node.jsDoc[j].tags.length;
+                                for(k; k<lengt; k++) {
+                                    if (node.jsDoc[j].tags[k].tagName && node.jsDoc[j].tags[k].tagName.text === 'internal') {
+                                        result = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     private isVariableRoutes(node) {

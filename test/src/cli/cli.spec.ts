@@ -149,6 +149,11 @@ describe('CLI simple flags', () => {
         it('should contain public methods', () => {
             expect(componentFile).to.contain('<code>showTab');
         });
+
+        it('should exclude foo directive with @internal', () => {
+            const directiveFile = exists(`${tmp.name}/directives/FooDirective.html`);
+            expect(directiveFile).to.be.false;
+        });
     });
 
     describe('when specific files are included in tsconfig', () => {
