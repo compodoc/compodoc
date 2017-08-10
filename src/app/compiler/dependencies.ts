@@ -1406,6 +1406,7 @@ export class Dependencies {
         inputs.sort(this.getNamesCompareFn());
         outputs.sort(this.getNamesCompareFn());
         properties.sort(this.getNamesCompareFn());
+        methods.sort(this.getNamesCompareFn());
         indexSignatures.sort(this.getNamesCompareFn());
 
         return {
