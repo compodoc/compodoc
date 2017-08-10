@@ -8,6 +8,7 @@ import { prefixOfficialDoc } from '../../utils/angular-version';
 import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
 
 import { finderInBasicTypes, finderInTypeScriptBasicTypes } from '../../utils/basic-types';
+import { kindToType } from '../../utils/kind-to-type';
 
 export let HtmlEngineHelpers = (function() {
     let init = function() {
@@ -432,6 +433,9 @@ export let HtmlEngineHelpers = (function() {
                         var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
                             tag.type = jsdocTags[i].typeExpression.type.name.text
+                        }
+                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.kind) {
+                            tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
                         }
                         if (jsdocTags[i].comment) {
                             tag.comment = jsdocTags[i].comment

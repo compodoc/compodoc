@@ -85,4 +85,33 @@ describe('CLI coverage report', () => {
 
     });
 
+    describe('coverage page', () => {
+
+        let stdoutString = null,
+            coverageFile;
+        before(function (done) {
+            tmp.create();
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            coverageFile = read(`${tmp.name}/coverage.html`);
+            done();
+        });
+        after(() => tmp.clean());
+
+        it('it should have coverage page', () => {
+            expect(coverageFile).to.contain('Documentation coverage');
+            expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
+            expect(coverageFile).to.contain('5/5');
+        });
+
+    });
+
 });

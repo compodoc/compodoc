@@ -939,7 +939,7 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             /*
-             * loop with components, classes, injectables, interfaces, pipes
+             * loop with components, directives, classes, injectables, interfaces, pipes
              */
             var files = [],
                 totalProjectStatementDocumented = 0,
@@ -955,76 +955,81 @@ export class Application {
                         status = 'good';
                     }
                     return status;
+                },
+                processComponentsAndDirectives = function(list) {
+                    _.forEach(list, (element) => {
+                        if (!element.propertiesClass ||
+                            !element.methodsClass ||
+                            !element.inputsClass ||
+                            !element.outputsClass) {
+                                return;
+                            }
+                        let cl:any = {
+                                filePath: element.file,
+                                type: element.type,
+                                linktype: element.type,
+                                name: element.name
+                            },
+                            totalStatementDocumented = 0,
+                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.outputsClass.length + 1; // +1 for element decorator comment
+
+                        if (element.constructorObj) {
+                            totalStatements += 1;
+                            if (element.constructorObj && element.constructorObj.description && element.constructorObj.description !== '') {
+                                totalStatementDocumented += 1;
+                            }
+                        }
+                        if (element.description && element.description !== '') {
+                            totalStatementDocumented += 1;
+                        }
+
+                        _.forEach(element.propertiesClass, (property) => {
+                            if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.methodsClass, (method) => {
+                            if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.inputsClass, (input) => {
+                            if (input.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(input.description && input.description !== '' && input.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.outputsClass, (output) => {
+                            if (output.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(output.description && output.description !== '' && output.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+
+                        cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                        if(totalStatements === 0) {
+                            cl.coveragePercent = 0;
+                        }
+                        cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                        cl.status = getStatus(cl.coveragePercent);
+                        totalProjectStatementDocumented += cl.coveragePercent;
+                        files.push(cl);
+                    })
                 };
 
-            _.forEach(this.configuration.mainData.components, (component) => {
-                if (!component.propertiesClass ||
-                    !component.methodsClass ||
-                    !component.inputsClass ||
-                    !component.outputsClass) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: component.file,
-                        type: component.type,
-                        linktype: component.type,
-                        name: component.name
-                    },
-                    totalStatementDocumented = 0,
-                    totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
+            processComponentsAndDirectives(this.configuration.mainData.components);
+            processComponentsAndDirectives(this.configuration.mainData.directives);
 
-                if (component.constructorObj) {
-                    totalStatements += 1;
-                    if (component.constructorObj && component.constructorObj.description && component.constructorObj.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                }
-                if (component.description && component.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-
-                _.forEach(component.propertiesClass, (property) => {
-                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.methodsClass, (method) => {
-                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.inputsClass, (input) => {
-                    if (input.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(input.description && input.description !== '' && input.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.outputsClass, (output) => {
-                    if (output.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(output.description && output.description !== '' && output.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            })
             _.forEach(this.configuration.mainData.classes, (classe) => {
                 if (!classe.properties ||
                     !classe.methods) {

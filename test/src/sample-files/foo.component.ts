@@ -35,4 +35,12 @@ export class FooComponent {
 	 */
 	@Output() exampleOutput: EventEmitter<{foo: string}> = new EventEmitter();
 
+	/**
+   * constructor description
+   * @param  {boolean} myprop description
+   */
+	constructor(public myprop: boolean) {
+
+	}
+
 }

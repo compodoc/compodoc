@@ -1011,7 +1011,7 @@ export class Dependencies {
             } else {
                 _return = kindToType(node.kind);
             }
-            if (node.typeArguments) {
+            if (node.typeArguments && node.typeArguments.length > 0) {
                 _return += '<';
                 for (const argument of node.typeArguments) {
                     _return += kindToType(argument.kind);
@@ -1142,8 +1142,6 @@ export class Dependencies {
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method),
 
-
-
         if (method.symbol) {
             result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
         }
@@ -1161,15 +1159,15 @@ export class Dependencies {
         return result;
     }
 
-    private visitConstructorProperties(method) {
+    private visitConstructorProperties(constr, sourceFile) {
         var that = this;
-        if (method.parameters) {
+        if (constr.parameters) {
             var _parameters = [],
                 i = 0,
-                len = method.parameters.length;
+                len = constr.parameters.length;
             for(i; i < len; i++) {
-                if (that.isPublic(method.parameters[i])) {
-                    _parameters.push(that.visitArgument(method.parameters[i]));
+                if (that.isPublic(constr.parameters[i])) {
+                    _parameters.push(that.visitProperty(constr.parameters[i], sourceFile));
                 }
             }
             return _parameters;
@@ -1327,7 +1325,11 @@ export class Dependencies {
              description: '',
              line: this.getPosition(property, sourceFile).line + 1
          },
-            jsdoctags = JSDocTagsParser.getJSDocs(property);
+            jsdoctags;
+
+         if(property.jsDoc) {
+             jsdoctags = JSDocTagsParser.getJSDocs(property);
+         }
 
          if (property.symbol) {
              result.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
@@ -1389,7 +1391,7 @@ export class Dependencies {
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                         indexSignatures.push(this.visitIndexDeclaration(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.Constructor) {
-                        let _constructorProperties = this.visitConstructorProperties(members[i]),
+                        let _constructorProperties = this.visitConstructorProperties(members[i], sourceFile),
                             j = 0,
                             len = _constructorProperties.length;
                         for(j; j<len; j++) {
