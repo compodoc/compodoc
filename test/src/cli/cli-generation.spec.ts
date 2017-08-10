@@ -546,6 +546,11 @@ describe('CLI simple generation', () => {
             const file = read('documentation/injectables/TodoStore.html');
             expect(file).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
         });
+
+        it('should have inherit return type', () => {
+            const file = read('documentation/classes/Todo.html');
+            expect(file).to.contain('code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"');
+        });
     });
 
     describe('when generation with -t flag', () => {

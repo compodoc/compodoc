@@ -60,4 +60,8 @@ export class Todo extends Tada {
     fakeMethod(): boolean {
         return true;
     }
+
+    azert() {
+      return 5;
+    }
 }

@@ -1,16 +1,14 @@
 import * as path from 'path';
 import * as util from 'util';
-import { readFileSync } from 'fs-extra';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
-import { LinkParser } from '../../utils/link-parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { markedtags } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { generate } from './codegen';
-import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
+import { cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
@@ -1219,6 +1217,23 @@ export class Dependencies {
             line: this.getPosition(method, sourceFile).line + 1
         },
             jsdoctags = JSDocTagsParser.getJSDocs(method);
+
+        if (typeof method.type === 'undefined') {
+            //Try to get inferred type
+            if (method.symbol) {
+                let symbol: ts.Symbol = method.symbol;
+                if (symbol.valueDeclaration) {
+                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
+                    if (symbolType) {
+                        try {
+                            const signature = this.typeChecker.getSignatureFromDeclaration(method);
+                            const returnType = signature.getReturnType();
+                            result.returnType = this.typeChecker.typeToString(returnType);
+                        } catch (error) {}
+                    }
+                }
+            }
+        }
 
         if (method.symbol) {
             result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
