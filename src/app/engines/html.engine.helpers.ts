@@ -431,14 +431,14 @@ export let HtmlEngineHelpers = (function() {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'param') {
                         var tag = {} as jsdocTagInterface;
-                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
-                            tag.type = jsdocTags[i].typeExpression.type.name.text
-                        }
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.kind) {
-                            tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
+                          tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
+                        }
+                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
+                          tag.type = jsdocTags[i].typeExpression.type.name.text
                         }
                         if (jsdocTags[i].comment) {
-                            tag.comment = jsdocTags[i].comment
+                            tag.comment = jsdocTags[i].comment;
                         }
                         if (jsdocTags[i].name) {
                             tag.name = jsdocTags[i].name.text;

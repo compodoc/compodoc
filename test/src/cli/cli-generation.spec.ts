@@ -14,7 +14,6 @@ describe('CLI simple generation', () => {
             fooServiceFile,
             componentFile,
             moduleFile,
-            coverageFile,
             emptyModuleFile,
             emptyModuleRawFile;
         before(function (done) {
@@ -31,7 +30,6 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
             fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
-            coverageFile = read(`${tmp.name}/coverage.html`);
             moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
             componentFile = read(`${tmp.name}/components/BarComponent.html`);
             emptyModuleFile = read(`${tmp.name}/modules/EmptyModule.html`);
@@ -113,15 +111,6 @@ describe('CLI simple generation', () => {
         });
 
         /**
-         * Coverage
-         */
-
-        it('it should have coverage page', () => {
-            expect(coverageFile).to.contain('Documentation coverage');
-            expect(coverageFile).to.contain('img src="./images/coverage-badge.svg"');
-        });
-
-        /**
          * internal/private methods
          */
          it('should include by default methods marked as internal', () => {
@@ -197,8 +186,7 @@ describe('CLI simple generation', () => {
             fooComponentFile,
             fooServiceFile,
             componentFile,
-            moduleFile,
-            coverageFile;
+            moduleFile;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -213,7 +201,6 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             fooComponentFile = read(`/tmp/${tmp.name}/components/FooComponent.html`);
             fooServiceFile = read(`/tmp/${tmp.name}/injectables/FooService.html`);
-            coverageFile = read(`/tmp/${tmp.name}/coverage.html`);
             moduleFile  = read(`/tmp/${tmp.name}/modules/AppModule.html`);
             componentFile = read(`/tmp/${tmp.name}/components/BarComponent.html`);
             done();
@@ -553,6 +540,11 @@ describe('CLI simple generation', () => {
         it('should have public function for component', () => {
             let file = read('documentation/components/HomeComponent.html');
             expect(file).to.contain('code>showTab(');
+        });
+
+        it('should have override types for arguments of function', () => {
+            const file = read('documentation/injectables/TodoStore.html');
+            expect(file).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
         });
     });
 
