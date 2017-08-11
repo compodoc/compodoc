@@ -99,6 +99,10 @@
             </table>
         </section>
 
+        {{#orLength directive.propertiesClass directive.methodsClass directive.inputsClass directive.outputClass}}
+            {{> index-directive methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass directive=component.outputsClass }}
+        {{/orLength}}
+
         {{#if directive.constructorObj}}
             {{> block-constructor constructor=directive.constructorObj file=directive.file }}
         {{/if}}
@@ -111,6 +115,7 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-2">
+                                    <a name="{{name}}"></a>
                                     <code>{{name}}</code>
                                 </td>
                                 <td class="col-md-10">
@@ -152,6 +157,7 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-2">
+                                    <a name="{{name}}"></a>
                                     <code>{{name}}</code>
                                 </td>
                                 <td class="col-md-10">

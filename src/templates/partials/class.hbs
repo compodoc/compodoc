@@ -74,6 +74,10 @@
             </div>
         {{/if}}
 
+        {{#orLength class.properties class.methods}}
+            {{> index methods=class.methods properties=class.properties }}
+        {{/orLength}}
+
         {{#if class.constructorObj}}
             {{> block-constructor constructor=class.constructorObj file=class.file }}
         {{/if}}

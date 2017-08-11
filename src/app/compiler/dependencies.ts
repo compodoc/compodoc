@@ -1156,6 +1156,7 @@ export class Dependencies {
 
     private visitCallDeclaration(method, sourceFile) {
         var result = {
+            id: 'call-declaration-' + Date.now(),
             description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
@@ -1172,6 +1173,7 @@ export class Dependencies {
 
     private visitIndexDeclaration(method, sourceFile?) {
         return {
+            id: 'index-declaration-' + Date.now(),
             description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),

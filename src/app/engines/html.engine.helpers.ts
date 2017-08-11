@@ -54,6 +54,19 @@ export let HtmlEngineHelpers = (function() {
 
           return options.inverse(this);
         });
+        Handlebars.registerHelper("orLength", function(/* any, any, ..., options */) {
+            var len = arguments.length - 1;
+          var options = arguments[len];
+          for (var i = 0; i < len; i++) {
+            if (typeof arguments[i] !== 'undefined') {
+                if(arguments[i].length > 0) {
+                  return options.fn(this);
+                }
+            }
+          }
+
+          return options.inverse(this);
+        });
         Handlebars.registerHelper("filterAngular2Modules", function(text, options) {
             const NG2_MODULES:string[] = [
                 'BrowserModule',
