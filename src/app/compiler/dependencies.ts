@@ -241,6 +241,44 @@ export class Dependencies {
         return deps;
     }
 
+    private processClass(node, file, srcFile, deps, outputSymbols) {
+        let name = this.getSymboleName(node);
+        let IO = this.getClassIO(file, srcFile, node);
+        deps = {
+            name,
+            id: 'class-' + name + '-' + Date.now(),
+            file: file,
+            type: 'class',
+            sourceCode: srcFile.getText()
+        };
+        if(IO.constructor) {
+            deps.constructorObj = IO.constructor;
+        }
+        if(IO.properties) {
+            deps.properties = IO.properties;
+        }
+        if(IO.description) {
+            deps.description = IO.description;
+        }
+        if(IO.methods) {
+            deps.methods = IO.methods;
+        }
+        if(IO.indexSignatures) {
+            deps.indexSignatures = IO.indexSignatures;
+        }
+        if (IO.extends) {
+            deps.extends = IO.extends;
+        }
+        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+            deps.jsdoctags = IO.jsdoctags[0].tags
+        }
+        if (IO.implements && IO.implements.length > 0) {
+            deps.implements = IO.implements;
+        }
+        this.debug(deps);
+        outputSymbols['classes'].push(deps);
+    }
+
     private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: Object): void {
 
         let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/'),
@@ -253,6 +291,7 @@ export class Dependencies {
             if (this.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disablePrivateOrInternalSupport) { return; }
 
             if (node.decorators) {
+                let classWithCustomDecorator = false;
                 let visitNode = (visitedNode, index) => {
 
                     let metadata = node.decorators;
@@ -395,6 +434,12 @@ export class Dependencies {
                             deps.constructorObj = IO.constructor;
                         }
                         outputSymbols['directives'].push(deps);
+                    } else {
+                        //Just a class
+                        if (!classWithCustomDecorator) {
+                            classWithCustomDecorator = true;
+                            this.processClass(node, file, srcFile, deps, outputSymbols);
+                        }
                     }
 
                     this.debug(deps);
@@ -402,9 +447,12 @@ export class Dependencies {
                     this.__cache[name] = deps;
                 }
 
-                let filterByDecorators = (node) => {
-                    if (node.expression && node.expression.expression) {
-                        return /(NgModule|Component|Injectable|Pipe|Directive)/.test(node.expression.expression.text)
+                let filterByDecorators = (filteredNode) => {
+                    if (filteredNode.expression && filteredNode.expression.expression) {
+                        return /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text)
+                    }
+                    if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                        return true;
                     }
                     return false;
                 };
@@ -415,41 +463,7 @@ export class Dependencies {
             }
             else if (node.symbol) {
                 if(node.symbol.flags === ts.SymbolFlags.Class) {
-                    let name = this.getSymboleName(node);
-                    let IO = this.getClassIO(file, srcFile, node);
-                    deps = {
-                        name,
-                        id: 'class-' + name + '-' + Date.now(),
-                        file: file,
-                        type: 'class',
-                        sourceCode: srcFile.getText()
-                    };
-                    if(IO.constructor) {
-                        deps.constructorObj = IO.constructor;
-                    }
-                    if(IO.properties) {
-                        deps.properties = IO.properties;
-                    }
-                    if(IO.description) {
-                        deps.description = IO.description;
-                    }
-                    if(IO.methods) {
-                        deps.methods = IO.methods;
-                    }
-                    if(IO.indexSignatures) {
-                        deps.indexSignatures = IO.indexSignatures;
-                    }
-                    if (IO.extends) {
-                        deps.extends = IO.extends;
-                    }
-                    if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-                        deps.jsdoctags = IO.jsdoctags[0].tags
-                    }
-                    if (IO.implements && IO.implements.length > 0) {
-                        deps.implements = IO.implements;
-                    }
-                    this.debug(deps);
-                    outputSymbols['classes'].push(deps);
+                    this.processClass(node, file, srcFile, deps, outputSymbols);
                 } else if(node.symbol.flags === ts.SymbolFlags.Interface) {
                     let name = this.getSymboleName(node);
                     let IO = this.getInterfaceIO(file, srcFile, node);
@@ -541,41 +555,7 @@ export class Dependencies {
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-                    let name = this.getSymboleName(node);
-                    let IO = this.getClassIO(file, srcFile, node);
-                    deps = {
-                        name,
-                        id: 'class-' + name + '-' + Date.now(),
-                        file: file,
-                        type: 'class',
-                        sourceCode: srcFile.getText()
-                    };
-                    if(IO.constructor) {
-                        deps.constructorObj = IO.constructor;
-                    }
-                    if(IO.properties) {
-                        deps.properties = IO.properties;
-                    }
-                    if(IO.indexSignatures) {
-                        deps.indexSignatures = IO.indexSignatures;
-                    }
-                    if(IO.description) {
-                        deps.description = IO.description;
-                    }
-                    if(IO.methods) {
-                        deps.methods = IO.methods;
-                    }
-                    if (IO.extends) {
-                        deps.extends = IO.extends;
-                    }
-                    if (IO.implements && IO.implements.length > 0) {
-                        deps.implements = IO.implements;
-                    }
-                    if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-                        deps.jsdoctags = IO.jsdoctags[0].tags
-                    }
-                    this.debug(deps);
-                    outputSymbols['classes'].push(deps);
+                    this.processClass(node, file, srcFile, deps, outputSymbols);
                 }
                 if (node.kind === ts.SyntaxKind.ExpressionStatement) {
                     let bootstrapModuleReference = 'bootstrapModule';
@@ -858,7 +838,7 @@ export class Dependencies {
     }
 
     private findProps(visitedNode) {
-        if(visitedNode.expression.arguments.length > 0) {
+        if(visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
             return visitedNode.expression.arguments.pop().properties;
         } else {
             return '';
@@ -1570,7 +1550,19 @@ export class Dependencies {
                         jsdoctags: jsdoctags
                     }];
                 } else {
-                    //console.log('custom decorator');
+                    members = this.visitMembers(classDeclaration.members, sourceFile);
+
+                    return [{
+                        description,
+                        methods: members.methods,
+                        indexSignatures: members.indexSignatures,
+                        properties: members.properties,
+                        kind: members.kind,
+                        constructor: members.constructor,
+                        jsdoctags: jsdoctags,
+                        extends: extendsElement,
+                        implements: implementsElements
+                    }];
                 }
             }
         } else if (description) {
