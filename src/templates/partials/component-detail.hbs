@@ -195,6 +195,10 @@
     </table>
 </section>
 
+{{#if component.constructorObj}}
+    {{> block-constructor constructor=component.constructorObj file=component.file }}
+{{/if}}
+
 {{#if component.inputsClass}}
     <section>
         <h3 id="inputs">Inputs</h3>
@@ -268,10 +272,6 @@
             </table>
         {{/each}}
     </section>
-{{/if}}
-
-{{#if component.constructorObj}}
-    {{> block-constructor constructor=component.constructorObj file=component.file }}
 {{/if}}
 
 {{#if component.methodsClass}}

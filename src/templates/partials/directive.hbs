@@ -99,6 +99,10 @@
             </table>
         </section>
 
+        {{#if directive.constructorObj}}
+            {{> block-constructor constructor=directive.constructorObj file=directive.file }}
+        {{/if}}
+
         {{#if directive.inputsClass}}
             <section>
                 <h3 id="inputs">Inputs</h3>
@@ -172,10 +176,6 @@
                     </table>
                 {{/each}}
             </section>
-        {{/if}}
-
-        {{#if directive.constructorObj}}
-            {{> block-constructor constructor=directive.constructorObj file=directive.file }}
         {{/if}}
 
         {{#if directive.methodsClass}}
