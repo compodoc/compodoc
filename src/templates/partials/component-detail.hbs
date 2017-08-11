@@ -39,13 +39,13 @@
         <h3>Example</h3>
     </p>
     <div class="io-description">
-        {{#jsdoc-component-example component.jsdoctags}}
+        {{#jsdoc-code-example component.jsdoctags}}
             {{#each tags}}
                 <div>
                     {{{comment}}}
                 </div>
             {{/each}}
-        {{/jsdoc-component-example}}
+        {{/jsdoc-code-example}}
     </div>
 {{/if}}
 
@@ -195,6 +195,14 @@
     </table>
 </section>
 
+{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass}}
+    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass }}
+{{/orLength}}
+
+{{#if component.constructorObj}}
+    {{> block-constructor constructor=component.constructorObj file=component.file }}
+{{/if}}
+
 {{#if component.inputsClass}}
     <section>
         <h3 id="inputs">Inputs</h3>
@@ -203,6 +211,7 @@
                 <tbody>
                     <tr>
                         <td class="col-md-2">
+                            <a name="{{name}}"></a>
                             <code>{{name}}</code>
                         </td>
                         <td class="col-md-10">
@@ -244,6 +253,7 @@
                 <tbody>
                     <tr>
                         <td class="col-md-2">
+                            <a name="{{name}}"></a>
                             <code>{{name}}</code>
                         </td>
                         <td class="col-md-10">
@@ -268,10 +278,6 @@
             </table>
         {{/each}}
     </section>
-{{/if}}
-
-{{#if component.constructorObj}}
-    {{> block-constructor constructor=component.constructorObj file=component.file }}
 {{/if}}
 
 {{#if component.methodsClass}}

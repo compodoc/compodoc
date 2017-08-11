@@ -292,7 +292,7 @@ export let RouterParser = (function() {
                                                     route.children = JSON5.parse(route.data);
                                                     delete route.data;
                                                     route.kind = 'module';
-                                                    _rawModule.children[i] = route;
+                                                    _rawModule.children.push(route);
                                                 }
                                             }
                                         }
@@ -359,7 +359,7 @@ export let RouterParser = (function() {
                                routes: JSON.stringify(routes)
                            });
                        outputFolder = outputFolder.replace(process.cwd(), '');
-                       fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
+                       fs.outputFile(path.resolve(outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
                            if(err) {
                                logger.error('Error during routes index file generation ', err);
                                reject(err);

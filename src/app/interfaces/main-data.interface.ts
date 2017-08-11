@@ -33,6 +33,7 @@ export interface MainDataInterface {
     includesFolder: string;
     disableSourceCode: boolean;
     disableGraph: boolean;
+    disableMainGraph: boolean;
     disableCoverage: boolean;
     disablePrivateOrInternalSupport: boolean;
     watch: boolean;

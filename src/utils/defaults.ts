@@ -10,6 +10,7 @@ export const COMPODOC_DEFAULTS = {
     toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableGraph: false,
+    disableMainGraph: false,
     disableCoverage: false,
     disablePrivateOrInternalSupport: false,
     PAGE_TYPES: {

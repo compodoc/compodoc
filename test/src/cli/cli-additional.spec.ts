@@ -30,10 +30,13 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean());
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile).to.contain('<a href="additional-documentation/introduction');
+        expect(fooIndexFile).to.contain('<a href="additional-documentation/big-introduction');
+        expect(fooIndexFile).to.contain('Big Introduction');
     });
     it('it should have generated files', () => {
-        const isFileExists = exists(`${tmp.name}/additional-documentation/Edition.html`);
+        let isFileExists = exists(`${tmp.name}/additional-documentation/edition.html`);
+        expect(isFileExists).to.be.true;
+        isFileExists = exists(`${tmp.name}/additional-documentation/big-introduction.html`);
         expect(isFileExists).to.be.true;
     });
 });

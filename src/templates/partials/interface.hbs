@@ -39,6 +39,56 @@
             </p>
         {{/if}}
 
+        {{#orLength interface.properties interface.methods}}
+        <section>
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    {{#compare interface.properties.length ">" 0}}
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                            {{#each interface.properties}}
+                                <li>
+                                    {{#if name}}
+                                        <a href="#{{name}}">{{name}}</a>
+                                    {{else}}
+                                        <a href="#{{id}}">Unamed property</a>
+                                    {{/if}}
+                                </li>
+                            {{/each}}
+                            </ul>
+                        </td>
+                    </tr>
+                    {{/compare}}
+                    {{#compare interface.methods.length ">" 0}}
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Methods</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                            {{#each interface.methods}}
+                                <li>
+                                    {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                                </li>
+                            {{/each}}
+                            </ul>
+                        </td>
+                    </tr>
+                    {{/compare}}
+                </tbody>
+            </table>
+        </section>
+        {{/orLength}}
+
         {{#if interface.methods}}
             {{> block-method methods=interface.methods file=interface.file }}
         {{/if}}
@@ -56,12 +106,13 @@
                             {{#if name}}
                                 <tr>
                                     <td class="col-md-4">
+                                        <a name="{{name}}"></a>
                                         <b>{{name}}</b>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>{{name}}: {{> link-type type=type }}</bcode>
+                                        <code>{{name}}: {{> link-type type=type }}</code>
                                     </td>
                                 </tr>
 
@@ -95,6 +146,7 @@
                                     <tr>
                                         <td class="col-md-4">
                                             <i>Signature :</i>
+                                            <a name="{{id}}"></a>
                                             <code>
                                                 <!--ts.SyntaxKind.CallSignature-->
                                                 {{#compare ../interface.kind "===" 151 }}
@@ -117,26 +169,34 @@
                                 {{/if}}
 
                                 {{#if jsdoctags}}
+                                    {{#jsdoc-params-valid jsdoctags}}
                                     <tr>
                                         <td class="col-md-4">
                                           <div class="io-description">
                                               {{#jsdoc-params jsdoctags}}
                                                   <b>Parameters :</b>
-                                                  <ul class="jsdoc-params">
-                                                      {{#each tags}}
-                                                          <li>
-                                                              <div>
-                                                                  <b>{{name}}</b>
-                                                                  {{#if type}}
-                                                                      : {{> link-type type=type }}
-                                                                  {{/if}}
-                                                              </div>
-                                                              <div>
-                                                                  {{{comment}}}
-                                                              </div>
-                                                          </li>
-                                                      {{/each}}
-                                                  </ul>
+                                                  <table class="params">
+                                                      <thead>
+                                                          <tr>
+                                                              <td>Name</td>
+                                                              <td>Type</td>
+                                                              <td>Description</td>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                          {{#each tags}}
+                                                              <tr>
+                                                                <td>{{name}}</td>
+                                                                <td>
+                                                                    {{#if type}}
+                                                                      {{> link-type type=type }}
+                                                                    {{/if}}
+                                                                </td>
+                                                                <td>{{{comment}}}</td>
+                                                              </tr>
+                                                          {{/each}}
+                                                      </tbody>
+                                                  </table>
                                               {{/jsdoc-params}}
                                               {{#jsdoc-example jsdoctags}}
                                                   <b>Example :</b>
@@ -149,6 +209,7 @@
                                           </div>
                                         </td>
                                     </tr>
+                                    {{/jsdoc-params-valid}}
                                 {{/if}}
 
                             {{/if}}

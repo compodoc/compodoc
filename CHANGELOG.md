@@ -1,3 +1,47 @@
+<a name="1.0.0-beta.14"></a>
+# [1.0.0-beta.14](https://github.com/compodoc/compodoc/compare/1.0.0-beta.13...1.0.0-beta.14) (2017-08-11)
+
+## Changes
+
+- main graph for huge projects with more than 200 modules is disabled
+- index for functions, variables, inputs etc
+- speed parsing for huge projects
+
+### Bug Fixes
+
+* **additional-doc:** incorrect filenames in additional-documentation ([68f80c60](https://github.com/compodoc/compodoc/commit/68f80c60)), closes [#228](https://github.com/compodoc/compodoc/issues/228)
+* **chore:** -d + absolute folder ([2830c086](https://github.com/compodoc/compodoc/commit/2830c086)), closes [#235](https://github.com/compodoc/compodoc/issues/235)
+* **modules:** Empty NgModule produce an empty graph ([d6d8388b](https://github.com/compodoc/compodoc/commit/d6d8388b)), closes [#236](https://github.com/compodoc/compodoc/issues/236)
+* **routes:** iOS 8 routes graph rendering - innerHTML + SVG ([128d33a1](https://github.com/compodoc/compodoc/commit/128d33a1)), closes [#229](https://github.com/compodoc/compodoc/issues/229)
+* **links:** Url for @link is not always right ([6be60bcb](https://github.com/compodoc/compodoc/commit/6be60bcb)), closes [#237](https://github.com/compodoc/compodoc/issues/237)
+* **links:** Wrong URL generated for inline {@link} doc in constructor ([73285b51](https://github.com/compodoc/compodoc/commit/73285b51)), closes [#264](https://github.com/compodoc/compodoc/issues/264)
+* **graph:** render again in sequence ([75ea0c96](https://github.com/compodoc/compodoc/commit/75ea0c96)), closes [#238](https://github.com/compodoc/compodoc/issues/238)
+* **routes:** Routes page not working with null route ([a62e7487](https://github.com/compodoc/compodoc/commit/a62e7487)), closes [#201](https://github.com/compodoc/compodoc/issues/201)
+* **parsing:** files scanning rewritten, huge main graph disabled ([cd03eddf](https://github.com/compodoc/compodoc/commit/cd03eddf)), closes [#226](https://github.com/compodoc/compodoc/issues/226) [#231](https://github.com/compodoc/compodoc/issues/231)
+* **overview:** don't display empty graph if no modules ([8c1ffe3b](https://github.com/compodoc/compodoc/commit/8c1ffe3b))
+* **markdown:** Images in README rendered in block ([7c695473](https://github.com/compodoc/compodoc/commit/7c695473)), closes [#261](https://github.com/compodoc/compodoc/issues/261)
+* **opts:** disablePrivateOrInternalSupport public methods in component ([a897a191](https://github.com/compodoc/compodoc/commit/a897a191)), closes [#265](https://github.com/compodoc/compodoc/issues/265)
+* **templates:** html tag bcode not balanced ([8d96a5aa](https://github.com/compodoc/compodoc/commit/8d96a5aa)), closes [#276](https://github.com/compodoc/compodoc/issues/276)
+* **deps:** UTF8-BOM parsing ([3f4707cb](https://github.com/compodoc/compodoc/commit/3f4707cb)), closes [#230](https://github.com/compodoc/compodoc/issues/230)
+* **deps:** live-server issue with Node.js 8 ([38710eaa](https://github.com/compodoc/compodoc/commit/38710eaa)), closes [#232](https://github.com/compodoc/compodoc/issues/232)
+* **deps:** empty module decorator ([00889ab6](https://github.com/compodoc/compodoc/commit/00889ab6)), closes [#248](https://github.com/compodoc/compodoc/issues/248)
+* **deps:** component @param missing in the generated documentation ([5b94056d](https://github.com/compodoc/compodoc/commit/5b94056d)), closes [#225](https://github.com/compodoc/compodoc/issues/225)
+* **deps:** @example for functions ([6b3f262c](https://github.com/compodoc/compodoc/commit/6b3f262c)), closes [#253](https://github.com/compodoc/compodoc/issues/253)
+* **deps:** c-style typed arrays support ([91f23f38](https://github.com/compodoc/compodoc/commit/91f23f38)), closes [#256](https://github.com/compodoc/compodoc/issues/256)
+* **deps:** indexable for class ([a12c120f](https://github.com/compodoc/compodoc/commit/a12c120f)), closes [#255](https://github.com/compodoc/compodoc/issues/255)
+* **deps:** coverage and constructor properties ([0653fb23](https://github.com/compodoc/compodoc/commit/0653fb23)), closes [#259](https://github.com/compodoc/compodoc/issues/259)
+* **deps:** inherit return type ([d468ee8d](https://github.com/compodoc/compodoc/commit/d468ee8d)), closes [#268](https://github.com/compodoc/compodoc/issues/268)
+* **deps:** support class with custom decorator ([059b3c9e](https://github.com/compodoc/compodoc/commit/059b3c9e)), closes [#245](https://github.com/compodoc/compodoc/issues/245)
+
+### Features
+
+* **app:** display link to MDN or TypeScript doc for basic types ([1cfa58e2](https://github.com/compodoc/compodoc/commit/1cfa58e2))
+* **app:** better params display ([0fb9e93c](https://github.com/compodoc/compodoc/commit/0fb9e93c))
+* **deps:** support of function type parameter ([e8b1c0fd](https://github.com/compodoc/compodoc/commit/e8b1c0fd))
+* **deps:** link to enums, split misc pages ([37ec7ba4](https://github.com/compodoc/compodoc/commit/37ec7ba4)), closes [#266](https://github.com/compodoc/compodoc/issues/266)
+* **deps:** @internal for main class decorator ([bafc1878](https://github.com/compodoc/compodoc/commit/bafc1878)), closes [#262](https://github.com/compodoc/compodoc/issues/262)
+* **deps:** Override JSDOC params types with TypeScript ones ([7492c45a](https://github.com/compodoc/compodoc/commit/7492c45a)), closes [#254](https://github.com/compodoc/compodoc/issues/254)
+
 <a name="1.0.0-beta.13"></a>
 # [1.0.0-beta.13](https://github.com/compodoc/compodoc/compare/1.0.0-beta.12...1.0.0-beta.13) (2017-07-15)
 

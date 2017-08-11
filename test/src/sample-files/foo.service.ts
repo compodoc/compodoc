@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class FooService {
 
+    ex: any;
+
+    bar: string[] = [];
+
     /**
      * @param {string} val The entry value
      * @returns {string} The string
@@ -10,6 +14,10 @@ export class FooService {
      * FooService.open('yala');
      */
     open(val: string): string {
+        return 'test';
+    }
+
+    close(work: (toto: string) => void): string {
         return 'test';
     }
 }

@@ -47,6 +47,7 @@ export class Configuration implements ConfigurationInterface {
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
+        disableMainGraph: COMPODOC_DEFAULTS.disableMainGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
         disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport,
         watch: false,
@@ -70,7 +71,10 @@ export class Configuration implements ConfigurationInterface {
     }
 
     addPage(page: PageInterface) {
-        this._pages.push(page);
+        let indexPage = _.findIndex(this._pages, {'name': page.name});
+        if (indexPage === -1) {
+            this._pages.push(page);
+        }
     }
 
     addAdditionalPage(page: PageInterface) {

@@ -4,25 +4,27 @@
 </ol>
 
 {{#unless disableGraph}}
-<div class="text-center">
-    <div id="module-graph-svg">
-        {{{ module.graph }}}
-    </div>
-    <div class="btn-group">
-        <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
-        <button id="reset" class="btn btn-default btn-sm">Reset</button>
-        <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
-    </div>
-</div>
-<script src="{{relativeURL depth 'modules'}}js/libs/svg-pan-zoom.min.js"></script>
-<script src="{{relativeURL depth 'modules'}}js/svg-pan-zoom.controls.js"></script>
+  {{#if module.graph }}
+      <div class="text-center">
+          <div id="module-graph-svg">
+              {{{ module.graph }}}
+          </div>
+          <div class="btn-group">
+              <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+              <button id="reset" class="btn btn-default btn-sm">Reset</button>
+              <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+          </div>
+      </div>
+      <script src="{{relativeURL depth 'modules'}}js/libs/svg-pan-zoom.min.js"></script>
+      <script src="{{relativeURL depth 'modules'}}js/svg-pan-zoom.controls.js"></script>
+    {{/if}}
 {{/unless}}
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="active">
         <a href="#info" id="info-tab" role="tab" data-toggle="tab" data-link="info">Info</a>
     </li>
-    
+
     {{#if module.readme}}
     <li>
         <a href="#readme" role="tab" id="readme-tab" data-toggle="tab" data-link="readme">README</a>

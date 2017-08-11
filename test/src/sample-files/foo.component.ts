@@ -1,5 +1,10 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
+/**
+ * FooComponent description
+ *
+ * See {@link AppModule|APP}
+ */
 @Component({
 	selector: 'app-foo',
 	styles: [`
@@ -29,5 +34,13 @@ export class FooComponent {
 	 * An example output
 	 */
 	@Output() exampleOutput: EventEmitter<{foo: string}> = new EventEmitter();
+
+	/**
+   * constructor description
+   * @param  {boolean} myprop description
+   */
+	constructor(public myprop: boolean) {
+
+	}
 
 }

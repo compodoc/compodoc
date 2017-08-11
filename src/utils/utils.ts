@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs-extra';
 
 import { LinkParser } from './link-parser';
 
@@ -73,11 +74,18 @@ export function cleanLifecycleHooksFromMethods(methods) {
         len = methods.length;
 
     for(i; i<len; i++) {
-        if (!methods[i].name in AngularLifecycleHooks) {
-            console.log('clean');
+        if (!(methods[i].name in AngularLifecycleHooks)) {
             result.push(methods[i]);
         }
     }
 
     return result;
+}
+
+export function cleanSourcesForWatch(list) {
+    return list.filter((element) => {
+        if(fs.existsSync(process.cwd() + path.sep + element)) {
+            return element;
+        }
+    })
 }

@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+  <li>Miscellaneous - Variables</li>
+</ol>
+
+{{#each miscellaneous.groupedVariables}}
+    <h3>{{@key}}</h3>
+    {{> block-property properties=this title='false'}}
+{{/each}}

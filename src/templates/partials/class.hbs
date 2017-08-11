@@ -59,6 +59,25 @@
             </p>
         {{/if}}
 
+        {{#if class.jsdoctags}}
+            <p class="comment">
+                <h3>Example</h3>
+            </p>
+            <div class="io-description">
+                {{#jsdoc-code-example class.jsdoctags}}
+                    {{#each tags}}
+                        <div>
+                            {{{comment}}}
+                        </div>
+                    {{/each}}
+                {{/jsdoc-code-example}}
+            </div>
+        {{/if}}
+
+        {{#orLength class.properties class.methods}}
+            {{> index methods=class.methods properties=class.properties }}
+        {{/orLength}}
+
         {{#if class.constructorObj}}
             {{> block-constructor constructor=class.constructorObj file=class.file }}
         {{/if}}

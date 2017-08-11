@@ -4,6 +4,8 @@ import * as util from 'util';
 
 import { logger } from './logger';
 
+import { stripBom, hasBom } from './utils/utils';
+
 const carriageReturnLineFeed = '\r\n',
       lineFeed = '\n',
       ts = require('typescript'),
@@ -104,6 +106,10 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
 
                 try {
                     libSource = fs.readFileSync(fileName).toString();
+
+                    if (hasBom(libSource)) {
+                        libSource = stripBom(libSource);
+                    }
                 }
                 catch(e) {
                     logger.debug(e, fileName);

@@ -7,6 +7,9 @@ import { prefixOfficialDoc } from '../../utils/angular-version';
 
 import { jsdocTagInterface } from '../interfaces/jsdoc-tag.interface';
 
+import { finderInBasicTypes, finderInTypeScriptBasicTypes } from '../../utils/basic-types';
+import { kindToType } from '../../utils/kind-to-type';
+
 export let HtmlEngineHelpers = (function() {
     let init = function() {
         //TODO use this instead : https://github.com/assemble/handlebars-helpers
@@ -46,6 +49,19 @@ export let HtmlEngineHelpers = (function() {
           for (var i = 0; i < len; i++) {
             if (arguments[i]) {
               return options.fn(this);
+            }
+          }
+
+          return options.inverse(this);
+        });
+        Handlebars.registerHelper("orLength", function(/* any, any, ..., options */) {
+            var len = arguments.length - 1;
+          var options = arguments[len];
+          for (var i = 0; i < len; i++) {
+            if (typeof arguments[i] !== 'undefined') {
+                if(arguments[i].length > 0) {
+                  return options.fn(this);
+                }
             }
           }
 
@@ -147,12 +163,16 @@ export let HtmlEngineHelpers = (function() {
          * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
          */
         Handlebars.registerHelper('parseDescription', function(description, depth) {
-            let tagRegExp = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+            let tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                tagRegExp,
                 matches,
                 previousString,
-                tagInfo = []
+                tagInfo = [];
 
-            var processTheLink = function(string, tagInfo) {
+            tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
+
+            var processTheLink = function(string, tagInfo, leadingText) {
                 var leading = extractLeadingText(string, tagInfo.completeTag),
                     split,
                     result,
@@ -169,7 +189,11 @@ export let HtmlEngineHelpers = (function() {
                 }
 
                 if (result) {
-                    if (leading.leadingText !== null) {
+
+                    if (leadingText) {
+                        stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                    }
+                    else if (leading.leadingText !== null) {
                         stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
                     } else if (typeof split.linkText !== 'undefined') {
                         stringtoReplace = tagInfo.completeTag;
@@ -208,7 +232,7 @@ export let HtmlEngineHelpers = (function() {
                 }
             }
 
-            function replaceMatch(replacer, tag, match, text) {
+            function replaceMatch(replacer, tag, match, text, linkText?) {
                 var matchedTag = {
                     completeTag: match,
                     tag: tag,
@@ -216,14 +240,23 @@ export let HtmlEngineHelpers = (function() {
                 };
                 tagInfo.push(matchedTag);
 
-                return replacer(description, matchedTag);
+                if (linkText) {
+                    return replacer(description, matchedTag, linkText);
+                } else {
+                    return replacer(description, matchedTag);
+                }
             }
 
             do {
                 matches = tagRegExp.exec(description);
                 if (matches) {
                     previousString = description;
-                    description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                    if (matches.length === 2) {
+                        description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                    }
+                    if (matches.length === 3) {
+                        description = replaceMatch(processTheLink, 'link', matches[0], matches[2], matches[1]);
+                    }
                 }
             } while (matches && previousString !== description);
 
@@ -266,6 +299,43 @@ export let HtmlEngineHelpers = (function() {
                         }
                     } else if (arg.dotDotDotToken) {
                         return `...${arg.name}: ${arg.type}`;
+                    } else if (arg.function) {
+                        if (arg.function.length > 0) {
+                            let argums = arg.function.map(function(argu) {
+                                    var _result = $dependenciesEngine.find(argu.type);
+                                    if (_result) {
+                                        if (_result.source === 'internal') {
+                                            let path = _result.data.type;
+                                            if (_result.data.type === 'class') path = 'classe';
+                                            return `${argu.name}: <a href="../${path}s/${_result.data.name}.html">${argu.type}</a>`;
+                                        } else {
+                                            let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
+                                            return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                        }
+                                    } else if (finderInBasicTypes(argu.type)) {
+                                        let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${argu.type}`;
+                                        return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                    } else if (finderInTypeScriptBasicTypes(argu.type)) {
+                                        let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
+                                        return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                    } else {
+                                        if (argu.name && argu.type) {
+                                            return `${argu.name}: ${argu.type}`;
+                                        } else {
+                                            return `${argu.name.text}`;
+                                        }
+                                    }
+                                });
+                            return `${arg.name}: (${argums}) => void`;
+                        } else {
+                            return `${arg.name}: () => void`;
+                        }
+                    } else if (finderInBasicTypes(arg.type)) {
+                        let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${arg.type}`;
+                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                    } else if (finderInTypeScriptBasicTypes(arg.type)) {
+                        let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
+                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     } else {
                         return `${arg.name}: ${arg.type}`;
                     }
@@ -291,7 +361,7 @@ export let HtmlEngineHelpers = (function() {
             }
             return result;
         });
-        Handlebars.registerHelper('jsdoc-component-example', function(jsdocTags:jsdocTagInterface[], options) {
+        Handlebars.registerHelper('jsdoc-code-example', function(jsdocTags:jsdocTagInterface[], options) {
             let i = 0,
                 len = jsdocTags.length,
                 tags = [];
@@ -302,6 +372,15 @@ export let HtmlEngineHelpers = (function() {
                 }
                 if (comment.charAt(0) === ' ') {
                     comment = comment.substring(1, comment.length);
+                }
+                if (comment.indexOf('<p>') === 0) {
+                    comment = comment.substring(3, comment.length);
+                }
+                if (comment.substr(-1) === '\n') {
+                    comment = comment.substring(0, comment.length - 1);
+                }
+                if (comment.substr(-4) === '</p>') {
+                    comment = comment.substring(0, comment.length - 4);
                 }
                 return comment;
             }
@@ -321,7 +400,11 @@ export let HtmlEngineHelpers = (function() {
                     if (jsdocTags[i].tagName.text === 'example') {
                         var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].comment) {
-                            tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            if (jsdocTags[i].comment.indexOf('<caption>') !== -1) {
+                                tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                            } else {
+                                tag.comment = `<pre class="line-numbers"><code class="language-${type}">` + htmlEntities(cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            }
                         }
                         tags.push(tag);
                     }
@@ -361,11 +444,14 @@ export let HtmlEngineHelpers = (function() {
                 if (jsdocTags[i].tagName) {
                     if (jsdocTags[i].tagName.text === 'param') {
                         var tag = {} as jsdocTagInterface;
+                        if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.kind) {
+                          tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
+                        }
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
-                            tag.type = jsdocTags[i].typeExpression.type.name.text
+                          tag.type = jsdocTags[i].typeExpression.type.name.text
                         }
                         if (jsdocTags[i].comment) {
-                            tag.comment = jsdocTags[i].comment
+                            tag.comment = jsdocTags[i].comment;
                         }
                         if (jsdocTags[i].name) {
                             tag.name = jsdocTags[i].name.text;
@@ -377,6 +463,24 @@ export let HtmlEngineHelpers = (function() {
             if (tags.length >= 1) {
                 this.tags = tags;
                 return options.fn(this);
+            }
+        });
+        Handlebars.registerHelper('jsdoc-params-valid', function(jsdocTags:jsdocTagInterface[], options) {
+            var i = 0,
+                len = jsdocTags.length,
+                tags = [],
+                valid = false;
+            for(i; i<len; i++) {
+                if (jsdocTags[i].tagName) {
+                    if (jsdocTags[i].tagName.text === 'param') {
+                        valid = true;
+                    }
+                }
+            }
+            if (valid) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
             }
         });
         Handlebars.registerHelper('jsdoc-default', function(jsdocTags:jsdocTagInterface[], options) {
@@ -418,12 +522,43 @@ export let HtmlEngineHelpers = (function() {
                 if (_result.source === 'internal') {
                     if (_result.data.type === 'class') _result.data.type = 'classe';
                     this.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
+                    if (_result.data.type === 'miscellaneous') {
+                        let mainpage = '';
+                        switch (_result.data.subtype) {
+                            case 'enum':
+                                mainpage = 'enumerations';
+                                break;
+                            case 'function':
+                                mainpage = 'functions';
+                                break;
+                            case 'typealias':
+                                mainpage = 'typealiases';
+                                break;
+                            case 'variable':
+                                mainpage = 'variables';
+                        }
+                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html';
+                    }
                     this.type.target = '_self';
                 } else {
                     this.type.href = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
                     this.type.target = '_blank';
                 }
 
+                return options.fn(this);
+            } else if (finderInBasicTypes(name)) {
+                this.type = {
+                    raw: name
+                };
+                this.type.target = '_blank';
+                this.type.href = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${name}`;
+                return options.fn(this);
+            } else if (finderInTypeScriptBasicTypes(name)) {
+                this.type = {
+                    raw: name
+                };
+                this.type.target = '_blank';
+                this.type.href = 'https://www.typescriptlang.org/docs/handbook/basic-types.html';
                 return options.fn(this);
             } else {
                 return options.inverse(this);

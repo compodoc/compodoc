@@ -1,5 +1,6 @@
 export interface PageInterface {
     name: string;
+    id: string;
     filename?: string;
     context: string;
     path?: string;

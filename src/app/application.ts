@@ -19,6 +19,8 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
 import { getAngularVersionOfProject } from '../utils/angular-version';
 
+import { cleanSourcesForWatch } from '../utils/utils';
+
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
@@ -200,6 +202,7 @@ export class Application {
                         this.configuration.addPage({
                             name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
                             context: 'getting-started',
+                            id: 'getting-started',
                             markdown: readmeData,
                             depth: 0,
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -208,6 +211,7 @@ export class Application {
                             this.configuration.mainData.readme = true;
                             this.configuration.addPage({
                                 name: 'overview',
+                                id: 'overview',
                                 context: 'overview',
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });
@@ -228,6 +232,7 @@ export class Application {
                         if (markdowns[i] === 'readme') {
                             this.configuration.addPage({
                                 name: 'index',
+                                id: 'index',
                                 context: 'overview'
                             });
                         }
@@ -318,6 +323,8 @@ export class Application {
 
         this.configuration.mainData.routesLength = RouterParser.routesLength();
 
+        this.printStatistics();
+
         this.prepareEverything();
     }
 
@@ -358,8 +365,7 @@ export class Application {
         if (diffCrawledData.miscellaneous.variables.length > 0 ||
             diffCrawledData.miscellaneous.functions.length > 0 ||
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
-            diffCrawledData.miscellaneous.enumerations.length > 0 ||
-            diffCrawledData.miscellaneous.types.length > 0 ) {
+            diffCrawledData.miscellaneous.enumerations.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
@@ -375,6 +381,36 @@ export class Application {
             .catch(errorMessage => {
                 logger.error(errorMessage);
             });
+    }
+
+    printStatistics() {
+        logger.info('-------------------');
+        logger.info('Project statistics ');
+        if ($dependenciesEngine.modules.length > 0) {
+            logger.info(`- module     : ${$dependenciesEngine.modules.length}`);
+        }
+        if ($dependenciesEngine.components.length > 0) {
+            logger.info(`- component  : ${$dependenciesEngine.components.length}`);
+        }
+        if ($dependenciesEngine.directives.length > 0) {
+            logger.info(`- directive  : ${$dependenciesEngine.directives.length}`);
+        }
+        if ($dependenciesEngine.injectables.length > 0) {
+            logger.info(`- injectable : ${$dependenciesEngine.injectables.length}`);
+        }
+        if ($dependenciesEngine.pipes.length > 0) {
+            logger.info(`- pipe       : ${$dependenciesEngine.pipes.length}`);
+        }
+        if ($dependenciesEngine.classes.length > 0) {
+            logger.info(`- class      : ${$dependenciesEngine.classes.length}`);
+        }
+        if ($dependenciesEngine.interfaces.length > 0) {
+            logger.info(`- interface  : ${$dependenciesEngine.interfaces.length}`);
+        }
+        if (this.configuration.mainData.routesLength > 0) {
+            logger.info(`- route      : ${this.configuration.mainData.routesLength}`);
+        }
+        logger.info('-------------------');
     }
 
     prepareEverything() {
@@ -410,8 +446,7 @@ export class Application {
         if ($dependenciesEngine.miscellaneous.variables.length > 0 ||
             $dependenciesEngine.miscellaneous.functions.length > 0 ||
             $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-            $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
-            $dependenciesEngine.miscellaneous.types.length > 0 ) {
+            $dependenciesEngine.miscellaneous.enumerations.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
@@ -449,6 +484,7 @@ export class Application {
                           $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file).then((markedData) => {
                               this.configuration.addAdditionalPage({
                                   name: parsedSummaryData[i].title,
+                                  id: parsedSummaryData[i].title,
                                   filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
                                   context: 'additional-page',
                                   path: this.configuration.mainData.includesFolder,
@@ -465,6 +501,7 @@ export class Application {
                                             $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file).then((markedData) => {
                                                 this.configuration.addAdditionalPage({
                                                     name: parsedSummaryData[i].children[j].title,
+                                                    id: parsedSummaryData[i].children[j].title,
                                                     filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
                                                     context: 'additional-page',
                                                     path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
@@ -537,6 +574,7 @@ export class Application {
             });
             this.configuration.addPage({
                 name: 'modules',
+                id: 'modules',
                 context: 'modules',
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -553,6 +591,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'modules',
                             name: this.configuration.mainData.modules[i].name,
+                            id: this.configuration.mainData.modules[i].id,
                             context: 'module',
                             module: this.configuration.mainData.modules[i],
                             depth: 1,
@@ -585,6 +624,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'pipes',
                             name: this.configuration.mainData.pipes[i].name,
+                            id: this.configuration.mainData.pipes[i].id,
                             context: 'pipe',
                             pipe: this.configuration.mainData.pipes[i],
                             depth: 1,
@@ -617,6 +657,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'classes',
                             name: this.configuration.mainData.classes[i].name,
+                            id: this.configuration.mainData.classes[i].id,
                             context: 'class',
                             class: this.configuration.mainData.classes[i],
                             depth: 1,
@@ -649,6 +690,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'interfaces',
                             name: this.configuration.mainData.interfaces[i].name,
+                            id: this.configuration.mainData.interfaces[i].id,
                             context: 'interface',
                             interface: this.configuration.mainData.interfaces[i],
                             depth: 1,
@@ -669,12 +711,48 @@ export class Application {
         this.configuration.mainData.miscellaneous = (someMisc) ? someMisc : $dependenciesEngine.getMiscellaneous();
 
         return new Promise((resolve, reject) => {
-            this.configuration.addPage({
-                name: 'miscellaneous',
-                context: 'miscellaneous',
-                depth: 0,
-                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-            });
+
+            if (this.configuration.mainData.miscellaneous.functions.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'functions',
+                    id: 'miscellaneous-functions',
+                    context: 'miscellaneous-functions',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.variables.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'variables',
+                    id: 'miscellaneous-variables',
+                    context: 'miscellaneous-variables',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.typealiases.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'typealiases',
+                    id: 'miscellaneous-typealiases',
+                    context: 'miscellaneous-typealiases',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+            if (this.configuration.mainData.miscellaneous.enumerations.length > 0) {
+                this.configuration.addPage({
+                    path: 'miscellaneous',
+                    name: 'enumerations',
+                    id: 'miscellaneous-enumerations',
+                    context: 'miscellaneous-enumerations',
+                    depth: 1,
+                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                });
+            }
+
             resolve();
         });
     }
@@ -714,6 +792,7 @@ export class Application {
                             this.configuration.addPage({
                                 path: 'components',
                                 name: this.configuration.mainData.components[i].name,
+                                id: this.configuration.mainData.components[i].id,
                                 context: 'component',
                                 component: this.configuration.mainData.components[i],
                                 depth: 1,
@@ -735,6 +814,7 @@ export class Application {
                             this.configuration.addPage({
                                 path: 'components',
                                 name: this.configuration.mainData.components[i].name,
+                                id: this.configuration.mainData.components[i].id,
                                 context: 'component',
                                 component: this.configuration.mainData.components[i],
                                 depth: 1,
@@ -779,6 +859,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'directives',
                             name: this.configuration.mainData.directives[i].name,
+                            id: this.configuration.mainData.directives[i].id,
                             context: 'directive',
                             directive: this.configuration.mainData.directives[i],
                             depth: 1,
@@ -812,6 +893,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'injectables',
                             name: this.configuration.mainData.injectables[i].name,
+                            id: this.configuration.mainData.injectables[i].id,
                             context: 'injectable',
                             injectable: this.configuration.mainData.injectables[i],
                             depth: 1,
@@ -835,6 +917,7 @@ export class Application {
 
             this.configuration.addPage({
                 name: 'routes',
+                id: 'routes',
                 context: 'routes',
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
@@ -856,7 +939,7 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             /*
-             * loop with components, classes, injectables, interfaces, pipes
+             * loop with components, directives, classes, injectables, interfaces, pipes
              */
             var files = [],
                 totalProjectStatementDocumented = 0,
@@ -872,76 +955,81 @@ export class Application {
                         status = 'good';
                     }
                     return status;
+                },
+                processComponentsAndDirectives = function(list) {
+                    _.forEach(list, (element) => {
+                        if (!element.propertiesClass ||
+                            !element.methodsClass ||
+                            !element.inputsClass ||
+                            !element.outputsClass) {
+                                return;
+                            }
+                        let cl:any = {
+                                filePath: element.file,
+                                type: element.type,
+                                linktype: element.type,
+                                name: element.name
+                            },
+                            totalStatementDocumented = 0,
+                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.outputsClass.length + 1; // +1 for element decorator comment
+
+                        if (element.constructorObj) {
+                            totalStatements += 1;
+                            if (element.constructorObj && element.constructorObj.description && element.constructorObj.description !== '') {
+                                totalStatementDocumented += 1;
+                            }
+                        }
+                        if (element.description && element.description !== '') {
+                            totalStatementDocumented += 1;
+                        }
+
+                        _.forEach(element.propertiesClass, (property) => {
+                            if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.methodsClass, (method) => {
+                            if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.inputsClass, (input) => {
+                            if (input.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(input.description && input.description !== '' && input.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.outputsClass, (output) => {
+                            if (output.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(output.description && output.description !== '' && output.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+
+                        cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                        if(totalStatements === 0) {
+                            cl.coveragePercent = 0;
+                        }
+                        cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                        cl.status = getStatus(cl.coveragePercent);
+                        totalProjectStatementDocumented += cl.coveragePercent;
+                        files.push(cl);
+                    })
                 };
 
-            _.forEach(this.configuration.mainData.components, (component) => {
-                if (!component.propertiesClass ||
-                    !component.methodsClass ||
-                    !component.inputsClass ||
-                    !component.outputsClass) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: component.file,
-                        type: component.type,
-                        linktype: component.type,
-                        name: component.name
-                    },
-                    totalStatementDocumented = 0,
-                    totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
+            processComponentsAndDirectives(this.configuration.mainData.components);
+            processComponentsAndDirectives(this.configuration.mainData.directives);
 
-                if (component.constructorObj) {
-                    totalStatements += 1;
-                    if (component.constructorObj && component.constructorObj.description && component.constructorObj.description !== '') {
-                        totalStatementDocumented += 1;
-                    }
-                }
-                if (component.description && component.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-
-                _.forEach(component.propertiesClass, (property) => {
-                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.methodsClass, (method) => {
-                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.inputsClass, (input) => {
-                    if (input.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(input.description && input.description !== '' && input.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(component.outputsClass, (output) => {
-                    if (output.modifierKind === 111) { // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if(output.description && output.description !== '' && output.modifierKind !== 111) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            })
             _.forEach(this.configuration.mainData.classes, (classe) => {
                 if (!classe.properties ||
                     !classe.methods) {
@@ -1119,6 +1207,7 @@ export class Application {
             coverageData.status = getStatus(coverageData.count);
             this.configuration.addPage({
                 name: 'coverage',
+                id: 'coverage',
                 context: 'coverage',
                 files: files,
                 data: coverageData,
@@ -1205,7 +1294,7 @@ export class Application {
                     if (pages[i].path) {
                         finalPath += pages[i].path + '/';
                     }
-                    finalPath += pages[i].name + '.html';
+                    finalPath += pages[i].filename + '.html';
                     $searchEngine.indexPage({
                         infos: pages[i],
                         rawData: htmlData,
@@ -1242,7 +1331,7 @@ export class Application {
         if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
-            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
+            fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
                 if(err) {
                     logger.error('Error during resources copy ', err);
                 }
@@ -1264,13 +1353,13 @@ export class Application {
 
         let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + finalOutput), (err) => {
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
             if(err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
                 if (this.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(process.cwd() + path.sep + finalOutput + '/styles/'), function (err) {
+                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme), path.resolve(finalOutput + '/styles/'), function (err) {
                         if (err) {
                             logger.error('Error during external styling theme copy ', err);
                         } else {
@@ -1293,54 +1382,63 @@ export class Application {
             this.processPages();
         } else {
             logger.info('Process main graph');
-
+            let modules = this.configuration.mainData.modules,
+              i = 0,
+              len = modules.length,
+              loop = () => {
+                  if( i <= len-1) {
+                      logger.info('Process module graph', modules[i].name);
+                      let finalPath = this.configuration.mainData.output;
+                      if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                          finalPath += '/';
+                      }
+                      finalPath += 'modules/' + modules[i].name;
+                      let _rawModule = $dependenciesEngine.getRawModule(modules[i].name);
+                      if (_rawModule.declarations.length > 0 ||
+                          _rawModule.bootstrap.length > 0 ||
+                          _rawModule.imports.length > 0 ||
+                          _rawModule.exports.length > 0 ||
+                          _rawModule.providers.length > 0) {
+                          $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
+                              $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
+                                  modules[i].graph = <string>data;
+                                  i++;
+                                  loop();
+                              }, (err) => {
+                                  logger.error('Error during graph read: ', err);
+                              });
+                          }, (errorMessage) => {
+                              logger.error(errorMessage);
+                          });
+                      } else {
+                          i++;
+                          loop();
+                      }
+                  } else {
+                      this.processPages();
+                  }
+              };
             let finalMainGraphPath = this.configuration.mainData.output;
             if(finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
-                    this.configuration.mainData.mainGraph = <string>data;
-                    generateModulesGraph();
-                }, (err) => {
-                    logger.error('Error during graph read: ', err);
-                });
-            }, (err) => {
-                logger.error('Error during graph generation: ', err);
-            });
-
-            let modules = this.configuration.mainData.modules,
-                generateModulesGraph = () => {
-                    Promise.all(
-                        modules.map((module, i) => {
-                            return new Promise((resolve, reject) => {
-                                logger.info('Process module graph', modules[i].name);
-                                let finalPath = this.configuration.mainData.output;
-                                if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                                    finalPath += '/';
-                                }
-                                finalPath += 'modules/' + modules[i].name;
-                                $ngdengine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                                    $ngdengine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name).then((data) => {
-                                        modules[i].graph = <string>data;
-                                        resolve();
-                                    }, (err) => {
-                                        logger.error('Error during graph read: ', err);
-                                    });
-                                }, (errorMessage) => {
-                                    logger.error(errorMessage);
-                                    reject();
-                                });
-                            });
-                        })
-                    ).then(() => {
-                        this.processPages();
-                    })
-                    .catch((e) => {
-                        logger.error(e);
+            if ($dependenciesEngine.rawModulesForOverview.length > 150) {
+                logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
+                this.configuration.mainData.disableMainGraph = true;
+                loop();
+            } else {
+                $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                    $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
+                        this.configuration.mainData.mainGraph = <string>data;
+                        loop();
+                    }, (err) => {
+                        logger.error('Error during graph read: ', err);
                     });
-                }
+                }, (err) => {
+                    logger.error('Error during graph generation: ', err);
+                });
+            }
         }
     }
 
@@ -1378,6 +1476,9 @@ export class Application {
         if (this.configuration.mainData.includes !== '') {
             sources = sources.concat(this.configuration.mainData.includes);
         }
+
+        // Check all elements of sources list exist
+        sources = cleanSourcesForWatch(sources);
 
         let watcher = chokidar.watch(sources, {
                 awaitWriteFinish: true,

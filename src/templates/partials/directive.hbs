@@ -61,13 +61,13 @@
                 <h3>Example</h3>
             </p>
             <div class="io-description">
-                {{#jsdoc-component-example directive.jsdoctags}}
+                {{#jsdoc-code-example directive.jsdoctags}}
                     {{#each tags}}
                         <div>
                             {{{comment}}}
                         </div>
                     {{/each}}
-                {{/jsdoc-component-example}}
+                {{/jsdoc-code-example}}
             </div>
         {{/if}}
 
@@ -99,6 +99,14 @@
             </table>
         </section>
 
+        {{#orLength directive.propertiesClass directive.methodsClass directive.inputsClass directive.outputClass}}
+            {{> index-directive methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass directive=component.outputsClass }}
+        {{/orLength}}
+
+        {{#if directive.constructorObj}}
+            {{> block-constructor constructor=directive.constructorObj file=directive.file }}
+        {{/if}}
+
         {{#if directive.inputsClass}}
             <section>
                 <h3 id="inputs">Inputs</h3>
@@ -107,6 +115,7 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-2">
+                                    <a name="{{name}}"></a>
                                     <code>{{name}}</code>
                                 </td>
                                 <td class="col-md-10">
@@ -148,6 +157,7 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-2">
+                                    <a name="{{name}}"></a>
                                     <code>{{name}}</code>
                                 </td>
                                 <td class="col-md-10">
@@ -174,10 +184,6 @@
             </section>
         {{/if}}
 
-        {{#if directive.constructorObj}}
-            {{> block-constructor constructor=directive.constructorObj file=directive.file }}
-        {{/if}}
-
         {{#if directive.methodsClass}}
             {{> block-method methods=directive.methodsClass file=directive.file }}
         {{/if}}
@@ -199,7 +205,7 @@
         <pre class="line-numbers"><code class="language-typescript">{{ directive.sourceCode}}</code></pre>
     </div>
     {{/unless}}
-    
+
     {{#if directive.exampleUrls}}
     <div class="tab-pane fade" id="example">
         {{#each directive.exampleUrls}}

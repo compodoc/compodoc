@@ -1,0 +1,43 @@
+<section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            {{#compare properties.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>Properties</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each properties}}
+                        <li>
+                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+            {{#compare methods.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>Methods</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each methods}}
+                        <li>
+                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+        </tbody>
+    </table>
+</section>

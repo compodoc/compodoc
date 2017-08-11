@@ -3,6 +3,11 @@ import { BarDirective } from './bar.directive';
 import { BarComponent } from './bar.component';
 import { BarService } from './bar.service';
 
+/**
+ * BarModule description
+ *
+ * Watch [The BarComponent]{@link BarComponent}
+ */
 @NgModule({
   declarations: [
     BarDirective, BarComponent

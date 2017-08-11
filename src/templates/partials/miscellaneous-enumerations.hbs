@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+  <li>Miscellaneous - Enumerations</li>
+</ol>
+
+{{#each miscellaneous.groupedEnumerations}}
+    <h3>{{@key}}</h3>
+    {{> block-enum enums=this title='false'}}
+{{/each}}

@@ -1,3 +1,5 @@
+import { Direction } from '../miscellaneous/miscellaneous';
+
 ﻿export class Tada {
 
 }
@@ -16,9 +18,13 @@ export class Todo extends Tada {
      */
     editing: boolean;
 
+    [index: number]: string;
+
     testCommentFunction(dig: number, str: string, bool: boolean): object {
         return {};
     }
+
+    dir: Direction = Direction.Left;
 
     /**
      * Title
@@ -35,6 +41,10 @@ export class Todo extends Tada {
         return 'hello';
     }
 
+    /**
+     * The todo constructor
+     * Watch {@link TodoStore} for service using it
+     */
     constructor(title: string) {
         this.completed = false;
         this.editing = false;
@@ -49,5 +59,9 @@ export class Todo extends Tada {
      */
     fakeMethod(): boolean {
         return true;
+    }
+
+    azert() {
+      return 5;
     }
 }

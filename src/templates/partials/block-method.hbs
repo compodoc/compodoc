@@ -9,6 +9,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
+                        <a name="{{name}}"></a>
                         <b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b>
                     </td>
                 </tr>
@@ -53,33 +54,44 @@
                         {{/if}}
 
                         {{#if jsdoctags}}
+                            {{#jsdoc-params-valid jsdoctags}}
                             <div class="io-description">
                                 {{#jsdoc-params jsdoctags}}
                                     <b>Parameters :</b>
-                                    <ul class="jsdoc-params">
-                                        {{#each tags}}
-                                            <li>
-                                                <div>
-                                                    <b>{{name}}</b>
-                                                    {{#if type}}
-                                                        : {{> link-type type=type }}
-                                                    {{/if}}
-                                                </div>
-                                                <div>
-                                                    {{{comment}}}
-                                                </div>
-                                            </li>
-                                        {{/each}}
-                                    </ul>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>Type</td>
+                                                <td>Description</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each tags}}
+                                                <tr>
+                                                  <td>{{name}}</td>
+                                                  <td>
+                                                  {{#if type}}
+                                                      {{> link-type type=type }}
+                                                  {{/if}}
+                                                  </td>
+                                                  <td>{{{comment}}}</td>
+                                                </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
                                 {{/jsdoc-params}}
-                                {{#jsdoc-example jsdoctags}}
+                            </div>
+                            {{/jsdoc-params-valid}}
+                            <div>
+                                {{#jsdoc-code-example jsdoctags}}
                                     <b>Example :</b>
                                     {{#each tags}}
-                                        <div class="jsdoc-example-ul">
+                                        <div>
                                             {{{comment}}}
                                         </div>
                                     {{/each}}
-                                {{/jsdoc-example}}
+                                {{/jsdoc-code-example}}
                             </div>
                         {{/if}}
                         {{#if returnType}}

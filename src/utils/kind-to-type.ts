@@ -10,10 +10,17 @@ export function kindToType(kind: number): string {
             _type = 'number';
             break;
         case ts.SyntaxKind.ArrayType:
+        case ts.SyntaxKind.ArrayLiteralExpression:
             _type = '[]';
             break;
         case ts.SyntaxKind.VoidKeyword:
             _type = 'void';
+            break;
+        case ts.SyntaxKind.FunctionType:
+            _type = 'function';
+            break;
+        case ts.SyntaxKind.TypeLiteral:
+            _type = 'literal type';
             break;
         case ts.SyntaxKind.BooleanKeyword:
             _type = 'boolean';
@@ -25,6 +32,7 @@ export function kindToType(kind: number): string {
             _type = 'never';
             break;
         case ts.SyntaxKind.ObjectKeyword:
+        case ts.SyntaxKind.ObjectLiteralExpression:
             _type = 'object';
             break;
     }

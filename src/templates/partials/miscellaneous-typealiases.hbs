@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+  <li>Miscellaneous - Type aliases</li>
+</ol>
+
+{{#each miscellaneous.groupedTypeAliases}}
+    <h3>{{@key}}</h3>
+    {{> block-typealias typealias=this title='false'}}
+{{/each}}

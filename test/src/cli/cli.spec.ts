@@ -113,6 +113,7 @@ describe('CLI simple flags', () => {
         });
 
     });
+
     describe('disabling excluding methods with --disablePrivateOrInternalSupport', () => {
 
         let componentFile;
@@ -128,7 +129,7 @@ describe('CLI simple flags', () => {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/FooComponent.html`);
+            componentFile = read(`${tmp.name}/components/BarComponent.html`);
             done();
         });
         after(() => tmp.clean());
@@ -143,6 +144,15 @@ describe('CLI simple flags', () => {
 
         it('should not display lifecyle hooks', () => {
             expect(componentFile).not.to.contain('<code>ngOnInit');
+        });
+
+        it('should contain public methods', () => {
+            expect(componentFile).to.contain('<code>showTab');
+        });
+
+        it('should exclude foo directive with @internal', () => {
+            const directiveFile = exists(`${tmp.name}/directives/FooDirective.html`);
+            expect(directiveFile).to.be.false;
         });
     });
 

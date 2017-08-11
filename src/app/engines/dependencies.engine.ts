@@ -55,20 +55,6 @@ class DependenciesEngine {
                         }
                     }
                 }
-                if (_m[i].declarations[j].methodsClass && _m[i].declarations[j].methodsClass.length > 0) {
-                    let l = 0,
-                        length = _m[i].declarations[j].methodsClass.length;
-                    for(l; l<length; l++) {
-                        delete _m[i].declarations[j].methodsClass[l].jsdoctags;
-                    }
-                }
-                if (_m[i].declarations[j].propertiesClass && _m[i].declarations[j].propertiesClass.length > 0) {
-                    let l = 0,
-                        length = _m[i].declarations[j].propertiesClass.length;
-                    for(l; l<length; l++) {
-                        delete _m[i].declarations[j].propertiesClass[l].jsdoctags;
-                    }
-                }
             }
         }
         return _m;
@@ -76,8 +62,8 @@ class DependenciesEngine {
     init(data: ParsedData) {
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.rawModulesForOverview = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
-        this.rawModules = _.sortBy(_.cloneDeep(this.cleanModules(data.modules)), ['name']);
+        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
+        this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
@@ -87,7 +73,6 @@ class DependenciesEngine {
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
-        this.cleanRawModulesForOverview();
     }
     find(type: string) {
         let finderInCompodocDependencies = function(data) {
@@ -106,10 +91,15 @@ class DependenciesEngine {
             }
             return _result;
         },
+
             resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
             resultInCompodocInterfaces = finderInCompodocDependencies(this.interfaces),
             resultInCompodocClasses = finderInCompodocDependencies(this.classes),
             resultInCompodocComponents = finderInCompodocDependencies(this.components),
+            resultInCompodocMiscellaneousVariables = finderInCompodocDependencies(this.miscellaneous.variables),
+            resultInCompodocMiscellaneousFunctions = finderInCompodocDependencies(this.miscellaneous.functions),
+            resultInCompodocMiscellaneousTypealiases = finderInCompodocDependencies(this.miscellaneous.typealiases),
+            resultInCompodocMiscellaneousEnumerations = finderInCompodocDependencies(this.miscellaneous.enumerations),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
         if (resultInCompodocInjectables.data !== null) {
@@ -120,6 +110,14 @@ class DependenciesEngine {
             return resultInCompodocClasses;
         } else if (resultInCompodocComponents.data !== null) {
             return resultInCompodocComponents;
+        } else if (resultInCompodocMiscellaneousVariables.data !== null) {
+            return resultInCompodocMiscellaneousVariables;
+        } else if (resultInCompodocMiscellaneousFunctions.data !== null) {
+            return resultInCompodocMiscellaneousFunctions;
+        } else if (resultInCompodocMiscellaneousTypealiases.data !== null) {
+            return resultInCompodocMiscellaneousTypealiases;
+        } else if (resultInCompodocMiscellaneousEnumerations.data !== null) {
+            return resultInCompodocMiscellaneousEnumerations;
         } else if (resultInAngularAPIs.data !== null) {
             return resultInAngularAPIs;
         }
@@ -206,15 +204,6 @@ class DependenciesEngine {
                 this.miscellaneous.enumerations[_index] = enumeration;
             });
         }
-        if (updatedData.miscellaneous.types.length > 0 ) {
-            _.forEach(updatedData.miscellaneous.types, (typ) => {
-                let _index = _.findIndex(this.miscellaneous.types, {
-                    'name': typ.name,
-                    'file': typ.file
-                });
-                this.miscellaneous.types[_index] = typ;
-            });
-        }
         this.prepareMiscellaneous();
     }
     findInCompodoc(name: string) {
@@ -222,17 +211,12 @@ class DependenciesEngine {
             result = _.find(mergedData, {'name': name});
         return result || false;
     }
-    cleanRawModulesForOverview() {
-        _.forEach(this.rawModulesForOverview, (module) => {
-            module.declarations = [];
-            module.providers = [];
-        });
-    }
     prepareMiscellaneous() {
         //group each subgoup by file
         this.miscellaneous.groupedVariables = _.groupBy(this.miscellaneous.variables, 'file');
         this.miscellaneous.groupedFunctions = _.groupBy(this.miscellaneous.functions, 'file');
         this.miscellaneous.groupedEnumerations = _.groupBy(this.miscellaneous.enumerations, 'file');
+        this.miscellaneous.groupedTypeAliases = _.groupBy(this.miscellaneous.typealiases, 'file');
     }
     getModule(name: string) {
         return _.find(this.modules, ['name', name]);

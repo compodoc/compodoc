@@ -7,6 +7,11 @@ import { FooService } from './foo.service';
 import { BarModule } from './bar.module';
 import { FooModule } from './foo.module';
 
+/**
+ * AppModule description
+ *
+ * See {@link BarComponent}
+ */
 @NgModule({
   declarations: [
     FooDirective,
