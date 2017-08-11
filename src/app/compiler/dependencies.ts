@@ -534,6 +534,9 @@ export class Dependencies {
                     }
                     if (node.type) {
                         deps.kind = node.type.kind;
+                        if(deps.rawtype === '') {
+                            deps.rawtype = kindToType(node.type.kind);
+                        }
                     }
                     outputSymbols['miscellaneous'].typealiases.push(deps);
                 }
@@ -1688,6 +1691,9 @@ export class Dependencies {
                 }
                 if(node.declarationList.declarations[i].type) {
                     result.type = this.visitType(node.declarationList.declarations[i].type);
+                }
+                if(typeof result.type === 'undefined' && result.initializer) {
+                    result.type = kindToType(result.initializer.kind);
                 }
                 return result;
             }
