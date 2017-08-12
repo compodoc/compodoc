@@ -214,4 +214,9 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('<code>completed');
       });
 
+      it('should support simple class with custom decorator()', () => {
+          let file = read('documentation/classes/DoNothing.html');
+          expect(file).to.contain('<code>aname');
+      });
+
 });

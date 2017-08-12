@@ -449,7 +449,11 @@ export class Dependencies {
 
                 let filterByDecorators = (filteredNode) => {
                     if (filteredNode.expression && filteredNode.expression.expression) {
-                        return /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text)
+                        let _test = /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text);
+                        if (!_test && node.kind === ts.SyntaxKind.ClassDeclaration) {
+                            _test = true;
+                        }
+                        return _test;
                     }
                     if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                         return true;
