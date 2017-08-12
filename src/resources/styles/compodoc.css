@@ -745,3 +745,9 @@ ul.index-list {
     line-height: 25px;
     margin-bottom: 0;
 }
+
+.no-graph {
+    text-align: center;
+    height: 175px;
+    line-height: 175px;
+}
