@@ -8,7 +8,7 @@ import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { markedtags } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { generate } from './codegen';
-import { cleanLifecycleHooksFromMethods } from '../../utils/utils';
+import { cleanLifecycleHooksFromMethods, getNamesCompareFn } from '../../utils/utils';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
@@ -1263,21 +1263,6 @@ export class Dependencies {
         return _result;
     }
 
-    private getNamesCompareFn(name) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        name = name || 'name';
-        var t = (a, b) => {
-            if (a[name]) {
-                return a[name].localeCompare(b[name])
-            } else {
-                return 0;
-            }
-        };
-        return t;
-    }
-
     private stringifyDefaultValue(node) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -1407,11 +1392,11 @@ export class Dependencies {
             }
         }
 
-        inputs.sort(this.getNamesCompareFn());
-        outputs.sort(this.getNamesCompareFn());
-        properties.sort(this.getNamesCompareFn());
-        methods.sort(this.getNamesCompareFn());
-        indexSignatures.sort(this.getNamesCompareFn());
+        inputs.sort(getNamesCompareFn());
+        outputs.sort(getNamesCompareFn());
+        properties.sort(getNamesCompareFn());
+        methods.sort(getNamesCompareFn());
+        indexSignatures.sort(getNamesCompareFn());
 
         return {
             inputs,

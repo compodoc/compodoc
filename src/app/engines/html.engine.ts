@@ -32,6 +32,7 @@ export class HtmlEngine {
             'routes',
             'index',
             'index-directive',
+            'index-misc',
             'search-results',
             'search-input',
             'link-type',

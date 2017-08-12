@@ -537,7 +537,7 @@ export let HtmlEngineHelpers = (function() {
                             case 'variable':
                                 mainpage = 'variables';
                         }
-                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html';
+                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html#' + _result.data.name;
                     }
                     this.type.target = '_self';
                 } else {

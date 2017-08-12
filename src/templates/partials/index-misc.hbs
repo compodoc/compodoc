@@ -1,0 +1,18 @@
+<section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each list}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
