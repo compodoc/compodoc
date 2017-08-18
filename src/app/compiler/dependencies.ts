@@ -974,6 +974,9 @@ export class Dependencies {
                         len = node.type.types.length;
                     for (i; i<len; i++) {
                         _return += kindToType(node.type.types[i].kind);
+                        if (node.type.types[i].kind === ts.SyntaxKind.LiteralType && node.type.types[i].literal) {
+                            _return += '"' + node.type.types[i].literal.text + '"';
+                        }
                         if (i<len-1) {
                             _return += '|';
                         }
