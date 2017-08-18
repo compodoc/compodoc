@@ -219,4 +219,9 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('<code>aname');
       });
 
+      it('should support TypeLiteral', () => {
+          let file = read('documentation/miscellaneous/typealiases.html');
+          expect(file).to.contain('&quot;creating&quot;|&quot;created&quot;|&quot;updating&quot;|&quot;updated&quot');
+      });
+
 });
