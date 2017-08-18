@@ -1454,7 +1454,12 @@ export class Application {
             });
         }
         if (this.configuration.mainData.watch && !this.isWatching) {
-            this.runWatch();
+            if (typeof this.files === 'undefined') {
+                logger.error('No sources files available, please use -p flag');
+                process.exit(1);
+            } else {
+                this.runWatch();
+            }
         } else if (this.configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
             logger.info(`Already watching sources in ${srcFolder} folder`);
