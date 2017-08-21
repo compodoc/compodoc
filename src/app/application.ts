@@ -960,6 +960,8 @@ export class Application {
                     _.forEach(list, (element) => {
                         if (!element.propertiesClass ||
                             !element.methodsClass ||
+                            !element.hostBindings ||
+                            !element.hostListeners ||
                             !element.inputsClass ||
                             !element.outputsClass) {
                                 return;
@@ -971,7 +973,7 @@ export class Application {
                                 name: element.name
                             },
                             totalStatementDocumented = 0,
-                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.outputsClass.length + 1; // +1 for element decorator comment
+                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.hostBindings.length + element.hostListeners.length + element.outputsClass.length + 1; // +1 for element decorator comment
 
                         if (element.constructorObj) {
                             totalStatements += 1;
@@ -992,6 +994,22 @@ export class Application {
                             }
                         });
                         _.forEach(element.methodsClass, (method) => {
+                            if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.hostBindings, (property) => {
+                            if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.hostListeners, (method) => {
                             if (method.modifierKind === 111) { // Doesn't handle private for coverage
                                 totalStatements -= 1;
                             }

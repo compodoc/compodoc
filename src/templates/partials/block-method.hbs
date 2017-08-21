@@ -1,9 +1,13 @@
 <section>
-    {{#compare title "===" 'false' }}{{else}}
+    {{#if title}}
+        <h3>
+            {{title}}
+        </h3>
+    {{else}}
         <h3 id="methods">
             Methods
         </h3>
-    {{/compare}}
+    {{/if}}
     {{#each methods}}
         <table class="table table-sm table-bordered">
             <tbody>
@@ -19,6 +23,13 @@
                         <i><code>{{file}}</code></i>
                     </td>
                 </tr>
+                {{/if}}
+                {{#if argsDecorator}}
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Arguments : </i><code>{{#each argsDecorator}}'{{this}}' {{/each}}</code>
+                        </td>
+                    </tr>
                 {{/if}}
                 <tr>
                     <td class="col-md-4">

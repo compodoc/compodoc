@@ -195,8 +195,8 @@
     </table>
 </section>
 
-{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass}}
-    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass }}
+{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners}}
+    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners }}
 {{/orLength}}
 
 {{#if component.constructorObj}}
@@ -278,6 +278,14 @@
             </table>
         {{/each}}
     </section>
+{{/if}}
+
+{{#if component.hostBindings}}
+    {{> block-property properties=component.hostBindings file=component.file title="HostBindings" }}
+{{/if}}
+
+{{#if component.hostListeners}}
+    {{> block-method methods=component.hostListeners file=component.file title="HostListeners" }}
 {{/if}}
 
 {{#if component.methodsClass}}

@@ -80,6 +80,9 @@ interface Deps {
     propertiesClass?: Object[];
     methodsClass?: Object[];
 
+    hostBindings?: Object[];
+    hostListeners?: Object[];
+
     //common
     providers?: Deps[];
 
@@ -349,6 +352,10 @@ export class Dependencies {
                             outputsClass: IO.outputs,
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
+
+                            hostBindings: IO.hostBindings,
+                            hostListeners: IO.hostListeners,
+
                             description: IO.description,
                             type: 'component',
                             sourceCode: srcFile.getText(),
@@ -419,6 +426,9 @@ export class Dependencies {
 
                             inputsClass: IO.inputs,
                             outputsClass: IO.outputs,
+
+                            hostBindings: IO.hostBindings,
+                            hostListeners: IO.hostListeners,
 
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
@@ -908,7 +918,65 @@ export class Dependencies {
       return null;
     }
 
-    private visitInput(property, inDecorator, sourceFile?) {
+    private visitOutput(property, outDecorator, sourceFile?) {
+        var inArgs = outDecorator.expression.arguments,
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        if (property.symbol) {
+            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
+
+        if (property.type) {
+            _return.type = this.visitType(property);
+        } else {
+            // handle NewExpression
+            if (property.initializer) {
+                if (property.initializer.kind === ts.SyntaxKind.NewExpression) {
+                    if (property.initializer.expression) {
+                        _return.type = property.initializer.expression.text;
+                    }
+                }
+            }
+        }
+        return _return;
+    }
+
+    private visitHostListener(property, hostListenerDecorator, sourceFile?) {
+        var inArgs = hostListenerDecorator.expression.arguments,
+            _return = {};
+        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
+        _return.args = property.parameters ? property.parameters.map((prop) => this.visitArgument(prop)) : [];
+        _return.argsDecorator = (inArgs.length > 1) ? inArgs[1].elements.map((prop) => {
+            return prop.text;
+        }) : [];
+        if (property.symbol) {
+            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
+        }
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        _return.description = marked(property.jsDoc[0].comment);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
+        return _return;
+    }
+
+    private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
         var inArgs = inDecorator.expression.arguments,
             _return = {};
         _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
@@ -1008,40 +1076,6 @@ export class Dependencies {
                     _return += kindToType(argument.kind);
                 }
                 _return += '>';
-            }
-        }
-        return _return;
-    }
-
-    private visitOutput(property, outDecorator, sourceFile?) {
-        var inArgs = outDecorator.expression.arguments,
-            _return = {};
-        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
-        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
-        if (property.symbol) {
-            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()))
-        }
-        if (!_return.description) {
-            if (property.jsDoc) {
-                if (property.jsDoc.length > 0) {
-                    if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
-                    }
-                }
-            }
-        }
-        _return.line = this.getPosition(property, sourceFile).line + 1;
-
-        if (property.type) {
-            _return.type = this.visitType(property);
-        } else {
-            // handle NewExpression
-            if (property.initializer) {
-                if (property.initializer.kind === ts.SyntaxKind.NewExpression) {
-                    if (property.initializer.expression) {
-                        _return.type = property.initializer.expression.text;
-                    }
-                }
             }
         }
         return _return;
@@ -1353,24 +1387,34 @@ export class Dependencies {
          */
         var inputs = [],
             outputs = [],
+            hostBindings = [],
+            hostListeners = [],
             methods = [],
             properties = [],
             indexSignatures = [],
             kind,
             inputDecorator,
+            hostBinding,
+            hostListener,
             constructor,
             outDecorator;
 
         for (var i = 0; i < members.length; i++) {
             inputDecorator = this.getDecoratorOfType(members[i], 'Input');
             outDecorator = this.getDecoratorOfType(members[i], 'Output');
+            hostBinding = this.getDecoratorOfType(members[i], 'HostBinding');
+            hostListener = this.getDecoratorOfType(members[i], 'HostListener');
 
             kind = members[i].kind;
 
             if (inputDecorator) {
-                inputs.push(this.visitInput(members[i], inputDecorator, sourceFile));
+                inputs.push(this.visitInputAndHostBinding(members[i], inputDecorator, sourceFile));
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(members[i], outDecorator, sourceFile));
+            } else if (hostBinding) {
+                hostBindings.push(this.visitInputAndHostBinding(members[i], hostBinding, sourceFile));
+            } else if (hostListener) {
+                hostListeners.push(this.visitHostListener(members[i], hostListener, sourceFile));
             } else if (!this.isHiddenMember(members[i])) {
 
                 if ( (this.isPrivate(members[i]) || this.isInternal(members[i])) && this.configuration.mainData.disablePrivateOrInternalSupport) {} else {
@@ -1400,6 +1444,8 @@ export class Dependencies {
 
         inputs.sort(getNamesCompareFn());
         outputs.sort(getNamesCompareFn());
+        hostBindings.sort(getNamesCompareFn());
+        hostListeners.sort(getNamesCompareFn());
         properties.sort(getNamesCompareFn());
         methods.sort(getNamesCompareFn());
         indexSignatures.sort(getNamesCompareFn());
@@ -1407,6 +1453,8 @@ export class Dependencies {
         return {
             inputs,
             outputs,
+            hostBindings,
+            hostListeners,
             methods,
             properties,
             indexSignatures,
@@ -1518,6 +1566,8 @@ export class Dependencies {
                         description,
                         inputs: members.inputs,
                         outputs: members.outputs,
+                        hostBindings: members.hostBindings,
+                        hostListeners: members.hostListeners,
                         properties: members.properties,
                         methods: members.methods,
                         indexSignatures: members.indexSignatures,

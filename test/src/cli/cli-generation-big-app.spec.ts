@@ -229,4 +229,15 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('<code>literal type | null');
       });
 
+      it('should support @HostBindings', () => {
+          let file = read('documentation/directives/DoNothingDirective.html');
+          expect(file).to.contain('<code>style.color');
+      });
+
+      it('should support @HostListener', () => {
+          let file = read('documentation/components/AboutComponent.html');
+          expect(file).to.contain('<code>mouseup(mouseX');
+          expect(file).to.contain('i>Arguments : </i><code>\'$event.clientX');
+      });
+
 });

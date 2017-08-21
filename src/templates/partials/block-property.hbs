@@ -1,9 +1,13 @@
 <section>
-    {{#compare title "===" 'false' }}{{else}}
+    {{#if title}}
+        <h3>
+            {{title}}
+        </h3>
+    {{else}}
         <h3 id="inputs">
             Properties
         </h3>
-    {{/compare}}
+    {{/if}}
     {{#each properties}}
         <table class="table table-sm table-bordered">
             <tbody>
