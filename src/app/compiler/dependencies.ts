@@ -978,7 +978,7 @@ export class Dependencies {
                             _return += '"' + node.type.types[i].literal.text + '"';
                         }
                         if (i<len-1) {
-                            _return += '|';
+                            _return += ' | ';
                         }
                     }
                 }
@@ -990,8 +990,11 @@ export class Dependencies {
                     len = node.types.length;
                 for (i; i<len; i++) {
                     _return += kindToType(node.types[i].kind);
+                    if (node.types[i].kind === ts.SyntaxKind.LiteralType && node.types[i].literal) {
+                        _return += '"' + node.types[i].literal.text + '"';
+                    }
                     if (i<len-1) {
-                        _return += '|';
+                        _return += ' | ';
                     }
                 }
             } else if (node.dotDotDotToken) {

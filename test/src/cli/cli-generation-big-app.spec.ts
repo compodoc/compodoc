@@ -129,7 +129,7 @@ describe('CLI simple generation - big app', () => {
       it('should have generated args and return informations for todo store', () => {
           const file = read('documentation/injectables/TodoStore.html');
           expect(file).to.contain('Promise&lt;void&gt;');
-          expect(file).to.contain('string|number');
+          expect(file).to.contain('string | number');
           expect(file).to.contain('number[]');
           expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
           expect(file).to.contain('service is a todo store');
@@ -221,7 +221,12 @@ describe('CLI simple generation - big app', () => {
 
       it('should support TypeLiteral', () => {
           let file = read('documentation/miscellaneous/typealiases.html');
-          expect(file).to.contain('&quot;creating&quot;|&quot;created&quot;|&quot;updating&quot;|&quot;updated&quot');
+          expect(file).to.contain('&quot;creating&quot; | &quot;created&quot; | &quot;updating&quot; | &quot;updated&quot');
+      });
+
+      it('should support return multiple with null & TypeLiteral', () => {
+          let file = read('documentation/classes/Tidi.html');
+          expect(file).to.contain('<code>literal type | null');
       });
 
 });
