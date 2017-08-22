@@ -96,7 +96,10 @@ export class HtmlEngine {
                        result = template({
                            data: coverageData
                        });
-                   outputFolder = outputFolder.replace(process.cwd(), '');
+                   let testOutputDir = outputFolder.match(process.cwd());
+                   if (!testOutputDir) {
+                       outputFolder = outputFolder.replace(process.cwd(), '');
+                   }
                    fs.outputFile(path.resolve(outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
                        if(err) {
                            logger.error('Error during coverage badge file generation ', err);

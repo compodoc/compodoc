@@ -1369,7 +1369,12 @@ export class Application {
             }
         };
 
-        let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
+        let finalOutput = this.configuration.mainData.output;
+
+        let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+        if (!testOutputDir) {
+            finalOutput = this.configuration.mainData.output.replace(process.cwd(), '')
+        }
 
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
             if(err) {
