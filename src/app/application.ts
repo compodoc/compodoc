@@ -1446,6 +1446,7 @@ export class Application {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
+            $ngdengine.init(path.resolve(finalMainGraphPath));
             if ($dependenciesEngine.rawModulesForOverview.length > 150) {
                 logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
                 this.configuration.mainData.disableMainGraph = true;

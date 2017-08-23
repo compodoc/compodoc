@@ -7,22 +7,25 @@ import { $dependenciesEngine } from './dependencies.engine';
 
 import isGlobal from '../../utils/global.path';
 
-const ngdCr = require('@compodoc/ngd-core'),
-      ngdT = require('@compodoc/ngd-transformer'),
+const ngdT = require('@compodoc/ngd-transformer'),
       _ = require('lodash');
 
 export class NgdEngine {
+    engine;
     constructor() {}
+    init(outputpath: string) {
+        this.engine = new ngdT.DotEngine({
+            output: outputpath,
+            displayLegend: true,
+            outputFormats: 'svg',
+            silent: false
+        });
+    }
     renderGraph(filepath: string, outputpath: string, type: string, name?: string) {
-        return new Promise(function(resolve, reject) {
-            ngdCr.logger.silent = false;
-            let engine = new ngdT.DotEngine({
-                output: outputpath,
-                displayLegend: true,
-                outputFormats: 'svg'
-            });
+        this.engine.updateOutput(outputpath);
+        return new Promise((resolve, reject) => {
             if (type === 'f') {
-                engine
+                this.engine
                     .generateGraph([$dependenciesEngine.getRawModule(name)])
                     .then(file => {
                         resolve();
@@ -30,7 +33,7 @@ export class NgdEngine {
                         reject(error);
                     });
             } else {
-                engine
+                this.engine
                     .generateGraph($dependenciesEngine.rawModulesForOverview)
                     .then(file => {
                         resolve();
@@ -41,7 +44,7 @@ export class NgdEngine {
         });
     }
     readGraph(filepath: string, name: string) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(filepath), 'utf8', (err, data) => {
                if (err) {
                    reject('Error during graph read ' + name);

@@ -54,8 +54,7 @@
   },
   "homepage": "https://github.com/compodoc/compodoc#readme",
   "dependencies": {
-    "@compodoc/ngd-core": "^2.0.0-alpha.1",
-    "@compodoc/ngd-transformer": "^2.0.0-alpha.3",
+    "@compodoc/ngd-transformer": "^2.0.0-alpha.4",
     "cheerio": "^1.0.0-rc.2",
     "chokidar": "^1.7.0",
     "colors": "^1.1.2",
