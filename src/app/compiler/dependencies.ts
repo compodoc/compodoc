@@ -503,6 +503,9 @@ export class Dependencies {
                     if(IO.methods) {
                         deps.methods = IO.methods;
                     }
+                    if (IO.extends) {
+                        deps.extends = IO.extends;
+                    }
                     this.debug(deps);
                     outputSymbols['interfaces'].push(deps);
                 } else if (node.kind === ts.SyntaxKind.FunctionDeclaration) {

@@ -240,4 +240,9 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('i>Arguments : </i><code>\'$event.clientX');
       });
 
+      it('should support extends for interface', () => {
+          let file = read('documentation/interfaces/ClockInterface.html');
+          expect(file).to.contain('Extends');
+      });
+
 });

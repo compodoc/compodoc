@@ -39,6 +39,15 @@
             </p>
         {{/if}}
 
+        {{#if interface.extends}}
+            <p class="comment">
+                <h3>Extends</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=interface.extends }}
+            </p>
+        {{/if}}
+
         {{#orLength interface.properties interface.methods}}
         <section>
             <h3 id="index">Index</h3>
