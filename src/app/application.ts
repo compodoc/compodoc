@@ -1447,22 +1447,21 @@ export class Application {
             }
             finalMainGraphPath += 'graph';
             $ngdengine.init(path.resolve(finalMainGraphPath));
-            if ($dependenciesEngine.rawModulesForOverview.length > 150) {
-                logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
+
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
+                    this.configuration.mainData.mainGraph = <string>data;
+                    loop();
+                }, (err) => {
+                    logger.error('Error during main graph reading : ', err);
+                    this.configuration.mainData.disableMainGraph = true;
+                    loop();
+                });
+            }, (err) => {
+                logger.error('Ooops error during main graph generation, moving on next part with main graph disabled : ', err);
                 this.configuration.mainData.disableMainGraph = true;
                 loop();
-            } else {
-                $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                    $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
-                        this.configuration.mainData.mainGraph = <string>data;
-                        loop();
-                    }, (err) => {
-                        logger.error('Error during graph read: ', err);
-                    });
-                }, (err) => {
-                    logger.error('Error during graph generation: ', err);
-                });
-            }
+            });
         }
     }
 
