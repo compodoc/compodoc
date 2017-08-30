@@ -7,9 +7,7 @@ const expect = chai.expect,
 
 describe('CLI generation - TypeDoc examples', () => {
 
-      let stdoutString = null,
-          clockInterfaceFile,
-          searchFuncFile;
+      let stdoutString = null;
       before(function (done) {
           let ls = shell('node', [
               './bin/index-cli.js',
@@ -20,8 +18,6 @@ describe('CLI generation - TypeDoc examples', () => {
               done('error');
           }
           stdoutString = ls.stdout.toString();
-          clockInterfaceFile = read(`documentation/interfaces/ClockInterface.html`);
-          searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
           done();
       });
       //after(() => tmp.clean('documentation'));
