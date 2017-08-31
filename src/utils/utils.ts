@@ -51,6 +51,23 @@ export function mergeTagsAndArgs(args, jsdoctags?) {
             });
         }
     });
+    // Add example & returns
+    if (jsdoctags) {
+        _.forEach(jsdoctags, (jsdoctag) => {
+            if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
+                margs.push({
+                    tagName: jsdoctag.tagName,
+                    comment: jsdoctag.comment
+                });
+            }
+            if (jsdoctag.tagName && jsdoctag.tagName.text === 'returns') {
+                margs.push({
+                    tagName: jsdoctag.tagName,
+                    comment: jsdoctag.comment
+                });
+            }
+        });
+    }
     return margs;
 }
 
