@@ -5,7 +5,7 @@ import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
-import { markedtags } from '../../utils/utils';
+import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { generate } from './codegen';
 import { cleanLifecycleHooksFromMethods, getNamesCompareFn } from '../../utils/utils';
@@ -1184,6 +1184,11 @@ export class Dependencies {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
+        if (result.jsdoctags && result.jsdoctags.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
+        } else if(result.args.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args)
+        }
         return result;
     }
 
@@ -1285,6 +1290,11 @@ export class Dependencies {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
+        if (result.jsdoctags && result.jsdoctags.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
+        } else if(result.args.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args)
+        }
         return result;
     }
 
@@ -1294,7 +1304,10 @@ export class Dependencies {
             type: this.visitType(arg)
         }
         if (arg.dotDotDotToken) {
-            _result.dotDotDotToken = true
+            _result.dotDotDotToken = true;
+        }
+        if (arg.questionToken) {
+            _result.optional = true;
         }
         if (arg.type) {
             if (arg.type.kind) {

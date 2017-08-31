@@ -34,6 +34,26 @@ export function markedtags(tags) {
     return mtags;
 };
 
+export function mergeTagsAndArgs(args, jsdoctags?) {
+    var margs = _.cloneDeep(args);
+    _.forEach(margs, (arg) => {
+        arg.tagName = {
+            text: 'param'
+        };
+        if (jsdoctags) {
+            _.forEach(jsdoctags, (jsdoctag) => {
+                if (jsdoctag.name && jsdoctag.name.text === arg.name) {
+                    arg.tagName = jsdoctag.tagName;
+                    arg.name = jsdoctag.name;
+                    arg.comment = jsdoctag.comment;
+                    arg.typeExpression = jsdoctag.typeExpression;
+                }
+            });
+        }
+    });
+    return margs;
+}
+
 export function readConfig(configFile: string): any {
     let result = ts.readConfigFile(configFile, ts.sys.readFile);
     if (result.error) {
