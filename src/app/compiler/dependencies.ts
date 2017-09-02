@@ -2078,28 +2078,30 @@ export class Dependencies {
 
             (o.properties || []).forEach((prop: NodeObject) => {
 
-                let identifier = prop.initializer.text;
-                if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
-                    identifier = `'${identifier}'`;
-                }
+                let identifier = '';
+                if (prop.initializer) {
+                    identifier = prop.initializer.text;
+                    if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
+                        identifier = `'${identifier}'`;
+                    }
 
-                // lambda function (i.e useFactory)
-                if (prop.initializer.body) {
-                    let params = (prop.initializer.parameters || <any>[]).map((params: NodeObject) => params.name.text);
-                    identifier = `(${params.join(', ')}) => {}`;
-                }
+                    // lambda function (i.e useFactory)
+                    if (prop.initializer.body) {
+                        let params = (prop.initializer.parameters || <any>[]).map((params: NodeObject) => params.name.text);
+                        identifier = `(${params.join(', ')}) => {}`;
+                    }
+                    // factory deps array
+                    else if (prop.initializer.elements) {
+                        let elements = (prop.initializer.elements || []).map((n: NodeObject) => {
 
-                // factory deps array
-                else if (prop.initializer.elements) {
-                    let elements = (prop.initializer.elements || []).map((n: NodeObject) => {
+                            if (n.kind === ts.SyntaxKind.StringLiteral) {
+                                return `'${n.text}'`;
+                            }
 
-                        if (n.kind === ts.SyntaxKind.StringLiteral) {
-                            return `'${n.text}'`;
-                        }
-
-                        return n.text;
-                    });
-                    identifier = `[${elements.join(', ')}]`;
+                            return n.text;
+                        });
+                        identifier = `[${elements.join(', ')}]`;
+                    }
                 }
 
                 _providerProps.push([

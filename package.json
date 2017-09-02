@@ -72,12 +72,12 @@
     "marked": "^0.3.6",
     "os-name": "^2.0.1",
     "shelljs": "^0.7.8",
-    "typescript": "2.4.2"
+    "typescript": "2.5.2"
   },
   "devDependencies": {
     "@types/chai": "4.0.4",
     "@types/es6-promise": "0.0.33",
-    "@types/fs-extra": "4.0.0",
+    "@types/fs-extra": "4.0.1",
     "@types/handlebars": "^4.0.36",
     "@types/marked": "0.3.0",
     "@types/mocha": "2.2.42",

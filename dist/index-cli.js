@@ -23,7 +23,7 @@ var LEVEL;
     LEVEL[LEVEL["ERROR"] = 2] = "ERROR";
     LEVEL[LEVEL["WARN"] = 3] = "WARN";
 })(LEVEL || (LEVEL = {}));
-var Logger = (function () {
+var Logger = /** @class */ (function () {
     function Logger() {
         this.name = pkg$2.name;
         this.version = pkg$2.version;
@@ -274,7 +274,7 @@ function mergeTagsAndArgs(args, jsdoctags) {
             });
         }
     });
-    // Add example
+    // Add example & returns
     if (jsdoctags) {
         _$4.forEach(jsdoctags, function (jsdoctag) {
             if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
@@ -353,7 +353,7 @@ function getNamesCompareFn(name) {
 }
 
 var _$2 = require('lodash');
-var DependenciesEngine = (function () {
+var DependenciesEngine = /** @class */ (function () {
     function DependenciesEngine() {
         if (DependenciesEngine._instance) {
             throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
@@ -606,7 +606,7 @@ var COMPODOC_DEFAULTS = {
 };
 
 var _$5 = require('lodash');
-var Configuration = (function () {
+var Configuration = /** @class */ (function () {
     function Configuration() {
         this._pages = [];
         this._mainData = {
@@ -1394,7 +1394,7 @@ var HtmlEngineHelpers = (function () {
 })();
 
 //import * as helpers from 'handlebars-helpers';
-var HtmlEngine = (function () {
+var HtmlEngine = /** @class */ (function () {
     function HtmlEngine() {
         this.cache = {};
         HtmlEngineHelpers.init();
@@ -1504,7 +1504,7 @@ var HtmlEngine = (function () {
 }());
 
 var marked$2 = require('marked');
-var MarkdownEngine = (function () {
+var MarkdownEngine = /** @class */ (function () {
     function MarkdownEngine() {
         var _this = this;
         var renderer = new marked$2.Renderer();
@@ -1649,7 +1649,7 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 
-var FileEngine = (function () {
+var FileEngine = /** @class */ (function () {
     function FileEngine() {
     }
     FileEngine.prototype.get = function (filepath) {
@@ -1669,7 +1669,7 @@ var FileEngine = (function () {
 
 var ngdT = require('@compodoc/ngd-transformer');
 var _$6 = require('lodash');
-var NgdEngine = (function () {
+var NgdEngine = /** @class */ (function () {
     function NgdEngine() {
     }
     NgdEngine.prototype.init = function (outputpath) {
@@ -1724,7 +1724,7 @@ var cheerio = require('cheerio');
 var Entities = require('html-entities').AllHtmlEntities;
 var $configuration = Configuration.getInstance();
 var Html = new Entities();
-var SearchEngine = (function () {
+var SearchEngine = /** @class */ (function () {
     function SearchEngine() {
         this.documentsStore = {};
     }
@@ -2577,7 +2577,7 @@ function recognize(node) {
 
 var $ = require('cheerio');
 var _$10 = require('lodash');
-var ComponentsTreeEngine = (function () {
+var ComponentsTreeEngine = /** @class */ (function () {
     function ComponentsTreeEngine() {
         this.components = [];
         this.componentsForTree = [];
@@ -2677,7 +2677,7 @@ var $componentsTreeEngine = ComponentsTreeEngine.getInstance();
 var marked$3 = require('marked');
 var ts$3 = require('typescript');
 var _$7 = require('lodash');
-var Dependencies = (function () {
+var Dependencies = /** @class */ (function () {
     function Dependencies(files, options) {
         this.__cache = {};
         this.__nsModule = {};
@@ -4479,23 +4479,26 @@ var Dependencies = (function () {
             // { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
             var _providerProps = [];
             (o.properties || []).forEach(function (prop) {
-                var identifier = prop.initializer.text;
-                if (prop.initializer.kind === ts$3.SyntaxKind.StringLiteral) {
-                    identifier = "'" + identifier + "'";
-                }
-                // lambda function (i.e useFactory)
-                if (prop.initializer.body) {
-                    var params = (prop.initializer.parameters || []).map(function (params) { return params.name.text; });
-                    identifier = "(" + params.join(', ') + ") => {}";
-                }
-                else if (prop.initializer.elements) {
-                    var elements = (prop.initializer.elements || []).map(function (n) {
-                        if (n.kind === ts$3.SyntaxKind.StringLiteral) {
-                            return "'" + n.text + "'";
-                        }
-                        return n.text;
-                    });
-                    identifier = "[" + elements.join(', ') + "]";
+                var identifier = '';
+                if (prop.initializer) {
+                    identifier = prop.initializer.text;
+                    if (prop.initializer.kind === ts$3.SyntaxKind.StringLiteral) {
+                        identifier = "'" + identifier + "'";
+                    }
+                    // lambda function (i.e useFactory)
+                    if (prop.initializer.body) {
+                        var params = (prop.initializer.parameters || []).map(function (params) { return params.name.text; });
+                        identifier = "(" + params.join(', ') + ") => {}";
+                    }
+                    else if (prop.initializer.elements) {
+                        var elements = (prop.initializer.elements || []).map(function (n) {
+                            if (n.kind === ts$3.SyntaxKind.StringLiteral) {
+                                return "'" + n.text + "'";
+                            }
+                            return n.text;
+                        });
+                        identifier = "[" + elements.join(', ') + "]";
+                    }
                 }
                 _providerProps.push([
                     // i.e provide
@@ -4586,7 +4589,7 @@ var $markdownengine = new MarkdownEngine();
 var $ngdengine = new NgdEngine();
 var $searchEngine = new SearchEngine();
 var startTime = new Date();
-var Application = (function () {
+var Application = /** @class */ (function () {
     /**
      * Create a new compodoc application instance.
      *
@@ -6045,7 +6048,7 @@ process.on('uncaughtException', function (err) {
     logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
     process.exit(1);
 });
-var CliApplication = (function (_super) {
+var CliApplication = /** @class */ (function (_super) {
     __extends(CliApplication, _super);
     function CliApplication() {
         return _super !== null && _super.apply(this, arguments) || this;
