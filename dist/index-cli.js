@@ -927,7 +927,7 @@ var HtmlEngineHelpers = (function () {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('modifKind', function (kind) {
-            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
+            // https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts#L62
             var _kindText = '';
             switch (kind) {
                 case 112:
@@ -946,19 +946,20 @@ var HtmlEngineHelpers = (function () {
             return new Handlebars.SafeString(_kindText);
         });
         Handlebars.registerHelper('modifIcon', function (kind) {
-            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
+            // https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts#L62
             var _kindText = '';
             switch (kind) {
                 case 112:
-                    _kindText = 'lock';
+                    _kindText = 'lock'; //private
                     break;
                 case 113:
-                    _kindText = 'circle';
+                    _kindText = 'lock'; //protected
                     break;
                 case 115:
-                    _kindText = 'square';
-                case 83:
-                    _kindText = 'export';
+                    _kindText = 'reset'; //static
+                    break;
+                case 84:
+                    _kindText = 'export'; //export
                     break;
             }
             return _kindText;

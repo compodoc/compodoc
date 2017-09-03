@@ -621,6 +621,9 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .modifier-icon.method .fa-lock {
     margin-right: 0;
 }
+.modifier-icon.fa-reset {
+    margin-right: 0;
+}
 
 /* Routes graph */
 
