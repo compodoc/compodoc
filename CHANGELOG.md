@@ -1,3 +1,30 @@
+<a name="1.0.0-beta.15"></a>
+# [1.0.0-beta.15](https://github.com/compodoc/compodoc/compare/1.0.0-beta.14...1.0.0-beta.15) (2017-09-04)
+
+## Changes
+
+- main graph for huge projects with more than 200 modules is disabled, and viz.js error catched.
+- @HostBinding & @HostListener support
+
+### Features
+
+* **deps:** optional support for parameter ([5bcef12](https://github.com/compodoc/compodoc/commit/5bcef12)), closes [#288](https://github.com/compodoc/compodoc/issues/288)
+* **app:** [@HostBinding](https://github.com/HostBinding) & [@HostListener](https://github.com/HostListener) support ([1ab4311](https://github.com/compodoc/compodoc/commit/1ab4311)), closes [#277](https://github.com/compodoc/compodoc/issues/277)
+* **misc:** Linking directly to correct enumeration, variable etc ([902c8f2](https://github.com/compodoc/compodoc/commit/902c8f2)), closes [#278](https://github.com/compodoc/compodoc/issues/278)
+
+### Bug Fixes
+
+* **symbols:** lock icon just for private or protected ([884eb9f](https://github.com/compodoc/compodoc/commit/884eb9f)), closes [#291](https://github.com/compodoc/compodoc/issues/291)
+* **deps:** invalid provider config ([77cc525](https://github.com/compodoc/compodoc/commit/77cc525)), closes [#293](https://github.com/compodoc/compodoc/issues/293)
+* **deps:** extends for interfaces ([8ba84a8](https://github.com/compodoc/compodoc/commit/8ba84a8)), closes [#281](https://github.com/compodoc/compodoc/issues/281)
+* **graph:** Not able to generate graph on large projects ([9ee7775](https://github.com/compodoc/compodoc/commit/9ee7775)), closes [#283](https://github.com/compodoc/compodoc/issues/283)
+* **output:** absolute path in cwd ([97953e3](https://github.com/compodoc/compodoc/commit/97953e3)), closes [#279](https://github.com/compodoc/compodoc/issues/279)
+* **deps:** return with union type & null ([b7d3406](https://github.com/compodoc/compodoc/commit/b7d3406)), closes [#287](https://github.com/compodoc/compodoc/issues/287)
+* **deps:** JSDoc tag for property in constructor ([b8965f6](https://github.com/compodoc/compodoc/commit/b8965f6)), closes [#286](https://github.com/compodoc/compodoc/issues/286)
+* **deps:** support typealias with LiteralType ([8c284e7](https://github.com/compodoc/compodoc/commit/8c284e7)), closes [#285](https://github.com/compodoc/compodoc/issues/285)
+* **cli:** Error with watch flag ([ae727ec](https://github.com/compodoc/compodoc/commit/ae727ec)), closes [#284](https://github.com/compodoc/compodoc/issues/284)
+* **deps:** support class with custom decorator ([059b3c9](https://github.com/compodoc/compodoc/commit/059b3c9)), closes [#245](https://github.com/compodoc/compodoc/issues/245)
+
 <a name="1.0.0-beta.14"></a>
 # [1.0.0-beta.14](https://github.com/compodoc/compodoc/compare/1.0.0-beta.13...1.0.0-beta.14) (2017-08-11)
 
