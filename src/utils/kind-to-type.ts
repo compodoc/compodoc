@@ -28,6 +28,9 @@ export function kindToType(kind: number): string {
         case ts.SyntaxKind.AnyKeyword:
             _type = 'any';
             break;
+        case ts.SyntaxKind.NullKeyword:
+            _type = 'null';
+            break;
         case ts.SyntaxKind.NeverKeyword:
             _type = 'never';
             break;

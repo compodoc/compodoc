@@ -43,3 +43,5 @@ export type Flags = {
 
 export let yo:{ [index:string] : {message: string} } = {};
 */
+
+export type ChartChange = "creating" | "created" | "updating" | "updated";

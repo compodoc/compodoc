@@ -358,7 +358,10 @@ export let RouterParser = (function() {
                            result = template({
                                routes: JSON.stringify(routes)
                            });
-                       outputFolder = outputFolder.replace(process.cwd(), '');
+                       let testOutputDir = outputFolder.match(process.cwd());
+                       if (!testOutputDir) {
+                           outputFolder = outputFolder.replace(process.cwd(), '');
+                       }
                        fs.outputFile(path.resolve(outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
                            if(err) {
                                logger.error('Error during routes index file generation ', err);

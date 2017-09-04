@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 /**
  * The about component
@@ -10,5 +10,11 @@ import { Component } from '@angular/core';
     templateUrl: './about.component.html'
 })
 export class AboutComponent {
+    /**
+     * HostListener mouseup description
+     */
+     @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
+     onMouseup(mouseX: number, mouseY: number): void {
 
+     }
 }

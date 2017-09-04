@@ -123,7 +123,7 @@ export let HtmlEngineHelpers = (function() {
             return new Handlebars.SafeString(text);
         });
         Handlebars.registerHelper('modifKind', function(kind) {
-            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
+            // https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts#L62
             let _kindText = '';
             switch(kind) {
                 case 112:
@@ -142,19 +142,20 @@ export let HtmlEngineHelpers = (function() {
             return new Handlebars.SafeString(_kindText);
         });
         Handlebars.registerHelper('modifIcon', function(kind) {
-            // https://github.com/Microsoft/TypeScript/blob/73ee2feb51c9b7e24a29eb4cee19d7c14b933065/lib/typescript.d.ts#L64
+            // https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts#L62
             let _kindText = '';
             switch(kind) {
                 case 112:
-                    _kindText = 'lock';
+                    _kindText = 'lock'; //private
                     break;
                 case 113:
-                    _kindText = 'circle';
+                    _kindText = 'lock'; //protected
                     break;
                 case 115:
-                    _kindText = 'square';
-                case 83:
-                    _kindText = 'export';
+                    _kindText = 'reset'; //static
+                    break;
+                case 84:
+                    _kindText = 'export'; //export
                     break;
             }
             return _kindText;
@@ -287,57 +288,65 @@ export let HtmlEngineHelpers = (function() {
                 angularDocPrefix = prefixOfficialDoc(configuration.mainData.angularVersion);
             if (method.args) {
                 args = method.args.map(function(arg) {
-                    var _result = $dependenciesEngine.find(arg.type);
+                    var _result = $dependenciesEngine.find(arg.type),
+                        _optional = '';
+                    if (arg.optional) {
+                        _optional = '?';
+                    }
                     if (_result) {
                         if (_result.source === 'internal') {
                             let path = _result.data.type;
                             if (_result.data.type === 'class') path = 'classe';
-                            return `${arg.name}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
+                            return `${arg.name}${_optional}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                         } else {
                             let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
-                            return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                            return `${arg.name}${_optional}: <a href="${path}" target="_blank">${arg.type}</a>`;
                         }
                     } else if (arg.dotDotDotToken) {
                         return `...${arg.name}: ${arg.type}`;
                     } else if (arg.function) {
                         if (arg.function.length > 0) {
                             let argums = arg.function.map(function(argu) {
-                                    var _result = $dependenciesEngine.find(argu.type);
+                                    var _result = $dependenciesEngine.find(argu.type),
+                                        _optional = '';
+                                    if (arg.optional) {
+                                        _optional = '?';
+                                    }
                                     if (_result) {
                                         if (_result.source === 'internal') {
                                             let path = _result.data.type;
                                             if (_result.data.type === 'class') path = 'classe';
-                                            return `${argu.name}: <a href="../${path}s/${_result.data.name}.html">${argu.type}</a>`;
+                                            return `${argu.name}${_optional}: <a href="../${path}s/${_result.data.name}.html">${argu.type}</a>`;
                                         } else {
                                             let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
-                                            return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                            return `${argu.name}${_optional}: <a href="${path}" target="_blank">${argu.type}</a>`;
                                         }
                                     } else if (finderInBasicTypes(argu.type)) {
                                         let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${argu.type}`;
-                                        return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                        return `${argu.name}${_optional}: <a href="${path}" target="_blank">${argu.type}</a>`;
                                     } else if (finderInTypeScriptBasicTypes(argu.type)) {
                                         let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
-                                        return `${argu.name}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                                        return `${argu.name}${_optional}: <a href="${path}" target="_blank">${argu.type}</a>`;
                                     } else {
                                         if (argu.name && argu.type) {
-                                            return `${argu.name}: ${argu.type}`;
+                                            return `${argu.name}${_optional}: ${argu.type}`;
                                         } else {
                                             return `${argu.name.text}`;
                                         }
                                     }
                                 });
-                            return `${arg.name}: (${argums}) => void`;
+                            return `${arg.name}${_optional}: (${argums}) => void`;
                         } else {
-                            return `${arg.name}: () => void`;
+                            return `${arg.name}${_optional}: () => void`;
                         }
                     } else if (finderInBasicTypes(arg.type)) {
                         let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${arg.type}`;
-                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                        return `${arg.name}${_optional}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     } else if (finderInTypeScriptBasicTypes(arg.type)) {
                         let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
-                        return `${arg.name}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                        return `${arg.name}${_optional}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     } else {
-                        return `${arg.name}: ${arg.type}`;
+                        return `${arg.name}${_optional}: ${arg.type}`;
                     }
                 }).join(', ');
             }
@@ -445,16 +454,25 @@ export let HtmlEngineHelpers = (function() {
                     if (jsdocTags[i].tagName.text === 'param') {
                         var tag = {} as jsdocTagInterface;
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.kind) {
-                          tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
+                            tag.type = kindToType(jsdocTags[i].typeExpression.type.kind);
                         }
                         if (jsdocTags[i].typeExpression && jsdocTags[i].typeExpression.type.name) {
-                          tag.type = jsdocTags[i].typeExpression.type.name.text
+                            tag.type = jsdocTags[i].typeExpression.type.name.text
+                        } else {
+                            tag.type = jsdocTags[i].type;
                         }
                         if (jsdocTags[i].comment) {
                             tag.comment = jsdocTags[i].comment;
                         }
                         if (jsdocTags[i].name) {
-                            tag.name = jsdocTags[i].name.text;
+                            if (jsdocTags[i].name.text) {
+                                tag.name = jsdocTags[i].name.text;
+                            } else {
+                                tag.name = jsdocTags[i].name;
+                            }
+                        }
+                        if (jsdocTags[i].optional) {
+                            tag.optional = true;
                         }
                         tags.push(tag);
                     }
@@ -537,7 +555,7 @@ export let HtmlEngineHelpers = (function() {
                             case 'variable':
                                 mainpage = 'variables';
                         }
-                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html';
+                        this.type.href = '../' + _result.data.type + '/' + mainpage + '.html#' + _result.data.name;
                     }
                     this.type.target = '_self';
                 } else {

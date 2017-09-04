@@ -3,6 +3,8 @@ import { finderInAngularAPIs } from '../../utils/angular-api';
 import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 
+import { getNamesCompareFn } from '../../utils/utils';
+
 const _ = require('lodash');
 
 class DependenciesEngine {
@@ -212,6 +214,10 @@ class DependenciesEngine {
         return result || false;
     }
     prepareMiscellaneous() {
+        this.miscellaneous.variables.sort(getNamesCompareFn());
+        this.miscellaneous.functions.sort(getNamesCompareFn());
+        this.miscellaneous.enumerations.sort(getNamesCompareFn());
+        this.miscellaneous.typealiases.sort(getNamesCompareFn());
         //group each subgoup by file
         this.miscellaneous.groupedVariables = _.groupBy(this.miscellaneous.variables, 'file');
         this.miscellaneous.groupedFunctions = _.groupBy(this.miscellaneous.functions, 'file');

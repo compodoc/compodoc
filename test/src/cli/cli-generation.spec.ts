@@ -240,6 +240,75 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when generation with d flag - absolute folder inside cwd', () => {
+
+        let stdoutString = null,
+            actualDir,
+            fooComponentFile,
+            fooServiceFile,
+            componentFile,
+            moduleFile;
+        before(function (done) {
+            tmp.create();
+
+            let pwd = shell('pwd');
+            actualDir = pwd.stdout.toString();
+
+            actualDir = actualDir.replace(' ', '');
+            actualDir = actualDir.replace('\n', '');
+            actualDir = actualDir.replace('\r\n', '');
+
+            let ls = shell('node', [
+                '../bin/index-cli.js',
+                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                '-d', actualDir + '/' + tmp.name], { cwd: tmp.name, env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            fooComponentFile = read(`/tmp/${tmp.name}/components/FooComponent.html`);
+            fooServiceFile = read(`/tmp/${tmp.name}/injectables/FooService.html`);
+            moduleFile  = read(`/tmp/${tmp.name}/modules/AppModule.html`);
+            componentFile = read(`/tmp/${tmp.name}/components/BarComponent.html`);
+            done();
+        });
+        after(() => tmp.clean(actualDir + '/' + tmp.name + '/'));
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
+        });
+
+        it('should have generated main folder', () => {
+            const isFolderExists = exists(`${actualDir}/${tmp.name}`);
+            expect(isFolderExists).to.be.true;
+        });
+
+        it('should have generated main pages', () => {
+            const isIndexExists = exists(`${actualDir}/${tmp.name}/index.html`);
+            expect(isIndexExists).to.be.true;
+            const isModulesExists = exists(`${actualDir}/${tmp.name}/modules.html`);
+            expect(isModulesExists).to.be.true;
+        });
+
+        it('should have generated resources folder', () => {
+            const isImagesExists = exists(`${actualDir}/${tmp.name}/images`);
+            expect(isImagesExists).to.be.true;
+            const isJSExists = exists(`${actualDir}/${tmp.name}/js`);
+            expect(isJSExists).to.be.true;
+            const isStylesExists = exists(`${actualDir}/${tmp.name}/styles`);
+            expect(isStylesExists).to.be.true;
+            const isFontsExists = exists(`${actualDir}/${tmp.name}/fonts`);
+            expect(isFontsExists).to.be.true;
+        });
+
+        it('should have generated search index json', () => {
+            const isIndexExists = exists(`${actualDir}/${tmp.name}/js/search/search_index.js`);
+            expect(isIndexExists).to.be.true;
+        });
+    });
+
     describe('when generation with d and a flags', () => {
 
         before(function (done) {

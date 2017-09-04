@@ -129,9 +129,9 @@ describe('CLI simple generation - big app', () => {
       it('should have generated args and return informations for todo store', () => {
           const file = read('documentation/injectables/TodoStore.html');
           expect(file).to.contain('Promise&lt;void&gt;');
-          expect(file).to.contain('string|number');
+          expect(file).to.contain('string | number');
           expect(file).to.contain('number[]');
-          expect(file).to.contain('<code>stopMonitoring(theTodo: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
+          expect(file).to.contain('<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
           expect(file).to.contain('service is a todo store');
           expect(file).to.contain('all todos status (completed');
           expect(file).to.contain('Local array of Todos');
@@ -212,6 +212,42 @@ describe('CLI simple generation - big app', () => {
       it('should support simple class with custom decorator', () => {
           let file = read('documentation/classes/Tidi.html');
           expect(file).to.contain('<code>completed');
+      });
+
+      it('should support simple class with custom decorator()', () => {
+          let file = read('documentation/classes/DoNothing.html');
+          expect(file).to.contain('<code>aname');
+      });
+
+      it('should support TypeLiteral', () => {
+          let file = read('documentation/miscellaneous/typealiases.html');
+          expect(file).to.contain('&quot;creating&quot; | &quot;created&quot; | &quot;updating&quot; | &quot;updated&quot');
+      });
+
+      it('should support return multiple with null & TypeLiteral', () => {
+          let file = read('documentation/classes/Tidi.html');
+          expect(file).to.contain('<code>literal type | null');
+      });
+
+      it('should support @HostBindings', () => {
+          let file = read('documentation/directives/DoNothingDirective.html');
+          expect(file).to.contain('<code>style.color');
+      });
+
+      it('should support @HostListener', () => {
+          let file = read('documentation/components/AboutComponent.html');
+          expect(file).to.contain('<code>mouseup(mouseX');
+          expect(file).to.contain('i>Arguments : </i><code>\'$event.clientX');
+      });
+
+      it('should support extends for interface', () => {
+          let file = read('documentation/interfaces/ClockInterface.html');
+          expect(file).to.contain('Extends');
+      });
+
+      it('should support optional', () => {
+          let file = read('documentation/injectables/TodoStore.html');
+          expect(file).to.contain('true');
       });
 
 });

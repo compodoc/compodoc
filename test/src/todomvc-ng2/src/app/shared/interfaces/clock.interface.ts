@@ -1,3 +1,5 @@
+import { TimeInterface } from './time.interface';
+
 /**
  * A class interface just for documentation purpose
  * ```typescript
@@ -7,7 +9,7 @@
  * }
  * ```
  */
-interface ClockInterface {
+interface ClockInterface extends TimeInterface {
     /**
      * The current time
      * @type {Date}

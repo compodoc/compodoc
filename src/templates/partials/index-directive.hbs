@@ -74,6 +74,42 @@
                 </td>
             </tr>
             {{/compare}}
+            {{#compare hostBindings.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>HostBindings</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each hostBindings}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+            {{#compare hostListeners.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>HostListeners</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each hostListeners}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
         </tbody>
     </table>
 </section>

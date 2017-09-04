@@ -1,9 +1,9 @@
 <section>
-    {{#compare title "===" 'false' }}{{else}}
+    {{#if title}}{{else}}
         <h3 id="methods">
             Methods
         </h3>
-    {{/compare}}
+    {{/if}}
     {{#each methods}}
         <table class="table table-sm table-bordered">
             <tbody>
@@ -20,10 +20,17 @@
                     </td>
                 </tr>
                 {{/if}}
+                {{#if argsDecorator}}
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Arguments : </i><code>{{#each argsDecorator}}'{{this}}' {{/each}}</code>
+                        </td>
+                    </tr>
+                {{/if}}
                 <tr>
                     <td class="col-md-4">
                         {{#if modifierKind}}
-                            <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}"></span>
+                            <span class="modifier-icon fa fa-{{modifIcon modifierKind}}"></span>
                         {{/if}}<code>{{{functionSignature this}}}</code>
                     </td>
                 </tr>
@@ -46,7 +53,7 @@
                     {{/unless}}
                 {{/if}}
 
-                {{#or description jsdoctags returnType}}
+                {{#or jsdoctags returnType}}
                 <tr>
                     <td class="col-md-4">
                         {{#if description}}
@@ -63,6 +70,7 @@
                                             <tr>
                                                 <td>Name</td>
                                                 <td>Type</td>
+                                                <td>Optional</td>
                                                 <td>Description</td>
                                             </tr>
                                         </thead>
@@ -73,6 +81,11 @@
                                                   <td>
                                                   {{#if type}}
                                                       {{> link-type type=type }}
+                                                  {{/if}}
+                                                  </td>
+                                                  <td>
+                                                  {{#if optional}}
+                                                      true
                                                   {{/if}}
                                                   </td>
                                                   <td>{{{comment}}}</td>

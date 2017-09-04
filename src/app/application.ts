@@ -960,6 +960,8 @@ export class Application {
                     _.forEach(list, (element) => {
                         if (!element.propertiesClass ||
                             !element.methodsClass ||
+                            !element.hostBindings ||
+                            !element.hostListeners ||
                             !element.inputsClass ||
                             !element.outputsClass) {
                                 return;
@@ -971,7 +973,7 @@ export class Application {
                                 name: element.name
                             },
                             totalStatementDocumented = 0,
-                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.outputsClass.length + 1; // +1 for element decorator comment
+                            totalStatements = element.propertiesClass.length + element.methodsClass.length + element.inputsClass.length + element.hostBindings.length + element.hostListeners.length + element.outputsClass.length + 1; // +1 for element decorator comment
 
                         if (element.constructorObj) {
                             totalStatements += 1;
@@ -992,6 +994,22 @@ export class Application {
                             }
                         });
                         _.forEach(element.methodsClass, (method) => {
+                            if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.hostBindings, (property) => {
+                            if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                                totalStatements -= 1;
+                            }
+                            if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                                totalStatementDocumented += 1;
+                            }
+                        });
+                        _.forEach(element.hostListeners, (method) => {
                             if (method.modifierKind === 111) { // Doesn't handle private for coverage
                                 totalStatements -= 1;
                             }
@@ -1351,7 +1369,12 @@ export class Application {
             }
         };
 
-        let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
+        let finalOutput = this.configuration.mainData.output;
+
+        let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+        if (!testOutputDir) {
+            finalOutput = this.configuration.mainData.output.replace(process.cwd(), '')
+        }
 
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
             if(err) {
@@ -1423,22 +1446,22 @@ export class Application {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            if ($dependenciesEngine.rawModulesForOverview.length > 150) {
-                logger.warn(`Too many modules (${$dependenciesEngine.rawModulesForOverview.length}), main graph generation disabled`);
+            $ngdengine.init(path.resolve(finalMainGraphPath));
+
+            $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
+                $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
+                    this.configuration.mainData.mainGraph = <string>data;
+                    loop();
+                }, (err) => {
+                    logger.error('Error during main graph reading : ', err);
+                    this.configuration.mainData.disableMainGraph = true;
+                    loop();
+                });
+            }, (err) => {
+                logger.error('Ooops error during main graph generation, moving on next part with main graph disabled : ', err);
                 this.configuration.mainData.disableMainGraph = true;
                 loop();
-            } else {
-                $ngdengine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                    $ngdengine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
-                        this.configuration.mainData.mainGraph = <string>data;
-                        loop();
-                    }, (err) => {
-                        logger.error('Error during graph read: ', err);
-                    });
-                }, (err) => {
-                    logger.error('Error during graph generation: ', err);
-                });
-            }
+            });
         }
     }
 
@@ -1454,7 +1477,12 @@ export class Application {
             });
         }
         if (this.configuration.mainData.watch && !this.isWatching) {
-            this.runWatch();
+            if (typeof this.files === 'undefined') {
+                logger.error('No sources files available, please use -p flag');
+                process.exit(1);
+            } else {
+                this.runWatch();
+            }
         } else if (this.configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
             logger.info(`Already watching sources in ${srcFolder} folder`);

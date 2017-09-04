@@ -621,6 +621,9 @@ thead.coverage-header >tr>td, thead.coverage-header>tr>th {
 .modifier-icon.method .fa-lock {
     margin-right: 0;
 }
+.modifier-icon.fa-reset {
+    margin-right: 0;
+}
 
 /* Routes graph */
 
@@ -744,4 +747,10 @@ ul.index-list {
     column-count: 3;
     line-height: 25px;
     margin-bottom: 0;
+}
+
+.no-graph {
+    text-align: center;
+    height: 175px;
+    line-height: 175px;
 }

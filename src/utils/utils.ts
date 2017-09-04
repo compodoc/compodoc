@@ -34,6 +34,43 @@ export function markedtags(tags) {
     return mtags;
 };
 
+export function mergeTagsAndArgs(args, jsdoctags?) {
+    var margs = _.cloneDeep(args);
+    _.forEach(margs, (arg) => {
+        arg.tagName = {
+            text: 'param'
+        };
+        if (jsdoctags) {
+            _.forEach(jsdoctags, (jsdoctag) => {
+                if (jsdoctag.name && jsdoctag.name.text === arg.name) {
+                    arg.tagName = jsdoctag.tagName;
+                    arg.name = jsdoctag.name;
+                    arg.comment = jsdoctag.comment;
+                    arg.typeExpression = jsdoctag.typeExpression;
+                }
+            });
+        }
+    });
+    // Add example & returns
+    if (jsdoctags) {
+        _.forEach(jsdoctags, (jsdoctag) => {
+            if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
+                margs.push({
+                    tagName: jsdoctag.tagName,
+                    comment: jsdoctag.comment
+                });
+            }
+            if (jsdoctag.tagName && jsdoctag.tagName.text === 'returns') {
+                margs.push({
+                    tagName: jsdoctag.tagName,
+                    comment: jsdoctag.comment
+                });
+            }
+        });
+    }
+    return margs;
+}
+
 export function readConfig(configFile: string): any {
     let result = ts.readConfigFile(configFile, ts.sys.readFile);
     if (result.error) {
@@ -88,4 +125,19 @@ export function cleanSourcesForWatch(list) {
             return element;
         }
     })
+}
+
+export function getNamesCompareFn(name) {
+    /**
+     * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+     */
+    name = name || 'name';
+    var t = (a, b) => {
+        if (a[name]) {
+            return a[name].localeCompare(b[name])
+        } else {
+            return 0;
+        }
+    };
+    return t;
 }

@@ -8,4 +8,8 @@ import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass } from '../decora
 @LogClass
 export class Tidi {
     completed: boolean;
+    afunc(a: string, b: string): { passwordMismatch: boolean } | null {
+        return (true)
+            ? { 'passwordMismatch': true } : null;
+    }
 }

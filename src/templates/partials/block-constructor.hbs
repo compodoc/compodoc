@@ -17,7 +17,7 @@
                     {{/unless}}
                 {{/if}}
 
-                {{#or constructor.description constructor.jsdoctags}}
+                {{#or constructor.jsdoctags}}
                 <tr>
                     <td class="col-md-4">
                         {{#if constructor.description}}
@@ -33,6 +33,7 @@
                                             <tr>
                                                 <td>Name</td>
                                                 <td>Type</td>
+                                                <td>Optional</td>
                                                 <td>Description</td>
                                             </tr>
                                         </thead>
@@ -43,6 +44,11 @@
                                                   <td>
                                                       {{#if type}}
                                                         {{> link-type type=type }}
+                                                      {{/if}}
+                                                  </td>
+                                                  <td>
+                                                      {{#if optional}}
+                                                          true
                                                       {{/if}}
                                                   </td>
                                                   <td>{{{comment}}}</td>

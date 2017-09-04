@@ -157,7 +157,7 @@ export class CliApplication extends Application
         }
 
         if (!this.isWatching) {
-            console.log(fs.readFileSync(path.join(__dirname, '../src/resources/images/banner')).toString());
+            console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
             console.log(pkg.version);
             console.log('');
             console.log(`Node.js version : ${process.version}`);
