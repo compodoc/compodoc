@@ -539,6 +539,9 @@ i {
 thead.coverage-header >tr>td, thead.coverage-header>tr>th {
     border-bottom-width: 0;
 }
+th[role=columnheader].statements:not(.no-sort):after {
+    margin-left: 10px;
+}
 .coverage-count {
     color: grey;
     font-size: 12px;
