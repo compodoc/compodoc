@@ -13,3 +13,9 @@ export function LogPropertyWithArgs(alias: string): any {
 export function LogClass(target: any) {
     console.log('LogClass: ', target);
 }
+
+export function LogClassWithArgs(filter: string) {
+    console.log('LogClass: ', filter);
+    return (target: Object) => {
+    }
+}

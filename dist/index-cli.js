@@ -3380,7 +3380,13 @@ var Dependencies = /** @class */ (function () {
     };
     Dependencies.prototype.findProps = function (visitedNode) {
         if (visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
-            return visitedNode.expression.arguments.pop().properties;
+            var pop = visitedNode.expression.arguments.pop();
+            if (typeof pop.properties !== 'undefined') {
+                return pop.properties;
+            }
+            else {
+                return '';
+            }
         }
         else {
             return '';

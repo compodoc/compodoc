@@ -4,11 +4,12 @@ import { TodoStore } from '../shared/services/todo.store';
 
 import { EmitterService } from '../shared/services/emitter.service';
 
-import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass } from '../shared/decorators/log.decorator';
+import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass, LogClassWithArgs } from '../shared/decorators/log.decorator';
 
 /**
  * The footer component
  */
+@LogClassWithArgs('toto')
 @Component({
     selector: 'footer',
     providers: [],
