@@ -1042,7 +1042,13 @@ export class Dependencies {
                     _return += '>';
                 }
                 if (node.type.elementType) {
-                    _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                    let _firstPart = kindToType(node.type.elementType.kind);
+                    if (typeof node.type.elementType.typeName !== 'undefined') {
+                        if (typeof node.type.elementType.typeName.escapedText !== 'undefined') {
+                            _firstPart = node.type.elementType.typeName.escapedText;
+                        }
+                    }
+                    _return = _firstPart + kindToType(node.type.kind);
                 }
                 if (node.type.types && node.type.kind === ts.SyntaxKind.UnionType) {
                     _return = '';

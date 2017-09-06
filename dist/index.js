@@ -961,6 +961,9 @@ var HtmlEngineHelpers = (function () {
                 case 84:
                     _kindText = 'export'; //export
                     break;
+                default:
+                    _kindText = 'reset';
+                    break;
             }
             return _kindText;
         });
@@ -3554,7 +3557,13 @@ var Dependencies = /** @class */ (function () {
                     _return += '>';
                 }
                 if (node.type.elementType) {
-                    _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                    var _firstPart = kindToType(node.type.elementType.kind);
+                    if (typeof node.type.elementType.typeName !== 'undefined') {
+                        if (typeof node.type.elementType.typeName.escapedText !== 'undefined') {
+                            _firstPart = node.type.elementType.typeName.escapedText;
+                        }
+                    }
+                    _return = _firstPart + kindToType(node.type.kind);
                 }
                 if (node.type.types && node.type.kind === ts$3.SyntaxKind.UnionType) {
                     _return = '';

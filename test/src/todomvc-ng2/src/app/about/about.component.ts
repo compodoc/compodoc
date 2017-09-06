@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 
+import { Subscription } from 'rxjs/Subscription';
+
 /**
  * The about component
  *
@@ -10,6 +12,9 @@ import { Component, HostListener } from '@angular/core';
     templateUrl: './about.component.html'
 })
 export class AboutComponent {
+
+     public subscriptions: Subscription[];
+
     /**
      * HostListener mouseup description
      */
