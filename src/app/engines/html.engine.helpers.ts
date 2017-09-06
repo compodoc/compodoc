@@ -157,6 +157,9 @@ export let HtmlEngineHelpers = (function() {
                 case 84:
                     _kindText = 'export'; //export
                     break;
+                default:
+                    _kindText = 'reset';
+                    break;
             }
             return _kindText;
         });
