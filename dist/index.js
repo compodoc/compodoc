@@ -974,13 +974,18 @@ var HtmlEngineHelpers = (function () {
             var tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'), tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'), tagRegExp, matches, previousString, tagInfo = [];
             tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
             var processTheLink = function (string, tagInfo, leadingText) {
-                var leading = extractLeadingText(string, tagInfo.completeTag), split, result, newLink, rootPath, stringtoReplace;
+                var leading = extractLeadingText(string, tagInfo.completeTag), split, result, newLink, rootPath, stringtoReplace, anchor = '';
                 split = splitLinkText(tagInfo.text);
                 if (typeof split.linkText !== 'undefined') {
                     result = $dependenciesEngine.findInCompodoc(split.target);
                 }
                 else {
-                    result = $dependenciesEngine.findInCompodoc(tagInfo.text);
+                    var info = tagInfo.text;
+                    if (tagInfo.text.indexOf('#') !== -1) {
+                        anchor = tagInfo.text.substr(tagInfo.text.indexOf('#'), tagInfo.text.length);
+                        info = tagInfo.text.substr(0, tagInfo.text.indexOf('#'));
+                    }
+                    result = $dependenciesEngine.findInCompodoc(info);
                 }
                 if (result) {
                     if (leadingText) {
@@ -1016,7 +1021,7 @@ var HtmlEngineHelpers = (function () {
                     if (typeof split.linkText !== 'undefined') {
                         label = split.linkText;
                     }
-                    newLink = "<a href=\"" + rootPath + result.type + "s/" + result.name + ".html\">" + label + "</a>";
+                    newLink = "<a href=\"" + rootPath + result.type + "s/" + result.name + ".html" + anchor + "\">" + label + "</a>";
                     return string.replace(stringtoReplace, newLink);
                 }
                 else {

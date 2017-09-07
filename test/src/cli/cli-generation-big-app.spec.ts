@@ -255,4 +255,9 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('<code>Subscription[]');
       });
 
+      it('should support @link with anchor', () => {
+          let file = read('documentation/injectables/TodoStore.html');
+          expect(file).to.contain('../classes/Todo.html#completed');
+      });
+
 });
