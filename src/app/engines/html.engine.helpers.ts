@@ -54,6 +54,12 @@ export let HtmlEngineHelpers = (function() {
 
           return options.inverse(this);
         });
+        Handlebars.registerHelper("ifString", function(a, options) {
+            if (typeof a === 'string') {
+              return options.fn(this);
+            }
+            return options.inverse(this);
+        });
         Handlebars.registerHelper("orLength", function(/* any, any, ..., options */) {
             var len = arguments.length - 1;
           var options = arguments[len];
@@ -157,112 +163,121 @@ export let HtmlEngineHelpers = (function() {
                 case 84:
                     _kindText = 'export'; //export
                     break;
+                default:
+                    _kindText = 'reset';
+                    break;
             }
             return _kindText;
         });
         /**
          * Convert {@link MyClass} to [MyClass](http://localhost:8080/classes/MyClass.html)
          */
-        Handlebars.registerHelper('parseDescription', function(description, depth) {
-            let tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
-                tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
-                tagRegExp,
-                matches,
-                previousString,
-                tagInfo = [];
+         Handlebars.registerHelper('parseDescription', function(description, depth) {
+             let tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                 tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+                 tagRegExp,
+                 matches,
+                 previousString,
+                 tagInfo = [];
 
-            tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
+             tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
 
-            var processTheLink = function(string, tagInfo, leadingText) {
-                var leading = extractLeadingText(string, tagInfo.completeTag),
-                    split,
-                    result,
-                    newLink,
-                    rootPath,
-                    stringtoReplace;
+             var processTheLink = function(string, tagInfo, leadingText) {
+                 var leading = extractLeadingText(string, tagInfo.completeTag),
+                     split,
+                     result,
+                     newLink,
+                     rootPath,
+                     stringtoReplace,
+                     anchor = '';
 
-                split = splitLinkText(tagInfo.text);
+                 split = splitLinkText(tagInfo.text);
 
-                if (typeof split.linkText !== 'undefined') {
-                    result = $dependenciesEngine.findInCompodoc(split.target);
-                } else {
-                    result = $dependenciesEngine.findInCompodoc(tagInfo.text);
-                }
+                 if (typeof split.linkText !== 'undefined') {
+                     result = $dependenciesEngine.findInCompodoc(split.target);
+                 } else {
+                     let info = tagInfo.text;
+                     if (tagInfo.text.indexOf('#') !== -1) {
+                         anchor = tagInfo.text.substr(tagInfo.text.indexOf('#'), tagInfo.text.length);
+                         info = tagInfo.text.substr(0, tagInfo.text.indexOf('#'));
+                     }
+                     result = $dependenciesEngine.findInCompodoc(info);
+                 }
 
-                if (result) {
+                 if (result) {
 
-                    if (leadingText) {
-                        stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
-                    }
-                    else if (leading.leadingText !== null) {
-                        stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
-                    } else if (typeof split.linkText !== 'undefined') {
-                        stringtoReplace = tagInfo.completeTag;
-                    } else {
-                        stringtoReplace = tagInfo.completeTag;
-                    }
+                     if (leadingText) {
+                         stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                     }
+                     else if (leading.leadingText !== null) {
+                         stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
+                     } else if (typeof split.linkText !== 'undefined') {
+                         stringtoReplace = tagInfo.completeTag;
+                     } else {
+                         stringtoReplace = tagInfo.completeTag;
+                     }
 
-                    if (result.type === 'class') result.type = 'classe';
+                     if (result.type === 'class') result.type = 'classe';
 
-                    rootPath = '';
+                     rootPath = '';
 
-                    switch (depth) {
-                        case 0:
-                            rootPath = './';
-                            break;
-                        case 1:
-                            rootPath = '../';
-                            break;
-                        case 2:
-                            rootPath = '../../';
-                            break;
-                    }
+                     switch (depth) {
+                         case 0:
+                             rootPath = './';
+                             break;
+                         case 1:
+                             rootPath = '../';
+                             break;
+                         case 2:
+                             rootPath = '../../';
+                             break;
+                     }
 
-                    let label = result.name;
-                    if (leading.leadingText !== null) {
-                        label = leading.leadingText;
-                    }
-                    if (typeof split.linkText !== 'undefined') {
-                        label = split.linkText;
-                    }
+                     let label = result.name;
+                     if (leading.leadingText !== null) {
+                         label = leading.leadingText;
+                     }
+                     if (typeof split.linkText !== 'undefined') {
+                         label = split.linkText;
+                     }
 
-                    newLink = `<a href="${rootPath}${result.type}s/${result.name}.html">${label}</a>`;
-                    return string.replace(stringtoReplace, newLink);
-                } else {
-                    return string;
-                }
-            }
+                     newLink = `<a href="${rootPath}${result.type}s/${result.name}.html${anchor}">${label}</a>`;
+                     return string.replace(stringtoReplace, newLink);
+                 } else {
+                     return string;
+                 }
+             }
 
-            function replaceMatch(replacer, tag, match, text, linkText?) {
-                var matchedTag = {
-                    completeTag: match,
-                    tag: tag,
-                    text: text
-                };
-                tagInfo.push(matchedTag);
+             function replaceMatch(replacer, tag, match, text, linkText?) {
+                 var matchedTag = {
+                     completeTag: match,
+                     tag: tag,
+                     text: text
+                 };
+                 tagInfo.push(matchedTag);
 
-                if (linkText) {
-                    return replacer(description, matchedTag, linkText);
-                } else {
-                    return replacer(description, matchedTag);
-                }
-            }
+                 if (linkText) {
+                     return replacer(description, matchedTag, linkText);
+                 } else {
+                     return replacer(description, matchedTag);
+                 }
+             }
 
-            do {
-                matches = tagRegExp.exec(description);
-                if (matches) {
-                    previousString = description;
-                    if (matches.length === 2) {
-                        description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
-                    }
-                    if (matches.length === 3) {
-                        description = replaceMatch(processTheLink, 'link', matches[0], matches[2], matches[1]);
-                    }
-                }
-            } while (matches && previousString !== description);
+             do {
+                 matches = tagRegExp.exec(description);
+                 if (matches) {
+                     previousString = description;
+                     if (matches.length === 2) {
+                         description = replaceMatch(processTheLink, 'link', matches[0], matches[1]);
+                     }
+                     if (matches.length === 3) {
+                         description = replaceMatch(processTheLink, 'link', matches[0], matches[2], matches[1]);
+                     }
+                 }
+             } while (matches && previousString !== description);
 
-            return description;
-        });
+             return description;
+         });
 
         Handlebars.registerHelper('relativeURL', function(currentDepth, context) {
             let result = '';

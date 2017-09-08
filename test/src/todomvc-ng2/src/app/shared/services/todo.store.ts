@@ -11,6 +11,7 @@ export class TodoStore {
     /**
      *  Local array of Todos
      *  See {@link Todo}
+     *  See also [Todo's completed property]{@link Todo#completed}
      */
     todos: Array<Todo>;
 

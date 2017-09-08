@@ -250,4 +250,21 @@ describe('CLI simple generation - big app', () => {
           expect(file).to.contain('true');
       });
 
+      it('should support optional', () => {
+          let file = read('documentation/components/AboutComponent.html');
+          expect(file).to.contain('<code>Subscription[]');
+      });
+
+      it('should support @link with anchor', () => {
+          let file = read('documentation/injectables/TodoStore.html');
+          expect(file).to.contain('../classes/Todo.html#completed');
+      });
+
+      it('should support self-defined type', () => {
+          let file = read('documentation/classes/Todo.html');
+          expect(file).to.contain('../miscellaneous/typealiases.html#PopupPosition');
+          file = read('documentation/miscellaneous/typealiases.html');
+          expect(file).to.contain('<code>ElementRef | HTMLElement</code>');
+      });
+
 });

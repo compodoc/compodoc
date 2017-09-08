@@ -860,6 +860,12 @@ var HtmlEngineHelpers = (function () {
             }
             return options.inverse(this);
         });
+        Handlebars.registerHelper("ifString", function (a, options) {
+            if (typeof a === 'string') {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        });
         Handlebars.registerHelper("orLength", function () {
             var len = arguments.length - 1;
             var options = arguments[len];
@@ -961,6 +967,9 @@ var HtmlEngineHelpers = (function () {
                 case 84:
                     _kindText = 'export'; //export
                     break;
+                default:
+                    _kindText = 'reset';
+                    break;
             }
             return _kindText;
         });
@@ -971,13 +980,18 @@ var HtmlEngineHelpers = (function () {
             var tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'), tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'), tagRegExp, matches, previousString, tagInfo = [];
             tagRegExp = (description.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
             var processTheLink = function (string, tagInfo, leadingText) {
-                var leading = extractLeadingText(string, tagInfo.completeTag), split, result, newLink, rootPath, stringtoReplace;
+                var leading = extractLeadingText(string, tagInfo.completeTag), split, result, newLink, rootPath, stringtoReplace, anchor = '';
                 split = splitLinkText(tagInfo.text);
                 if (typeof split.linkText !== 'undefined') {
                     result = $dependenciesEngine.findInCompodoc(split.target);
                 }
                 else {
-                    result = $dependenciesEngine.findInCompodoc(tagInfo.text);
+                    var info = tagInfo.text;
+                    if (tagInfo.text.indexOf('#') !== -1) {
+                        anchor = tagInfo.text.substr(tagInfo.text.indexOf('#'), tagInfo.text.length);
+                        info = tagInfo.text.substr(0, tagInfo.text.indexOf('#'));
+                    }
+                    result = $dependenciesEngine.findInCompodoc(info);
                 }
                 if (result) {
                     if (leadingText) {
@@ -1013,7 +1027,7 @@ var HtmlEngineHelpers = (function () {
                     if (typeof split.linkText !== 'undefined') {
                         label = split.linkText;
                     }
-                    newLink = "<a href=\"" + rootPath + result.type + "s/" + result.name + ".html\">" + label + "</a>";
+                    newLink = "<a href=\"" + rootPath + result.type + "s/" + result.name + ".html" + anchor + "\">" + label + "</a>";
                     return string.replace(stringtoReplace, newLink);
                 }
                 else {
@@ -3380,7 +3394,13 @@ var Dependencies = /** @class */ (function () {
     };
     Dependencies.prototype.findProps = function (visitedNode) {
         if (visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
-            return visitedNode.expression.arguments.pop().properties;
+            var pop = visitedNode.expression.arguments.pop();
+            if (typeof pop.properties !== 'undefined') {
+                return pop.properties;
+            }
+            else {
+                return '';
+            }
         }
         else {
             return '';
@@ -3548,7 +3568,13 @@ var Dependencies = /** @class */ (function () {
                     _return += '>';
                 }
                 if (node.type.elementType) {
-                    _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                    var _firstPart = kindToType(node.type.elementType.kind);
+                    if (typeof node.type.elementType.typeName !== 'undefined') {
+                        if (typeof node.type.elementType.typeName.escapedText !== 'undefined') {
+                            _firstPart = node.type.elementType.typeName.escapedText;
+                        }
+                    }
+                    _return = _firstPart + kindToType(node.type.kind);
                 }
                 if (node.type.types && node.type.kind === ts$3.SyntaxKind.UnionType) {
                     _return = '';
@@ -3557,6 +3583,11 @@ var Dependencies = /** @class */ (function () {
                         _return += kindToType(node.type.types[i].kind);
                         if (node.type.types[i].kind === ts$3.SyntaxKind.LiteralType && node.type.types[i].literal) {
                             _return += '"' + node.type.types[i].literal.text + '"';
+                        }
+                        if (typeof node.type.types[i].typeName !== 'undefined') {
+                            if (typeof node.type.types[i].typeName.escapedText !== 'undefined') {
+                                _return += node.type.types[i].typeName.escapedText;
+                            }
                         }
                         if (i < len - 1) {
                             _return += ' | ';

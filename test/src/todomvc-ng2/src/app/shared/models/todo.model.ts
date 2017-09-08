@@ -1,3 +1,7 @@
+import {
+    ElementRef
+} from "@angular/core";
+
 import { Direction } from '../miscellaneous/miscellaneous';
 
 ﻿export class Tada {
@@ -17,6 +21,8 @@ export class Todo extends Tada {
      * Editing status
      */
     editing: boolean;
+
+    pos?: PopupPosition;
 
     [index: number]: string;
 
@@ -65,3 +71,5 @@ export class Todo extends Tada {
       return 5;
     }
 }
+
+export type PopupPosition = ElementRef | HTMLElement;

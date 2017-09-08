@@ -859,7 +859,12 @@ export class Dependencies {
 
     private findProps(visitedNode) {
         if(visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
-            return visitedNode.expression.arguments.pop().properties;
+            let pop = visitedNode.expression.arguments.pop();
+            if (typeof pop.properties !== 'undefined') {
+                return pop.properties;
+            } else {
+                return '';
+            }
         } else {
             return '';
         }
@@ -1037,7 +1042,13 @@ export class Dependencies {
                     _return += '>';
                 }
                 if (node.type.elementType) {
-                    _return = kindToType(node.type.elementType.kind) + kindToType(node.type.kind);
+                    let _firstPart = kindToType(node.type.elementType.kind);
+                    if (typeof node.type.elementType.typeName !== 'undefined') {
+                        if (typeof node.type.elementType.typeName.escapedText !== 'undefined') {
+                            _firstPart = node.type.elementType.typeName.escapedText;
+                        }
+                    }
+                    _return = _firstPart + kindToType(node.type.kind);
                 }
                 if (node.type.types && node.type.kind === ts.SyntaxKind.UnionType) {
                     _return = '';
@@ -1048,6 +1059,13 @@ export class Dependencies {
                         if (node.type.types[i].kind === ts.SyntaxKind.LiteralType && node.type.types[i].literal) {
                             _return += '"' + node.type.types[i].literal.text + '"';
                         }
+
+                        if (typeof node.type.types[i].typeName !== 'undefined') {
+                            if (typeof node.type.types[i].typeName.escapedText !== 'undefined') {
+                                _return += node.type.types[i].typeName.escapedText;
+                            }
+                        }
+
                         if (i<len-1) {
                             _return += ' | ';
                         }

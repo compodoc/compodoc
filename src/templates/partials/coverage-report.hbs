@@ -4,13 +4,13 @@
 
 <img src="./images/coverage-badge.svg">
 
-<table class="table table-bordered coverage">
+<table class="table table-bordered coverage" id="coverage-table">
     <thead class="coverage-header">
         <tr>
             <th>File</th>
             <th>Type</th>
             <th>Identifier</th>
-            <th style="text-align:right">Statements</th>
+            <th style="text-align:right" class="statements" data-sort-default>Statements</th>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +25,7 @@
             <td>
                 {{name}}
             </td>
-            <td align="right">
+            <td align="right" data-sort="{{coveragePercent}}">
                 <span class="coverage-percent">{{coveragePercent}} %</span>
                 <span class="coverage-count">({{coverageCount}})</span>
             </td>
@@ -33,3 +33,9 @@
         {{/each}}
     </tbody>
 </table>
+
+<script src="{{relativeURL data.depth }}js/libs/tablesort.min.js"></script>
+<script src="{{relativeURL data.depth }}js/libs/tablesort.number.min.js"></script>
+<script>
+    new Tablesort(document.getElementById('coverage-table'));
+</script>
