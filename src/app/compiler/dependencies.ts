@@ -1059,6 +1059,13 @@ export class Dependencies {
                         if (node.type.types[i].kind === ts.SyntaxKind.LiteralType && node.type.types[i].literal) {
                             _return += '"' + node.type.types[i].literal.text + '"';
                         }
+
+                        if (typeof node.type.types[i].typeName !== 'undefined') {
+                            if (typeof node.type.types[i].typeName.escapedText !== 'undefined') {
+                                _return += node.type.types[i].typeName.escapedText;
+                            }
+                        }
+
                         if (i<len-1) {
                             _return += ' | ';
                         }
