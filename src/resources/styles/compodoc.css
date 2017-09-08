@@ -757,3 +757,12 @@ ul.index-list {
     height: 175px;
     line-height: 175px;
 }
+
+.name a {
+    display: none;
+    color: #6e6e6e;
+    margin-left: 5px;
+}
+.name:hover a {
+    display: inline-block;
+}

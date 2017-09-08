@@ -54,6 +54,12 @@ export let HtmlEngineHelpers = (function() {
 
           return options.inverse(this);
         });
+        Handlebars.registerHelper("ifString", function(a, options) {
+            if (typeof a === 'string') {
+              return options.fn(this);
+            }
+            return options.inverse(this);
+        });
         Handlebars.registerHelper("orLength", function(/* any, any, ..., options */) {
             var len = arguments.length - 1;
           var options = arguments[len];

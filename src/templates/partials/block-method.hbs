@@ -1,16 +1,16 @@
 <section>
-    {{#if title}}{{else}}
+    {{#ifString title}}<h3>{{title}}</h3>{{else}}
         <h3 id="methods">
             Methods
         </h3>
-    {{/if}}
+    {{/ifString}}
     {{#each methods}}
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
                     <td class="col-md-4">
                         <a name="{{name}}"></a>
-                        <b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b>
+                        <span class="name"><b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b><a href="#{{name}}"><span class="fa fa-link"></span></a></span>
                     </td>
                 </tr>
                 {{#if ../file-path}}
