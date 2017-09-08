@@ -1,3 +1,21 @@
+<a name="1.0.1"></a>
+# [1.0.1](https://github.com/compodoc/compodoc/compare/1.0.0-beta.15...1.0.1) (2017-09-08)
+
+Stopping beta period. The release cycle will be more quicker than before, when between 5 to 10 bugs are ready to ship, i will submit a new patch version.
+
+### Features
+
+* **coverage:** Sort coverage table ([30923878](https://github.com/compodoc/compodoc/commit/30923878)), closes [#292](https://github.com/compodoc/compodoc/issues/292)
+* **link:** anchor support for @link ([d9b75567](https://github.com/compodoc/compodoc/commit/d9b75567)), closes [#211](https://github.com/compodoc/compodoc/issues/211)
+* **pages:** anchor for name of variables and functions ([d9869a6f](https://github.com/compodoc/compodoc/commit/d9869a6f))
+
+### Bug Fixes
+
+* **deps:** support self-defined type ([104b82fa](https://github.com/compodoc/compodoc/commit/104b82fa)), closes [#267](https://github.com/compodoc/compodoc/issues/267)
+* **deps:** Array of custom interface not showing in documentation ([469f0945](https://github.com/compodoc/compodoc/commit/469f0945)), closes [#300](https://github.com/compodoc/compodoc/issues/300)
+* **deps:** decorator with simple argument string ([8eb13c52](https://github.com/compodoc/compodoc/commit/8eb13c52)), closes [#299](https://github.com/compodoc/compodoc/issues/299)
+* **doc:** links to Angular documentation for modules import, export etc ([b9b9d419](https://github.com/compodoc/compodoc/commit/b9b9d419)), closes [#297](https://github.com/compodoc/compodoc/issues/297)
+
 <a name="1.0.0-beta.15"></a>
 # [1.0.0-beta.15](https://github.com/compodoc/compodoc/compare/1.0.0-beta.14...1.0.0-beta.15) (2017-09-04)
 
