@@ -5430,7 +5430,7 @@ var Application = /** @class */ (function () {
                     status = 'good';
                 }
                 else {
-                    status = 'good';
+                    status = 'very-good';
                 }
                 return status;
             }, processComponentsAndDirectives = function (list) {
