@@ -359,7 +359,7 @@ export class Dependencies {
                             description: IO.description,
                             type: 'component',
                             sourceCode: srcFile.getText(),
-                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
+                            exampleUrls: this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (this.configuration.mainData.disablePrivateOrInternalSupport) {
                             deps.methodsClass = cleanLifecycleHooksFromMethods(deps.methodsClass);
@@ -405,7 +405,8 @@ export class Dependencies {
                             file: file,
                             type: 'pipe',
                             description: IO.description,
-                            sourceCode: srcFile.getText()
+                            sourceCode: srcFile.getText(),
+                            exampleUrls: this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
@@ -432,7 +433,7 @@ export class Dependencies {
 
                             propertiesClass: IO.properties,
                             methodsClass: IO.methods,
-                            exampleUrls: _this.getComponentExampleUrls(srcFile.getText())
+                            exampleUrls: this.getComponentExampleUrls(srcFile.getText())
                         };
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             deps.jsdoctags = IO.jsdoctags[0].tags
