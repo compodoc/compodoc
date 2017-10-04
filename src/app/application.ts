@@ -1259,7 +1259,7 @@ export class Application {
             });
             $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
             files = _.sortBy(files, ['coveragePercent']);
-            let coverageTestPerFileResults = processCoveragePerFile();
+            let coverageTestPerFileResults;
             if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {
                 // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
@@ -1270,6 +1270,7 @@ export class Application {
                     process.exit(1);
                 }
             } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
+                coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
                     logger.error('Documentation coverage per file is not achieved');
@@ -1280,6 +1281,7 @@ export class Application {
                 }
             } else if (this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
                 // Per file coverage test and global
+                coverageTestPerFileResults = processCoveragePerFile();
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold && coverageTestPerFileResults.underFiles.length === 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     logger.info('Documentation coverage per file is achieved');
