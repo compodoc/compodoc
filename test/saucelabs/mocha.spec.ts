@@ -196,7 +196,7 @@ describe('WIN7 | IE | Compodoc page', function() {
 });
 */
 
-describe('WIN7 | Safari | Compodoc page', function() {
+/*describe('WIN7 | Safari | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'safari';
@@ -220,7 +220,7 @@ describe('WIN7 | Safari | Compodoc page', function() {
     after(function(done) {
         endTests(this, done);
     });
-});
+});*/
 
 describe('Linux | Firefox | Compodoc page', function() {
 
@@ -332,13 +332,12 @@ describe('Mac | Chrome | Compodoc page', function() {
     });
 });
 
-/*
 describe('Mac | Safari | Compodoc page', function() {
 
     before(function(done) {
         capabilities.platform = 'Mac 10.11';
         capabilities.browserName = 'safari';
-        capabilities.version = '10';
+        capabilities.version = '9';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
@@ -359,4 +358,3 @@ describe('Mac | Safari | Compodoc page', function() {
         endTests(this, done);
     });
 });
-*/
