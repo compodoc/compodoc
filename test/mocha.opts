@@ -3,5 +3,5 @@
 --colors
 --harmony
 --timeout 120000
---compilers ts:ts-node/register
+--register ts:ts-node/register
 test/src/cli/**/*.spec.ts

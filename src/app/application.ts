@@ -1043,7 +1043,32 @@ export class Application {
                         totalProjectStatementDocumented += cl.coveragePercent;
                         files.push(cl);
                     })
+                },
+            processCoveragePerFile = () => {
+                logger.info('Process documentation coverage per file');
+                logger.info('-------------------');
+
+                let overFiles = files.filter((f) => {
+                        let overTest = f.coveragePercent >= this.configuration.mainData.coverageMinimumPerFile;
+                        if (overTest) {
+                            logger.info(`${f.coveragePercent} % for file ${f.filePath} - over minimum per file`);
+                        }
+                        return overTest;
+                    }),
+                    underFiles = files.filter((f) => {
+                        let underTest = f.coveragePercent < this.configuration.mainData.coverageMinimumPerFile;
+                        if (underTest) {
+                            logger.error(`${f.coveragePercent} % for file ${f.filePath} - under minimum per file`);
+                        }
+                        return underTest;
+                    });
+
+                logger.info('-------------------');
+                return {
+                    overFiles: overFiles,
+                    underFiles: underFiles
                 };
+            };
 
             processComponentsAndDirectives(this.configuration.mainData.components);
             processComponentsAndDirectives(this.configuration.mainData.directives);
@@ -1233,12 +1258,43 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             $htmlengine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
-            if (this.configuration.mainData.coverageTest) {
+            files = _.sortBy(files, ['coveragePercent']);
+            let coverageTestPerFileResults = processCoveragePerFile();
+            if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {
+                // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
-                    logger.info('Documentation coverage is over threshold');
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     process.exit(0);
                 } else {
-                    logger.error('Documentation coverage is not over threshold');
+                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    process.exit(1);
+                }
+            } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
+                // Per file coverage test and not global
+                if (coverageTestPerFileResults.underFiles.length > 0) {
+                    logger.error('Documentation coverage per file is not achieved');
+                    process.exit(1);
+                } else {
+                    logger.info('Documentation coverage per file is achieved');
+                    process.exit(0);
+                }
+            } else if (this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
+                // Per file coverage test and global
+                if (coverageData.count >= this.configuration.mainData.coverageTestThreshold && coverageTestPerFileResults.underFiles.length === 0) {
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
+                    logger.info('Documentation coverage per file is achieved');
+                    process.exit(0);
+                } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold && coverageTestPerFileResults.underFiles.length > 0) {
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
+                    logger.error('Documentation coverage per file is not achieved');
+                    process.exit(1);
+                } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold && coverageTestPerFileResults.underFiles.length > 0) {
+                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    logger.error('Documentation coverage per file is not achieved');
+                    process.exit(1);
+                } else {
+                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    logger.info('Documentation coverage per file is achieved');
                     process.exit(1);
                 }
             } else {
