@@ -332,7 +332,7 @@ describe('Mac | Chrome | Compodoc page', function() {
     });
 });
 
-describe('Mac | Safari | Compodoc page', function() {
+/*describe('Mac | Safari | Compodoc page', function() {
 
     before(function(done) {
         capabilities.platform = 'Mac 10.11';
@@ -357,4 +357,4 @@ describe('Mac | Safari | Compodoc page', function() {
     after(function(done) {
         endTests(this, done);
     });
-});
+});*/
