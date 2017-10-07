@@ -51,7 +51,7 @@ The demo features documentation generated for a simple [TodoMVC application].
 
 - **Offline** — No server needed, no sources uploaded online, documentation generated entirely offline.
 
-- **Open-source and on npm** — Use it directly in your project using npm and a single script—that's it!
+- **Open-source and on npm** — Use it directly in your project using [npm] and a single script—that's it!
 
 [Gitbook]: https://www.gitbook.com
 [Read the Docs]: https://readthedocs.org/
@@ -61,7 +61,7 @@ The demo features documentation generated for a simple [TodoMVC application].
 [Stripe]: https://stripe.com/docs/api
 [lunr.js]: http://lunrjs.com/
 [Angular CLI]: https://cli.angular.io/
-
+[npm]: https://www.npmjs.com/
 
 # Documentation
 
