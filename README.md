@@ -16,10 +16,10 @@
     <a href="https://gitter.im/compodoc/compodoc" target="_blank"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter badge"></a><br><br>
 </p>
 
-<p align="center">The missing documentation tool for your Angular application<br><br></p>
+<p align="center">The missing documentation tool for your Angular application.<br><br></p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.gif" alt="Compodoc: The missing documentation tool for your Angular application" >
+  <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.gif" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
 
@@ -65,11 +65,11 @@ The demo features documentation generated for a simple [TodoMVC application].
 
 # Documentation
 
-Official documentation has moved to [https://compodoc.github.io/website/](https://compodoc.github.io/website/guides/getting-started.html)
+Official documentation has moved to [https://compodoc.github.io/website/](https://compodoc.github.io/website/guides/getting-started.html).
 
 ## Installation
 
-Ready to get started? [View installation instructions](https://compodoc.github.io/website/guides/installation.html).
+Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
 
 ## Contributing
 
