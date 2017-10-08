@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+const ts = require('typescript');
 
 let code: string[] = [];
 
