@@ -84,7 +84,7 @@ export function stripBom(source: string): string {
     if (source.charCodeAt(0) === 0xFEFF) {
 		return source.slice(1);
 	}
-	return source;
+	   return source;
 }
 
 export function hasBom(source: string): boolean {
@@ -106,7 +106,7 @@ export function handlePath(files: string[], cwd: string): string[] {
 }
 
 export function cleanLifecycleHooksFromMethods(methods) {
-    var result = [],
+    let result = [],
         i = 0,
         len = methods.length;
 
@@ -124,17 +124,17 @@ export function cleanSourcesForWatch(list) {
         if(fs.existsSync(process.cwd() + path.sep + element)) {
             return element;
         }
-    })
+    });
 }
 
-export function getNamesCompareFn(name) {
+export function getNamesCompareFn(name?) {
     /**
      * Copyright https://github.com/ng-bootstrap/ng-bootstrap
      */
     name = name || 'name';
-    var t = (a, b) => {
+    const t = (a, b) => {
         if (a[name]) {
-            return a[name].localeCompare(b[name])
+            return a[name].localeCompare(b[name]);
         } else {
             return 0;
         }

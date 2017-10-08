@@ -24,7 +24,7 @@ describe('CLI simple generation - big app', () => {
           searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
           done();
       });
-      //after(() => tmp.clean('documentation'));
+      // after(() => tmp.clean('documentation'));
 
       it('should display generated message', () => {
           expect(stdoutString).to.contain('Documentation generated');

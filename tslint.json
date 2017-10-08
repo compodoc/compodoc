@@ -7,7 +7,7 @@
             "statements"
         ],
         "ban": [
-            true, ["_", "forEach"],
+            true,
             ["_", "each"],
             ["$", "each"],
             ["angular", "forEach"]
@@ -15,8 +15,7 @@
         "class-name": true,
         "comment-format": [
             true,
-            "check-space",
-            "check-lowercase"
+            "check-space"
         ],
         "curly": true,
         "eofline": false,
@@ -59,7 +58,7 @@
         ],
         "no-null-keyword": true,
         "no-reference": true,
-        "no-require-imports": true,
+        "no-require-imports": false,
         "no-shadowed-variable": true,
         "no-string-literal": true,
         "no-switch-case-fall-through": true,
@@ -67,8 +66,8 @@
         "no-unused-expression": true,
         "no-use-before-declare": true,
         "no-var-keyword": true,
-        "no-var-requires": true,
-        "object-literal-sort-keys": true,
+        "no-var-requires": false,
+        "object-literal-sort-keys": false,
         "one-line": [
             true,
             "check-open-brace",

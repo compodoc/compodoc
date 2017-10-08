@@ -24,17 +24,17 @@ export function copy(source: string, dest: string): boolean {
 
 export function temporaryDir() {
     let name = '.tmp-compodoc-test';
-    let cleanUp = (name) => {
-        if( fs.existsSync(name) ) {
-            fs.readdirSync(name).forEach((file) => {
-                var curdir = path.join(name, file);
+    let cleanUp = (cleanUpName) => {
+        if( fs.existsSync(cleanUpName) ) {
+            fs.readdirSync(cleanUpName).forEach((file) => {
+                const curdir = path.join(cleanUpName, file);
                 if(fs.statSync(curdir).isDirectory()) {
                     cleanUp(curdir);
                 } else {
                     fs.unlinkSync(curdir);
                 }
             });
-            fs.rmdirSync(name);
+            fs.rmdirSync(cleanUpName);
         }
     };
 
@@ -55,5 +55,5 @@ export function temporaryDir() {
                 cleanUp(name);
             } catch (e) {}
         }
-    }
+    };
 }
