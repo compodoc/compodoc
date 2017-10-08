@@ -545,7 +545,11 @@ export class Dependencies {
 
     }
     private debug(deps: IDep) {
-        logger.debug('found', `${deps.name}`);
+        if (deps) {
+            logger.debug('found', `${deps.name}`);
+        } else {
+            return;
+        }
         [
             'imports', 'exports', 'declarations', 'providers', 'bootstrap'
         ].forEach(symbols => {
@@ -725,7 +729,7 @@ export class Dependencies {
             }
         };
         let visitArgument = function (arg) {
-            let result1: any = {
+            let result: any = {
                 name: arg.name.text
             };
             if (arg.type) {
@@ -737,7 +741,7 @@ export class Dependencies {
                     }
                 }
             }
-            return result1;
+            return result;
         };
 
         let result: any = {
