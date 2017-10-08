@@ -13,7 +13,8 @@
       "../node_modules/@types"
     ],
     "types": [
-      "node"
+      "node",
+      "typescript"
     ],
     "lib": [
         "es5",

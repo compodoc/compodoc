@@ -1,25 +1,23 @@
-const ts = require('typescript');
+import * as ts from 'typescript';
 
 let code: string[] = [];
 
 export let gen = (function () {
     let tmp: typeof code = [];
 
-    return (token = null) => {
+    return (token = undefined) => {
         if (!token) {
-            //console.log(' ! token');
+            // console.log(' ! token');
             return code;
-        }
-        else if (token === '\n') {
-            //console.log(' \n');
+        } else if (token === '\n') {
+            // console.log(' \n');
             code.push(tmp.join(''));
             tmp = [];
-        }
-        else {
+        } else {
             code.push(token);
         }
         return code;
-    }
+    };
 } ());
 
 export function generate(node: any) {
@@ -36,7 +34,7 @@ function visitAndRecognize(node: any, depth = 0) {
 
 function recognize(node: any) {
 
-    //console.log('recognizing...', ts.SyntaxKind[node.kind+'']);
+    // console.log('recognizing...', ts.SyntaxKind[node.kind+'']);
 
     switch (node.kind) {
         case ts.SyntaxKind.FirstLiteralToken:
