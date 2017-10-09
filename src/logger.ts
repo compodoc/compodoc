@@ -1,20 +1,20 @@
-let gutil = require('gulp-util')
+let gutil = require('gulp-util');
 let c = gutil.colors;
 let pkg = require('../package.json');
 
 enum LEVEL {
 	INFO,
 	DEBUG,
-    ERROR,
-    WARN
+	ERROR,
+	WARN
 }
 
 class Logger {
 
-	name;
-	logger;
-	version;
-	silent;
+	public name;
+	public logger;
+	public version;
+	public silent;
 
 	constructor() {
 		this.name = pkg.name;
@@ -23,29 +23,29 @@ class Logger {
 		this.silent = true;
 	}
 
-	info(...args) {
-		if(!this.silent) return;
+	public info(...args) {
+		if (!this.silent) { return; }
 		this.logger(
 			this.format(LEVEL.INFO, ...args)
 		);
 	}
 
-	error(...args) {
-		if(!this.silent) return;
+	public error(...args) {
+		if (!this.silent) { return; }
 		this.logger(
 			this.format(LEVEL.ERROR, ...args)
 		);
 	}
 
-    warn(...args) {
-		if(!this.silent) return;
+	public warn(...args) {
+		if (!this.silent) { return; }
 		this.logger(
 			this.format(LEVEL.WARN, ...args)
 		);
 	}
 
-	debug(...args) {
-		if(!this.silent) return;
+	public debug(...args) {
+		if (!this.silent) { return; }
 		this.logger(
 			this.format(LEVEL.DEBUG, ...args)
 		);
@@ -53,17 +53,17 @@ class Logger {
 
 	private format(level, ...args) {
 
-		let pad = (s, l, c='') => {
-			return s + Array( Math.max(0, l - s.length + 1)).join( c )
+		let pad = (s, l, z = '') => {
+			return s + Array(Math.max(0, l - s.length + 1)).join(z);
 		};
 
 		let msg = args.join(' ');
-		if(args.length > 1) {
-			msg = `${ pad(args.shift(), 15, ' ') }: ${ args.join(' ') }`;
+		if (args.length > 1) {
+			msg = `${pad(args.shift(), 15, ' ')}: ${args.join(' ')}`;
 		}
 
 
-		switch(level) {
+		switch (level) {
 			case LEVEL.INFO:
 				msg = c.green(msg);
 				break;
@@ -72,7 +72,7 @@ class Logger {
 				msg = c.cyan(msg);
 				break;
 
-            case LEVEL.WARN:
+			case LEVEL.WARN:
 				msg = c.yellow(msg);
 				break;
 

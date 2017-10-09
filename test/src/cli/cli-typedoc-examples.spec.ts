@@ -1,14 +1,14 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
-const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+const expect = chai.expect;
+const tmp = temporaryDir();
+const tsconfigPath = require.resolve('../../../tsconfig.json');
+const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI generation - TypeDoc examples', () => {
 
       let stdoutString = null;
-      before(function (done) {
+      before((done) => {
           let ls = shell('node', [
               './bin/index-cli.js',
               '-p', './test/src/typedoc-examples/tsconfig.json'], { env});
@@ -20,7 +20,7 @@ describe('CLI generation - TypeDoc examples', () => {
           stdoutString = ls.stdout.toString();
           done();
       });
-      //after(() => tmp.clean('documentation'));
+      // after(() => tmp.clean('documentation'));
 
       it('should display generated message', () => {
           expect(stdoutString).to.contain('Documentation generated');
@@ -28,9 +28,9 @@ describe('CLI generation - TypeDoc examples', () => {
 
       it('interfaces - INameInterface', () => {
           const file = read(`documentation/interfaces/INameInterface.html`);
-          expect(file).to.contain('This is a simple interface.');
-          expect(file).to.contain('This is a interface function of INameInterface.');
-          expect(file).to.contain('This is a interface member of INameInterface.');
+          expect(file, 'Did not contain class comment').to.contain('This is a simple interface.');
+          expect(file, 'Did not contain function commment').to.contain('This is a interface function of INameInterface.');
+          expect(file, 'Did not contain member comment').to.contain('This is a interface member of INameInterface.');
       });
 
       it('interfaces - IPrintNameInterface', () => {

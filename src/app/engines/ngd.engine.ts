@@ -2,18 +2,21 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Shelljs from 'shelljs';
 import * as util from 'util';
-
-import { $dependenciesEngine } from './dependencies.engine';
+import * as _ from 'lodash';
 
 import isGlobal from '../../utils/global.path';
+import { DependenciesEngine } from './dependencies.engine';
 
-const ngdT = require('@compodoc/ngd-transformer'),
-      _ = require('lodash');
+const ngdT = require('@compodoc/ngd-transformer');
 
 export class NgdEngine {
-    engine;
-    constructor() {}
-    init(outputpath: string) {
+    public engine;
+
+    constructor(private dependenciesEngine: DependenciesEngine) {
+
+    }
+
+    public init(outputpath: string) {
         this.engine = new ngdT.DotEngine({
             output: outputpath,
             displayLegend: true,
@@ -21,12 +24,13 @@ export class NgdEngine {
             silent: false
         });
     }
-    renderGraph(filepath: string, outputpath: string, type: string, name?: string) {
+
+    public renderGraph(filepath: string, outputpath: string, type: string, name?: string) {
         this.engine.updateOutput(outputpath);
         return new Promise((resolve, reject) => {
             if (type === 'f') {
                 this.engine
-                    .generateGraph([$dependenciesEngine.getRawModule(name)])
+                    .generateGraph([this.dependenciesEngine.getRawModule(name)])
                     .then(file => {
                         resolve();
                     }, error => {
@@ -34,7 +38,7 @@ export class NgdEngine {
                     });
             } else {
                 this.engine
-                    .generateGraph($dependenciesEngine.rawModulesForOverview)
+                    .generateGraph(this.dependenciesEngine.rawModulesForOverview)
                     .then(file => {
                         resolve();
                     }, error => {
@@ -43,7 +47,8 @@ export class NgdEngine {
             }
         });
     }
-    readGraph(filepath: string, name: string) {
+
+    public readGraph(filepath: string, name: string) {
         return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(filepath), 'utf8', (err, data) => {
                if (err) {
@@ -54,4 +59,4 @@ export class NgdEngine {
            });
         });
     }
-};
+}

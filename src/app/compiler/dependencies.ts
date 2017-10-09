@@ -21,6 +21,7 @@ import { ModuleHelper } from './deps/helpers/module-helper';
 import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper, NsModuleCache } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
+import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import {
     IInjectableDep,
     IPipeDep,
@@ -46,14 +47,16 @@ export class Dependencies {
     private engine: any;
     private __nsModule: NsModuleCache = new NsModuleCache();
     private cache: ComponentCache = new ComponentCache();
-    private configuration = Configuration.getInstance();
     private componentHelper: ComponentHelper;
     private moduleHelper = new ModuleHelper(this.__nsModule, this.cache);
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private classHelper: ClassHelper;
 
-    constructor(files: string[], options: any) {
+    constructor(
+        files: string[],
+        options: any,
+        private configuration: ConfigurationInterface) {
         this.files = files;
         const transpileOptions = {
             target: ts.ScriptTarget.ES5,
@@ -260,7 +263,7 @@ export class Dependencies {
                         if (props.length === 0) {
                             return;
                         }
-                        const componentDep = new ComponentDepFactory(this.componentHelper)
+                        const componentDep = new ComponentDepFactory(this.componentHelper, this.configuration)
                             .create(file, srcFile, name, props, IO);
                         $componentsTreeEngine.addComponent(componentDep);
                         outputSymbols.components.push(componentDep);
@@ -706,47 +709,47 @@ export class Dependencies {
         return result;
     }
 
-    private visitFunctionDeclaration(method) {
-        let mapTypes = function (type) {
-            // tslint:disable-next-line:switch-default
-            switch (type) {
-                case 94:
-                    return 'Null';
-                case 118:
-                    return 'Any';
-                case 121:
-                    return 'Boolean';
-                case 129:
-                    return 'Never';
-                case 132:
-                    return 'Number';
-                case 134:
-                    return 'String';
-                case 137:
-                    return 'Undefined';
-                case 157:
-                    return 'TypeReference';
-            }
+    private visitArgument(arg) {
+        let result: any = {
+            name: arg.name.text
         };
-        let visitArgument = function (arg) {
-            let result: any = {
-                name: arg.name.text
-            };
-            if (arg.type) {
-                result.type = mapTypes(arg.type.kind);
-                if (arg.type.kind === 157) {
-                    // try replace TypeReference with typeName
-                    if (arg.type.typeName) {
-                        result.type = arg.type.typeName.text;
-                    }
+        if (arg.type) {
+            result.type = this.mapType(arg.type.kind);
+            if (arg.type.kind === 157) {
+                // try replace TypeReference with typeName
+                if (arg.type.typeName) {
+                    result.type = arg.type.typeName.text;
                 }
             }
-            return result;
-        };
+        }
+        return result;
+    }
 
+    private mapType(type): string | undefined {
+        switch (type) {
+            case 94:
+                return 'Null';
+            case 118:
+                return 'Any';
+            case 121:
+                return 'Boolean';
+            case 129:
+                return 'Never';
+            case 132:
+                return 'Number';
+            case 134:
+                return 'String';
+            case 137:
+                return 'Undefined';
+            case 157:
+                return 'TypeReference';
+        }
+    }
+
+    private visitFunctionDeclaration(method) {
         let result: any = {
             name: method.name.text,
-            args: method.parameters ? method.parameters.map((prop) => visitArgument(prop)) : []
+            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
         };
         let jsdoctags = JSDocTagsParser.getJSDocs(method);
 
@@ -873,7 +876,7 @@ export class Dependencies {
     }
 
 
-    private getClassIO(filename: string, sourceFile, node) {
+    private getClassIO(filename: string, sourceFile: ts.SourceFile, node) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */

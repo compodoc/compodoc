@@ -1,11 +1,6 @@
 {
     "rules": {
-        "align": [
-            true,
-            "parameters",
-            "arguments",
-            "statements"
-        ],
+        "align": false,
         "ban": [
             true,
             ["_", "each"],
@@ -19,7 +14,7 @@
         ],
         "curly": true,
         "eofline": false,
-        "forin": true,
+        "forin": false,
         "indent": [
             true,
             4
@@ -31,12 +26,7 @@
             140
         ],
         "member-access": true,
-        "member-ordering": [
-            true,
-            {
-                "order": "fields-first"
-            }
-        ],
+        "member-ordering": false,
         "new-parens": true,
         "no-angle-bracket-type-assertion": true,
         "no-any": false,
@@ -86,7 +76,7 @@
         ],
         "radix": true,
         "semicolon": [true, "always"],
-        "switch-default": true,
+        "switch-default": false,
         "trailing-comma": [false],
         "triple-equals": [
             true,

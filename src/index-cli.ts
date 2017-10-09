@@ -8,13 +8,13 @@ import { logger } from './logger';
 import { readConfig, handlePath } from './utils/utils';
 import { ExcludeParser } from './utils/exclude.parser';
 
-let pkg = require('../package.json'),
-    program = require('commander'),
-    _ = require('lodash'),
-    os = require('os'),
-    osName = require('os-name'),
-    files = [],
-    cwd = process.cwd();
+const pkg = require('../package.json');
+const program = require('commander');
+const _ = require('lodash');
+const os = require('os');
+const osName = require('os-name');
+const files = [];
+const cwd = process.cwd();
 
 process.setMaxListeners(0);
 
@@ -326,8 +326,8 @@ export class CliApplication extends Application
                         var finder = require('findit')(path.resolve(sourceFolder));
 
                         finder.on('directory', function (dir, stat, stop) {
-                            var base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') stop()
+                            let base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop();
                         });
 
                         finder.on('file', (file, stat) => {
