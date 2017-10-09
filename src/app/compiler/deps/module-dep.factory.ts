@@ -3,6 +3,7 @@ import { NodeObject } from '../node-object.interface';
 import { ModuleHelper } from './helpers/module-helper';
 import { NsModuleCache } from './helpers/symbol-helper';
 import { ComponentCache } from './helpers/component-helper';
+const ts = require('typescript');
 
 
 
@@ -11,7 +12,7 @@ export class ModuleDepFactory {
 
     }
 
-    public create(file: any, srcFile: any, name: any, props: any, IO: any): IModuleDep {
+    public create(file: any, srcFile: ts.SourceFile, name: any, props: any, IO: any): IModuleDep {
         return {
             name,
             id: 'module-' + name + '-' + Date.now(),

@@ -4,15 +4,17 @@ import { ComponentHelper } from './helpers/component-helper';
 import { cleanLifecycleHooksFromMethods } from '../../../utils/utils';
 import { NsModuleCache } from './helpers/symbol-helper';
 import { ClassHelper } from './helpers/class-helper';
+import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 
 export class ComponentDepFactory {
-    constructor(private helper: ComponentHelper) {
+    constructor(
+        private helper: ComponentHelper,
+        private configuration: ConfigurationInterface) {
 
     }
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
-        const configuration = Configuration.getInstance();
         let componentDep: IComponentDep = {
             name,
             id: 'component-' + name + '-' + Date.now(),
@@ -48,7 +50,7 @@ export class ComponentDepFactory {
             sourceCode: srcFile.getText(),
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
-        if (configuration.mainData.disablePrivateOrInternalSupport) {
+        if (this.configuration.mainData.disablePrivateOrInternalSupport) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {

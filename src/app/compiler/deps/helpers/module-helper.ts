@@ -12,9 +12,9 @@ export class ModuleHelper {
     }
 
     public getModuleProviders(props: NodeObject[]): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'providers').map((providerName) => {
-            return this.symbolHelper.parseDeepIndentifier(providerName, this.moduleCache);
-        });
+        return this.symbolHelper
+            .getSymbolDeps(props, 'providers')
+            .map((providerName) => this.symbolHelper.parseDeepIndentifier(providerName, this.moduleCache));
     }
 
     public getModuleDeclations(props: NodeObject[]): Deps[] {
@@ -30,15 +30,15 @@ export class ModuleHelper {
     }
 
     public getModuleImports(props: NodeObject[]): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'imports').map((name) => {
-            return this.symbolHelper.parseDeepIndentifier(name, this.moduleCache);
-        });
+        return this.symbolHelper
+            .getSymbolDeps(props, 'imports')
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 
     public getModuleExports(props: NodeObject[]): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'exports').map((name) => {
-            return this.symbolHelper.parseDeepIndentifier(name, this.moduleCache);
-        });
+        return this.symbolHelper
+            .getSymbolDeps(props, 'exports')
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 
     public getModuleImportsRaw(props: NodeObject[]): Deps[] {
@@ -46,8 +46,8 @@ export class ModuleHelper {
     }
 
     public getModuleBootstrap(props: NodeObject[]): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'bootstrap').map((name) => {
-            return this.symbolHelper.parseDeepIndentifier(name, this.moduleCache);
-        });
+        return this.symbolHelper
+            .getSymbolDeps(props, 'bootstrap')
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 }

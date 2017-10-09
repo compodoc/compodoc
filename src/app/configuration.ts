@@ -1,17 +1,11 @@
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
-
 import { PageInterface } from './interfaces/page.interface';
-
 import { MainDataInterface } from './interfaces/main-data.interface';
-
 import { ConfigurationInterface } from './interfaces/configuration.interface';
-
-const _ = require('lodash');
+import * as _ from 'lodash';
 
 export class Configuration implements ConfigurationInterface {
-    private static _instance:Configuration = new Configuration();
-
-    private _pages:PageInterface[] = [];
+    private _pages: PageInterface[] = [];
     private _mainData: MainDataInterface = {
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
@@ -60,62 +54,50 @@ export class Configuration implements ConfigurationInterface {
         angularVersion: ''
     };
 
-    constructor() {
-        if(Configuration._instance){
-            throw new Error('Error: Instantiation failed: Use Configuration.getInstance() instead of new.');
-        }
-        Configuration._instance = this;
-    }
-
-    public static getInstance():Configuration
-    {
-        return Configuration._instance;
-    }
-
-    addPage(page: PageInterface) {
-        let indexPage = _.findIndex(this._pages, {'name': page.name});
+    public addPage(page: PageInterface) {
+        let indexPage = _.findIndex(this._pages, { 'name': page.name });
         if (indexPage === -1) {
             this._pages.push(page);
         }
     }
 
-    addAdditionalPage(page: PageInterface) {
+    public addAdditionalPage(page: PageInterface) {
         this._mainData.additionalPages.push(page);
     }
 
-    resetPages() {
+    public resetPages() {
         this._pages = [];
     }
 
-    resetAdditionalPages() {
+    public resetAdditionalPages() {
         this._mainData.additionalPages = [];
     }
 
-    resetRootMarkdownPages() {
-        let indexPage = _.findIndex(this._pages, {'name': 'index'});
+    public resetRootMarkdownPages() {
+        let indexPage = _.findIndex(this._pages, { 'name': 'index' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, {'name': 'changelog'});
+        indexPage = _.findIndex(this._pages, { 'name': 'changelog' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, {'name': 'contributing'});
+        indexPage = _.findIndex(this._pages, { 'name': 'contributing' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, {'name': 'license'});
+        indexPage = _.findIndex(this._pages, { 'name': 'license' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, {'name': 'todo'});
+        indexPage = _.findIndex(this._pages, { 'name': 'todo' });
         this._pages.splice(indexPage, 1);
         this._mainData.markdowns = [];
     }
 
-    get pages():PageInterface[] {
+    get pages(): PageInterface[] {
         return this._pages;
     }
-    set pages(pages:PageInterface[]) {
+    set pages(pages: PageInterface[]) {
         this._pages = [];
     }
 
-    get mainData():MainDataInterface {
+    get mainData(): MainDataInterface {
         return this._mainData;
     }
-    set mainData(data:MainDataInterface) {
-        (<any>Object).assign(this._mainData, data);
+    set mainData(data: MainDataInterface) {
+        (Object as any).assign(this._mainData, data);
     }
-};
+}

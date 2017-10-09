@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as _ from 'lodash';
 
 const marked = require('marked');
 
@@ -25,15 +26,12 @@ export class MarkdownEngine {
                 + body
                 + '</tbody>\n'
                 + '</table>\n';
-        }
+        };
 
-        renderer.image = function (href, title, text) {
-            var out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
-            if (title) {
-                out += ' title="' + title + '"';
-            }
-            out += this.options.xhtml ? '/>' : '>';
-            return out;
+        let self = this;
+        renderer.image = function() {
+            // tslint:disable-next-line:no-invalid-this
+            self.rendereImage.apply(self, [this, ..._.slice(arguments as any)]);
         };
 
         marked.setOptions({
@@ -41,8 +39,18 @@ export class MarkdownEngine {
             breaks: false
         });
     }
-    get(filepath: string) {
-        return new Promise(function (resolve, reject) {
+
+    private rendereImage(context, href: string, title: string, text: string): string {
+        let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
+        if (title) {
+            out += ' title="' + title + '"';
+        }
+        out += context.options.xhtml ? '/>' : '>';
+        return out;
+    }
+
+    public get(filepath: string): Promise<string> {
+        return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during ' + filepath + ' read');
@@ -52,15 +60,16 @@ export class MarkdownEngine {
             });
         });
     }
-    getTraditionalMarkdown(filepath: string) {
+
+    public getTraditionalMarkdown(filepath: string): Promise<any> {
         return new Promise(function (resolve, reject) {
             fs.readFile(path.resolve(process.cwd() + path.sep + filepath + '.md'), 'utf8', (err, data) => {
                 if (err) {
-                    fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err, data) => {
-                        if (err) {
+                    fs.readFile(path.resolve(process.cwd() + path.sep + filepath), 'utf8', (err1, data1) => {
+                        if (err1) {
                             reject('Error during ' + filepath + ' read');
                         } else {
-                            resolve(marked(data));
+                            resolve(marked(data1));
                         }
                     });
                 } else {
@@ -69,8 +78,9 @@ export class MarkdownEngine {
             });
         });
     }
-    getReadmeFile() {
-        return new Promise(function (resolve, reject) {
+
+    private getReadmeFile(): Promise<any> {
+        return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(process.cwd() + path.sep + 'README.md'), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during README.md file reading');
@@ -80,21 +90,24 @@ export class MarkdownEngine {
             });
         });
     }
-    readNeighbourReadmeFile(file: string) {
-        let dirname = path.dirname(file),
-            readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+
+    private readNeighbourReadmeFile(file: string) {
+        let dirname = path.dirname(file);
+        let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
         return fs.readFileSync(readmeFile, 'utf8');
     }
-    hasNeighbourReadmeFile(file: string): boolean {
-        let dirname = path.dirname(file),
-            readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+
+    private hasNeighbourReadmeFile(file: string): boolean {
+        let dirname = path.dirname(file);
+        let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
         return fs.existsSync(readmeFile);
     }
-    componentReadmeFile(file: string): string {
-        let dirname = path.dirname(file),
-            readmeFile = dirname + path.sep + 'README.md',
-            readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md',
-            finalPath = '';
+
+    private componentReadmeFile(file: string): string {
+        let dirname = path.dirname(file);
+        let readmeFile = dirname + path.sep + 'README.md';
+        let readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
+        let finalPath = '';
         if (fs.existsSync(readmeFile)) {
             finalPath = readmeFile;
         } else {
@@ -102,55 +115,59 @@ export class MarkdownEngine {
         }
         return finalPath;
     }
-    hasRootMarkdowns(): boolean {
-        let readmeFile = process.cwd() + path.sep + 'README.md',
-            readmeFileWithoutExtension = process.cwd() + path.sep + 'README',
-            changelogFile = process.cwd() + path.sep + 'CHANGELOG.md',
-            changelogFileWithoutExtension = process.cwd() + path.sep + 'CHANGELOG',
-            licenseFile = process.cwd() + path.sep + 'LICENSE.md',
-            licenseFileWithoutExtension = process.cwd() + path.sep + 'LICENSE',
-            contributingFile = process.cwd() + path.sep + 'CONTRIBUTING.md',
-            contributingFileWithoutExtension = process.cwd() + path.sep + 'CONTRIBUTING',
-            todoFile = process.cwd() + path.sep + 'TODO.md',
-            todoFileWithoutExtension = process.cwd() + path.sep + 'TODO';
+
+    public hasRootMarkdowns(): boolean {
+        let readmeFile = process.cwd() + path.sep + 'README.md';
+        let readmeFileWithoutExtension = process.cwd() + path.sep + 'README';
+        let changelogFile = process.cwd() + path.sep + 'CHANGELOG.md';
+        let changelogFileWithoutExtension = process.cwd() + path.sep + 'CHANGELOG';
+        let licenseFile = process.cwd() + path.sep + 'LICENSE.md';
+        let licenseFileWithoutExtension = process.cwd() + path.sep + 'LICENSE';
+        let contributingFile = process.cwd() + path.sep + 'CONTRIBUTING.md';
+        let contributingFileWithoutExtension = process.cwd() + path.sep + 'CONTRIBUTING';
+        let todoFile = process.cwd() + path.sep + 'TODO.md';
+        let todoFileWithoutExtension = process.cwd() + path.sep + 'TODO';
+
         return fs.existsSync(readmeFile) ||
-               fs.existsSync(readmeFileWithoutExtension) ||
-               fs.existsSync(changelogFile) ||
-               fs.existsSync(changelogFileWithoutExtension) ||
-               fs.existsSync(licenseFile) ||
-               fs.existsSync(licenseFileWithoutExtension) ||
-               fs.existsSync(contributingFile) ||
-               fs.existsSync(contributingFileWithoutExtension) ||
-               fs.existsSync(todoFile) ||
-               fs.existsSync(todoFileWithoutExtension);
+            fs.existsSync(readmeFileWithoutExtension) ||
+            fs.existsSync(changelogFile) ||
+            fs.existsSync(changelogFileWithoutExtension) ||
+            fs.existsSync(licenseFile) ||
+            fs.existsSync(licenseFileWithoutExtension) ||
+            fs.existsSync(contributingFile) ||
+            fs.existsSync(contributingFileWithoutExtension) ||
+            fs.existsSync(todoFile) ||
+            fs.existsSync(todoFileWithoutExtension);
     }
-    listRootMarkdowns(): string[] {
-        let list = [],
-            readme = 'README',
-            changelog = 'CHANGELOG',
-            contributing = 'CONTRIBUTING',
-            license = 'LICENSE',
-            todo = 'TODO';
-            if (fs.existsSync(process.cwd() + path.sep + readme + '.md') || fs.existsSync(process.cwd() + path.sep + readme)) {
-                list.push(readme);
-                list.push(readme+ '.md');
-            }
-            if (fs.existsSync(process.cwd() + path.sep + changelog + '.md') || fs.existsSync(process.cwd() + path.sep + changelog)) {
-                list.push(changelog);
-                list.push(changelog+ '.md');
-            }
-            if (fs.existsSync(process.cwd() + path.sep + contributing + '.md') || fs.existsSync(process.cwd() + path.sep + contributing)) {
-                list.push(contributing);
-                list.push(contributing+ '.md');
-            }
-            if (fs.existsSync(process.cwd() + path.sep + license + '.md') || fs.existsSync(process.cwd() + path.sep + license)) {
-                list.push(license);
-                list.push(license+ '.md');
-            }
-            if (fs.existsSync(process.cwd() + path.sep + todo + '.md') || fs.existsSync(process.cwd() + path.sep + todo)) {
-                list.push(todo);
-                list.push(todo+ '.md');
-            }
+
+    public listRootMarkdowns(): string[] {
+        let list = [];
+        let readme = 'README';
+        let changelog = 'CHANGELOG';
+        let contributing = 'CONTRIBUTING';
+        let license = 'LICENSE';
+        let todo = 'TODO';
+
+        if (fs.existsSync(process.cwd() + path.sep + readme + '.md') || fs.existsSync(process.cwd() + path.sep + readme)) {
+            list.push(readme);
+            list.push(readme + '.md');
+        }
+        if (fs.existsSync(process.cwd() + path.sep + changelog + '.md') || fs.existsSync(process.cwd() + path.sep + changelog)) {
+            list.push(changelog);
+            list.push(changelog + '.md');
+        }
+        if (fs.existsSync(process.cwd() + path.sep + contributing + '.md') || fs.existsSync(process.cwd() + path.sep + contributing)) {
+            list.push(contributing);
+            list.push(contributing + '.md');
+        }
+        if (fs.existsSync(process.cwd() + path.sep + license + '.md') || fs.existsSync(process.cwd() + path.sep + license)) {
+            list.push(license);
+            list.push(license + '.md');
+        }
+        if (fs.existsSync(process.cwd() + path.sep + todo + '.md') || fs.existsSync(process.cwd() + path.sep + todo)) {
+            list.push(todo);
+            list.push(todo + '.md');
+        }
         return list;
     }
 
@@ -163,4 +180,4 @@ export class MarkdownEngine {
             .replace(/'/g, '&#39;')
             .replace(/@/g, '&#64;');
     }
-};
+}

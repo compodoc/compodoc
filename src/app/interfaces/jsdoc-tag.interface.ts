@@ -10,7 +10,7 @@ export interface jsdocParameterNameInterface {
     text: string;
 }
 
-export interface jsdocTagInterface {
+export interface JsdocTagInterface {
     comment: string;
     name: string;
     tagName: jsdocTagNameInterface;

@@ -12,7 +12,7 @@ export class ClassHelper {
 
     constructor(
         private typeChecker,
-        private configuration: Configuration) {
+        private configuration: ConfigurationInterface) {
 
     }
 

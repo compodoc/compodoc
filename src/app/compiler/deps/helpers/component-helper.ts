@@ -1,9 +1,10 @@
+const ts = require('typescript');
 import { SymbolHelper, NsModuleCache } from './symbol-helper';
 import { NodeObject } from '../../node-object.interface';
 import { detectIndent } from '../../../../utilities';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
-const ts = require('typescript');
+
 
 export class ComponentHelper {
     constructor(
@@ -72,10 +73,10 @@ export class ComponentHelper {
             .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 
-    public getComponentTemplateUrl(props: NodeObject[]): string[] {
+    public getComponentTemplateUrl(props: Array<NodeObject>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'templateUrl');
     }
-    public getComponentExampleUrls(text: string) {
+    public getComponentExampleUrls(text: string): Array<string> | undefined {
         let exampleUrlsMatches = text.match(/<example-url>(.*?)<\/example-url>/g);
         let exampleUrls = undefined;
         if (exampleUrlsMatches && exampleUrlsMatches.length) {
@@ -106,7 +107,7 @@ export class ComponentHelper {
         return deps.map(parseProperties).pop();
     }
 
-    public getComponentIO(filename: string, sourceFile, node) {
+    public getComponentIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node): any {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -114,7 +115,7 @@ export class ComponentHelper {
 
             if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
                 if (statement.pos === node.pos && statement.end === node.end) {
-                    return directive.concat(this.classHelper.visitClassDeclaration(filename, statement, sourceFile));
+                    return directive.concat(this.classHelper.visitClassDeclaration(filename, statement as ts.ClassDeclaration, sourceFile));
                 }
             }
 
@@ -124,7 +125,7 @@ export class ComponentHelper {
         return res[0] || {};
     }
 
-    private sanitizeUrls(urls: string[]) {
+    private sanitizeUrls(urls: Array<string>): Array<string> {
         return urls.map(url => url.replace('./', ''));
     }
 }
