@@ -489,7 +489,7 @@ export class Application {
                     let len = parsedSummaryData.length;
                     let loop = () => {
                         if (i <= len - 1) {
-                            $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
+                            $markdownengine.getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
                                 .then((markedData) => {
                                     this.configuration.addAdditionalPage({
                                         name: parsedSummaryData[i].title,
@@ -508,7 +508,7 @@ export class Application {
                                         let loopChild = () => {
                                             if (j <= leng - 1) {
                                                 $markdownengine
-                                                    .get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
+                                                    .getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
                                                     .then((markedData) => {
                                                         this.configuration.addAdditionalPage({
                                                             name: parsedSummaryData[i].children[j].title,
@@ -1339,9 +1339,12 @@ export class Application {
             finalPath += page.path + '/';
         }
 
-        console.log(page.name + ' vs ' + page.fileName);
+        if (page.filename) {
+            finalPath += page.filename + '.html';
+        } else {
+            finalPath += page.name + '.html';
+        }
 
-        finalPath += page.name + '.html';
         this.searchEngine.indexPage({
             infos: page,
             rawData: htmlData,

@@ -41,5 +41,7 @@ describe('CLI Additional documentation', () => {
         expect(isFileExists).to.be.true;
         isFileExists = exists(`${tmp.name}/additional-documentation/big-introduction.html`);
         expect(isFileExists).to.be.true;
+        let file = read(`${tmp.name}/additional-documentation/big-introduction.html`);
+        expect(file).to.contain('<h1 id="introduction">Introduction</h1>');
     });
 });
