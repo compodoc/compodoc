@@ -9,12 +9,13 @@ class ComponentsTreeEngine {
     private static _instance: ComponentsTreeEngine = new ComponentsTreeEngine();
     private components: any[] = [];
     private componentsForTree: any[] = [];
-    constructor() {
+    constructor(private fileEngine: FileEngine = new FileEngine()) {
         if (ComponentsTreeEngine._instance) {
             throw new Error('Error: Instantiation failed: Use ComponentsTreeEngine.getInstance() instead of new.');
         }
         ComponentsTreeEngine._instance = this;
     }
+
     public static getInstance(): ComponentsTreeEngine {
         return ComponentsTreeEngine._instance;
     }
@@ -27,16 +28,15 @@ class ComponentsTreeEngine {
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.componentsForTree.length;
-            let $fileengine = new FileEngine();
             let loop = () => {
                 if (i <= len - 1) {
                     if (this.componentsForTree[i].templateUrl) {
-                        $fileengine.get(path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl)
+                        this.fileEngine.get(process.cwd() + path.sep + path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl)
                             .then((templateData) => {
                                 this.componentsForTree[i].templateData = templateData;
                                 i++;
                                 loop();
-                            },    (e) => {
+                            }, (e) => {
                                 logger.error(e);
                                 reject();
                             });
@@ -93,11 +93,11 @@ class ComponentsTreeEngine {
                         .then(() => {
                             console.log('this.componentsForTree: ', this.componentsForTree);
                             resolve();
-                        },    (e) => {
+                        }, (e) => {
                             logger.error(e);
                             reject();
                         });
-                },    (e) => {
+                }, (e) => {
                     logger.error(e);
                 });
         });

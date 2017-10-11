@@ -74,8 +74,8 @@ describe('CLI simple flags', () => {
     });
 
     describe('when no README/package.json files available', () => {
-
         let command = null;
+
         beforeEach(() => {
             tmp.create();
             tmp.copy('./test/src/sample-files/', tmp.name);
@@ -84,8 +84,10 @@ describe('CLI simple flags', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('Error during README read');
-            expect(command.stdout.toString()).to.contain('Error during package.json read');
+            const output: string = command.stdout.toString();
+
+            expect(output.indexOf('Error during README read') > -1, 'No error displayed for README').to.be.true;
+            expect(output.indexOf('Error during package.json read') > -1, 'No error displayed for package.json').to.be.true;
         });
     });
 

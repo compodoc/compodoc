@@ -7,6 +7,7 @@ import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './logger';
 import { readConfig, handlePath } from './utils/utils';
 import { ExcludeParser } from './utils/exclude.parser';
+import { FileEngine } from './app/engines/file.engine';
 
 const pkg = require('../package.json');
 const program = require('commander');
@@ -30,8 +31,7 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
 });
 
-export class CliApplication extends Application
-{
+export class CliApplication extends Application {
     /**
      * Run compodoc from the command line.
      */
@@ -70,7 +70,7 @@ export class CliApplication extends Application
         let outputHelp = () => {
             program.outputHelp()
             process.exit(1);
-        }
+        };
 
         if (program.output) {
             this.configuration.mainData.output = program.output;
@@ -174,7 +174,7 @@ export class CliApplication extends Application
 
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
-            if (!fs.existsSync(program.output)) {
+            if (!this.fileEngine.existsSync(program.output)) {
                 logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
@@ -183,7 +183,7 @@ export class CliApplication extends Application
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!fs.existsSync(program.output)) {
+            if (!this.fileEngine.existsSync(program.output)) {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
@@ -197,7 +197,7 @@ export class CliApplication extends Application
 
             if (program.tsconfig && program.args.length === 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
-                if (!fs.existsSync(program.tsconfig)) {
+                if (!this.fileEngine.existsSync(program.tsconfig)) {
                     logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
@@ -221,11 +221,11 @@ export class CliApplication extends Application
 
                         ExcludeParser.init(exclude, cwd);
 
-                        var finder = require('findit')(cwd || '.');
+                        let finder = require('findit')(cwd || '.');
 
                         finder.on('directory', function (dir, stat, stop) {
-                            var base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') stop()
+                            let base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop();
                         });
 
                         finder.on('file', (file, stat) => {
@@ -253,7 +253,7 @@ export class CliApplication extends Application
             }  else if (program.tsconfig && program.args.length > 0 && program.coverageTest) {
                 logger.info('Run documentation coverage test');
                 this.configuration.mainData.tsconfig = program.tsconfig;
-                if (!fs.existsSync(program.tsconfig)) {
+                if (!this.fileEngine.existsSync(program.tsconfig)) {
                     logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                     process.exit(1);
                 } else {
@@ -276,11 +276,11 @@ export class CliApplication extends Application
 
                         ExcludeParser.init(exclude, cwd);
 
-                        var finder = require('findit')(cwd || '.');
+                        let finder = require('findit')(cwd || '.');
 
                         finder.on('directory', function (dir, stat, stop) {
-                            var base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') stop()
+                            let base = path.basename(dir);
+                            if (base === '.git' || base === 'node_modules') stop();
                         });
 
                         finder.on('file', (file, stat) => {
@@ -308,13 +308,13 @@ export class CliApplication extends Application
             } else if (program.tsconfig && program.args.length > 0) {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 let sourceFolder = program.args[0];
-                if (!fs.existsSync(sourceFolder)) {
+                if (!this.fileEngine.existsSync(sourceFolder)) {
                     logger.error(`Provided source folder ${sourceFolder} was not found in the current directory`);
                     process.exit(1);
                 } else {
                     logger.info('Using provided source folder');
 
-                    if (!fs.existsSync(program.tsconfig)) {
+                    if (!this.fileEngine.existsSync(program.tsconfig)) {
                         logger.error(`"${program.tsconfig}" file was not found in the current directory`);
                         process.exit(1);
                     } else {
@@ -323,7 +323,7 @@ export class CliApplication extends Application
 
                         ExcludeParser.init(exclude, cwd);
 
-                        var finder = require('findit')(path.resolve(sourceFolder));
+                        let finder = require('findit')(path.resolve(sourceFolder));
 
                         finder.on('directory', function (dir, stat, stop) {
                             let base = path.basename(dir);
