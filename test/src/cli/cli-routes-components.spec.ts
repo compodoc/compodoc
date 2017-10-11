@@ -1,9 +1,10 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
-const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+
+const expect = chai.expect;
+const tmp = temporaryDir();
+const tsconfigPath = require.resolve('../../../tsconfig.json');
+const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI routes', () => {
 

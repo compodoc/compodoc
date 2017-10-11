@@ -248,7 +248,7 @@ describe('CLI simple generation', () => {
             fooServiceFile,
             componentFile,
             moduleFile;
-        before(function (done) {
+        before((done) => {
             tmp.create();
 
             let pwd = shell('pwd');
@@ -572,7 +572,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        //after(() => tmp.clean(tmp.name));
+        // after(() => tmp.clean(tmp.name));
 
         it('should not generate any graph data', () => {
             expect(stdoutString).to.contain('Graph generation disabled');

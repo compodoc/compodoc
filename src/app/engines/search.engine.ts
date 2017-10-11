@@ -53,7 +53,7 @@ export class SearchEngine {
         }
     }
 
-    public generateSearchIndexJson(outputFolder: string): Promise<any> {
+    public generateSearchIndexJson(outputFolder: string): Promise<void> {
         return this.fileEngine.get(__dirname + '/../src/templates/partials/search-index.hbs').then(data => {
             let template: any = Handlebars.compile(data);
             let result = template({

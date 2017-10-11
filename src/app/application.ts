@@ -33,7 +33,6 @@ import { DependenciesEngine } from './engines/dependencies.engine';
 
 let pkg = require('../package.json');
 let cwd = process.cwd();
-let $fileengine = new FileEngine();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
 
@@ -169,7 +168,7 @@ export class Application {
 
     private processPackageJson(): void {
         logger.info('Searching package.json file');
-        $fileengine.get('package.json').then((packageData) => {
+        this.fileEngine.get(process.cwd() + path.sep + 'package.json').then((packageData) => {
             let parsedData = JSON.parse(packageData);
             if (typeof parsedData.name !== 'undefined' && this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
                 this.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
@@ -481,72 +480,73 @@ export class Application {
         // For each file, add to this.configuration.mainData.additionalPages
         // Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-            $fileengine.get(this.configuration.mainData.includes + path.sep + 'summary.json').then((summaryData) => {
-                logger.info('Additional documentation: summary.json file found');
+            this.fileEngine.get(process.cwd() + path.sep + this.configuration.mainData.includes + path.sep + 'summary.json')
+                .then((summaryData) => {
+                    logger.info('Additional documentation: summary.json file found');
 
-                let parsedSummaryData = JSON.parse(summaryData);
-                let i = 0;
-                let len = parsedSummaryData.length;
-                let loop = () => {
-                    if (i <= len - 1) {
-                        $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
-                            .then((markedData) => {
-                                this.configuration.addAdditionalPage({
-                                    name: parsedSummaryData[i].title,
-                                    id: parsedSummaryData[i].title,
-                                    filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                    context: 'additional-page',
-                                    path: this.configuration.mainData.includesFolder,
-                                    additionalPage: markedData,
-                                    depth: 1,
-                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                                });
+                    let parsedSummaryData = JSON.parse(summaryData);
+                    let i = 0;
+                    let len = parsedSummaryData.length;
+                    let loop = () => {
+                        if (i <= len - 1) {
+                            $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
+                                .then((markedData) => {
+                                    this.configuration.addAdditionalPage({
+                                        name: parsedSummaryData[i].title,
+                                        id: parsedSummaryData[i].title,
+                                        filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                        context: 'additional-page',
+                                        path: this.configuration.mainData.includesFolder,
+                                        additionalPage: markedData,
+                                        depth: 1,
+                                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                    });
 
-                                if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
-                                    let j = 0;
-                                    let leng = parsedSummaryData[i].children.length;
-                                    let loopChild = () => {
-                                        if (j <= leng - 1) {
-                                            $markdownengine
-                                                .get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
-                                                .then((markedData) => {
-                                                    this.configuration.addAdditionalPage({
-                                                        name: parsedSummaryData[i].children[j].title,
-                                                        id: parsedSummaryData[i].children[j].title,
-                                                        filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
-                                                        context: 'additional-page',
-                                                        path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                                        additionalPage: markedData,
-                                                        depth: 2,
-                                                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                    if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
+                                        let j = 0;
+                                        let leng = parsedSummaryData[i].children.length;
+                                        let loopChild = () => {
+                                            if (j <= leng - 1) {
+                                                $markdownengine
+                                                    .get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
+                                                    .then((markedData) => {
+                                                        this.configuration.addAdditionalPage({
+                                                            name: parsedSummaryData[i].children[j].title,
+                                                            id: parsedSummaryData[i].children[j].title,
+                                                            filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
+                                                            context: 'additional-page',
+                                                            path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                                            additionalPage: markedData,
+                                                            depth: 2,
+                                                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                                        });
+                                                        j++;
+                                                        loopChild();
+                                                    }, (e) => {
+                                                        logger.error(e);
                                                     });
-                                                    j++;
-                                                    loopChild();
-                                                }, (e) => {
-                                                    logger.error(e);
-                                                });
-                                        } else {
-                                            i++;
-                                            loop();
-                                        }
-                                    };
-                                    loopChild();
-                                } else {
-                                    i++;
-                                    loop();
-                                }
-                            }, (e) => {
-                                logger.error(e);
-                            });
-                    } else {
-                        resolve();
-                    }
-                };
-                loop();
-            }, (errorMessage) => {
-                logger.error(errorMessage);
-                reject('Error during Additional documentation generation');
-            });
+                                            } else {
+                                                i++;
+                                                loop();
+                                            }
+                                        };
+                                        loopChild();
+                                    } else {
+                                        i++;
+                                        loop();
+                                    }
+                                }, (e) => {
+                                    logger.error(e);
+                                });
+                        } else {
+                            resolve();
+                        }
+                    };
+                    loop();
+                }, (errorMessage) => {
+                    logger.error(errorMessage);
+                    reject('Error during Additional documentation generation');
+                });
         });
     }
 
@@ -768,6 +768,24 @@ export class Application {
         });
     }
 
+    private handleTemplateurl(component): Promise<any> {
+        let dirname = path.dirname(component.file);
+        let templatePath = path.resolve(dirname + path.sep + component.templateUrl);
+
+        if (!this.fileEngine.existsSync(templatePath)) {
+            let err = `Cannot read template for ${component.name}`;
+            logger.error(err);
+            return new Promise((resolve, reject) => { });
+        }
+
+        return this.fileEngine.get(templatePath)
+            .then(data => component.templateData = data,
+            err => {
+                logger.error(err);
+                return Promise.reject('');
+            });
+    }
+
     public prepareComponents(someComponents?) {
         logger.info('Prepare components');
         this.configuration.mainData.components = (someComponents) ? someComponents : this.dependenciesEngine.getComponents();
@@ -777,22 +795,6 @@ export class Application {
             let len = this.configuration.mainData.components.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    let dirname = path.dirname(this.configuration.mainData.components[i].file);
-                    let handleTemplateurl = () => {
-                        let templatePath = path.resolve(dirname + path.sep + this.configuration.mainData.components[i].templateUrl);
-                        if (!this.fileEngine.existsSync(templatePath)) {
-                            let err = `Cannot read template for ${this.configuration.mainData.components[i].name}`;
-                            logger.error(err);
-                            return Promise.reject(err);
-                        }
-
-                        return this.fileEngine.get(templatePath)
-                            .then(data => this.configuration.mainData.components[i].templateData = data,
-                            err => {
-                                logger.error(err);
-                                return Promise.reject('');
-                            });
-                    };
                     if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.components[i].file)) {
                         logger.info(` ${this.configuration.mainData.components[i].name} has a README file, include it`);
                         let readmeFile = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.components[i].file);
@@ -808,7 +810,7 @@ export class Application {
                         });
                         if (this.configuration.mainData.components[i].templateUrl.length > 0) {
                             logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
-                            handleTemplateurl().then(() => {
+                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(() => {
                                 i++;
                                 loop();
                             }, (e) => {
@@ -830,7 +832,7 @@ export class Application {
                         });
                         if (this.configuration.mainData.components[i].templateUrl.length > 0) {
                             logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
-                            handleTemplateurl().then(() => {
+                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(() => {
                                 i++;
                                 loop();
                             }, (e) => {
@@ -1324,34 +1326,39 @@ export class Application {
         });
     }
 
+    private processPage(page): Promise<void> {
+        logger.info('Process page', page.name);
+
+        let htmlData = this.htmlEngine.render(this.configuration.mainData, page);
+        let finalPath = this.configuration.mainData.output;
+
+        if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
+            finalPath += '/';
+        }
+        if (page.path) {
+            finalPath += page.path + '/';
+        }
+
+        console.log(page.name + ' vs ' + page.fileName);
+
+        finalPath += page.name + '.html';
+        this.searchEngine.indexPage({
+            infos: page,
+            rawData: htmlData,
+            url: finalPath
+        });
+
+        return this.fileEngine.write(finalPath, htmlData).catch(err => {
+            logger.error('Error during ' + page.name + ' page generation');
+            return Promise.reject('');
+        });
+    }
+
     public processPages() {
         logger.info('Process pages');
         let pages = this.configuration.pages;
-        Promise.all(
-            pages.map((page, i) => {
-                return new Promise((resolve, reject) => {
-                    logger.info('Process page', page.name);
-                    let htmlData = this.htmlEngine.render(this.configuration.mainData, page);
-                    let finalPath = this.configuration.mainData.output;
-                    if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
-                    }
-                    if (page.path) {
-                        finalPath += page.path + '/';
-                    }
-                    finalPath += page.name + '.html';
-                    this.searchEngine.indexPage({
-                        infos: page,
-                        rawData: htmlData,
-                        url: finalPath
-                    });
-
-                    return this.fileEngine.write(finalPath, htmlData).catch(err => {
-                        logger.error('Error during ' + page.name + ' page generation');
-                        return Promise.reject('');
-                    });
-                });
-            })).then(() => {
+        Promise.all(pages.map((page) => this.processPage(page)))
+            .then(() => {
                 this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
                     if (this.configuration.mainData.additionalPages.length > 0) {
                         this.processAdditionalPages();
@@ -1373,42 +1380,18 @@ export class Application {
     public processAdditionalPages() {
         logger.info('Process additional pages');
         let pages = this.configuration.mainData.additionalPages;
-        Promise.all(
-            pages.map((page, i) => {
-                return new Promise((resolve, reject) => {
-                    logger.info('Process page', pages[i].name);
-                    let htmlData = this.htmlEngine.render(this.configuration.mainData, pages[i]);
-                    let finalPath = this.configuration.mainData.output;
-                    if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
-                        finalPath += '/';
+        Promise.all(pages.map((page, i) => this.processPage(page)))
+            .then(() => {
+                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
+                    if (this.configuration.mainData.assetsFolder !== '') {
+                        this.processAssetsFolder();
                     }
-                    if (pages[i].path) {
-                        finalPath += pages[i].path + '/';
-                    }
-                    finalPath += pages[i].filename + '.html';
-                    this.searchEngine.indexPage({
-                        infos: pages[i],
-                        rawData: htmlData,
-                        url: finalPath
-                    });
-                    return this.fileEngine.write(finalPath, htmlData).catch(err => {
-                        logger.error('Error during ' + pages[i].name + ' page generation');
-                        return Promise.reject('');
-                    });
+                    this.processResources();
                 });
             })
-        ).then(() => {
-            this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                if (this.configuration.mainData.assetsFolder !== '') {
-                    this.processAssetsFolder();
-                }
-                this.processResources();
-            }, (e) => {
-                logger.error(e);
-            });
-        })
             .catch((e) => {
                 logger.error(e);
+                return Promise.reject(e);
             });
     }
 

@@ -19,7 +19,7 @@ export class CodeGenerator {
 	}
 
 	private visitAndRecognize(node: any, code: Array<string>, depth = 0): Array<string> {
-		this.recognize(code, code);
+		this.recognize(node, code);
 		node.getChildren().forEach(c => this.visitAndRecognize(c, code, depth + 1));
 		return code;
 	}
