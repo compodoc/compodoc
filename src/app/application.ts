@@ -64,6 +64,7 @@ export class Application {
     private ngdEngine: NgdEngine;
     private htmlEngine: HtmlEngine;
     private searchEngine: SearchEngine;
+    protected fileEngine: FileEngine = new FileEngine();
 
     /**
      * Create a new compodoc application instance.
@@ -74,8 +75,8 @@ export class Application {
         this.configuration = new Configuration();
         this.dependenciesEngine = new DependenciesEngine();
         this.ngdEngine = new NgdEngine(this.dependenciesEngine);
-        this.htmlEngine = new HtmlEngine(this.configuration, this.dependenciesEngine);
-        this.searchEngine = new SearchEngine(this.configuration);
+        this.htmlEngine = new HtmlEngine(this.configuration, this.dependenciesEngine, this.fileEngine);
+        this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
 
         for (let option in options) {
             if (typeof this.configuration.mainData[option] !== 'undefined') {
@@ -776,25 +777,22 @@ export class Application {
             let len = this.configuration.mainData.components.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    let dirname = path.dirname(this.configuration.mainData.components[i].file),
-                        handleTemplateurl = () => {
-                            return new Promise((resolve, reject) => {
-                                let templatePath = path.resolve(dirname + path.sep + this.configuration.mainData.components[i].templateUrl);
-                                if (fs.existsSync(templatePath)) {
-                                    fs.readFile(templatePath, 'utf8', (err, data) => {
-                                        if (err) {
-                                            logger.error(err);
-                                            reject();
-                                        } else {
-                                            this.configuration.mainData.components[i].templateData = data;
-                                            resolve();
-                                        }
-                                    });
-                                } else {
-                                    logger.error(`Cannot read template for ${this.configuration.mainData.components[i].name}`);
-                                }
+                    let dirname = path.dirname(this.configuration.mainData.components[i].file);
+                    let handleTemplateurl = () => {
+                        let templatePath = path.resolve(dirname + path.sep + this.configuration.mainData.components[i].templateUrl);
+                        if (!this.fileEngine.existsSync(templatePath)) {
+                            let err = `Cannot read template for ${this.configuration.mainData.components[i].name}`;
+                            logger.error(err);
+                            return Promise.reject(err);
+                        }
+
+                        return this.fileEngine.get(templatePath)
+                            .then(data => this.configuration.mainData.components[i].templateData = data,
+                            err => {
+                                logger.error(err);
+                                return Promise.reject('');
                             });
-                        };
+                    };
                     if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.components[i].file)) {
                         logger.info(` ${this.configuration.mainData.components[i].name} has a README file, include it`);
                         let readmeFile = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.components[i].file);
@@ -1347,13 +1345,10 @@ export class Application {
                         rawData: htmlData,
                         url: finalPath
                     });
-                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                        if (err) {
-                            logger.error('Error during ' + page.name + ' page generation');
-                            reject();
-                        } else {
-                            resolve();
-                        }
+
+                    return this.fileEngine.write(finalPath, htmlData).catch(err => {
+                        logger.error('Error during ' + page.name + ' page generation');
+                        return Promise.reject('');
                     });
                 });
             })).then(() => {
@@ -1396,13 +1391,9 @@ export class Application {
                         rawData: htmlData,
                         url: finalPath
                     });
-                    fs.outputFile(path.resolve(finalPath), htmlData, function (err) {
-                        if (err) {
-                            logger.error('Error during ' + pages[i].name + ' page generation');
-                            reject();
-                        } else {
-                            resolve();
-                        }
+                    return this.fileEngine.write(finalPath, htmlData).catch(err => {
+                        logger.error('Error during ' + pages[i].name + ' page generation');
+                        return Promise.reject('');
                     });
                 });
             })
@@ -1424,7 +1415,7 @@ export class Application {
     public processAssetsFolder(): void {
         logger.info('Copy assets folder');
 
-        if (!fs.existsSync(this.configuration.mainData.assetsFolder)) {
+        if (!this.fileEngine.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
             fs.copy(

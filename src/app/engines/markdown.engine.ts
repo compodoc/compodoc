@@ -6,6 +6,17 @@ import { FileEngine } from './file.engine';
 const marked = require('marked');
 
 export class MarkdownEngine {
+	/**
+	 * List of markdown files without .md extension
+	 */
+	private readonly markdownFiles = [
+		'README',
+		'CHANGELOG',
+		'LICENSE',
+		'CONTRIBUTING',
+		'TODO'
+	];
+
 	constructor(private fileEngine = new FileEngine()) {
 		const renderer = new marked.Renderer();
 		renderer.code = (code, language) => {
@@ -51,25 +62,25 @@ export class MarkdownEngine {
 	}
 
 	public getTraditionalMarkdown(filepath: string): Promise<any> {
-		return this.fileEngine.get(filepath + '.md')
-			.catch(err => this.fileEngine.get(filepath).then())
+		return this.fileEngine.get(process.cwd() + path.sep + filepath + '.md')
+			.catch(err => this.fileEngine.get(process.cwd() + path.sep + filepath).then())
 			.then(data => marked(data));
 	}
 
 	private getReadmeFile(): Promise<any> {
-		return this.fileEngine.get('README.md').then(data => marked(data));
+		return this.fileEngine.get(process.cwd() + path.sep + 'README.md').then(data => marked(data));
 	}
 
-	private readNeighbourReadmeFile(file: string): string {
+	public readNeighbourReadmeFile(file: string): string {
 		let dirname = path.dirname(file);
 		let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
 		return fs.readFileSync(readmeFile, 'utf8');
 	}
 
-	private hasNeighbourReadmeFile(file: string): boolean {
+	public hasNeighbourReadmeFile(file: string): boolean {
 		let dirname = path.dirname(file);
 		let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
-		return fs.existsSync(readmeFile);
+		return this.fileEngine.existsSync(readmeFile);
 	}
 
 	private componentReadmeFile(file: string): string {
@@ -77,7 +88,7 @@ export class MarkdownEngine {
 		let readmeFile = dirname + path.sep + 'README.md';
 		let readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
 		let finalPath = '';
-		if (fs.existsSync(readmeFile)) {
+		if (this.fileEngine.existsSync(readmeFile)) {
 			finalPath = readmeFile;
 		} else {
 			finalPath = readmeAlternativeFile;
@@ -85,59 +96,21 @@ export class MarkdownEngine {
 		return finalPath;
 	}
 
+	/**
+	 * Checks if any of the markdown files is exists with or without endings
+	 */
 	public hasRootMarkdowns(): boolean {
-		let readmeFile = process.cwd() + path.sep + 'README.md';
-		let readmeFileWithoutExtension = process.cwd() + path.sep + 'README';
-		let changelogFile = process.cwd() + path.sep + 'CHANGELOG.md';
-		let changelogFileWithoutExtension = process.cwd() + path.sep + 'CHANGELOG';
-		let licenseFile = process.cwd() + path.sep + 'LICENSE.md';
-		let licenseFileWithoutExtension = process.cwd() + path.sep + 'LICENSE';
-		let contributingFile = process.cwd() + path.sep + 'CONTRIBUTING.md';
-		let contributingFileWithoutExtension = process.cwd() + path.sep + 'CONTRIBUTING';
-		let todoFile = process.cwd() + path.sep + 'TODO.md';
-		let todoFileWithoutExtension = process.cwd() + path.sep + 'TODO';
-
-		return fs.existsSync(readmeFile) ||
-			fs.existsSync(readmeFileWithoutExtension) ||
-			fs.existsSync(changelogFile) ||
-			fs.existsSync(changelogFileWithoutExtension) ||
-			fs.existsSync(licenseFile) ||
-			fs.existsSync(licenseFileWithoutExtension) ||
-			fs.existsSync(contributingFile) ||
-			fs.existsSync(contributingFileWithoutExtension) ||
-			fs.existsSync(todoFile) ||
-			fs.existsSync(todoFileWithoutExtension);
+		return this.addEndings(this.markdownFiles)
+			.some(x => this.fileEngine.existsSync(process.cwd() + path.sep + x));
 	}
 
 	public listRootMarkdowns(): string[] {
-		let list = [];
-		let readme = 'README';
-		let changelog = 'CHANGELOG';
-		let contributing = 'CONTRIBUTING';
-		let license = 'LICENSE';
-		let todo = 'TODO';
+		let foundFiles = this.markdownFiles
+			.filter(x =>
+				this.fileEngine.existsSync(process.cwd() + path.sep + x + '.md') ||
+				this.fileEngine.existsSync(process.cwd() + path.sep + x));
 
-		if (fs.existsSync(process.cwd() + path.sep + readme + '.md') || fs.existsSync(process.cwd() + path.sep + readme)) {
-			list.push(readme);
-			list.push(readme + '.md');
-		}
-		if (fs.existsSync(process.cwd() + path.sep + changelog + '.md') || fs.existsSync(process.cwd() + path.sep + changelog)) {
-			list.push(changelog);
-			list.push(changelog + '.md');
-		}
-		if (fs.existsSync(process.cwd() + path.sep + contributing + '.md') || fs.existsSync(process.cwd() + path.sep + contributing)) {
-			list.push(contributing);
-			list.push(contributing + '.md');
-		}
-		if (fs.existsSync(process.cwd() + path.sep + license + '.md') || fs.existsSync(process.cwd() + path.sep + license)) {
-			list.push(license);
-			list.push(license + '.md');
-		}
-		if (fs.existsSync(process.cwd() + path.sep + todo + '.md') || fs.existsSync(process.cwd() + path.sep + todo)) {
-			list.push(todo);
-			list.push(todo + '.md');
-		}
-		return list;
+		return this.addEndings(foundFiles);
 	}
 
 	private escape(html) {
@@ -148,5 +121,12 @@ export class MarkdownEngine {
 			.replace(/"/g, '&quot;')
 			.replace(/'/g, '&#39;')
 			.replace(/@/g, '&#64;');
+	}
+
+	/**
+	 * ['README'] => ['README', 'README.md']
+	 */
+	private addEndings(files: Array<string>): Array<string> {
+		return _.flatMap(files, x => [x, x + '.md']);
 	}
 }

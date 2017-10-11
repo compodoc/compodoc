@@ -54,7 +54,7 @@ export class SearchEngine {
     }
 
     public generateSearchIndexJson(outputFolder: string): Promise<any> {
-        return this.fileEngine.getAbsolute(__dirname + '/../src/templates/partials/search-index.hbs').then(data => {
+        return this.fileEngine.get(__dirname + '/../src/templates/partials/search-index.hbs').then(data => {
             let template: any = Handlebars.compile(data);
             let result = template({
                 index: JSON.stringify(this.getSearchIndex()),
@@ -64,7 +64,7 @@ export class SearchEngine {
             if (!testOutputDir) {
                 outputFolder = outputFolder.replace(process.cwd(), '');
             }
-            return this.fileEngine.writeAbsolute(outputFolder + path.sep + '/js/search/search_index.js', result)
+            return this.fileEngine.write(outputFolder + path.sep + '/js/search/search_index.js', result)
                 .catch(err => {
                     logger.error('Error during search index file generation ', err);
                     return Promise.reject(err);

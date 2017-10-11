@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
+
 import { logger } from '../../logger';
 import { HtmlEngineHelpers } from './html.engine.helpers';
 import { DependenciesEngine } from './dependencies.engine';
@@ -61,16 +62,16 @@ export class HtmlEngine {
         return Promise
             .all(partials.map(partial => {
                 return this.fileEngine
-                    .getAbsolute(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
+                    .get(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
                     .then(data => Handlebars.registerPartial(partial, data));
             })).then(() => {
                 return this.fileEngine
-                    .getAbsolute(path.resolve(__dirname + '/../src/templates/page.hbs'))
+                    .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
                     .then(data => this.cache.page = data);
             }).then(() => { });
     }
 
-    public render(mainData: any, page: any): Object {
+    public render(mainData: any, page: any): string {
         let o = mainData;
         (Object as any).assign(o, page);
 
@@ -81,7 +82,7 @@ export class HtmlEngine {
     }
 
     public generateCoverageBadge(outputFolder, coverageData) {
-        return this.fileEngine.getAbsolute(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
+        return this.fileEngine.get(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
             .then(data => {
                 let template: any = Handlebars.compile(data);
                 let result = template({
@@ -93,7 +94,7 @@ export class HtmlEngine {
                 }
 
                 return this.fileEngine
-                    .writeAbsolute(outputFolder + path.sep + '/images/coverage-badge.svg', result)
+                    .write(outputFolder + path.sep + '/images/coverage-badge.svg', result)
                     .catch(err => {
                         logger.error('Error during coverage badge file generation ', err);
                         return Promise.reject(err);
