@@ -29,21 +29,9 @@ export class NgdEngine {
         this.engine.updateOutput(outputpath);
         return new Promise((resolve, reject) => {
             if (type === 'f') {
-                this.engine
-                    .generateGraph([this.dependenciesEngine.getRawModule(name)])
-                    .then(file => {
-                        resolve();
-                    }, error => {
-                        reject(error);
-                    });
+                return this.engine.generateGraph([this.dependenciesEngine.getRawModule(name)]);
             } else {
-                this.engine
-                    .generateGraph(this.dependenciesEngine.rawModulesForOverview)
-                    .then(file => {
-                        resolve();
-                    }, error => {
-                        reject(error);
-                    });
+                return this.engine.generateGraph(this.dependenciesEngine.rawModulesForOverview);
             }
         });
     }

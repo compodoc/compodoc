@@ -1,17 +1,18 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import { logger } from '../../logger';
 import { HtmlEngineHelpers } from './html.engine.helpers';
 import { DependenciesEngine } from './dependencies.engine';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
+import { FileEngine } from './file.engine';
 
 export class HtmlEngine {
-    private cache: { page: any } = {} as any;
+    private cache: { page: string } = {} as any;
 
     constructor(
         configuration: ConfigurationInterface,
-        dependenciesEngine: DependenciesEngine) {
+        dependenciesEngine: DependenciesEngine,
+        private fileEngine: FileEngine = new FileEngine()) {
 
         const helper = new HtmlEngineHelpers();
         helper.registerHelpers(Handlebars, configuration, dependenciesEngine);
@@ -56,33 +57,19 @@ export class HtmlEngine {
             'miscellaneous-enumerations',
             'additional-page'
         ];
-        let i = 0;
-        let len = partials.length;
-        let loop = (resolve, reject) => {
-            if (i <= len - 1) {
-                fs.readFile(path.resolve(__dirname + '/../src/templates/partials/' + partials[i] + '.hbs'), 'utf8', (err, data) => {
-                    if (err) { reject(); }
-                    Handlebars.registerPartial(partials[i], data);
-                    i++;
-                    loop(resolve, reject);
-                });
-            } else {
-                fs.readFile(path.resolve(__dirname + '/../src/templates/page.hbs'), 'utf8', (err, data) => {
-                    if (err) {
-                        reject('Error during index generation');
-                    } else {
-                        this.cache.page = data;
-                        resolve();
-                    }
-                });
-            }
-        };
 
-
-        return new Promise(function (resolve, reject) {
-            loop(resolve, reject);
-        });
+        return Promise
+            .all(partials.map(partial => {
+                return this.fileEngine
+                    .getAbsolute(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
+                    .then(data => Handlebars.registerPartial(partial, data));
+            })).then(() => {
+                return this.fileEngine
+                    .getAbsolute(path.resolve(__dirname + '/../src/templates/page.hbs'))
+                    .then(data => this.cache.page = data);
+            }).then(() => { });
     }
+
     public render(mainData: any, page: any): Object {
         let o = mainData;
         (Object as any).assign(o, page);
@@ -94,29 +81,23 @@ export class HtmlEngine {
     }
 
     public generateCoverageBadge(outputFolder, coverageData) {
-        return new Promise((resolve, reject) => {
-            fs.readFile(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'), 'utf8', (err, data) => {
-                if (err) {
-                    reject('Error during coverage badge generation');
-                } else {
-                    let template: any = Handlebars.compile(data);
-                    let result = template({
-                        data: coverageData
-                    });
-                    let testOutputDir = outputFolder.match(process.cwd());
-                    if (!testOutputDir) {
-                        outputFolder = outputFolder.replace(process.cwd(), '');
-                    }
-                    fs.outputFile(path.resolve(outputFolder + path.sep + '/images/coverage-badge.svg'), result, (err1) => {
-                        if (err1) {
-                            logger.error('Error during coverage badge file generation ', err1);
-                            reject(err1);
-                        } else {
-                            resolve();
-                        }
-                    });
+        return this.fileEngine.getAbsolute(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
+            .then(data => {
+                let template: any = Handlebars.compile(data);
+                let result = template({
+                    data: coverageData
+                });
+                let testOutputDir = outputFolder.match(process.cwd());
+                if (!testOutputDir) {
+                    outputFolder = outputFolder.replace(process.cwd(), '');
                 }
-            });
-        });
+
+                return this.fileEngine
+                    .writeAbsolute(outputFolder + path.sep + '/images/coverage-badge.svg', result)
+                    .catch(err => {
+                        logger.error('Error during coverage badge file generation ', err);
+                        return Promise.reject(err);
+                    });
+            }, err => Promise.reject('Error during coverage badge generation'));
     }
 }

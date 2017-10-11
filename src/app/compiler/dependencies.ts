@@ -9,7 +9,7 @@ import { RouterParser } from '../../utils/router.parser';
 import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
-import { generate } from './codegen';
+import { CodeGenerator } from './code-generator';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 import { NodeObject } from './node-object.interface';
@@ -843,7 +843,7 @@ export class Dependencies {
                 if (node.declarationList.declarations[i].type) {
                     if (node.declarationList.declarations[i].type.typeName &&
                         node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        let data = generate(node.declarationList.declarations[i].initializer);
+                        let data = new CodeGenerator().generate(node.declarationList.declarations[i].initializer);
                         RouterParser.addRoute({
                             name: node.declarationList.declarations[i].name.text,
                             data: RouterParser.cleanRawRoute(data),
