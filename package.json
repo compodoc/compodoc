@@ -66,7 +66,7 @@
     "handlebars": "^4.0.10",
     "html-entities": "^1.2.1",
     "json5": "^0.5.1",
-    "live-server": "1.1.0",
+    "live-server": "^1.2.0",
     "lodash": "^4.17.3",
     "lunr": "1.0.0",
     "marked": "^0.3.6",
