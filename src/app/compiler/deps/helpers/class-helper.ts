@@ -229,7 +229,8 @@ export class ClassHelper {
                 constructor: members.constructor,
                 jsdoctags: jsdoctags,
                 extends: extendsElement,
-                implements: implementsElements
+                implements: implementsElements,
+                accessors: members.accessors
             }];
         } else {
             members = this.visitMembers(classDeclaration.members, sourceFile);
@@ -291,6 +292,9 @@ export class ClassHelper {
         return (decorator.expression.expression) ? decorator.expression.expression.text === 'Injectable' : false;
     }
 
+    private addAccessor(accessors, nodeAccessor) {
+        //console.log(nodeAccessor);
+    }
 
     private visitMembers(members, sourceFile) {
         /**
@@ -309,6 +313,7 @@ export class ClassHelper {
         let hostListener;
         let constructor;
         let outDecorator;
+        let accessors = {};
 
         for (let i = 0; i < members.length; i++) {
             inputDecorator = this.getDecoratorOfType(members[i], 'Input');
@@ -339,6 +344,8 @@ export class ClassHelper {
                         properties.push(this.visitProperty(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                         properties.push(this.visitCallDeclaration(members[i], sourceFile));
+                    } else if (members[i].kind === ts.SyntaxKind.GetAccessor || members[i].kind === ts.SyntaxKind.SetAccessor) {
+                        this.addAccessor(accessors, members[i]);
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                         indexSignatures.push(this.visitIndexDeclaration(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.Constructor) {

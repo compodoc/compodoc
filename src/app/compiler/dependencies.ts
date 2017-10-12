@@ -885,7 +885,7 @@ export class Dependencies {
             }
 
             return directive;
-        },                                     []);
+        }, []);
 
         return res[0] || {};
     }
@@ -903,7 +903,7 @@ export class Dependencies {
             }
 
             return directive;
-        },                                     []);
+        }, []);
 
         return res[0] || {};
     }
