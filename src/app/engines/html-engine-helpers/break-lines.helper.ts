@@ -6,7 +6,7 @@ export class BreakLinesHelper implements IHtmlEngineHelper {
 
     }
 
-    public helperFunc(context: any, text) {
+    public helperFunc(context: any, text: string) {
         text = this.bars.Utils.escapeExpression(text);
         text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
         text = text.replace(/ /gm, '&nbsp;');

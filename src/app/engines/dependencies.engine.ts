@@ -104,8 +104,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(type, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(type, this.miscellaneous.typealiases),
             () => this.findInCompodocDependencies(type, this.miscellaneous.enumerations),
-            () => this.angularApiUtil.findApi(type),
-        ];
+            () => this.angularApiUtil.findApi(type)];
 
         for (let searchFunction of searchFunctions) {
             let result = searchFunction();

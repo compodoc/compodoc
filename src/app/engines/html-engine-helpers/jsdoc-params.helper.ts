@@ -1,9 +1,9 @@
-import { IHtmlEngineHelper } from './html-engine-helper.interface';
+import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 import { JsdocTagInterface } from '../../interfaces/jsdoc-tag.interface';
 import { kindToType } from '../../../utils/kind-to-type';
 
 export class JsdocParamsHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, jsdocTags: Array<JsdocTagInterface | any>, options) {
+    public helperFunc(context: any, jsdocTags: Array<JsdocTagInterface | any>, options: IHandlebarsOptions) {
         let i = 0;
         let len = jsdocTags.length;
         let tags = [];

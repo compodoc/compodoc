@@ -1,7 +1,7 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 
 export class CompareHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, a, operator, b, options: IHandlebarsOptions) {
+    public helperFunc(context: any, a: any, operator: string, b: any, options: IHandlebarsOptions): string {
         if (arguments.length < 4) {
             throw new Error('handlebars Helper {{compare}} expects 4 arguments');
         }

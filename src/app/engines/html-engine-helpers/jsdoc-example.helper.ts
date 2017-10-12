@@ -1,8 +1,8 @@
 import { JsdocTagInterface } from '../../interfaces/jsdoc-tag.interface';
-import { IHtmlEngineHelper } from './html-engine-helper.interface';
+import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 
 export class JsdocExampleHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, jsdocTags: JsdocTagInterface[], options) {
+    public helperFunc(context: any, jsdocTags: JsdocTagInterface[], options: IHandlebarsOptions) {
         let i = 0;
         let len = jsdocTags.length;
         let tags = [];

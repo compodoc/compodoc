@@ -1,17 +1,17 @@
 import * as ts from 'typescript';
 
 export class CodeGenerator {
-    public generate(node: any): string {
+    public generate(node: ts.Node): string {
         return this.visitAndRecognize(node, []).join('');
     }
 
-    private visitAndRecognize(node: any, code: Array<string>, depth = 0): Array<string> {
+    private visitAndRecognize(node: ts.Node, code: Array<string>, depth = 0): Array<string> {
         this.recognize(node, code);
         node.getChildren().forEach(c => this.visitAndRecognize(c, code, depth + 1));
         return code;
     }
 
-    private recognize(node: any, code: Array<string>) {
+    private recognize(node: ts.Node, code: Array<string>) {
         const conversion = TsKindConversion.find(x => x.kinds.some(z => z === node.kind));
 
         if (conversion) {
@@ -35,7 +35,7 @@ export class CodeGenerator {
 
 class TsKindsToText {
     constructor(
-        public output: (node) => Array<string>,
+        public output: (node: ts.Node) => Array<string>,
         public kinds: Array<any>) { }
 }
 

@@ -1,7 +1,7 @@
 import { IfStringHelper } from './if-string.helper';
 import { expect } from 'chai';
 
-describe.only(IfStringHelper.name, () => {
+describe(IfStringHelper.name, () => {
     let helper: IfStringHelper;
     let options = {
         fn: () => 'fnCalled',

@@ -1,12 +1,12 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 
 export class EscapeSimpleQuoteHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, text) {
+    public helperFunc(context: any, text: string) {
         if (!text) {
             return;
         }
-        let _text = text.replace(/'/g, "\\'");
-        _text = _text.replace(/(\r\n|\n|\r)/gm, '');
-        return _text;
+        text = text.replace(/'/g, "\\'");
+        text = text.replace(/(\r\n|\n|\r)/gm, '');
+        return text;
     }
 }

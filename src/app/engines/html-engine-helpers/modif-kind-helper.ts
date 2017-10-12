@@ -1,21 +1,21 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 import * as Handlebars from 'handlebars';
+import * as ts from 'typescript';
 
 export class ModifKindHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, kind) {
-        // https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts#L62
+    public helperFunc(context: any, kind: ts.SyntaxKind) {
         let _kindText = '';
         switch (kind) {
-            case 112:
+            case ts.SyntaxKind.PrivateKeyword:
                 _kindText = 'Private';
                 break;
-            case 113:
+            case ts.SyntaxKind.ProtectedKeyword:
                 _kindText = 'Protected';
                 break;
-            case 114:
+            case ts.SyntaxKind.PublicKeyword:
                 _kindText = 'Public';
                 break;
-            case 115:
+            case ts.SyntaxKind.StaticKeyword:
                 _kindText = 'Static';
                 break;
         }

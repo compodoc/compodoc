@@ -1,9 +1,9 @@
-import { IHtmlEngineHelper } from './html-engine-helper.interface';
+import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 import { JsdocTagInterface } from '../../interfaces/jsdoc-tag.interface';
 
 export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
 
-    private cleanTag(comment) {
+    private cleanTag(comment: string): string {
         if (comment.charAt(0) === '*') {
             comment = comment.substring(1, comment.length);
         }
@@ -26,7 +26,7 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    public helperFunc(context: any, jsdocTags: JsdocTagInterface[], options) {
+    public helperFunc(context: any, jsdocTags: JsdocTagInterface[], options: IHandlebarsOptions) {
         let i = 0;
         let len = jsdocTags.length;
         let tags = [];

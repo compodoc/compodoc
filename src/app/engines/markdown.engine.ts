@@ -61,13 +61,13 @@ export class MarkdownEngine {
 		return out;
 	}
 
-	public getTraditionalMarkdown(filepath: string): Promise<any> {
+	public getTraditionalMarkdown(filepath: string): Promise<string> {
 		return this.fileEngine.get(process.cwd() + path.sep + filepath + '.md')
 			.catch(err => this.fileEngine.get(process.cwd() + path.sep + filepath).then())
 			.then(data => marked(data));
 	}
 
-	private getReadmeFile(): Promise<any> {
+	private getReadmeFile(): Promise<string> {
 		return this.fileEngine.get(process.cwd() + path.sep + 'README.md').then(data => marked(data));
 	}
 
@@ -113,7 +113,7 @@ export class MarkdownEngine {
 		return this.addEndings(foundFiles);
 	}
 
-	private escape(html) {
+	private escape(html: string): string {
 		return html
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')

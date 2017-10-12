@@ -31,7 +31,6 @@ export class JsdocParserUtil {
                         result.push(doc);
                     }
                 } else if (ts.isJSDoc(doc)) {
-
                     result.push(..._.filter(doc.tags, tag => tag.kind === kind));
                 } else {
                     throw new Error('Unexpected type');
