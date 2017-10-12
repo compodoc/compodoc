@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "module": "commonjs",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",

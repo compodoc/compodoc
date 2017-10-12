@@ -19,8 +19,10 @@ const cwd = process.cwd();
 
 process.setMaxListeners(0);
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', (err, p) => {
     logger.error(err);
+    logger.error(p);
+    console.log('Unhandled Rejection at:', p, 'reason:', err);
     logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
     process.exit(1);
 });
@@ -68,7 +70,7 @@ export class CliApplication extends Application {
             .parse(process.argv);
 
         let outputHelp = () => {
-            program.outputHelp()
+            program.outputHelp();
             process.exit(1);
         };
 

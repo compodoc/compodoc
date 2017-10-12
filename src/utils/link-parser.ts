@@ -1,6 +1,6 @@
 export function extractLeadingText(string, completeTag) {
     var tagIndex = string.indexOf(completeTag);
-    var leadingText = null;
+    var leadingText = undefined;
     var leadingTextRegExp = /\[(.+?)\]/g;
     var leadingTextInfo = leadingTextRegExp.exec(string);
 
@@ -59,7 +59,7 @@ export let LinkParser = (function() {
         split = splitLinkText(tagInfo.text);
         target = split.target;
 
-        if (leading.leadingText !== null) {
+        if (leading.leadingText !== undefined) {
             stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
         } else if (typeof split.linkText !== 'undefined') {
             stringtoReplace = tagInfo.completeTag;

@@ -1,14 +1,15 @@
-import { JSDocTagsParser } from '../../../../utils/jsdoc.parser';
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../utils/utils';
 import { kindToType } from '../../../../utils/kind-to-type';
-import { Configuration } from '../../../configuration';
 
 import * as _ from 'lodash';
+import { JsdocParserUtil } from '../../../../utils';
+import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 
 const marked = require('marked');
 const ts = require('typescript');
 
 export class ClassHelper {
+    private jsdocParserUtil = new JsdocParserUtil();
 
     constructor(
         private typeChecker,
@@ -154,7 +155,7 @@ export class ClassHelper {
 
         if (symbol) {
             if (symbol.valueDeclaration) {
-                jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
             }
         }
 

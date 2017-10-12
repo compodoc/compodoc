@@ -251,7 +251,7 @@ export let RouterParser = (function () {
         console.log('  routesTree: ', routesTree);
         console.log('');*/
 
-        var cleanedRoutesTree = null;
+        var cleanedRoutesTree = undefined;
 
         var cleanRoutesTree = function (route) {
             for (var i in route.children) {

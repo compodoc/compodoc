@@ -22,7 +22,6 @@ import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
-import { getAngularVersionOfProject } from '../utils/angular-version';
 
 import { cleanSourcesForWatch } from '../utils/utils';
 
@@ -30,6 +29,7 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 
 import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
+import { AngularVersionUtil } from '../utils';
 
 let pkg = require('../package.json');
 let cwd = process.cwd();
@@ -59,6 +59,7 @@ export class Application {
      */
     public isWatching: boolean = false;
 
+    private angularVersionUtil = new AngularVersionUtil();
     private dependenciesEngine: DependenciesEngine;
     private ngdEngine: NgdEngine;
     private htmlEngine: HtmlEngine;
@@ -176,7 +177,7 @@ export class Application {
             if (typeof parsedData.description !== 'undefined') {
                 this.configuration.mainData.documentationMainDescription = parsedData.description;
             }
-            this.configuration.mainData.angularVersion = getAngularVersionOfProject(parsedData);
+            this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
             this.processMarkdowns().then(() => {
                 this.getDependenciesData();

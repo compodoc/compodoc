@@ -43,7 +43,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
 
                 if (leadingText) {
                     stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
-                } else if (leading.leadingText !== null) {
+                } else if (leading.leadingText !== undefined) {
                     stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
                 } else if (typeof split.linkText !== 'undefined') {
                     stringtoReplace = tagInfo.completeTag;
@@ -70,7 +70,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                 }
 
                 let label = result.name;
-                if (leading.leadingText !== null) {
+                if (leading.leadingText !== undefined) {
                     label = leading.leadingText;
                 }
                 if (typeof split.linkText !== 'undefined') {

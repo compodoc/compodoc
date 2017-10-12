@@ -1,18 +1,23 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
-import { prefixOfficialDoc } from '../../../utils/angular-version';
+
 import { DependenciesEngine } from '../dependencies.engine';
-import { finderInBasicTypes, finderInTypeScriptBasicTypes } from '../../../utils/basic-types';
+import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 
+import * as ts from 'typescript';
+
 export class FunctionSignatureHelper implements IHtmlEngineHelper {
+    private angularVersionUtil = new AngularVersionUtil();
+    private basicTypeUtil = new BasicTypeUtil();
+
+
     constructor(
         private configuration: ConfigurationInterface,
         private dependenciesEngine: DependenciesEngine) {
 
     }
 
-    private handleFunction(arg) {
-        let angularDocPrefix = prefixOfficialDoc(this.configuration.mainData.angularVersion);
+    private handleFunction(arg): string {
 
         if (arg.function.length === 0) {
             return `${arg.name}${this.getOptionalString(arg)}: () => void`;
@@ -26,14 +31,11 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                     if (_result.data.type === 'class') { path = 'classe'; }
                     return `${argu.name}${this.getOptionalString(arg)}: <a href="../${path}s/${_result.data.name}.html">${argu.type}</a>`;
                 } else {
-                    let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
+                    let path = this.angularVersionUtil.getApiLink(_result.data, this.configuration.mainData.angularVersion);
                     return `${argu.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${argu.type}</a>`;
                 }
-            } else if (finderInBasicTypes(argu.type)) {
-                let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${argu.type}`;
-                return `${argu.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${argu.type}</a>`;
-            } else if (finderInTypeScriptBasicTypes(argu.type)) {
-                let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
+            } else if (this.basicTypeUtil.isKnownType(argu.type)) {
+                let path = this.basicTypeUtil.getTypeUrl(argu.type);
                 return `${argu.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${argu.type}</a>`;
             } else {
                 if (argu.name && argu.type) {
@@ -52,7 +54,6 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
 
     public helperFunc(context: any, method) {
         let args = [];
-        let angularDocPrefix = prefixOfficialDoc(this.configuration.mainData.angularVersion);
 
         if (method.args) {
             args = method.args.map((arg) => {
@@ -63,18 +64,15 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                         if (_result.data.type === 'class') { path = 'classe'; }
                         return `${arg.name}${this.getOptionalString(arg)}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                     } else {
-                        let path = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
+                        let path = this.angularVersionUtil.getApiLink(_result.data, this.configuration.mainData.angularVersion);
                         return `${arg.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     }
                 } else if (arg.dotDotDotToken) {
                     return `...${arg.name}: ${arg.type}`;
                 } else if (arg.function) {
                     return this.handleFunction(arg);
-                } else if (finderInBasicTypes(arg.type)) {
-                    let path = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${arg.type}`;
-                    return `${arg.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${arg.type}</a>`;
-                } else if (finderInTypeScriptBasicTypes(arg.type)) {
-                    let path = `https://www.typescriptlang.org/docs/handbook/basic-types.html`;
+                } else if (this.basicTypeUtil.isKnownType(arg.type)) {
+                    let path = this.basicTypeUtil.getTypeUrl(arg.type);
                     return `${arg.name}${this.getOptionalString(arg)}: <a href="${path}" target="_blank">${arg.type}</a>`;
                 } else {
                     return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;

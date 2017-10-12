@@ -23,7 +23,7 @@
             var ctx = this, args = arguments;
             if (!timeout) {
                 timeout = setTimeout(function() {
-                    timeout = null;
+                    timeout = undefined;
                     fn.apply(ctx, args);
                 }, wait);
             }

@@ -5,7 +5,7 @@ import {shell, pkg} from '../helpers';
 
 describe('CLI Options', () => {
 
-    let runHelp = null;
+    let runHelp = undefined;
 
     before( () => {
         runHelp = shell('node', ['./bin/index-cli.js', '-h']);

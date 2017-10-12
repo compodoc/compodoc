@@ -7,7 +7,7 @@ const tsconfigPath = require.resolve('../../../tsconfig.json');
 const env = Object.freeze({ TS_NODE_PROJECT: tsconfigPath, MODE: 'TESTING' });
 
 describe('CLI simple generation - big app', () => {
-    let stdoutString = null;
+    let stdoutString = undefined;
     let clockInterfaceFile;
     let searchFuncFile;
 

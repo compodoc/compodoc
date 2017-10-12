@@ -1,10 +1,12 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 import { DependenciesEngine } from '../dependencies.engine';
-import { prefixOfficialDoc } from '../../../utils/angular-version';
-import { finderInBasicTypes, finderInTypeScriptBasicTypes } from '../../../utils/basic-types';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
+import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
 
 export class LinkTypeHelper implements IHtmlEngineHelper {
+    private angularVersionUtil = new AngularVersionUtil();
+    private basicTypeUtil = new BasicTypeUtil();
+
     constructor(
         private configuration: ConfigurationInterface,
         private dependenciesEngine: DependenciesEngine) {
@@ -13,7 +15,7 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
 
     public helperFunc(context: any, name, options) {
         let _result = this.dependenciesEngine.find(name);
-        let angularDocPrefix = prefixOfficialDoc(this.configuration.mainData.angularVersion);
+        let angularDocPrefix = this.angularVersionUtil.prefixOfficialDoc(this.configuration.mainData.angularVersion);
         if (_result) {
             context.type = {
                 raw: name
@@ -47,19 +49,12 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
             }
 
             return options.fn(context);
-        } else if (finderInBasicTypes(name)) {
+        } else if (this.basicTypeUtil.isKnownType(name)) {
             context.type = {
                 raw: name
             };
             context.type.target = '_blank';
-            context.type.href = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${name}`;
-            return options.fn(context);
-        } else if (finderInTypeScriptBasicTypes(name)) {
-            context.type = {
-                raw: name
-            };
-            context.type.target = '_blank';
-            context.type.href = 'https://www.typescriptlang.org/docs/handbook/basic-types.html';
+            context.type.href = this.basicTypeUtil.getTypeUrl(name);
             return options.fn(context);
         } else {
             return options.inverse(context);
