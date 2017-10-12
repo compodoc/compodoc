@@ -77,16 +77,16 @@ export class JsdocParserUtil {
         // Also recognize when the node is the RHS of an assignment expression
         const isSourceOfAssignmentExpressionStatement =
             parent && parent.parent &&
-            parent.kind === ts.SyntaxKind.BinaryExpression &&
-            (parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-            parent.parent.kind === ts.SyntaxKind.ExpressionStatement;
+            ts.isBinaryExpression(parent) &&
+            parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+            ts.isExpressionStatement(parent.parent);
         if (isSourceOfAssignmentExpressionStatement) {
             cache = this.getJSDocsWorker(parent.parent, cache);
         }
 
-        const isModuleDeclaration = node.kind === ts.SyntaxKind.ModuleDeclaration &&
-            parent && parent.kind === ts.SyntaxKind.ModuleDeclaration;
-        const isPropertyAssignmentExpression = parent && parent.kind === ts.SyntaxKind.PropertyAssignment;
+        const isModuleDeclaration = ts.isModuleDeclaration(node) &&
+            parent && ts.isModuleDeclaration(parent);
+        const isPropertyAssignmentExpression = parent && ts.isPropertyAssignment(parent);
         if (isModuleDeclaration || isPropertyAssignmentExpression) {
             cache = this.getJSDocsWorker(parent, cache);
         }

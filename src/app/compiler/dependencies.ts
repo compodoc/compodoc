@@ -320,12 +320,12 @@ export class Dependencies {
                 let filterByDecorators = (filteredNode) => {
                     if (filteredNode.expression && filteredNode.expression.expression) {
                         let _test = /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text);
-                        if (!_test && node.kind === ts.SyntaxKind.ClassDeclaration) {
+                        if (!_test && ts.isClassDeclaration(node)) {
                             _test = true;
                         }
                         return _test;
                     }
-                    if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                    if (ts.isClassDeclaration(node)) {
                         return true;
                     }
                     return false;
@@ -367,7 +367,7 @@ export class Dependencies {
                     }
                     this.debug(interfaceDeps);
                     outputSymbols.interfaces.push(interfaceDeps);
-                } else if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
+                } else if (ts.isFunctionDeclaration(node)) {
                     let infos = this.visitFunctionDeclaration(node);
                     let tags = this.visitFunctionDeclarationJSDocTags(node);
                     let name = infos.name;
@@ -385,7 +385,7 @@ export class Dependencies {
                         functionDep.jsdoctags = tags;
                     }
                     outputSymbols.miscellaneous.functions.push(functionDep);
-                } else if (node.kind === ts.SyntaxKind.EnumDeclaration) {
+                } else if (ts.isEnumDeclaration(node)) {
                     let infos = this.visitEnumDeclaration(node);
                     let name = node.name.text;
                     let enumDeps: IEnumDecDep = {
@@ -397,7 +397,7 @@ export class Dependencies {
                         file: file
                     };
                     outputSymbols.miscellaneous.enumerations.push(enumDeps);
-                } else if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
+                } else if (ts.isTypeAliasDeclaration(node)) {
                     let infos = this.visitTypeDeclaration(node);
                     let name = infos.name;
                     let typeAliasDeps: ITypeAliasDecDep = {
@@ -434,10 +434,10 @@ export class Dependencies {
                     }
                     outputSymbols.routes = [...outputSymbols.routes, ...newRoutes];
                 }
-                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                if (ts.isClassDeclaration(node)) {
                     this.processClass(node, file, srcFile, outputSymbols);
                 }
-                if (node.kind === ts.SyntaxKind.ExpressionStatement) {
+                if (ts.isExpressionStatement(node)) {
                     let bootstrapModuleReference = 'bootstrapModule';
                     // Find the root module with bootstrapModule call
                     // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
@@ -473,7 +473,7 @@ export class Dependencies {
                         }
                     }
                 }
-                if (node.kind === ts.SyntaxKind.VariableStatement && !this.isVariableRoutes(node)) {
+                if (ts.isVariableStatement(node) && !this.isVariableRoutes(node)) {
                     let infos: any = this.visitVariableDeclaration(node);
                     let name = infos.name;
                     let deps: any = {
@@ -494,7 +494,7 @@ export class Dependencies {
                     }
                     outputSymbols.miscellaneous.variables.push(deps);
                 }
-                if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
+                if (ts.isTypeAliasDeclaration(node)) {
                     let infos = this.visitTypeDeclaration(node);
                     let name = infos.name;
                     let deps: any = {
@@ -510,7 +510,7 @@ export class Dependencies {
                     }
                     outputSymbols.miscellaneous.typealiases.push(deps);
                 }
-                if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
+                if (ts.isFunctionDeclaration(node)) {
                     let infos = this.visitFunctionDeclaration(node);
                     let name = infos.name;
                     let deps: any = {
@@ -525,7 +525,7 @@ export class Dependencies {
                     }
                     outputSymbols.miscellaneous.functions.push(deps);
                 }
-                if (node.kind === ts.SyntaxKind.EnumDeclaration) {
+                if (ts.isEnumDeclaration(node)) {
                     let infos = this.visitEnumDeclaration(node);
                     let name = node.name.text;
                     let deps = {
@@ -690,7 +690,7 @@ export class Dependencies {
         return ANGULAR_LIFECYCLE_METHODS.indexOf(methodName) >= 0;
     }
 
-    private visitTypeDeclaration(node) {
+    private visitTypeDeclaration(node: ts.TypeAliasDeclaration) {
         let result: any = {
             name: node.name.text,
             kind: node.kind
@@ -742,7 +742,7 @@ export class Dependencies {
         }
     }
 
-    private visitFunctionDeclaration(method) {
+    private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
         let result: any = {
             name: method.name.text,
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
@@ -790,7 +790,7 @@ export class Dependencies {
         }
     }
 
-    private visitFunctionDeclarationJSDocTags(node): string {
+    private visitFunctionDeclarationJSDocTags(node: ts.FunctionDeclaration): string {
         let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
         let result;
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -813,7 +813,7 @@ export class Dependencies {
         return description;
     }
 
-    private visitEnumDeclaration(node) {
+    private visitEnumDeclaration(node: ts.EnumDeclaration) {
         let result = [];
         if (node.members) {
             let i = 0;
@@ -861,7 +861,7 @@ export class Dependencies {
          */
         let res = sourceFile.statements.reduce((directive, statement) => {
 
-            if (statement.kind === ts.SyntaxKind.VariableStatement) {
+            if (ts.isVariableStatement(statement)) {
                 return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
             }
 
@@ -878,7 +878,7 @@ export class Dependencies {
          */
         let res = sourceFile.statements.reduce((directive, statement) => {
 
-            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+            if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(this.classHelper.visitClassDeclaration(filename, statement, sourceFile));
                 }
@@ -896,7 +896,7 @@ export class Dependencies {
          */
         let res = sourceFile.statements.reduce((directive, statement) => {
 
-            if (statement.kind === ts.SyntaxKind.InterfaceDeclaration) {
+            if (ts.isInterfaceDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(this.classHelper.visitClassDeclaration(filename, statement, sourceFile));
                 }
