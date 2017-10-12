@@ -254,11 +254,11 @@ export let RouterParser = (function () {
         var cleanedRoutesTree = undefined;
 
         var cleanRoutesTree = function (route) {
-            for (var i in route.children) {
-                var routes = route.children[i].routes;
+            for (let i in route.children) {
+                let routes = route.children[i].routes;
             }
             return route;
-        }
+        };
 
         cleanedRoutesTree = cleanRoutesTree(routesTree);
 
@@ -268,7 +268,7 @@ export let RouterParser = (function () {
 
         let loopRoutesParser = function (route) {
             if (route.children) {
-                for (var i in route.children) {
+                for (let i in route.children) {
                     if (route.children[i].loadChildren) {
                         let child = foundLazyModuleWithPath(route.children[i].loadChildren),
                             module = _.find(cleanModulesTree, { 'name': child });
@@ -279,7 +279,7 @@ export let RouterParser = (function () {
                             _rawModule.module = module.name;
                             let loopInside = function (mod) {
                                 if (mod.children) {
-                                    for (var i in mod.children) {
+                                    for (let i in mod.children) {
                                         let route = foundRouteWithModuleName(mod.children[i].name);
                                         if (typeof route !== 'undefined') {
                                             if (route.data) {
@@ -291,7 +291,7 @@ export let RouterParser = (function () {
                                         }
                                     }
                                 }
-                            }
+                            };
                             loopInside(module);
 
                             route.children[i].children = [];
@@ -301,7 +301,7 @@ export let RouterParser = (function () {
                     loopRoutesParser(route.children[i]);
                 }
             }
-        }
+        };
         loopRoutesParser(cleanedRoutesTree);
 
         // console.log('');
@@ -342,14 +342,14 @@ export let RouterParser = (function () {
         console.log(modulesTree);*/
     };
 
-    let _generateRoutesIndex = function (outputFolder, routes) {
+    let _generateRoutesIndex = (outputFolder, routes) => {
         return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(__dirname + '/../src/templates/partials/routes-index.hbs'), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during routes index generation');
                 } else {
-                    let template: any = Handlebars.compile(data),
-                        result = template({
+                    let template: any = Handlebars.compile(data);
+                    let result = template({
                             routes: JSON.stringify(routes)
                         });
                     let testOutputDir = outputFolder.match(process.cwd());

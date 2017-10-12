@@ -7,7 +7,7 @@
     "noImplicitAny": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "sourceMap": false,
+    "sourceMap": true,
     "noResolve": false,
     "typeRoots": [
       "../node_modules/@types"
@@ -17,9 +17,9 @@
       "typescript"
     ],
     "lib": [
-        "es5",
-        "es6",
-        "es2015.promise"
+      "es5",
+      "es6",
+      "es2015.promise"
     ]
   },
   "files": [

@@ -13,7 +13,7 @@ export class AngularVersionUtil {
             .replace('>', '');
     }
 
-    public getAngularVersionOfProject(packageData) {
+    public getAngularVersionOfProject(packageData): string {
         let _result = '';
 
         if (packageData.dependencies) {

@@ -2,11 +2,11 @@ import * as path from 'path';
 import * as util from 'util';
 
 import * as _ from 'lodash';
+import * as ts from 'typescript';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { RouterParser } from '../../utils/router.parser';
-import { JSDocTagsParser } from '../../utils/jsdoc.parser';
 import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { CodeGenerator } from './code-generator';
@@ -22,6 +22,7 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper, NsModuleCache } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
+import { JsdocParserUtil } from '../../utils/jsdoc-parser.util';
 import {
     IInjectableDep,
     IPipeDep,
@@ -32,8 +33,6 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-
-const ts = require('typescript');
 const marked = require('marked');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
@@ -52,6 +51,8 @@ export class Dependencies {
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private classHelper: ClassHelper;
+
+    private jsdocParserUtil = new JsdocParserUtil();
 
     constructor(
         files: string[],
@@ -99,12 +100,7 @@ export class Dependencies {
 
                 if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
                     logger.info('parsing', filePath);
-
-                    try {
-                        this.getSourceFileDecorators(file, deps);
-                    } catch (e) {
-                        logger.error(e, file.fileName);
-                    }
+                    this.getSourceFileDecorators(file, deps);
                 }
 
             }
@@ -699,7 +695,7 @@ export class Dependencies {
             name: node.name.text,
             kind: node.kind
         };
-        let jsdoctags = JSDocTagsParser.getJSDocs(node);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
 
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
@@ -751,7 +747,7 @@ export class Dependencies {
             name: method.name.text,
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : []
         };
-        let jsdoctags = JSDocTagsParser.getJSDocs(method);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (typeof method.type !== 'undefined') {
             result.returnType = this.classHelper.visitType(method.type);
@@ -795,7 +791,7 @@ export class Dependencies {
     }
 
     private visitFunctionDeclarationJSDocTags(node): string {
-        let jsdoctags = JSDocTagsParser.getJSDocs(node);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
         let result;
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {

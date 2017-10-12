@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { JSDocParameterTag } from 'typescript';
+import * as _ from 'lodash';
 
 
 export class JsdocParserUtil {
@@ -20,80 +21,31 @@ export class JsdocParserUtil {
         return false;
     }
 
-    public some<T>(array: ReadonlyArray<T>, predicate?: (value: T) => boolean): boolean {
-        if (array) {
-            if (predicate) {
-                for (const v of array) {
-                    if (predicate(v)) {
-                        return true;
-                    }
-                }
-            } else {
-                return array.length > 0;
-            }
-        }
-        return false;
-    }
-
-    public concatenate<T>(array1: ReadonlyArray<T>, array2: ReadonlyArray<T>): ReadonlyArray<T> {
-        if (!this.some(array2)) { return array1; }
-        if (!this.some(array1)) { return array2; }
-        return [...array1, ...array2];
-    }
-
-    public isParameter(node: ts.Node): node is ts.ParameterDeclaration {
-        return node.kind === ts.SyntaxKind.Parameter;
-    }
-
     private getJSDocTags(node: ts.Node, kind: ts.SyntaxKind): ts.JSDocTag[] {
         const docs = this.getJSDocs(node);
         if (docs) {
             const result: ts.JSDocTag[] = [];
             for (const doc of docs) {
-                if (doc.kind === ts.SyntaxKind.JSDocParameterTag) {
+                if (ts.isJSDocParameterTag(doc)) {
                     if (doc.kind === kind) {
-                        result.push(doc as ts.JSDocTag);
+                        result.push(doc);
                     }
+                } else if (ts.isJSDoc(doc)) {
+
+                    result.push(..._.filter(doc.tags, tag => tag.kind === kind));
                 } else {
-                    result.push(...this.filter((doc as ts.JSDoc).tags, tag => tag.kind === kind));
+                    throw new Error('Unexpected type');
                 }
             }
             return result;
         }
     }
 
-    /**
-     * Filters an array by a predicate function. Returns the same array instance if the predicate is
-     * true for all elements, otherwise returns a new array instance containing the filtered subset.
-     */
-    public filter<T>(array: ReadonlyArray<T>, f: (x: T) => boolean): ReadonlyArray<T> {
-        if (array) {
-            const len = array.length;
-            let i = 0;
-            while (i < len && f(array[i])) {
-                i++;
-            }
-            if (i < len) {
-                const result = array.slice(0, i);
-                i++;
-                while (i < len) {
-                    const item = array[i];
-                    if (f(item)) {
-                        result.push(item);
-                    }
-                    i++;
-                }
-                return result;
-            }
-        }
-        return array;
-    }
-
     public getJSDocs(node: ts.Node): ReadonlyArray<ts.JSDoc | ts.JSDocTag> {
         // TODO: jsDocCache is internal, see if there's a way around it
         let cache: ReadonlyArray<ts.JSDoc | ts.JSDocTag> = (node as any).jsDocCache;
         if (!cache) {
-            cache = this.getJSDocsWorker(node, cache);
+            cache = this.getJSDocsWorker(node, []).filter(x => x);
             (node as any).jsDocCache = cache;
         }
         return cache;
@@ -112,9 +64,9 @@ export class JsdocParserUtil {
         const isInitializerOfVariableDeclarationInStatement =
             this.isVariableLike(parent) &&
             parent.initializer === node &&
-            parent.parent.parent.kind === ts.SyntaxKind.VariableStatement;
+            ts.isVariableStatement(parent.parent.parent);
         const isVariableOfVariableDeclarationStatement = this.isVariableLike(node) &&
-            parent.parent.kind === ts.SyntaxKind.VariableStatement;
+            ts.isVariableStatement(parent.parent);
         const variableStatementNode =
             isInitializerOfVariableDeclarationInStatement ? parent.parent.parent :
                 isVariableOfVariableDeclarationStatement ? parent.parent :
@@ -141,44 +93,38 @@ export class JsdocParserUtil {
         }
 
         // Pull parameter comments from declaring function as well
-        if (node.kind === ts.SyntaxKind.Parameter) {
-            cache = this.concatenate(cache, this.getJSDocParameterTags(node));
+        if (ts.isParameter(node)) {
+            cache = _.concat(cache, this.getJSDocParameterTags(node));
         }
 
         if (this.isVariableLike(node) && node.initializer) {
-            cache = this.concatenate(cache, node.initializer.jsDoc);
+            cache = _.concat(cache, node.initializer.jsDoc);
         }
 
-        cache = this.concatenate(cache, node.jsDoc);
+        cache = _.concat(cache, node.jsDoc);
 
         return cache;
     }
 
-    public getJSDocParameterTags(param: ts.Node): ReadonlyArray<ts.JSDocParameterTag> {
-        if (!this.isParameter(param)) {
-            return undefined;
-        }
+    private getJSDocParameterTags(param: ts.ParameterDeclaration): ReadonlyArray<ts.JSDocParameterTag> {
         const func = param.parent as ts.FunctionLikeDeclaration;
         const tags = this.getJSDocTags(func, ts.SyntaxKind.JSDocParameterTag) as ts.JSDocParameterTag[];
+
         if (!param.name) {
             // this is an anonymous jsdoc param from a `function(type1, type2): type3` specification
             const i = func.parameters.indexOf(param);
-            const paramTags = this.filter(tags, tag => tag.kind === ts.SyntaxKind.JSDocParameterTag);
+            const paramTags = _.filter(tags, tag => ts.isJSDocParameterTag(tag));
+
             if (paramTags && 0 <= i && i < paramTags.length) {
                 return [paramTags[i]];
             }
-        } else if (param.name.kind === ts.SyntaxKind.Identifier) {
-            console.log(tags[0]);
-            const name = (param.name as ts.Identifier).text;
-            return this.filter(tags, tag => this.isJSDocParameterTag(tag.kind) && tag.parameterName.text === name);
+        } else if (ts.isIdentifier(param.name)) {
+            const name = param.name.text;
+            return _.filter(tags, tag => ts && ts.isJSDocParameterTag(tag) && tag.parameterName.text === name);
         } else {
             // TODO: it's a destructured parameter, so it should look up an "object type" series of multiple lines
             // But multi-line object types aren't supported yet either
             return undefined;
         }
-    }
-
-    private isJSDocParameterTag(tag): tag is ts.JSDocParameterTag {
-        return tag.kind === ts.SyntaxKind.JSDocParameterTag;
     }
 }
