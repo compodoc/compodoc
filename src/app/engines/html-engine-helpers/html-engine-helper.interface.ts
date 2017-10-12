@@ -7,4 +7,5 @@ export interface IHtmlEngineHelper {
 export interface IHandlebarsOptions {
     fn(context): string;
     inverse(context: string): string;
+    hash?: any;
 }

@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import { logger } from '../logger';
+import { FileEngine } from '../app/engines/file.engine';
 
 const JSON5 = require('json5');
 
@@ -16,6 +17,8 @@ export let RouterParser = (function () {
     let rootModule;
     let cleanModulesTree;
     let modulesWithRoutes = [];
+
+    const fileEngine = new FileEngine();
 
     let _addRoute = function (route) {
         routes.push(route);
@@ -124,7 +127,7 @@ export let RouterParser = (function () {
                 if (node.initializer) {
                     if (node.initializer.elements) {
                         _.forEach(node.initializer.elements, function (element) {
-                            //find element with arguments
+                            // find element with arguments
                             if (element.arguments) {
                                 _.forEach(element.arguments, function (argument) {
                                     _.forEach(routes, function (route) {
@@ -189,7 +192,7 @@ export let RouterParser = (function () {
         // console.log(routes);
         // console.log('');
 
-        var routesTree = {
+        let routesTree = {
             name: '<root>',
             kind: 'module',
             className: rootModule,
@@ -200,7 +203,7 @@ export let RouterParser = (function () {
             if (node.children && node.children.length > 0) {
                 // If module has child modules
                 // console.log('   If module has child modules');
-                for (var i in node.children) {
+                for (let i in node.children) {
                     let route = foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
                         route.children = JSON5.parse(route.data);
@@ -251,14 +254,14 @@ export let RouterParser = (function () {
         console.log('  routesTree: ', routesTree);
         console.log('');*/
 
-        var cleanedRoutesTree = null;
+        let cleanedRoutesTree = undefined;
 
-        var cleanRoutesTree = function (route) {
-            for (var i in route.children) {
-                var routes = route.children[i].routes;
+        let cleanRoutesTree = function (route) {
+            for (let i in route.children) {
+                let routes = route.children[i].routes;
             }
             return route;
-        }
+        };
 
         cleanedRoutesTree = cleanRoutesTree(routesTree);
 
@@ -268,7 +271,7 @@ export let RouterParser = (function () {
 
         let loopRoutesParser = function (route) {
             if (route.children) {
-                for (var i in route.children) {
+                for (let i in route.children) {
                     if (route.children[i].loadChildren) {
                         let child = foundLazyModuleWithPath(route.children[i].loadChildren),
                             module = _.find(cleanModulesTree, { 'name': child });
@@ -279,7 +282,7 @@ export let RouterParser = (function () {
                             _rawModule.module = module.name;
                             let loopInside = function (mod) {
                                 if (mod.children) {
-                                    for (var i in mod.children) {
+                                    for (let i in mod.children) {
                                         let route = foundRouteWithModuleName(mod.children[i].name);
                                         if (typeof route !== 'undefined') {
                                             if (route.data) {
@@ -291,7 +294,7 @@ export let RouterParser = (function () {
                                         }
                                     }
                                 }
-                            }
+                            };
                             loopInside(module);
 
                             route.children[i].children = [];
@@ -301,7 +304,7 @@ export let RouterParser = (function () {
                     loopRoutesParser(route.children[i]);
                 }
             }
-        }
+        };
         loopRoutesParser(cleanedRoutesTree);
 
         // console.log('');
@@ -342,31 +345,20 @@ export let RouterParser = (function () {
         console.log(modulesTree);*/
     };
 
-    let _generateRoutesIndex = function (outputFolder, routes) {
-        return new Promise((resolve, reject) => {
-            fs.readFile(path.resolve(__dirname + '/../src/templates/partials/routes-index.hbs'), 'utf8', (err, data) => {
-                if (err) {
-                    reject('Error during routes index generation');
-                } else {
-                    let template: any = Handlebars.compile(data),
-                        result = template({
-                            routes: JSON.stringify(routes)
-                        });
-                    let testOutputDir = outputFolder.match(process.cwd());
-                    if (!testOutputDir) {
-                        outputFolder = outputFolder.replace(process.cwd(), '');
-                    }
-                    fs.outputFile(path.resolve(outputFolder + path.sep + '/js/routes/routes_index.js'), result, function (err) {
-                        if (err) {
-                            logger.error('Error during routes index file generation ', err);
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                }
-            });
-        });
+    let _generateRoutesIndex = (outputFolder, routes) => {
+        return fileEngine.get(__dirname + '/../src/templates/partials/routes-index.hbs').then(data => {
+            let template: any = Handlebars.compile(data);
+            let result = template({
+                    routes: JSON.stringify(routes)
+                });
+            let testOutputDir = outputFolder.match(process.cwd());
+
+            if (!testOutputDir) {
+                outputFolder = outputFolder.replace(process.cwd(), '');
+            }
+
+            return fileEngine.write(outputFolder + path.sep + '/js/routes/routes_index.js', result);
+        }, err => Promise.reject('Error during routes index generation'));
     };
 
     let _routesLength = function (): number {

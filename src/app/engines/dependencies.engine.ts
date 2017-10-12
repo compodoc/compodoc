@@ -1,5 +1,3 @@
-import { finderInAngularAPIs } from '../../utils/angular-api';
-
 import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 
@@ -8,6 +6,8 @@ import * as _ from 'lodash';
 import { IModuleDep } from '../compiler/deps/module-dep.factory';
 import { IComponentDep } from '../compiler/deps/component-dep.factory';
 import { IDirectiveDep } from '../compiler/deps/directive-dep.factory';
+import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { AngularApiUtil } from '../../utils/angular-api.util';
 import {
     IInjectableDep,
     IInterfaceDep,
@@ -30,6 +30,8 @@ export class DependenciesEngine {
     public pipes: Object[];
     public classes: Object[];
     public miscellaneous: MiscellaneousData;
+
+    private angularApiUtil: AngularApiUtil = new AngularApiUtil();
 
     private cleanModules(modules) {
         let _m = modules;
@@ -77,10 +79,10 @@ export class DependenciesEngine {
         this.routes = this.rawData.routesTree;
     }
 
-    private finderInCompodocDependencies(type, data) {
+    private findInCompodocDependencies(type, data): IApiSourceResult<any> {
         let _result = {
             source: 'internal',
-            data: null
+            data: undefined
         };
         for (let i = 0; i < data.length; i++) {
             if (typeof type !== 'undefined') {
@@ -92,36 +94,27 @@ export class DependenciesEngine {
         return _result;
     }
 
-    public find(type: string) {
-        let resultInCompodocInjectables = this.finderInCompodocDependencies(type, this.injectables);
-        let resultInCompodocInterfaces = this.finderInCompodocDependencies(type, this.interfaces);
-        let resultInCompodocClasses = this.finderInCompodocDependencies(type, this.classes);
-        let resultInCompodocComponents = this.finderInCompodocDependencies(type, this.components);
-        let resultInCompodocMiscellaneousVariables = this.finderInCompodocDependencies(type, this.miscellaneous.variables);
-        let resultInCompodocMiscellaneousFunctions = this.finderInCompodocDependencies(type, this.miscellaneous.functions);
-        let resultInCompodocMiscellaneousTypealiases = this.finderInCompodocDependencies(type, this.miscellaneous.typealiases);
-        let resultInCompodocMiscellaneousEnumerations = this.finderInCompodocDependencies(type, this.miscellaneous.enumerations);
-        let resultInAngularAPIs = finderInAngularAPIs(type);
+    public find(type: string): IApiSourceResult<any> | undefined {
+        let searchFunctions: Array<() => IApiSourceResult<any>> = [
+            () => this.findInCompodocDependencies(type, this.injectables),
+            () => this.findInCompodocDependencies(type, this.interfaces),
+            () => this.findInCompodocDependencies(type, this.classes),
+            () => this.findInCompodocDependencies(type, this.components),
+            () => this.findInCompodocDependencies(type, this.miscellaneous.variables),
+            () => this.findInCompodocDependencies(type, this.miscellaneous.functions),
+            () => this.findInCompodocDependencies(type, this.miscellaneous.typealiases),
+            () => this.findInCompodocDependencies(type, this.miscellaneous.enumerations),
+            () => this.angularApiUtil.findApi(type)];
 
-        if (resultInCompodocInjectables.data !== null) {
-            return resultInCompodocInjectables;
-        } else if (resultInCompodocInterfaces.data !== null) {
-            return resultInCompodocInterfaces;
-        } else if (resultInCompodocClasses.data !== null) {
-            return resultInCompodocClasses;
-        } else if (resultInCompodocComponents.data !== null) {
-            return resultInCompodocComponents;
-        } else if (resultInCompodocMiscellaneousVariables.data !== null) {
-            return resultInCompodocMiscellaneousVariables;
-        } else if (resultInCompodocMiscellaneousFunctions.data !== null) {
-            return resultInCompodocMiscellaneousFunctions;
-        } else if (resultInCompodocMiscellaneousTypealiases.data !== null) {
-            return resultInCompodocMiscellaneousTypealiases;
-        } else if (resultInCompodocMiscellaneousEnumerations.data !== null) {
-            return resultInCompodocMiscellaneousEnumerations;
-        } else if (resultInAngularAPIs.data !== null) {
-            return resultInAngularAPIs;
+        for (let searchFunction of searchFunctions) {
+            let result = searchFunction();
+
+            if (result.data) {
+                return result;
+            }
         }
+
+        return undefined;
     }
 
     public update(updatedData): void {

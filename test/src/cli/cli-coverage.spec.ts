@@ -9,7 +9,7 @@ describe('CLI coverage report', () => {
 
     describe('excluding coverage', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -35,7 +35,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test command above', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -61,7 +61,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test command under', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -87,7 +87,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command under', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -113,7 +113,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -139,7 +139,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 1/4', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -169,7 +169,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 2/4', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -199,7 +199,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 3/4', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -229,7 +229,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 4/4', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -259,7 +259,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage page', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             coverageFile;
         before(function (done) {
             tmp.create();

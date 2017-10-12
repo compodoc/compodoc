@@ -1,21 +1,16 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 
 export class RelativeURLHelper implements IHtmlEngineHelper {
-    public helperFunc(ctx: any, currentDepth, context) {
-        let result = '';
-
+    public helperFunc(context: any, currentDepth: number, options): string {
         switch (currentDepth) {
             case 0:
-                result = './';
-                break;
+                return './';
             case 1:
-                result = '../';
-                break;
+                return '../';
             case 2:
-                result = '../../';
-                break;
+                return '../../';
         }
 
-        return result;
+        return '';
     }
 }

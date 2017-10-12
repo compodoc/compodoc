@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as _ from 'lodash';
 
 import { Application } from './app/application';
 
@@ -11,7 +12,6 @@ import { FileEngine } from './app/engines/file.engine';
 
 const pkg = require('../package.json');
 const program = require('commander');
-const _ = require('lodash');
 const os = require('os');
 const osName = require('os-name');
 const files = [];
@@ -19,8 +19,8 @@ const cwd = process.cwd();
 
 process.setMaxListeners(0);
 
-process.on('unhandledRejection', (err) => {
-    logger.error(err);
+process.on('unhandledRejection', (err, p) => {
+    console.log('Unhandled Rejection at:', p, 'reason:', err);
     logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
     process.exit(1);
 });
@@ -68,7 +68,7 @@ export class CliApplication extends Application {
             .parse(process.argv);
 
         let outputHelp = () => {
-            program.outputHelp()
+            program.outputHelp();
             process.exit(1);
         };
 

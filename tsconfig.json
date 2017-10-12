@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "module": "commonjs",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
     "noImplicitAny": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "sourceMap": false,
+    "sourceMap": true,
     "noResolve": false,
     "typeRoots": [
       "../node_modules/@types"
@@ -17,9 +17,9 @@
       "typescript"
     ],
     "lib": [
-        "es5",
-        "es6",
-        "es2015.promise"
+      "es5",
+      "es6",
+      "es2015.promise"
     ]
   },
   "files": [

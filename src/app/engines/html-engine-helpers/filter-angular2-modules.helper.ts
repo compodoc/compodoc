@@ -1,7 +1,7 @@
-import { IHtmlEngineHelper } from './html-engine-helper.interface';
+import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 
 export class FilterAngular2ModulesHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, text, options) {
+    public helperFunc(context: any, text: string, options: IHandlebarsOptions) {
         const NG2_MODULES: string[] = [
             'BrowserModule',
             'FormsModule',

@@ -7,7 +7,7 @@ const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI generation - TypeDoc examples', () => {
 
-      let stdoutString = null;
+      let stdoutString = undefined;
       before((done) => {
           let ls = shell('node', [
               './bin/index-cli.js',

@@ -1,9 +1,9 @@
 import * as path from 'path';
+import * as _ from 'lodash';
 import { FileEngine } from './file.engine';
 import { logger } from '../../logger';
 
 const $: any = require('cheerio');
-const _ = require('lodash');
 
 class ComponentsTreeEngine {
     private static _instance: ComponentsTreeEngine = new ComponentsTreeEngine();
@@ -31,7 +31,8 @@ class ComponentsTreeEngine {
             let loop = () => {
                 if (i <= len - 1) {
                     if (this.componentsForTree[i].templateUrl) {
-                        this.fileEngine.get(process.cwd() + path.sep + path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl)
+                        let filePath = process.cwd() + path.sep + path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl;
+                        this.fileEngine.get(filePath)
                             .then((templateData) => {
                                 this.componentsForTree[i].templateData = templateData;
                                 i++;

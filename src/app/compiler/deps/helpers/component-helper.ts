@@ -1,4 +1,4 @@
-const ts = require('typescript');
+import * as ts from 'typescript';
 import { SymbolHelper, NsModuleCache } from './symbol-helper';
 import { NodeObject } from '../../node-object.interface';
 import { detectIndent } from '../../../../utilities';
@@ -113,9 +113,9 @@ export class ComponentHelper {
          */
         let res = sourceFile.statements.reduce((directive, statement) => {
 
-            if (statement.kind === ts.SyntaxKind.ClassDeclaration) {
+            if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
-                    return directive.concat(this.classHelper.visitClassDeclaration(filename, statement as ts.ClassDeclaration, sourceFile));
+                    return directive.concat(this.classHelper.visitClassDeclaration(filename, statement, sourceFile));
                 }
             }
 

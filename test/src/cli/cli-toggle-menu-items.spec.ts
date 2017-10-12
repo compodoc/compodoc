@@ -8,7 +8,7 @@ const expect = chai.expect,
 describe('CLI toggle menu items', () => {
 
     describe('with a list', () => {
-        let stdoutString = null,
+        let stdoutString = undefined,
             fooIndexFile,
             fooServiceFile;
         before(function (done) {

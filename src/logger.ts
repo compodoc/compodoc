@@ -34,7 +34,7 @@ class Logger {
 		if (!this.silent) { return; }
 		this.logger(
 			this.format(LEVEL.ERROR, ...args)
-		);
+        );
 	}
 
 	public warn(...args) {

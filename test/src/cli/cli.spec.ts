@@ -9,7 +9,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json provided', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js'], { cwd: tmp.name, env });
@@ -28,7 +28,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json is found in cwd', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-p', '../test.json'], { cwd: tmp.name, env });
@@ -47,7 +47,7 @@ describe('CLI simple flags', () => {
 
     describe('when just serving without generation', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-s'], { cwd: tmp.name, env });
@@ -61,7 +61,7 @@ describe('CLI simple flags', () => {
 
     describe('when just serving without generation and folder which does\'t exist', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-s', '-d', 'doc'], { cwd: tmp.name, env });
@@ -74,7 +74,7 @@ describe('CLI simple flags', () => {
     });
 
     describe('when no README/package.json files available', () => {
-        let command = null;
+        let command = undefined;
 
         beforeEach(() => {
             tmp.create();
@@ -160,7 +160,7 @@ describe('CLI simple flags', () => {
 
     describe('when specific files are included in tsconfig', () => {
 
-        let moduleFile = null;
+        let moduleFile = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [

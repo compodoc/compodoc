@@ -1,14 +1,15 @@
-import { JSDocTagsParser } from '../../../../utils/jsdoc.parser';
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../utils/utils';
 import { kindToType } from '../../../../utils/kind-to-type';
-import { Configuration } from '../../../configuration';
 
 import * as _ from 'lodash';
+import * as ts from 'typescript';
+import { JsdocParserUtil } from '../../../../utils';
+import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 
 const marked = require('marked');
-const ts = require('typescript');
 
 export class ClassHelper {
+    private jsdocParserUtil = new JsdocParserUtil();
 
     constructor(
         private typeChecker,
@@ -114,7 +115,7 @@ export class ClassHelper {
         return _return;
     }
 
-    public visitClassDeclaration(fileName, classDeclaration, sourceFile?): any {
+    public visitClassDeclaration(fileName: string, classDeclaration: ts.ClassDeclaration, sourceFile?: ts.SourceFile): any {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -154,7 +155,7 @@ export class ClassHelper {
 
         if (symbol) {
             if (symbol.valueDeclaration) {
-                jsdoctags = JSDocTagsParser.getJSDocs(symbol.valueDeclaration);
+                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
             }
         }
 
@@ -382,7 +383,7 @@ export class ClassHelper {
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
-        let jsdoctags = JSDocTagsParser.getJSDocs(method);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
@@ -444,7 +445,7 @@ export class ClassHelper {
             args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
             line: this.getPosition(method, sourceFile).line + 1
         };
-        let jsdoctags = JSDocTagsParser.getJSDocs(method);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (method.symbol) {
             result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
@@ -496,7 +497,7 @@ export class ClassHelper {
         let jsdoctags;
 
         if (property.jsDoc) {
-            jsdoctags = JSDocTagsParser.getJSDocs(property);
+            jsdoctags = this.jsdocParserUtil.getJSDocs(property);
         }
 
         if (property.symbol) {
@@ -636,7 +637,7 @@ export class ClassHelper {
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
-        let jsdoctags = JSDocTagsParser.getJSDocs(method);
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (typeof method.type === 'undefined') {
             // Try to get inferred type
