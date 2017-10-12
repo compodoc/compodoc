@@ -45,7 +45,7 @@ export function temporaryDir() {
         },
         create(param?) {
             if (param) name = param;
-            if (!fs.existsSync(name)){
+            if (!fs.existsSync(name)) {
                 fs.mkdirSync(name);
             }
         },

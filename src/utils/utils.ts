@@ -24,7 +24,7 @@ export const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
     getCurrentDirectory,
     getCanonicalFileName,
     getNewLine
-}
+};
 
 export function markedtags(tags) {
     var mtags = tags;
@@ -32,7 +32,7 @@ export function markedtags(tags) {
         tag.comment = marked(LinkParser.resolveLinks(tag.comment));
     });
     return mtags;
-};
+}
 
 export function mergeTagsAndArgs(args, jsdoctags?) {
     var margs = _.cloneDeep(args);
@@ -78,7 +78,7 @@ export function readConfig(configFile: string): any {
         throw new Error(message);
     }
     return result.config;
-};
+}
 
 export function stripBom(source: string): string {
     if (source.charCodeAt(0) === 0xFEFF) {

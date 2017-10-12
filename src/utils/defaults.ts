@@ -18,4 +18,4 @@ export const COMPODOC_DEFAULTS = {
         ROOT: 'root',
         INTERNAL: 'internal'
     }
-}
+};

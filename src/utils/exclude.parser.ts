@@ -18,7 +18,7 @@ export let ExcludeParser = (function() {
             }
         },
 
-        _testFile = (file: string):boolean => {
+        _testFile = (file: string): boolean => {
             let i = 0,
                 len = _exclude.length,
                 fileBasename = path.basename(file),
@@ -35,10 +35,10 @@ export let ExcludeParser = (function() {
                 if(result) {break;}
             }
             return result;
-        }
+        };
 
     return {
         init: _init,
         testFile: _testFile
-    }
+    };
 })();

@@ -69,7 +69,7 @@ let endTests = function (context, cb) {
     }
 };
 let testSearchBarWithResults = function (cb) {
-    var searchBox
+    var searchBox;
     driver
         .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
         .then(function (elems) {

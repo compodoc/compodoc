@@ -67,7 +67,7 @@ export let LinkParser = (function() {
         }
 
         return string.replace(stringtoReplace, '[' + linkText + '](' + target + ')');
-    }
+    };
 
     /**
      * Convert
@@ -118,13 +118,13 @@ export let LinkParser = (function() {
         return {
             newString: str
         };
-    }
+    };
 
     var _resolveLinks = function(str: string) {
         return replaceLinkTag(str).newString;
-    }
+    };
 
     return {
         resolveLinks: _resolveLinks
-    }
+    };
 })();
