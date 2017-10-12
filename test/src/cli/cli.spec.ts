@@ -86,8 +86,8 @@ describe('CLI simple flags', () => {
         it('should display error message', () => {
             const output: string = command.stdout.toString();
 
-            expect(output.indexOf('Error during README read') > -1, 'No error displayed for README').to.be.true;
-            expect(output.indexOf('Error during package.json read') > -1, 'No error displayed for package.json').to.be.true;
+            expect(output.indexOf('Continuing without README.md file') > -1, 'No error displayed for README').to.be.true;
+            expect(output.indexOf('Continuing without package.json file') > -1, 'No error displayed for package.json').to.be.true;
         });
     });
 
