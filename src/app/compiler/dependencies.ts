@@ -12,7 +12,6 @@ import { kindToType } from '../../utils/kind-to-type';
 import { CodeGenerator } from './code-generator';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
-import { NodeObject } from './node-object.interface';
 import { DirectiveDepFactory } from './deps/directive-dep.factory';
 import { ComponentHelper, ComponentCache } from './deps/helpers/component-helper';
 import { ModuleDepFactory } from './deps/module-dep.factory';

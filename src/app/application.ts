@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as Shelljs from 'shelljs';
 import * as _ from 'lodash';
-const ts = require('typescript');
+import * as ts from 'typescript';
 import * as glob from 'glob';
 
 const chokidar = require('chokidar');

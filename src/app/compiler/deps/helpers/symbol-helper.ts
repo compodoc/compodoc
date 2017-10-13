@@ -1,4 +1,3 @@
-import { NodeObject } from '../../node-object.interface';
 import * as ts from 'typescript';
 
 export class NsModuleCache {
@@ -19,7 +18,7 @@ export class SymbolHelper {
     private readonly unknown = '???';
 
 
-    public parseDeepIndentifier(name: string, cache: NsModuleCache): any {
+    public parseDeepIndentifier(name: string, cache: NsModuleCache): ParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
         if (nsModule.length > 1) {
@@ -28,12 +27,12 @@ export class SymbolHelper {
             cache.setOrAdd(nsModule[0], name);
             return {
                 ns: nsModule[0],
-                name,
+                name: name,
                 type: type
             };
         }
         return {
-            name,
+            name: name,
             type: type
         };
     }
@@ -52,19 +51,11 @@ export class SymbolHelper {
         return type;
     }
 
-    public getSymbolDeps(props: ts.Node[], type: string, multiLine?: boolean): string[] {
+    public getSymbolDeps(props: Array<ts.Node>, type: string, multiLine?: boolean): Array<string> {
 
         if (props.length === 0) { return []; }
 
-        let deps = props.filter((node: ts.Node) => {
-            return node.name.text === type;
-        });
-
-        let parseSymbolText = (text: string) => {
-            return [
-                text
-            ];
-        };
+        let deps = props.filter(node => node.name.text === type);
 
         let buildIdentifierName = (node: ts.Node, name = '') => {
 
@@ -150,7 +141,7 @@ export class SymbolHelper {
             return `{ ${_providerProps.join(', ')} }`;
         };
 
-        let parseSymbolElements = (o: NodeObject | any): string => {
+        let parseSymbolElements = (o: ts.Node | any): string => {
             // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
             if (o.arguments) {
                 let className = buildIdentifierName(o.expression);
@@ -170,11 +161,11 @@ export class SymbolHelper {
             return o.text ? o.text : parseProviderConfiguration(o);
         };
 
-        let parseSymbols = (node: NodeObject): string[] => {
+        let parseSymbols = (node: ts.Node): Array<string> => {
 
             let text = node.initializer.text;
             if (text) {
-                return parseSymbolText(text);
+                return [text];
             } else if (node.initializer.expression) {
                 let identifier = parseSymbolElements(node.initializer);
                 return [
@@ -188,10 +179,14 @@ export class SymbolHelper {
         return deps.map(parseSymbols).pop() || [];
     }
 
-    public getSymbolDepsRaw(props: NodeObject[], type: string, multiLine?: boolean): any {
-        let deps = props.filter((node: NodeObject) => {
-            return node.name.text === type;
-        });
+    public getSymbolDepsRaw(props: Array<ts.Node>, type: string, multiLine?: boolean): any {
+        let deps = props.filter(node => node.name.text === type);
         return deps || [];
     }
+}
+
+export interface ParseDeepIdentifierResult {
+    ns?: any;
+    name: string;
+    type: any;
 }

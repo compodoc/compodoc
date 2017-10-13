@@ -12,7 +12,7 @@ export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
 
     constructor(
-        private typeChecker,
+        private typeChecker: ts.TypeChecker,
         private configuration: ConfigurationInterface) {
 
     }
@@ -30,7 +30,7 @@ export class ClassHelper {
         }
     }
 
-    public visitType(node: ts.SignatureDeclaration | undefined): string {
+    public visitType(node: ts.Declaration | undefined): string {
         let _return = 'void';
 
         if (!node) {
@@ -212,7 +212,6 @@ export class ClassHelper {
                     }];
                 } else {
                     members = this.visitMembers(classDeclaration.members, sourceFile);
-
                     return [{
                         description,
                         methods: members.methods,
@@ -228,7 +227,6 @@ export class ClassHelper {
             }
         } else if (description) {
             members = this.visitMembers(classDeclaration.members, sourceFile);
-
             return [{
                 description,
                 methods: members.methods,
@@ -243,7 +241,6 @@ export class ClassHelper {
             }];
         } else {
             members = this.visitMembers(classDeclaration.members, sourceFile);
-
             return [{
                 methods: members.methods,
                 indexSignatures: members.indexSignatures,
@@ -288,7 +285,7 @@ export class ClassHelper {
         };
     }
 
-    private isDirectiveDecorator(decorator) {
+    private isDirectiveDecorator(decorator: ts.Decorator): boolean {
         if (decorator.expression.expression) {
             let decoratorIdentifierText = decorator.expression.expression.text;
             return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
@@ -744,7 +741,7 @@ export class ClassHelper {
     }
 
 
-    private visitOutput(property, outDecorator, sourceFile?) {
+    private visitOutput(property: ts.PropertyDeclaration, outDecorator: ts.Decorator, sourceFile?: ts.SourceFile) {
         let inArgs = outDecorator.expression.arguments;
         let _return: any = {
             name: (inArgs.length > 0) ? inArgs[0].text : property.name.text,
@@ -754,11 +751,9 @@ export class ClassHelper {
             _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
         }
         if (!_return.description) {
-            if (property.jsDoc) {
-                if (property.jsDoc.length > 0) {
-                    if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
-                    }
+            if (property.jsDoc && property.jsDoc.length > 0) {
+                if (typeof property.jsDoc[0].comment !== 'undefined') {
+                    _return.description = marked(property.jsDoc[0].comment);
                 }
             }
         }
@@ -801,7 +796,7 @@ export class ClassHelper {
         return _result;
     }
 
-    private getPosition(node, sourceFile): ts.LineAndCharacter {
+    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
         let position: ts.LineAndCharacter;
         if (node.name && node.name.end) {
             position = ts.getLineAndCharacterOfPosition(sourceFile, node.name.end);

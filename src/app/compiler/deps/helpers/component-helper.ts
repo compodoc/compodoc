@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { SymbolHelper, NsModuleCache } from './symbol-helper';
-import { NodeObject } from '../../node-object.interface';
 import { detectIndent } from '../../../../utilities';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
@@ -14,27 +13,27 @@ export class ComponentHelper {
 
     }
 
-    public getComponentChangeDetection(props: NodeObject[]): string {
+    public getComponentChangeDetection(props: Array<ts.Node>): string {
         return this.symbolHelper.getSymbolDeps(props, 'changeDetection').pop();
     }
 
-    public getComponentEncapsulation(props: NodeObject[]): string[] {
+    public getComponentEncapsulation(props: Array<ts.Node>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'encapsulation');
     }
 
-    public getComponentExportAs(props: NodeObject[]): string {
+    public getComponentExportAs(props: Array<ts.Node>): string {
         return this.symbolHelper.getSymbolDeps(props, 'exportAs').pop();
     }
 
-    public getComponentHost(props: NodeObject[]): Object {
+    public getComponentHost(props: Array<ts.Node>): Object {
         return this.getSymbolDepsObject(props, 'host');
     }
 
-    public getComponentInputsMetadata(props: NodeObject[]): string[] {
+    public getComponentInputsMetadata(props: Array<ts.Node>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'inputs');
     }
 
-    public getComponentTemplate(props: NodeObject[]): string {
+    public getComponentTemplate(props: Array<ts.Node>): string {
         let t = this.symbolHelper.getSymbolDeps(props, 'template', true).pop();
         if (t) {
             t = detectIndent(t, 0);
@@ -44,36 +43,36 @@ export class ComponentHelper {
         return t;
     }
 
-    public getComponentStyleUrls(props: NodeObject[]): string[] {
+    public getComponentStyleUrls(props: Array<ts.Node>): string[] {
         return this.sanitizeUrls(this.symbolHelper.getSymbolDeps(props, 'styleUrls'));
     }
 
-    public getComponentStyles(props: NodeObject[]): string[] {
+    public getComponentStyles(props: Array<ts.Node>): string[] {
         return this.symbolHelper.getSymbolDeps(props, 'styles');
     }
 
-    public getComponentModuleId(props: NodeObject[]): string {
+    public getComponentModuleId(props: Array<ts.Node>): string {
         return this.symbolHelper.getSymbolDeps(props, 'moduleId').pop();
     }
 
 
-    public getComponentOutputs(props: NodeObject[]): string[] {
+    public getComponentOutputs(props: Array<ts.Node>): string[] {
         return this.symbolHelper.getSymbolDeps(props, 'outputs');
     }
 
-    public getComponentProviders(props: NodeObject[]): Deps[] {
+    public getComponentProviders(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers')
             .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 
-    public getComponentViewProviders(props: NodeObject[]): Deps[] {
+    public getComponentViewProviders(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'viewProviders')
             .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
     }
 
-    public getComponentTemplateUrl(props: Array<NodeObject>): Array<string> {
+    public getComponentTemplateUrl(props: Array<ts.Node>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'templateUrl');
     }
     public getComponentExampleUrls(text: string): Array<string> | undefined {
@@ -87,24 +86,24 @@ export class ComponentHelper {
         return exampleUrls;
     }
 
-    public getComponentSelector(props: NodeObject[]): string {
+    public getComponentSelector(props: Array<ts.Node>): string {
         return this.symbolHelper.getSymbolDeps(props, 'selector').pop();
     }
 
-    public getSymbolDepsObject(props: NodeObject[], type: string, multiLine?: boolean): Object {
-        let deps = props.filter((node: NodeObject) => {
+    public getSymbolDepsObject(props: Array<ts.Node>, type: string, multiLine?: boolean): Object {
+        let deps = props.filter(node => {
             return node.name.text === type;
         });
 
-        let parseProperties = (node: NodeObject): Object => {
+        let parseProperties = node => {
             let obj = {};
-            (node.initializer.properties || []).forEach((prop: NodeObject) => {
+            (node.initializer.properties || []).forEach((prop) => {
                 obj[prop.name.text] = prop.initializer.text;
             });
             return obj;
         };
 
-        return deps.map(parseProperties).pop();
+        return deps.map(x => parseProperties(x)).pop();
     }
 
     public getComponentIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node): any {

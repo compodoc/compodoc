@@ -2,7 +2,7 @@ import { ClassHelper } from '../class-helper';
 import * as ts from 'typescript';
 import { expect } from 'chai';
 
-describe.only(ClassHelper.name + ' visitType', () => {
+describe(ClassHelper.name + ' visitType', () => {
     let classHelper: ClassHelper;
 
     beforeEach(() => {
