@@ -14,7 +14,7 @@ addons:
 install:
     - npm install
 script:
-    - npm build
+    - npm run build
     - npm run test
     #- node tools/test-watch.js
     - if [ $TO_TEST == 'ALL' ];
