@@ -293,7 +293,44 @@ export class ClassHelper {
     }
 
     private addAccessor(accessors, nodeAccessor) {
-        //console.log(nodeAccessor);
+        let nodeName = '';
+        if (nodeAccessor.name) {
+            nodeName = nodeAccessor.name.escapedText;
+
+            if (!accessors[nodeName]) {
+                accessors[nodeName] = {
+                    'name': nodeName,
+                    'setSignature': [],
+                    'getSignature': []
+                }
+            }
+
+            if (nodeAccessor.kind === ts.SyntaxKind.SetAccessor) {
+                let setSignature = {
+                    'name': '__set',
+                    'type': 'void',
+                    'parameters': nodeAccessor.parameters.map((param) => {
+                        return {
+                            'name': param.name.escapedText,
+                            'type': kindToType(param.type.kind)
+                        }
+                    })
+                }
+                accessors[nodeName].setSignature.push(
+                    setSignature
+                )
+            }
+            if (nodeAccessor.kind === ts.SyntaxKind.GetAccessor) {
+                let getSignature = {
+                    'name': '__get',
+                    'type': kindToType(nodeAccessor.type.kind)
+                }
+                accessors[nodeName].getSignature.push(
+                    getSignature
+                )
+            }
+        }
+        //console.log(' ', accessors);
     }
 
     private visitMembers(members, sourceFile) {
@@ -340,11 +377,11 @@ export class ClassHelper {
                         methods.push(this.visitMethodDeclaration(members[i], sourceFile));
                     } else if (
                         members[i].kind === ts.SyntaxKind.PropertyDeclaration ||
-                        members[i].kind === ts.SyntaxKind.PropertySignature || members[i].kind === ts.SyntaxKind.GetAccessor) {
+                        members[i].kind === ts.SyntaxKind.PropertySignature) {
                         properties.push(this.visitProperty(members[i], sourceFile));
                     } else if (members[i].kind === ts.SyntaxKind.CallSignature) {
                         properties.push(this.visitCallDeclaration(members[i], sourceFile));
-                    } else if (members[i].kind === ts.SyntaxKind.GetAccessor || members[i].kind === ts.SyntaxKind.SetAccessor) {
+                    } else if (members[i].kind === ts.SyntaxKind.SetAccessor || members[i].kind === ts.SyntaxKind.GetAccessor) {
                         this.addAccessor(accessors, members[i]);
                     } else if (members[i].kind === ts.SyntaxKind.IndexSignature) {
                         indexSignatures.push(this.visitIndexDeclaration(members[i], sourceFile));
