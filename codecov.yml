@@ -4,3 +4,4 @@ codecov:
 coverage:
   ignore:
     - 'dist/index-cli.js'
+    - 'bin/index-cli.js'
