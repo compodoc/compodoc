@@ -36,9 +36,17 @@ export class Todo extends Tada {
      * Title
      */
     private _title: string;
+    /**
+     * Getter of _title
+     * @return {string} _title value
+     */
     get title() {
         return this._title;
     }
+    /**
+     * Setter of _title
+     * @param  {string} value The new title
+     */
     set title(value: string) {
         this._title = value.trim();
     }

@@ -766,3 +766,9 @@ ul.index-list {
 .name:hover a {
     display: inline-block;
 }
+
+.accessor b {
+    color: #808080;
+    margin-right: 8px;
+    font-weight: normal;
+}

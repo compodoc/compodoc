@@ -51,6 +51,7 @@ export class HtmlEngine {
             'block-index',
             'block-constructor',
             'block-typealias',
+            'block-accessors',
             'coverage-report',
             'miscellaneous-functions',
             'miscellaneous-variables',

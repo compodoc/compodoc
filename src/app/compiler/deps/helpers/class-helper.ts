@@ -2,6 +2,7 @@ import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../uti
 import { kindToType } from '../../../../utils/kind-to-type';
 
 import * as _ from 'lodash';
+import * as util from 'util';
 import * as ts from 'typescript';
 import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
@@ -186,7 +187,8 @@ export class ClassHelper {
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
                         extends: extendsElement,
-                        implements: implementsElements
+                        implements: implementsElements,
+                        accessors: members.accessors
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
                     members = this.visitMembers(classDeclaration.members, sourceFile);
@@ -201,7 +203,8 @@ export class ClassHelper {
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
                         extends: extendsElement,
-                        implements: implementsElements
+                        implements: implementsElements,
+                        accessors: members.accessors
                     }];
                 } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
                     return [{
@@ -221,7 +224,8 @@ export class ClassHelper {
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
                         extends: extendsElement,
-                        implements: implementsElements
+                        implements: implementsElements,
+                        accessors: members.accessors
                     }];
                 }
             }
@@ -249,7 +253,8 @@ export class ClassHelper {
                 constructor: members.constructor,
                 jsdoctags: jsdoctags,
                 extends: extendsElement,
-                implements: implementsElements
+                implements: implementsElements,
+                accessors: members.accessors
             }];
         }
 
@@ -298,45 +303,72 @@ export class ClassHelper {
         return (decorator.expression.expression) ? decorator.expression.expression.text === 'Injectable' : false;
     }
 
-    private addAccessor(accessors, nodeAccessor) {
+    private addAccessor(accessors, nodeAccessor, sourceFile) {
         let nodeName = '';
         if (nodeAccessor.name) {
             nodeName = nodeAccessor.name.escapedText;
+            let jsdoctags = this.jsdocParserUtil.getJSDocs(nodeAccessor);
 
             if (!accessors[nodeName]) {
                 accessors[nodeName] = {
                     'name': nodeName,
-                    'setSignature': [],
-                    'getSignature': []
+                    'setSignature': null,
+                    'getSignature': null
                 }
             }
 
             if (nodeAccessor.kind === ts.SyntaxKind.SetAccessor) {
                 let setSignature = {
-                    'name': '__set',
+                    'name': nodeName,
                     'type': 'void',
-                    'parameters': nodeAccessor.parameters.map((param) => {
+                    'args': nodeAccessor.parameters.map((param) => {
                         return {
                             'name': param.name.escapedText,
-                            'type': kindToType(param.type.kind)
+                            'type': (param.type) ? kindToType(param.type.kind) : ''
                         }
-                    })
+                    }),
+                    returnType: (nodeAccessor.type) ? this.visitType(nodeAccessor.type) : 'void',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
                 }
-                accessors[nodeName].setSignature.push(
-                    setSignature
-                )
+
+                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
+                    setSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                }
+
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+                if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
+                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args, setSignature.jsdoctags);
+                } else if (setSignature.args && setSignature.args.length > 0) {
+                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args);
+                }
+
+                accessors[nodeName].setSignature = setSignature;
             }
             if (nodeAccessor.kind === ts.SyntaxKind.GetAccessor) {
                 let getSignature = {
-                    'name': '__get',
-                    'type': kindToType(nodeAccessor.type.kind)
+                    'name': nodeName,
+                    'type': (nodeAccessor.type) ? kindToType(nodeAccessor.type.kind) : '',
+                    returnType: (nodeAccessor.type) ? this.visitType(nodeAccessor.type) : '',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
                 }
-                accessors[nodeName].getSignature.push(
-                    getSignature
-                )
+
+                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
+                    getSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                }
+
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        getSignature.jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+
+                accessors[nodeName].getSignature = getSignature;
             }
         }
-        // console.log(' ', accessors);
     }
 
     private visitMembers(members, sourceFile) {
@@ -357,6 +389,7 @@ export class ClassHelper {
         let constructor;
         let outDecorator;
         let accessors = {};
+        let result = {};
 
         for (let i = 0; i < members.length; i++) {
             // Allows typescript guess type when using ts.is*
@@ -390,6 +423,8 @@ export class ClassHelper {
                         properties.push(this.visitProperty(member, sourceFile));
                     } else if (ts.isCallSignatureDeclaration(member)) {
                         properties.push(this.visitCallDeclaration(member, sourceFile));
+                    } else if (ts.isGetAccessorDeclaration(member) || ts.isSetAccessorDeclaration(member)) {
+                        this.addAccessor(accessors, members[i], sourceFile);
                     } else if (ts.isIndexSignatureDeclaration(member)) {
                         indexSignatures.push(this.visitIndexDeclaration(member, sourceFile));
                     } else if (ts.isConstructorDeclaration(member)) {
@@ -413,7 +448,7 @@ export class ClassHelper {
         methods.sort(getNamesCompareFn());
         indexSignatures.sort(getNamesCompareFn());
 
-        return {
+        result = {
             inputs,
             outputs,
             hostBindings,
@@ -423,7 +458,13 @@ export class ClassHelper {
             indexSignatures,
             kind,
             constructor
-        };
+        }
+
+        if (Object.keys(accessors).length) {
+            result['accessors'] = accessors;
+        }
+
+        return result;
     }
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {

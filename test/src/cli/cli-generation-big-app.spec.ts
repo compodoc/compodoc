@@ -268,4 +268,11 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<code>ElementRef | HTMLElement</code>');
     });
 
+    it('should support accessors for class', () => {
+        let file = read('documentation/classes/Todo.html');
+        expect(file).to.contain('Accessors');
+        expect(file).to.contain('Getter of _title');
+        expect(file).to.contain('Setter of _title');
+    });
+
 });

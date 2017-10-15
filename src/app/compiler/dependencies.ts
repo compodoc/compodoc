@@ -220,6 +220,9 @@ export class Dependencies {
         if (IO.implements && IO.implements.length > 0) {
             deps.implements = IO.implements;
         }
+        if (IO.accessors) {
+            deps.accessors = IO.accessors;
+        }
         this.debug(deps);
         outputSymbols.classes.push(deps);
     }
@@ -865,7 +868,7 @@ export class Dependencies {
             }
 
             return directive;
-        },                                     []);
+        }, []);
 
         return res[0] || {};
     }

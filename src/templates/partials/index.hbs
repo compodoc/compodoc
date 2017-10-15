@@ -38,6 +38,24 @@
                 </td>
             </tr>
             {{/compare}}
+            {{#if accessors}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>Accessors</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each accessors}}
+                        <li>
+                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{@key}}">{{@key}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/if}}
         </tbody>
     </table>
 </section>
