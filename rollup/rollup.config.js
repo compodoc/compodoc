@@ -20,6 +20,7 @@ export default {
         'live-server',
         'shelljs',
         'typescript',
-        'highlight.js'
+        'highlight.js',
+        'semver'
     ]
 }
