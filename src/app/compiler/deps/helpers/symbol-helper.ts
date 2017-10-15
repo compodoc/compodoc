@@ -1,5 +1,4 @@
-import { NodeObject } from '../../node-object.interface';
-const ts = require('typescript');
+import * as ts from 'typescript';
 
 export class NsModuleCache {
     private cache: Map<string, Array<string>> = new Map();
@@ -19,7 +18,7 @@ export class SymbolHelper {
     private readonly unknown = '???';
 
 
-    public parseDeepIndentifier(name: string, cache: NsModuleCache): any {
+    public parseDeepIndentifier(name: string, cache: NsModuleCache): ParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
         if (nsModule.length > 1) {
@@ -28,12 +27,12 @@ export class SymbolHelper {
             cache.setOrAdd(nsModule[0], name);
             return {
                 ns: nsModule[0],
-                name,
+                name: name,
                 type: type
             };
         }
         return {
-            name,
+            name: name,
             type: type
         };
     }
@@ -52,21 +51,13 @@ export class SymbolHelper {
         return type;
     }
 
-    public getSymbolDeps(props: NodeObject[], type: string, multiLine?: boolean): string[] {
+    public getSymbolDeps(props: Array<ts.Node>, type: string, multiLine?: boolean): Array<string> {
 
         if (props.length === 0) { return []; }
 
-        let deps = props.filter((node: NodeObject) => {
-            return node.name.text === type;
-        });
+        let deps = props.filter(node => node.name.text === type);
 
-        let parseSymbolText = (text: string) => {
-            return [
-                text
-            ];
-        };
-
-        let buildIdentifierName = (node: NodeObject, name = '') => {
+        let buildIdentifierName = (node: ts.Node, name = '') => {
 
             if (node.expression) {
                 name = name ? `.${name}` : name;
@@ -82,7 +73,7 @@ export class SymbolHelper {
                         nodeName = node.expression.text;
                     } else if (node.expression.elements) {
 
-                        if (node.expression.kind === ts.SyntaxKind.ArrayLiteralExpression) {
+                        if (ts.isArrayLiteralExpression(node.expression)) {
                             nodeName = node.expression.elements.map(el => el.text).join(', ');
                             nodeName = `[${nodeName}]`;
                         }
@@ -90,7 +81,7 @@ export class SymbolHelper {
                     }
                 }
 
-                if (node.kind === ts.SyntaxKind.SpreadElement) {
+                if (ts.isSpreadElement(node)) {
                     return `...${nodeName}`;
                 }
                 return `${buildIdentifierName(node.expression, nodeName)}${name}`;
@@ -99,7 +90,7 @@ export class SymbolHelper {
             return `${node.text}.${name}`;
         };
 
-        let parseProviderConfiguration = (o: NodeObject): string => {
+        let parseProviderConfiguration = (o: ts.Node): string => {
             // parse expressions such as:
             // { provide: APP_BASE_HREF, useValue: '/' },
             // or
@@ -108,24 +99,24 @@ export class SymbolHelper {
             let _genProviderName: string[] = [];
             let _providerProps: string[] = [];
 
-            (o.properties || []).forEach((prop: NodeObject) => {
+            (o.properties || []).forEach((prop: ts.Node) => {
 
                 let identifier = '';
                 if (prop.initializer) {
                     identifier = prop.initializer.text;
-                    if (prop.initializer.kind === ts.SyntaxKind.StringLiteral) {
+                    if (ts.isStringLiteral(prop.initializer)) {
                         identifier = `'${identifier}'`;
                     }
 
                     // lambda function (i.e useFactory)
                     if (prop.initializer.body) {
                         let params = (prop.initializer.parameters || [] as any)
-                            .map((params1: NodeObject) => params1.name.text);
+                            .map((params1: ts.Node) => params1.name.text);
                         identifier = `(${params.join(', ')}) => {}`;
                     } else if (prop.initializer.elements) { // factory deps array
-                        let elements = (prop.initializer.elements || []).map((n: NodeObject) => {
+                        let elements = (prop.initializer.elements || []).map((n: ts.Node) => {
 
-                            if (n.kind === ts.SyntaxKind.StringLiteral) {
+                            if (ts.isStringLiteral(n)) {
                                 return `'${n.text}'`;
                             }
 
@@ -150,7 +141,7 @@ export class SymbolHelper {
             return `{ ${_providerProps.join(', ')} }`;
         };
 
-        let parseSymbolElements = (o: NodeObject | any): string => {
+        let parseSymbolElements = (o: ts.Node | any): string => {
             // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
             if (o.arguments) {
                 let className = buildIdentifierName(o.expression);
@@ -170,11 +161,11 @@ export class SymbolHelper {
             return o.text ? o.text : parseProviderConfiguration(o);
         };
 
-        let parseSymbols = (node: NodeObject): string[] => {
+        let parseSymbols = (node: ts.Node): Array<string> => {
 
             let text = node.initializer.text;
             if (text) {
-                return parseSymbolText(text);
+                return [text];
             } else if (node.initializer.expression) {
                 let identifier = parseSymbolElements(node.initializer);
                 return [
@@ -188,10 +179,14 @@ export class SymbolHelper {
         return deps.map(parseSymbols).pop() || [];
     }
 
-    public getSymbolDepsRaw(props: NodeObject[], type: string, multiLine?: boolean): any {
-        let deps = props.filter((node: NodeObject) => {
-            return node.name.text === type;
-        });
+    public getSymbolDepsRaw(props: Array<ts.Node>, type: string, multiLine?: boolean): any {
+        let deps = props.filter(node => node.name.text === type);
         return deps || [];
     }
+}
+
+export interface ParseDeepIdentifierResult {
+    ns?: any;
+    name: string;
+    type: any;
 }

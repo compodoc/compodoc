@@ -36,7 +36,7 @@ export class CodeGenerator {
 class TsKindsToText {
     constructor(
         public output: (node: ts.Node) => Array<string>,
-        public kinds: Array<any>) { }
+        public kinds: Array<ts.SyntaxKind>) { }
 }
 
 const TsKindConversion: Array<TsKindsToText> = [
