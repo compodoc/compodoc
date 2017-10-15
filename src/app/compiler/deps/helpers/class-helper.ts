@@ -418,8 +418,7 @@ export class ClassHelper {
                     if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
                         methods.push(this.visitMethodDeclaration(member, sourceFile));
                     } else if (ts.isPropertyDeclaration(member) ||
-                        ts.isPropertySignature(member) ||
-                        ts.isGetAccessorDeclaration(member)) {
+                        ts.isPropertySignature(member)) {
                         properties.push(this.visitProperty(member, sourceFile));
                     } else if (ts.isCallSignatureDeclaration(member)) {
                         properties.push(this.visitCallDeclaration(member, sourceFile));

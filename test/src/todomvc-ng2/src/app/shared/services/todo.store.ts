@@ -156,4 +156,22 @@ export class TodoStore {
             //TODO
         });
     }
+
+    private _fullName: string;
+
+    /**
+     * Getter of _fullName
+     * @return {string} _fullName value
+     */
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    /**
+     * Setter of _fullName
+     * @param  {string} newName The new name
+     */
+    set fullName(newName: string) {
+        this._fullName = newName;
+    }
 }

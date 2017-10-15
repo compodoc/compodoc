@@ -25,7 +25,7 @@ describe('CLI simple generation - big app', () => {
         searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
         done();
     });
-    // after(() => tmp.clean('documentation'));
+    //after(() => tmp.clean('documentation'));
 
     it('should display generated message', () => {
         expect(stdoutString).to.contain('Documentation generated');
@@ -273,6 +273,13 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Accessors');
         expect(file).to.contain('Getter of _title');
         expect(file).to.contain('Setter of _title');
+    });
+
+    it('should support accessors for injectables', () => {
+        let file = read('documentation/injectables/TodoStore.html');
+        expect(file).to.contain('Accessors');
+        expect(file).to.contain('Getter of _fullName');
+        expect(file).to.contain('Setter of _fullName');
     });
 
 });

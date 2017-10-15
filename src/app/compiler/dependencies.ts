@@ -283,6 +283,9 @@ export class Dependencies {
                         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                             injectableDeps.jsdoctags = IO.jsdoctags[0].tags;
                         }
+                        if (IO.accessors) {
+                            injectableDeps.accessors = IO.accessors;
+                        }
                         outputSymbols.injectables.push(injectableDeps);
                         deps = injectableDeps;
                     } else if (this.isPipe(metadata)) {
