@@ -282,4 +282,20 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Setter of _fullName');
     });
 
+    it('should support accessors for directives', () => {
+        let file = read('documentation/directives/DoNothingDirective.html');
+        expect(file).to.contain('Accessors');
+        expect(file).to.contain('Getter of _fullName');
+        expect(file).to.contain('Setter of _fullName');
+    });
+
+    it('should support accessors for components with input', () => {
+        let file = read('documentation/components/HeaderComponent.html');
+        expect(file).to.contain('Accessors');
+        expect(file).to.contain('Getter of _fullName');
+        expect(file).to.contain('Setter of _fullName');
+
+        expect(file).to.contain('Inputs');
+    });
+
 });

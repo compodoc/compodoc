@@ -65,6 +65,9 @@ export class ComponentDepFactory {
         if (IO.implements && IO.implements.length > 0) {
             componentDep.implements = IO.implements;
         }
+        if (IO.accessors) {
+            componentDep.accessors = IO.accessors;
+        }
 
         return componentDep;
     }
@@ -102,4 +105,5 @@ export interface IComponentDep extends IDep {
     jsdoctags?: Array<string>;
     extends?: any;
     implements?: any;
+    accessors?: Object;
 }

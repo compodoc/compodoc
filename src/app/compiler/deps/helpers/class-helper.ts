@@ -405,6 +405,9 @@ export class ClassHelper {
 
             if (inputDecorator) {
                 inputs.push(this.visitInputAndHostBinding(member, inputDecorator, sourceFile));
+                if (ts.isSetAccessorDeclaration(member)) {
+                    this.addAccessor(accessors, members[i], sourceFile);
+                }
             } else if (outDecorator) {
                 outputs.push(this.visitOutput(member, outDecorator, sourceFile));
             } else if (hostBinding) {
@@ -663,9 +666,6 @@ export class ClassHelper {
         let _return: any = {};
         _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
         _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
-        if (property.symbol) {
-            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
-        }
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
@@ -685,6 +685,14 @@ export class ClassHelper {
                     if (property.initializer.expression) {
                         _return.type = property.initializer.expression.text;
                     }
+                }
+            }
+        }
+        if (property.kind === ts.SyntaxKind.SetAccessor) {
+            // For setter accessor, find type in first parameter
+            if (property.parameters && property.parameters.length === 1) {
+                if (property.parameters[0].type) {
+                    _return.type = kindToType(property.parameters[0].type.kind);
                 }
             }
         }

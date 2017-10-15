@@ -23,7 +23,7 @@ export class HeaderComponent {
     /**
      * The data-binding value of the input tag, added on enter to the todo store
      */
-    @Input() newTodoText: string = '';
+    newTodoText: string = '';
 
     constructor(todoStore: TodoStore) {
 		this.todoStore = todoStore;
@@ -38,4 +38,23 @@ export class HeaderComponent {
 			this.newTodoText = '';
 		}
 	}
+
+    private _fullName: string;
+
+    /**
+     * Getter of _fullName
+     * @return {string} _fullName value
+     */
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    /**
+     * Setter of _fullName
+     * @param  {string} newName The new name
+     */
+    @Input()
+    set fullName(newName: string) {
+        this._fullName = newName;
+    }
 }

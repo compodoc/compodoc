@@ -37,6 +37,9 @@ export class DirectiveDepFactory {
         if (IO.constructor) {
             directiveDeps.constructorObj = IO.constructor;
         }
+        if (IO.accessors) {
+            directiveDeps.accessors = IO.accessors;
+        }
         return directiveDeps;
     }
 }
@@ -62,4 +65,5 @@ export interface IDirectiveDep extends IDep {
     constructorObj?: Object;
     jsdoctags?: Array<string>;
     implements?: any;
+    accessors?: Object;
 }

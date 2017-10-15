@@ -195,8 +195,8 @@
     </table>
 </section>
 
-{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners}}
-    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners }}
+{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners component.accessors}}
+    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners accessors=component.accessors}}
 {{/orLength}}
 
 {{#if component.constructorObj}}
@@ -294,4 +294,8 @@
 
 {{#if component.propertiesClass}}
     {{> block-property properties=component.propertiesClass file=component.file }}
+{{/if}}
+
+{{#if component.accessors}}
+    {{> block-accessors accessors=component.accessors file=component.file }}
 {{/if}}
