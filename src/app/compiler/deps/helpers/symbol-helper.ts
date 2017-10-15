@@ -1,30 +1,15 @@
 import * as ts from 'typescript';
-
-export class NsModuleCache {
-    private cache: Map<string, Array<string>> = new Map();
-
-    public setOrAdd(key: string, toSetOrAdd: string) {
-        const result = this.cache.get(key);
-
-        if (result) {
-            result.push(toSetOrAdd);
-        } else {
-            this.cache.set(key, [toSetOrAdd]);
-        }
-    }
-}
+import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
 export class SymbolHelper {
     private readonly unknown = '???';
 
 
-    public parseDeepIndentifier(name: string, cache: NsModuleCache): ParseDeepIdentifierResult {
+    public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
-        if (nsModule.length > 1) {
 
-            // cache deps with the same namespace (i.e Shared.*)
-            cache.setOrAdd(nsModule[0], name);
+        if (nsModule.length > 1) {
             return {
                 ns: nsModule[0],
                 name: name,
@@ -51,142 +36,113 @@ export class SymbolHelper {
         return type;
     }
 
-    public getSymbolDeps(props: Array<ts.Node>, type: string, multiLine?: boolean): Array<string> {
 
+    /**
+     * Output
+     * RouterModule.forRoot 179
+     */
+    public buildIdentifierName(node: ts.Identifier | ts.PropertyAccessExpression | ts.SpreadElement, name = '') {
+        if (ts.isIdentifier(node) && !ts.isPropertyAccessExpression(node)) {
+            return `${node.text}.${name}`;
+        }
+
+        name = name ? `.${name}` : name;
+
+        let nodeName = this.unknown;
+        if (node.name) {
+            nodeName = node.name.text;
+        } else if (node.text) {
+            nodeName = node.text;
+        } else if (node.expression) {
+
+            if (node.expression.text) {
+                nodeName = node.expression.text;
+            } else if (node.expression.elements) {
+
+                if (ts.isArrayLiteralExpression(node.expression)) {
+                    nodeName = node.expression.elements.map(el => el.text).join(', ');
+                    nodeName = `[${nodeName}]`;
+                }
+
+            }
+        }
+
+        if (ts.isSpreadElement(node)) {
+            return `...${nodeName}`;
+        }
+        return `${this.buildIdentifierName(node.expression, nodeName)}${name}`;
+    }
+
+    /**
+     * parse expressions such as:
+     * { provide: APP_BASE_HREF, useValue: '/' }
+     * { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
+     */
+    public parseProviderConfiguration(node: ts.ObjectLiteralExpression): string {
+        return new TsPrinterUtil().print(node);
+    }
+
+    /**
+     * Kind
+     *  181 CallExpression => "RouterModule.forRoot(args)"
+     *   71 Identifier     => "RouterModule" "TodoStore"
+     *    9 StringLiteral  => "./app.component.css" "./tab.scss"
+     */
+    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression): string {
+        // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
+        if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+            let className = this.buildIdentifierName(node.expression);
+
+            // function arguments could be really complex. There are so
+            // many use cases that we can't handle. Just print "args" to indicate
+            // that we have arguments.
+
+            let functionArgs = node.arguments.length > 0 ? 'args' : '';
+            let text = `${className}(${functionArgs})`;
+            return text;
+        } else if (ts.isPropertyAccessExpression(node)) { // parse expressions such as: Shared.Module
+            return this.buildIdentifierName(node);
+        }
+
+        return node.text ? node.text : this.parseProviderConfiguration(node);
+    }
+
+    /**
+     * Kind
+     *  177 ArrayLiteralExpression
+     *    9 StringLiteral
+     */
+    private parseSymbols(node: ts.PropertyAssignment): Array<string> {
+        if (ts.isStringLiteral(node.initializer)) {
+            return [node.initializer.text];
+        } else if (ts.isPropertyAccessExpression(node.initializer)) {
+            let identifier = this.parseSymbolElements(node.initializer);
+            return [
+                identifier
+            ];
+        } else if (ts.isArrayLiteralExpression(node.initializer)) {
+            return node.initializer.elements.map(x => this.parseSymbolElements(x));
+        }
+
+    }
+
+    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
         let deps = props.filter(node => node.name.text === type);
-
-        let buildIdentifierName = (node: ts.Node, name = '') => {
-
-            if (node.expression) {
-                name = name ? `.${name}` : name;
-
-                let nodeName = this.unknown;
-                if (node.name) {
-                    nodeName = node.name.text;
-                } else if (node.text) {
-                    nodeName = node.text;
-                } else if (node.expression) {
-
-                    if (node.expression.text) {
-                        nodeName = node.expression.text;
-                    } else if (node.expression.elements) {
-
-                        if (ts.isArrayLiteralExpression(node.expression)) {
-                            nodeName = node.expression.elements.map(el => el.text).join(', ');
-                            nodeName = `[${nodeName}]`;
-                        }
-
-                    }
-                }
-
-                if (ts.isSpreadElement(node)) {
-                    return `...${nodeName}`;
-                }
-                return `${buildIdentifierName(node.expression, nodeName)}${name}`;
-            }
-
-            return `${node.text}.${name}`;
-        };
-
-        let parseProviderConfiguration = (o: ts.Node): string => {
-            // parse expressions such as:
-            // { provide: APP_BASE_HREF, useValue: '/' },
-            // or
-            // { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
-
-            let _genProviderName: string[] = [];
-            let _providerProps: string[] = [];
-
-            (o.properties || []).forEach((prop: ts.Node) => {
-
-                let identifier = '';
-                if (prop.initializer) {
-                    identifier = prop.initializer.text;
-                    if (ts.isStringLiteral(prop.initializer)) {
-                        identifier = `'${identifier}'`;
-                    }
-
-                    // lambda function (i.e useFactory)
-                    if (prop.initializer.body) {
-                        let params = (prop.initializer.parameters || [] as any)
-                            .map((params1: ts.Node) => params1.name.text);
-                        identifier = `(${params.join(', ')}) => {}`;
-                    } else if (prop.initializer.elements) { // factory deps array
-                        let elements = (prop.initializer.elements || []).map((n: ts.Node) => {
-
-                            if (ts.isStringLiteral(n)) {
-                                return `'${n.text}'`;
-                            }
-
-                            return n.text;
-                        });
-                        identifier = `[${elements.join(', ')}]`;
-                    }
-                }
-
-                _providerProps.push([
-
-                    // i.e provide
-                    prop.name.text,
-
-                    // i.e OpaqueToken or 'StringToken'
-                    identifier
-
-                ].join(': '));
-
-            });
-
-            return `{ ${_providerProps.join(', ')} }`;
-        };
-
-        let parseSymbolElements = (o: ts.Node | any): string => {
-            // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
-            if (o.arguments) {
-                let className = buildIdentifierName(o.expression);
-
-                // function arguments could be really complexe. There are so
-                // many use cases that we can't handle. Just print "args" to indicate
-                // that we have arguments.
-
-                let functionArgs = o.arguments.length > 0 ? 'args' : '';
-                let text = `${className}(${functionArgs})`;
-                return text;
-            } else if (o.expression) { // parse expressions such as: Shared.Module
-                let identifier = buildIdentifierName(o);
-                return identifier;
-            }
-
-            return o.text ? o.text : parseProviderConfiguration(o);
-        };
-
-        let parseSymbols = (node: ts.Node): Array<string> => {
-
-            let text = node.initializer.text;
-            if (text) {
-                return [text];
-            } else if (node.initializer.expression) {
-                let identifier = parseSymbolElements(node.initializer);
-                return [
-                    identifier
-                ];
-            } else if (node.initializer.elements) {
-                return node.initializer.elements.map(parseSymbolElements);
-            }
-
-        };
-        return deps.map(parseSymbols).pop() || [];
+        return deps.map(x => this.parseSymbols(x)).pop() || [];
     }
 
-    public getSymbolDepsRaw(props: Array<ts.Node>, type: string, multiLine?: boolean): any {
-        let deps = props.filter(node => node.name.text === type);
-        return deps || [];
+    public getSymbolDepsRaw(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        type: string,
+        multiLine?: boolean): Array<ts.ObjectLiteralElementLike> {
+        return props.filter(node => node.name.text === type);
     }
 }
 
-export interface ParseDeepIdentifierResult {
+export interface IParseDeepIdentifierResult {
     ns?: any;
     name: string;
-    type: any;
+    type: string | undefined;
 }

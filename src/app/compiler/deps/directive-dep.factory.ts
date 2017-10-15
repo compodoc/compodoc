@@ -1,6 +1,5 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
-import { NsModuleCache } from './helpers/symbol-helper';
 
 export class DirectiveDepFactory {
     constructor(private helper: ComponentHelper) {

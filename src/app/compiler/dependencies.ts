@@ -18,7 +18,7 @@ import { ModuleDepFactory } from './deps/module-dep.factory';
 import { ComponentDepFactory } from './deps/component-dep.factory';
 import { ModuleHelper } from './deps/helpers/module-helper';
 import { JsDocHelper } from './deps/helpers/js-doc-helper';
-import { SymbolHelper, NsModuleCache } from './deps/helpers/symbol-helper';
+import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { JsdocParserUtil } from '../../utils/jsdoc-parser.util';
@@ -43,10 +43,9 @@ export class Dependencies {
     private program: ts.Program;
     private typeChecker: ts.TypeChecker;
     private engine: any;
-    private __nsModule: NsModuleCache = new NsModuleCache();
     private cache: ComponentCache = new ComponentCache();
     private componentHelper: ComponentHelper;
-    private moduleHelper = new ModuleHelper(this.__nsModule, this.cache);
+    private moduleHelper = new ModuleHelper(this.cache);
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private classHelper: ClassHelper;
@@ -66,7 +65,7 @@ export class Dependencies {
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
         this.typeChecker = this.program.getTypeChecker();
         this.classHelper = new ClassHelper(this.typeChecker, this.configuration);
-        this.componentHelper = new ComponentHelper(this.__nsModule, this.classHelper);
+        this.componentHelper = new ComponentHelper(this.classHelper);
     }
 
     public getDependencies() {
@@ -244,7 +243,7 @@ export class Dependencies {
 
                     let metadata = node.decorators;
                     let name = this.getSymboleName(node);
-                    let props = this.findProps(visitedNode);
+                    let props = this.findProperties(visitedNode);
                     let IO = this.componentHelper.getComponentIO(file, srcFile, node);
 
                     if (this.isModule(metadata)) {
@@ -669,19 +668,16 @@ export class Dependencies {
         return node.name.text;
     }
 
-
-
-    private findProps(visitedNode) {
-        if (visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
-            let pop = visitedNode.expression.arguments.pop();
-            if (typeof pop.properties !== 'undefined') {
+    private findProperties(visitedNode: ts.Decorator): ReadonlyArray<ts.ObjectLiteralElementLike> {
+        console.log(visitedNode.expression.kind);
+        if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
+            let pop = visitedNode.expression.arguments[0];
+            if (ts.isObjectLiteralExpression(pop)) {
                 return pop.properties;
-            } else {
-                return '';
             }
-        } else {
-            return '';
         }
+
+        return [];
     }
 
     private isAngularLifecycleHook(methodName) {

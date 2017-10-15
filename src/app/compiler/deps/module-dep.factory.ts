@@ -1,6 +1,5 @@
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
-import { NsModuleCache } from './helpers/symbol-helper';
 import { ComponentCache } from './helpers/component-helper';
 import * as ts from 'typescript';
 
@@ -11,16 +10,21 @@ export class ModuleDepFactory {
 
     }
 
-    public create(file: any, srcFile: ts.SourceFile, name: string, props: Array<ts.Node>, IO: any): IModuleDep {
+    public create(
+        file: any,
+        srcFile: ts.SourceFile,
+        name: string,
+        properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        IO: any): IModuleDep {
         return {
             name,
             id: 'module-' + name + '-' + Date.now(),
             file: file,
-            providers: this.moduleHelper.getModuleProviders(props),
-            declarations: this.moduleHelper.getModuleDeclations(props),
-            imports: this.moduleHelper.getModuleImports(props),
-            exports: this.moduleHelper.getModuleExports(props),
-            bootstrap: this.moduleHelper.getModuleBootstrap(props),
+            providers: this.moduleHelper.getModuleProviders(properties),
+            declarations: this.moduleHelper.getModuleDeclations(properties),
+            imports: this.moduleHelper.getModuleImports(properties),
+            exports: this.moduleHelper.getModuleExports(properties),
+            bootstrap: this.moduleHelper.getModuleBootstrap(properties),
             type: 'module',
             description: IO.description,
             sourceCode: srcFile.getText()
