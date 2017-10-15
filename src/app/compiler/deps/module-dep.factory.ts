@@ -1,6 +1,5 @@
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
-import { NsModuleCache } from './helpers/symbol-helper';
 import { ComponentCache } from './helpers/component-helper';
 import * as ts from 'typescript';
 

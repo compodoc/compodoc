@@ -1,11 +1,10 @@
-import { SymbolHelper, NsModuleCache } from './symbol-helper';
+import { SymbolHelper } from './symbol-helper';
 import { ComponentCache } from './component-helper';
 import { Deps } from '../../dependencies.interfaces';
 import * as ts from 'typescript';
 
 export class ModuleHelper {
     constructor(
-        private moduleCache: NsModuleCache,
         private cache: ComponentCache,
         private symbolHelper: SymbolHelper = new SymbolHelper()) {
 
@@ -14,7 +13,7 @@ export class ModuleHelper {
     public getModuleProviders(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers')
-            .map((providerName) => this.symbolHelper.parseDeepIndentifier(providerName, this.moduleCache));
+            .map((providerName) => this.symbolHelper.parseDeepIndentifier(providerName));
     }
 
     public getModuleDeclations(props: Array<ts.Node>): Deps[] {
@@ -25,20 +24,20 @@ export class ModuleHelper {
                 return component;
             }
 
-            return this.symbolHelper.parseDeepIndentifier(name, this.moduleCache);
+            return this.symbolHelper.parseDeepIndentifier(name);
         });
     }
 
     public getModuleImports(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'imports')
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
     public getModuleExports(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'exports')
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
     public getModuleImportsRaw(props: Array<ts.Node>): Deps[] {
@@ -48,6 +47,6 @@ export class ModuleHelper {
     public getModuleBootstrap(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'bootstrap')
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 }

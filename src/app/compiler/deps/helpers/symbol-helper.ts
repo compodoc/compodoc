@@ -1,30 +1,14 @@
 import * as ts from 'typescript';
 
-export class NsModuleCache {
-    private cache: Map<string, Array<string>> = new Map();
-
-    public setOrAdd(key: string, toSetOrAdd: string) {
-        const result = this.cache.get(key);
-
-        if (result) {
-            result.push(toSetOrAdd);
-        } else {
-            this.cache.set(key, [toSetOrAdd]);
-        }
-    }
-}
-
 export class SymbolHelper {
     private readonly unknown = '???';
 
 
-    public parseDeepIndentifier(name: string, cache: NsModuleCache): ParseDeepIdentifierResult {
+    public parseDeepIndentifier(name: string): ParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
+        
         if (nsModule.length > 1) {
-
-            // cache deps with the same namespace (i.e Shared.*)
-            cache.setOrAdd(nsModule[0], name);
             return {
                 ns: nsModule[0],
                 name: name,
@@ -188,5 +172,5 @@ export class SymbolHelper {
 export interface ParseDeepIdentifierResult {
     ns?: any;
     name: string;
-    type: any;
+    type: string | undefined;
 }

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { SymbolHelper, NsModuleCache } from './symbol-helper';
+import { SymbolHelper } from './symbol-helper';
 import { detectIndent } from '../../../../utilities';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
@@ -7,7 +7,6 @@ import { ClassHelper } from './class-helper';
 
 export class ComponentHelper {
     constructor(
-        private moduleCache: NsModuleCache,
         private classHelper: ClassHelper,
         private symbolHelper: SymbolHelper = new SymbolHelper()) {
 
@@ -63,13 +62,13 @@ export class ComponentHelper {
     public getComponentProviders(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers')
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
     public getComponentViewProviders(props: Array<ts.Node>): Deps[] {
         return this.symbolHelper
             .getSymbolDeps(props, 'viewProviders')
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name, this.moduleCache));
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
     public getComponentTemplateUrl(props: Array<ts.Node>): Array<string> {
@@ -91,9 +90,7 @@ export class ComponentHelper {
     }
 
     public getSymbolDepsObject(props: Array<ts.Node>, type: string, multiLine?: boolean): Object {
-        let deps = props.filter(node => {
-            return node.name.text === type;
-        });
+        let deps = props.filter(node => node.name.text === type);
 
         let parseProperties = node => {
             let obj = {};

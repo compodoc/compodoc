@@ -18,7 +18,7 @@ import { ModuleDepFactory } from './deps/module-dep.factory';
 import { ComponentDepFactory } from './deps/component-dep.factory';
 import { ModuleHelper } from './deps/helpers/module-helper';
 import { JsDocHelper } from './deps/helpers/js-doc-helper';
-import { SymbolHelper, NsModuleCache } from './deps/helpers/symbol-helper';
+import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { JsdocParserUtil } from '../../utils/jsdoc-parser.util';
@@ -43,10 +43,9 @@ export class Dependencies {
     private program: ts.Program;
     private typeChecker: ts.TypeChecker;
     private engine: any;
-    private __nsModule: NsModuleCache = new NsModuleCache();
     private cache: ComponentCache = new ComponentCache();
     private componentHelper: ComponentHelper;
-    private moduleHelper = new ModuleHelper(this.__nsModule, this.cache);
+    private moduleHelper = new ModuleHelper(this.cache);
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private classHelper: ClassHelper;
@@ -66,7 +65,7 @@ export class Dependencies {
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
         this.typeChecker = this.program.getTypeChecker();
         this.classHelper = new ClassHelper(this.typeChecker, this.configuration);
-        this.componentHelper = new ComponentHelper(this.__nsModule, this.classHelper);
+        this.componentHelper = new ComponentHelper(this.classHelper);
     }
 
     public getDependencies() {

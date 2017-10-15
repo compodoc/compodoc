@@ -2,7 +2,6 @@ import { IDep } from '../dependencies.interfaces';
 import { Configuration } from '../../configuration';
 import { ComponentHelper } from './helpers/component-helper';
 import { cleanLifecycleHooksFromMethods } from '../../../utils/utils';
-import { NsModuleCache } from './helpers/symbol-helper';
 import { ClassHelper } from './helpers/class-helper';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 
