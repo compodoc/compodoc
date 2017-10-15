@@ -312,8 +312,8 @@ export class ClassHelper {
             if (!accessors[nodeName]) {
                 accessors[nodeName] = {
                     'name': nodeName,
-                    'setSignature': null,
-                    'getSignature': null
+                    'setSignature': undefined,
+                    'getSignature': undefined
                 }
             }
 
@@ -325,11 +325,11 @@ export class ClassHelper {
                         return {
                             'name': param.name.escapedText,
                             'type': (param.type) ? kindToType(param.type.kind) : ''
-                        }
+                        };
                     }),
                     returnType: (nodeAccessor.type) ? this.visitType(nodeAccessor.type) : 'void',
                     line: this.getPosition(nodeAccessor, sourceFile).line + 1
-                }
+                };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
                     setSignature.description = marked(nodeAccessor.jsDoc[0].comment);
