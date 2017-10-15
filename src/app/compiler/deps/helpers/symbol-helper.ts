@@ -5,7 +5,7 @@ export class SymbolHelper {
     private readonly unknown = '???';
 
 
-    public parseDeepIndentifier(name: string): ParseDeepIdentifierResult {
+    public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
 
@@ -41,7 +41,7 @@ export class SymbolHelper {
      * Output
      * RouterModule.forRoot 179
      */
-    public buildIdentifierName(node: ts.Identifier | ts.PropertyAccessExpression, name = '') {
+    public buildIdentifierName(node: ts.Identifier | ts.PropertyAccessExpression | ts.SpreadElement, name = '') {
         if (ts.isIdentifier(node) && !ts.isPropertyAccessExpression(node)) {
             return `${node.text}.${name}`;
         }
@@ -83,42 +83,39 @@ export class SymbolHelper {
     }
 
     /**
-     * 181 CallExpression "RouterModule.forRoot(args)"
-     * 71 Identifier "RouterModule" "TodoStore"
-     * 9 StringLiteral "./app.component.css" "./tab.scss"
-     *
-     *
-     *
-     *
+     * Kind
+     *  181 CallExpression => "RouterModule.forRoot(args)"
+     *   71 Identifier     => "RouterModule" "TodoStore"
+     *    9 StringLiteral  => "./app.component.css" "./tab.scss"
      */
-    private parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral): string {
+    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression): string {
         // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
-        if (ts.isCallExpression(node)) {
+        if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
             let className = this.buildIdentifierName(node.expression);
 
-            // function arguments could be really complexe. There are so
+            // function arguments could be really complex. There are so
             // many use cases that we can't handle. Just print "args" to indicate
             // that we have arguments.
 
             let functionArgs = node.arguments.length > 0 ? 'args' : '';
             let text = `${className}(${functionArgs})`;
             return text;
-        } else if (node.expression) { // parse expressions such as: Shared.Module
-            let identifier = this.buildIdentifierName(node);
-            return identifier;
+        } else if (ts.isPropertyAccessExpression(node)) { // parse expressions such as: Shared.Module
+            return this.buildIdentifierName(node);
         }
 
         return node.text ? node.text : this.parseProviderConfiguration(node);
     }
 
+    /**
+     * Kind
+     *  177 ArrayLiteralExpression
+     *    9 StringLiteral
+     */
     private parseSymbols(node: ts.PropertyAssignment): Array<string> {
-        let text = node.initializer.text;
-        console.log(node.initializer.kind);
-        // 177 ArrayLiteralExpression
-        // 9  StringLiteral
         if (ts.isStringLiteral(node.initializer)) {
-            return [text];
-        } else if (node.initializer.expression) {
+            return [node.initializer.text];
+        } else if (ts.isPropertyAccessExpression(node.initializer)) {
             let identifier = this.parseSymbolElements(node.initializer);
             return [
                 identifier
@@ -129,21 +126,22 @@ export class SymbolHelper {
 
     }
 
-    public getSymbolDeps(props: Array<ts.Node>, type: string, multiLine?: boolean): Array<string> {
-
+    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
         let deps = props.filter(node => node.name.text === type);
         return deps.map(x => this.parseSymbols(x)).pop() || [];
     }
 
-    public getSymbolDepsRaw(props: Array<ts.Node>, type: string, multiLine?: boolean): any {
-        let deps = props.filter(node => node.name.text === type);
-        return deps || [];
+    public getSymbolDepsRaw(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        type: string,
+        multiLine?: boolean): Array<ts.ObjectLiteralElementLike> {
+        return props.filter(node => node.name.text === type);
     }
 }
 
-export interface ParseDeepIdentifierResult {
+export interface IParseDeepIdentifierResult {
     ns?: any;
     name: string;
     type: string | undefined;

@@ -243,7 +243,7 @@ export class Dependencies {
 
                     let metadata = node.decorators;
                     let name = this.getSymboleName(node);
-                    let props = this.findProps(visitedNode);
+                    let props = this.findProperties(visitedNode);
                     let IO = this.componentHelper.getComponentIO(file, srcFile, node);
 
                     if (this.isModule(metadata)) {
@@ -668,19 +668,16 @@ export class Dependencies {
         return node.name.text;
     }
 
-
-
-    private findProps(visitedNode) {
-        if (visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
-            let pop = visitedNode.expression.arguments.pop();
-            if (typeof pop.properties !== 'undefined') {
+    private findProperties(visitedNode: ts.Decorator): ReadonlyArray<ts.ObjectLiteralElementLike> {
+        console.log(visitedNode.expression.kind);
+        if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
+            let pop = visitedNode.expression.arguments[0];
+            if (ts.isObjectLiteralExpression(pop)) {
                 return pop.properties;
-            } else {
-                return '';
             }
-        } else {
-            return '';
         }
+
+        return [];
     }
 
     private isAngularLifecycleHook(methodName) {

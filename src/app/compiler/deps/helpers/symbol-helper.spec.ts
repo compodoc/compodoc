@@ -62,4 +62,37 @@ describe(SymbolHelper.name, () => {
 
         });
     });
+
+    describe('parseSymbolElements', () => {
+        it('should handle CallExpression and remove args', () => {
+            // RouterModule.forRoot(args)
+            const routerModule = ts.createIdentifier('RouterModule');
+            const forRoot = ts.createPropertyAccess(routerModule, 'forRoot');
+
+            const callExp = ts.createCall(forRoot, [], [ts.createLiteral('arg1')]);
+
+            const result = helper.parseSymbolElements(callExp);
+
+            expect(result).to.equal('RouterModule.forRoot(args)');
+        });
+
+        it('should handle sub-Module', () => {
+            // Shared.Module
+            const shared = ts.createIdentifier('Shared');
+            const module = ts.createPropertyAccess(shared, 'Module');
+
+            const result = helper.parseSymbolElements(module);
+
+            expect(result).to.equal('Shared.Module');
+        });
+
+        it('should handle string literal', () => {
+            // "./app.component.css"
+            const stringLiteral = ts.createLiteral('./app.component.css');
+
+            const result = helper.parseSymbolElements(stringLiteral);
+
+            expect(result).to.equal('./app.component.css');
+        });
+    });
 });

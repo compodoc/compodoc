@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { SymbolHelper } from './symbol-helper';
+import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
 import { detectIndent } from '../../../../utilities';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
@@ -12,27 +12,27 @@ export class ComponentHelper {
 
     }
 
-    public getComponentChangeDetection(props: Array<ts.Node>): string {
+    public getComponentChangeDetection(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         return this.symbolHelper.getSymbolDeps(props, 'changeDetection').pop();
     }
 
-    public getComponentEncapsulation(props: Array<ts.Node>): Array<string> {
+    public getComponentEncapsulation(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'encapsulation');
     }
 
-    public getComponentExportAs(props: Array<ts.Node>): string {
+    public getComponentExportAs(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         return this.symbolHelper.getSymbolDeps(props, 'exportAs').pop();
     }
 
-    public getComponentHost(props: Array<ts.Node>): Object {
+    public getComponentHost(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Map<string, string> {
         return this.getSymbolDepsObject(props, 'host');
     }
 
-    public getComponentInputsMetadata(props: Array<ts.Node>): Array<string> {
+    public getComponentInputsMetadata(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'inputs');
     }
 
-    public getComponentTemplate(props: Array<ts.Node>): string {
+    public getComponentTemplate(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         let t = this.symbolHelper.getSymbolDeps(props, 'template', true).pop();
         if (t) {
             t = detectIndent(t, 0);
@@ -42,36 +42,36 @@ export class ComponentHelper {
         return t;
     }
 
-    public getComponentStyleUrls(props: Array<ts.Node>): string[] {
+    public getComponentStyleUrls(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string[] {
         return this.sanitizeUrls(this.symbolHelper.getSymbolDeps(props, 'styleUrls'));
     }
 
-    public getComponentStyles(props: Array<ts.Node>): string[] {
+    public getComponentStyles(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string[] {
         return this.symbolHelper.getSymbolDeps(props, 'styles');
     }
 
-    public getComponentModuleId(props: Array<ts.Node>): string {
+    public getComponentModuleId(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         return this.symbolHelper.getSymbolDeps(props, 'moduleId').pop();
     }
 
 
-    public getComponentOutputs(props: Array<ts.Node>): string[] {
+    public getComponentOutputs(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string[] {
         return this.symbolHelper.getSymbolDeps(props, 'outputs');
     }
 
-    public getComponentProviders(props: Array<ts.Node>): Deps[] {
+    public getComponentProviders(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers')
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getComponentViewProviders(props: Array<ts.Node>): Deps[] {
+    public getComponentViewProviders(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'viewProviders')
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getComponentTemplateUrl(props: Array<ts.Node>): Array<string> {
+    public getComponentTemplateUrl(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'templateUrl');
     }
     public getComponentExampleUrls(text: string): Array<string> | undefined {
@@ -85,22 +85,22 @@ export class ComponentHelper {
         return exampleUrls;
     }
 
-    public getComponentSelector(props: Array<ts.Node>): string {
+    public getComponentSelector(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         return this.symbolHelper.getSymbolDeps(props, 'selector').pop();
     }
 
-    public getSymbolDepsObject(props: Array<ts.Node>, type: string, multiLine?: boolean): Object {
+    private parseProperties(node: ReadonlyArray<ts.ObjectLiteralElementLike>): Map<string, string> {
+        let obj = new Map<string, string>();
+        let properties = node.initializer.properties || [];
+        properties.forEach((prop) => {
+            obj.set(prop.name.text, prop.initializer.text);
+        });
+        return obj;
+    }
+
+    public getSymbolDepsObject(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Map<string, string> {
         let deps = props.filter(node => node.name.text === type);
-
-        let parseProperties = node => {
-            let obj = {};
-            (node.initializer.properties || []).forEach((prop) => {
-                obj[prop.name.text] = prop.initializer.text;
-            });
-            return obj;
-        };
-
-        return deps.map(x => parseProperties(x)).pop();
+        return deps.map(x => this.parseProperties(x)).pop();
     }
 
     public getComponentIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node): any {
