@@ -32,7 +32,6 @@ The demo features documentation generated for a simple [TodoMVC application].
 [demo]: https://compodoc.github.io/compodoc-demo-todomvc-angular/
 [TodoMVC application]: https://github.com/compodoc/compodoc-demo-todomvc-angular
 
-
 # Features
 
 - **Clean, simple design** — Navigate the documentation on the left side, read it on the right.
@@ -67,24 +66,23 @@ The demo features documentation generated for a simple [TodoMVC application].
 
 Official documentation has moved to [https://compodoc.github.io/website/](https://compodoc.github.io/website/guides/getting-started.html).
 
-## Installation
+# Installation
 
 Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
 
-## Contributing
+# Contributing
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
 
 Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/.github/CONTRIBUTING.md).
 
-## Contributors
+# Contributors
 
 [<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky)|[<img alt="JonasMH" src="https://avatars0.githubusercontent.com/u/1939229?v=3&s=117" width="117">](https://github.com/JonasMH) |[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/mattlewis92)|[<img alt="rprotsyk" src="https://avatars0.githubusercontent.com/u/104502?v=3&s=117" width="117">](https://github.com/rprotsyk)|[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico) |
 :---: |:---: |:---: |:---: |:---: |
 [vogloblinsky](https://github.com/vogloblinsky)|[JonasMH](https://github.com/JonasMH) |[mattlewis92](https://github.com/mattlewis92) |[rprotsyk](https://github.com/rprotsyk) |[daniele-zurico](https://github.com/daniele-zurico) |
 
-
-## License
+# License
 
 Everything in this repository is [licensed under the MIT License][license] unless otherwise specified.
 
