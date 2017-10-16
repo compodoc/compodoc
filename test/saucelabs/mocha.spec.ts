@@ -117,12 +117,39 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
-describe('WIN 10 | Edge 14 | Compodoc page', function () {
+describe('WIN 10 | Edge 15 | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Windows 10';
         capabilities.browserName = 'MicrosoftEdge';
-        capabilities.version = '14.14393';
+        capabilities.version = '15.15063';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 10 | Firefox 56 | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '56.0';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
