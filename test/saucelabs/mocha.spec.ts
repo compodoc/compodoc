@@ -117,7 +117,88 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
-describe('WIN8 | Chrome | Compodoc page', function () {
+describe('WIN 10 | IE 11 | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'internet explorer';
+        capabilities.version = '11.103';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 10 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '61';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 8.1 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 8.1';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '61';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 8 | Chrome | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Windows 8';
@@ -144,7 +225,7 @@ describe('WIN8 | Chrome | Compodoc page', function () {
     });
 });
 
-describe('WIN7 | Chrome | Compodoc page', function () {
+describe('WIN 7 | Chrome | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Windows 7';
@@ -172,7 +253,7 @@ describe('WIN7 | Chrome | Compodoc page', function () {
 });
 
 /*
-describe('WIN7 | Firefox | Compodoc page', function() {
+describe('WIN 7 | Firefox | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'firefox';
@@ -198,7 +279,7 @@ describe('WIN7 | Firefox | Compodoc page', function() {
     });
 });
 
-describe('WIN7 | IE | Compodoc page', function() {
+describe('WIN 7 | IE | Compodoc page', function() {
 
     before(function(done) {
         capabilities.browserName = 'internet explorer';

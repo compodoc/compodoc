@@ -15,11 +15,12 @@ install:
     - npm install
 script:
     - npm run build
-    - npm run test
+    #- npm run test
     #- node tools/test-watch.js
-    - if [ $TO_TEST == 'ALL' ];
-      then npm run saucelabs-test-e2e-mocha;
-      fi
+    #- if [ $TO_TEST == 'ALL' ];
+    #  then npm run saucelabs-test-e2e-mocha;
+    #  fi
+    - npm run saucelabs-test-e2e-mocha;
 after_success:
     - npm run codecov
 branches:
