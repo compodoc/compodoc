@@ -117,7 +117,7 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
-describe('WIN 10 | Edge 15 | Compodoc page', function () {
+/*describe('WIN 10 | Edge 15 | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Windows 10';
@@ -142,7 +142,7 @@ describe('WIN 10 | Edge 15 | Compodoc page', function () {
     after(function (done) {
         endTests(this, done);
     });
-});
+});*/
 
 describe('WIN 10 | Firefox 56 | Compodoc page', function () {
 
@@ -414,13 +414,12 @@ describe('Linux | Chrome | Compodoc page', function () {
     });
 });
 
-/*
-describe('Mac | Firefox | Compodoc page', function() {
+describe('Mac Sierra | Safari 10 | Compodoc page', function() {
 
     before(function(done) {
-        capabilities.platform = 'Mac 10.11';
-        capabilities.browserName = 'firefox';
-        capabilities.version = '51';
+        capabilities.platform = 'Mac 10.12';
+        capabilities.browserName = 'safari';
+        capabilities.version = '10.0';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
@@ -441,9 +440,35 @@ describe('Mac | Firefox | Compodoc page', function() {
         endTests(this, done);
     });
 });
-*/
 
-describe('Mac Sierra | Chrome | Compodoc page', function () {
+describe('Mac Sierra | Firefox 56 | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'Mac 10.12';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '56.0';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac Sierra | Chrome 61 | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Mac 10.12';
@@ -470,7 +495,7 @@ describe('Mac Sierra | Chrome | Compodoc page', function () {
     });
 });
 
-describe('Mac El Capitan | Chrome | Compodoc page', function () {
+describe('Mac El Capitan | Chrome 61 | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Mac 10.11';
