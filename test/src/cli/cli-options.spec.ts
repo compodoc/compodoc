@@ -72,6 +72,16 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Change default serving port');
         });
 
+        it(`-w`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-w, --watch');
+            expect(runHelp.stdout.toString()).to.contain('Watch source files after serve and force documentation rebuild');
+        });
+
+        it(`-e`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-e, --exportFormat [format]');
+            expect(runHelp.stdout.toString()).to.contain('Export in specified format (json, html (default))');
+        });
+
         it(`--hideGenerator`, () => {
             expect(runHelp.stdout.toString()).to.contain('--hideGenerator');
             expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');

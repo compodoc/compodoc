@@ -44,4 +44,6 @@ export interface MainDataInterface {
     coverageMinimumPerFile: number;
     routesLength: number;
     angularVersion: string;
+    exportFormat: string;
+    coverageData: Object;
 }

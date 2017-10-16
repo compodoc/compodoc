@@ -5,6 +5,7 @@ export const COMPODOC_DEFAULTS = {
     folder: './documentation/',
     port: 8080,
     theme: 'gitbook',
+    exportFormat: 'html',
     base: '/',
     defaultCoverageThreshold: 70,
     defaultCoverageMinimumPerFile: 0,

@@ -17,11 +17,11 @@ import { Configuration } from './configuration';
 import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
+import { ExportEngine } from './engines/export.engine';
 import { Dependencies } from './compiler/dependencies';
 import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
-
 
 import { cleanSourcesForWatch } from '../utils/utils';
 
@@ -64,6 +64,7 @@ export class Application {
     private ngdEngine: NgdEngine;
     private htmlEngine: HtmlEngine;
     private searchEngine: SearchEngine;
+    private exportEngine: ExportEngine;
     protected fileEngine: FileEngine = new FileEngine();
 
     /**
@@ -77,6 +78,7 @@ export class Application {
         this.ngdEngine = new NgdEngine(this.dependenciesEngine);
         this.htmlEngine = new HtmlEngine(this.configuration, this.dependenciesEngine, this.fileEngine);
         this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
+        this.exportEngine = new ExportEngine(this.configuration, this.dependenciesEngine, this.fileEngine);
 
         for (let option in options) {
             if (typeof this.configuration.mainData[option] !== 'undefined') {
@@ -100,8 +102,13 @@ export class Application {
         if (this.configuration.mainData.output.charAt(this.configuration.mainData.output.length - 1) !== '/') {
             this.configuration.mainData.output += '/';
         }
-        this.htmlEngine.init()
-            .then(() => this.processPackageJson());
+
+        if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
+            this.processPackageJson();
+        } else {
+            this.htmlEngine.init()
+                .then(() => this.processPackageJson());
+        }
     }
 
     /**
@@ -468,7 +475,16 @@ export class Application {
 
         promiseSequential(actions)
             .then(res => {
-                this.processGraphs();
+                if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
+                    logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
+                    this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
+                        let finalTime = (new Date() - startTime) / 1000;
+                        logger.info('Documentation generated in ' + this.configuration.mainData.output +
+                            ' in ' + finalTime + ' seconds');
+                    })
+                } else {
+                    this.processGraphs();
+                }
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -934,13 +950,17 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
-                logger.info(' Routes index generated');
+            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+                RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
+                    logger.info(' Routes index generated');
+                    resolve();
+                }, (e) => {
+                    logger.error(e);
+                    reject();
+                });
+            } else {
                 resolve();
-            }, (e) => {
-                logger.error(e);
-                reject();
-            });
+            }
 
         });
     }
@@ -1264,7 +1284,8 @@ export class Application {
             files = _.sortBy(files, ['filePath']);
             let coverageData = {
                 count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
-                status: ''
+                status: '',
+                files
             };
             coverageData.status = getStatus(coverageData.count);
             this.configuration.addPage({
@@ -1276,7 +1297,11 @@ export class Application {
                 depth: 0,
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
-            this.htmlEngine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
+            coverageData.files = files;
+            this.configuration.mainData.coverageData = coverageData;
+            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+                this.htmlEngine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
+            }
             files = _.sortBy(files, ['coveragePercent']);
             let coverageTestPerFileResults;
             if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {

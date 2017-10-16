@@ -54,6 +54,7 @@ export class CliApplication extends Application {
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option('-w, --watch', 'Watch source files after serve and force documentation rebuild', false)
+            .option('-e, --exportFormat [format]', 'Export in specified format (json, html (default))', COMPODOC_DEFAULTS.exportFormat)
             .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
             .option('--toggleMenuItems <items>', 'Close by default items in the menu (default [\'all\']) values : [\'all\'] or one of these [\'modules\',\'components\',\'directives\',\'classes\',\'injectables\',\'interfaces\',\'pipes\',\'additionalPages\']', list, COMPODOC_DEFAULTS.toggleMenuItems)
@@ -122,6 +123,10 @@ export class CliApplication extends Application {
 
         if (program.watch) {
             this.configuration.mainData.watch = program.watch;
+        }
+
+        if (program.exportFormat) {
+            this.configuration.mainData.exportFormat = program.exportFormat;
         }
 
         if (program.hideGenerator) {
