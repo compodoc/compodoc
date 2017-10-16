@@ -2,10 +2,7 @@ os:
   - linux
 language: node_js
 node_js:
-  - "4"
   - "6"
-  - "7"
-  - "8"
 addons:
   sauce_connect:
     username: "compodoc"
@@ -15,13 +12,7 @@ install:
     - npm install
 script:
     - npm run build
-    - npm run test
-    #- node tools/test-watch.js
-    - if [ $TO_TEST == 'ALL' ];
-      then npm run saucelabs-test-e2e-mocha;
-      fi
-after_success:
-    - npm run codecov
+    - npm run saucelabs-test-e2e-mocha
 branches:
   only:
     - develop
@@ -29,16 +20,7 @@ matrix:
   allow_failures:
     - os: osx
   exclude:
-    - node_js: "4"
     - node_js: "6"
-    - node_js: "7"
-    - node_js: "8"
   include:
-    - node_js: "4"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "6"
       env: TO_TEST=ALL SAUCE_USERNAME=compodoc
-    - node_js: "7"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
-    - node_js: "8"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
