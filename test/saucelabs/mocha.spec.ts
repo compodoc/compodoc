@@ -126,7 +126,7 @@ describe('Mac El Capitan | Safari | Compodoc page', function() {
         capabilities.browserName = 'safari';
         capabilities.version = '9.0';
 
-        startDriver(done, 'http://localhost:3029/components/FooComponent.html');
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
     });
 
     // Test search bar
