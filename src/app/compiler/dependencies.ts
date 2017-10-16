@@ -669,7 +669,6 @@ export class Dependencies {
     }
 
     private findProperties(visitedNode: ts.Decorator): ReadonlyArray<ts.ObjectLiteralElementLike> {
-        console.log(visitedNode.expression.kind);
         if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
             let pop = visitedNode.expression.arguments[0];
             if (ts.isObjectLiteralExpression(pop)) {
