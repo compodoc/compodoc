@@ -27,8 +27,6 @@ let startDriver = function (cb, pageUrl) {
 
     capabilities.recordVideo = false;
 
-    console.log(capabilities);
-
     driver = new webdriver.Builder()
         .withCapabilities(capabilities)
         .usingServer(server)
@@ -128,7 +126,7 @@ describe('Mac El Capitan | Safari | Compodoc page', function() {
         capabilities.browserName = 'safari';
         capabilities.version = '9.0';
 
-        startDriver(done, 'http://localhost:8383/components/FooComponent.html');
+        startDriver(done, 'http://localhost:3029/components/FooComponent.html');
     });
 
     // Test search bar

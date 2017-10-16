@@ -15,7 +15,7 @@
     "codecov": "codecov -f coverage/*.json",
     "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch",
-    "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 8383 & sleep 20",
+    "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 3029 & sleep 20",
     "test-e2e-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts",
     "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
     "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
