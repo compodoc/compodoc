@@ -4,7 +4,6 @@ import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 export class SymbolHelper {
     private readonly unknown = '???';
 
-
     public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
         let nsModule = name.split('.');
         let type = this.getType(name);
@@ -36,17 +35,16 @@ export class SymbolHelper {
         return type;
     }
 
-
     /**
      * Output
      * RouterModule.forRoot 179
      */
-    public buildIdentifierName(node: ts.Identifier | ts.PropertyAccessExpression | ts.SpreadElement, name = '') {
+    public buildIdentifierName(node: ts.Identifier | ts.PropertyAccessExpression | ts.SpreadElement, name) {
         if (ts.isIdentifier(node) && !ts.isPropertyAccessExpression(node)) {
             return `${node.text}.${name}`;
         }
 
-        name = name ? `.${name}` : name;
+        name = name ? `.${name}` : '';
 
         let nodeName = this.unknown;
         if (node.name) {
