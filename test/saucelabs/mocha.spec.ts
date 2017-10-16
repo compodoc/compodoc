@@ -461,4 +461,4 @@ describe('Mac El Capitan | Safari 10 | Compodoc page', function() {
     after(function(done) {
         endTests(this, done);
     });
-});*/
+});
