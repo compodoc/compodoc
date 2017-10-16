@@ -119,6 +119,8 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
+// Cannot connect to localhost...
+/*
 describe('WIN 10 | Edge 15 | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 10';
@@ -138,6 +140,7 @@ describe('WIN 10 | Edge 15 | Compodoc page', function () {
         endTests(this, done);
     });
 });
+*/
 
 describe('WIN 10 | Firefox 56 | Compodoc page', function () {
 
