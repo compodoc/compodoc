@@ -117,11 +117,39 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
+describe('WIN8 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 8';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '61';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
 describe('WIN7 | Chrome | Compodoc page', function () {
 
     before(function (done) {
+        capabilities.platform = 'Windows 7';
         capabilities.browserName = 'chrome';
-        capabilities.version = '56';
+        capabilities.version = '61.0';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
@@ -196,32 +224,6 @@ describe('WIN7 | IE | Compodoc page', function() {
     });
 });
 */
-
-/*describe('WIN7 | Safari | Compodoc page', function() {
-
-    before(function(done) {
-        capabilities.browserName = 'safari';
-        capabilities.version = '5';
-
-        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
-    });
-
-    // Test search bar
-
-    it('should have a search bar, and handle results', function(done) {
-        testSearchBarWithResults(done);
-    });
-
-    it('should have a search bar, and handle results empty', function(done) {
-        testSearchBarWithNoResults(done);
-    });
-
-    // TODO : test routing
-
-    after(function(done) {
-        endTests(this, done);
-    });
-});*/
 
 describe('Linux | Firefox | Compodoc page', function () {
 
@@ -306,12 +308,39 @@ describe('Mac | Firefox | Compodoc page', function() {
 });
 */
 
-describe('Mac | Chrome | Compodoc page', function () {
+describe('Mac Sierra | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Mac 10.12';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '61';
+
+        startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
+    });
+
+    // Test search bar
+
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac El Capitan | Chrome | Compodoc page', function () {
 
     before(function (done) {
         capabilities.platform = 'Mac 10.11';
         capabilities.browserName = 'chrome';
-        capabilities.version = '56';
+        capabilities.version = '61';
 
         startDriver(done, 'http://127.0.0.1:8383/components/FooComponent.html');
     });
