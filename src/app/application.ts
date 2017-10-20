@@ -19,7 +19,6 @@ import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { ExportEngine } from './engines/export.engine';
 import { Dependencies } from './compiler/dependencies';
-import { RouterParser } from '../utils/router.parser';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 
@@ -29,7 +28,7 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 
 import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
-import { AngularVersionUtil } from '../utils';
+import { AngularVersionUtil, RouterParserUtil } from '../utils';
 
 let pkg = require('../package.json');
 let cwd = process.cwd();
@@ -66,6 +65,7 @@ export class Application {
     private searchEngine: SearchEngine;
     private exportEngine: ExportEngine;
     protected fileEngine: FileEngine = new FileEngine();
+    private routerParser = new RouterParserUtil();
 
     /**
      * Create a new compodoc application instance.
@@ -288,7 +288,8 @@ export class Application {
             this.updatedFiles, {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
             },
-            this.configuration
+            this.configuration,
+            this.routerParser
         );
 
         let dependenciesData = crawler.getDependencies();
@@ -329,14 +330,15 @@ export class Application {
             this.files, {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
             },
-            this.configuration
+            this.configuration,
+            this.routerParser
         );
 
         let dependenciesData = crawler.getDependencies();
 
         this.dependenciesEngine.init(dependenciesData);
 
-        this.configuration.mainData.routesLength = RouterParser.routesLength();
+        this.configuration.mainData.routesLength = this.routerParser.routesLength();
 
         this.printStatistics();
 
@@ -481,7 +483,7 @@ export class Application {
                         let finalTime = (new Date() - startTime) / 1000;
                         logger.info('Documentation generated in ' + this.configuration.mainData.output +
                             ' in ' + finalTime + ' seconds');
-                    })
+                    });
                 } else {
                     this.processGraphs();
                 }
@@ -951,7 +953,7 @@ export class Application {
             });
 
             if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
+                this.routerParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
                     logger.info(' Routes index generated');
                     resolve();
                 }, (e) => {

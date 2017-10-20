@@ -11,22 +11,24 @@ export function promiseSequential(promises) {
 
         const iterateeFunc = (previousPromise, currentPromise) => {
             return previousPromise
-                .then(function(result) {
-                    if (count++ !== 0) results = results.concat(result);
+                .then(function (result) {
+                    if (count++ !== 0) {
+                        results = results.concat(result);
+                    }
                     return currentPromise(result, results, count);
                 })
                 .catch((err) => {
                     return reject(err);
                 });
-        }
+        };
 
         promises = promises.concat(() => Promise.resolve());
 
         promises
             .reduce(iterateeFunc, Promise.resolve(false))
-            .then(function(res) {
+            .then((res) => {
                 resolve(results);
-            })
+            });
 
     });
-};
+}
