@@ -1,16 +1,16 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as ts from 'typescript';
+import * as _ from 'lodash';
 
 import { LinkParser } from './link-parser';
 
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 
-const ts = require('typescript'),
-      getCurrentDirectory = ts.sys.getCurrentDirectory,
-      useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames,
-      newLine = ts.sys.newLine,
-      marked = require('marked'),
-      _ = require('lodash');
+const getCurrentDirectory = ts.sys.getCurrentDirectory;
+const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
+const newLine = ts.sys.newLine;
+const marked = require('marked');
 
 export function getNewLine(): string {
     return newLine;
@@ -26,16 +26,16 @@ export const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
     getNewLine
 };
 
-export function markedtags(tags) {
-    var mtags = tags;
+export function markedtags(tags: Array<any>) {
+    let mtags = tags;
     _.forEach(mtags, (tag) => {
         tag.comment = marked(LinkParser.resolveLinks(tag.comment));
     });
     return mtags;
 }
 
-export function mergeTagsAndArgs(args, jsdoctags?) {
-    var margs = _.cloneDeep(args);
+export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Array<any> {
+    let margs = _.cloneDeep(args);
     _.forEach(margs, (arg) => {
         arg.tagName = {
             text: 'param'
@@ -82,21 +82,21 @@ export function readConfig(configFile: string): any {
 
 export function stripBom(source: string): string {
     if (source.charCodeAt(0) === 0xFEFF) {
-		return source.slice(1);
-	}
-	   return source;
+        return source.slice(1);
+    }
+    return source;
 }
 
 export function hasBom(source: string): boolean {
     return (source.charCodeAt(0) === 0xFEFF);
 }
 
-export function handlePath(files: string[], cwd: string): string[] {
-    let _files = files,
-        i = 0,
-        len = files.length;
+export function handlePath(files: Array<string>, cwd: string): Array<string> {
+    let _files = files;
+    let i = 0;
+    let len = files.length;
 
-    for(i; i<len; i++) {
+    for (i; i < len; i++) {
         if (files[i].indexOf(cwd) === -1) {
             files[i] = path.resolve(cwd + path.sep + files[i]);
         }
@@ -105,12 +105,12 @@ export function handlePath(files: string[], cwd: string): string[] {
     return _files;
 }
 
-export function cleanLifecycleHooksFromMethods(methods) {
-    let result = [],
-        i = 0,
-        len = methods.length;
+export function cleanLifecycleHooksFromMethods(methods: Array<any>): Array<any> {
+    let result = [];
+    let i = 0;
+    let len = methods.length;
 
-    for(i; i<len; i++) {
+    for (i; i < len; i++) {
         if (!(methods[i].name in AngularLifecycleHooks)) {
             result.push(methods[i]);
         }
@@ -121,7 +121,7 @@ export function cleanLifecycleHooksFromMethods(methods) {
 
 export function cleanSourcesForWatch(list) {
     return list.filter((element) => {
-        if(fs.existsSync(process.cwd() + path.sep + element)) {
+        if (fs.existsSync(process.cwd() + path.sep + element)) {
             return element;
         }
     });
