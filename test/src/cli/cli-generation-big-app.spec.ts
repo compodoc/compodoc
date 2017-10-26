@@ -298,4 +298,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Inputs');
     });
 
+    it('should support QualifiedName for type', () => {
+        let file = read('documentation/components/AboutComponent.html');
+        expect(file).to.contain('Highcharts.Options');
+    })
+
 });

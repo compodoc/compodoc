@@ -44,8 +44,13 @@ export class ClassHelper {
             if (node.type.kind) {
                 _return = kindToType(node.type.kind);
             }
-            if (node.type.typeName) {
+            if (node.type.typeName && node.type.typeName.text) {
                 _return = node.type.typeName.text;
+            }
+            if (node.type.typeName && node.type.typeName.kind === ts.SyntaxKind.QualifiedName) {
+                if (node.type.typeName.left && node.type.typeName.right) {
+                    _return = node.type.typeName.left.escapedText + '.' + node.type.typeName.right.escapedText;
+                }
             }
             if (node.type.typeArguments) {
                 _return += '<';
