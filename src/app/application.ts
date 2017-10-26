@@ -1025,50 +1025,50 @@ export class Application {
                     }
 
                     _.forEach(element.propertiesClass, (property: any) => {
-                        if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (property.description && property.description !== '' && property.modifierKind !== 111) {
+                        if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.methodsClass, (method: any) => {
-                        if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (method.description && method.description !== '' && method.modifierKind !== 111) {
+                        if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostBindings, (property: any) => {
-                        if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (property.description && property.description !== '' && property.modifierKind !== 111) {
+                        if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostListeners, (method: any) => {
-                        if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (method.description && method.description !== '' && method.modifierKind !== 111) {
+                        if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.inputsClass, (input: any) => {
-                        if (input.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (input.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (input.description && input.description !== '' && input.modifierKind !== 111) {
+                        if (input.description && input.description !== '' && input.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.outputsClass, (output: any) => {
-                        if (output.modifierKind === 111) { // Doesn't handle private for coverage
+                        if (output.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (output.description && output.description !== '' && output.modifierKind !== 111) {
+                        if (output.description && output.description !== '' && output.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                             totalStatementDocumented += 1;
                         }
                     });
@@ -1137,18 +1137,18 @@ export class Application {
                 }
 
                 _.forEach(classe.properties, (property: any) => {
-                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(classe.methods, (method: any) => {
-                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -1189,18 +1189,19 @@ export class Application {
                 }
 
                 _.forEach(injectable.properties, (property: any) => {
-                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    console.log(property.modifierKind);
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(injectable.methods, (method: any) => {
-                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -1239,18 +1240,18 @@ export class Application {
                 }
 
                 _.forEach(inter.properties, (property: any) => {
-                    if (property.modifierKind === 111) { // Doesn't handle private for coverage
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(inter.methods, (method: any) => {
-                    if (method.modifierKind === 111) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
                         totalStatementDocumented += 1;
                     }
                 });
