@@ -21,6 +21,7 @@ export default {
         'shelljs',
         'typescript',
         'highlight.js',
-        'semver'
+        'semver',
+        'json5'
     ]
 }
