@@ -1189,7 +1189,6 @@ export class Application {
                 }
 
                 _.forEach(injectable.properties, (property: any) => {
-                    console.log(property.modifierKind);
                     if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
