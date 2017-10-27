@@ -72,6 +72,7 @@
     "marked": "^0.3.6",
     "os-name": "^2.0.1",
     "shelljs": "^0.7.8",
+    "traverse": "^0.6.6",
     "typescript": "2.5.3"
   },
   "devDependencies": {
