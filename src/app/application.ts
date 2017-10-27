@@ -478,12 +478,16 @@ export class Application {
         promiseSequential(actions)
             .then(res => {
                 if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
-                    logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
-                    this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
-                        let finalTime = (new Date() - startTime) / 1000;
-                        logger.info('Documentation generated in ' + this.configuration.mainData.output +
-                            ' in ' + finalTime + ' seconds');
-                    });
+                    if (COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(this.configuration.mainData.exportFormat) > -1) {
+                        logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
+                        this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
+                            let finalTime = (new Date() - startTime) / 1000;
+                            logger.info('Documentation generated in ' + this.configuration.mainData.output +
+                                ' in ' + finalTime + ' seconds');
+                        });
+                    } else {
+                        logger.warn(`Exported format not supported`);
+                    }
                 } else {
                     this.processGraphs();
                 }
