@@ -185,9 +185,9 @@ export class Dependencies {
         return deps;
     }
 
-    private processClass(node, file, srcFile, outputSymbols) {
+    private processClass(node, file, srcFile, outputSymbols, fileBody) {
         let name = this.getSymboleName(node);
-        let IO = this.getClassIO(file, srcFile, node);
+        let IO = this.getClassIO(file, srcFile, node, fileBody);
         let deps: any = {
             name,
             id: 'class-' + name + '-' + Date.now(),
@@ -236,313 +236,326 @@ export class Dependencies {
                 return;
             }
 
-            if (node.decorators) {
-                let classWithCustomDecorator = false;
-                let visitNode = (visitedNode, index) => {
-                    let deps: IDep;
+            let parseNode = (file, srcFile, node, fileBody) => {
+                if (node.decorators) {
+                    let classWithCustomDecorator = false;
+                    let visitNode = (visitedNode, index) => {
 
-                    let metadata = node.decorators;
-                    let name = this.getSymboleName(node);
-                    let props = this.findProperties(visitedNode);
-                    let IO = this.componentHelper.getComponentIO(file, srcFile, node);
+                        let deps: IDep;
 
-                    if (this.isModule(metadata)) {
-                        const moduleDep = new ModuleDepFactory(this.moduleHelper)
-                            .create(file, srcFile, name, props, IO);
-                        if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
-                            this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props), file);
+                        let metadata = node.decorators;
+                        let name = this.getSymboleName(node);
+                        let props = this.findProperties(visitedNode);
+                        let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
+
+                        if (this.isModule(metadata)) {
+                            const moduleDep = new ModuleDepFactory(this.moduleHelper)
+                                .create(file, srcFile, name, props, IO);
+                            if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
+                                this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props), file);
+                            }
+                            this.routerParser.addModule(name, moduleDep.imports);
+                            outputSymbols.modules.push(moduleDep);
+                            outputSymbols.modulesForGraph.push(moduleDep);
+                            deps = moduleDep;
+                        } else if (this.isComponent(metadata)) {
+                            if (props.length === 0) {
+                                return;
+                            }
+                            const componentDep = new ComponentDepFactory(this.componentHelper, this.configuration)
+                                .create(file, srcFile, name, props, IO);
+                            $componentsTreeEngine.addComponent(componentDep);
+                            outputSymbols.components.push(componentDep);
+                            deps = componentDep;
+                        } else if (this.isInjectable(metadata)) {
+                            let injectableDeps: IInjectableDep = {
+                                name,
+                                id: 'injectable-' + name + '-' + Date.now(),
+                                file: file,
+                                type: 'injectable',
+                                properties: IO.properties,
+                                methods: IO.methods,
+                                description: IO.description,
+                                sourceCode: srcFile.getText()
+                            };
+                            if (IO.constructor) {
+                                injectableDeps.constructorObj = IO.constructor;
+                            }
+                            if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                                injectableDeps.jsdoctags = IO.jsdoctags[0].tags;
+                            }
+                            if (IO.accessors) {
+                                injectableDeps.accessors = IO.accessors;
+                            }
+                            outputSymbols.injectables.push(injectableDeps);
+                            deps = injectableDeps;
+                        } else if (this.isPipe(metadata)) {
+                            let pipeDeps: IPipeDep = {
+                                name,
+                                id: 'pipe-' + name + '-' + Date.now(),
+                                file: file,
+                                type: 'pipe',
+                                description: IO.description,
+                                sourceCode: srcFile.getText(),
+                                exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
+                            };
+                            if (IO.jsdoctags && IO.jsdoctags.length > 0) {
+                                pipeDeps.jsdoctags = IO.jsdoctags[0].tags;
+                            }
+                            outputSymbols.pipes.push(pipeDeps);
+                            deps = pipeDeps;
+                        } else if (this.isDirective(metadata)) {
+                            if (props.length === 0) {
+                                return;
+                            }
+                            let directiveDeps = new DirectiveDepFactory(this.componentHelper)
+                                .create(file, srcFile, name, props, IO);
+                            outputSymbols.directives.push(directiveDeps);
+                            deps = directiveDeps;
+                        } else {
+                            // Just a class
+                            if (!classWithCustomDecorator) {
+                                classWithCustomDecorator = true;
+                                this.processClass(node, file, srcFile, outputSymbols, fileBody);
+                            }
                         }
-                        this.routerParser.addModule(name, moduleDep.imports);
-                        outputSymbols.modules.push(moduleDep);
-                        outputSymbols.modulesForGraph.push(moduleDep);
-                        deps = moduleDep;
-                    } else if (this.isComponent(metadata)) {
-                        if (props.length === 0) {
-                            return;
+                        this.cache.set(name, deps);
+                        this.debug(deps);
+                    };
+
+                    let filterByDecorators = (filteredNode) => {
+                        if (filteredNode.expression && filteredNode.expression.expression) {
+                            let _test = /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text);
+                            if (!_test && ts.isClassDeclaration(node)) {
+                                _test = true;
+                            }
+                            return _test;
                         }
-                        const componentDep = new ComponentDepFactory(this.componentHelper, this.configuration)
-                            .create(file, srcFile, name, props, IO);
-                        $componentsTreeEngine.addComponent(componentDep);
-                        outputSymbols.components.push(componentDep);
-                        deps = componentDep;
-                    } else if (this.isInjectable(metadata)) {
-                        let injectableDeps: IInjectableDep = {
+                        if (ts.isClassDeclaration(node)) {
+                            return true;
+                        }
+                        return false;
+                    };
+
+                    node.decorators
+                        .filter(filterByDecorators)
+                        .forEach(visitNode);
+                } else if (node.symbol) {
+                    if (node.symbol.flags === ts.SymbolFlags.Class) {
+                        this.processClass(node, file, srcFile, outputSymbols, fileBody);
+                    } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
+                        let name = this.getSymboleName(node);
+                        let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
+                        let interfaceDeps: IInterfaceDep = {
                             name,
-                            id: 'injectable-' + name + '-' + Date.now(),
+                            id: 'interface-' + name + '-' + Date.now(),
                             file: file,
-                            type: 'injectable',
-                            properties: IO.properties,
-                            methods: IO.methods,
-                            description: IO.description,
+                            type: 'interface',
                             sourceCode: srcFile.getText()
                         };
-                        if (IO.constructor) {
-                            injectableDeps.constructorObj = IO.constructor;
+                        if (IO.properties) {
+                            interfaceDeps.properties = IO.properties;
                         }
-                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-                            injectableDeps.jsdoctags = IO.jsdoctags[0].tags;
+                        if (IO.indexSignatures) {
+                            interfaceDeps.indexSignatures = IO.indexSignatures;
                         }
-                        if (IO.accessors) {
-                            injectableDeps.accessors = IO.accessors;
+                        if (IO.kind) {
+                            interfaceDeps.kind = IO.kind;
                         }
-                        outputSymbols.injectables.push(injectableDeps);
-                        deps = injectableDeps;
-                    } else if (this.isPipe(metadata)) {
-                        let pipeDeps: IPipeDep = {
+                        if (IO.description) {
+                            interfaceDeps.description = IO.description;
+                        }
+                        if (IO.methods) {
+                            interfaceDeps.methods = IO.methods;
+                        }
+                        if (IO.extends) {
+                            interfaceDeps.extends = IO.extends;
+                        }
+                        this.debug(interfaceDeps);
+                        outputSymbols.interfaces.push(interfaceDeps);
+                    } else if (ts.isFunctionDeclaration(node)) {
+                        let infos = this.visitFunctionDeclaration(node);
+                        let tags = this.visitFunctionDeclarationJSDocTags(node);
+                        let name = infos.name;
+                        let functionDep: IFunctionDecDep = {
                             name,
-                            id: 'pipe-' + name + '-' + Date.now(),
                             file: file,
-                            type: 'pipe',
-                            description: IO.description,
-                            sourceCode: srcFile.getText(),
-                            exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
+                            type: 'miscellaneous',
+                            subtype: 'function',
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
-                        if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-                            pipeDeps.jsdoctags = IO.jsdoctags[0].tags;
+                        if (infos.args) {
+                            functionDep.args = infos.args;
                         }
-                        outputSymbols.pipes.push(pipeDeps);
-                        deps = pipeDeps;
-                    } else if (this.isDirective(metadata)) {
-                        if (props.length === 0) {
-                            return;
+                        if (tags && tags.length > 0) {
+                            functionDep.jsdoctags = tags;
                         }
-                        let directiveDeps = new DirectiveDepFactory(this.componentHelper)
-                            .create(file, srcFile, name, props, IO);
-                        outputSymbols.directives.push(directiveDeps);
-                        deps = directiveDeps;
-                    } else {
-                        // Just a class
-                        if (!classWithCustomDecorator) {
-                            classWithCustomDecorator = true;
-                            this.processClass(node, file, srcFile, outputSymbols);
+                        outputSymbols.miscellaneous.functions.push(functionDep);
+                    } else if (ts.isEnumDeclaration(node)) {
+                        let infos = this.visitEnumDeclaration(node);
+                        let name = node.name.text;
+                        let enumDeps: IEnumDecDep = {
+                            name,
+                            childs: infos,
+                            type: 'miscellaneous',
+                            subtype: 'enum',
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
+                            file: file
+                        };
+                        outputSymbols.miscellaneous.enumerations.push(enumDeps);
+                    } else if (ts.isTypeAliasDeclaration(node)) {
+                        let infos = this.visitTypeDeclaration(node);
+                        let name = infos.name;
+                        let typeAliasDeps: ITypeAliasDecDep = {
+                            name,
+                            type: 'miscellaneous',
+                            subtype: 'typealias',
+                            rawtype: this.classHelper.visitType(node),
+                            file: file,
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
+                        };
+                        if (node.type) {
+                            typeAliasDeps.kind = node.type.kind;
+                            if (typeAliasDeps.rawtype === '') {
+                                typeAliasDeps.rawtype = kindToType(node.type.kind);
+                            }
+                        }
+                        outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
+                    } else if (ts.isModuleDeclaration(node)) {
+                        if (node.body) {
+                            if (node.body.statements && node.body.statements.length > 0) {
+                                node.body.statements
+                                    .forEach((statement) => parseNode(file, srcFile, statement, node.body));
+                            }
                         }
                     }
-                    this.cache.set(name, deps);
-                    this.debug(deps);
-                };
-
-                let filterByDecorators = (filteredNode) => {
-                    if (filteredNode.expression && filteredNode.expression.expression) {
-                        let _test = /(NgModule|Component|Injectable|Pipe|Directive)/.test(filteredNode.expression.expression.text);
-                        if (!_test && ts.isClassDeclaration(node)) {
-                            _test = true;
+                } else {
+                    let IO = this.getRouteIO(file, srcFile);
+                    if (IO.routes) {
+                        let newRoutes;
+                        try {
+                            newRoutes = this.routerParser.cleanRawRouteParsed(IO.routes);
+                        } catch (e) {
+                            // tslint:disable-next-line:max-line-length
+                            logger.error('Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.');
+                            newRoutes = IO.routes.replace(/ /gm, '');
+                            this.routerParser.addIncompleteRoute({
+                                data: newRoutes,
+                                file: file
+                            });
+                            return true;
                         }
-                        return _test;
+                        outputSymbols.routes = [...outputSymbols.routes, ...newRoutes];
                     }
                     if (ts.isClassDeclaration(node)) {
-                        return true;
+                        this.processClass(node, file, srcFile, outputSymbols, fileBody);
                     }
-                    return false;
-                };
-
-                node.decorators
-                    .filter(filterByDecorators)
-                    .forEach(visitNode);
-            } else if (node.symbol) {
-                if (node.symbol.flags === ts.SymbolFlags.Class) {
-                    this.processClass(node, file, srcFile, outputSymbols);
-                } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
-                    let name = this.getSymboleName(node);
-                    let IO = this.getInterfaceIO(file, srcFile, node);
-                    let interfaceDeps: IInterfaceDep = {
-                        name,
-                        id: 'interface-' + name + '-' + Date.now(),
-                        file: file,
-                        type: 'interface',
-                        sourceCode: srcFile.getText()
-                    };
-                    if (IO.properties) {
-                        interfaceDeps.properties = IO.properties;
-                    }
-                    if (IO.indexSignatures) {
-                        interfaceDeps.indexSignatures = IO.indexSignatures;
-                    }
-                    if (IO.kind) {
-                        interfaceDeps.kind = IO.kind;
-                    }
-                    if (IO.description) {
-                        interfaceDeps.description = IO.description;
-                    }
-                    if (IO.methods) {
-                        interfaceDeps.methods = IO.methods;
-                    }
-                    if (IO.extends) {
-                        interfaceDeps.extends = IO.extends;
-                    }
-                    this.debug(interfaceDeps);
-                    outputSymbols.interfaces.push(interfaceDeps);
-                } else if (ts.isFunctionDeclaration(node)) {
-                    let infos = this.visitFunctionDeclaration(node);
-                    let tags = this.visitFunctionDeclarationJSDocTags(node);
-                    let name = infos.name;
-                    let functionDep: IFunctionDecDep = {
-                        name,
-                        file: file,
-                        type: 'miscellaneous',
-                        subtype: 'function',
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
-                    };
-                    if (infos.args) {
-                        functionDep.args = infos.args;
-                    }
-                    if (tags && tags.length > 0) {
-                        functionDep.jsdoctags = tags;
-                    }
-                    outputSymbols.miscellaneous.functions.push(functionDep);
-                } else if (ts.isEnumDeclaration(node)) {
-                    let infos = this.visitEnumDeclaration(node);
-                    let name = node.name.text;
-                    let enumDeps: IEnumDecDep = {
-                        name,
-                        childs: infos,
-                        type: 'miscellaneous',
-                        subtype: 'enum',
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
-                        file: file
-                    };
-                    outputSymbols.miscellaneous.enumerations.push(enumDeps);
-                } else if (ts.isTypeAliasDeclaration(node)) {
-                    let infos = this.visitTypeDeclaration(node);
-                    let name = infos.name;
-                    let typeAliasDeps: ITypeAliasDecDep = {
-                        name,
-                        type: 'miscellaneous',
-                        subtype: 'typealias',
-                        rawtype: this.classHelper.visitType(node),
-                        file: file,
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
-                    };
-                    if (node.type) {
-                        typeAliasDeps.kind = node.type.kind;
-                        if (typeAliasDeps.rawtype === '') {
-                            typeAliasDeps.rawtype = kindToType(node.type.kind);
+                    if (ts.isExpressionStatement(node)) {
+                        let bootstrapModuleReference = 'bootstrapModule';
+                        // Find the root module with bootstrapModule call
+                        // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
+                        // 2. or inside a call :
+                        // () => {
+                        //     platformBrowserDynamic().bootstrapModule(AppModule);
+                        // });
+                        // 3. with a catch : platformBrowserDynamic().bootstrapModule(AppModule).catch(error => console.error(error));
+                        // 4. with parameters : platformBrowserDynamic().bootstrapModule(AppModule, {}).catch(error => console.error(error));
+                        // Find recusively in expression nodes one with name 'bootstrapModule'
+                        let rootModule;
+                        let resultNode;
+                        if (srcFile.text.indexOf(bootstrapModuleReference) !== -1) {
+                            if (node.expression) {
+                                resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
+                            }
+                            if (!resultNode) {
+                                if (node.expression && node.expression.arguments && node.expression.arguments.length > 0) {
+                                    resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
+                                }
+                            }
+                            if (resultNode) {
+                                if (resultNode.arguments.length > 0) {
+                                    _.forEach(resultNode.arguments, (argument: any) => {
+                                        if (argument.text) {
+                                            rootModule = argument.text;
+                                        }
+                                    });
+                                }
+                                if (rootModule) {
+                                    this.routerParser.setRootModule(rootModule);
+                                }
+                            }
                         }
                     }
-                    outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
-                }
-            } else {
-                let IO = this.getRouteIO(file, srcFile);
-                if (IO.routes) {
-                    let newRoutes;
-                    try {
-                        newRoutes = this.routerParser.cleanRawRouteParsed(IO.routes);
-                    } catch (e) {
-                        // tslint:disable-next-line:max-line-length
-                        logger.error('Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.');
-                        newRoutes = IO.routes.replace(/ /gm, '');
-                        this.routerParser.addIncompleteRoute({
-                            data: newRoutes,
+                    if (ts.isVariableStatement(node) && !this.isVariableRoutes(node)) {
+                        let infos: any = this.visitVariableDeclaration(node);
+                        let name = infos.name;
+                        let deps: any = {
+                            name,
+                            type: 'miscellaneous',
+                            subtype: 'variable',
                             file: file
-                        });
-                        return true;
-                    }
-                    outputSymbols.routes = [...outputSymbols.routes, ...newRoutes];
-                }
-                if (ts.isClassDeclaration(node)) {
-                    this.processClass(node, file, srcFile, outputSymbols);
-                }
-                if (ts.isExpressionStatement(node)) {
-                    let bootstrapModuleReference = 'bootstrapModule';
-                    // Find the root module with bootstrapModule call
-                    // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
-                    // 2. or inside a call :
-                    // () => {
-                    //     platformBrowserDynamic().bootstrapModule(AppModule);
-                    // });
-                    // 3. with a catch : platformBrowserDynamic().bootstrapModule(AppModule).catch(error => console.error(error));
-                    // 4. with parameters : platformBrowserDynamic().bootstrapModule(AppModule, {}).catch(error => console.error(error));
-                    // Find recusively in expression nodes one with name 'bootstrapModule'
-                    let rootModule;
-                    let resultNode;
-                    if (srcFile.text.indexOf(bootstrapModuleReference) !== -1) {
-                        if (node.expression) {
-                            resultNode = this.findExpressionByNameInExpressions(node.expression, 'bootstrapModule');
+                        };
+                        deps.type = (infos.type) ? infos.type : '';
+                        if (infos.defaultValue) {
+                            deps.defaultValue = infos.defaultValue;
                         }
-                        if (!resultNode) {
-                            if (node.expression && node.expression.arguments && node.expression.arguments.length > 0) {
-                                resultNode = this.findExpressionByNameInExpressionArguments(node.expression.arguments, 'bootstrapModule');
-                            }
+                        if (infos.initializer) {
+                            deps.initializer = infos.initializer;
                         }
-                        if (resultNode) {
-                            if (resultNode.arguments.length > 0) {
-                                _.forEach(resultNode.arguments, (argument: any) => {
-                                    if (argument.text) {
-                                        rootModule = argument.text;
-                                    }
-                                });
-                            }
-                            if (rootModule) {
-                                this.routerParser.setRootModule(rootModule);
-                            }
+                        if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
+                            deps.description = marked(node.jsDoc[0].comment);
                         }
+                        outputSymbols.miscellaneous.variables.push(deps);
                     }
-                }
-                if (ts.isVariableStatement(node) && !this.isVariableRoutes(node)) {
-                    let infos: any = this.visitVariableDeclaration(node);
-                    let name = infos.name;
-                    let deps: any = {
-                        name,
-                        type: 'miscellaneous',
-                        subtype: 'variable',
-                        file: file
-                    };
-                    deps.type = (infos.type) ? infos.type : '';
-                    if (infos.defaultValue) {
-                        deps.defaultValue = infos.defaultValue;
+                    if (ts.isTypeAliasDeclaration(node)) {
+                        let infos = this.visitTypeDeclaration(node);
+                        let name = infos.name;
+                        let deps: any = {
+                            name,
+                            type: 'miscellaneous',
+                            subtype: 'typealias',
+                            rawtype: this.classHelper.visitType(node),
+                            file: file,
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
+                        };
+                        if (node.type) {
+                            deps.kind = node.type.kind;
+                        }
+                        outputSymbols.miscellaneous.typealiases.push(deps);
                     }
-                    if (infos.initializer) {
-                        deps.initializer = infos.initializer;
+                    if (ts.isFunctionDeclaration(node)) {
+                        let infos = this.visitFunctionDeclaration(node);
+                        let name = infos.name;
+                        let deps: any = {
+                            name,
+                            type: 'miscellaneous',
+                            subtype: 'function',
+                            file: file,
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
+                        };
+                        if (infos.args) {
+                            deps.args = infos.args;
+                        }
+                        outputSymbols.miscellaneous.functions.push(deps);
                     }
-                    if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
-                        deps.description = marked(node.jsDoc[0].comment);
+                    if (ts.isEnumDeclaration(node)) {
+                        let infos = this.visitEnumDeclaration(node);
+                        let name = node.name.text;
+                        let deps = {
+                            name,
+                            childs: infos,
+                            type: 'miscellaneous',
+                            subtype: 'enum',
+                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
+                            file: file
+                        };
+                        outputSymbols.miscellaneous.enumerations.push(deps);
                     }
-                    outputSymbols.miscellaneous.variables.push(deps);
-                }
-                if (ts.isTypeAliasDeclaration(node)) {
-                    let infos = this.visitTypeDeclaration(node);
-                    let name = infos.name;
-                    let deps: any = {
-                        name,
-                        type: 'miscellaneous',
-                        subtype: 'typealias',
-                        rawtype: this.classHelper.visitType(node),
-                        file: file,
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
-                    };
-                    if (node.type) {
-                        deps.kind = node.type.kind;
-                    }
-                    outputSymbols.miscellaneous.typealiases.push(deps);
-                }
-                if (ts.isFunctionDeclaration(node)) {
-                    let infos = this.visitFunctionDeclaration(node);
-                    let name = infos.name;
-                    let deps: any = {
-                        name,
-                        type: 'miscellaneous',
-                        subtype: 'function',
-                        file: file,
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
-                    };
-                    if (infos.args) {
-                        deps.args = infos.args;
-                    }
-                    outputSymbols.miscellaneous.functions.push(deps);
-                }
-                if (ts.isEnumDeclaration(node)) {
-                    let infos = this.visitEnumDeclaration(node);
-                    let name = node.name.text;
-                    let deps = {
-                        name,
-                        childs: infos,
-                        type: 'miscellaneous',
-                        subtype: 'enum',
-                        description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
-                        file: file
-                    };
-                    outputSymbols.miscellaneous.enumerations.push(deps);
                 }
             }
+
+            parseNode(file, srcFile, node);
+
         });
 
 
@@ -859,24 +872,29 @@ export class Dependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let res = sourceFile.statements.reduce((directive, statement) => {
+        let res;
+        if (sourceFile.statements) {
+            res = sourceFile.statements.reduce((directive, statement) => {
 
-            if (ts.isVariableStatement(statement)) {
-                return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
-            }
+                if (ts.isVariableStatement(statement)) {
+                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
+                }
 
-            return directive;
-        }, []);
-
-        return res[0] || {};
+                return directive;
+            }, []);
+            return res[0] || {};
+        } else {
+            return {};
+        }
     }
 
 
-    private getClassIO(filename: string, sourceFile: ts.SourceFile, node) {
+    private getClassIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node, fileBody) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let res = sourceFile.statements.reduce((directive, statement) => {
+        let reducedSource = (fileBody) ? fileBody.statements : sourceFile.statements;
+        let res = reducedSource.reduce((directive, statement) => {
 
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
@@ -890,11 +908,12 @@ export class Dependencies {
         return res[0] || {};
     }
 
-    private getInterfaceIO(filename: string, sourceFile, node) {
+    private getInterfaceIO(filename: string, sourceFile, node, fileBody) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let res = sourceFile.statements.reduce((directive, statement) => {
+        let reducedSource = (fileBody) ? fileBody.statements : sourceFile.statements;
+        let res = reducedSource.reduce((directive, statement) => {
 
             if (ts.isInterfaceDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {

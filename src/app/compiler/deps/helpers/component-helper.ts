@@ -103,11 +103,12 @@ export class ComponentHelper {
         return deps.map(x => this.parseProperties(x)).pop();
     }
 
-    public getComponentIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node): any {
+    public getComponentIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node, fileBody): any {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let res = sourceFile.statements.reduce((directive, statement) => {
+        let reducedSource = (fileBody) ? fileBody.statements : sourceFile.statements;
+        let res = reducedSource.reduce((directive, statement) => {
 
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
@@ -116,7 +117,7 @@ export class ComponentHelper {
             }
 
             return directive;
-        },                                     []);
+        }, []);
 
         return res[0] || {};
     }

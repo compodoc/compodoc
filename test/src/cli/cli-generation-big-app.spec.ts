@@ -301,6 +301,41 @@ describe('CLI simple generation - big app', () => {
     it('should support QualifiedName for type', () => {
         let file = read('documentation/components/AboutComponent.html');
         expect(file).to.contain('Highcharts.Options');
-    })
+    });
+
+    it('should support namespace', () => {
+        let file = read('documentation/modules/AboutModule2.html');
+        expect(file).to.contain('The about module');
+
+        file = read('documentation/components/AboutComponent2.html');
+        expect(file).to.contain('The about component');
+
+        file = read('documentation/directives/DoNothingDirective2.html');
+        expect(file).to.contain('This directive does nothing !');
+
+        file = read('documentation/classes/Todo2.html');
+        expect(file).to.contain('The todo class');
+
+        file = read('documentation/injectables/TodoStore2.html');
+        expect(file).to.contain('This service is a todo store');
+
+        file = read('documentation/interfaces/TimeInterface2.html');
+        expect(file).to.contain('A time interface just for documentation purpose');
+
+        file = read('documentation/pipes/FirstUpperPipe2.html');
+        expect(file).to.contain('Uppercase the first letter of the string');
+
+        file = read('documentation/miscellaneous/enumerations.html');
+        expect(file).to.contain('PopupEffect2');
+
+        file = read('documentation/miscellaneous/functions.html');
+        expect(file).to.contain('foo2');
+
+        file = read('documentation/miscellaneous/typealiases.html');
+        expect(file).to.contain('Name2');
+
+        file = read('documentation/miscellaneous/variables.html');
+        expect(file).to.contain('PI2');
+    });
 
 });
