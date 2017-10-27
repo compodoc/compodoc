@@ -586,6 +586,13 @@ th[role=columnheader].statements:not(.no-sort):after {
 .content ul.list-group {
     padding-left: 0;
 }
+.content ul.list-group li.list-group-item a {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .content ul ul {
     list-style-type: circle;
 }
