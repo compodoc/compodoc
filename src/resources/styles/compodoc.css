@@ -779,3 +779,13 @@ ul.index-list {
     margin-right: 8px;
     font-weight: normal;
 }
+
+.module-graph-container {
+    position: relative;
+}
+.module-graph-fullscreen-btn {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    cursor: pointer;
+}
