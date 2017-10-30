@@ -13,6 +13,7 @@
     "start": "npm run test:watch",
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
     "codecov": "codecov -f coverage/*.json",
+    "prepublishOnly": "npm run build",
     "lint": "tslint src/**/*.ts test/**/*.ts",
     "test:watch": "npm-watch",
     "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
