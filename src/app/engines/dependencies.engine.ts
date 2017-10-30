@@ -17,6 +17,8 @@ import {
     IEnumDecDep
 } from '../compiler/dependencies.interfaces';
 
+const traverse = require('traverse');
+
 export class DependenciesEngine {
     public rawData: ParsedData;
     public modules: Object[];
@@ -64,6 +66,12 @@ export class DependenciesEngine {
     }
 
     public init(data: ParsedData) {
+        traverse(data).forEach(function (node) {
+            if (node) {
+                if (node.parent) delete node.parent;
+                if (node.initializer) delete node.initializer;
+            }
+        });
         this.rawData = data;
         this.modules = _.sortBy(this.rawData.modules, ['name']);
         this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
