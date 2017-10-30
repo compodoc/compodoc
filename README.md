@@ -25,7 +25,7 @@
 
 # Live Demo
 
-A live demo is available—**[see it in action][demo]**!
+A live demo is available — **[see it in action][demo]**!
 
 The demo features documentation generated for a simple [TodoMVC application].
 
