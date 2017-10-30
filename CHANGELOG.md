@@ -1,3 +1,33 @@
+<a name="1.0.2"></a>
+# [1.0.2](https://github.com/compodoc/compodoc/compare/1.0.1...1.0.2) (2017-10-30)
+
+__Main features :__
+
+- export option : json and html, pdf coming soon
+- es6 accessors support
+
+### Features
+
+* **coverage:** per-file minimum coverage ([185465eb](https://github.com/compodoc/compodoc/commit/185465eb)), closes [#306](https://github.com/compodoc/compodoc/issues/306)
+* **dependencies:** accessors support ([bed46c93](https://github.com/compodoc/compodoc/commit/bed46c93)), closes [#274](https://github.com/compodoc/compodoc/issues/274)
+* **app:** export option ([93df1075](https://github.com/compodoc/compodoc/commit/93df1075)), closes [#196](https://github.com/compodoc/compodoc/issues/196)
+* **module:** graph fullscreen button
+([8161ea40](https://github.com/compodoc/compodoc/commit/8161ea40)), closes [#337](https://github.com/compodoc/compodoc/issues/337)
+
+### Bug Fixes
+
+* **interface:** fix relative link for properties ([4751f602](https://github.com/compodoc/compodoc/commit/4751f602)), closes [#311](https://github.com/compodoc/compodoc/issues/311)
+* **menu:** URLs for CHANGELOG, CONTRIBUTING, LICENSE in pages with depth = 1 ([8de9a9f3](https://github.com/compodoc/compodoc/commit/8de9a9f3)), closes [#328](https://github.com/compodoc/compodoc/issues/328)
+* **dependencies:** handling QualifiedName types ex: Highcharts.Options ([6bdd6345](https://github.com/compodoc/compodoc/commit/6bdd6345)), closes [#335](https://github.com/compodoc/compodoc/issues/335)
+* **coverage:** correctly ignore private members
+([19d8e5c2](https://github.com/compodoc/compodoc/commit/19d8e5c2)), closes [#332](https://github.com/compodoc/compodoc/issues/332)
+* **dependencies:** namespace support
+([46e3601f](https://github.com/compodoc/compodoc/commit/46e3601f)), closes [#341](https://github.com/compodoc/compodoc/issues/341)
+* **cli:** use tsconfig include attribute
+([69fa771c](https://github.com/compodoc/compodoc/commit/69fa771c)), closes [#307](https://github.com/compodoc/compodoc/issues/307)
+* **coverage:** restore very-good status
+([37d1965c](https://github.com/compodoc/compodoc/commit/37d1965c)), closes [#309](https://github.com/compodoc/compodoc/issues/309)
+
 <a name="1.0.1"></a>
 # [1.0.1](https://github.com/compodoc/compodoc/compare/1.0.0-beta.15...1.0.1) (2017-09-08)
 
