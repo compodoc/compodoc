@@ -9,6 +9,7 @@ node_modules
 
 #ide folders
 .idea/
+.vscode/
 
 # Optional npm cache directory
 .npm
@@ -25,3 +26,6 @@ coverage
 coverage.*
 
 .dockerignore
+
+# Build-output
+dist/

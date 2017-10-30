@@ -1,16 +1,17 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
-const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+
+const expect = chai.expect;
+const tmp = temporaryDir();
+const tsconfigPath = require.resolve('../../../tsconfig.json');
+const env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
 describe('CLI Additional documentation', () => {
+    let stdoutString = undefined;
+    let fooIndexFile: string;
+    let fooServiceFile;
 
-    let stdoutString = null,
-        fooIndexFile,
-        fooServiceFile;
-    before(function (done) {
+    before((done) => {
         tmp.create();
         let ls = shell('node', [
             '../bin/index-cli.js',
@@ -30,13 +31,17 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean());
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile).to.contain('<a href="additional-documentation/big-introduction');
-        expect(fooIndexFile).to.contain('Big Introduction');
+
+        expect(fooIndexFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to.be.true;
+        expect(fooIndexFile.indexOf('Big Introduction') > -1).to.be.true;
     });
+
     it('it should have generated files', () => {
         let isFileExists = exists(`${tmp.name}/additional-documentation/edition.html`);
         expect(isFileExists).to.be.true;
         isFileExists = exists(`${tmp.name}/additional-documentation/big-introduction.html`);
         expect(isFileExists).to.be.true;
+        let file = read(`${tmp.name}/additional-documentation/big-introduction.html`);
+        expect(file).to.contain('<h1 id="introduction">Introduction</h1>');
     });
 });

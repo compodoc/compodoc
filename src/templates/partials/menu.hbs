@@ -41,11 +41,11 @@
                 {{#each markdowns}}
                     <li class="link">
                         {{#compare name "!==" 'readme'}}
-                        <a href="{{relativeURL depth pageType 'root'}}{{name}}.html"
+                            <a href="{{relativeURL ../depth pageType 'root' name}}{{name}}.html"
                         {{else}}
-                        <a href="{{relativeURL depth pageType 'root'}}index.html"
+                            <a href="{{relativeURL depth pageType 'root'}}index.html"
                         {{/compare}}
-                            {{#compare ../id "===" id }} class="active" {{/compare}}>
+                        {{#compare ../id "===" id }} class="active" {{/compare}}>
                             <span class="fa fa-file-text-o"></span>{{uppername}}
                         </a>
                     </li>

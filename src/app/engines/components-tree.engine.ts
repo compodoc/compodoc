@@ -1,55 +1,60 @@
 import * as path from 'path';
+import * as _ from 'lodash';
 import { FileEngine } from './file.engine';
 import { logger } from '../../logger';
 
-const $: any = require('cheerio'),
-      _ = require('lodash');
+const $: any = require('cheerio');
 
 class ComponentsTreeEngine {
     private static _instance: ComponentsTreeEngine = new ComponentsTreeEngine();
-    components: any[] = [];
-    componentsForTree: any[] = [];
-    constructor() {
+    private components: any[] = [];
+    private componentsForTree: any[] = [];
+    constructor(private fileEngine: FileEngine = new FileEngine()) {
         if (ComponentsTreeEngine._instance) {
             throw new Error('Error: Instantiation failed: Use ComponentsTreeEngine.getInstance() instead of new.');
         }
         ComponentsTreeEngine._instance = this;
     }
+
     public static getInstance(): ComponentsTreeEngine {
         return ComponentsTreeEngine._instance;
     }
-    addComponent(component) {
+
+    public addComponent(component) {
         this.components.push(component);
     }
-    readTemplates() {
+
+    private readTemplates() {
         return new Promise((resolve, reject) => {
-            let i = 0,
-                len = this.componentsForTree.length,
-                $fileengine = new FileEngine(),
-                loop = () => {
-                    if (i <= len - 1) {
-                        if (this.componentsForTree[i].templateUrl) {
-                            $fileengine.get(path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl).then((templateData) => {
+            let i = 0;
+            let len = this.componentsForTree.length;
+            let loop = () => {
+                if (i <= len - 1) {
+                    if (this.componentsForTree[i].templateUrl) {
+                        let filePath = process.cwd() + path.sep + path.dirname(this.componentsForTree[i].file) + path.sep + this.componentsForTree[i].templateUrl;
+                        this.fileEngine.get(filePath)
+                            .then((templateData) => {
                                 this.componentsForTree[i].templateData = templateData;
-                                i++
+                                i++;
                                 loop();
                             }, (e) => {
                                 logger.error(e);
                                 reject();
                             });
-                        } else {
-                            this.componentsForTree[i].templateData = this.componentsForTree[i].template;
-                            i++
-                            loop();
-                        }
                     } else {
-                        resolve();
+                        this.componentsForTree[i].templateData = this.componentsForTree[i].template;
+                        i++;
+                        loop();
                     }
+                } else {
+                    resolve();
                 }
+            };
             loop();
         });
     }
-    findChildrenAndParents() {
+
+    private findChildrenAndParents() {
         return new Promise((resolve, reject) => {
             _.forEach(this.componentsForTree, (component) => {
                 let $component = $(component.templateData);
@@ -63,7 +68,8 @@ class ComponentsTreeEngine {
             resolve();
         });
     }
-    createTreesForComponents() {
+
+    private createTreesForComponents() {
         return new Promise((resolve, reject) => {
             _.forEach(this.components, (component) => {
                 let _component = {
@@ -73,28 +79,30 @@ class ComponentsTreeEngine {
                     children: [],
                     template: '',
                     templateUrl: ''
-                }
+                };
                 if (typeof component.template !== 'undefined') {
-                    _component.template = component.template
+                    _component.template = component.template;
                 }
                 if (component.templateUrl.length > 0) {
-                    _component.templateUrl = component.templateUrl[0]
+                    _component.templateUrl = component.templateUrl[0];
                 }
                 this.componentsForTree.push(_component);
             });
-            this.readTemplates().then(() => {
-                this.findChildrenAndParents().then(() => {
-                    console.log('this.componentsForTree: ', this.componentsForTree);
-                    resolve();
+            this.readTemplates()
+                .then(() => {
+                    this.findChildrenAndParents()
+                        .then(() => {
+                            console.log('this.componentsForTree: ', this.componentsForTree);
+                            resolve();
+                        }, (e) => {
+                            logger.error(e);
+                            reject();
+                        });
                 }, (e) => {
                     logger.error(e);
-                    reject();
                 });
-            }, (e) => {
-                logger.error(e);
-            });
         });
     }
-};
+}
 
 export const $componentsTreeEngine = ComponentsTreeEngine.getInstance();

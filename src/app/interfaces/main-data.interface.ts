@@ -40,6 +40,10 @@ export interface MainDataInterface {
     mainGraph: string;
     coverageTest: boolean;
     coverageTestThreshold: number;
+    coverageTestPerFile: boolean;
+    coverageMinimumPerFile: number;
     routesLength: number;
     angularVersion: string;
+    exportFormat: string;
+    coverageData: Object;
 }

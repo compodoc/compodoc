@@ -586,6 +586,13 @@ th[role=columnheader].statements:not(.no-sort):after {
 .content ul.list-group {
     padding-left: 0;
 }
+.content ul.list-group li.list-group-item a {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .content ul ul {
     list-style-type: circle;
 }
@@ -765,4 +772,20 @@ ul.index-list {
 }
 .name:hover a {
     display: inline-block;
+}
+
+.accessor b {
+    color: #808080;
+    margin-right: 8px;
+    font-weight: normal;
+}
+
+.module-graph-container {
+    position: relative;
+}
+.module-graph-fullscreen-btn {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    cursor: pointer;
 }

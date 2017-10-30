@@ -5,7 +5,7 @@ import {shell, pkg} from '../helpers';
 
 describe('CLI Options', () => {
 
-    let runHelp = null;
+    let runHelp = undefined;
 
     before( () => {
         runHelp = shell('node', ['./bin/index-cli.js', '-h']);
@@ -70,6 +70,16 @@ describe('CLI Options', () => {
         it(`-r`, () => {
             expect(runHelp.stdout.toString()).to.contain('-r, --port [port]');
             expect(runHelp.stdout.toString()).to.contain('Change default serving port');
+        });
+
+        it(`-w`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-w, --watch');
+            expect(runHelp.stdout.toString()).to.contain('Watch source files after serve and force documentation rebuild');
+        });
+
+        it(`-e`, () => {
+            expect(runHelp.stdout.toString()).to.contain('-e, --exportFormat [format]');
+            expect(runHelp.stdout.toString()).to.contain('Export in specified format (json, html (default))');
         });
 
         it(`--hideGenerator`, () => {

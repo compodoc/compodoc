@@ -16,57 +16,77 @@
     <a href="https://gitter.im/compodoc/compodoc" target="_blank"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter badge"></a><br><br>
 </p>
 
-<p align="center">The missing documentation tool for your Angular application<br><br></p>
+<p align="center">The missing documentation tool for your Angular application.<br><br></p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/compodoc/compodoc/master/screenshots/main-view.gif" alt="Compodoc: The missing documentation tool for your Angular application">
 </p>
 
+
 # Live Demo
 
-A live demo is available [HERE](https://compodoc.github.io/compodoc-demo-todomvc-angular/).
+A live demo is available—**[see it in action][demo]**!
 
-It is the documentation generated for this demo project which is a simple [TodoMVC application](https://github.com/compodoc/compodoc-demo-todomvc-angular).
+The demo features documentation generated for a simple [TodoMVC application].
+
+[demo]: https://compodoc.github.io/compodoc-demo-todomvc-angular/
+[TodoMVC application]: https://github.com/compodoc/compodoc-demo-todomvc-angular
 
 # Features
 
-* **Clean, simple design** — With Compodoc, the main endpoints are on the left side of your documentation, and all the content on the right side
+- **Clean, simple design** — Navigate the documentation on the left side, read it on the right.
 
-* **Beautiful themes** — 7 themes are available from famous documentation tools like [Gitbook](https://www.gitbook.com), [Read the Docs](https://readthedocs.org/) or projects like [Vagrant](https://www.vagrantup.com/docs/), [Laravel](https://laravel.com/docs/5.3), [Postmark](http://developer.postmarkapp.com/) and [Stripe](https://stripe.com/docs/api).
+- **Beautiful themes** — Seven themes are available from well known documentation tools like [Gitbook], [Read the Docs] and projects like [Vagrant], [Laravel], [Postmark] and [Stripe].
 
-* **Search** — Compodoc include a powerful search engine ([lunr.js](http://lunrjs.com/)) for easily finding your information
+- **Search** — Includes a powerful search engine ([lunr.js]) for easily finding what you're looking for.
 
-* **Automatic table of contents** - API table of contents is generated using elements found during files parsing
+- **Automatic table of contents** — API table of contents is generated using elements found during files parsing.
 
-* **JSDoc light support** - Support of @param, @returns, @link and @example tags
+- **JSDoc light support** — Support for `@param`, `@returns`, `@link` and `@example` tags.
 
-* **Documentation coverage** - Get the documentation coverage report of your project
+- **Documentation coverage** — Get the documentation coverage report of your project.
 
-* **Angular-CLI friendly** - Compodoc support out of the box Angular-CLI projects
+- **Angular CLI-friendly** — Supports [Angular CLI] projects out-of-the-box.
 
-* **A local tool** - No server needed, no sources uploaded online
+- **Offline** — No server needed, no sources uploaded online, documentation generated entirely offline.
 
-* **Open-source and on npm** - Use it directly in your project using npm and one script, that's it !
+- **Open-source and on npm** — Use it directly in your project using [npm] and a single script—that's it!
+
+[Gitbook]: https://www.gitbook.com
+[Read the Docs]: https://readthedocs.org/
+[Vagrant]: https://www.vagrantup.com/docs/
+[Laravel]: https://laravel.com/docs/5.3
+[Postmark]: http://developer.postmarkapp.com/
+[Stripe]: https://stripe.com/docs/api
+[lunr.js]: http://lunrjs.com/
+[Angular CLI]: https://cli.angular.io/
+[npm]: https://www.npmjs.com/
 
 # Documentation
 
-Official documentation has moved to [https://compodoc.github.io/website/](https://compodoc.github.io/website/guides/getting-started.html)
+Official documentation has moved to [https://compodoc.github.io/website/](https://compodoc.github.io/website/guides/getting-started.html).
 
-## Contributing
+# Installation
 
-Want to file a bug, contribute some code, or improve documentation? Excellent !
+Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
+
+# Contributing
+
+Want to file a bug, contribute some code, or improve documentation? Excellent!
 
 Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/.github/CONTRIBUTING.md).
 
-## Contributors
+# Contributors
 
-[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky) |[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico) |[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/mattlewis92) |[<img alt="mattlewis92" src="https://avatars0.githubusercontent.com/u/104502?v=3&s=117" width="117">](https://github.com/mattlewis92) |
-:---: |:---: |:---: |:---: |
-[vogloblinsky](https://github.com/vogloblinsky) |[daniele-zurico](https://github.com/daniele-zurico) |[mattlewis92](https://github.com/mattlewis92) |[rprotsyk](https://github.com/rprotsyk) |
+[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=3&s=117" width="117">](https://github.com/vogloblinsky)|[<img alt="JonasMH" src="https://avatars0.githubusercontent.com/u/1939229?v=3&s=117" width="117">](https://github.com/JonasMH) |[<img alt="mattlewis92" src="https://avatars3.githubusercontent.com/u/6425649?v=3&s=117" width="117">](https://github.com/mattlewis92)|[<img alt="rprotsyk" src="https://avatars0.githubusercontent.com/u/104502?v=3&s=117" width="117">](https://github.com/rprotsyk)|[<img alt="daniele-zurico" src="https://avatars3.githubusercontent.com/u/3193095?v=3&s=117" width="117">](https://github.com/daniele-zurico)|[<img alt="profimedica" src="https://avatars3.githubusercontent.com/u/2903499?v=3&s=117" width="117">](https://github.com/profimedica) |
+:---: |:---: |:---: |:---: |:---: |
+[vogloblinsky](https://github.com/vogloblinsky)|[JonasMH](https://github.com/JonasMH) |[mattlewis92](https://github.com/mattlewis92) |[rprotsyk](https://github.com/rprotsyk) |[daniele-zurico](https://github.com/daniele-zurico) |[profimedica](https://github.com/profimedica)
 
+# License
 
-## License
+Everything in this repository is [licensed under the MIT License][license] unless otherwise specified.
 
-Everything in this repo is MIT License unless otherwise specified.
+Copyright (c) 2016–2017 [Vincent Ogloblinsky]
 
-MIT © 2016-2017 - [Vincent Ogloblinsky](http://www.vincentogloblinsky.com)
+[license]: https://github.com/compodoc/compodoc/blob/master/LICENSE
+[Vincent Ogloblinsky]: http://www.vincentogloblinsky.com

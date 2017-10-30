@@ -1,4 +1,4 @@
-const ts = require('typescript');
+import * as ts from 'typescript';
 
 export function kindToType(kind: number): string {
     let _type = '';

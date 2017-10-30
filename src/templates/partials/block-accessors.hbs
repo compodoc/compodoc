@@ -1,0 +1,185 @@
+<section>
+    <h3 id="accessors">
+        Accessors
+    </h3>
+    {{#each accessors}}
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="{{@key}}"></a>
+                        <span class="name"><b>{{@key}}</b><a href="#{{@key}}"><span class="fa fa-link"></span></a></span>
+                    </td>
+                </tr>
+
+                {{#if this.getSignature}}
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>{{{functionSignature this.getSignature}}}</code></span>
+                    </td>
+                </tr>
+                    {{#if this.getSignature.line}}
+                        {{#unless ../disableSourceCode}}
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="{{{this.getSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.getSignature.line}}}</a></div>
+                                </td>
+                            </tr>
+                        {{/unless}}
+                    {{/if}}
+                    {{#or jsdoctags this.getSignature.returnType}}
+                    <tr>
+                        <td class="col-md-4">
+                            {{#if this.getSignature.description}}
+                                <div class="io-description">{{{parseDescription this.getSignature.description ../depth}}}</div>
+                            {{/if}}
+
+                            {{#if this.getSignature.jsdoctags}}
+                                {{#jsdoc-params-valid this.getSignature.jsdoctags}}
+                                <div class="io-description">
+                                    {{#jsdoc-params this.getSignature.jsdoctags}}
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                    <td>Type</td>
+                                                    <td>Optional</td>
+                                                    <td>Description</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each tags}}
+                                                    <tr>
+                                                      <td>{{name}}</td>
+                                                      <td>
+                                                      {{#if type}}
+                                                          {{> link-type type=type }}
+                                                      {{/if}}
+                                                      </td>
+                                                      <td>
+                                                      {{#if optional}}
+                                                          true
+                                                      {{/if}}
+                                                      </td>
+                                                      <td>{{{comment}}}</td>
+                                                    </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    {{/jsdoc-params}}
+                                </div>
+                                {{/jsdoc-params-valid}}
+                                <div>
+                                    {{#jsdoc-code-example this.getSignature.jsdoctags}}
+                                        <b>Example :</b>
+                                        {{#each tags}}
+                                            <div>
+                                                {{{comment}}}
+                                            </div>
+                                        {{/each}}
+                                    {{/jsdoc-code-example}}
+                                </div>
+                            {{/if}}
+                            {{#if this.getSignature.returnType}}
+                                <div class="io-description">
+                                    <b>Returns : </b>{{> link-type type=this.getSignature.returnType }}
+                                </div>
+                                {{#if jsdoctags}}
+                                    <div class="io-description">
+                                        {{{jsdoc-returns-comment this.getSignature.jsdoctags}}}
+                                    </div>
+                                {{/if}}
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/or}}
+                {{/if}}
+
+                {{#if this.setSignature}}
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>{{{functionSignature this.setSignature}}}</code></span>
+                    </td>
+                </tr>
+                    {{#if this.setSignature.line}}
+                        {{#unless ../disableSourceCode}}
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="{{{this.setSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.setSignature.line}}}</a></div>
+                                </td>
+                            </tr>
+                        {{/unless}}
+                    {{/if}}
+                    {{#or jsdoctags this.setSignature.returnType}}
+                    <tr>
+                        <td class="col-md-4">
+                            {{#if this.setSignature.description}}
+                                <div class="io-description">{{{parseDescription this.setSignature.description ../depth}}}</div>
+                            {{/if}}
+
+                            {{#if this.setSignature.jsdoctags}}
+                                {{#jsdoc-params-valid this.setSignature.jsdoctags}}
+                                <div class="io-description">
+                                    {{#jsdoc-params this.setSignature.jsdoctags}}
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                    <td>Type</td>
+                                                    <td>Optional</td>
+                                                    <td>Description</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each tags}}
+                                                    <tr>
+                                                      <td>{{name}}</td>
+                                                      <td>
+                                                      {{#if type}}
+                                                          {{> link-type type=type }}
+                                                      {{/if}}
+                                                      </td>
+                                                      <td>
+                                                      {{#if optional}}
+                                                          true
+                                                      {{/if}}
+                                                      </td>
+                                                      <td>{{{comment}}}</td>
+                                                    </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    {{/jsdoc-params}}
+                                </div>
+                                {{/jsdoc-params-valid}}
+                                <div>
+                                    {{#jsdoc-code-example this.setSignature.jsdoctags}}
+                                        <b>Example :</b>
+                                        {{#each tags}}
+                                            <div>
+                                                {{{comment}}}
+                                            </div>
+                                        {{/each}}
+                                    {{/jsdoc-code-example}}
+                                </div>
+                            {{/if}}
+                            {{#if this.setSignature.returnType}}
+                                <div class="io-description">
+                                    <b>Returns : </b>{{> link-type type=this.setSignature.returnType }}
+                                </div>
+                                {{#if jsdoctags}}
+                                    <div class="io-description">
+                                        {{{jsdoc-returns-comment this.setSignature.jsdoctags}}}
+                                    </div>
+                                {{/if}}
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/or}}
+                {{/if}}
+            </tbody>
+        </table>
+    {{/each}}
+</section>

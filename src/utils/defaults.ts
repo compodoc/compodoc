@@ -5,8 +5,11 @@ export const COMPODOC_DEFAULTS = {
     folder: './documentation/',
     port: 8080,
     theme: 'gitbook',
+    exportFormat: 'html',
+    exportFormatsSupported: ['html', 'json'],
     base: '/',
     defaultCoverageThreshold: 70,
+    defaultCoverageMinimumPerFile: 0,
     toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableGraph: false,
@@ -17,4 +20,4 @@ export const COMPODOC_DEFAULTS = {
         ROOT: 'root',
         INTERNAL: 'internal'
     }
-}
+};

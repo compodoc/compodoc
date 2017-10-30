@@ -9,7 +9,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag - relative folder', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             fooComponentFile,
             fooServiceFile,
             componentFile,
@@ -182,7 +182,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag - absolute folder', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             fooComponentFile,
             fooServiceFile,
             componentFile,
@@ -242,13 +242,13 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag - absolute folder inside cwd', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             actualDir,
             fooComponentFile,
             fooServiceFile,
             componentFile,
             moduleFile;
-        before(function (done) {
+        before((done) => {
             tmp.create();
 
             let pwd = shell('pwd');
@@ -335,7 +335,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag and src arg', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -372,7 +372,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation without d flag', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -419,7 +419,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with -t flag', () => {
 
-        let stdoutString = null;
+        let stdoutString = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -445,9 +445,9 @@ describe('CLI simple generation', () => {
 
     describe('when generation with --theme flag', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             baseTheme = 'laravel',
-            index = null;
+            index = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -473,9 +473,9 @@ describe('CLI simple generation', () => {
 
     describe('when generation with -n flag', () => {
 
-        let stdoutString = null,
+        let stdoutString = undefined,
             name = 'TodoMVC-angular2-application',
-            index = null;
+            index = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -501,8 +501,8 @@ describe('CLI simple generation', () => {
 
     describe('when generation with --hideGenerator flag', () => {
 
-        let stdoutString = null,
-            index = null;
+        let stdoutString = undefined,
+            index = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -528,8 +528,8 @@ describe('CLI simple generation', () => {
 
     describe('when generation with --disableSourceCode flag', () => {
 
-        let stdoutString = null,
-            index = null;
+        let stdoutString = undefined,
+            index = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -555,8 +555,8 @@ describe('CLI simple generation', () => {
 
     describe('when generation with --disableGraph flag', () => {
 
-        let stdoutString = null,
-          fileContents = null;
+        let stdoutString = undefined,
+          fileContents = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [
@@ -572,7 +572,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        //after(() => tmp.clean(tmp.name));
+        // after(() => tmp.clean(tmp.name));
 
         it('should not generate any graph data', () => {
             expect(stdoutString).to.contain('Graph generation disabled');

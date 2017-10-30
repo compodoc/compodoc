@@ -20,4 +20,30 @@ document.addEventListener('DOMContentLoaded', function() {
         panZoom.resetZoom();
         panZoom.resetPan();
     });
+
+    var overviewFullscreen = false,
+        originalOverviewHeight;
+
+    document.getElementById('fullscreen').addEventListener('click', function(ev) {
+        if (overviewFullscreen) {
+            document.getElementById('module-graph-svg').style.height = originalOverviewHeight;
+            overviewFullscreen = false;
+            if (ev.target) {
+                ev.target.classList.remove('fa-compress');
+            }
+        } else {
+            originalOverviewHeight = document.getElementById('module-graph-svg').style.height;
+            document.getElementById('module-graph-svg').style.height = '85vh';
+            overviewFullscreen = true;
+            if (ev.target) {
+                ev.target.classList.add('fa-compress');
+            }
+        }
+        setTimeout(function() {
+            panZoom.resize();
+            panZoom.fit();
+            panZoom.center();
+        }, 0)
+    });
+
 });

@@ -2,11 +2,11 @@ import * as path from 'path';
 export default function isGlobal() {
     var binPath,
         globalBinPath = function() {
-            if (binPath) return binPath
+            if (binPath) return binPath;
 
             if (process.platform === 'win32') {
-                var pathnames = process.env.PATH.split(path.delimiter)
-                var len = pathnames.length
+                var pathnames = process.env.PATH.split(path.delimiter);
+                var len = pathnames.length;
 
                 for (var i = 0; i < len; i++) {
                     if (path.basename(pathnames[i]) === 'npm' || path.basename(pathnames[i]) === 'nodejs') {
@@ -14,10 +14,10 @@ export default function isGlobal() {
                     }
                 }
             } else {
-                binPath = path.dirname(process.execPath)
+                binPath = path.dirname(process.execPath);
             }
 
-            return binPath
+            return binPath;
         },
         stripTrailingSep = function(thePath) {
             if (thePath[thePath.length - 1] === path.sep) {
@@ -31,7 +31,7 @@ export default function isGlobal() {
             potentialParent = stripTrailingSep(potentialParent);
 
             // Node treats only Windows as case-insensitive in its path module; we follow those conventions.
-            if (process.platform === "win32") {
+            if (process.platform === 'win32') {
                 thePath = thePath.toLowerCase();
                 potentialParent = potentialParent.toLowerCase();
             }
@@ -51,6 +51,6 @@ export default function isGlobal() {
             }
 
             return pathIsInside(a, b);
-        }
-    return isPathInside(process.argv[1] || '', globalBinPath() || '')
-};
+        };
+    return isPathInside(process.argv[1] || '', globalBinPath() || '');
+}

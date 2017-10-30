@@ -9,7 +9,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json provided', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js'], { cwd: tmp.name, env });
@@ -28,7 +28,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json is found in cwd', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-p', '../test.json'], { cwd: tmp.name, env });
@@ -47,7 +47,7 @@ describe('CLI simple flags', () => {
 
     describe('when just serving without generation', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-s'], { cwd: tmp.name, env });
@@ -61,7 +61,7 @@ describe('CLI simple flags', () => {
 
     describe('when just serving without generation and folder which does\'t exist', () => {
 
-        let command = null;
+        let command = undefined;
         beforeEach(() => {
             tmp.create();
             command = shell('node', ['../bin/index-cli.js', '-s', '-d', 'doc'], { cwd: tmp.name, env });
@@ -74,8 +74,8 @@ describe('CLI simple flags', () => {
     });
 
     describe('when no README/package.json files available', () => {
+        let command = undefined;
 
-        let command = null;
         beforeEach(() => {
             tmp.create();
             tmp.copy('./test/src/sample-files/', tmp.name);
@@ -84,8 +84,10 @@ describe('CLI simple flags', () => {
         afterEach(() => tmp.clean());
 
         it('should display error message', () => {
-            expect(command.stdout.toString()).to.contain('Error during README read');
-            expect(command.stdout.toString()).to.contain('Error during package.json read');
+            const output: string = command.stdout.toString();
+
+            expect(output.indexOf('Continuing without README.md file') > -1, 'No error displayed for README').to.be.true;
+            expect(output.indexOf('Continuing without package.json file') > -1, 'No error displayed for package.json').to.be.true;
         });
     });
 
@@ -158,7 +160,7 @@ describe('CLI simple flags', () => {
 
     describe('when specific files are included in tsconfig', () => {
 
-        let moduleFile = null;
+        let moduleFile = undefined;
         before(function (done) {
             tmp.create();
             let ls = shell('node', [

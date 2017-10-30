@@ -2,10 +2,11 @@
 {{#unless disableGraph}}
     {{#unless disableMainGraph}}
         {{#if modules}}
-            <div class="text-center">
+            <div class="text-center module-graph-container">
                 <div id="module-graph-svg">
                     {{{ mainGraph }}}
                 </div>
+                <i id="fullscreen" class="fa fa-expand module-graph-fullscreen-btn" aria-hidden="true"></i>
                 <div class="btn-group">
                     <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
                     <button id="reset" class="btn btn-default btn-sm">Reset</button>

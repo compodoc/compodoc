@@ -54,8 +54,8 @@
             </div>
         {{/if}}
 
-        {{#orLength injectable.properties injectable.methods}}
-            {{> index methods=injectable.methods properties=injectable.properties }}
+        {{#orLength injectable.properties injectable.methods injectable.accessors}}
+            {{> index methods=injectable.methods properties=injectable.properties  accessors=injectable.accessors}}
         {{/orLength}}
 
         {{#if injectable.constructorObj}}
@@ -68,6 +68,10 @@
 
         {{#if injectable.properties}}
             {{> block-property properties=injectable.properties file=injectable.file }}
+        {{/if}}
+
+        {{#if injectable.accessors}}
+            {{> block-accessors accessors=injectable.accessors file=injectable.file }}
         {{/if}}
     </div>
 
