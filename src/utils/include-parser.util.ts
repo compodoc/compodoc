@@ -10,19 +10,17 @@ export class IncludeParserUtil {
     public init(include: string[], cwd: string) {
         this._include = include;
         this._cwd = cwd;
-        let i = 0;
-        let len = include.length;
-
-        for (i; i < len; i++) {
-            this._globFiles = [...this._globFiles, ...glob.sync(include[i], { cwd: this._cwd })];
-        }
+        
+        this._globFiles = include
+            .map((includeRule) => glob.sync(includeRule, { cwd: this._cwd }).map((filePath) => filePath.replace(/\//, path.sep)))
+            .reduce((allFiles, globs) => [...allFiles, ...globs], []);
     }
 
     public testFile(file: string): boolean {
         let i = 0;
         let len = this._include.length;
         let fileBasename = path.basename(file);
-        let fileNameInCwd = file.replace(this._cwd + path.sep, '');
+        let fileNameInCwd = file.replace(this._cwd + path.sep, '').replace(/\//,path.sep);
         let result = false;
 
         if (path.sep === '\\') {
