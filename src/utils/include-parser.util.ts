@@ -25,6 +25,10 @@ export class IncludeParserUtil {
         let fileNameInCwd = file.replace(this._cwd + path.sep, '');
         let result = false;
 
+        if (path.sep === '\\') {
+            fileNameInCwd = fileNameInCwd.replace(new RegExp('\\' + path.sep, 'g'), '/');
+        }
+
         for (i; i < len; i++) {
             if (glob.hasMagic(this._include[i]) && this._globFiles.length > 0) {
                 let resultGlobSearch = this._globFiles.findIndex((element) => {

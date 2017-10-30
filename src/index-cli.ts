@@ -247,7 +247,7 @@ export class CliApplication extends Application {
                         finder.on('file', (file, stat) => {
                             if (/(spec|\.d)\.ts/.test(file)) {
                                 logger.warn('Ignoring', file);
-                            } else if (excludeParser.testFile(file)) {
+                            } else if (excludeParser.testFile(file) && path.extname(file) === '.ts') {
                                 logger.warn('Excluding', file);
                             } else if (include.length > 0) {
                                 /**
@@ -258,7 +258,9 @@ export class CliApplication extends Application {
                                     logger.debug('Including', file);
                                     files.push(file);
                                 } else {
-                                    logger.warn('Excluding', file);
+                                    if (path.extname(file) === '.ts') {
+                                        logger.warn('Excluding', file);
+                                    }
                                 }
                             } else {
                                 logger.debug('Including', file);
@@ -300,9 +302,11 @@ export class CliApplication extends Application {
                     }
 
                     if (!files) {
-                        let exclude = tsConfigFile.exclude || [];
+                        let exclude = tsConfigFile.exclude || [],
+                            include = tsConfigFile.include || [];
 
-                        let excludeParser = new ExcludeParserUtil();
+                        let excludeParser = new ExcludeParserUtil(),
+                            includeParser = new IncludeParserUtil();
 
                         let finder = require('findit')(cwd || '.');
 
@@ -318,7 +322,20 @@ export class CliApplication extends Application {
                                 logger.warn('Ignoring', file);
                             } else if (excludeParser.testFile(file)) {
                                 logger.warn('Excluding', file);
-                            } else if (path.extname(file) === '.ts') {
+                            } else if (include.length > 0) {
+                                /**
+                                 * If include provided in tsconfig, use only this source,
+                                 * and not files found with global findit scan in working directory
+                                 */
+                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
+                                    logger.debug('Including', file);
+                                    files.push(file);
+                                } else {
+                                    if (path.extname(file) === '.ts') {
+                                        logger.warn('Excluding', file);
+                                    }
+                                }
+                            } else {
                                 logger.debug('Including', file);
                                 files.push(file);
                             }
@@ -391,7 +408,9 @@ export class CliApplication extends Application {
                                     logger.debug('Including', file);
                                     files.push(file);
                                 } else {
-                                    logger.warn('Excluding', file);
+                                    if (path.extname(file) === '.ts') {
+                                        logger.warn('Excluding', file);
+                                    }
                                 }
                             } else {
                                 logger.debug('Including', file);
