@@ -3,7 +3,6 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
-import Ast from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -32,8 +31,7 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked'),
-      ast = new Ast();
+const marked = require('marked');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -197,20 +195,6 @@ export class Dependencies {
             type: 'class',
             sourceCode: srcFile.getText()
         };
-        /*const sourceFile = ast.addSourceFileFromText(srcFile.fileName, srcFile.getText());
-        const imports = sourceFile.getImports();
-
-        console.log(imports, imports[0].getModuleSpecifier());
-
-        let imporPath = path.resolve(path.dirname(srcFile.fileName) + '/' + imports[0].getModuleSpecifier() + '.ts');
-        console.log(imporPath);
-
-        const sourceFileImport = ast.getOrAddSourceFile(imporPath);
-        console.log(sourceFileImport);
-
-        //const versionDeclaration = sourceFileImport.getVariableDeclaration('VERSION');
-        const versionDeclaration = ast.getSourceFile(imporPath)!.getVariableDeclaration('VERSION')!;
-        console.log(versionDeclaration);*/
         if (IO.constructor) {
             deps.constructorObj = IO.constructor;
         }
