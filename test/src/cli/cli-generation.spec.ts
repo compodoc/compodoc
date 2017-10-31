@@ -251,8 +251,7 @@ describe('CLI simple generation', () => {
         before((done) => {
             tmp.create();
 
-            let pwd = shell('pwd');
-            actualDir = pwd.stdout.toString();
+            actualDir = process.cwd();
 
             actualDir = actualDir.replace(' ', '');
             actualDir = actualDir.replace('\n', '');
@@ -610,12 +609,13 @@ describe('CLI simple generation', () => {
                 '-s',
                 '-r',
                 '-r', port,
-                '-d', './' + tmp.name + '/'], { env, timeout: 5000});
+                '-d', './' + tmp.name + '/'], { env, timeout: 20000});
 
             if (ls.stderr.toString() !== '') {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done('error');
+                done(new Error(`shell error: ${ls.stderr.toString()}`));
+                return;
             }
+
             stdoutString = ls.stdout.toString();
             done();
         });
