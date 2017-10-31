@@ -34,6 +34,9 @@ export function kindToType(kind: number): string {
         case ts.SyntaxKind.NeverKeyword:
             _type = 'never';
             break;
+        case ts.SyntaxKind.UndefinedKeyword:
+            _type = 'undefined';
+            break;
         case ts.SyntaxKind.ObjectKeyword:
         case ts.SyntaxKind.ObjectLiteralExpression:
             _type = 'object';
