@@ -20,18 +20,6 @@ let cwd = process.cwd();
 
 process.setMaxListeners(0);
 
-process.on('unhandledRejection', (err, p) => {
-    console.log('Unhandled Rejection at:', p, 'reason:', err);
-    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
-    process.exit(1);
-});
-
-process.on('uncaughtException', (err) => {
-    logger.error(err);
-    logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
-    process.exit(1);
-});
-
 export class CliApplication extends Application {
     /**
      * Run compodoc from the command line.

@@ -22,6 +22,7 @@ export default {
         'typescript',
         'highlight.js',
         'semver',
-        'json5'
+        'json5',
+        'ts-simple-ast'
     ]
 }

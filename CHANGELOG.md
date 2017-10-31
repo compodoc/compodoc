@@ -1,3 +1,15 @@
+<a name="1.0.3"></a>
+# [1.0.3](https://github.com/compodoc/compodoc/compare/1.0.2...1.0.3) (2017-10-31)
+
+### Features
+
+* **generation:** return a Promise ([2792967](https://github.com/compodoc/compodoc/commit/2792967)), closes [#4](https://github.com/compodoc/gulp-compodoc/issues/4)
+
+### Bug Fixes
+
+* **configuration:** missing properties ([c55d2496](https://github.com/compodoc/compodoc/commit/c55d2496))
+* **process:** correct listening of unhandledRejection & uncaughtException ([a0c4f688](https://github.com/compodoc/compodoc/commit/a0c4f688))
+
 <a name="1.0.2"></a>
 # [1.0.2](https://github.com/compodoc/compodoc/compare/1.0.1...1.0.2) (2017-10-30)
 

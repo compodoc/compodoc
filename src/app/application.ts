@@ -34,6 +34,12 @@ let pkg = require('../package.json');
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
+let generationPromiseResolve;
+let generationPromiseReject;
+let generationPromise = new Promise((resolve, reject) => {
+    generationPromiseResolve = resolve;
+    generationPromiseReject = reject;
+});
 
 export class Application {
     /**
@@ -99,6 +105,10 @@ export class Application {
      * Start compodoc process
      */
     protected generate() {
+
+        process.on('unhandledRejection', this.unhandledRejectionListener);
+        process.on('uncaughtException', this.uncaughtExceptionListener);
+
         if (this.configuration.mainData.output.charAt(this.configuration.mainData.output.length - 1) !== '/') {
             this.configuration.mainData.output += '/';
         }
@@ -109,6 +119,24 @@ export class Application {
             this.htmlEngine.init()
                 .then(() => this.processPackageJson());
         }
+        return generationPromise;
+    }
+
+    private endCallback() {
+        process.removeListener('unhandledRejection', this.unhandledRejectionListener);
+        process.removeListener('uncaughtException', this.uncaughtExceptionListener);
+    }
+
+    private unhandledRejectionListener(err, p) {
+        console.log('Unhandled Rejection at:', p, 'reason:', err);
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        process.exit(1);
+    }
+
+    private uncaughtExceptionListener(err) {
+        logger.error(err);
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        process.exit(1);
     }
 
     /**
@@ -482,6 +510,8 @@ export class Application {
                         logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
                         this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
                             let finalTime = (new Date() - startTime) / 1000;
+                            generationPromiseResolve();
+                            this.endCallback();
                             logger.info('Documentation generated in ' + this.configuration.mainData.output +
                                 ' in ' + finalTime + ' seconds');
                         });
@@ -1314,9 +1344,11 @@ export class Application {
                 // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
+                    generationPromiseResolve();
                     process.exit(0);
                 } else {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    generationPromiseReject();
                     process.exit(1);
                 }
             } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
@@ -1324,9 +1356,11 @@ export class Application {
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else {
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseResolve();
                     process.exit(0);
                 }
             } else if (this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
@@ -1336,20 +1370,24 @@ export class Application {
                     coverageTestPerFileResults.underFiles.length === 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseResolve();
                     process.exit(0);
                 } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 }
             } else {
@@ -1457,6 +1495,9 @@ export class Application {
             if (this.configuration.mainData.serve) {
                 logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
                 this.runWebServer(this.configuration.mainData.output);
+            } else {
+                generationPromiseResolve();
+                this.endCallback();
             }
         };
 
@@ -1570,6 +1611,7 @@ export class Application {
         if (this.configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {
                 logger.error('No sources files available, please use -p flag');
+                generationPromiseReject();
                 process.exit(1);
             } else {
                 this.runWatch();
