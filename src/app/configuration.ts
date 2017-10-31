@@ -51,7 +51,9 @@ export class Configuration implements ConfigurationInterface {
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
         routesLength: 0,
-        angularVersion: ''
+        angularVersion: '',
+        exportFormat: COMPODOC_DEFAULTS.exportFormat,
+        coverageData: {}
     };
 
     public addPage(page: PageInterface) {
