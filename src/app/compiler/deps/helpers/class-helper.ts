@@ -30,6 +30,13 @@ export class ClassHelper {
             return 'true';
         }
     }
+    
+    private visitTypeName(typeName: any) {
+      if(typeName.text) {
+        return typeName.text;
+      }
+      return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
+    }
 
     public visitType(node: ts.Declaration | undefined): string {
         let _return = 'void';
@@ -39,55 +46,40 @@ export class ClassHelper {
         }
 
         if (node.typeName) {
-            _return = node.typeName.text;
+            _return = this.visitTypeName(node.typeName);
         } else if (node.type) {
             if (node.type.kind) {
                 _return = kindToType(node.type.kind);
             }
-            if (node.type.typeName && node.type.typeName.text) {
-                _return = node.type.typeName.text;
-            }
-            if (node.type.typeName && node.type.typeName.kind === ts.SyntaxKind.QualifiedName) {
-                if (node.type.typeName.left && node.type.typeName.right) {
-                    _return = node.type.typeName.left.escapedText + '.' + node.type.typeName.right.escapedText;
-                }
+            if (node.type.typeName) {
+                _return = this.visitTypeName(node.type.typeName);
             }
             if (node.type.typeArguments) {
                 _return += '<';
+                const typeArguments = [];
                 for (const argument of node.type.typeArguments) {
-                    if (argument.kind) {
-                        _return += kindToType(argument.kind);
-                    }
-                    if (argument.typeName) {
-                        _return += argument.typeName.text;
-                    }
+                    typeArguments.push(this.visitType(argument));
                 }
+                _return += typeArguments.join(' | ');
                 _return += '>';
             }
             if (node.type.elementType) {
-                let _firstPart = kindToType(node.type.elementType.kind);
-                if (typeof node.type.elementType.typeName !== 'undefined') {
-                    if (typeof node.type.elementType.typeName.escapedText !== 'undefined') {
-                        _firstPart = node.type.elementType.typeName.escapedText;
-                    }
-                }
+                const _firstPart = this.visitType(node.type.elementType);
                 _return = _firstPart + kindToType(node.type.kind);
             }
-            if (node.type.types && ts.isUnionTypeNode(node.type)) {
+            if (node.type.types &&  ts.isUnionTypeNode(node.type)) {
                 _return = '';
                 let i = 0;
                 let len = node.type.types.length;
                 for (i; i < len; i++) {
                     let type = node.type.types[i];
+                    
                     _return += kindToType(type.kind);
                     if (ts.isLiteralTypeNode(type) && type.literal) {
                         _return += '"' + type.literal.text + '"';
                     }
-
-                    if (typeof type.typeName !== 'undefined') {
-                        if (typeof type.typeName.escapedText !== 'undefined') {
-                            _return += type.typeName.escapedText;
-                        }
+                    if (type.typeName) {
+                        _return += this.visitTypeName(type.typeName);
                     }
 
                     if (i < len - 1) {
@@ -107,6 +99,9 @@ export class ClassHelper {
                 if (ts.isLiteralTypeNode(type) && type.literal) {
                     _return += '"' + type.literal.text + '"';
                 }
+                if (type.typeName) {
+                    _return += this.visitTypeName(type.typeName);
+                }
                 if (i < len - 1) {
                     _return += ' | ';
                 }
@@ -119,7 +114,7 @@ export class ClassHelper {
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
             for (const argument of node.typeArguments) {
-                _return += kindToType(argument.kind);
+                _return += this.visitType(argument);
             }
             _return += '>';
         }
