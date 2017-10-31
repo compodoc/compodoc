@@ -34,6 +34,12 @@ let pkg = require('../package.json');
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
+let generationPromiseResolve;
+let generationPromiseReject;
+let generationPromise = new Promise((resolve, reject) => {
+    generationPromiseResolve = resolve;
+    generationPromiseReject = reject;
+});
 
 export class Application {
     /**
@@ -109,6 +115,7 @@ export class Application {
             this.htmlEngine.init()
                 .then(() => this.processPackageJson());
         }
+        return generationPromise;
     }
 
     /**
@@ -482,6 +489,7 @@ export class Application {
                         logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
                         this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
                             let finalTime = (new Date() - startTime) / 1000;
+                            generationPromiseResolve();
                             logger.info('Documentation generated in ' + this.configuration.mainData.output +
                                 ' in ' + finalTime + ' seconds');
                         });
@@ -1314,9 +1322,11 @@ export class Application {
                 // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
+                    generationPromiseResolve();
                     process.exit(0);
                 } else {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    generationPromiseReject();
                     process.exit(1);
                 }
             } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
@@ -1324,9 +1334,11 @@ export class Application {
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else {
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseResolve();
                     process.exit(0);
                 }
             } else if (this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
@@ -1336,20 +1348,24 @@ export class Application {
                     coverageTestPerFileResults.underFiles.length === 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseResolve();
                     process.exit(0);
                 } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
                     logger.error('Documentation coverage per file is not achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 } else {
                     logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
                     logger.info('Documentation coverage per file is achieved');
+                    generationPromiseReject();
                     process.exit(1);
                 }
             } else {
@@ -1451,6 +1467,7 @@ export class Application {
 
         const onComplete = () => {
             let finalTime = (new Date() - startTime) / 1000;
+            generationPromiseResolve();
             logger.info('Documentation generated in ' + this.configuration.mainData.output +
                 ' in ' + finalTime +
                 ' seconds using ' + this.configuration.mainData.theme + ' theme');
@@ -1570,6 +1587,7 @@ export class Application {
         if (this.configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {
                 logger.error('No sources files available, please use -p flag');
+                generationPromiseReject();
                 process.exit(1);
             } else {
                 this.runWatch();
