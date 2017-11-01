@@ -39,7 +39,7 @@ export class ExportEngine {
         exportData.coverage = data.coverageData;
 
         return this.fileEngine
-            .write(outputFolder + path.sep + '/documentation.json', JSON.stringify(exportData))
+            .write(outputFolder + path.sep + '/documentation.json', JSON.stringify(exportData, null, 4))
             .catch(err => {
                 logger.error('Error during export file generation ', err);
                 return Promise.reject(err);
