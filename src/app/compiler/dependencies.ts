@@ -3,6 +3,7 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
+import Ast from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -31,7 +32,8 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked');
+const marked = require('marked'),
+      ast = new Ast();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
