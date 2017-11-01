@@ -25,6 +25,11 @@ export interface IPipeDep extends IDep {
     sourceCode: string;
     exampleUrls?;
 
+    methods: Array<any>;
+    properties: Array<any>;
+    pure: string;
+    ngname: string;
+
     jsdoctags?: Array<string>;
 }
 

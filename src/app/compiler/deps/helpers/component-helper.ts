@@ -20,6 +20,14 @@ export class ComponentHelper {
         return this.symbolHelper.getSymbolDeps(props, 'encapsulation');
     }
 
+    public getComponentPure(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
+        return this.symbolHelper.getSymbolDeps(props, 'pure').pop();
+    }
+
+    public getComponentName(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
+        return this.symbolHelper.getSymbolDeps(props, 'name').pop();
+    }
+
     public getComponentExportAs(props: ReadonlyArray<ts.ObjectLiteralElementLike>): string {
         return this.symbolHelper.getSymbolDeps(props, 'exportAs').pop();
     }

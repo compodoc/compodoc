@@ -30,7 +30,7 @@ export class ClassHelper {
             return 'true';
         }
     }
-    
+
     private visitTypeName(typeName: any) {
       if(typeName.text) {
         return typeName.text;
@@ -73,7 +73,7 @@ export class ClassHelper {
                 let len = node.type.types.length;
                 for (i; i < len; i++) {
                     let type = node.type.types[i];
-                    
+
                     _return += kindToType(type.kind);
                     if (ts.isLiteralTypeNode(type) && type.literal) {
                         _return += '"' + type.literal.text + '"';
@@ -206,7 +206,17 @@ export class ClassHelper {
                         implements: implementsElements,
                         accessors: members.accessors
                     }];
-                } else if (this.isPipeDecorator(classDeclaration.decorators[i]) || this.isModuleDecorator(classDeclaration.decorators[i])) {
+                } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
+                    members = this.visitMembers(classDeclaration.members, sourceFile);
+                    return [{
+                        fileName,
+                        className,
+                        description,
+                        jsdoctags: jsdoctags,
+                        properties: members.properties,
+                        methods: members.methods
+                    }];
+                } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
                     return [{
                         fileName,
                         className,

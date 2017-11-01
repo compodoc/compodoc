@@ -298,6 +298,10 @@ export class Dependencies {
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
+                                properties: IO.properties,
+                                methods: IO.methods,
+                                pure: this.componentHelper.getComponentPure(props),
+                                ngname: this.componentHelper.getComponentName(props),
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };

@@ -61,6 +61,34 @@
             </div>
         {{/if}}
 
+        <section>
+            <h3>Metadata</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+                    {{#if pipe.ngname}}
+                    <tr>
+                        <td class="col-md-3">name</td>
+                        <td class="col-md-9">{{pipe.ngname}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if pipe.pure}}
+                    <tr>
+                        <td class="col-md-3">pure</td>
+                        <td class="col-md-9">{{pipe.pure}}</td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </section>
+
+        {{#if pipe.methods}}
+            {{> block-method methods=pipe.methods file=pipe.file }}
+        {{/if}}
+
+        {{#if pipe.properties}}
+            {{> block-property properties=pipe.properties file=pipe.file }}
+        {{/if}}
+
     </div>
 
     {{#if pipe.readme}}
@@ -74,7 +102,7 @@
         <pre class="line-numbers"><code class="language-typescript">{{ pipe.sourceCode}}</code></pre>
     </div>
     {{/unless}}
-    
+
     {{#if pipe.exampleUrls}}
     <div class="tab-pane fade" id="example">
         {{#each pipe.exampleUrls}}

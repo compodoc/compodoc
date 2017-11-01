@@ -108,11 +108,14 @@ export class SymbolHelper {
     /**
      * Kind
      *  177 ArrayLiteralExpression
+     *  122 BooleanKeyword
      *    9 StringLiteral
      */
     private parseSymbols(node: ts.PropertyAssignment): Array<string> {
         if (ts.isStringLiteral(node.initializer)) {
             return [node.initializer.text];
+        } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
+            return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
         } else if (ts.isPropertyAccessExpression(node.initializer)) {
             let identifier = this.parseSymbolElements(node.initializer);
             return [
@@ -121,13 +124,14 @@ export class SymbolHelper {
         } else if (ts.isArrayLiteralExpression(node.initializer)) {
             return node.initializer.elements.map(x => this.parseSymbolElements(x));
         }
-
     }
 
     public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
-        let deps = props.filter(node => node.name.text === type);
+        let deps = props.filter(node => {
+            return node.name.text === type;
+        });
         return deps.map(x => this.parseSymbols(x)).pop() || [];
     }
 

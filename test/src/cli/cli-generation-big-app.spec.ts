@@ -106,6 +106,11 @@ describe('CLI simple generation - big app', () => {
     it('should have generated pipes', () => {
         const file = exists('documentation/pipes/FirstUpperPipe.html');
         expect(file).to.be.true;
+
+        const pipeFile = read('documentation/pipes/FirstUpperPipe.html');
+        expect(pipeFile).to.contain('Example property');
+        expect(pipeFile).to.contain('the transform function');
+        expect(pipeFile).to.contain('false');
     });
 
     it('should have miscellaneous page', () => {
