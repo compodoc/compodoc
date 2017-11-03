@@ -53,7 +53,8 @@ export class Configuration implements ConfigurationInterface {
         routesLength: 0,
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
-        coverageData: {}
+        coverageData: {},
+        customFavicon: ''
     };
 
     public addPage(page: PageInterface) {

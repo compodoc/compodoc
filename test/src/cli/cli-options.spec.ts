@@ -122,6 +122,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not show private, @internal or Angular lifecycle hooks in generated documentation');
         });
 
+        it(`--customFavicon`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--customFavicon [path]');
+            expect(runHelp.stdout.toString()).to.contain('Use a custom favicon');
+        });
+
     });
 
 });

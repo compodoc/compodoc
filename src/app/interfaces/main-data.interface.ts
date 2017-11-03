@@ -46,4 +46,5 @@ export interface MainDataInterface {
     angularVersion: string;
     exportFormat: string;
     coverageData: Object;
+    customFavicon: string;
 }

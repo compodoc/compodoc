@@ -1523,7 +1523,18 @@ export class Application {
                             }
                         });
                 } else {
-                    onComplete();
+                    if (this.configuration.mainData.customFavicon !== '') {
+                        logger.info(`Custom favicon supplied`);
+                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (err) => {
+                            if (err) {
+                                logger.error('Error during resources copy ', err);
+                            } else {
+                                onComplete();
+                            }
+                        });
+                    } else {
+                        onComplete();
+                    }
                 }
             }
         });

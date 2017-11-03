@@ -55,6 +55,7 @@ export class CliApplication extends Application {
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivateOrInternalSupport', 'Do not show private, @internal or Angular lifecycle hooks in generated documentation', false)
+            .option('--customFavicon [path]', 'Use a custom favicon')
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -154,6 +155,10 @@ export class CliApplication extends Application {
 
         if (program.disablePrivateOrInternalSupport) {
             this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
+        }
+
+        if (program.customFavicon) {
+            this.configuration.mainData.customFavicon = program.customFavicon;
         }
 
         if (!this.isWatching) {
