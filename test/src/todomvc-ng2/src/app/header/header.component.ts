@@ -2,13 +2,12 @@ import { Component, Input } from '@angular/core';
 
 import { TodoStore } from '../shared/services/todo.store';
 
+import { HeaderComponentSchema as MyAlias } from './header-component.metadata';
+
 /**
  * The header component
  */
-@Component({
-    selector: 'header',
-    templateUrl: './header.component.html'
-})
+@Component(MyAlias)
 export class HeaderComponent {
     /**
      * Application main title

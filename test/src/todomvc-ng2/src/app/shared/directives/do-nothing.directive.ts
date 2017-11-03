@@ -1,11 +1,11 @@
 import { Directive, HostBinding, HostListener } from '@angular/core';
 
+import { DoNothingDirectiveSchema } from './do-nothing-directive.metadata';
+
 /**
  * This directive does nothing !
  */
-@Directive({
-    selector: '[donothing]'
-})
+@Directive(DoNothingDirectiveSchema)
 export class DoNothingDirective {
     protected popover: string;
 

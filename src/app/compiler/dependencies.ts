@@ -3,7 +3,6 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
-import Ast from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -21,7 +20,7 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { JsdocParserUtil, RouterParserUtil } from '../../utils';
+import { JsdocParserUtil, RouterParserUtil, ImportsUtil } from '../../utils';
 import {
     IInjectableDep,
     IPipeDep,
@@ -32,11 +31,9 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked'),
-      ast = new Ast();
+const marked = require('marked');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
-
 
 export class Dependencies {
 
@@ -52,6 +49,7 @@ export class Dependencies {
     private classHelper: ClassHelper;
 
     private jsdocParserUtil = new JsdocParserUtil();
+    private importsUtil = new ImportsUtil();
 
     constructor(
         files: string[],
@@ -247,7 +245,7 @@ export class Dependencies {
 
                         let metadata = node.decorators;
                         let name = this.getSymboleName(node);
-                        let props = this.findProperties(visitedNode);
+                        let props = this.findProperties(visitedNode, srcFile);
                         let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
 
                         if (this.isModule(metadata)) {
@@ -687,11 +685,14 @@ export class Dependencies {
         return node.name.text;
     }
 
-    private findProperties(visitedNode: ts.Decorator): ReadonlyArray<ts.ObjectLiteralElementLike> {
+    private findProperties(visitedNode: ts.Decorator, sourceFile: ts.SourceFile): ReadonlyArray<ts.ObjectLiteralElementLike> {
         if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
             let pop = visitedNode.expression.arguments[0];
             if (ts.isObjectLiteralExpression(pop)) {
                 return pop.properties;
+            } else {
+                logger.warn('Empty metadatas, trying to found it with imports.');
+                return this.importsUtil.merge(pop.text, sourceFile);
             }
         }
 

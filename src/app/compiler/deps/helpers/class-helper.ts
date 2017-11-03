@@ -3,14 +3,18 @@ import { kindToType } from '../../../../utils/kind-to-type';
 
 import * as _ from 'lodash';
 import * as util from 'util';
+import * as path from 'path';
 import * as ts from 'typescript';
+
 import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
-import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
+import { JsdocParserUtil, ImportsUtil } from '../../../../utils';
+import { logger } from '../../../../logger';
 
 const marked = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
+    private importsUtil = new ImportsUtil();
 
     constructor(
         private typeChecker: ts.TypeChecker,
@@ -172,7 +176,7 @@ export class ClassHelper {
         if (classDeclaration.decorators) {
             for (let i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i]);
+                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i], sourceFile);
                     members = this.visitMembers(classDeclaration.members, sourceFile);
                     return {
                         description,
@@ -271,7 +275,7 @@ export class ClassHelper {
         return [];
     }
 
-    private visitDirectiveDecorator(decorator) {
+    private visitDirectiveDecorator(decorator, sourceFile: ts.SourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -280,17 +284,34 @@ export class ClassHelper {
         let properties;
 
         if (decorator.expression.arguments.length > 0) {
-            properties = decorator.expression.arguments[0].properties;
 
-            for (let i = 0; i < properties.length; i++) {
-                if (properties[i].name.text === 'selector') {
-                    // TODO: this will only work if selector is initialized as a string literal
-                    selector = properties[i].initializer.text;
+            let firstArgument = decorator.expression.arguments[0],
+                properties;
+            if (firstArgument.kind && firstArgument.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+                properties = decorator.expression.arguments[0].properties;
+            }
+
+            let searchInProperties = () => {
+                for (let i = 0; i < properties.length; i++) {
+                    if (properties[i].name.text === 'selector') {
+                        // TODO: this will only work if selector is initialized as a string literal
+                        selector = properties[i].initializer.text;
+                    }
+                    if (properties[i].name.text === 'exportAs') {
+                        // TODO: this will only work if selector is initialized as a string literal
+                        exportAs = properties[i].initializer.text;
+                    }
                 }
-                if (properties[i].name.text === 'exportAs') {
-                    // TODO: this will only work if selector is initialized as a string literal
-                    exportAs = properties[i].initializer.text;
-                }
+            }
+
+            if (properties) {
+                // if decorator.expression.arguments[0].kind && decorator.expression.arguments[0].kind === ObjectLiteralExpression = 178
+                // we have object literal definition of the decorator
+                searchInProperties();
+            } else {
+                // if not, may be it is an import
+                properties = this.importsUtil.merge(firstArgument.text, sourceFile);
+                searchInProperties();
             }
         }
 

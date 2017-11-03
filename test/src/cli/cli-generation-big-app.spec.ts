@@ -11,6 +11,8 @@ describe('CLI simple generation - big app', () => {
     let clockInterfaceFile;
     let searchFuncFile;
 
+    let todoComponentFile, listComponentFile, footerComponentFile, routesIndex;
+
     before((done) => {
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -23,6 +25,11 @@ describe('CLI simple generation - big app', () => {
         stdoutString = ls.stdout.toString();
         clockInterfaceFile = read(`documentation/interfaces/ClockInterface.html`);
         searchFuncFile = read(`documentation/interfaces/SearchFunc.html`);
+
+        routesIndex = read(`documentation/js/routes/routes_index.js`);
+        todoComponentFile = read(`documentation/components/TodoComponent.html`);
+        footerComponentFile = read(`documentation/components/FooterComponent.html`);
+        listComponentFile = read(`documentation/components/ListComponent.html`);
         done();
     });
     //after(() => tmp.clean('documentation'));
@@ -57,6 +64,54 @@ describe('CLI simple generation - big app', () => {
         const isFontsExists = exists('documentation/fonts');
         expect(isFontsExists).to.be.true;
     });
+
+    /**
+     * Dynamic imports for metadatas
+     */
+     it('should have metadatas - component', () => {
+         expect(footerComponentFile).to.contain('footer.component.html');
+     });
+     it('should have metadatas - component with aliased import', () => {
+         const file = read(`documentation/components/HeaderComponent.html`);
+         expect(file).to.contain('header.component.html');
+     });
+     it('should have metadatas - directive', () => {
+         const file = read(`documentation/directives/DoNothingDirective.html`);
+         expect(file).to.contain('[donothing]');
+     });
+
+    /**
+     * Routing
+     */
+
+    it('should not have a toggled item menu', () => {
+        expect(routesIndex).to.not.contain('fa-angle-down');
+    });
+
+    it('should have a route index', () => {
+        const isFileExists = exists(`documentation/js/routes/routes_index.js`);
+        expect(isFileExists).to.be.true;
+    });
+
+    it('should have generated files', () => {
+        expect(routesIndex).to.contain('AppModule');
+        expect(routesIndex).to.contain('AppRoutingModule');
+        expect(routesIndex).to.contain('HomeRoutingModule');
+        expect(routesIndex).to.contain('AboutComponent');
+    });
+
+    it('should have a readme tab', () => {
+        expect(todoComponentFile).to.contain('readme-tab');
+        expect(listComponentFile).to.contain('readme-tab');
+    });
+
+    it('should have a decorator listed', () => {
+        expect(footerComponentFile).to.contain('<i>Decorators : </i><code>LogProperty</code>');
+    });
+
+    /**
+     * End Routing
+     */
 
     it('should have generated search index json', () => {
         const isIndexExists = exists(`documentation/js/search/search_index.js`);
@@ -123,11 +178,11 @@ describe('CLI simple generation - big app', () => {
         expect(miscFile).to.contain('Directions of the app');
     });
 
-    it('it should have infos about SearchFunc interface', () => {
+    it('should have infos about SearchFunc interface', () => {
         expect(searchFuncFile).to.contain('A string');
     });
 
-    it('it should have infos about ClockInterface interface', () => {
+    it('should have infos about ClockInterface interface', () => {
         const file = read(`documentation/interfaces/ClockInterface.html`);
         expect(file).to.contain('A simple reset method');
     });
@@ -210,7 +265,7 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
     });
 
-    it('should have inherit return type', () => {
+    it('should have inherreturn type', () => {
         const file = read('documentation/classes/Todo.html');
         expect(file).to.contain('code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"');
     });
