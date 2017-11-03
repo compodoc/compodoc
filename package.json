@@ -74,8 +74,8 @@
     "os-name": "^2.0.1",
     "shelljs": "^0.7.8",
     "traverse": "^0.6.6",
-    "ts-simple-ast": "^0.80.0",
-    "typescript": "2.5.3"
+    "ts-simple-ast": "^0.81.0",
+    "typescript": "2.6.1"
   },
   "devDependencies": {
     "@types/chai": "4.0.4",
@@ -94,7 +94,7 @@
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
     "npm-watch": "0.3.0",
-    "nyc": "11.2.1",
+    "nyc": "11.3.0",
     "request": "^2.83.0",
     "rimraf": "^2.6.2",
     "rollup": "0.50.0",
