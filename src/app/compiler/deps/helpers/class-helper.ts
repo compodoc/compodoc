@@ -7,7 +7,8 @@ import * as path from 'path';
 import * as ts from 'typescript';
 
 import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
-import { JsdocParserUtil, ImportsUtil } from '../../../../utils';
+import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
+import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
 
 const marked = require('marked');
