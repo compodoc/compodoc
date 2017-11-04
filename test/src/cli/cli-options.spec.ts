@@ -117,9 +117,24 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not add the documentation coverage report');
         });
 
-        it(`--disablePrivateOrInternalSupport`, () => {
-            expect(runHelp.stdout.toString()).to.contain('--disablePrivateOrInternalSupport');
-            expect(runHelp.stdout.toString()).to.contain('Do not show private, @internal or Angular lifecycle hooks in generated documentation');
+        it(`--disablePrivate`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disablePrivate');
+            expect(runHelp.stdout.toString()).to.contain('Do not show private in generated documentation');
+        });
+
+        it(`--disableProtected`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableProtected');
+            expect(runHelp.stdout.toString()).to.contain('Do not show protected in generated documentation');
+        });
+
+        it(`--disableInternal`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableInternal');
+            expect(runHelp.stdout.toString()).to.contain('Do not show @internal in generated documentation');
+        });
+
+        it(`--disableLifeCycleHooks`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableLifeCycleHooks');
+            expect(runHelp.stdout.toString()).to.contain('Do not show Angular lifecycle hooks in generated documentation');
         });
 
         it(`--customFavicon`, () => {

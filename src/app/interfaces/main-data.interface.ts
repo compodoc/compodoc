@@ -35,7 +35,10 @@ export interface MainDataInterface {
     disableGraph: boolean;
     disableMainGraph: boolean;
     disableCoverage: boolean;
-    disablePrivateOrInternalSupport: boolean;
+    disablePrivate: boolean;
+    disableProtected: boolean;
+    disableInternal: boolean;
+    disableLifeCycleHooks: boolean;
     watch: boolean;
     mainGraph: string;
     coverageTest: boolean;

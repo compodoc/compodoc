@@ -116,48 +116,6 @@ describe('CLI simple flags', () => {
 
     });
 
-    describe('disabling excluding methods with --disablePrivateOrInternalSupport', () => {
-
-        let componentFile;
-        before(function (done) {
-            tmp.create();
-            let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '--disablePrivateOrInternalSupport',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
-
-            if (ls.stderr.toString() !== '') {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done('error');
-            }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
-            done();
-        });
-        after(() => tmp.clean());
-
-        it('should exclude methods marked as private', () => {
-            expect(componentFile).not.to.contain('<code>privateMethod');
-        });
-
-        it('should exclude methods marked as internal', () => {
-            expect(componentFile).not.to.contain('<code>internalMethod');
-        });
-
-        it('should not display lifecyle hooks', () => {
-            expect(componentFile).not.to.contain('<code>ngOnInit');
-        });
-
-        it('should contain public methods', () => {
-            expect(componentFile).to.contain('<code>showTab');
-        });
-
-        it('should exclude foo directive with @internal', () => {
-            const directiveFile = exists(`${tmp.name}/directives/FooDirective.html`);
-            expect(directiveFile).to.be.false;
-        });
-    });
-
     describe('when specific files are included in tsconfig', () => {
 
         let moduleFile = undefined;

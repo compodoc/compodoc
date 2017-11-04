@@ -448,28 +448,38 @@ export class ClassHelper {
                 hostListeners.push(this.visitHostListener(member, hostListener, sourceFile));
             } else if (!this.isHiddenMember(member)) {
 
-                if (!((this.isPrivate(member) || this.isInternal(member)) &&
-                    this.configuration.mainData.disablePrivateOrInternalSupport)) {
-                    if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
-                        methods.push(this.visitMethodDeclaration(member, sourceFile));
-                    } else if (ts.isPropertyDeclaration(member) ||
-                        ts.isPropertySignature(member)) {
-                        properties.push(this.visitProperty(member, sourceFile));
-                    } else if (ts.isCallSignatureDeclaration(member)) {
-                        properties.push(this.visitCallDeclaration(member, sourceFile));
-                    } else if (ts.isGetAccessorDeclaration(member) || ts.isSetAccessorDeclaration(member)) {
-                        this.addAccessor(accessors, members[i], sourceFile);
-                    } else if (ts.isIndexSignatureDeclaration(member)) {
-                        indexSignatures.push(this.visitIndexDeclaration(member, sourceFile));
-                    } else if (ts.isConstructorDeclaration(member)) {
-                        let _constructorProperties = this.visitConstructorProperties(member, sourceFile);
-                        let j = 0;
-                        let len = _constructorProperties.length;
-                        for (j; j < len; j++) {
-                            properties.push(_constructorProperties[j]);
+                if (!(this.isPrivate(member) && this.configuration.mainData.disablePrivate)) {
+
+                     if (!(this.isInternal(member) && this.configuration.mainData.disableInternal)) {
+
+                         if (!(this.isProtected(member) && this.configuration.mainData.disableProtected)) {
+
+
+                            if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
+                                methods.push(this.visitMethodDeclaration(member, sourceFile));
+                            } else if (ts.isPropertyDeclaration(member) ||
+                                ts.isPropertySignature(member)) {
+                                properties.push(this.visitProperty(member, sourceFile));
+                            } else if (ts.isCallSignatureDeclaration(member)) {
+                                properties.push(this.visitCallDeclaration(member, sourceFile));
+                            } else if (ts.isGetAccessorDeclaration(member) || ts.isSetAccessorDeclaration(member)) {
+                                this.addAccessor(accessors, members[i], sourceFile);
+                            } else if (ts.isIndexSignatureDeclaration(member)) {
+                                indexSignatures.push(this.visitIndexDeclaration(member, sourceFile));
+                            } else if (ts.isConstructorDeclaration(member)) {
+                                let _constructorProperties = this.visitConstructorProperties(member, sourceFile);
+                                let j = 0;
+                                let len = _constructorProperties.length;
+                                for (j; j < len; j++) {
+                                    properties.push(_constructorProperties[j]);
+                                }
+                                constructor = this.visitConstructorDeclaration(member, sourceFile);
+                            }
+
                         }
-                        constructor = this.visitConstructorDeclaration(member, sourceFile);
+
                     }
+
                 }
             }
         }
@@ -535,6 +545,16 @@ export class ClassHelper {
         if (member.modifiers) {
             const isPrivate: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword);
             if (isPrivate) {
+                return true;
+            }
+        }
+        return this.isHiddenMember(member);
+    }
+
+    private isProtected(member): boolean {
+        if (member.modifiers) {
+            const isProtected: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.ProtectedKeyword);
+            if (isProtected) {
                 return true;
             }
         }

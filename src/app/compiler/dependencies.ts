@@ -232,7 +232,7 @@ export class Dependencies {
         let file = srcFile.fileName.replace(cleaner, '');
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
-            if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disablePrivateOrInternalSupport) {
+            if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disableInternal) {
                 return;
             }
 
