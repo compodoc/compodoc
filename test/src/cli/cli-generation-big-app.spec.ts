@@ -398,4 +398,10 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('PI2');
     });
 
+    it('should support spread operator for modules metadatas', () => {
+        let file = read('documentation/modules/HomeModule.html');
+        expect(file).to.contain('../modules/FooterModule.html');
+    });
+
+
 });

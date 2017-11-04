@@ -86,7 +86,7 @@ export class SymbolHelper {
      *   71 Identifier     => "RouterModule" "TodoStore"
      *    9 StringLiteral  => "./app.component.css" "./tab.scss"
      */
-    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression): string {
+    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression | ts.SpreadElement): string {
         // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
         if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
             let className = this.buildIdentifierName(node.expression);
@@ -100,6 +100,11 @@ export class SymbolHelper {
             return text;
         } else if (ts.isPropertyAccessExpression(node)) { // parse expressions such as: Shared.Module
             return this.buildIdentifierName(node);
+        } else if (ts.isSpreadElement(node)) { // parse expressions such as: ...MYARRAY
+            // Resolve MYARRAY in imports or local file variables after full scan, just return the name of the variable
+            if (node.expression && node.expression.text) {
+                return node.expression.text;
+            }
         }
 
         return node.text ? node.text : this.parseProviderConfiguration(node);
