@@ -14,11 +14,12 @@ describe('CLI Additional documentation', () => {
     before((done) => {
         tmp.create();
         let ls = shell('node', [
-            '../bin/index-cli.js',
-            '-p', '../test/src/todomvc-ng2/src/tsconfig.json',
-            '-d', '../' + tmp.name + '/',
-            '--includes', '../test/src/todomvc-ng2/additional-doc',
-            '--includesName', '"Additional documentation"'], { cwd: tmp.name, env });
+            '../../../bin/index-cli.js',
+            '-p', './src/tsconfig.json',
+            '-d', '../../../' + tmp.name + '/',
+            '-a', './screenshots',
+            '--includes', './additional-doc',
+            '--includesName', '"Additional documentation"'], { cwd: './test/src/todomvc-ng2/', env });
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -43,5 +44,10 @@ describe('CLI Additional documentation', () => {
         expect(isFileExists).to.be.true;
         let file = read(`${tmp.name}/additional-documentation/big-introduction.html`);
         expect(file).to.contain('<h1 id="introduction">Introduction</h1>');
+    });
+
+    it('should have generated README file in index.html', () => {
+        const file = read(`${tmp.name}/additional-documentation/edition/edition-of-a-todo.html`);
+        expect(file).to.contain('screenshots/actions/edition.png');
     });
 });
