@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ev.target.classList.add('fa-compress');
             }
         }
+        document.getElementById('module-graph-svg').querySelector('svg').style.height = document.getElementById('module-graph-svg').clientHeight;
         setTimeout(function() {
             panZoom.resize();
             panZoom.fit();
