@@ -25,11 +25,11 @@ export class ImportsUtil {
 
             if (namedImportsLength > 0) {
                 for (j; j<namedImportsLength; j++) {
-                    let importName = namedImports[j].getName().getText() as string,
+                    let importName = namedImports[j].getNameIdentifier().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAlias()) {
-                        importAlias = namedImports[j].getAlias().getText();
+                    if (namedImports[j].getAliasIdentifier()) {
+                        importAlias = namedImports[j].getAliasIdentifier().getText();
                     }
                     if (importName === metadataVariableName) {
                         searchedImport = i;
