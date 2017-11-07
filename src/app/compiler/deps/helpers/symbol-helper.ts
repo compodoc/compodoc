@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
 export class SymbolHelper {
@@ -77,7 +78,35 @@ export class SymbolHelper {
      * { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
      */
     public parseProviderConfiguration(node: ts.ObjectLiteralExpression): string {
-        return new TsPrinterUtil().print(node);
+        if (node.kind && node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+            // Search for provide: HTTP_INTERCEPTORS
+            // and if true, return type: 'interceptor' + name
+            let interceptorName,
+                hasInterceptor;
+            if (node.properties) {
+                if (node.properties.length > 0) {
+                    _.forEach(node.properties, (property) => {
+                        if (property.kind && property.kind === ts.SyntaxKind.PropertyAssignment) {
+                            if (property.name.text === 'provide') {
+                                if (property.initializer.text === 'HTTP_INTERCEPTORS') {
+                                    hasInterceptor = true;
+                                }
+                            }
+                            if (property.name.text === 'useClass') {
+                                interceptorName = property.initializer.text;
+                            }
+                        }
+                    });
+                }
+            }
+            if (hasInterceptor) {
+                return interceptorName;
+            } else {
+                return new TsPrinterUtil().print(node);
+            }
+        } else {
+            return new TsPrinterUtil().print(node);
+        }
     }
 
     /**

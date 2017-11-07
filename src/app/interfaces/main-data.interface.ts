@@ -24,6 +24,7 @@ export interface MainDataInterface {
     components: any;
     directives: any;
     injectables: any;
+    interceptors: any;
     miscellaneous: any;
     routes: any;
     tsconfig: string;

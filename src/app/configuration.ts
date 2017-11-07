@@ -32,6 +32,7 @@ export class Configuration implements ConfigurationInterface {
         components: [],
         directives: [],
         injectables: [],
+        interceptors: [],
         miscellaneous: [],
         routes: [],
         tsconfig: '',

@@ -403,5 +403,12 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('../modules/FooterModule.html');
     });
 
+    it('should support interceptors', () => {
+        let file = read('documentation/modules/AppModule.html');
+        expect(file).to.contain('../interceptors/NoopInterceptor.html');
+        const fileTest = exists('documentation/interceptors/NoopInterceptor.html');
+        expect(fileTest).to.be.true;
+    });
+
 
 });

@@ -218,6 +218,33 @@
         </li>
         {{/if}}
 
+        {{#if interceptors}}
+        <li class="chapter">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#interceptors-links"
+                {{else}}
+                    data-target="#xs-interceptors-links"
+                {{/compare}}>
+                <span class="fa fa-exchange"></span>
+                <span>Interceptors</span>
+                <span class="fa {{#isNotToggle 'interceptors'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+            </div>
+            <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}"
+                {{#compare menu "===" 'normal' }}
+                    id="interceptors-links"
+                {{else}}
+                    id="xs-interceptors-links"
+                {{/compare}}>
+                {{#each interceptors}}
+                    <li class="link">
+                        <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
         {{#if interfaces}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"

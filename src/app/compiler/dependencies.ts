@@ -74,6 +74,7 @@ export class Dependencies {
             modulesForGraph: [],
             components: [],
             injectables: [],
+            interceptors: [],
             pipes: [],
             directives: [],
             routes: [],
@@ -287,7 +288,16 @@ export class Dependencies {
                             if (IO.accessors) {
                                 injectableDeps.accessors = IO.accessors;
                             }
-                            outputSymbols.injectables.push(injectableDeps);
+                            if (IO.implements && IO.implements.length > 0) {
+                                if (IO.implements.includes('HttpInterceptor')) {
+                                    outputSymbols.interceptors.push(injectableDeps);
+                                } else {
+                                    outputSymbols.injectables.push(injectableDeps);
+                                }
+                            } else {
+                                outputSymbols.injectables.push(injectableDeps);
+                            }
+
                             deps = injectableDeps;
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {

@@ -19,6 +19,18 @@ export interface IInjectableDep extends IDep {
     jsdoctags?: Array<string>;
 }
 
+export interface IInterceptorDep extends IDep {
+    file: any;
+    properties: Array<any>;
+    methods: Array<any>;
+    description: string;
+    sourceCode: string;
+
+    accessors?: Object;
+    constructorObj?: Object;
+    jsdoctags?: Array<string>;
+}
+
 export interface IPipeDep extends IDep {
     file: any;
     description: string;

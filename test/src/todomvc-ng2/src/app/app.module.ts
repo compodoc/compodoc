@@ -11,7 +11,9 @@ import { TodoStore } from './shared/services/todo.store';
 
 /* Routing Module */
 import { AppRoutingModule }   from './app-routing.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { NoopInterceptor } from './shared/interceptors/noopinterceptor.interceptor';
 /**
  * The bootstrapper module
  */
@@ -24,7 +26,12 @@ import { AppRoutingModule }   from './app-routing.module';
         AppRoutingModule
     ],
     providers: [
-        TodoStore
+        TodoStore,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: NoopInterceptor,
+          multi: true
+        }
     ],
     bootstrap: [AppComponent]
 })
