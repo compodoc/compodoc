@@ -14,6 +14,10 @@ export function exists(file: string): boolean {
     return fs.existsSync(file);
 }
 
+export function stats(file: string): object {
+    return fs.statSync(file);
+}
+
 export function remove(file: string): boolean {
     return fs.removeSync(file);
 }

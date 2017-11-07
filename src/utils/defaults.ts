@@ -15,7 +15,10 @@ export const COMPODOC_DEFAULTS = {
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,
-    disablePrivateOrInternalSupport: false,
+    disablePrivate: false,
+    disableProtected: false,
+    disableInternal: false,
+    disableLifeCycleHooks: false,
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'

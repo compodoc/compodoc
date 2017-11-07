@@ -78,7 +78,12 @@
                     <ul class="list-group">
                         {{#each module.providers}}
                             <li class="list-group-item">
-                                <a href="{{relativeURL ../depth 'modules'}}injectables/{{name}}.html" >{{name}}</a>
+                                {{#compare type "===" 'injectable'}}
+                                     <a href="{{relativeURL ../depth 'modules'}}injectables/{{name}}.html" >{{name}}</a>
+                                {{/compare}}
+                                {{#compare type "===" 'interceptor'}}
+                                     <a href="{{relativeURL ../depth 'modules'}}interceptors/{{name}}.html" >{{name}}</a>
+                                {{/compare}}
                             </li>
                         {{/each}}
                     </ul>

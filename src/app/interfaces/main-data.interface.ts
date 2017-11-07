@@ -24,6 +24,7 @@ export interface MainDataInterface {
     components: any;
     directives: any;
     injectables: any;
+    interceptors: any;
     miscellaneous: any;
     routes: any;
     tsconfig: string;
@@ -35,7 +36,10 @@ export interface MainDataInterface {
     disableGraph: boolean;
     disableMainGraph: boolean;
     disableCoverage: boolean;
-    disablePrivateOrInternalSupport: boolean;
+    disablePrivate: boolean;
+    disableProtected: boolean;
+    disableInternal: boolean;
+    disableLifeCycleHooks: boolean;
     watch: boolean;
     mainGraph: string;
     coverageTest: boolean;
@@ -46,4 +50,5 @@ export interface MainDataInterface {
     angularVersion: string;
     exportFormat: string;
     coverageData: Object;
+    customFavicon: string;
 }

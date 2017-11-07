@@ -49,7 +49,7 @@ export class ComponentDepFactory {
             sourceCode: srcFile.getText(),
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
-        if (this.configuration.mainData.disablePrivateOrInternalSupport) {
+        if (this.configuration.mainData.disableLifeCycleHooks) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {

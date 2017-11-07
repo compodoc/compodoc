@@ -32,6 +32,7 @@ export class Configuration implements ConfigurationInterface {
         components: [],
         directives: [],
         injectables: [],
+        interceptors: [],
         miscellaneous: [],
         routes: [],
         tsconfig: '',
@@ -43,7 +44,10 @@ export class Configuration implements ConfigurationInterface {
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
         disableMainGraph: COMPODOC_DEFAULTS.disableMainGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,
-        disablePrivateOrInternalSupport: COMPODOC_DEFAULTS.disablePrivateOrInternalSupport,
+        disablePrivate: COMPODOC_DEFAULTS.disablePrivate,
+        disableInternal: COMPODOC_DEFAULTS.disableInternal,
+        disableProtected: COMPODOC_DEFAULTS.disableProtected,
+        disableLifeCycleHooks: COMPODOC_DEFAULTS.disableLifeCycleHooks,
         watch: false,
         mainGraph: '',
         coverageTest: false,
@@ -53,7 +57,8 @@ export class Configuration implements ConfigurationInterface {
         routesLength: 0,
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
-        coverageData: {}
+        coverageData: {},
+        customFavicon: ''
     };
 
     public addPage(page: PageInterface) {

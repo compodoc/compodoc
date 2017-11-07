@@ -33,6 +33,7 @@ export class HtmlEngine {
             'directive',
             'injectables',
             'injectable',
+            'interceptor',
             'pipes',
             'pipe',
             'classes',

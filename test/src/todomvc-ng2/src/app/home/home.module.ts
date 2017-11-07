@@ -10,6 +10,13 @@ import { HeaderModule } from '../header/';
 import { ListModule } from '../list/';
 import { FooterModule } from '../footer/';
 
+const INTERNAL_MODULES = [
+    HeaderModule,
+    ListModule,
+    FooterModule,
+    HomeRoutingModule
+]
+
 /**
  * The header module
  *
@@ -24,10 +31,7 @@ import { FooterModule } from '../footer/';
         FormsModule,
         HttpModule,
 
-        HeaderModule,
-        ListModule,
-        FooterModule,
-        HomeRoutingModule
+        ...INTERNAL_MODULES
     ],
     exports: [HomeComponent]
 })

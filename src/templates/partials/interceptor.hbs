@@ -1,0 +1,89 @@
+<ol class="breadcrumb">
+  <li>Interceptors</li>
+  <li>{{name}}</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active">
+        <a href="#info" id="info-tab" role="tab" data-toggle="tab" data-link="info">Info</a>
+    </li>
+
+    {{#if injectable.readme}}
+    <li>
+        <a href="#readme" role="tab" id="readme-tab" data-toggle="tab" data-link="readme">README</a>
+    </li>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
+    <li>
+        <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+    </li>
+    {{/unless}}
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>{{injectable.file}}</code>
+        </p>
+
+        {{#if injectable.description}}
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                {{{parseDescription injectable.description depth}}}
+            </p>
+        {{/if}}
+
+        {{#if injectable.jsdoctags}}
+            <p class="comment">
+                <h3>Example</h3>
+            </p>
+            <div class="io-description">
+                {{#jsdoc-code-example injectable.jsdoctags}}
+                    {{#each tags}}
+                        <div>
+                            {{{comment}}}
+                        </div>
+                    {{/each}}
+                {{/jsdoc-code-example}}
+            </div>
+        {{/if}}
+
+        {{#orLength injectable.properties injectable.methods injectable.accessors}}
+            {{> index methods=injectable.methods properties=injectable.properties  accessors=injectable.accessors}}
+        {{/orLength}}
+
+        {{#if injectable.constructorObj}}
+            {{> block-constructor constructor=injectable.constructorObj file=injectable.file }}
+        {{/if}}
+
+        {{#if injectable.methods}}
+            {{> block-method methods=injectable.methods file=injectable.file }}
+        {{/if}}
+
+        {{#if injectable.properties}}
+            {{> block-property properties=injectable.properties file=injectable.file }}
+        {{/if}}
+
+        {{#if injectable.accessors}}
+            {{> block-accessors accessors=injectable.accessors file=injectable.file }}
+        {{/if}}
+    </div>
+
+    {{#if injectable.readme}}
+    <div class="tab-pane fade" id="readme">
+        <p>{{{injectable.readme}}}</p>
+    </div>
+    {{/if}}
+
+    {{#unless disableSourceCode}}
+    <div class="tab-pane fade tab-source-code" id="source">
+        <pre class="line-numbers"><code class="language-typescript">{{injectable.sourceCode}}</code></pre>
+    </div>
+    {{/unless}}
+</div>

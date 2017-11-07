@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { FileEngine } from './file.engine';
 
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 export class MarkdownEngine {
 	/**
@@ -41,24 +41,18 @@ export class MarkdownEngine {
 		};
 
 		let self = this;
-		renderer.image = function () {
-			// tslint:disable-next-line:no-invalid-this
-			self.renderImage.apply(self, [this, ..._.slice(arguments as any)]);
+		renderer.image = function (href: string, title: string, text: string) {
+            let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
+    		if (title) {
+    			out += ' title="' + title + '"';
+    		}
+    		return out;
 		};
 
 		marked.setOptions({
 			renderer: renderer,
 			breaks: false
 		});
-	}
-
-	private renderImage(context, href: string, title: string, text: string): string {
-		let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
-		if (title) {
-			out += ' title="' + title + '"';
-		}
-		out += context.options.xhtml ? '/>' : '>';
-		return out;
 	}
 
 	public getTraditionalMarkdown(filepath: string): Promise<string> {

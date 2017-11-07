@@ -6,15 +6,13 @@ import { EmitterService } from '../shared/services/emitter.service';
 
 import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass, LogClassWithArgs } from '../shared/decorators/log.decorator';
 
+import { FooterComponentSchema } from './footer-component.metadata';
+
 /**
  * The footer component
  */
 @LogClassWithArgs('toto')
-@Component({
-    selector: 'footer',
-    providers: [],
-    templateUrl: './footer.component.html'
-})
+@Component(FooterComponentSchema)
 export class FooterComponent {
     /**
      * Local reference of TodoStore

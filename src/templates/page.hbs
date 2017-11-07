@@ -71,6 +71,10 @@
                         {{~> injectable data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'interceptor'}}
+                        {{~> interceptor data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'pipes'}}
                         {{~> pipes data ~}}
                    {{/compare}}

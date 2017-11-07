@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
 export class SymbolHelper {
@@ -77,7 +78,35 @@ export class SymbolHelper {
      * { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
      */
     public parseProviderConfiguration(node: ts.ObjectLiteralExpression): string {
-        return new TsPrinterUtil().print(node);
+        if (node.kind && node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+            // Search for provide: HTTP_INTERCEPTORS
+            // and if true, return type: 'interceptor' + name
+            let interceptorName,
+                hasInterceptor;
+            if (node.properties) {
+                if (node.properties.length > 0) {
+                    _.forEach(node.properties, (property) => {
+                        if (property.kind && property.kind === ts.SyntaxKind.PropertyAssignment) {
+                            if (property.name.text === 'provide') {
+                                if (property.initializer.text === 'HTTP_INTERCEPTORS') {
+                                    hasInterceptor = true;
+                                }
+                            }
+                            if (property.name.text === 'useClass') {
+                                interceptorName = property.initializer.text;
+                            }
+                        }
+                    });
+                }
+            }
+            if (hasInterceptor) {
+                return interceptorName;
+            } else {
+                return new TsPrinterUtil().print(node);
+            }
+        } else {
+            return new TsPrinterUtil().print(node);
+        }
     }
 
     /**
@@ -86,7 +115,7 @@ export class SymbolHelper {
      *   71 Identifier     => "RouterModule" "TodoStore"
      *    9 StringLiteral  => "./app.component.css" "./tab.scss"
      */
-    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression): string {
+    public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression | ts.SpreadElement): string {
         // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
         if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
             let className = this.buildIdentifierName(node.expression);
@@ -100,6 +129,11 @@ export class SymbolHelper {
             return text;
         } else if (ts.isPropertyAccessExpression(node)) { // parse expressions such as: Shared.Module
             return this.buildIdentifierName(node);
+        } else if (ts.isSpreadElement(node)) { // parse expressions such as: ...MYARRAY
+            // Resolve MYARRAY in imports or local file variables after full scan, just return the name of the variable
+            if (node.expression && node.expression.text) {
+                return node.expression.text;
+            }
         }
 
         return node.text ? node.text : this.parseProviderConfiguration(node);
@@ -108,11 +142,14 @@ export class SymbolHelper {
     /**
      * Kind
      *  177 ArrayLiteralExpression
+     *  122 BooleanKeyword
      *    9 StringLiteral
      */
     private parseSymbols(node: ts.PropertyAssignment): Array<string> {
         if (ts.isStringLiteral(node.initializer)) {
             return [node.initializer.text];
+        } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
+            return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
         } else if (ts.isPropertyAccessExpression(node.initializer)) {
             let identifier = this.parseSymbolElements(node.initializer);
             return [
@@ -121,13 +158,14 @@ export class SymbolHelper {
         } else if (ts.isArrayLiteralExpression(node.initializer)) {
             return node.initializer.elements.map(x => this.parseSymbolElements(x));
         }
-
     }
 
     public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
-        let deps = props.filter(node => node.name.text === type);
+        let deps = props.filter(node => {
+            return node.name.text === type;
+        });
         return deps.map(x => this.parseSymbols(x)).pop() || [];
     }
 

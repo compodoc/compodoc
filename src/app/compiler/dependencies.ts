@@ -20,7 +20,7 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { JsdocParserUtil, RouterParserUtil } from '../../utils';
+import { JsdocParserUtil, RouterParserUtil, ImportsUtil } from '../../utils';
 import {
     IInjectableDep,
     IPipeDep,
@@ -31,10 +31,9 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
-
 
 export class Dependencies {
 
@@ -50,6 +49,7 @@ export class Dependencies {
     private classHelper: ClassHelper;
 
     private jsdocParserUtil = new JsdocParserUtil();
+    private importsUtil = new ImportsUtil();
 
     constructor(
         files: string[],
@@ -74,6 +74,7 @@ export class Dependencies {
             modulesForGraph: [],
             components: [],
             injectables: [],
+            interceptors: [],
             pipes: [],
             directives: [],
             routes: [],
@@ -232,7 +233,7 @@ export class Dependencies {
         let file = srcFile.fileName.replace(cleaner, '');
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
-            if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disablePrivateOrInternalSupport) {
+            if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disableInternal) {
                 return;
             }
 
@@ -245,7 +246,7 @@ export class Dependencies {
 
                         let metadata = node.decorators;
                         let name = this.getSymboleName(node);
-                        let props = this.findProperties(visitedNode);
+                        let props = this.findProperties(visitedNode, srcFile);
                         let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
 
                         if (this.isModule(metadata)) {
@@ -287,7 +288,16 @@ export class Dependencies {
                             if (IO.accessors) {
                                 injectableDeps.accessors = IO.accessors;
                             }
-                            outputSymbols.injectables.push(injectableDeps);
+                            if (IO.implements && IO.implements.length > 0) {
+                                if (_.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
+                                    outputSymbols.interceptors.push(injectableDeps);
+                                } else {
+                                    outputSymbols.injectables.push(injectableDeps);
+                                }
+                            } else {
+                                outputSymbols.injectables.push(injectableDeps);
+                            }
+
                             deps = injectableDeps;
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
@@ -296,6 +306,10 @@ export class Dependencies {
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
+                                properties: IO.properties,
+                                methods: IO.methods,
+                                pure: this.componentHelper.getComponentPure(props),
+                                ngname: this.componentHelper.getComponentName(props),
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };
@@ -681,11 +695,14 @@ export class Dependencies {
         return node.name.text;
     }
 
-    private findProperties(visitedNode: ts.Decorator): ReadonlyArray<ts.ObjectLiteralElementLike> {
+    private findProperties(visitedNode: ts.Decorator, sourceFile: ts.SourceFile): ReadonlyArray<ts.ObjectLiteralElementLike> {
         if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
             let pop = visitedNode.expression.arguments[0];
             if (ts.isObjectLiteralExpression(pop)) {
                 return pop.properties;
+            } else {
+                logger.warn('Empty metadatas, trying to found it with imports.');
+                return this.importsUtil.merge(pop.text, sourceFile);
             }
         }
 

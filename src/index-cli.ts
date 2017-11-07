@@ -54,7 +54,11 @@ export class CliApplication extends Application {
             .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
-            .option('--disablePrivateOrInternalSupport', 'Do not show private, @internal or Angular lifecycle hooks in generated documentation', false)
+            .option('--disablePrivate', 'Do not show private in generated documentation', false)
+            .option('--disableProtected', 'Do not show protected in generated documentation', false)
+            .option('--disableInternal', 'Do not show @internal in generated documentation', false)
+            .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
+            .option('--customFavicon [path]', 'Use a custom favicon')
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -152,8 +156,24 @@ export class CliApplication extends Application {
             this.configuration.mainData.disableCoverage = program.disableCoverage;
         }
 
-        if (program.disablePrivateOrInternalSupport) {
-            this.configuration.mainData.disablePrivateOrInternalSupport = program.disablePrivateOrInternalSupport;
+        if (program.disablePrivate) {
+            this.configuration.mainData.disablePrivate = program.disablePrivate;
+        }
+
+        if (program.disableProtected) {
+            this.configuration.mainData.disableProtected = program.disableProtected;
+        }
+
+        if (program.disableInternal) {
+            this.configuration.mainData.disableInternal = program.disableInternal;
+        }
+
+        if (program.disableLifeCycleHooks) {
+            this.configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
+        }
+
+        if (program.customFavicon) {
+            this.configuration.mainData.customFavicon = program.customFavicon;
         }
 
         if (!this.isWatching) {

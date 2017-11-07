@@ -7,7 +7,7 @@ import * as ts from 'typescript';
 import * as glob from 'glob';
 
 const chokidar = require('chokidar');
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -395,6 +395,10 @@ export class Application {
             actions.push(() => this.prepareInjectables());
         }
 
+        if (diffCrawledData.interceptors.length > 0) {
+            actions.push(() => this.prepareInterceptors());
+        }
+
         if (diffCrawledData.pipes.length > 0) {
             actions.push(() => this.preparePipes());
         }
@@ -443,6 +447,9 @@ export class Application {
         if (this.dependenciesEngine.injectables.length > 0) {
             logger.info(`- injectable : ${this.dependenciesEngine.injectables.length}`);
         }
+        if (this.dependenciesEngine.interceptors.length > 0) {
+            logger.info(`- injector   : ${this.dependenciesEngine.interceptors.length}`);
+        }
         if (this.dependenciesEngine.pipes.length > 0) {
             logger.info(`- pipe       : ${this.dependenciesEngine.pipes.length}`);
         }
@@ -470,6 +477,10 @@ export class Application {
 
         if (this.dependenciesEngine.injectables.length > 0) {
             actions.push(() => { return this.prepareInjectables(); });
+        }
+
+        if (this.dependenciesEngine.interceptors.length > 0) {
+            actions.push(() => { return this.prepareInterceptors(); });
         }
 
         if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0) {
@@ -632,8 +643,18 @@ export class Application {
                     });
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
-                    return this.dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name);
+                    return this.dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name) ||
+                           this.dependenciesEngine.getInterceptors().some(interceptor => interceptor.name === provider.name);
                 });
+                // Try fixing type undefined for each providers
+                _.forEach(ngModule.providers, (provider) => {
+                    if (this.dependenciesEngine.getInjectables().find(injectable => injectable.name === provider.name)) {
+                        provider.type = 'injectable';
+                    }
+                    if (this.dependenciesEngine.getInterceptors().find(interceptor => interceptor.name === provider.name)) {
+                        provider.type = 'interceptor';
+                    }
+                })
                 return ngModule;
             });
             this.configuration.addPage({
@@ -959,6 +980,40 @@ export class Application {
                         id: this.configuration.mainData.injectables[i].id,
                         context: 'injectable',
                         injectable: this.configuration.mainData.injectables[i],
+                        depth: 1,
+                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    });
+                    i++;
+                    loop();
+                } else {
+                    resolve();
+                }
+            };
+            loop();
+        });
+    }
+
+    public prepareInterceptors(someInterceptors?): Promise<void> {
+        logger.info('Prepare interceptors');
+
+        this.configuration.mainData.interceptors = (someInterceptors) ? someInterceptors : this.dependenciesEngine.getInterceptors();
+
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let len = this.configuration.mainData.interceptors.length;
+            let loop = () => {
+                if (i < len) {
+                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.interceptors[i].file)) {
+                        logger.info(` ${this.configuration.mainData.interceptors[i].name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.interceptors[i].file);
+                        this.configuration.mainData.interceptors[i].readme = marked(readme);
+                    }
+                    this.configuration.addPage({
+                        path: 'interceptors',
+                        name: this.configuration.mainData.interceptors[i].name,
+                        id: this.configuration.mainData.interceptors[i].id,
+                        context: 'interceptor',
+                        injectable: this.configuration.mainData.interceptors[i],
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                     });
@@ -1523,7 +1578,18 @@ export class Application {
                             }
                         });
                 } else {
-                    onComplete();
+                    if (this.configuration.mainData.customFavicon !== '') {
+                        logger.info(`Custom favicon supplied`);
+                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (err) => {
+                            if (err) {
+                                logger.error('Error during resources copy ', err);
+                            } else {
+                                onComplete();
+                            }
+                        });
+                    } else {
+                        onComplete();
+                    }
                 }
             }
         });

@@ -14,7 +14,8 @@ import {
     IPipeDep,
     ITypeAliasDecDep,
     IFunctionDecDep,
-    IEnumDecDep
+    IEnumDecDep,
+    IInterceptorDep
 } from '../compiler/dependencies.interfaces';
 
 const traverse = require('traverse');
@@ -27,6 +28,7 @@ export class DependenciesEngine {
     public components: Object[];
     public directives: Object[];
     public injectables: Object[];
+    public interceptors: Object[];
     public interfaces: Object[];
     public routes: Object[];
     public pipes: Object[];
@@ -79,6 +81,7 @@ export class DependenciesEngine {
         this.components = _.sortBy(this.rawData.components, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
+        this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
@@ -105,6 +108,7 @@ export class DependenciesEngine {
     public find(type: string): IApiSourceResult<any> | undefined {
         let searchFunctions: Array<() => IApiSourceResult<any>> = [
             () => this.findInCompodocDependencies(type, this.injectables),
+            () => this.findInCompodocDependencies(type, this.interceptors),
             () => this.findInCompodocDependencies(type, this.interfaces),
             () => this.findInCompodocDependencies(type, this.classes),
             () => this.findInCompodocDependencies(type, this.components),
@@ -148,6 +152,12 @@ export class DependenciesEngine {
             _.forEach(updatedData.injectables, (injectable: IInjectableDep) => {
                 let _index = _.findIndex(this.injectables, { 'name': injectable.name });
                 this.injectables[_index] = injectable;
+            });
+        }
+        if (updatedData.interceptors.length > 0) {
+            _.forEach(updatedData.interceptors, (interceptor: IInterceptorDep) => {
+                let _index = _.findIndex(this.interceptors, { 'name': interceptor.name });
+                this.interceptors[_index] = interceptor;
             });
         }
         if (updatedData.interfaces.length > 0) {
@@ -212,7 +222,7 @@ export class DependenciesEngine {
 
     public findInCompodoc(name: string) {
         let mergedData = _.concat([], this.modules, this.components, this.directives,
-            this.injectables, this.interfaces, this.pipes, this.classes);
+            this.injectables, this.interceptors, this.interfaces, this.pipes, this.classes);
         let result = _.find(mergedData, { 'name': name } as any);
         return result || false;
     }
@@ -251,6 +261,10 @@ export class DependenciesEngine {
 
     public getInjectables() {
         return this.injectables;
+    }
+
+    public getInterceptors() {
+        return this.interceptors;
     }
 
     public getInterfaces() {
