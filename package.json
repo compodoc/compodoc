@@ -1,6 +1,6 @@
 {
   "name": "@compodoc/compodoc",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The missing documentation tool for your Angular application",
   "main": "dist/index.js",
   "bin": {
@@ -74,7 +74,7 @@
     "os-name": "^2.0.1",
     "shelljs": "^0.7.8",
     "traverse": "^0.6.6",
-    "ts-simple-ast": "^0.81.0",
+    "ts-simple-ast": "^0.86.0",
     "typescript": "2.6.1"
   },
   "devDependencies": {
@@ -82,10 +82,10 @@
     "@types/es6-promise": "0.0.33",
     "@types/fs-extra": "4.0.3",
     "@types/handlebars": "^4.0.36",
-    "@types/lodash": "^4.14.80",
+    "@types/lodash": "^4.14.82",
     "@types/marked": "0.3.0",
     "@types/mocha": "2.2.44",
-    "@types/node": "8.0.47",
+    "@types/node": "8.0.49",
     "@types/semver": "^5.4.0",
     "chai": "^4.1.2",
     "codecov": "^3.0.0",
