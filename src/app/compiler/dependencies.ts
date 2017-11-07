@@ -289,7 +289,7 @@ export class Dependencies {
                                 injectableDeps.accessors = IO.accessors;
                             }
                             if (IO.implements && IO.implements.length > 0) {
-                                if (IO.implements.includes('HttpInterceptor')) {
+                                if (_.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
                                     outputSymbols.interceptors.push(injectableDeps);
                                 } else {
                                     outputSymbols.injectables.push(injectableDeps);
