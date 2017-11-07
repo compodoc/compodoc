@@ -1,3 +1,19 @@
+<a name="1.0.4"></a>
+# [1.0.4](https://github.com/compodoc/compodoc/compare/1.0.3...1.0.4) (2017-11-07)
+
+### Features
+
+* **pipes:** add metadata + functions and properties ([7ccb04b2](https://github.com/compodoc/compodoc/commit/7ccb04b2)), closes [#336](https://github.com/compodoc/-compodoc/issues/336)
+* **export:** beautify formats JSON output ([562455ab](https://github.com/compodoc/compodoc/commit/562455ab)) thanks [realappie](https://github.com/realappie)
+* **cli:** Add support for specifying a favicon ([8cfe576f](https://github.com/compodoc/compodoc/commit/8cfe576f)), closes [#310](https://github.com/compodoc/-compodoc/issues/310)
+* **dependencies:** interceptors support ([7efd812e](https://github.com/compodoc/compodoc/commit/7efd812e)), closes [#334](https://github.com/compodoc/-compodoc/issues/334)
+
+### Bug Fixes
+
+* **dependencies:** decorators metadatas resolve with imports ([a5a3027c](https://github.com/compodoc/compodoc/commit/a5a3027c)), closes [#94](https://github.com/compodoc/-compodoc/issues/94)
+* **dependencies:** spread operator support for module metadatas ([8e098086](https://github.com/compodoc/compodoc/commit/8e098086)), closes [#298](https://github.com/compodoc/-compodoc/issues/298)
+* **core:** split disablePrivateOrInternalSupport ([9e4222ed](https://github.com/compodoc/compodoc/commit/9e4222ed)), closes [#241](https://github.com/compodoc/-compodoc/issues/241) [#271](https://github.com/compodoc/-compodoc/issues/271)
+
 <a name="1.0.3"></a>
 # [1.0.3](https://github.com/compodoc/compodoc/compare/1.0.2...1.0.3) (2017-10-31)
 
