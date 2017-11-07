@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { FileEngine } from './file.engine';
 
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 export class MarkdownEngine {
 	/**

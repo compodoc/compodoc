@@ -7,7 +7,7 @@ import * as ts from 'typescript';
 import * as glob from 'glob';
 
 const chokidar = require('chokidar');
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';

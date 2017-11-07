@@ -10,7 +10,7 @@ import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
 const newLine = ts.sys.newLine;
-const marked = require('marked');
+const marked = require('8fold-marked');
 
 export function getNewLine(): string {
     return newLine;
