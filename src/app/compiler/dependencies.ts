@@ -322,7 +322,7 @@ export class Dependencies {
                             if (props.length === 0) {
                                 return;
                             }
-                            let directiveDeps = new DirectiveDepFactory(this.componentHelper)
+                            let directiveDeps = new DirectiveDepFactory(this.componentHelper, this.configuration)
                                 .create(file, srcFile, name, props, IO);
                             outputSymbols.directives.push(directiveDeps);
                             deps = directiveDeps;

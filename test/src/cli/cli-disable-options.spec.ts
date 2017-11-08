@@ -140,6 +140,8 @@ describe('CLI disable flags', () => {
 
         it('should exclude lifecyle hooks', () => {
             expect(componentFile).not.to.contain('<code>ngOnInit');
+            const directiveFile = read(`${tmp.name}/directives/BarDirective.html`);
+            expect(directiveFile).not.to.contain('<code>ngOnInit');
         });
 
         it('should include methods marked as private', () => {
