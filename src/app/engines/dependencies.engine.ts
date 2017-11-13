@@ -7,6 +7,7 @@ import { IModuleDep } from '../compiler/deps/module-dep.factory';
 import { IComponentDep } from '../compiler/deps/component-dep.factory';
 import { IDirectiveDep } from '../compiler/deps/directive-dep.factory';
 import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { RouteInterface } from '../interfaces/routes.interface';
 import { AngularApiUtil } from '../../utils/angular-api.util';
 import {
     IInjectableDep,
@@ -30,7 +31,7 @@ export class DependenciesEngine {
     public injectables: Object[];
     public interceptors: Object[];
     public interfaces: Object[];
-    public routes: Object[];
+    public routes: RouteInterface;
     public pipes: Object[];
     public classes: Object[];
     public miscellaneous: MiscellaneousData;

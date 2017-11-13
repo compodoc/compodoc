@@ -483,7 +483,7 @@ export class Application {
             actions.push(() => { return this.prepareInterceptors(); });
         }
 
-        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.length > 0) {
+        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0) {
             actions.push(() => { return this.prepareRoutes(); });
         }
 
