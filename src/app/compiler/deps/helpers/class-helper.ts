@@ -27,8 +27,8 @@ export class ClassHelper {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        if (node.text) {
-            return node.text;
+        if (node.getText()) {
+            return node.getText();
         } else if (node.kind === ts.SyntaxKind.FalseKeyword) {
             return 'false';
         } else if (node.kind === ts.SyntaxKind.TrueKeyword) {
@@ -36,21 +36,21 @@ export class ClassHelper {
         }
     }
 
-    private visitTypeName(typeName: any) {
+    private visitTypeName(typeName: ts.Identifier) {
       if(typeName.text) {
         return typeName.text;
       }
       return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
     }
 
-    public visitType(node: ts.Declaration | undefined): string {
+    public visitType(node): string {
         let _return = 'void';
 
         if (!node) {
             return _return;
         }
 
-        if (node.typeName) {
+        if (node) {
             _return = this.visitTypeName(node.typeName);
         } else if (node.type) {
             if (node.type.kind) {

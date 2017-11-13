@@ -104,7 +104,7 @@ export class Application {
     /**
      * Start compodoc process
      */
-    protected generate() {
+    protected generate(): Promise<{}> {
 
         process.on('unhandledRejection', this.unhandledRejectionListener);
         process.on('uncaughtException', this.uncaughtExceptionListener);

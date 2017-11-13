@@ -59,7 +59,8 @@ export class ImportsUtil {
                         if (initializer) {
                             let initializerKind = initializer.getKind();
                             if (initializerKind && initializerKind === ts.SyntaxKind.ObjectLiteralExpression) {
-                                return initializer.compilerNode.properties;
+                                let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
+                                return compilerNode.properties;
                             }
                         }
                     }

@@ -7,6 +7,8 @@ import { FileEngine } from './file.engine';
 
 import { ExportData } from '../interfaces/export-data.interface';
 
+import { AngularNgModuleNode } from '../nodes/angular-ngmodule-node';
+
 const traverse = require('traverse');
 
 export class ExportJsonEngine {
@@ -47,7 +49,7 @@ export class ExportJsonEngine {
     }
 
     processModules() {
-        const modules = this.dependenciesEngine.getModules();
+        const modules: AngularNgModuleNode[] = this.dependenciesEngine.getModules();
 
         let _resultedModules = [];
 

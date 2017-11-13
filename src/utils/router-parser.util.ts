@@ -8,6 +8,7 @@ import * as JSON5 from 'json5';
 
 import { logger } from '../logger';
 import { FileEngine } from '../app/engines/file.engine';
+import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
 
 export class RouterParserUtil {
     private routes: any[] = [];
@@ -118,13 +119,14 @@ export class RouterParserUtil {
         let i = 0;
         let len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
-            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.Node) => {
-                if (node.initializer) {
-                    if (node.initializer.elements) {
-                        _.forEach(node.initializer.elements, (element) => {
+            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.PropertyDeclaration) => {
+                let initializer = node.initializer as ts.ArrayLiteralExpression;
+                if (initializer) {
+                    if (initializer.elements) {
+                        _.forEach(initializer.elements, (element: ts.CallExpression) => {
                             // find element with arguments
                             if (element.arguments) {
-                                _.forEach(element.arguments, (argument) => {
+                                _.forEach(element.arguments, (argument: ts.Identifier) => {
                                     _.forEach(this.routes, (route) => {
                                         if (argument.text && route.name === argument.text &&
                                             route.filename === this.modulesWithRoutes[i].filename) {
@@ -286,9 +288,9 @@ export class RouterParserUtil {
                 for (let i in route.children) {
                     if (route.children[i].loadChildren) {
                         let child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
-                        let module = _.find(this.cleanModulesTree, { 'name': child });
+                        let module: RoutingGraphNode = _.find(this.cleanModulesTree, { 'name': child });
                         if (module) {
-                            let _rawModule: any = {};
+                            let _rawModule: RoutingGraphNode = {};
                             _rawModule.kind = 'module';
                             _rawModule.children = [];
                             _rawModule.module = module.name;
