@@ -50,7 +50,7 @@ export class ClassHelper {
             return _return;
         }
 
-        if (node) {
+        if (node.typeName) {
             _return = this.visitTypeName(node.typeName);
         } else if (node.type) {
             if (node.type.kind) {
