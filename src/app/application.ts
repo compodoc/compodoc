@@ -483,7 +483,7 @@ export class Application {
             actions.push(() => { return this.prepareInterceptors(); });
         }
 
-        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0) {
+        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.length > 0) {
             actions.push(() => { return this.prepareRoutes(); });
         }
 
@@ -520,11 +520,10 @@ export class Application {
                     if (COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(this.configuration.mainData.exportFormat) > -1) {
                         logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
                         this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
-                            let finalTime = (new Date() - startTime) / 1000;
                             generationPromiseResolve();
                             this.endCallback();
                             logger.info('Documentation generated in ' + this.configuration.mainData.output +
-                                ' in ' + finalTime + ' seconds');
+                                ' in ' + this.getElapsedTime() + ' seconds');
                         });
                     } else {
                         logger.warn(`Exported format not supported`);
@@ -626,16 +625,24 @@ export class Application {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
-                                return this.dependenciesEngine.getDirectives().some(directive => directive.name === metaDataItem.name);
+                                return this.dependenciesEngine.getDirectives().some(
+                                    directive => (directive as any).name === metaDataItem.name
+                                );
 
                             case 'component':
-                                return this.dependenciesEngine.getComponents().some(component => component.name === metaDataItem.name);
+                                return this.dependenciesEngine.getComponents().some(
+                                    component => (component as any).name === metaDataItem.name
+                                );
 
                             case 'module':
-                                return this.dependenciesEngine.getModules().some(module => module.name === metaDataItem.name);
+                                return this.dependenciesEngine.getModules().some(
+                                    module => (module as any).name === metaDataItem.name
+                                );
 
                             case 'pipe':
-                                return this.dependenciesEngine.getPipes().some(pipe => pipe.name === metaDataItem.name);
+                                return this.dependenciesEngine.getPipes().some(
+                                    pipe => (pipe as any).name === metaDataItem.name
+                                );
 
                             default:
                                 return true;
@@ -643,18 +650,18 @@ export class Application {
                     });
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
-                    return this.dependenciesEngine.getInjectables().some(injectable => injectable.name === provider.name) ||
-                           this.dependenciesEngine.getInterceptors().some(interceptor => interceptor.name === provider.name);
+                    return this.dependenciesEngine.getInjectables().some(injectable => (injectable as any).name === provider.name) ||
+                           this.dependenciesEngine.getInterceptors().some(interceptor => (interceptor as any).name === provider.name);
                 });
                 // Try fixing type undefined for each providers
                 _.forEach(ngModule.providers, (provider) => {
-                    if (this.dependenciesEngine.getInjectables().find(injectable => injectable.name === provider.name)) {
+                    if (this.dependenciesEngine.getInjectables().find(injectable => (injectable as any).name === provider.name)) {
                         provider.type = 'injectable';
                     }
-                    if (this.dependenciesEngine.getInterceptors().find(interceptor => interceptor.name === provider.name)) {
+                    if (this.dependenciesEngine.getInterceptors().find(interceptor => (interceptor as any).name === provider.name)) {
                         provider.type = 'interceptor';
                     }
-                })
+                });
                 return ngModule;
             });
             this.configuration.addPage({
@@ -1543,9 +1550,8 @@ export class Application {
         logger.info('Copy main resources');
 
         const onComplete = () => {
-            let finalTime = (new Date() - startTime) / 1000;
             logger.info('Documentation generated in ' + this.configuration.mainData.output +
-                ' in ' + finalTime +
+                ' in ' + this.getElapsedTime() +
                 ' seconds using ' + this.configuration.mainData.theme + ' theme');
             if (this.configuration.mainData.serve) {
                 logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
@@ -1593,6 +1599,15 @@ export class Application {
                 }
             }
         });
+    }
+
+    /**
+     * Calculates the elapsed time since the program was started.
+     *
+     * @returns {number}
+     */
+    private getElapsedTime() {
+        return (new Date().valueOf() - startTime.valueOf()) / 1000;
     }
 
     public processGraphs() {
