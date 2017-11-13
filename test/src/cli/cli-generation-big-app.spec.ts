@@ -410,5 +410,8 @@ describe('CLI simple generation - big app', () => {
         expect(fileTest).to.be.true;
     });
 
-
+    it('should have DOM tree tab for component with inline template', () => {
+        let file = read('documentation/components/HomeComponent.html');
+        expect(file).to.contain('<header class="header"');
+    });
 });

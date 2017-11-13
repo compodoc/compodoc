@@ -146,7 +146,7 @@ export class SymbolHelper {
      *    9 StringLiteral
      */
     private parseSymbols(node: ts.PropertyAssignment): Array<string> {
-        if (ts.isStringLiteral(node.initializer)) {
+        if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
             return [node.initializer.text];
         } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
             return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
