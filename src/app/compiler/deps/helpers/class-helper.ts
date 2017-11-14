@@ -599,7 +599,13 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -656,7 +662,13 @@ export class ClassHelper {
 
         if (property.modifiers) {
             if (property.modifiers.length > 0) {
-                result.modifierKind = property.modifiers[0].kind;
+                let kinds = property.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -816,7 +828,13 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {

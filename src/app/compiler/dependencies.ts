@@ -785,7 +785,12 @@ export class Dependencies {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                };
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {

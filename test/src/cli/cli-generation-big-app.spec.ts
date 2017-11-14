@@ -414,4 +414,17 @@ describe('CLI simple generation - big app', () => {
         let file = read('documentation/components/HomeComponent.html');
         expect(file).to.contain('<header class="header"');
     });
+
+    it('should have parsed correctly private, public, and static methods or properties', () => {
+        let file = read('documentation/components/AboutComponent.html');
+        expect(file).to.contain('<code>privateStaticMethod()');
+        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`);
+        expect(file).to.contain('<code>protectedStaticMethod()');
+        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`);
+        expect(file).to.contain('<code>publicMethod()');
+        expect(file).to.contain('<code>publicStaticMethod()');
+        expect(file).to.contain('<code>staticMethod()');
+        expect(file).to.contain('staticReadonlyVariable');
+        expect(file).to.contain(`<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`);
+    });
 });

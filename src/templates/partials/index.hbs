@@ -13,7 +13,10 @@
                     <ul class="index-list">
                     {{#each properties}}
                         <li>
-                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                            {{#each modifierKind}}
+                                <span class="modifier">{{modifKind this}}</span>
+                            {{/each}}
+                            <a href="#{{name}}">{{name}}</a>
                         </li>
                     {{/each}}
                     </ul>
@@ -31,7 +34,10 @@
                     <ul class="index-list">
                     {{#each methods}}
                         <li>
-                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                            {{#each modifierKind}}
+                                <span class="modifier">{{modifKind this}}</span>
+                            {{/each}}
+                            <a href="#{{name}}">{{name}}</a>
                         </li>
                     {{/each}}
                     </ul>
@@ -49,7 +55,10 @@
                     <ul class="index-list">
                     {{#each accessors}}
                         <li>
-                            {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{@key}}">{{@key}}</a>
+                            {{#each modifierKind}}
+                                <span class="modifier">{{modifKind this}}</span>
+                            {{/each}}
+                            <a href="#{{@key}}">{{@key}}</a>
                         </li>
                     {{/each}}
                     </ul>

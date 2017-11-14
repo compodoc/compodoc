@@ -86,7 +86,10 @@
                             <ul class="index-list">
                             {{#each interface.methods}}
                                 <li>
-                                    {{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} <a href="#{{name}}">{{name}}</a>
+                                    {{#each modifierKind}}
+                                        <span class="modifier">{{modifKind this}}</span>
+                                    {{/each}}
+                                    <a href="#{{name}}">{{name}}</a>
                                 </li>
                             {{/each}}
                             </ul>

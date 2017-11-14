@@ -44,4 +44,28 @@ export class AboutComponent {
      set fullName(newName: string) {
          this._fullName = newName;
      }
+
+     static readonly staticReadonlyVariable: string;
+
+     public static publicStaticVariable: string;
+
+     protected static protectedStaticMethod(): string {
+         return '';
+     }
+
+     private static privateStaticMethod(): string {
+         return '';
+     }
+
+     public static publicStaticMethod(): string {
+         return '';
+     }
+
+     static staticMethod(): string {
+         return '';
+     }
+
+     public publicMethod(): string {
+         return '';
+     }
 }
