@@ -68,6 +68,40 @@ export class DependenciesEngine {
         return _m;
     }
 
+    private updateModulesDeclarationsExportsTypes() {
+        let _m = this.modules,
+            i = 0,
+            len = this.modules.length;
+
+        let mergeTypes = (entry) => {
+            let directive = this.findInCompodocDependencies(entry.name, this.directives);
+            if (typeof directive.data !== 'undefined') {
+                entry.type = 'directive';
+            }
+            let component = this.findInCompodocDependencies(entry.name, this.components);
+            if (typeof component.data !== 'undefined') {
+                entry.type = 'component';
+            }
+            let pipe = this.findInCompodocDependencies(entry.name, this.pipes);
+            if (typeof pipe.data !== 'undefined') {
+                entry.type = 'pipe';
+            }
+        }
+
+        this.modules.forEach((module) => {
+            module.declarations.forEach((declaration) => {
+                mergeTypes(declaration);
+            });
+            module.exports.forEach((expt) => {
+                mergeTypes(expt);
+            });
+            module.entryComponents.forEach((ent) => {
+                mergeTypes(ent);
+            });
+        })
+
+    }
+
     public init(data: ParsedData) {
         traverse(data).forEach(function (node) {
             if (node) {
@@ -88,6 +122,7 @@ export class DependenciesEngine {
         this.classes = _.sortBy(this.rawData.classes, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
+        this.updateModulesDeclarationsExportsTypes();
         this.routes = this.rawData.routesTree;
     }
 
