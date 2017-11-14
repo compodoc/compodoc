@@ -602,7 +602,7 @@ export class ClassHelper {
                 let kinds = method.modifiers.map((modifier) => {
                     return modifier.kind;
                 }).reverse();
-                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
                     kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
@@ -665,7 +665,7 @@ export class ClassHelper {
                 let kinds = property.modifiers.map((modifier) => {
                     return modifier.kind;
                 }).reverse();
-                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
                     kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
@@ -831,7 +831,7 @@ export class ClassHelper {
                 let kinds = method.modifiers.map((modifier) => {
                     return modifier.kind;
                 }).reverse();
-                if (kinds.includes(ts.SyntaxKind.PublicKeyword) && kinds.includes(ts.SyntaxKind.StaticKeyword)) {
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
                     kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
