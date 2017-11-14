@@ -118,7 +118,7 @@ export class RouterParserUtil {
         let i = 0;
         let len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
-            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.Node) => {
+            _.forEach(this.modulesWithRoutes[i].importsNode, (node) => {
                 if (node.initializer) {
                     if (node.initializer.elements) {
                         _.forEach(node.initializer.elements, (element) => {
@@ -286,7 +286,7 @@ export class RouterParserUtil {
                 for (let i in route.children) {
                     if (route.children[i].loadChildren) {
                         let child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
-                        let module = _.find(this.cleanModulesTree, { 'name': child });
+                        let module: any = _.find(this.cleanModulesTree, { 'name': child } as any);
                         if (module) {
                             let _rawModule: any = {};
                             _rawModule.kind = 'module';
