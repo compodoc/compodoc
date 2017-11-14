@@ -72,6 +72,18 @@
                     </ul>
                 </div>
                 {{/if}}
+                {{#if module.entryComponents}}
+                <div class="col-sm-3">
+                    <h3>EntryComponents<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" title="Official documentation about module entryComponents"><span class="fa fa-info-circle"></span></a></h3>
+                    <ul class="list-group">
+                        {{#each module.entryComponents}}
+                            <li class="list-group-item">
+                                <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
                 {{#if module.providers}}
                 <div class="col-sm-3">
                     <h3>Providers<a href="https://angular.io/api/core/NgModule#providers" target="_blank" title="Official documentation about module providers"><span class="fa fa-info-circle"></a></h3>
@@ -123,7 +135,7 @@
                 {{/if}}
                 {{#if module.bootstrap}}
                 <div class="col-sm-3">
-                    <h3>Bootstrap<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank"><span class="fa fa-info-circle"></a></h3>
+                    <h3>Bootstrap<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" title="Official documentation about module bootstrap"><span class="fa fa-info-circle"></a></h3>
                     <ul class="list-group">
                         {{#each module.bootstrap}}
                             <li class="list-group-item">

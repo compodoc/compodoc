@@ -427,4 +427,10 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('staticReadonlyVariable');
         expect(file).to.contain(`<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`);
     });
+
+    it('should support entryComponents for modules', () => {
+        let file = read('documentation/modules/AboutModule.html');
+        expect(file).to.contain('EntryComponents');
+        expect(file).to.contain('href="../components/AboutComponent.html"');
+    });
 });

@@ -28,6 +28,18 @@ export class ModuleHelper {
         });
     }
 
+    public getModuleEntryComponents(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Deps[] {
+        return this.symbolHelper.getSymbolDeps(props, 'entryComponents').map((name) => {
+            let component = this.cache.get(name);
+
+            if (component) {
+                return component;
+            }
+
+            return this.symbolHelper.parseDeepIndentifier(name);
+        });
+    }
+
     public getModuleImports(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'imports')
