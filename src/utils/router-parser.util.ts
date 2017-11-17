@@ -9,6 +9,7 @@ import * as JSON5 from 'json5';
 import { logger } from '../logger';
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
+import { ImportsUtil } from './imports.util';
 
 export class RouterParserUtil {
     private routes: any[] = [];
@@ -20,6 +21,7 @@ export class RouterParserUtil {
     private modulesWithRoutes = [];
 
     private fileEngine = new FileEngine();
+    private importsUtil = new ImportsUtil();
 
     public addRoute(route): void {
         this.routes.push(route);
@@ -391,5 +393,65 @@ export class RouterParserUtil {
         console.log('');
         console.log('printModulesRoutes: ');
         console.log(this.modulesWithRoutes);
+    }
+
+    /**
+     * Clean routes definition with imported data, for example path, children, or dynamic stuff inside data
+     *
+     * const MY_ROUTES: Routes = [
+     *     {
+     *         path: 'home',
+     *         component: HomeComponent
+     *     },
+     *     {
+     *         path: PATHS.home,
+     *         component: HomeComponent
+     *     }
+     * ];
+     *
+     * The initializer is an array (ArrayLiteralExpression - 177 ), it has elements, objects (ObjectLiteralExpression - 178)
+     * with properties (PropertyAssignment - 261)
+     *
+     * For each know property (https://angular.io/api/router/Routes#description), we try to see if we have what we want
+     *
+     * Ex: path and pathMatch want a string, component a component reference.
+     *
+     * It is an imperative approach, not a generic way, parsing all the tree
+     * and find something like this which willl break JSON.stringify : MYIMPORT.path
+     *
+     * @param  {ts.Node} initializer The node of routes definition
+     * @return {ts.Node}             The edited node
+     */
+    public cleanRoutesDefinitionWithImport(initializer: ts.ArrayLiteralExpression, node: ts.Node, sourceFile: ts.SourceFile): ts.Node {
+        initializer.elements.forEach((element: ts.ObjectLiteralExpression) => {
+            element.properties.forEach((property: ts.PropertyAssignment) => {
+                let propertyName = property.name.getText(),
+                    propertyInitializer = property.initializer;
+                switch (propertyName) {
+                    case 'path':
+                    case 'pathMatch':
+                      if (propertyInitializer) {
+                          if (propertyInitializer.kind !== ts.SyntaxKind.StringLiteral) {
+                              // Identifier(71) won't break parsing, but it will be better to retrive them
+                              // PropertyAccessExpression(179) ex: MYIMPORT.path will break it, find it in import
+                              if (propertyInitializer.kind === ts.SyntaxKind.PropertyAccessExpression) {
+                                  let lastObjectLiteralAttributeName = propertyInitializer.name.getText(),
+                                      firstObjectLiteralAttributeName;
+                                  if (propertyInitializer.expression) {
+                                      firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
+                                      let result = this.importsUtil.findPropertyValueInImport(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile)
+                                      if (result !== '') {
+                                          propertyInitializer.kind = 9;
+                                          propertyInitializer.text = result;
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                      break;
+                }
+            });
+        });
+        return initializer;
     }
 }

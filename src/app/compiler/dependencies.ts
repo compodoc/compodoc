@@ -866,7 +866,7 @@ export class Dependencies {
         return result;
     }
 
-    private visitEnumDeclarationForRoutes(fileName, node) {
+    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
@@ -874,15 +874,19 @@ export class Dependencies {
                 if (node.declarationList.declarations[i].type) {
                     if (node.declarationList.declarations[i].type.typeName &&
                         node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        let data = new CodeGenerator().generate(node.declarationList.declarations[i].initializer);
-                        this.routerParser.addRoute({
-                            name: node.declarationList.declarations[i].name.text,
-                            data: this.routerParser.cleanRawRoute(data),
-                            filename: fileName
-                        });
-                        return [{
-                            routes: data
-                        }];
+                            let routesInitializer = node.declarationList.declarations[i].initializer;
+                            if (ts.isArrayLiteralExpression(routesInitializer)) {
+                                routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
+                            }
+                            let data = new CodeGenerator().generate(routesInitializer);
+                            this.routerParser.addRoute({
+                                name: node.declarationList.declarations[i].name.text,
+                                data: this.routerParser.cleanRawRoute(data),
+                                filename: fileName
+                            });
+                            return [{
+                                routes: data
+                            }];
                     }
                 }
             }
@@ -899,7 +903,7 @@ export class Dependencies {
             res = sourceFile.statements.reduce((directive, statement) => {
 
                 if (ts.isVariableStatement(statement)) {
-                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
+                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
                 }
 
                 return directive;
