@@ -74,7 +74,7 @@ Ready to get started? [Read installation instructions](https://compodoc.github.i
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
 
-Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/.github/CONTRIBUTING.md).
+Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/CONTRIBUTING.md).
 
 # Contributors
 
