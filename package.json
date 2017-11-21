@@ -95,6 +95,7 @@
     "nodemon": "^1.12.1",
     "npm-watch": "0.3.0",
     "nyc": "11.3.0",
+    "prettier": "1.8.2",
     "request": "^2.83.0",
     "rimraf": "^2.6.2",
     "rollup": "0.51.3",
