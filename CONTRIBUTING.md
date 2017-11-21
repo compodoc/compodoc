@@ -18,6 +18,10 @@ to follow:
 
 Compodoc is written in TypeScript. The compiling process use Rollup.js
 
+## Architecture and operating
+
+See this folder for more details : [DOCS](./docs/README.md)
+
 ### Development process
 
 - open one terminal and run inside compodoc folder : `ǹpm run start`
