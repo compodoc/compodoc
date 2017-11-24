@@ -364,7 +364,10 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    setSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        setSignature.description = marked(comment);
+                    }
                 }
 
                 if (jsdoctags && jsdoctags.length >= 1) {
@@ -389,7 +392,10 @@ export class ClassHelper {
                 }
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    getSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        getSignature.description = marked(comment);
+                    }
                 }
 
                 if (jsdoctags && jsdoctags.length >= 1) {
