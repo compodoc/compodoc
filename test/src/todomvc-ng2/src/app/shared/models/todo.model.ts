@@ -37,7 +37,6 @@ export class Todo extends Tada {
      */
     private _title: string;
     /**
-     * Getter of _title
      * @return {string} _title value
      */
     get title() {
