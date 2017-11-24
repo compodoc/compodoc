@@ -25,7 +25,7 @@ export class ImportsUtil {
 
             if (namedImportsLength > 0) {
                 for (j; j<namedImportsLength; j++) {
-                    let importName = namedImports[j].getNameIdentifier().getText() as string,
+                    let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
                     if (namedImports[j].getAliasIdentifier()) {
@@ -96,7 +96,7 @@ export class ImportsUtil {
 
             if (namedImportsLength > 0) {
                 for (j; j<namedImportsLength; j++) {
-                    let importName = namedImports[j].getNameIdentifier().getText() as string,
+                    let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
                     if (namedImports[j].getAliasIdentifier()) {
