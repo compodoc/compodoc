@@ -40,7 +40,7 @@
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="info">
+    <div class="tab-pane fade active in" id="c-info">
 
         <p class="comment">
             <h3>File</h3>
@@ -150,13 +150,13 @@
     </div>
 
     {{#if module.readme}}
-    <div class="tab-pane fade" id="readme">
+    <div class="tab-pane fade" id="c-readme">
         <p>{{{module.readme}}}</p>
     </div>
     {{/if}}
 
     {{#unless disableSourceCode}}
-    <div class="tab-pane fade tab-source-code" id="source">
+    <div class="tab-pane fade tab-source-code" id="c-source">
         <pre class="line-numbers"><code class="language-typescript">{{ module.sourceCode}}</code></pre>
     </div>
     {{/unless}}

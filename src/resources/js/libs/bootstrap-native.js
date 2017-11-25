@@ -225,7 +225,7 @@
     this.handle = function(e) {
       e = e || window.e; e.preventDefault();
       var next = e.target; //the tab we clicked is now the next tab
-      var nextContent = document.getElementById(next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
+      var nextContent = document.getElementById('c-'+next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
 
       // get current active tab and content
       var activeTab = self.getActiveTab();
@@ -269,7 +269,7 @@
     };
     this.getActiveContent = function() {
       var active = this.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
-      return active && document.getElementById(active)
+      return active && document.getElementById('c-'+active)
     };
 
     // init
