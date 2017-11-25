@@ -1,128 +1,131 @@
 {
-  "name": "@compodoc/compodoc",
-  "version": "1.0.4",
-  "description": "The missing documentation tool for your Angular application",
-  "main": "dist/index.js",
-  "bin": {
-    "compodoc": "./bin/index-cli.js"
-  },
-  "scripts": {
-    "build": "rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
-    "download-api-list": "node tools/download-api-list.js",
-    "start": "npm run test:watch",
-    "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
-    "codecov": "codecov -f coverage/*.json",
-    "prepublishOnly": "npm run build",
-    "lint": "tslint src/**/*.ts test/**/*.ts",
-    "test:watch": "npm-watch",
-    "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
-    "test-e2e-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts",
-    "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
-    "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
-    "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha"
-  },
-  "watch": {
-    "build": {
-      "patterns": [
-        "src/**/*.ts"
-      ],
-      "extensions": "js,ts",
-      "quiet": true
+    "name": "@compodoc/compodoc",
+    "version": "1.0.4",
+    "description": "The missing documentation tool for your Angular application",
+    "main": "dist/index.js",
+    "bin": {
+        "compodoc": "./bin/index-cli.js"
+    },
+    "scripts": {
+        "build": "rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs",
+        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
+        "download-api-list": "node tools/download-api-list.js",
+        "start": "npm run test:watch",
+        "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts",
+        "codecov": "codecov -f coverage/*.json",
+        "backup-package-json": "node tools/backup-package-json.js",
+        "restore-package-json": "node tools/restore-package-json.js",
+        "prepublishOnly": "npm run build && npm run backup-package-json",
+        "postpublish": "npm run restore-package-json",
+        "lint": "tslint src/**/*.ts test/**/*.ts",
+        "test:watch": "npm-watch",
+        "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
+        "test-e2e-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts",
+        "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
+        "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
+        "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha"
+    },
+    "watch": {
+        "build": {
+            "patterns": [
+                "src/**/*.ts"
+            ],
+            "extensions": "js,ts",
+            "quiet": true
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/compodoc/compodoc.git"
+    },
+    "keywords": [
+        "angular2",
+        "angular",
+        "documentation",
+        "components",
+        "module",
+        "graph",
+        "dependencies",
+        "markdown"
+    ],
+    "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/compodoc/compodoc/issues"
+    },
+    "engines": {
+        "node": ">= 5.4.1"
+    },
+    "homepage": "https://github.com/compodoc/compodoc#readme",
+    "dependencies": {
+        "@compodoc/ngd-transformer": "^2.0.0-alpha.4",
+        "cheerio": "^1.0.0-rc.2",
+        "chokidar": "^1.7.0",
+        "colors": "^1.1.2",
+        "commander": "2.12.1",
+        "findit": "^2.0.0",
+        "fs-extra": "^4.0.2",
+        "glob": "^7.1.2",
+        "gulp-util": "^3.0.8",
+        "handlebars": "^4.0.11",
+        "html-entities": "^1.2.1",
+        "json5": "^0.5.1",
+        "live-server": "1.1.0",
+        "lodash": "^4.17.3",
+        "lunr": "1.0.0",
+        "8fold-marked": "^0.3.8",
+        "os-name": "^2.0.1",
+        "shelljs": "^0.7.8",
+        "traverse": "^0.6.6",
+        "ts-simple-ast": "^0.96.0",
+        "typescript": "2.6.1"
+    },
+    "devDependencies": {
+        "@types/chai": "4.0.5",
+        "@types/es6-promise": "0.0.33",
+        "@types/fs-extra": "4.0.5",
+        "@types/handlebars": "^4.0.36",
+        "@types/lodash": "^4.14.85",
+        "@types/marked": "0.3.0",
+        "@types/mocha": "2.2.44",
+        "@types/node": "8.0.51",
+        "@types/semver": "^5.4.0",
+        "chai": "^4.1.2",
+        "codecov": "^3.0.0",
+        "conventional-changelog-cli": "^1.3.5",
+        "cross-env": "5.1.1",
+        "mocha": "^4.0.1",
+        "nodemon": "^1.12.1",
+        "npm-watch": "0.3.0",
+        "nyc": "11.3.0",
+        "prettier": "1.8.2",
+        "request": "^2.83.0",
+        "rimraf": "^2.6.2",
+        "rollup": "0.51.8",
+        "rollup-plugin-typescript": "^0.8.1",
+        "rollup-watch": "^4.3.1",
+        "selenium-webdriver": "^3.6.0",
+        "semver": "^5.4.1",
+        "ts-node": "3.3.0",
+        "tslint": "^5.8.0",
+        "webshot": "^0.18.0"
+    },
+    "nyc": {
+        "include": [
+            "dist/index-cli.js",
+            "bin/*.js"
+        ],
+        "extension": [
+            ".ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ],
+        "reporter": [
+            "json",
+            "html",
+            "text-summary"
+        ],
+        "all": true
     }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/compodoc/compodoc.git"
-  },
-  "keywords": [
-    "angular2",
-    "angular",
-    "documentation",
-    "components",
-    "module",
-    "graph",
-    "dependencies",
-    "markdown"
-  ],
-  "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/compodoc/compodoc/issues"
-  },
-  "engines": {
-    "node": ">= 5.4.1"
-  },
-  "homepage": "https://github.com/compodoc/compodoc#readme",
-  "dependencies": {
-    "@compodoc/ngd-transformer": "^2.0.0-alpha.4",
-    "cheerio": "^1.0.0-rc.2",
-    "chokidar": "^1.7.0",
-    "colors": "^1.1.2",
-    "commander": "2.12.1",
-    "findit": "^2.0.0",
-    "fs-extra": "^4.0.2",
-    "glob": "^7.1.2",
-    "gulp-util": "^3.0.8",
-    "handlebars": "^4.0.11",
-    "html-entities": "^1.2.1",
-    "json5": "^0.5.1",
-    "live-server": "1.1.0",
-    "lodash": "^4.17.3",
-    "lunr": "1.0.0",
-    "8fold-marked": "^0.3.8",
-    "os-name": "^2.0.1",
-    "shelljs": "^0.7.8",
-    "traverse": "^0.6.6",
-    "ts-simple-ast": "^0.96.0",
-    "typescript": "2.6.1"
-  },
-  "devDependencies": {
-    "@types/chai": "4.0.5",
-    "@types/es6-promise": "0.0.33",
-    "@types/fs-extra": "4.0.5",
-    "@types/handlebars": "^4.0.36",
-    "@types/lodash": "^4.14.85",
-    "@types/marked": "0.3.0",
-    "@types/mocha": "2.2.44",
-    "@types/node": "8.0.51",
-    "@types/semver": "^5.4.0",
-    "chai": "^4.1.2",
-    "codecov": "^3.0.0",
-    "conventional-changelog-cli": "^1.3.5",
-    "cross-env": "5.1.1",
-    "mocha": "^4.0.1",
-    "nodemon": "^1.12.1",
-    "npm-watch": "0.3.0",
-    "nyc": "11.3.0",
-    "prettier": "1.8.2",
-    "request": "^2.83.0",
-    "rimraf": "^2.6.2",
-    "rollup": "0.51.8",
-    "rollup-plugin-typescript": "^0.8.1",
-    "rollup-watch": "^4.3.1",
-    "selenium-webdriver": "^3.6.0",
-    "semver": "^5.4.1",
-    "ts-node": "3.3.0",
-    "tslint": "^5.8.0",
-    "webshot": "^0.18.0"
-  },
-  "nyc": {
-    "include": [
-      "dist/index-cli.js",
-      "bin/*.js"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "json",
-      "html",
-      "text-summary"
-    ],
-    "all": true
-  }
 }
