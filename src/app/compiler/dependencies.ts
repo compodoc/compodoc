@@ -753,22 +753,22 @@ export class Dependencies {
 
     private mapType(type): string | undefined {
         switch (type) {
-            case 94:
-                return 'Null';
-            case 118:
-                return 'Any';
-            case 121:
-                return 'Boolean';
-            case 129:
-                return 'Never';
-            case 132:
-                return 'Number';
-            case 134:
-                return 'String';
-            case 137:
-                return 'Undefined';
-            case 157:
-                return 'TypeReference';
+            case 95:
+                return 'null';
+            case 119:
+                return 'any';
+            case 122:
+                return 'boolean';
+            case 130:
+                return 'never';
+            case 133:
+                return 'number';
+            case 136:
+                return 'string';
+            case 139:
+                return 'undefined';
+            case 159:
+                return 'typeReference';
         }
     }
 
@@ -797,6 +797,11 @@ export class Dependencies {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
+        }
+        if (result.jsdoctags && result.jsdoctags.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
+        } else if (result.args.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args);
         }
         return result;
     }
