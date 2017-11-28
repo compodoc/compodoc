@@ -389,7 +389,7 @@ export class Dependencies {
                         outputSymbols.interfaces.push(interfaceDeps);
                     } else if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
-                        let tags = this.visitFunctionDeclarationJSDocTags(node);
+                        //let tags = this.visitFunctionDeclarationJSDocTags(node);
                         let name = infos.name;
                         let functionDep: IFunctionDecDep = {
                             name,
@@ -401,9 +401,10 @@ export class Dependencies {
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
-                        if (tags && tags.length > 0) {
-                            functionDep.jsdoctags = tags;
+                        if (infos.jsdoctags && infos.jsdoctags.length > 0) {
+                            functionDep.jsdoctags = infos.jsdoctags;
                         }
+
                         outputSymbols.miscellaneous.functions.push(functionDep);
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
@@ -549,6 +550,9 @@ export class Dependencies {
                         };
                         if (infos.args) {
                             deps.args = infos.args;
+                        }
+                        if (infos.jsdoctags && infos.jsdoctags.length > 0) {
+                            deps.jsdoctags = infos.jsdoctags;
                         }
                         outputSymbols.miscellaneous.functions.push(deps);
                     }
@@ -737,8 +741,15 @@ export class Dependencies {
 
     private visitArgument(arg) {
         let result: any = {
-            name: arg.name.text
+            name: arg.name.text,
+            type: this.classHelper.visitType(arg)
         };
+        if (arg.dotDotDotToken) {
+            result.dotDotDotToken = true;
+        }
+        if (arg.questionToken) {
+            result.optional = true;
+        }
         if (arg.type) {
             result.type = this.mapType(arg.type.kind);
             if (arg.type.kind === 157) {
