@@ -55,6 +55,14 @@ export class Todo extends Tada {
     }
 
     /**
+     * Returns the runtime path
+     * @returns {string}
+     */
+    get runtimePath() {
+      return this._options.runtimePath;
+    }
+
+    /**
      * The todo constructor
      * Watch {@link TodoStore} for service using it
      */
