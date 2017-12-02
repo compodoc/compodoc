@@ -41,7 +41,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 '../bin/index-cli.js',
                 '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '--coverageTest', '15',
+                '--coverageTest', '10',
                 '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
 
             if (ls.stderr.toString() !== '') {
@@ -176,7 +176,7 @@ describe('CLI coverage report', () => {
                 '../bin/index-cli.js',
                 '-p', '../test/src/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile', '50',
-                '--coverageTest', '20',
+                '--coverageTest', '10',
                 '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
 
             if (ls.stderr.toString() !== '') {
@@ -206,7 +206,7 @@ describe('CLI coverage report', () => {
                 '../bin/index-cli.js',
                 '-p', '../test/src/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile', '0',
-                '--coverageTest', '20',
+                '--coverageTest', '10',
                 '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
 
             if (ls.stderr.toString() !== '') {

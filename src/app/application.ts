@@ -1068,7 +1068,7 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             /*
-             * loop with components, directives, classes, injectables, interfaces, pipes
+             * loop with components, directives, classes, injectables, interfaces, pipes, misc functions variables
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
@@ -1203,6 +1203,35 @@ export class Application {
                     overFiles: overFiles,
                     underFiles: underFiles
                 };
+            };
+            let processFunctionsAndVariables = (id, type) => {
+                _.forEach(id, (el: any) => {
+                    let cl: any = {
+                        filePath: el.file,
+                        type: type,
+                        linktype: el.type,
+                        linksubtype: el.subtype,
+                        name: el.name
+                    };
+                    if (type === 'variable') {
+                        cl.linktype = 'miscellaneous'
+                    }
+                    let totalStatementDocumented = 0;
+                    let totalStatements = 1;
+
+                    if (el.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        totalStatements -= 1;
+                    }
+                    if (el.description && el.description !== '' && el.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        totalStatementDocumented += 1;
+                    }
+
+                    cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                    cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                    cl.status = getStatus(cl.coveragePercent);
+                    totalProjectStatementDocumented += cl.coveragePercent;
+                    files.push(cl);
+                });
             };
 
             processComponentsAndDirectives(this.configuration.mainData.components);
@@ -1379,6 +1408,10 @@ export class Application {
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
+
+            processFunctionsAndVariables(this.configuration.mainData.miscellaneous.functions, 'function');
+            processFunctionsAndVariables(this.configuration.mainData.miscellaneous.variables, 'variable');
+
             files = _.sortBy(files, ['filePath']);
             let coverageData = {
                 count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
@@ -1401,6 +1434,7 @@ export class Application {
                 this.htmlEngine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
             }
             files = _.sortBy(files, ['coveragePercent']);
+
             let coverageTestPerFileResults;
             if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {
                 // Global coverage test and not per file
