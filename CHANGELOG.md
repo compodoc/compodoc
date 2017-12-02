@@ -1,3 +1,29 @@
+<a name="1.0.5"></a>
+# [1.0.5](https://github.com/compodoc/compodoc/compare/1.0.4...1.0.5) (2017-12-02)
+
+### Features
+
+* **code-highlightning:** copy button ([15ad139d](https://github.com/compodoc/compodoc/commit/15ad139d)), closes [#373](https://github.com/compodoc/-compodoc/issues/373)
+* **dependencies:** entryComponents support for modules ([4774f9e3](https://github.com/compodoc/compodoc/commit/4774f9e3))
+
+### Bug Fixes
+
+* **dependencies:** accessors documentation ([84857c2b](https://github.com/compodoc/compodoc/commit/84857c2b)), closes [#393](https://github.com/compodoc/-compodoc/issues/393)
+* **dependencies:** function parameter undefined in Miscellaneous - Functions ([e29a56c8](https://github.com/compodoc/compodoc/commit/e29a56c8)), closes [#389](https://github.com/compodoc/-compodoc/issues/389)
+* **dependencies:** Empty description for accessors ([45181513](https://github.com/compodoc/compodoc/commit/45181513)), closes [#385](https://github.com/compodoc/-compodoc/issues/385)
+* **dependencies:** wrong generated links of module declarations ([ab1af5b0](https://github.com/compodoc/compodoc/commit/ab1af5b0)), closes [#372](https://github.com/compodoc/-compodoc/issues/372)
+* **dependencies:** Dom tree tab - component with inline template ([9ff83a90](https://github.com/compodoc/compodoc/commit/9ff83a90)), closes [#370](https://github.com/compodoc/-compodoc/issues/370)
+* **dependencies:** static modifier ([6cd80868](https://github.com/compodoc/compodoc/commit/6cd80868)), closes [#367](https://github.com/compodoc/-compodoc/issues/367)
+* **dependencies:** disableLifeCycleHooks ignored for Directives ([c2b5f75f](https://github.com/compodoc/compodoc/commit/c2b5f75f)), closes [#363](https://github.com/compodoc/-compodoc/issues/363)
+* **dependencies:** dynamic import support for path and pathMatch routes definition ([633ea2f8](https://github.com/compodoc/compodoc/commit/633ea2f8)), closes [#216](https://github.com/compodoc/-compodoc/issues/216)
+* **tabs:** conflict with readme titles ([230d96a6](https://github.com/compodoc/compodoc/commit/230d96a6)), closes [#381](https://github.com/compodoc/-compodoc/issues/381)
+* **links:** the generated href to angular api doc is wrong ([153b38d9](https://github.com/compodoc/compodoc/commit/153b38d9)), closes [#368](https://github.com/compodoc/-compodoc/issues/368)
+* **markdown:** image tag not correctly closed ([43c86a17](https://github.com/compodoc/compodoc/commit/43c86a17)), closes [#384](https://github.com/compodoc/-compodoc/issues/384)
+* **coverage:** add misc functions and variables ([04e0c038](https://github.com/compodoc/compodoc/commit/04e0c038)), closes [#388](https://github.com/compodoc/-compodoc/issues/388)
+* **routes:** support for outlet dynamic imports, + enums ([d3b9b9e9](https://github.com/compodoc/compodoc/commit/d3b9b9e9)), closes [#394](https://github.com/compodoc/-compodoc/issues/394)
+* **core:** typescript errors ([96426902](https://github.com/compodoc/compodoc/commit/96426902)), closes [#369](https://github.com/compodoc/-compodoc/issues/369)
+Thanks [daniel.preussner](https://github.com/dp-1a)
+
 <a name="1.0.4"></a>
 # [1.0.4](https://github.com/compodoc/compodoc/compare/1.0.3...1.0.4) (2017-11-07)
 
