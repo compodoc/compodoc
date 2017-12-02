@@ -12,3 +12,4 @@ codecov.yml
 appveyor.yml
 doc
 documentation
+package.json.old
