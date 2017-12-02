@@ -84,12 +84,6 @@ export class RouterParserUtil {
     }
 
     public fixIncompleteRoutes(miscellaneousVariables: Array<any>): void {
-        /*console.log('fixIncompleteRoutes');
-        console.log('');
-        console.log(routes);
-        console.log('');*/
-        // console.log(miscellaneousVariables);
-        // console.log('');
         let matchingVariables = [];
         // For each incompleteRoute, scan if one misc variable is in code
         // if ok, try recreating complete route
@@ -105,19 +99,9 @@ export class RouterParserUtil {
             this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace('[', '');
             this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace(']', '');
         }
-        /*console.log(incompleteRoutes);
-        console.log('');
-        console.log(matchingVariables);
-        console.log('');*/
-
     }
 
     public linkModulesAndRoutes(): void {
-        /*console.log('');
-        console.log('linkModulesAndRoutes: ');
-        //scan each module imports AST for each routes, and link routes with module
-        console.log('linkModulesAndRoutes routes: ', routes);
-        console.log('');*/
         let i = 0;
         let len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
@@ -157,14 +141,6 @@ export class RouterParserUtil {
     }
 
     public constructRoutesTree() {
-        // console.log('');
-        /*console.log('constructRoutesTree modules: ', modules);
-        console.log('');
-        console.log('constructRoutesTree modulesWithRoutes: ', modulesWithRoutes);
-        console.log('');
-        console.log('constructRoutesTree modulesTree: ', util.inspect(modulesTree, { depth: 10 }));
-        console.log('');*/
-
         // routes[] contains routes with module link
         // modulesTree contains modules tree
         // make a final routes tree with that
@@ -185,12 +161,6 @@ export class RouterParserUtil {
         };
 
         modulesCleaner(this.cleanModulesTree);
-        // console.log('');
-        // console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-        // console.log('');
-
-        // console.log(routes);
-        // console.log('');
 
         let routesTree = {
             name: '<root>',
@@ -202,7 +172,6 @@ export class RouterParserUtil {
         let loopModulesParser = (node) => {
             if (node.children && node.children.length > 0) {
                 // If module has child modules
-                // console.log('   If module has child modules');
                 for (let i in node.children) {
                     let route = this.foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
@@ -217,7 +186,6 @@ export class RouterParserUtil {
                 }
             } else {
                 // else routes are directly inside the module
-                // console.log('   else routes are directly inside the root module');
                 let rawRoutes = this.foundRouteWithModuleName(node.name);
                 if (rawRoutes) {
                     let routes = JSON5.parse(rawRoutes.data);
@@ -238,9 +206,6 @@ export class RouterParserUtil {
                 }
             }
         };
-        // console.log('');
-        // console.log('  rootModule: ', rootModule);
-        // console.log('');
 
         let startModule = _.find(this.cleanModulesTree, { 'name': this.rootModule });
 
@@ -249,10 +214,6 @@ export class RouterParserUtil {
             // Loop twice for routes with lazy loading
             // loopModulesParser(routesTree);
         }
-
-        /*console.log('');
-        console.log('  routesTree: ', routesTree);
-        console.log('');*/
 
         let cleanedRoutesTree = undefined;
 
@@ -266,8 +227,6 @@ export class RouterParserUtil {
         cleanedRoutesTree = cleanRoutesTree(routesTree);
 
         // Try updating routes with lazy loading
-        // console.log('');
-        // console.log('Try updating routes with lazy loading');
 
         let loopInside = (mod, _rawModule) => {
             if (mod.children) {
@@ -308,15 +267,10 @@ export class RouterParserUtil {
         };
         loopRoutesParser(cleanedRoutesTree);
 
-        // console.log('');
-        // console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
-
         return cleanedRoutesTree;
     }
 
     public constructModulesTree(): void {
-        // console.log('');
-        // console.log('constructModulesTree');
         let getNestedChildren = (arr, parent?) => {
             let out = [];
             for (let i in arr) {
@@ -342,9 +296,6 @@ export class RouterParserUtil {
             });
         });
         this.modulesTree = getNestedChildren(this.modules);
-        /*console.log('');
-        console.log('end constructModulesTree');
-        console.log(modulesTree);*/
     }
 
     public generateRoutesIndex(outputFolder: string, routes: Array<any>): Promise<void> {
@@ -429,6 +380,8 @@ export class RouterParserUtil {
                     propertyInitializer = property.initializer;
                 switch (propertyName) {
                     case 'path':
+                    case 'redirectTo':
+                    case 'outlet':
                     case 'pathMatch':
                       if (propertyInitializer) {
                           if (propertyInitializer.kind !== ts.SyntaxKind.StringLiteral) {

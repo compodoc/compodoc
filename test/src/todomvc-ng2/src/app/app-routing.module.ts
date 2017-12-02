@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { APP_ENUMS } from './app-routes.enum';
+
+enum APP_ENUM {
+    home = 'homeenuminfile'
+}
+
 export const APP_ROUTES: Routes = [
     { path: 'about', loadChildren: './about/about.module#AboutModule' },
-    { path: '', redirectTo: 'home', pathMatch: 'full'},
-    { path: '**', redirectTo: 'home', pathMatch: 'full'}
+    { path: '', redirectTo: APP_ENUMS.home, pathMatch: 'full'},
+    { path: '**', redirectTo: APP_ENUM.home, pathMatch: 'full'}
 ];
 
 /**

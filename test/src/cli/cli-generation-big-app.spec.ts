@@ -439,5 +439,7 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.be.true;
         let routesFile = read('documentation/js/routes/routes_index.js');
         expect(routesFile).to.contain('homeimported');
+        expect(routesFile).to.contain('homeenumimported');
+        expect(routesFile).to.contain('homeenuminfile');
     });
 });

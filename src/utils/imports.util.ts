@@ -154,6 +154,20 @@ export class ImportsUtil {
             }
         };
 
+        let findInEnums = (sourceFile, variableName: string, variableValue: string) => {
+            let res = '';
+            sourceFile.getEnum(e => {
+                if (e.getName() === variableName) {
+                    e.getMember(m => {
+                        if (m.getName() === variableValue) {
+                            res = m.getValue();
+                        }
+                    });
+                }
+            });
+            return res;
+        };
+
         if (typeof searchedImport !== 'undefined') {
             let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
             const sourceFileImport = ast.getOrAddSourceFile(imporPath);
@@ -163,6 +177,13 @@ export class ImportsUtil {
                 if (variableDeclaration) {
                     return findInVariableDeclaration(variableDeclaration);
                 }
+                // Try find it in enums
+                if (variablesAttributes.length > 0) {
+                    let en = findInEnums(sourceFileImport, metadataVariableName, variablesAttributes[1]);
+                    if (en !== '') {
+                        return en;
+                    }
+                }
             }
         } else {
             // Find in local variables of the file
@@ -170,6 +191,13 @@ export class ImportsUtil {
             const variableDeclaration = file.getVariableDeclaration(metadataVariableName);
             if (variableDeclaration) {
                 return findInVariableDeclaration(variableDeclaration);
+            }
+            // Try find it in enums
+            if (variablesAttributes.length > 0) {
+                let en = findInEnums(file, metadataVariableName, variablesAttributes[1]);
+                if (en !== '') {
+                    return en;
+                }
             }
         }
     }
