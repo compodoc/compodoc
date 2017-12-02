@@ -27,8 +27,8 @@ export class ClassHelper {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        if (node.text) {
-            return node.text;
+        if (node.getText()) {
+            return node.getText();
         } else if (node.kind === ts.SyntaxKind.FalseKeyword) {
             return 'false';
         } else if (node.kind === ts.SyntaxKind.TrueKeyword) {
@@ -36,14 +36,14 @@ export class ClassHelper {
         }
     }
 
-    private visitTypeName(typeName: any) {
+    private visitTypeName(typeName: ts.Identifier) {
       if(typeName.text) {
         return typeName.text;
       }
       return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
     }
 
-    public visitType(node: ts.Declaration | undefined): string {
+    public visitType(node): string {
         let _return = 'void';
 
         if (!node) {
@@ -364,7 +364,10 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    setSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        setSignature.description = marked(comment);
+                    }
                 }
 
                 if (jsdoctags && jsdoctags.length >= 1) {
@@ -389,7 +392,10 @@ export class ClassHelper {
                 }
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    getSignature.description = marked(nodeAccessor.jsDoc[0].comment);
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        getSignature.description = marked(comment);
+                    }
                 }
 
                 if (jsdoctags && jsdoctags.length >= 1) {
@@ -599,7 +605,13 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -656,7 +668,13 @@ export class ClassHelper {
 
         if (property.modifiers) {
             if (property.modifiers.length > 0) {
-                result.modifierKind = property.modifiers[0].kind;
+                let kinds = property.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -816,7 +834,13 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                }
+                result.modifierKind = kinds;
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {

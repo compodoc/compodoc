@@ -37,7 +37,6 @@ export class Todo extends Tada {
      */
     private _title: string;
     /**
-     * Getter of _title
      * @return {string} _title value
      */
     get title() {
@@ -53,6 +52,14 @@ export class Todo extends Tada {
 
     static classMethod() {
         return 'hello';
+    }
+
+    /**
+     * Returns the runtime path
+     * @returns {string}
+     */
+    get runtimePath() {
+      return this._options.runtimePath;
     }
 
     /**

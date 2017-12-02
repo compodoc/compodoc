@@ -40,7 +40,7 @@
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="info">
+    <div class="tab-pane fade active in" id="c-info">
 
         <p class="comment">
             <h3>File</h3>
@@ -65,6 +65,18 @@
                     <h3>Declarations<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" title="Official documentation about module declarations"><span class="fa fa-info-circle"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.declarations}}
+                            <li class="list-group-item">
+                                <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
+                {{#if module.entryComponents}}
+                <div class="col-sm-3">
+                    <h3>EntryComponents<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" title="Official documentation about module entryComponents"><span class="fa fa-info-circle"></span></a></h3>
+                    <ul class="list-group">
+                        {{#each module.entryComponents}}
                             <li class="list-group-item">
                                 <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
                             </li>
@@ -123,7 +135,7 @@
                 {{/if}}
                 {{#if module.bootstrap}}
                 <div class="col-sm-3">
-                    <h3>Bootstrap<a href="https://angular.io/docs/ts/latest/api/core/index/NgModule-interface.html#!#bootstrap-anchor" target="_blank"><span class="fa fa-info-circle"></a></h3>
+                    <h3>Bootstrap<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" title="Official documentation about module bootstrap"><span class="fa fa-info-circle"></a></h3>
                     <ul class="list-group">
                         {{#each module.bootstrap}}
                             <li class="list-group-item">
@@ -138,13 +150,13 @@
     </div>
 
     {{#if module.readme}}
-    <div class="tab-pane fade" id="readme">
+    <div class="tab-pane fade" id="c-readme">
         <p>{{{module.readme}}}</p>
     </div>
     {{/if}}
 
     {{#unless disableSourceCode}}
-    <div class="tab-pane fade tab-source-code" id="source">
+    <div class="tab-pane fade tab-source-code" id="c-source">
         <pre class="line-numbers"><code class="language-typescript">{{ module.sourceCode}}</code></pre>
     </div>
     {{/unless}}

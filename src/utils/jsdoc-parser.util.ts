@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import { JSDocParameterTag } from 'typescript';
 import * as _ from 'lodash';
 
+import { JSDocParameterTagExt } from '../app/nodes/jsdoc-parameter-tag.node';
 
 export class JsdocParserUtil {
     public isVariableLike(node: ts.Node): node is ts.VariableLikeDeclaration {
@@ -119,7 +120,12 @@ export class JsdocParserUtil {
             }
         } else if (ts.isIdentifier(param.name)) {
             const name = param.name.text;
-            return _.filter(tags, tag => ts && ts.isJSDocParameterTag(tag) && tag.parameterName.text === name);
+            return _.filter(tags, (tag) => {
+              if (ts && ts.isJSDocParameterTag(tag)) {
+                  let t: JSDocParameterTagExt = tag;
+                  return t.parameterName.text === name;
+              }
+            });
         } else {
             // TODO: it's a destructured parameter, so it should look up an "object type" series of multiple lines
             // But multi-line object types aren't supported yet either

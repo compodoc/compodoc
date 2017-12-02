@@ -322,7 +322,7 @@ export class Dependencies {
                             if (props.length === 0) {
                                 return;
                             }
-                            let directiveDeps = new DirectiveDepFactory(this.componentHelper)
+                            let directiveDeps = new DirectiveDepFactory(this.componentHelper, this.configuration)
                                 .create(file, srcFile, name, props, IO);
                             outputSymbols.directives.push(directiveDeps);
                             deps = directiveDeps;
@@ -389,7 +389,7 @@ export class Dependencies {
                         outputSymbols.interfaces.push(interfaceDeps);
                     } else if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
-                        let tags = this.visitFunctionDeclarationJSDocTags(node);
+                        //let tags = this.visitFunctionDeclarationJSDocTags(node);
                         let name = infos.name;
                         let functionDep: IFunctionDecDep = {
                             name,
@@ -401,9 +401,10 @@ export class Dependencies {
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
-                        if (tags && tags.length > 0) {
-                            functionDep.jsdoctags = tags;
+                        if (infos.jsdoctags && infos.jsdoctags.length > 0) {
+                            functionDep.jsdoctags = infos.jsdoctags;
                         }
+
                         outputSymbols.miscellaneous.functions.push(functionDep);
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
@@ -549,6 +550,9 @@ export class Dependencies {
                         };
                         if (infos.args) {
                             deps.args = infos.args;
+                        }
+                        if (infos.jsdoctags && infos.jsdoctags.length > 0) {
+                            deps.jsdoctags = infos.jsdoctags;
                         }
                         outputSymbols.miscellaneous.functions.push(deps);
                     }
@@ -737,8 +741,15 @@ export class Dependencies {
 
     private visitArgument(arg) {
         let result: any = {
-            name: arg.name.text
+            name: arg.name.text,
+            type: this.classHelper.visitType(arg)
         };
+        if (arg.dotDotDotToken) {
+            result.dotDotDotToken = true;
+        }
+        if (arg.questionToken) {
+            result.optional = true;
+        }
         if (arg.type) {
             result.type = this.mapType(arg.type.kind);
             if (arg.type.kind === 157) {
@@ -753,22 +764,22 @@ export class Dependencies {
 
     private mapType(type): string | undefined {
         switch (type) {
-            case 94:
-                return 'Null';
-            case 118:
-                return 'Any';
-            case 121:
-                return 'Boolean';
-            case 129:
-                return 'Never';
-            case 132:
-                return 'Number';
-            case 134:
-                return 'String';
-            case 137:
-                return 'Undefined';
-            case 157:
-                return 'TypeReference';
+            case 95:
+                return 'null';
+            case 119:
+                return 'any';
+            case 122:
+                return 'boolean';
+            case 130:
+                return 'never';
+            case 133:
+                return 'number';
+            case 136:
+                return 'string';
+            case 139:
+                return 'undefined';
+            case 159:
+                return 'typeReference';
         }
     }
 
@@ -785,13 +796,23 @@ export class Dependencies {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                result.modifierKind = method.modifiers[0].kind;
+                let kinds = method.modifiers.map((modifier) => {
+                    return modifier.kind;
+                }).reverse();
+                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
+                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                };
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
+        }
+        if (result.jsdoctags && result.jsdoctags.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
+        } else if (result.args.length > 0) {
+            result.jsdoctags = mergeTagsAndArgs(result.args);
         }
         return result;
     }
@@ -861,7 +882,7 @@ export class Dependencies {
         return result;
     }
 
-    private visitEnumDeclarationForRoutes(fileName, node) {
+    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
@@ -869,15 +890,19 @@ export class Dependencies {
                 if (node.declarationList.declarations[i].type) {
                     if (node.declarationList.declarations[i].type.typeName &&
                         node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        let data = new CodeGenerator().generate(node.declarationList.declarations[i].initializer);
-                        this.routerParser.addRoute({
-                            name: node.declarationList.declarations[i].name.text,
-                            data: this.routerParser.cleanRawRoute(data),
-                            filename: fileName
-                        });
-                        return [{
-                            routes: data
-                        }];
+                            let routesInitializer = node.declarationList.declarations[i].initializer;
+                            if (ts.isArrayLiteralExpression(routesInitializer)) {
+                                routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
+                            }
+                            let data = new CodeGenerator().generate(routesInitializer);
+                            this.routerParser.addRoute({
+                                name: node.declarationList.declarations[i].name.text,
+                                data: this.routerParser.cleanRawRoute(data),
+                                filename: fileName
+                            });
+                            return [{
+                                routes: data
+                            }];
                     }
                 }
             }
@@ -894,7 +919,7 @@ export class Dependencies {
             res = sourceFile.statements.reduce((directive, statement) => {
 
                 if (ts.isVariableStatement(statement)) {
-                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
+                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
                 }
 
                 return directive;

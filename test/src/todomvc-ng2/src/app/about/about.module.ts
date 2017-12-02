@@ -13,6 +13,7 @@ import { AboutRoutingModule }    from './about-routing.module';
     declarations: [
         AboutComponent
     ],
+    entryComponents: [AboutComponent],
     imports: [AboutRoutingModule]
 })
 export class AboutModule { }

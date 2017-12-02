@@ -8,6 +8,8 @@ import * as JSON5 from 'json5';
 
 import { logger } from '../logger';
 import { FileEngine } from '../app/engines/file.engine';
+import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
+import { ImportsUtil } from './imports.util';
 
 export class RouterParserUtil {
     private routes: any[] = [];
@@ -19,6 +21,7 @@ export class RouterParserUtil {
     private modulesWithRoutes = [];
 
     private fileEngine = new FileEngine();
+    private importsUtil = new ImportsUtil();
 
     public addRoute(route): void {
         this.routes.push(route);
@@ -81,12 +84,6 @@ export class RouterParserUtil {
     }
 
     public fixIncompleteRoutes(miscellaneousVariables: Array<any>): void {
-        /*console.log('fixIncompleteRoutes');
-        console.log('');
-        console.log(routes);
-        console.log('');*/
-        // console.log(miscellaneousVariables);
-        // console.log('');
         let matchingVariables = [];
         // For each incompleteRoute, scan if one misc variable is in code
         // if ok, try recreating complete route
@@ -102,29 +99,20 @@ export class RouterParserUtil {
             this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace('[', '');
             this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace(']', '');
         }
-        /*console.log(incompleteRoutes);
-        console.log('');
-        console.log(matchingVariables);
-        console.log('');*/
-
     }
 
     public linkModulesAndRoutes(): void {
-        /*console.log('');
-        console.log('linkModulesAndRoutes: ');
-        //scan each module imports AST for each routes, and link routes with module
-        console.log('linkModulesAndRoutes routes: ', routes);
-        console.log('');*/
         let i = 0;
         let len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
-            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.Node) => {
-                if (node.initializer) {
-                    if (node.initializer.elements) {
-                        _.forEach(node.initializer.elements, (element) => {
+            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.PropertyDeclaration) => {
+                let initializer = node.initializer as ts.ArrayLiteralExpression;
+                if (initializer) {
+                    if (initializer.elements) {
+                        _.forEach(initializer.elements, (element: ts.CallExpression) => {
                             // find element with arguments
                             if (element.arguments) {
-                                _.forEach(element.arguments, (argument) => {
+                                _.forEach(element.arguments, (argument: ts.Identifier) => {
                                     _.forEach(this.routes, (route) => {
                                         if (argument.text && route.name === argument.text &&
                                             route.filename === this.modulesWithRoutes[i].filename) {
@@ -153,14 +141,6 @@ export class RouterParserUtil {
     }
 
     public constructRoutesTree() {
-        // console.log('');
-        /*console.log('constructRoutesTree modules: ', modules);
-        console.log('');
-        console.log('constructRoutesTree modulesWithRoutes: ', modulesWithRoutes);
-        console.log('');
-        console.log('constructRoutesTree modulesTree: ', util.inspect(modulesTree, { depth: 10 }));
-        console.log('');*/
-
         // routes[] contains routes with module link
         // modulesTree contains modules tree
         // make a final routes tree with that
@@ -181,12 +161,6 @@ export class RouterParserUtil {
         };
 
         modulesCleaner(this.cleanModulesTree);
-        // console.log('');
-        // console.log('  cleanModulesTree light: ', util.inspect(cleanModulesTree, { depth: 10 }));
-        // console.log('');
-
-        // console.log(routes);
-        // console.log('');
 
         let routesTree = {
             name: '<root>',
@@ -198,7 +172,6 @@ export class RouterParserUtil {
         let loopModulesParser = (node) => {
             if (node.children && node.children.length > 0) {
                 // If module has child modules
-                // console.log('   If module has child modules');
                 for (let i in node.children) {
                     let route = this.foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
@@ -213,7 +186,6 @@ export class RouterParserUtil {
                 }
             } else {
                 // else routes are directly inside the module
-                // console.log('   else routes are directly inside the root module');
                 let rawRoutes = this.foundRouteWithModuleName(node.name);
                 if (rawRoutes) {
                     let routes = JSON5.parse(rawRoutes.data);
@@ -234,9 +206,6 @@ export class RouterParserUtil {
                 }
             }
         };
-        // console.log('');
-        // console.log('  rootModule: ', rootModule);
-        // console.log('');
 
         let startModule = _.find(this.cleanModulesTree, { 'name': this.rootModule });
 
@@ -245,10 +214,6 @@ export class RouterParserUtil {
             // Loop twice for routes with lazy loading
             // loopModulesParser(routesTree);
         }
-
-        /*console.log('');
-        console.log('  routesTree: ', routesTree);
-        console.log('');*/
 
         let cleanedRoutesTree = undefined;
 
@@ -262,8 +227,6 @@ export class RouterParserUtil {
         cleanedRoutesTree = cleanRoutesTree(routesTree);
 
         // Try updating routes with lazy loading
-        // console.log('');
-        // console.log('Try updating routes with lazy loading');
 
         let loopInside = (mod, _rawModule) => {
             if (mod.children) {
@@ -286,9 +249,9 @@ export class RouterParserUtil {
                 for (let i in route.children) {
                     if (route.children[i].loadChildren) {
                         let child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
-                        let module = _.find(this.cleanModulesTree, { 'name': child });
+                        let module: RoutingGraphNode = _.find(this.cleanModulesTree, { 'name': child });
                         if (module) {
-                            let _rawModule: any = {};
+                            let _rawModule: RoutingGraphNode = {};
                             _rawModule.kind = 'module';
                             _rawModule.children = [];
                             _rawModule.module = module.name;
@@ -304,15 +267,10 @@ export class RouterParserUtil {
         };
         loopRoutesParser(cleanedRoutesTree);
 
-        // console.log('');
-        // console.log('  cleanedRoutesTree: ', util.inspect(cleanedRoutesTree, { depth: 10 }));
-
         return cleanedRoutesTree;
     }
 
     public constructModulesTree(): void {
-        // console.log('');
-        // console.log('constructModulesTree');
         let getNestedChildren = (arr, parent?) => {
             let out = [];
             for (let i in arr) {
@@ -338,9 +296,6 @@ export class RouterParserUtil {
             });
         });
         this.modulesTree = getNestedChildren(this.modules);
-        /*console.log('');
-        console.log('end constructModulesTree');
-        console.log(modulesTree);*/
     }
 
     public generateRoutesIndex(outputFolder: string, routes: Array<any>): Promise<void> {
@@ -389,5 +344,67 @@ export class RouterParserUtil {
         console.log('');
         console.log('printModulesRoutes: ');
         console.log(this.modulesWithRoutes);
+    }
+
+    /**
+     * Clean routes definition with imported data, for example path, children, or dynamic stuff inside data
+     *
+     * const MY_ROUTES: Routes = [
+     *     {
+     *         path: 'home',
+     *         component: HomeComponent
+     *     },
+     *     {
+     *         path: PATHS.home,
+     *         component: HomeComponent
+     *     }
+     * ];
+     *
+     * The initializer is an array (ArrayLiteralExpression - 177 ), it has elements, objects (ObjectLiteralExpression - 178)
+     * with properties (PropertyAssignment - 261)
+     *
+     * For each know property (https://angular.io/api/router/Routes#description), we try to see if we have what we want
+     *
+     * Ex: path and pathMatch want a string, component a component reference.
+     *
+     * It is an imperative approach, not a generic way, parsing all the tree
+     * and find something like this which willl break JSON.stringify : MYIMPORT.path
+     *
+     * @param  {ts.Node} initializer The node of routes definition
+     * @return {ts.Node}             The edited node
+     */
+    public cleanRoutesDefinitionWithImport(initializer: ts.ArrayLiteralExpression, node: ts.Node, sourceFile: ts.SourceFile): ts.Node {
+        initializer.elements.forEach((element: ts.ObjectLiteralExpression) => {
+            element.properties.forEach((property: ts.PropertyAssignment) => {
+                let propertyName = property.name.getText(),
+                    propertyInitializer = property.initializer;
+                switch (propertyName) {
+                    case 'path':
+                    case 'redirectTo':
+                    case 'outlet':
+                    case 'pathMatch':
+                      if (propertyInitializer) {
+                          if (propertyInitializer.kind !== ts.SyntaxKind.StringLiteral) {
+                              // Identifier(71) won't break parsing, but it will be better to retrive them
+                              // PropertyAccessExpression(179) ex: MYIMPORT.path will break it, find it in import
+                              if (propertyInitializer.kind === ts.SyntaxKind.PropertyAccessExpression) {
+                                  let lastObjectLiteralAttributeName = propertyInitializer.name.getText(),
+                                      firstObjectLiteralAttributeName;
+                                  if (propertyInitializer.expression) {
+                                      firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
+                                      let result = this.importsUtil.findPropertyValueInImport(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile)
+                                      if (result !== '') {
+                                          propertyInitializer.kind = 9;
+                                          propertyInitializer.text = result;
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                      break;
+                }
+            });
+        });
+        return initializer;
     }
 }

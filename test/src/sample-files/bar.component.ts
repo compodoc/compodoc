@@ -31,9 +31,9 @@ export class BarComponent implements OnInit {
 
 	private privateMethod() {}
 
-    protected varprotected: string;
+  protected varprotected: string;
 
-    ngOnInit() {}
+  ngOnInit() {}
 
 	public showTab(index) {
 			// TOTO

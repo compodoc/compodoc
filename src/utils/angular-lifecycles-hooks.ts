@@ -1,4 +1,4 @@
-export const enum AngularLifecycleHooks {
+export enum AngularLifecycleHooks {
     ngOnChanges,
     ngOnInit,
     ngDoCheck,

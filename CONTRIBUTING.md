@@ -18,6 +18,10 @@ to follow:
 
 Compodoc is written in TypeScript. The compiling process use Rollup.js
 
+## Architecture and operating
+
+See this folder for more details : [DOCS](./docs/README.md)
+
 ### Development process
 
 - open one terminal and run inside compodoc folder : `ǹpm run start`
@@ -61,23 +65,39 @@ You can file new issues by filling out our [new issue form](https://github.com/c
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-* Search [GitHub](https://github.com/compodoc/compodoc/pulls) for an open or closed PR   that relates to your submission. You don't want to duplicate effort.
-* Make your changes in a new git branch:
+* I use [Git flow](http://danielkummer.github.io/git-flow-cheatsheet/) for the development
+* Search [GitHub](https://github.com/compodoc/compodoc/pulls) for an open or closed Pull Request
+  that relates to your submission.
+* Make your changes in a new git branch
 
      ```shell
-     git checkout -b my-fix-branch master
+     git checkout -b my-fix-branch develop
      ```
 
 * Create your patch, **including appropriate test cases**.
 * Follow our [Coding Rules](#rules).
-* Run the full Compodoc test suite, and ensure that all tests pass (coming soon).
+* Ensure that all tests pass
+
+* Generate a new project with angular-cli:
+
+     ```shell
+     ng new test-pr
+     ```
+
+* Test that a new project runs correctly:
+
+     ```shell
+     cd test-pr
+     compodoc -p src/tsconfig.json
+     ```
+
 * Commit your changes using a descriptive commit message that follows our
-  [commit message conventions](#commit). Adherence to these conventions
-  is necessary because release notes are automatically generated from these messages.
+  [commit message conventions](#commit-message-format).
 
      ```shell
      git commit -a
      ```
+
   Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
 
 * Push your branch to GitHub:
@@ -86,10 +106,10 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-* In GitHub, send a pull request to `compodoc:develop`.
-* If we suggest changes then:
+* In GitHub, send a pull request to `compodoc/compodoc:develop`.
+* If i suggest changes then
   * Make the required updates.
-  * Re-run the Compodoc test suites to ensure tests are still passing.
+  * Re-run the tests and retest your sample generated project to ensure tests are still passing.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
@@ -110,10 +130,10 @@ from the main (upstream) repository:
     git push origin --delete my-fix-branch
     ```
 
-* Check out the master branch:
+* Check out the develop branch:
 
     ```shell
-    git checkout master -f
+    git checkout develop -f
     ```
 
 * Delete the local branch:
@@ -122,11 +142,29 @@ from the main (upstream) repository:
     git branch -D my-fix-branch
     ```
 
-* Update your master with the latest upstream version:
+* Update your develop with the latest upstream version:
 
     ```shell
-    git pull --ff upstream master
+    git pull --ff upstream develop
     ```
+
+### Fork the compodoc project
+
+Go to the [compodoc project](https://github.com/compodoc/compodoc) and click on the "fork" button. You can then clone your own fork of the project, and start working on it.
+
+[Please read the Github forking documentation for more information](https://help.github.com/articles/fork-a-repo)
+
+### Set NPM to use the cloned project
+
+In your cloned `compodoc` project, type `npm link`.
+
+This will do a symbolic link from the global `node_modules` version to point to this folder, so when we run `compodoc`, you will now use the development version of Compodoc.
+
+For testing, you will want to generate an application with angular-cli, and run compodoc instaled globally.
+
+```shell
+compodoc ...
+```
 
 ## <a name="rules"></a> Coding Rules
 To ensure consistency throughout the source code, keep these rules in mind as you are working:

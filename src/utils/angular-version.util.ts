@@ -42,7 +42,6 @@ export class AngularVersionUtil {
 
     public getApiLink(api: IAngularApi, angularVersion: string): string {
         let angularDocPrefix = this.prefixOfficialDoc(angularVersion);
-        return `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${api.path}`;
+        return `https://${angularDocPrefix}angular.io/${api.path}`;
     }
 }
-

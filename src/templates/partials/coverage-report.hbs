@@ -17,7 +17,12 @@
         {{#each files}}
         <tr class="{{status}}">
             <td>
-                <a href="./{{linktype}}s/{{name}}.html">{{filePath}}</a>
+                <!-- miscellaneous -->
+                {{#if linksubtype}}
+                    <a href="./{{linktype}}/{{linksubtype}}s.html#{{name}}">{{filePath}}</a>
+                {{else}}
+                    <a href="./{{linktype}}s/{{name}}.html">{{filePath}}</a>
+                {{/if}}
             </td>
             <td>
                 {{type}}

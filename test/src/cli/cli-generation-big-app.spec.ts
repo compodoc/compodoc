@@ -331,8 +331,8 @@ describe('CLI simple generation - big app', () => {
     it('should support accessors for class', () => {
         let file = read('documentation/classes/Todo.html');
         expect(file).to.contain('Accessors');
-        expect(file).to.contain('Getter of _title');
         expect(file).to.contain('Setter of _title');
+        expect(file).to.contain('<p>Returns the runtime path</p>');
     });
 
     it('should support accessors for injectables', () => {
@@ -410,5 +410,36 @@ describe('CLI simple generation - big app', () => {
         expect(fileTest).to.be.true;
     });
 
+    it('should have DOM tree tab for component with inline template', () => {
+        let file = read('documentation/components/HomeComponent.html');
+        expect(file).to.contain('<header class="header"');
+    });
 
+    it('should have parsed correctly private, public, and static methods or properties', () => {
+        let file = read('documentation/components/AboutComponent.html');
+        expect(file).to.contain('<code>privateStaticMethod()');
+        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`);
+        expect(file).to.contain('<code>protectedStaticMethod()');
+        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`);
+        expect(file).to.contain('<code>publicMethod()');
+        expect(file).to.contain('<code>publicStaticMethod()');
+        expect(file).to.contain('<code>staticMethod()');
+        expect(file).to.contain('staticReadonlyVariable');
+        expect(file).to.contain(`<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`);
+    });
+
+    it('should support entryComponents for modules', () => {
+        let file = read('documentation/modules/AboutModule.html');
+        expect(file).to.contain('EntryComponents');
+        expect(file).to.contain('href="../components/AboutComponent.html"');
+    });
+
+    it('should support dynamic path for routes', () => {
+        let file = exists('documentation/modules/HomeRoutingModule.html');
+        expect(file).to.be.true;
+        let routesFile = read('documentation/js/routes/routes_index.js');
+        expect(routesFile).to.contain('homeimported');
+        expect(routesFile).to.contain('homeenumimported');
+        expect(routesFile).to.contain('homeenuminfile');
+    });
 });

@@ -1,8 +1,12 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
+import { ConfigurationInterface } from '../../interfaces/configuration.interface';
+import { cleanLifecycleHooksFromMethods } from '../../../utils/utils';
 
 export class DirectiveDepFactory {
-    constructor(private helper: ComponentHelper) {
+    constructor(
+        private helper: ComponentHelper,
+        private configuration: ConfigurationInterface) {
 
     }
 
@@ -27,6 +31,9 @@ export class DirectiveDepFactory {
             methodsClass: IO.methods,
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
+        if (this.configuration.mainData.disableLifeCycleHooks) {
+            directiveDeps.methodsClass = cleanLifecycleHooksFromMethods(directiveDeps.methodsClass);
+        }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
             directiveDeps.jsdoctags = IO.jsdoctags[0].tags;
         }

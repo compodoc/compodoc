@@ -119,10 +119,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
 
-        myTabs = document.getElementsByClassName('nav-tabs')[0],
-        myTabsCollection = myTabs.getElementsByTagName('A'),
-        myLastTab = myTabsCollection[myTabsCollection.length - 1];
-    myLastTab.addEventListener('click', function(event) {
+        tabs = document.getElementsByClassName('nav-tabs')[0],
+        tabsCollection = tabs.getElementsByTagName('A'),
+        treeTab;
+        var i = 0,
+            len = tabsCollection.length;
+        for(i; i<len; i++) {
+            if (tabsCollection[i].getAttribute('id') === 'tree-tab') {
+                treeTab = tabsCollection[i];
+            }
+        }
+    treeTab.addEventListener('click', function(event) {
         setTimeout(function() {
             container.style.height = document.getElementsByClassName('content')[0].offsetHeight - 140 + 'px';
             var network = new vis.Network(container, data, options);

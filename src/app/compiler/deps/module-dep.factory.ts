@@ -22,6 +22,7 @@ export class ModuleDepFactory {
             file: file,
             providers: this.moduleHelper.getModuleProviders(properties),
             declarations: this.moduleHelper.getModuleDeclations(properties),
+            entryComponents: this.moduleHelper.getModuleEntryComponents(properties),
             imports: this.moduleHelper.getModuleImports(properties),
             exports: this.moduleHelper.getModuleExports(properties),
             bootstrap: this.moduleHelper.getModuleBootstrap(properties),
@@ -36,6 +37,7 @@ export interface IModuleDep extends IDep {
     file: any;
     providers: Array<any>;
     declarations: Array<any>;
+    entryComponents: Array<any>;
     imports: Array<any>;
     exports: Array<any>;
     bootstrap: any;

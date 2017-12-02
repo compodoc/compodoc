@@ -44,7 +44,7 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                 }
                 context.type.target = '_self';
             } else {
-                context.type.href = `https://${angularDocPrefix}angular.io/docs/ts/latest/api/${_result.data.path}`;
+                context.type.href = `https://${angularDocPrefix}angular.io/${_result.data.path}`;
                 context.type.target = '_blank';
             }
 

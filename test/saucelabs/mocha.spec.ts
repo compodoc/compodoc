@@ -380,7 +380,7 @@ describe('Mac Sierra | Safari 10 | Compodoc page', function() {
     before(function(done) {
         capabilities.platform = 'macOS 10.12';
         capabilities.browserName = 'safari';
-        capabilities.version = '10.0';
+        capabilities.version = '10.1';
         startDriver(done, 'http://127.0.0.1:4000/components/FooComponent.html');
     });
     // Test search bar
@@ -448,7 +448,7 @@ describe('Mac Sierra | Chrome 61 | Compodoc page', function () {
 
 describe('Mac El Capitan | Safari 10 | Compodoc page', function() {
     before(function(done) {
-        capabilities.platform = 'Mac 10.11';
+        capabilities.platform = 'OS X 10.11';
         capabilities.browserName = 'safari';
         capabilities.version = '10.0';
         startDriver(done, 'http://127.0.0.1:4000/components/FooComponent.html');
