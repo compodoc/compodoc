@@ -31,6 +31,11 @@ import { NoopInterceptor } from './shared/interceptors/noopinterceptor.intercept
           provide: HTTP_INTERCEPTORS,
           useClass: NoopInterceptor,
           multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useExisting: NoopInterceptor,
+            multi: true
         }
     ],
     bootstrap: [AppComponent]
