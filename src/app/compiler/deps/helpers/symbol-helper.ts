@@ -92,7 +92,7 @@ export class SymbolHelper {
                                     hasInterceptor = true;
                                 }
                             }
-                            if (property.name.text === 'useClass') {
+                            if (property.name.text === 'useClass' || property.name.text === 'useExisting') {
                                 interceptorName = property.initializer.text;
                             }
                         }
