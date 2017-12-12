@@ -164,7 +164,11 @@ export class SymbolHelper {
         if (props.length === 0) { return []; }
 
         let deps = props.filter(node => {
-            return node.name.text === type;
+            if (node.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
+                
+            } else {
+                return node.name.text === type;
+            }
         });
         return deps.map(x => this.parseSymbols(x)).pop() || [];
     }
