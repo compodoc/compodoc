@@ -287,9 +287,22 @@ h6 {
     padding-left: 20px;
 }
 
-.menu ul.list li.for-chapter {
+.menu ul.list li.for-chapter2 {
     padding-left: 20px;
 }
+
+.menu ul.list li.for-chapter3 {
+  padding-left: 40px;
+}
+
+.menu ul.list li.for-chapter4 {
+  padding-left: 60px;
+}
+
+.menu ul.list li.for-chapter5 {
+  padding-left: 80px;
+}
+
 
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;

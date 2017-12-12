@@ -1,5 +1,4 @@
-[
-    {
+[{
         "title": "Big Introduction",
         "file": "introduction.md"
     },
@@ -8,9 +7,33 @@
         "file": "edition.md",
         "children": [
             {
-                "title": "Edition of a todo",
-                "file": "edition/edition.md"
+            "title": "Edition of a todo",
+            "file": "edition/edition.md",
+            "children": [
+                {
+                "title": "edit-level3",
+                "file": "edition/level3.md",
+                "children": [
+                    {
+                    "title": "edit-level4",
+                    "file": "edition/level4.md",
+                    "children": [
+                        {
+                        "title": "edit-level5",
+                        "file": "edition/level5.md",
+                        "children": [
+                            {
+                            "title": "edit-level6",
+                            "file": "edition/level6.md"
+                        }
+                    ]
+                    }
+                ]
+                }
+            ]
             }
         ]
+        }
+    ]
     }
 ]

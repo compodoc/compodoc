@@ -58,10 +58,11 @@
                     link = './';
                     break;
                 case 1:
-                    link = '../';
-                    break;
                 case 2:
-                    link = '../../';
+                case 3:
+                case 4:
+                case 5:
+                    link = '../'.repeat(currentDepth);
                     break;
             }
 
