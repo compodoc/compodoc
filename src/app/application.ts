@@ -1570,9 +1570,12 @@ export class Application {
         if (!this.fileEngine.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
+            const destination = path.join(
+                                    this.configuration.mainData.output,
+                                    path.basename(this.configuration.mainData.assetsFolder));
             fs.copy(
                 path.resolve(this.configuration.mainData.assetsFolder),
-                path.resolve(this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), (err) => {
+                path.resolve(destination), (err) => {
                     if (err) {
                         logger.error('Error during resources copy ', err);
                     }
