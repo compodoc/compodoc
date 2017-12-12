@@ -77,11 +77,11 @@
         "os-name": "^2.0.1",
         "shelljs": "^0.7.8",
         "traverse": "^0.6.6",
-        "ts-simple-ast": "^3.1.0",
+        "ts-simple-ast": "^3.2.0",
         "typescript": "2.6.1"
     },
     "devDependencies": {
-        "@types/chai": "4.0.9",
+        "@types/chai": "4.0.10",
         "@types/es6-promise": "0.0.33",
         "@types/fs-extra": "4.0.6",
         "@types/handlebars": "^4.0.36",
@@ -98,7 +98,7 @@
         "nodemon": "^1.12.5",
         "npm-watch": "0.3.0",
         "nyc": "11.3.0",
-        "prettier": "1.9.1",
+        "prettier": "1.9.2",
         "request": "^2.83.0",
         "rimraf": "^2.6.2",
         "rollup": "0.52.1",
