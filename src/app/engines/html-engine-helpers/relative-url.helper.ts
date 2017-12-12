@@ -6,9 +6,11 @@ export class RelativeURLHelper implements IHtmlEngineHelper {
             case 0:
                 return './';
             case 1:
-                return '../';
             case 2:
-                return '../../';
+            case 3:
+            case 4:
+            case 5:
+                return '../'.repeat(currentDepth);
         }
 
         return '';

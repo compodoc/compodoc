@@ -72,7 +72,7 @@
                     id="xs-additional-pages"
                 {{/compare}}>
                 {{#each additionalPages}}
-                    <li class="link {{#compare depth "===" 2 }}for-chapter{{/compare}}">
+                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
                         <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
                     </li>
                 {{/each}}

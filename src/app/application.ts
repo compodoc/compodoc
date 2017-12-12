@@ -537,75 +537,66 @@ export class Application {
             });
     }
 
+
+    private getIncludedPathForFile(file) {
+      return path.join(this.configuration.mainData.includes, file);
+    }
+
     private prepareExternalIncludes() {
         logger.info('Adding external markdown files');
         // Scan include folder for files detailed in summary.json
         // For each file, add to this.configuration.mainData.additionalPages
         // Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-            this.fileEngine.get(process.cwd() + path.sep + this.configuration.mainData.includes + path.sep + 'summary.json')
+            this.fileEngine.get(this.getIncludedPathForFile('summary.json'))
                 .then((summaryData) => {
                     logger.info('Additional documentation: summary.json file found');
 
-                    let parsedSummaryData = JSON.parse(summaryData);
-                    let i = 0;
-                    let len = parsedSummaryData.length;
-                    let loop = () => {
-                        if (i <= len - 1) {
-                            $markdownengine.getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
+                    const parsedSummaryData = JSON.parse(summaryData);
+
+                    // Loop for every "collection of items", children included
+                    const loop = (items, depth = 1, father = '') => {
+                        if (depth > 5) {
+                          logger.error('Only 5 levels of depth are supported');
+                          return;
+                        }
+                        // index will be scoped on every deepth collection
+                        let i = 0;
+                        const len = items.length;
+                        const internalLoop = () => {
+                            if (i <= len - 1) {
+                                $markdownengine.getTraditionalMarkdown(this.getIncludedPathForFile(items[i].file))
                                 .then((markedData) => {
+                                    const url = cleanNameWithoutSpaceAndToLowerCase(items[i].title);
+
                                     this.configuration.addAdditionalPage({
-                                        name: parsedSummaryData[i].title,
-                                        id: parsedSummaryData[i].title,
-                                        filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                        name: items[i].title,
+                                        id: items[i].title,
+                                        filename: url,
                                         context: 'additional-page',
-                                        path: this.configuration.mainData.includesFolder,
+                                        path: this.configuration.mainData.includesFolder + father,
                                         additionalPage: markedData,
-                                        depth: 1,
+                                        depth: depth,
                                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                     });
 
-                                    if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
-                                        let j = 0;
-                                        let leng = parsedSummaryData[i].children.length;
-                                        let loopChild = () => {
-                                            if (j <= leng - 1) {
-                                                $markdownengine
-                                                    .getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
-                                                    .then((markedData) => {
-                                                        this.configuration.addAdditionalPage({
-                                                            name: parsedSummaryData[i].children[j].title,
-                                                            id: parsedSummaryData[i].children[j].title,
-                                                            filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
-                                                            context: 'additional-page',
-                                                            path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                                            additionalPage: markedData,
-                                                            depth: 2,
-                                                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                                                        });
-                                                        j++;
-                                                        loopChild();
-                                                    }, (e) => {
-                                                        logger.error(e);
-                                                    });
-                                            } else {
-                                                i++;
-                                                loop();
-                                            }
-                                        };
-                                        loopChild();
-                                    } else {
-                                        i++;
-                                        loop();
+                                    if (items[i].children && items[i].children.length > 0) {
+                                        loop(items[i].children, depth+1, father + '/' + url);
                                     }
+                                    i++;
+                                    internalLoop();
                                 }, (e) => {
                                     logger.error(e);
                                 });
-                        } else {
-                            resolve();
-                        }
+                            } else {
+                              if (depth === 1) {
+                                resolve();
+                              }
+                            }
+                        };
+                        internalLoop();
                     };
-                    loop();
+                    loop(parsedSummaryData);
                 }, (errorMessage) => {
                     logger.error(errorMessage);
                     reject('Error during Additional documentation generation');

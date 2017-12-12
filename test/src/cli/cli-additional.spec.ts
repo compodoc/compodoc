@@ -32,7 +32,6 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean());
 
     it('it should have a menu with links', () => {
-
         expect(fooIndexFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to.be.true;
         expect(fooIndexFile.indexOf('Big Introduction') > -1).to.be.true;
     });
@@ -49,5 +48,30 @@ describe('CLI Additional documentation', () => {
     it('should have generated README file in index.html', () => {
         const file = read(`${tmp.name}/additional-documentation/edition/edition-of-a-todo.html`);
         expect(file).to.contain('screenshots/actions/edition.png');
+    });
+
+    it('should contain up to 5 level of depth', () => {
+
+      expect(fooIndexFile.indexOf('for-chapter2') > -1).to.be.true;
+      expect(fooIndexFile.indexOf('for-chapter3') > -1).to.be.true;
+      expect(fooIndexFile.indexOf('for-chapter4') > -1).to.be.true;
+      expect(fooIndexFile.indexOf('for-chapter5') > -1).to.be.true;
+
+      expect(fooIndexFile.indexOf('for-chapter6') > -1).to.be.false;
+
+    });
+
+    it('should generate every link containing its parent reference', () => {
+      [
+        '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html',
+        '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
+        '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html',
+      ].map(linkRef =>
+        expect(fooIndexFile.indexOf(linkRef) > -1).to.be.true
+      );
+
+      expect(fooIndexFile.indexOf(
+        '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
+      ) > -1).to.be.false;
     });
 });
