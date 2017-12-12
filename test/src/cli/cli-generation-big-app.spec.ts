@@ -118,6 +118,11 @@ describe('CLI simple generation - big app', () => {
         expect(isIndexExists).to.be.true;
     });
 
+    it('should have excluded big file for search index json', () => {
+        const searchIndexFile = read(`documentation/js/search/search_index.js`);
+        expect(searchIndexFile).to.not.contain('photo64_1');
+    });
+
     it('should have generated extends information for todo class', () => {
         const todoModelFile = read(`documentation/classes/Todo.html`);
         expect(todoModelFile).to.contain('Extends');

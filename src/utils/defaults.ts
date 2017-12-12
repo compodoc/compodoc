@@ -24,3 +24,10 @@ export const COMPODOC_DEFAULTS = {
         INTERNAL: 'internal'
     }
 };
+
+
+/**
+ * Max length for the string of a file during Lunr search engine indexing.
+ * Prevent stack size exceeded
+ */
+export const MAX_SIZE_FILE_SEARCH_INDEX = 15000;

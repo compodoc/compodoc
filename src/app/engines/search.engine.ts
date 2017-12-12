@@ -5,6 +5,7 @@ import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
+import { MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/defaults';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');
@@ -47,7 +48,8 @@ export class SearchEngine {
             body: text
         };
 
-        if (!this.documentsStore.hasOwnProperty(doc.url)) {
+        if (!this.documentsStore.hasOwnProperty(doc.url)
+            && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
             this.documentsStore[doc.url] = doc;
             this.getSearchIndex().add(doc);
         }
