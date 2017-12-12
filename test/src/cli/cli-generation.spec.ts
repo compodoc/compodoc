@@ -332,6 +332,30 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when passing a deep path on a flag', () => {
+
+        before(function (done) {
+            tmp.create();
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', './' + tmp.name + '/',
+                '-a', './test/src/todomvc-ng2/screenshots/actions'], { env});
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean());
+
+        it('should flatten the path to the deeper dirname', () => {
+            const isFolderExists = exists(`${tmp.name}/actions`);
+            expect(isFolderExists).to.be.true;
+        });
+    });
+
     describe('when generation with d flag and src arg', () => {
 
         let stdoutString = undefined;
