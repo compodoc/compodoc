@@ -1,8 +1,8 @@
 export function extractLeadingText(string, completeTag) {
-    var tagIndex = string.indexOf(completeTag);
-    var leadingText = undefined;
-    var leadingTextRegExp = /\[(.+?)\]/g;
-    var leadingTextInfo = leadingTextRegExp.exec(string);
+    let tagIndex = string.indexOf(completeTag);
+    let leadingText = undefined;
+    let leadingTextRegExp = /\[(.+?)\]/g;
+    let leadingTextInfo = leadingTextRegExp.exec(string);
 
     // did we find leading text, and if so, does it immediately precede the tag?
     while (leadingTextInfo && leadingTextInfo.length) {
@@ -22,9 +22,9 @@ export function extractLeadingText(string, completeTag) {
 }
 
 export function splitLinkText(text) {
-    var linkText;
-    var target;
-    var splitIndex;
+    let linkText;
+    let target;
+    let splitIndex;
 
     // if a pipe is not present, we split on the first space
     splitIndex = text.indexOf('|');
@@ -47,8 +47,8 @@ export function splitLinkText(text) {
 
 export let LinkParser = (function() {
 
-    var processTheLink = function(string, tagInfo, leadingText) {
-        var leading = extractLeadingText(string, tagInfo.completeTag),
+    let processTheLink = function(string, tagInfo, leadingText) {
+        let leading = extractLeadingText(string, tagInfo.completeTag),
             linkText,
             split,
             target,
@@ -74,12 +74,12 @@ export let LinkParser = (function() {
      * {@link http://www.google.com|Google} or {@link https://github.com GitHub} or [Github]{@link https://github.com} to [Github](https://github.com)
      */
 
-    var replaceLinkTag = function(str: string) {
+    let replaceLinkTag = function(str: string) {
 
         // new RegExp('\\[((?:.|\n)+?)]\\{@link\\s+((?:.|\n)+?)\\}', 'i').exec('ee [TO DO]{@link Todo} fo') -> "[TO DO]{@link Todo}", "TO DO", "Todo"
         // new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i').exec('ee [TODO]{@link Todo} fo') -> "{@link Todo}", "Todo"
 
-        var tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
+        let tagRegExpLight = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
             tagRegExpFull = new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i'),
             tagRegExp,
             matches,
@@ -89,7 +89,7 @@ export let LinkParser = (function() {
         tagRegExp = (str.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
 
         function replaceMatch(replacer, tag, match, text, linkText?) {
-            var matchedTag = {
+            let matchedTag = {
                 completeTag: match,
                 tag: tag,
                 text: text
@@ -120,7 +120,7 @@ export let LinkParser = (function() {
         };
     };
 
-    var _resolveLinks = function(str: string) {
+    let _resolveLinks = function(str: string) {
         return replaceLinkTag(str).newString;
     };
 

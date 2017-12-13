@@ -1,14 +1,14 @@
 import * as path from 'path';
 export default function isGlobal() {
-    var binPath,
+    let binPath,
         globalBinPath = function() {
-            if (binPath) return binPath;
+            if (binPath) { return binPath; }
 
             if (process.platform === 'win32') {
-                var pathnames = process.env.PATH.split(path.delimiter);
-                var len = pathnames.length;
+                let pathnames = process.env.PATH.split(path.delimiter);
+                let len = pathnames.length;
 
-                for (var i = 0; i < len; i++) {
+                for (let i = 0; i < len; i++) {
                     if (path.basename(pathnames[i]) === 'npm' || path.basename(pathnames[i]) === 'nodejs') {
                         binPath = pathnames[i];
                     }

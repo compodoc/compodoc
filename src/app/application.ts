@@ -129,13 +129,13 @@ export class Application {
 
     private unhandledRejectionListener(err, p) {
         console.log('Unhandled Rejection at:', p, 'reason:', err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
         process.exit(1);
     }
 
     private uncaughtExceptionListener(err) {
         logger.error(err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
         process.exit(1);
     }
 
@@ -1205,7 +1205,7 @@ export class Application {
                         name: el.name
                     };
                     if (type === 'variable') {
-                        cl.linktype = 'miscellaneous'
+                        cl.linktype = 'miscellaneous';
                     }
                     let totalStatementDocumented = 0;
                     let totalStatements = 1;
@@ -1597,15 +1597,15 @@ export class Application {
             finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
         }
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
-            if (err) {
-                logger.error('Error during resources copy ', err);
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (errorCopy) => {
+            if (errorCopy) {
+                logger.error('Error during resources copy ', errorCopy);
             } else {
                 if (this.configuration.mainData.extTheme) {
                     fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme),
-                        path.resolve(finalOutput + '/styles/'), function (err1) {
-                            if (err1) {
-                                logger.error('Error during external styling theme copy ', err1);
+                        path.resolve(finalOutput + '/styles/'), function (errorCopyTheme) {
+                            if (errorCopyTheme) {
+                                logger.error('Error during external styling theme copy ', errorCopyTheme);
                             } else {
                                 logger.info('External styling theme copy succeeded');
                                 onComplete();
@@ -1614,9 +1614,9 @@ export class Application {
                 } else {
                     if (this.configuration.mainData.customFavicon !== '') {
                         logger.info(`Custom favicon supplied`);
-                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (err) => {
-                            if (err) {
-                                logger.error('Error during resources copy ', err);
+                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (errorCopyFavicon) => {// tslint:disable-line
+                            if (errorCopyFavicon) {
+                                logger.error('Error during resources copy ', errorCopyFavicon);
                             } else {
                                 onComplete();
                             }

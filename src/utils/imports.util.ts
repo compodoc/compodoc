@@ -6,17 +6,17 @@ import Ast from 'ts-simple-ast';
 const ast = new Ast();
 
 export class ImportsUtil {
-    public merge(variableName: string, sourceFile: ts.SourceFile) {
-        let metadataVariableName = variableName,
+    public merge(inputVariableName: string, sourceFile: ts.SourceFile) {
+        let metadataVariableName = inputVariableName,
             searchedImport,
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
         const imports = file.getImports();
 
         /**
-         * Loop through all imports, and find one matching variableName
+         * Loop through all imports, and find one matching inputVariableName
          */
         imports.forEach((i) => {
             let namedImports = i.getNamedImports(),
@@ -73,21 +73,21 @@ export class ImportsUtil {
 
     /**
      * Find in imports something like VAR.AVAR.BVAR.thestring
-     * @param  {string} variableName                   like VAR.AVAR.BVAR.thestring
+     * @param  {string} inputVariableName                   like VAR.AVAR.BVAR.thestring
      * @return {[type]}                                thestring value
      */
-    public findPropertyValueInImport(variableName, sourceFile: ts.SourceFile) {
-        let variablesAttributes = variableName.split('.'),
+    public findPropertyValueInImport(inputVariableName, sourceFile: ts.SourceFile) {
+        let variablesAttributes = inputVariableName.split('.'),
             metadataVariableName = variablesAttributes[0],
             searchedImport,
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
         const imports = file.getImports();
 
         /**
-         * Loop through all imports, and find one matching variableName
+         * Loop through all imports, and find one matching inputVariableName
          */
         imports.forEach((i) => {
             let namedImports = i.getNamedImports(),
@@ -145,7 +145,7 @@ export class ImportsUtil {
                                         }
                                     }
                                 }
-                            })
+                            });
                         };
                         loopProperties(compilerNode.properties);
                         return finalValue;
@@ -154,9 +154,9 @@ export class ImportsUtil {
             }
         };
 
-        let findInEnums = (sourceFile, variableName: string, variableValue: string) => {
+        let findInEnums = (srcFile, variableName: string, variableValue: string) => {
             let res = '';
-            sourceFile.getEnum(e => {
+            srcFile.getEnum(e => {
                 if (e.getName() === variableName) {
                     e.getMember(m => {
                         if (m.getName() === variableValue) {
