@@ -6,7 +6,76 @@ import Ast from 'ts-simple-ast';
 const ast = new Ast();
 
 export class ImportsUtil {
-    public merge(inputVariableName: string, sourceFile: ts.SourceFile) {
+
+    /**
+     * Find for a sourceFile a variable value in a local enum
+     * @param srcFile 
+     * @param variableName 
+     * @param variableValue 
+     */
+    private findInEnums(srcFile, variableName: string, variableValue: string) {
+        let res = '';
+        srcFile.getEnum(e => {
+            if (e.getName() === variableName) {
+                e.getMember(m => {
+                    if (m.getName() === variableValue) {
+                        res = m.getValue();
+                    }
+                });
+            }
+        });
+        return res;
+    }
+
+    /**
+     * Find a value in a local variable declaration like an object
+     * @param variableDeclaration 
+     * @param variablesAttributes
+     */
+    private findInObjectVariableDeclaration(variableDeclaration, variablesAttributes) {
+        let variableKind = variableDeclaration.getKind();
+        if (variableKind && variableKind === ts.SyntaxKind.VariableDeclaration) {
+            let initializer = variableDeclaration.getInitializer();
+            if (initializer) {
+                let initializerKind = initializer.getKind();
+                if (initializerKind && initializerKind === ts.SyntaxKind.ObjectLiteralExpression) {
+                    let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression,
+                        finalValue = '';
+                    // Find thestring from AVAR.BVAR.thestring inside properties
+                    let depth = 0;
+                    let loopProperties = (properties) => {
+                        properties.forEach(prop => {
+                            if (prop.name) {
+                                if (variablesAttributes[depth + 1]) {
+                                    if (prop.name.getText() === variablesAttributes[depth + 1]) {
+                                        if (prop.initializer) {
+                                            if (prop.initializer.properties) {
+                                                depth += 1;
+                                                loopProperties(prop.initializer.properties);
+                                            } else {
+                                                finalValue = prop.initializer.text;
+                                            }
+                                        } else {
+                                            finalValue = prop.initializer.text;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    };
+                    loopProperties(compilerNode.properties);
+                    return finalValue;
+                }
+            }
+        }
+    }
+
+    /**
+     * Find in imports something like myvar
+     * @param  {string} inputVariableName              like myvar
+     * @return {[type]}                                myvar value
+     */
+    public findValueInImportOrLocalVariables(inputVariableName: string, sourceFile: ts.SourceFile) {
         let metadataVariableName = inputVariableName,
             searchedImport,
             aliasOriginalName = '',
@@ -45,7 +114,7 @@ export class ImportsUtil {
             }
         });
 
-        if (searchedImport) {
+        if (typeof searchedImport !== 'undefined') {
             let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
             const sourceFileImport = ast.getOrAddSourceFile(imporPath);
             if (sourceFileImport) {
@@ -66,6 +135,12 @@ export class ImportsUtil {
                     }
                 }
             }
+        } else {
+            // Find in local variables of the file
+            const variableDeclaration = file.getVariableDeclaration(metadataVariableName);
+            if (variableDeclaration) {
+                return variableDeclaration.compilerNode;
+            }
         }
 
         return [];
@@ -76,7 +151,7 @@ export class ImportsUtil {
      * @param  {string} inputVariableName                   like VAR.AVAR.BVAR.thestring
      * @return {[type]}                                thestring value
      */
-    public findPropertyValueInImport(inputVariableName, sourceFile: ts.SourceFile) {
+    public findPropertyValueInImportOrLocalVariables(inputVariableName, sourceFile: ts.SourceFile) {
         let variablesAttributes = inputVariableName.split('.'),
             metadataVariableName = variablesAttributes[0],
             searchedImport,
@@ -116,88 +191,30 @@ export class ImportsUtil {
             }
         });
 
-        let findInVariableDeclaration = (variableDeclaration) => {
-            let variableKind = variableDeclaration.getKind();
-            if (variableKind && variableKind === ts.SyntaxKind.VariableDeclaration) {
-                let initializer = variableDeclaration.getInitializer();
-                if (initializer) {
-                    let initializerKind = initializer.getKind();
-                    if (initializerKind && initializerKind === ts.SyntaxKind.ObjectLiteralExpression) {
-                        let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression,
-                            finalValue = '';
-                        // Find thestring from AVAR.BVAR.thestring inside properties
-                        let depth = 0;
-                        let loopProperties = (properties) => {
-                            properties.forEach(prop => {
-                                if (prop.name) {
-                                    if (variablesAttributes[depth + 1]) {
-                                        if (prop.name.getText() === variablesAttributes[depth + 1]) {
-                                            if (prop.initializer) {
-                                                if (prop.initializer.properties) {
-                                                    depth += 1;
-                                                    loopProperties(prop.initializer.properties);
-                                                } else {
-                                                    finalValue = prop.initializer.text;
-                                                }
-                                            } else {
-                                                finalValue = prop.initializer.text;
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        };
-                        loopProperties(compilerNode.properties);
-                        return finalValue;
-                    }
-                }
-            }
-        };
-
-        let findInEnums = (srcFile, variableName: string, variableValue: string) => {
-            let res = '';
-            srcFile.getEnum(e => {
-                if (e.getName() === variableName) {
-                    e.getMember(m => {
-                        if (m.getName() === variableValue) {
-                            res = m.getValue();
-                        }
-                    });
-                }
-            });
-            return res;
-        };
-
+        let fileToSearchIn,
+            variableDeclaration;
         if (typeof searchedImport !== 'undefined') {
             let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
             const sourceFileImport = ast.getOrAddSourceFile(imporPath);
             if (sourceFileImport) {
+                fileToSearchIn = sourceFileImport;
                 let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
-                let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
-                if (variableDeclaration) {
-                    return findInVariableDeclaration(variableDeclaration);
-                }
-                // Try find it in enums
-                if (variablesAttributes.length > 0) {
-                    let en = findInEnums(sourceFileImport, metadataVariableName, variablesAttributes[1]);
-                    if (en !== '') {
-                        return en;
-                    }
-                }
+                variableDeclaration = fileToSearchIn.getVariableDeclaration(variableName);
             }
         } else {
+            fileToSearchIn = file;
             // Find in local variables of the file
-            const variableStatements = file.getVariableStatements();
-            const variableDeclaration = file.getVariableDeclaration(metadataVariableName);
-            if (variableDeclaration) {
-                return findInVariableDeclaration(variableDeclaration);
-            }
-            // Try find it in enums
-            if (variablesAttributes.length > 0) {
-                let en = findInEnums(file, metadataVariableName, variablesAttributes[1]);
-                if (en !== '') {
-                    return en;
-                }
+            const variableDeclaration = fileToSearchIn.getVariableDeclaration(metadataVariableName);           
+        }
+
+        if (variableDeclaration) {
+            return this.findInObjectVariableDeclaration(variableDeclaration, variablesAttributes);
+        }
+        // Try find it in enums
+        if (variablesAttributes.length > 0) {
+            let en = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+            if (en !== '') {
+                return en;
             }
         }
     }

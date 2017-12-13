@@ -392,7 +392,7 @@ export class RouterParserUtil {
                                       firstObjectLiteralAttributeName;
                                   if (propertyInitializer.expression) {
                                       firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
-                                      let result = this.importsUtil.findPropertyValueInImport(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile);
+                                      let result = this.importsUtil.findPropertyValueInImportOrLocalVariables(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile);
                                       if (result !== '') {
                                           propertyInitializer.kind = 9;
                                           propertyInitializer.text = result;

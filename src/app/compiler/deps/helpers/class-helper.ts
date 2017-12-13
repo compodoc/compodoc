@@ -311,7 +311,7 @@ export class ClassHelper {
                 searchInProperties();
             } else {
                 // if not, may be it is an import
-                properties = this.importsUtil.merge(firstArgument.text, sourceFile);
+                properties = this.importsUtil.findValueInImportOrLocalVariables(firstArgument.text, sourceFile);
                 searchInProperties();
             }
         }

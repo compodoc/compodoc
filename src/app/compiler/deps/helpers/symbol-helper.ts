@@ -2,8 +2,11 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
+import { ImportsUtil } from '../../../../utils/imports.util';
+
 export class SymbolHelper {
     private readonly unknown = '???';
+    private importsUtil = new ImportsUtil();
 
     public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
         let nsModule = name.split('.');
@@ -145,8 +148,13 @@ export class SymbolHelper {
      *  122 BooleanKeyword
      *    9 StringLiteral
      */
-    private parseSymbols(node: ts.PropertyAssignment): Array<string> {
-        if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
+    private parseSymbols(node: ts.ObjectLiteralElement, srcFile: ts.SourceFile): Array<string> {
+        if (ts.isShorthandPropertyAssignment(node)) {
+            let vl = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
+            if (ts.isArrayLiteralExpression(vl.initializer)) {
+                return vl.initializer.elements.map(x => this.parseSymbolElements(x));
+            }
+        } else if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
             return [node.initializer.text];
         } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
             return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
@@ -160,17 +168,13 @@ export class SymbolHelper {
         }
     }
 
-    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
+    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, srcFile: ts.SourceFile, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
         let deps = props.filter(node => {
-            if (node.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
-                
-            } else {
-                return node.name.text === type;
-            }
+            return node.name.text === type;
         });
-        return deps.map(x => this.parseSymbols(x)).pop() || [];
+        return deps.map(x => this.parseSymbols(x, srcFile)).pop() || [];
     }
 
     public getSymbolDepsRaw(

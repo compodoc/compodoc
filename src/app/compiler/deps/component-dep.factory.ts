@@ -19,23 +19,23 @@ export class ComponentDepFactory {
             id: 'component-' + name + '-' + Date.now(),
             file: file,
             // animations?: string[]; // TODO
-            changeDetection: this.helper.getComponentChangeDetection(props),
-            encapsulation: this.helper.getComponentEncapsulation(props),
+            changeDetection: this.helper.getComponentChangeDetection(props, srcFile),
+            encapsulation: this.helper.getComponentEncapsulation(props, srcFile),
             // entryComponents?: string; // TODO waiting doc infos
-            exportAs: this.helper.getComponentExportAs(props),
+            exportAs: this.helper.getComponentExportAs(props, srcFile),
             host: this.helper.getComponentHost(props),
-            inputs: this.helper.getComponentInputsMetadata(props),
+            inputs: this.helper.getComponentInputsMetadata(props, srcFile),
             // interpolation?: string; // TODO waiting doc infos
-            moduleId: this.helper.getComponentModuleId(props),
-            outputs: this.helper.getComponentOutputs(props),
-            providers: this.helper.getComponentProviders(props),
+            moduleId: this.helper.getComponentModuleId(props, srcFile),
+            outputs: this.helper.getComponentOutputs(props, srcFile),
+            providers: this.helper.getComponentProviders(props, srcFile),
             // queries?: Deps[]; // TODO
-            selector: this.helper.getComponentSelector(props),
-            styleUrls: this.helper.getComponentStyleUrls(props),
-            styles: this.helper.getComponentStyles(props), // TODO fix args
-            template: this.helper.getComponentTemplate(props),
-            templateUrl: this.helper.getComponentTemplateUrl(props),
-            viewProviders: this.helper.getComponentViewProviders(props),
+            selector: this.helper.getComponentSelector(props, srcFile),
+            styleUrls: this.helper.getComponentStyleUrls(props, srcFile),
+            styles: this.helper.getComponentStyles(props, srcFile), // TODO fix args
+            template: this.helper.getComponentTemplate(props, srcFile),
+            templateUrl: this.helper.getComponentTemplateUrl(props, srcFile),
+            viewProviders: this.helper.getComponentViewProviders(props, srcFile),
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
             propertiesClass: IO.properties,

@@ -10,14 +10,14 @@ export class ModuleHelper {
 
     }
 
-    public getModuleProviders(properties: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
+    public getModuleProviders(properties: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
-            .getSymbolDeps(properties, 'providers')
+            .getSymbolDeps(properties, 'providers', srcFile)
             .map((providerName) => this.symbolHelper.parseDeepIndentifier(providerName));
     }
 
-    public getModuleDeclations(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'declarations').map((name) => {
+    public getModuleDeclations(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Deps[] {
+        return this.symbolHelper.getSymbolDeps(props, 'declarations', srcFile).map((name) => {
             let component = this.cache.get(name);
 
             if (component) {
@@ -28,8 +28,8 @@ export class ModuleHelper {
         });
     }
 
-    public getModuleEntryComponents(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'entryComponents').map((name) => {
+    public getModuleEntryComponents(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Deps[] {
+        return this.symbolHelper.getSymbolDeps(props, 'entryComponents', srcFile).map((name) => {
             let component = this.cache.get(name);
 
             if (component) {
@@ -40,25 +40,25 @@ export class ModuleHelper {
         });
     }
 
-    public getModuleImports(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
+    public getModuleImports(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
-            .getSymbolDeps(props, 'imports')
+            .getSymbolDeps(props, 'imports', srcFile)
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getModuleExports(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
+    public getModuleExports(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
-            .getSymbolDeps(props, 'exports')
+            .getSymbolDeps(props, 'exports', srcFile)
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getModuleImportsRaw(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<ts.ObjectLiteralElementLike> {
+    public getModuleImportsRaw(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<ts.ObjectLiteralElementLike> {
         return this.symbolHelper.getSymbolDepsRaw(props, 'imports');
     }
 
-    public getModuleBootstrap(props: ReadonlyArray<ts.ObjectLiteralElementLike>): Array<IParseDeepIdentifierResult> {
+    public getModuleBootstrap(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
-            .getSymbolDeps(props, 'bootstrap')
+            .getSymbolDeps(props, 'bootstrap', srcFile)
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 }

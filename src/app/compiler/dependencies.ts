@@ -253,7 +253,7 @@ export class Dependencies {
                             const moduleDep = new ModuleDepFactory(this.moduleHelper)
                                 .create(file, srcFile, name, props, IO);
                             if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
-                                this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props), file);
+                                this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props, srcFile), file);
                             }
                             this.routerParser.addModule(name, moduleDep.imports);
                             outputSymbols.modules.push(moduleDep);
@@ -706,7 +706,7 @@ export class Dependencies {
                 return pop.properties;
             } else {
                 logger.warn('Empty metadatas, trying to found it with imports.');
-                return this.importsUtil.merge(pop.text, sourceFile);
+                return this.importsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
             }
         }
 

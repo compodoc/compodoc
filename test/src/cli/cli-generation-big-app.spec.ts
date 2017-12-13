@@ -447,4 +447,9 @@ describe('CLI simple generation - big app', () => {
         expect(routesFile).to.contain('homeenumimported');
         expect(routesFile).to.contain('homeenuminfile');
     });
+
+    it('should support Object Literal Property Value Shorthand support for metadatas for modules', () => {
+        let file = read('documentation/modules/AboutModule.html');
+        expect(file).to.contain('<h3>Declarations');
+    });
 });
