@@ -62,7 +62,7 @@
                 case 3:
                 case 4:
                 case 5:
-                    link = '../'.repeat(currentDepth);
+                    link = '../'.repeat(COMPODOC_CURRENT_PAGE_DEPTH);
                     break;
             }
 
