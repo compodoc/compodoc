@@ -12,8 +12,8 @@
 - prism : 1.9.0
 - promise
 - svg-pan-zoom : 3.5.2
-- tablesort : 5.0.1
-- vis : 4.18.1
+- tablesort : 5.0.2
+- vis : 4.20.1
 - zepto : 1.2.0
 - lunr : 2.1.5
 
