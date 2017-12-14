@@ -469,4 +469,14 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<h3>Bootstrap');
         expect(file).to.contain('<h3>Schemas');
     });
+
+    it('should support Object Literal Property Value Shorthand support for metadatas for components', () => {
+        let file = read('documentation/components/HomeComponent.html');
+        expect(file).to.contain('<h3>Metadata');
+        expect(file).to.contain('<code>home</code>');
+        expect(file).to.contain('<code>ChangeDetectionStrategy.OnPush</code>');
+        expect(file).to.contain('<code>ViewEncapsulation.Emulated</code>');
+        expect(file).to.contain('<code>./home.component.html</code>');
+        expect(file).to.contain('<td class="col-md-3">template</td>');
+    });
 });

@@ -149,28 +149,25 @@ export class SymbolHelper {
      *    9 StringLiteral
      */
     private parseSymbols(node: ts.ObjectLiteralElement, srcFile: ts.SourceFile): Array<string | boolean> {
-        if (ts.isShorthandPropertyAssignment(node)) {
-            let vl = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
-            if (ts.isArrayLiteralExpression(vl.initializer)) {
-                return vl.initializer.elements.map(x => this.parseSymbolElements(x));
-            }
-            if (ts.isStringLiteral(vl.initializer) || (ts.isPropertyAssignment(vl) && vl.initializer.text)) {
-                return [vl.initializer.text];
-            }
-            if (vl.initializer.kind === ts.SyntaxKind.TrueKeyword || vl.initializer.kind === ts.SyntaxKind.FalseKeyword) {
-                return [(vl.initializer.kind === ts.SyntaxKind.TrueKeyword) ? true : false];
-            }
-        } else if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
-            return [node.initializer.text];
-        } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
-            return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
-        } else if (ts.isPropertyAccessExpression(node.initializer)) {
-            let identifier = this.parseSymbolElements(node.initializer);
+        let localNode = node;
+
+        if (ts.isShorthandPropertyAssignment(localNode)) {
+            localNode = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
+        }
+
+        if (ts.isArrayLiteralExpression(localNode.initializer)) {
+            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
+        } else if (ts.isStringLiteral(localNode.initializer) || ts.isTemplateLiteral(localNode.initializer) || (ts.isPropertyAssignment(localNode) && localNode.initializer.text)) {
+            return [localNode.initializer.text];
+        } else if (localNode.initializer.kind && (localNode.initializer.kind === ts.SyntaxKind.TrueKeyword || localNode.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
+            return [(localNode.initializer.kind === ts.SyntaxKind.TrueKeyword) ? true : false];
+        } else if (ts.isPropertyAccessExpression(localNode.initializer)) {
+            let identifier = this.parseSymbolElements(localNode.initializer);
             return [
                 identifier
             ];
-        } else if (ts.isArrayLiteralExpression(node.initializer)) {
-            return node.initializer.elements.map(x => this.parseSymbolElements(x));
+        } else if (ts.isArrayLiteralExpression(localNode.initializer)) {
+            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         }
     }
 
