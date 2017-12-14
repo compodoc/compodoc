@@ -154,6 +154,9 @@ export class SymbolHelper {
             if (ts.isArrayLiteralExpression(vl.initializer)) {
                 return vl.initializer.elements.map(x => this.parseSymbolElements(x));
             }
+            if (ts.isStringLiteral(vl.initializer) || (ts.isPropertyAssignment(vl) && vl.initializer.text)) {
+                return [vl.initializer.text];
+            }
         } else if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
             return [node.initializer.text];
         } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {

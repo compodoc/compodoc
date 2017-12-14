@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { FooterComponent } from './footer.component';
@@ -13,6 +13,7 @@ import { FooterComponent } from './footer.component';
     declarations: [
         FooterComponent
     ],
-    exports: [FooterComponent]
+    exports: [FooterComponent],
+    schemas: [NO_ERRORS_SCHEMA]
 })
 export class FooterModule { }

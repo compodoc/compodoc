@@ -435,8 +435,18 @@ describe('CLI simple generation - big app', () => {
 
     it('should support entryComponents for modules', () => {
         let file = read('documentation/modules/AboutModule.html');
-        expect(file).to.contain('EntryComponents');
+        expect(file).to.contain('<h3>EntryComponents');
         expect(file).to.contain('href="../components/AboutComponent.html"');
+    });
+
+    it('should id for modules', () => {
+        let file = read('documentation/modules/AboutModule.html');
+        expect(file).to.contain('<h3>Id');
+    });
+
+    it('should schemas for modules', () => {
+        let file = read('documentation/modules/FooterModule.html');
+        expect(file).to.contain('<h3>Schemas');
     });
 
     it('should support dynamic path for routes', () => {
@@ -451,5 +461,10 @@ describe('CLI simple generation - big app', () => {
     it('should support Object Literal Property Value Shorthand support for metadatas for modules', () => {
         let file = read('documentation/modules/AboutModule.html');
         expect(file).to.contain('<h3>Declarations');
+        expect(file).to.contain('<h3>Imports');
+        expect(file).to.contain('<h3>EntryComponents');
+        expect(file).to.contain('<h3>Providers');
+        expect(file).to.contain('<h3>Bootstrap');
+        expect(file).to.contain('<h3>Schemas');
     });
 });

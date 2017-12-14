@@ -49,6 +49,15 @@
             <code>{{module.file}}</code>
         </p>
 
+        {{#if module.ngid}}
+            <p class="comment">
+                <h3>Id</h3>
+            </p>
+            <p class="comment">
+                {{module.ngid}}
+            </p>
+        {{/if}}
+
         {{#if module.description}}
             <p class="comment">
                 <h3>Description</h3>
@@ -57,6 +66,7 @@
                 {{{parseDescription module.description depth}}}
             </p>
         {{/if}}
+        
 
         <div class="container-fluid module">
             <div class="row">
@@ -140,6 +150,18 @@
                         {{#each module.bootstrap}}
                             <li class="list-group-item">
                                 <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html" >{{name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
+                {{#if module.schemas}}
+                <div class="col-sm-3">
+                    <h3>Schemas<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span class="fa fa-info-circle"></a></h3>
+                    <ul class="list-group">
+                        {{#each module.schemas}}
+                            <li class="list-group-item">
+                                <a href="https://angular.io/api/core/{{this}}" target="_blank">{{this}}</a>
                             </li>
                         {{/each}}
                     </ul>
