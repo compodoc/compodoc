@@ -24,12 +24,12 @@ See this folder for more details : [DOCS](./docs/README.md)
 
 ### Development process
 
-- open one terminal and run inside compodoc folder : `ǹpm run start`
+- open one terminal and run inside compodoc folder : `npm run start`
 - open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `compodoc -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems 'all'" -s`
 
 ### Debugging process
 
-- open one terminal and run inside compodoc folder : `ǹpm run start`
+- open one terminal and run inside compodoc folder : `npm run start`
 - open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node --inspect ../compodoc/bin/index-cli.js -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems 'all'" -s`
 
 ## <a name="issue"></a> Found an Issue?
@@ -230,14 +230,6 @@ Just as in the **subject**, use the imperative, present tense: "change" not Ther
 * **packaging**: used for changes that change the npm package layout in all of our packages, e.g. public path changes, package.json changes done to all packages, d.ts file/format changes, changes to bundles, etc.
 * **changelog**: used for updating the release notes in CHANGELOG.md
 * none/empty string: useful for `style`, `test` and `refactor` changes that are done across all packages (e.g. `style: add missing semicolons`)
-
-There are currently a few exceptions to the "use package name" rule:
-
-* **packaging**: used for changes that change the npm package layout in all of our packages, e.g. public path changes, package.json changes done to all packages, d.ts file/format changes, changes to bundles, etc.
-* **changelog**: used for updating the release notes in CHANGELOG.md
-* none/empty string: useful for `style`, `test` and `refactor` changes that are done across all packages (e.g. `style: add missing semicolons`)
-
-
 
 **Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
