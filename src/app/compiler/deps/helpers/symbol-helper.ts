@@ -148,7 +148,7 @@ export class SymbolHelper {
      *  122 BooleanKeyword
      *    9 StringLiteral
      */
-    private parseSymbols(node: ts.ObjectLiteralElement, srcFile: ts.SourceFile): Array<string> {
+    private parseSymbols(node: ts.ObjectLiteralElement, srcFile: ts.SourceFile): Array<string | boolean> {
         if (ts.isShorthandPropertyAssignment(node)) {
             let vl = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
             if (ts.isArrayLiteralExpression(vl.initializer)) {
@@ -156,6 +156,9 @@ export class SymbolHelper {
             }
             if (ts.isStringLiteral(vl.initializer) || (ts.isPropertyAssignment(vl) && vl.initializer.text)) {
                 return [vl.initializer.text];
+            }
+            if (vl.initializer.kind === ts.SyntaxKind.TrueKeyword || vl.initializer.kind === ts.SyntaxKind.FalseKeyword) {
+                return [(vl.initializer.kind === ts.SyntaxKind.TrueKeyword) ? true : false];
             }
         } else if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
             return [node.initializer.text];

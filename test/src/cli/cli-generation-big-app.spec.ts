@@ -168,9 +168,11 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.be.true;
 
         const pipeFile = read('documentation/pipes/FirstUpperPipe.html');
+        expect(pipeFile).to.contain('<h3>Metadata');
         expect(pipeFile).to.contain('Example property');
         expect(pipeFile).to.contain('the transform function');
-        expect(pipeFile).to.contain('false');
+        expect(pipeFile).to.contain('<td class="col-md-9">true</td>');
+        expect(pipeFile).to.contain('<td class="col-md-9">firstUpper</td>');
     });
 
     it('should have miscellaneous page', () => {

@@ -308,8 +308,8 @@ export class Dependencies {
                                 description: IO.description,
                                 properties: IO.properties,
                                 methods: IO.methods,
-                                pure: this.componentHelper.getComponentPure(props),
-                                ngname: this.componentHelper.getComponentName(props),
+                                pure: this.componentHelper.getComponentPure(props, srcFile),
+                                ngname: this.componentHelper.getComponentName(props, srcFile),
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };
