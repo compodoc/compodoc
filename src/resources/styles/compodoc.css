@@ -524,6 +524,10 @@ code {
     padding-left: 20px;
 }
 
+example-url {
+    display: none;
+}
+
 i {
     font-style: italic;
 }

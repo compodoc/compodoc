@@ -277,7 +277,8 @@ export class Dependencies {
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 description: IO.description,
-                                sourceCode: srcFile.getText()
+                                sourceCode: srcFile.getText(),
+                                exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };
                             if (IO.constructor) {
                                 injectableDeps.constructorObj = IO.constructor;
