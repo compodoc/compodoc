@@ -15,6 +15,7 @@ const pkg = require('../package.json');
 const program = require('commander');
 const os = require('os');
 const osName = require('os-name');
+
 let files = [];
 let cwd = process.cwd();
 

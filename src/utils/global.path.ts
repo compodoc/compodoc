@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 export default function isGlobal() {
     let binPath,
         globalBinPath = function() {

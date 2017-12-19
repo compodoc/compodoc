@@ -1,15 +1,9 @@
-import * as path from 'path';
-
 import { logger } from '../../logger';
 import { DependenciesEngine } from './dependencies.engine';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
 
 import { ExportJsonEngine } from './export-json.engine';
-
-import { ExportData } from '../interfaces/export-data.interface';
-
-const traverse = require('traverse');
 
 export class ExportEngine {
 

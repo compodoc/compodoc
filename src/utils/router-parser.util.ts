@@ -1,12 +1,10 @@
 import * as util from 'util';
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as ts from 'typescript';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import * as JSON5 from 'json5';
 
-import { logger } from '../logger';
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
 import { ImportsUtil } from './imports.util';
