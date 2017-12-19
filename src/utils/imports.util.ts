@@ -81,7 +81,7 @@ export class ImportsUtil {
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
         const imports = file.getImports();
 
         /**
@@ -116,7 +116,7 @@ export class ImportsUtil {
 
         if (typeof searchedImport !== 'undefined') {
             let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
-            const sourceFileImport = ast.getOrAddSourceFile(imporPath);
+            const sourceFileImport = ast.getSourceFile(imporPath);
             if (sourceFileImport) {
                 let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
                 let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
@@ -158,7 +158,7 @@ export class ImportsUtil {
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addSourceFileFromText(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
         const imports = file.getImports();
 
         /**
@@ -195,7 +195,7 @@ export class ImportsUtil {
             variableDeclaration;
         if (typeof searchedImport !== 'undefined') {
             let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
-            const sourceFileImport = ast.getOrAddSourceFile(imporPath);
+            const sourceFileImport = ast.getSourceFile(imporPath);
             if (sourceFileImport) {
                 fileToSearchIn = sourceFileImport;
                 let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
@@ -212,9 +212,11 @@ export class ImportsUtil {
         }
         // Try find it in enums
         if (variablesAttributes.length > 0) {
-            let en = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
-            if (en !== '') {
-                return en;
+            if (typeof fileToSearchIn !== 'undefined') {
+                let en = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+                if (en !== '') {
+                    return en;
+                }
             }
         }
     }
