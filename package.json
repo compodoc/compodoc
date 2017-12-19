@@ -75,7 +75,6 @@
         "lunr": "2.1.5",
         "8fold-marked": "^0.3.9",
         "os-name": "^2.0.1",
-        "shelljs": "^0.7.8",
         "traverse": "^0.6.6",
         "ts-simple-ast": "^4.1.0",
         "typescript": "2.6.1"

@@ -1,9 +1,3 @@
-import * as path from 'path';
-import * as Shelljs from 'shelljs';
-import * as util from 'util';
-import * as _ from 'lodash';
-
-import isGlobal from '../../utils/global.path';
 import { DependenciesEngine } from './dependencies.engine';
 import { FileEngine } from './file.engine';
 

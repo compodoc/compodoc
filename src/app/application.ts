@@ -1,10 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
-import * as Shelljs from 'shelljs';
 import * as _ from 'lodash';
 import * as ts from 'typescript';
-import * as glob from 'glob';
 
 const chokidar = require('chokidar');
 const marked = require('8fold-marked');
@@ -30,7 +28,6 @@ import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { AngularVersionUtil, RouterParserUtil } from '../utils';
 
-let pkg = require('../package.json');
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
