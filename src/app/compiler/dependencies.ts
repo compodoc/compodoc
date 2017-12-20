@@ -20,7 +20,13 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { JsdocParserUtil, RouterParserUtil, ImportsUtil } from '../../utils';
+import { 
+    JsdocParserUtil, 
+    RouterParserUtil,
+    ImportsUtil,
+    isModuleWithProviders,
+    getModuleWithProviders
+} from '../../utils';
 import {
     IInjectableDep,
     IPipeDep,
@@ -520,6 +526,11 @@ export class Dependencies {
                         }
                         if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                             deps.description = marked(node.jsDoc[0].comment);
+                        }
+                        if (isModuleWithProviders(node)) {
+                            let routingInitializer = getModuleWithProviders(node);
+                            this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
+                            this.routerParser.addModule(name, [routingInitializer]);
                         }
                         outputSymbols.miscellaneous.variables.push(deps);
                     }

@@ -9,6 +9,8 @@ import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
 import { ImportsUtil } from './imports.util';
 
+const traverse = require('traverse');
+
 export class RouterParserUtil {
     private routes: any[] = [];
     private incompleteRoutes = [];
@@ -122,6 +124,22 @@ export class RouterParserUtil {
                         });
                     }
                 }
+                /**
+                 * direct support of for example
+                 * export const HomeRoutingModule: ModuleWithProviders = RouterModule.forChild(HOME_ROUTES);
+                 */
+                if (ts.isCallExpression(node)) {
+                    if (node.arguments) {
+                        _.forEach(node.arguments, (argument: ts.Identifier) => {
+                            _.forEach(this.routes, (route) => {
+                                if (argument.text && route.name === argument.text &&
+                                    route.filename === this.modulesWithRoutes[i].filename) {
+                                    route.module = this.modulesWithRoutes[i].name;
+                                }
+                            });
+                        });
+                    }
+                }
             });
         }
     }
@@ -142,23 +160,15 @@ export class RouterParserUtil {
         // routes[] contains routes with module link
         // modulesTree contains modules tree
         // make a final routes tree with that
-        this.cleanModulesTree = _.cloneDeep(this.modulesTree);
-
-        let modulesCleaner = (arr) => {
-            for (let i in arr) {
-                if (arr[i].importsNode) {
-                    delete arr[i].importsNode;
-                }
-                if (arr[i].parent) {
-                    delete arr[i].parent;
-                }
-                if (arr[i].children) {
-                    modulesCleaner(arr[i].children);
-                }
+        traverse(this.modulesTree).forEach(function (node) {
+            if (node) {
+                if (node.parent) delete node.parent;
+                if (node.initializer) delete node.initializer;
+                if (node.importsNode) delete node.importsNode;
             }
-        };
+        });
 
-        modulesCleaner(this.cleanModulesTree);
+        this.cleanModulesTree = _.cloneDeep(this.modulesTree);
 
         let routesTree = {
             name: '<root>',

@@ -452,8 +452,6 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support dynamic path for routes', () => {
-        let file = exists('documentation/modules/HomeRoutingModule.html');
-        expect(file).to.be.true;
         let routesFile = read('documentation/js/routes/routes_index.js');
         expect(routesFile).to.contain('homeimported');
         expect(routesFile).to.contain('homeenumimported');
