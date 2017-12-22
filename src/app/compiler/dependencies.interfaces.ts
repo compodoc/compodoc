@@ -1,7 +1,8 @@
 
 export interface IDep {
     id?: string;
-    type: string;
+    type?: string;
+    ctype: string;
     name: string;
 }
 

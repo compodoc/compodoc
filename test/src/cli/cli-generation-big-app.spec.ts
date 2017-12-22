@@ -477,4 +477,12 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<code>./home.component.html</code>');
         expect(file).to.contain('<td class="col-md-3">template</td>');
     });
+
+    it('should support @link to miscellaneous', () => {
+        let file = read('documentation/components/AboutComponent.html');
+        expect(file).to.contain('<a href="../miscellaneous/variables.html#PIT">PIT</a>');
+        expect(file).to.contain('<a href="../miscellaneous/enumerations.html#Direction">Direction</a>');
+        expect(file).to.contain('<a href="../miscellaneous/typealiases.html#ChartChange">ChartChange</a>');
+        expect(file).to.contain('<a href="../miscellaneous/functions.html#foo">foo</a>');
+    });
 });

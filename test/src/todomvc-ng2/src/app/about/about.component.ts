@@ -4,6 +4,14 @@ import { Subscription } from 'rxjs/Subscription';
 
 /**
  * The about component
+ * 
+ * {@link PIT}
+ * 
+ * {@link Direction}
+ * 
+ * {@link ChartChange}
+ * 
+ * {@link foo}
  *
  * Display some text with links for details about TodoMVC & Compodoc.
  */

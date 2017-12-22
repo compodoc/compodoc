@@ -401,7 +401,7 @@ export class Dependencies {
                         let functionDep: IFunctionDecDep = {
                             name,
                             file: file,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'function',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
@@ -419,7 +419,7 @@ export class Dependencies {
                         let enumDeps: IEnumDecDep = {
                             name,
                             childs: infos,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'enum',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
@@ -430,7 +430,7 @@ export class Dependencies {
                         let name = infos.name;
                         let typeAliasDeps: ITypeAliasDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
@@ -513,7 +513,7 @@ export class Dependencies {
                         let name = infos.name;
                         let deps: any = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'variable',
                             file: file
                         };
@@ -532,14 +532,15 @@ export class Dependencies {
                             this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
                             this.routerParser.addModule(name, [routingInitializer]);
                         }
+                        
                         outputSymbols.miscellaneous.variables.push(deps);
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
                         let name = infos.name;
-                        let deps: any = {
+                        let deps: ITypeAliasDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
@@ -553,9 +554,9 @@ export class Dependencies {
                     if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
                         let name = infos.name;
-                        let deps: any = {
+                        let deps: IFunctionDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'function',
                             file: file,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
@@ -571,10 +572,10 @@ export class Dependencies {
                     if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
                         let name = node.name.text;
-                        let deps = {
+                        let deps: IEnumDecDep = {
                             name,
                             childs: infos,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'enum',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file

@@ -257,8 +257,20 @@ export class DependenciesEngine {
     }
 
     public findInCompodoc(name: string) {
-        let mergedData = _.concat([], this.modules, this.components, this.directives,
-            this.injectables, this.interceptors, this.interfaces, this.pipes, this.classes);
+        let mergedData = _.concat([], 
+            this.modules, 
+            this.components, 
+            this.directives,
+            this.injectables, 
+            this.interceptors, 
+            this.interfaces, 
+            this.pipes, 
+            this.classes, 
+            this.miscellaneous.enumerations,
+            this.miscellaneous.typealiases,
+            this.miscellaneous.variables,
+            this.miscellaneous.functions
+        );
         let result = _.find(mergedData, { 'name': name } as any);
         return result || false;
     }

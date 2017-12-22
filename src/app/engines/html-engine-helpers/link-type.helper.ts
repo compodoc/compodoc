@@ -25,7 +25,7 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                     _result.data.type = 'classe';
                 }
                 context.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
-                if (_result.data.type === 'miscellaneous') {
+                if (_result.data.type === 'miscellaneous' || (_result.data.ctype && _result.data.ctype === 'miscellaneous')) {
                     let mainpage = '';
                     switch (_result.data.subtype) {
                         case 'enum':
@@ -40,7 +40,7 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                         case 'variable':
                             mainpage = 'variables';
                     }
-                    context.type.href = '../' + _result.data.type + '/' + mainpage + '.html#' + _result.data.name;
+                    context.type.href = '../' + _result.data.ctype + '/' + mainpage + '.html#' + _result.data.name;
                 }
                 context.type.target = '_self';
             } else {
