@@ -27,7 +27,7 @@
                             </tr>
                         {{/unless}}
                     {{/if}}
-                    {{#or this.getSignature.description}}
+                    {{#or this.getSignature.description this.getSignature.jsdoctags}}
                     <tr>
                         <td class="col-md-4">
                             {{#if this.getSignature.description}}
@@ -111,7 +111,7 @@
                             </tr>
                         {{/unless}}
                     {{/if}}
-                    {{#or this.setSignature.description}}
+                    {{#or this.setSignature.description this.setSignature.jsdoctags}}
                     <tr>
                         <td class="col-md-4">
                             {{#if this.setSignature.description}}
