@@ -11,7 +11,7 @@ import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
 
-const marked = require('8fold-marked');
+const marked = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();

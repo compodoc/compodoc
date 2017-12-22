@@ -37,7 +37,7 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('8fold-marked');
+const marked = require('marked');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 

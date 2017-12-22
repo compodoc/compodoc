@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import * as ts from 'typescript';
 
 const chokidar = require('chokidar');
-const marked = require('8fold-marked');
+const marked = require('marked');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
