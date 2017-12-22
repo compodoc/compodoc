@@ -58,7 +58,6 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
-        "8fold-marked": "^0.3.9",
         "@compodoc/ngd-transformer": "^2.0.0-alpha.4",
         "chalk": "^2.3.0",
         "cheerio": "^1.0.0-rc.2",
@@ -75,6 +74,7 @@
         "live-server": "1.1.0",
         "lodash": "^4.17.3",
         "lunr": "2.1.5",
+        "marked": "^0.3.7",
         "os-name": "^2.0.1",
         "traverse": "^0.6.6",
         "ts-simple-ast": "^4.1.0",
