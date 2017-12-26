@@ -81,7 +81,7 @@ export class ImportsUtil {
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName, sourceFile.getText());// tslint:disable-line
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
         const imports = file.getImports();
 
         /**
@@ -115,8 +115,9 @@ export class ImportsUtil {
         });
 
         if (typeof searchedImport !== 'undefined') {
-            let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
-            const sourceFileImport = ast.getSourceFile(imporPath);
+            let importPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
+            const sourceFileImport = (typeof ast.getSourceFile(importPath) !== 'undefined') ? ast.getSourceFile(importPath) : ast.addExistingSourceFile(importPath);// tslint:disable-line
+            
             if (sourceFileImport) {
                 let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
                 let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
