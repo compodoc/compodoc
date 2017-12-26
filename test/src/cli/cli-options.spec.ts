@@ -39,7 +39,7 @@ describe('CLI Options', () => {
 
         it(`--theme`, () => {
             expect(runHelp.stdout.toString()).to.contain('--theme [theme]');
-            expect(runHelp.stdout.toString()).to.contain('Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)');
+            expect(runHelp.stdout.toString()).to.contain('Choose one of available themes, default is \'gitbook\' (laravel, original, material, postmark, readthedocs, stripe, vagrant)');
         });
 
         it(`-n`, () => {
