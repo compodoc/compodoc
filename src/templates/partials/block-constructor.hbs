@@ -47,9 +47,11 @@
                                                       {{/if}}
                                                   </td>
                                                   <td>
-                                                      {{#if optional}}
-                                                          true
-                                                      {{/if}}
+                                                    {{#if optional}}
+                                                        yes
+                                                    {{else}}
+                                                        no
+                                                    {{/if}}
                                                   </td>
                                                   <td>{{{comment}}}</td>
                                                 </tr>

@@ -315,7 +315,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support optional', () => {
         let file = read('documentation/injectables/TodoStore.html');
-        expect(file).to.contain('true');
+        expect(file).to.contain('yes');
     });
 
     it('should support optional', () => {
