@@ -82,7 +82,7 @@ export class ImportsUtil {
             foundWithAlias = false;
 
         const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
-        const imports = file.getImports();
+        const imports = file.getImportDeclarations();
 
         /**
          * Loop through all imports, and find one matching inputVariableName
@@ -160,7 +160,7 @@ export class ImportsUtil {
             foundWithAlias = false;
 
         const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
-        const imports = file.getImports();
+        const imports = file.getImportDeclarations();
 
         /**
          * Loop through all imports, and find one matching inputVariableName
