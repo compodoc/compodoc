@@ -26,6 +26,20 @@ describe('CLI simple flags', () => {
         });
     });
 
+    describe('when no tsconfig.json provided with just -p', () => {
+
+        let command = undefined;
+        beforeEach(() => {
+            tmp.create();
+            command = shell('node', ['../bin/index-cli.js', '-p'], { cwd: tmp.name, env });
+        });
+        afterEach(() => tmp.clean());
+
+        it('should display error message', () => {
+            expect(command.stdout.toString()).to.contain('Please provide a tsconfig file.');
+        });
+    });
+
     describe('when no tsconfig.json is found in cwd', () => {
 
         let command = undefined;

@@ -187,6 +187,11 @@ export class CliApplication extends Application {
             console.log('');
         }
 
+        if (program.tsconfig && typeof program.tsconfig === 'boolean') {
+            logger.error(`Please provide a tsconfig file.`);
+            process.exit(1);
+        }
+
         if (program.serve && !program.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!this.fileEngine.existsSync(program.output)) {
