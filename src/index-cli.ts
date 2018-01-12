@@ -249,7 +249,7 @@ export class CliApplication extends Application {
                         excludeParser.init(exclude, cwd);
                         includeParser.init(include, cwd);
 
-                        let finder = require('findit')(cwd || '.');
+                        let finder = require('findit2')(cwd || '.');
 
                         finder.on('directory', function (dir, stat, stop) {
                             let base = path.basename(dir);
@@ -322,7 +322,7 @@ export class CliApplication extends Application {
                         let excludeParser = new ExcludeParserUtil(),
                             includeParser = new IncludeParserUtil();
 
-                        let finder = require('findit')(cwd || '.');
+                        let finder = require('findit2')(cwd || '.');
 
                         finder.on('directory', function (dir, stat, stop) {
                             let base = path.basename(dir);
@@ -399,7 +399,7 @@ export class CliApplication extends Application {
                         excludeParser.init(exclude, cwd);
                         includeParser.init(include, cwd);
 
-                        let finder = require('findit')(path.resolve(sourceFolder));
+                        let finder = require('findit2')(path.resolve(sourceFolder));
 
                         finder.on('directory', function (dir, stat, stop) {
                             let base = path.basename(dir);
