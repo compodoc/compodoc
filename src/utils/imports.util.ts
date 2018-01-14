@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as ts from 'typescript';
 
-import Ast from 'ts-simple-ast';
+import Ast, { PropertyDeclaration } from 'ts-simple-ast';
 
 const ast = new Ast();
 
@@ -22,6 +22,25 @@ export class ImportsUtil {
                         res = m.getValue();
                     }
                 });
+            }
+        });
+        return res;
+    }
+
+    /**
+     * Find for a sourceFile a variable value in a local static class
+     * @param srcFile
+     * @param variableName
+     * @param variableValue
+     */
+    private findInClasses(srcFile, variableName: string, variableValue: string) {
+        let res = '';
+        srcFile.getClass(c => {
+            let staticProperty: PropertyDeclaration = c.getStaticProperty(variableValue);
+            if (staticProperty) {
+                if (staticProperty.getInitializer()) {
+                    res = staticProperty.getInitializer().getText();
+                }
             }
         });
         return res;
@@ -214,9 +233,13 @@ export class ImportsUtil {
         // Try find it in enums
         if (variablesAttributes.length > 0) {
             if (typeof fileToSearchIn !== 'undefined') {
-                let en = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
-                if (en !== '') {
-                    return en;
+                let val = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+                if (val !== '') {
+                    return val;
+                }
+                val = this.findInClasses(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+                if (val !== '') {
+                    return val;
                 }
             }
         }

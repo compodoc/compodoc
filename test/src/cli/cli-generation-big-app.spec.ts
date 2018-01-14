@@ -456,6 +456,7 @@ describe('CLI simple generation - big app', () => {
         expect(routesFile).to.contain('homeimported');
         expect(routesFile).to.contain('homeenumimported');
         expect(routesFile).to.contain('homeenuminfile');
+        expect(routesFile).to.contain('todomvcinstaticclass');
     });
 
     it('should support Object Literal Property Value Shorthand support for metadatas for modules', () => {
