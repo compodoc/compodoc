@@ -1754,17 +1754,13 @@ export class Application {
         });
         let timerAddAndRemoveRef;
         let timerChangeRef;
-        let waiterAddAndRemove = () => {
-            clearTimeout(timerAddAndRemoveRef);
-            timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
-        };
         let runnerAddAndRemove = () => {
             startTime = new Date();
             this.generate();
         };
-        let waiterChange = () => {
-            clearTimeout(timerChangeRef);
-            timerChangeRef = setTimeout(runnerChange, 1000);
+        let waiterAddAndRemove = () => {
+            clearTimeout(timerAddAndRemoveRef);
+            timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
         };
         let runnerChange = () => {
             startTime = new Date();
@@ -1776,6 +1772,10 @@ export class Application {
             } else {
                 this.rebuildExternalDocumentation();
             }
+        };
+        let waiterChange = () => {
+            clearTimeout(timerChangeRef);
+            timerChangeRef = setTimeout(runnerChange, 1000);
         };
 
         watcher

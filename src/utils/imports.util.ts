@@ -9,9 +9,9 @@ export class ImportsUtil {
 
     /**
      * Find for a sourceFile a variable value in a local enum
-     * @param srcFile 
-     * @param variableName 
-     * @param variableValue 
+     * @param srcFile
+     * @param variableName
+     * @param variableValue
      */
     private findInEnums(srcFile, variableName: string, variableValue: string) {
         let res = '';
@@ -29,7 +29,7 @@ export class ImportsUtil {
 
     /**
      * Find a value in a local variable declaration like an object
-     * @param variableDeclaration 
+     * @param variableDeclaration
      * @param variablesAttributes
      */
     private findInObjectVariableDeclaration(variableDeclaration, variablesAttributes) {
@@ -117,7 +117,7 @@ export class ImportsUtil {
         if (typeof searchedImport !== 'undefined') {
             let importPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
             const sourceFileImport = (typeof ast.getSourceFile(importPath) !== 'undefined') ? ast.getSourceFile(importPath) : ast.addExistingSourceFile(importPath);// tslint:disable-line
-            
+
             if (sourceFileImport) {
                 let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
                 let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
@@ -205,7 +205,7 @@ export class ImportsUtil {
         } else {
             fileToSearchIn = file;
             // Find in local variables of the file
-            const variableDeclaration = fileToSearchIn.getVariableDeclaration(metadataVariableName);           
+            variableDeclaration = fileToSearchIn.getVariableDeclaration(metadataVariableName);
         }
 
         if (variableDeclaration) {

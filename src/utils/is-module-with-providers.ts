@@ -7,7 +7,7 @@ export function isModuleWithProviders(node: ts.VariableStatement): boolean {
             let i = 0,
                 declarations = node.declarationList.declarations,
                 len = node.declarationList.declarations.length;
-            
+
                 for (i; i<len; i++) {
                     let declaration = node.declarationList.declarations[i];
 

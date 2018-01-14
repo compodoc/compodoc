@@ -162,9 +162,9 @@ export class RouterParserUtil {
         // make a final routes tree with that
         traverse(this.modulesTree).forEach(function (node) {
             if (node) {
-                if (node.parent) delete node.parent;
-                if (node.initializer) delete node.initializer;
-                if (node.importsNode) delete node.importsNode;
+                if (node.parent) { delete node.parent; }
+                if (node.initializer) { delete node.initializer; }
+                if (node.importsNode) { delete node.importsNode; }
             }
         });
 
@@ -400,7 +400,7 @@ export class RouterParserUtil {
                                       firstObjectLiteralAttributeName;
                                   if (propertyInitializer.expression) {
                                       firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
-                                      let result = this.importsUtil.findPropertyValueInImportOrLocalVariables(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile);
+                                      let result = this.importsUtil.findPropertyValueInImportOrLocalVariables(firstObjectLiteralAttributeName + '.' + lastObjectLiteralAttributeName, sourceFile);// tslint:disable-line
                                       if (result !== '') {
                                           propertyInitializer.kind = 9;
                                           propertyInitializer.text = result;
