@@ -7,7 +7,7 @@
         "compodoc": "./bin/index-cli.js"
     },
     "scripts": {
-        "build": "rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs",
+        "build": "rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs",
         "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
         "download-api-list": "node tools/download-api-list.js",
         "start": "npm run test:watch",
