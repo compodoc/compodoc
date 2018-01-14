@@ -17,7 +17,7 @@
         "restore-package-json": "node tools/restore-package-json.js",
         "prepublishOnly": "npm run build && npm run backup-package-json",
         "postpublish": "npm run restore-package-json",
-        "lint": "tslint src/**/*.ts",
+        "lint": "tslint -p tsconfig.json src/**/*.ts",
         "test:watch": "npm-watch",
         "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
         "test-e2e-mocha": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha-e2e.opts",
@@ -77,7 +77,7 @@
         "marked": "^0.3.12",
         "os-name": "^2.0.1",
         "traverse": "^0.6.6",
-        "ts-simple-ast": "^5.5.1",
+        "ts-simple-ast": "^6.0.1",
         "typescript": "2.4.2"
     },
     "devDependencies": {
