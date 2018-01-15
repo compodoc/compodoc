@@ -20,12 +20,13 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { 
-    JsdocParserUtil, 
+import {
+    JsdocParserUtil,
     RouterParserUtil,
     ImportsUtil,
     isModuleWithProviders,
-    getModuleWithProviders
+    getModuleWithProviders,
+    hasSpreadElementInArray
 } from '../../utils';
 import {
     IInjectableDep,
@@ -905,6 +906,12 @@ export class Dependencies {
                         node.declarationList.declarations[i].type.typeName.text === 'Routes') {
                             let routesInitializer = node.declarationList.declarations[i].initializer;
                             if (ts.isArrayLiteralExpression(routesInitializer)) {
+                                if (routesInitializer.elements.length > 0) {
+                                    if (hasSpreadElementInArray(routesInitializer.elements)) {
+                                        //console.log('clean spread');
+                                        //console.log(routesInitializer.elements);
+                                    }
+                                }
                                 routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
                             }
                             let data = new CodeGenerator().generate(routesInitializer);

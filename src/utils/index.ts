@@ -7,3 +7,4 @@ export * from './router-parser.util';
 export * from './imports.util';
 export * from './is-module-with-providers';
 export * from './get-module-with-providers';
+export * from './has-spread-element-in-array';
