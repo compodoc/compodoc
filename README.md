@@ -86,7 +86,7 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 
 Everything in this repository is [licensed under the MIT License][license] unless otherwise specified.
 
-Copyright (c) 2016–2017 [Vincent Ogloblinsky]
+Copyright (c) 2016 – 2018 [Vincent Ogloblinsky]
 
 [license]: https://github.com/compodoc/compodoc/blob/master/LICENSE
 [Vincent Ogloblinsky]: http://www.vincentogloblinsky.com
