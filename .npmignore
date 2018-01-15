@@ -1,6 +1,6 @@
 screenshots/
 tsconfig.json
-rollup.config.js
+rollup/
 test/
 coverage
 .nyc_output
@@ -12,4 +12,5 @@ codecov.yml
 appveyor.yml
 doc
 documentation
+docs
 package.json.old
