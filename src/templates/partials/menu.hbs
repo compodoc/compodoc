@@ -359,12 +359,12 @@
                 Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img src="./images/compodoc-vectorise-inverted.svg" class="img-responsive">
+                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive">
                         {{else}}
-                            <img src="./images/compodoc-vectorise.svg" class="img-responsive">
+                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
                         {{/compare}}
                     {{else}}
-                    <img src="./images/compodoc-vectorise.svg" class="img-responsive">
+                    <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
                     {{/if}}
                 </a>
         </li>
