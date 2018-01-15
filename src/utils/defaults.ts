@@ -10,6 +10,7 @@ export const COMPODOC_DEFAULTS = {
     base: '/',
     defaultCoverageThreshold: 70,
     defaultCoverageMinimumPerFile: 0,
+    coverageTestThresholdFail: true,
     toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableGraph: false,

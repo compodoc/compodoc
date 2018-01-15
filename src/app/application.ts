@@ -1431,19 +1431,31 @@ export class Application {
                     generationPromiseResolve();
                     process.exit(0);
                 } else {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 }
             } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
                 coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.error(`Documentation coverage per file is not over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 } else {
-                    logger.info(`Documentation coverage per file is over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
                     generationPromiseResolve();
                     process.exit(0);
                 }
@@ -1453,26 +1465,47 @@ export class Application {
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length === 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    logger.info(`Documentation coverage per file is over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
                     generationPromiseResolve();
                     process.exit(0);
                 } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
                     logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    logger.error(`Documentation coverage per file is not over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    logger.error(`Documentation coverage per file is not over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    let messageGlobal = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`,
+                        messagePerFile = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(messageGlobal);
+                        logger.error(messagePerFile);
+                        process.exit(1);
+                    } else {
+                        logger.warn(messageGlobal);
+                        logger.error(messagePerFile);
+                        process.exit(0);
+                    }
                 } else {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    logger.info(`Documentation coverage per file is over threshold per file (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        process.exit(0);
+                    }
                 }
             } else {
                 resolve();

@@ -52,6 +52,7 @@ export class CliApplication extends Application {
             .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
             .option('--coverageMinimumPerFile [minimum]', 'Test command of documentation coverage per file with a minimum (default 0)')
+            .option('--coverageTestThresholdFail [true|false]', 'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn) (default true)', COMPODOC_DEFAULTS.coverageTestThresholdFail)
             .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
@@ -66,6 +67,9 @@ export class CliApplication extends Application {
             program.outputHelp();
             process.exit(1);
         };
+
+        console.log(program.coverageTestThresholdFail);
+        
 
         if (program.output) {
             this.configuration.mainData.output = program.output;
@@ -143,6 +147,10 @@ export class CliApplication extends Application {
         if (program.coverageMinimumPerFile) {
             this.configuration.mainData.coverageTestPerFile = true;
             this.configuration.mainData.coverageMinimumPerFile = (typeof program.coverageMinimumPerFile === 'string') ? parseInt(program.coverageMinimumPerFile) : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
+        }
+
+        if (program.coverageTestThresholdFail) {
+            this.configuration.mainData.coverageTestThresholdFail = (program.coverageTestThresholdFail === 'false') ? false : true;
         }
 
         if (program.disableSourceCode) {

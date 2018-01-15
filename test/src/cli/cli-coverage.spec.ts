@@ -133,7 +133,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be under threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold');
         });
 
     });
@@ -159,7 +159,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be over threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is over threshold');
         });
 
     });
@@ -186,7 +186,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be over threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold');
         });
         it('it should not be over threshold', () => {
             expect(stdoutString).to.contain('is not over threshold');
@@ -216,7 +216,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be not over threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is not over threshold');
         });
         it('it should be over threshold', () => {
             expect(stdoutString).to.contain('is over threshold');
@@ -246,7 +246,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be over threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is over threshold');
         });
         it('it should be over threshold', () => {
             expect(stdoutString).to.contain('is over threshold');
@@ -276,7 +276,7 @@ describe('CLI coverage report', () => {
         after(() => tmp.clean());
 
         it('it should be over threshold per file', () => {
-            expect(stdoutString).to.contain('Documentation coverage per file is over threshold per file');
+            expect(stdoutString).to.contain('Documentation coverage per file is over threshold');
         });
         it('it should not be over threshold', () => {
             expect(stdoutString).to.contain('is not over threshold');

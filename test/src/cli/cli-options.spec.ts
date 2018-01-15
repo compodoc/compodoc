@@ -102,6 +102,16 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage with a threshold');
         });
 
+        it(`--coverageMinimumPerFile`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--coverageMinimumPerFile');
+            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage per file with a minimum (default 0)');
+        });
+
+        it(`--coverageTestThresholdFail`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--coverageTestThresholdFail [true|false]');
+            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn) (default true)');
+        });
+
         it(`--disableSourceCode`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableSourceCode');
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
