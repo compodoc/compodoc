@@ -3,5 +3,5 @@
 --colors
 --harmony
 --timeout 120000
---compilers ts:ts-node/register
+--require ts-node/register
 test/saucelabs/mocha.spec.ts
