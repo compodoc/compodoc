@@ -84,7 +84,7 @@ let testSearchBarWithResults = function (cb) {
                     writeScreenshot(data, 'test.png');
                 });*/
 
-                driver.sleep(2000);
+                driver.sleep(4000);
 
                 driver
                     .findElements(webdriver.By.className('search-results-item'))
@@ -106,7 +106,7 @@ let testSearchBarWithNoResults = function (cb) {
             searchBox.getAttribute('value').then(function (value) {
                 expect(value).to.equal('waza');
 
-                driver.sleep(2000);
+                driver.sleep(4000);
 
                 driver
                     .findElements(webdriver.By.className('search-results-item'))
