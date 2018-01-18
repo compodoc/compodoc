@@ -594,6 +594,12 @@ th[role=columnheader].statements:not(.no-sort):after {
     background: #4dc71f;
 }
 
+.content ol {
+    list-style-type: decimal;
+    margin-top: 0;
+    padding-left: 20px;
+    margin-bottom: 16px;
+}
 .content ul {
     list-style: disc;
     margin-top: 0;
