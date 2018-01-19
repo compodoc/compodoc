@@ -658,7 +658,16 @@ th[role=columnheader].statements:not(.no-sort):after {
     margin-right: 0;
 }
 
-/* Routes graph */
+/**
+ * Modules
+ */
+.card-module {
+    min-hight: 323px
+}
+
+/**
+ * Routes graph
+ */
 
 .node text {
     font-size: 12px;
@@ -685,7 +694,9 @@ path.link {
     overflow: visible;
 }
 
-/* Miscellaneous */
+/**
+ * Miscellaneous
+ */
 
 .content.miscellaneous h2 {
     margin-bottom: 20px;
@@ -812,3 +823,4 @@ ul.index-list {
     top: 0;
     cursor: pointer;
 }
+
