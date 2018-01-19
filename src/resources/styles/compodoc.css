@@ -655,7 +655,7 @@ th[role=columnheader].statements:not(.no-sort):after {
 /**
  * Modules
  */
-.module-card {
+.card-module {
     min-hight: 323px
 }
 
