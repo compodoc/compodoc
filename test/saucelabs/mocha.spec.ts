@@ -41,8 +41,8 @@ let startDriver = function (cb, pageUrl) {
     });
 };
 let handleStatus = function (tests) {
-    var status = false;
-    for (var i = 0; i < tests.length; i++) {
+    let status = false;
+    for (let i = 0; i < tests.length; i++) {
         if (tests[i].state === 'passed') {
             status = true;
         }
@@ -51,12 +51,12 @@ let handleStatus = function (tests) {
 };
 let writeScreenshot = function (data, name) {
     fs.writeFile('out.png', data, 'base64', function (err) {
-        if (err) console.log(err);
+        if (err) { console.log(err); }
     });
 };
 let endTests = function (context, cb) {
     if (process.env.MODE_LOCAL === '0') {
-        var result = handleStatus(context.test.parent.tests);
+        let result = handleStatus(context.test.parent.tests);
         request({
             method: 'PUT',
             uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
@@ -71,12 +71,13 @@ let endTests = function (context, cb) {
     }
 };
 let testSearchBarWithResults = function (cb) {
-    var searchBox;
+    let searchBox;
     driver
         .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.sendKeys('exampleInput');
+            driver.sleep(1000);
             searchBox.getAttribute('value').then(function (value) {
                 expect(value).to.equal('exampleInput');
 
@@ -103,6 +104,7 @@ let testSearchBarWithNoResults = function (cb) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.clear();
             searchBox.sendKeys('waza');
+            driver.sleep(1000);
             searchBox.getAttribute('value').then(function (value) {
                 expect(value).to.equal('waza');
 
