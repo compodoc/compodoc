@@ -486,4 +486,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<a href="../miscellaneous/typealiases.html#ChartChange">ChartChange</a>');
         expect(file).to.contain('<a href="../miscellaneous/functions.html#foo">foo</a>');
     });
+
+    it('should support default type on default value', () => {
+        let file = read('documentation/classes/TODO_STATUS.html');
+        expect(file).to.contain('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"');
+    });
 });

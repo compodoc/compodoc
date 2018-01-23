@@ -115,6 +115,9 @@ export class ClassHelper {
             _return = 'any[]';
         } else {
             _return = kindToType(node.kind);
+            if (_return === '' && node.kind === ts.SyntaxKind.PropertyDeclaration && node.initializer && node.initializer.kind) {
+                _return = kindToType(node.initializer.kind);
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
