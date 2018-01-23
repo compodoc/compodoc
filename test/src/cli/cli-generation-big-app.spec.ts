@@ -491,4 +491,11 @@ describe('CLI simple generation - big app', () => {
         let file = read('documentation/classes/TODO_STATUS.html');
         expect(file).to.contain('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"');
     });
+
+    it('should disaply project dependencies', () => {
+        const file = exists('documentation/dependencies.html');
+        expect(file).to.be.true;
+        let dependencies = read('documentation/dependencies.html');
+        expect(dependencies).to.contain('typescript');
+    });
 });

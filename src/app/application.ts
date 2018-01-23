@@ -211,6 +211,11 @@ export class Application {
             }
             this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
+
+            if (typeof parsedData.dependencies !== 'undefined') {
+                this.processPackageDependencies(parsedData.dependencies);
+            }
+
             this.processMarkdowns().then(() => {
                 this.getDependenciesData();
             }, (errorMessage) => {
@@ -224,6 +229,18 @@ export class Application {
             }, (errorMessage1) => {
                 logger.error(errorMessage1);
             });
+        });
+    }
+
+    private processPackageDependencies(dependencies): void {
+        logger.info('Processing package.json dependencies');
+        this.configuration.mainData.packageDependencies = dependencies;
+        this.configuration.addPage({
+            name: 'dependencies',
+            id: 'packageDependencies',
+            context: 'package-dependencies',
+            depth: 0,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
     }
 

@@ -58,7 +58,8 @@ export class HtmlEngine {
             'miscellaneous-variables',
             'miscellaneous-typealiases',
             'miscellaneous-enumerations',
-            'additional-page'
+            'additional-page',
+            'package-dependencies'
         ];
 
         return Promise

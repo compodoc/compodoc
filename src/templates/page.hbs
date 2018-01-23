@@ -97,6 +97,10 @@
                         {{~> routes data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'package-dependencies'}}
+                        {{~> package-dependencies data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'miscellaneous-functions'}}
                         {{~> miscellaneous-functions data ~}}
                    {{/compare}}

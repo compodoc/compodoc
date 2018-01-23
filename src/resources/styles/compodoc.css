@@ -824,3 +824,14 @@ ul.index-list {
     cursor: pointer;
 }
 
+/**
+ * Dependencies
+ */
+
+.package-dependencies ul {
+    list-style: none;
+    margin: 0;
+}
+.package-dependencies li {
+    margin: 5px 0;
+}

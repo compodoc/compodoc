@@ -52,4 +52,5 @@ export interface MainDataInterface {
     exportFormat: string;
     coverageData: Object;
     customFavicon: string;
+    packageDependencies: Object[]
 }
