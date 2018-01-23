@@ -77,23 +77,25 @@ let testSearchBarWithResults = function (cb) {
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.sendKeys('exampleInput');
-            driver.sleep(1000);
-            searchBox.getAttribute('value').then(function (value) {
-                expect(value).to.equal('exampleInput');
+            driver.sleep(1000).then(function() {
+                searchBox.getAttribute('value').then(function (value) {
+                    expect(value).to.equal('exampleInput');
 
-                /*driver.takeScreenshot().then(function (data) {
-                    writeScreenshot(data, 'test.png');
-                });*/
+                    /*driver.takeScreenshot().then(function (data) {
+                        writeScreenshot(data, 'test.png');
+                    });*/
 
-                driver.sleep(4000);
-
-                driver
-                    .findElements(webdriver.By.className('search-results-item'))
-                    .then(function (elems) {
-                        expect(elems.length).to.equal(1);
-                        driver.sleep(1000);
-                        cb();
+                    driver.sleep(1000).then(function() {
+                        driver
+                            .findElements(webdriver.By.className('search-results-item'))
+                            .then(function (elems) {
+                                expect(elems.length).to.equal(1);
+                                driver.sleep(1000).then(function() {
+                                    cb();
+                                });
+                            });
                     });
+                });
             });
         });
 };
@@ -104,21 +106,23 @@ let testSearchBarWithNoResults = function (cb) {
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.clear();
-            driver.sleep(1000);
-            searchBox.sendKeys('waza');
-            driver.sleep(1000);
-            searchBox.getAttribute('value').then(function (value) {
-                expect(value).to.equal('waza');
-
-                driver.sleep(4000);
-
-                driver
-                    .findElements(webdriver.By.className('search-results-item'))
-                    .then(function (elems1) {
-                        expect(elems1.length).to.equal(0);
-                        driver.sleep(1000);
-                        cb();
+            driver.sleep(1000).then(function() {
+                searchBox.sendKeys('waza');
+                driver.sleep(1000).then(function() {
+                    searchBox.getAttribute('value').then(function (value) {
+                        expect(value).to.equal('waza');
+                        driver.sleep(4000).then(function() {
+                            driver
+                                .findElements(webdriver.By.className('search-results-item'))
+                                .then(function (elems1) {
+                                    expect(elems1.length).to.equal(0);
+                                    driver.sleep(1000).then(function() {
+                                        cb();
+                                    });
+                                });
+                        });
                     });
+                });
             });
         });
 };
