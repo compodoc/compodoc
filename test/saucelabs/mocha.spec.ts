@@ -91,6 +91,7 @@ let testSearchBarWithResults = function (cb) {
                     .findElements(webdriver.By.className('search-results-item'))
                     .then(function (elems) {
                         expect(elems.length).to.equal(1);
+                        driver.sleep(1000);
                         cb();
                     });
             });
@@ -103,6 +104,7 @@ let testSearchBarWithNoResults = function (cb) {
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.clear();
+            driver.sleep(1000);
             searchBox.sendKeys('waza');
             driver.sleep(1000);
             searchBox.getAttribute('value').then(function (value) {
@@ -114,6 +116,7 @@ let testSearchBarWithNoResults = function (cb) {
                     .findElements(webdriver.By.className('search-results-item'))
                     .then(function (elems1) {
                         expect(elems1.length).to.equal(0);
+                        driver.sleep(1000);
                         cb();
                     });
             });
