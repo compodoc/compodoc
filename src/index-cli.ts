@@ -131,14 +131,6 @@ export class CliApplication extends Application {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
         }
 
-        if (program.includes) {
-            this.configuration.mainData.includes = program.includes;
-        }
-
-        if (program.includesName) {
-            this.configuration.mainData.includesName = program.includesName;
-        }
-
         if (program.coverageTest) {
             this.configuration.mainData.coverageTest = true;
             this.configuration.mainData.coverageTestThreshold = (typeof program.coverageTest === 'string') ? parseInt(program.coverageTest) : COMPODOC_DEFAULTS.defaultCoverageThreshold;
