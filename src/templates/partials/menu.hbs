@@ -352,13 +352,13 @@
 
         {{#if routes}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-code-fork"></span>Routes</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-fw fa-code-fork"></span>Routes</a>
         </li>
         {{/if}}
 
         {{#unless disableCoverage}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-tasks"></span>Documentation coverage</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
         </li>
         {{/unless}}
 
