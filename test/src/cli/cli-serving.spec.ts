@@ -42,7 +42,7 @@ describe('CLI serving', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-s'], { timeout: 5000 });
+                '-s'], { timeout: 15000 });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
