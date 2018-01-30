@@ -1,22 +1,23 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+      tmp = temporaryDir();
 
 describe('CLI serving', () => {
+
+    const distFolder = tmp.name + '-serving',
+        TIMEOUT = 2000;
 
     describe('when serving with -s flag in another directory', () => {
 
         let stdoutString = '',
             child;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
+                './bin/index-cli.js',
                 '-s',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env, timeout: 15000 });
+                '-d', distFolder], { timeout: TIMEOUT });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -25,10 +26,10 @@ describe('CLI serving', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should serve', () => {
-            expect(stdoutString).to.contain('Serving documentation from ../' + tmp.name + '/ at http://127.0.0.1:8080');
+            expect(stdoutString).to.contain(`Serving documentation from ${distFolder} at http://127.0.0.1:8080`);
         });
     });
 
@@ -37,10 +38,11 @@ describe('CLI serving', () => {
         let stdoutString = '',
             child;
         before(function (done) {
+            tmp.create('documentation');
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-s'], { env, timeout: 20000 });
+                '-s'], { timeout: 5000 });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -62,7 +64,7 @@ describe('CLI serving', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-s',
-                '-d', './documentation/'], { env, timeout: 12000 });
+                '-d', './documentation/'], { timeout: TIMEOUT });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -84,7 +86,7 @@ describe('CLI serving', () => {
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-s'], { env, timeout: 12000 });
+                '-s'], { timeout: TIMEOUT });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);

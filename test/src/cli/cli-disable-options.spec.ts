@@ -1,31 +1,31 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+      tmp = temporaryDir();
 
 describe('CLI disable flags', () => {
+
+    const distFolder = tmp.name + '-disable-options';
 
     describe('disabling excluding methods with --disablePrivate', () => {
 
         let componentFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as private', () => {
             expect(componentFile).not.to.contain('<code>privateMethod');
@@ -48,21 +48,21 @@ describe('CLI disable flags', () => {
 
         let componentFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disableProtected',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as protected', () => {
             expect(componentFile).not.to.contain('<code>varprotected');
@@ -85,21 +85,21 @@ describe('CLI disable flags', () => {
 
         let componentFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disableInternal',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as @internal', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
@@ -122,25 +122,25 @@ describe('CLI disable flags', () => {
 
         let componentFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disableLifeCycleHooks',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should exclude lifecyle hooks', () => {
             expect(componentFile).not.to.contain('<code>ngOnInit');
-            const directiveFile = read(`${tmp.name}/directives/BarDirective.html`);
+            const directiveFile = read(`${distFolder}/directives/BarDirective.html`);
             expect(directiveFile).not.to.contain('<code>ngOnInit');
         });
 
@@ -161,24 +161,24 @@ describe('CLI disable flags', () => {
 
         let componentFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '--disableProtected',
                 '--disableInternal',
                 '--disableLifeCycleHooks',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should exclude lifecyle hooks', () => {
             expect(componentFile).not.to.contain('<code>ngOnInit');

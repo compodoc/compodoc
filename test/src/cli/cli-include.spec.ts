@@ -1,19 +1,19 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+      tmp = temporaryDir();
 
 describe('CLI include with tsconfig', () => {
 
+    const distFolder = tmp.name + '-include';
+
     describe('when specific files (glob) are included in tsconfig', () => {
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.include-glob.json',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.include-glob.json',
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -21,25 +21,25 @@ describe('CLI include with tsconfig', () => {
             }
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should create files included', () => {
-            let isFileExists = exists(`${tmp.name}/components/BarComponent.html`);
+            let isFileExists = exists(`${distFolder}/components/BarComponent.html`);
             expect(isFileExists).to.be.true;
-            isFileExists = exists(`${tmp.name}/modules/BarModule.html`);
+            isFileExists = exists(`${distFolder}/modules/BarModule.html`);
             expect(isFileExists).to.be.false;
-            isFileExists = exists(`${tmp.name}/modules/DeepModule.html`);
+            isFileExists = exists(`${distFolder}/modules/DeepModule.html`);
             expect(isFileExists).to.be.false;
         });
     });
 
     describe('when specific file is included in tsconfig', () => {
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.include-file.json',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env });
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.include-file.json',
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -47,12 +47,12 @@ describe('CLI include with tsconfig', () => {
             }
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should create file included', () => {
-            let isFileExists = exists(`${tmp.name}/components/BarComponent.html`);
+            let isFileExists = exists(`${distFolder}/components/BarComponent.html`);
             expect(isFileExists).to.be.true;
-            isFileExists = exists(`${tmp.name}/modules/BarModule.html`);
+            isFileExists = exists(`${distFolder}/modules/BarModule.html`);
             expect(isFileExists).to.be.false;
         });
     });

@@ -3,5 +3,4 @@
 --colors
 --harmony
 --timeout 120000
---require ts-node/register
-test/saucelabs/mocha.spec.ts
+test/dist/mocha.spec.js
