@@ -5,6 +5,10 @@ const expect = chai.expect,
       tsconfigPath = require.resolve('../../../tsconfig.json'),
       env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
 
+interface Image {
+    size: number;
+}
+
 describe('CLI custom favicon', () => {
 
     describe('when specifying a custom favicon', () => {
@@ -28,9 +32,9 @@ describe('CLI custom favicon', () => {
         it('should have copied the customFavicon', () => {
             let isFileExists = exists(`${tmp.name}/images/favicon.ico`);
             expect(isFileExists).to.be.true;
-            let originalFileSize = stats('test/src/todomvc-ng2/favicon.ico').size,
-                copiedFileSize = stats(`${tmp.name}/images/favicon.ico`).size;
-            expect(originalFileSize).to.equal(copiedFileSize)
+            let originalFileSize = (stats('test/src/todomvc-ng2/favicon.ico') as Image).size,
+                copiedFileSize = (stats(`${tmp.name}/images/favicon.ico`) as Image).size;
+            expect(originalFileSize).to.equal(copiedFileSize);
         });
     });
 
