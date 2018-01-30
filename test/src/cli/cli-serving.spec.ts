@@ -6,7 +6,7 @@ const expect = chai.expect,
 describe('CLI serving', () => {
 
     const distFolder = tmp.name + '-serving',
-        TIMEOUT = 2000;
+        TIMEOUT = 8000;
 
     describe('when serving with -s flag in another directory', () => {
 
