@@ -98,6 +98,7 @@
         "codecov": "^3.0.0",
         "conventional-changelog-cli": "^1.3.5",
         "cross-env": "5.1.3",
+        "fast-deep-equal": "^1.0.0",
         "mocha": "^5.0.0",
         "mocha-parallel-tests": "^1.2.10",
         "nodemon": "^1.14.11",
