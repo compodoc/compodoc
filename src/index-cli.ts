@@ -68,9 +68,6 @@ export class CliApplication extends Application {
             process.exit(1);
         };
 
-        console.log(program.coverageTestThresholdFail);
-        
-
         if (program.output) {
             this.configuration.mainData.output = program.output;
         }
