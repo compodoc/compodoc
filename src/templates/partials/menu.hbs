@@ -22,7 +22,7 @@
                             {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare name "===" 'overview' }} class="active" {{/compare}}>
-                            <span class="fa fa-th"></span>Overview
+                            <span class="fa fa-fw fa-th"></span>Overview
                         </a>
                     </li>
                     <li class="link">
@@ -34,7 +34,7 @@
                             {{#compare name "===" 'overview' }} class="active" {{/compare}}
                             {{#compare name "===" 'index' }} class="active" {{/compare}}
                             >
-                            <span class="fa fa-th"></span>Overview
+                            <span class="fa fa-fw fa-th"></span>Overview
                         </a>
                     </li>
                 {{/if}}
@@ -46,7 +46,7 @@
                             <a href="{{relativeURL depth pageType 'root'}}index.html"
                         {{/compare}}
                         {{#compare ../name "===" name }} class="active" {{/compare}}>
-                            <span class="fa fa-file-text-o"></span>{{uppername}}
+                            <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
                         </a>
                     </li>
                 {{/each}}
@@ -55,7 +55,7 @@
                         <a href="{{relativeURL depth pageType 'root'}}dependencies.html"
                             {{#compare name "===" 'dependencies' }} class="active" {{/compare}}
                             >
-                            <span class="fa fa-list"></span>Dependencies
+                            <span class="fa fa-fw fa-list"></span>Dependencies
                         </a>
                     </li>
                 {{/objectLength}}
@@ -70,7 +70,7 @@
                 {{else}}
                     data-target="#xs-additional-pages"
                 {{/compare}}>
-                <span class="fa fa-book"></span>
+                <span class="fa fa-fw fa-book"></span>
                 <span>{{includesName}}</span>
                 <span class="fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -99,7 +99,7 @@
                         data-target="#xs-modules-links"
                     {{/compare}}
                 >
-                    <span class="fa fa-archive"></span>
+                    <span class="fa fa-fw fa-archive"></span>
                     <span class="link-name">Modules</span>
                     <span class="fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
                 </div>
@@ -127,7 +127,7 @@
                 {{else}}
                     data-target="#xs-components-links"
                 {{/compare}}>
-                <span class="fa fa-cogs"></span>
+                <span class="fa fa-fw fa-cogs"></span>
                 <span>Components</span>
                 <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -154,7 +154,7 @@
                 {{else}}
                     data-target="#xs-directives-links"
                 {{/compare}}>
-                <span class="fa fa-code"></span>
+                <span class="fa fa-fw fa-code"></span>
                 <span>Directives</span>
                 <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -181,7 +181,7 @@
                 {{else}}
                     data-target="#xs-classes-links"
                 {{/compare}}>
-                <span class="fa fa-file-code-o"></span>
+                <span class="fa fa-fw fa-file-code-o"></span>
                 <span>Classes</span>
                 <span class="fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -208,7 +208,7 @@
                 {{else}}
                     data-target="#xs-injectables-links"
                 {{/compare}}>
-                <span class="fa fa-long-arrow-down"></span>
+                <span class="fa fa-fw fa-long-arrow-down"></span>
                 <span>Injectables</span>
                 <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -235,7 +235,7 @@
                 {{else}}
                     data-target="#xs-interceptors-links"
                 {{/compare}}>
-                <span class="fa fa-exchange"></span>
+                <span class="fa fa-fw fa-exchange"></span>
                 <span>Interceptors</span>
                 <span class="fa {{#isNotToggle 'interceptors'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -262,7 +262,7 @@
                 {{else}}
                     data-target="#xs-interfaces-links"
                 {{/compare}}>
-                <span class="fa fa-info"></span>
+                <span class="fa fa-fw fa-info"></span>
                 <span>Interfaces</span>
                 <span class="fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -289,7 +289,7 @@
                 {{else}}
                     data-target="#xs-pipes-links"
                 {{/compare}}>
-                <span class="fa fa-plus"></span>
+                <span class="fa fa-fw fa-plus"></span>
                 <span>Pipes</span>
                 <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
@@ -316,7 +316,7 @@
                 {{else}}
                     data-target="#xs-miscellaneous-links"
                 {{/compare}}>
-                <span class="fa fa-cubes"></span>
+                <span class="fa fa-fw fa-cubes"></span>
                 <span>Miscellaneous</span>
                 <span class="fa {{#isNotToggle 'miscellaneous'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
             </div>
