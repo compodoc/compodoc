@@ -70,6 +70,18 @@ Official documentation has moved to [https://compodoc.github.io/website/](https:
 
 Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
 
+## Backers
+
+Support us with a monthly donation and help us continue our activities. [Become a backer][support-url]
+
+[![Backers][backers-image]][support-url]
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor][support-url]
+
+[![Sponsors][sponsors-image]][support-url]
+
 # Contributing
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
@@ -90,3 +102,8 @@ Copyright (c) 2016 – 2018 [Vincent Ogloblinsky]
 
 [license]: https://github.com/compodoc/compodoc/blob/master/LICENSE
 [Vincent Ogloblinsky]: http://www.vincentogloblinsky.com
+
+
+[support-url]: https://opencollective.com/compodoc#support
+[backers-image]: https://opencollective.com/compodoc/backers.svg
+[sponsors-image]: https://opencollective.com/compodoc/sponsors.svg
