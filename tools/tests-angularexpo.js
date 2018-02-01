@@ -174,19 +174,26 @@ let i = 0,
         });
     },
     printStat = function(stdout) {
-        let stats = stdout.match(regStat)[0],
-            statModules = stats.match(regStatModules),
+        let statsRaw = stdout.match(regStat),
+            stats,
+            statModules,
+            statComponents;
+        
+        if (statsRaw && statsRaw.length > 0) {
+            stats = statsRaw[0];
+            statModules = stats.match(regStatModules);
             statComponents = stats.match(regStatComponents);
-
-        console.log(`   ${stdout.match(reg).length} files`);
-        console.log('');
-        if (statModules) {
-            statModules = statModules[2];
-            console.log(`   ${statModules} modules`);
-        }
-        if (statComponents) {
-            statComponents = statComponents[2];
-            console.log(`   ${statComponents} components`);
+            
+            console.log(`   ${stdout.match(reg).length} files`);
+            console.log('');
+            if (statModules) {
+                statModules = statModules[2];
+                console.log(`   ${statModules} modules`);
+            }
+            if (statComponents) {
+                statComponents = statComponents[2];
+                console.log(`   ${statComponents} components`);
+            }
         }
     }
 
@@ -200,7 +207,7 @@ let reg = /parsing/gm,
             console.log(`Repository ${GIT_REPOSITORIES[i].name} cloned`);
             compodoc(GIT_REPOSITORIES[i]).then((stdout, stderr) => {
                 console.log('');
-                console.log(` Compodoc ${GIT_REPOSITORIES[i].name} ok`);
+                console.log(` Compodoc ${GIT_REPOSITORIES[i].name} OK`);
                 if (stdout && stdout.match(reg)) {
                     printStat(stdout);
                     GIT_REPOSITORIES[i].filesLength = stdout.match(reg).length;
@@ -222,19 +229,24 @@ let reg = /parsing/gm,
             });
         });
     } else {
-        console.log('END');
+        
+        console.log('End processing projects');
         console.log('');
-        //console.log('GIT_REPOSITORIES: ', GIT_REPOSITORIES);
-        //console.log('');
-        console.log('failedRepositories: ', failedRepositories);
-        process.exit(0);
-        rimraf(TEST_FOLDER);
+        
+        if (failedRepositories.length > 0) {
+            console.log('Failed repositories: ', failedRepositories);
+            console.log('');
+            process.exit(1);
+        } else {
+            process.exit(0);
+        }
     }
 }
 
 try {
     process.chdir(TEST_FOLDER);
-    console.log(`New directory: ${process.cwd()}`);
+    console.log('Start processing projects');
+    console.log('');
     loop();
 } catch (err) {
     console.error(`chdir: ${err}`);

@@ -14,6 +14,7 @@
         "pretest": "./node_modules/.bin/tsc -p test/tsconfig.json",
         "test": "./node_modules/.bin/mocha-parallel-tests test",
         "posttest": "rimraf test/dist",
+        "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "nyc": "nyc npm test",
         "codecov": "codecov -f coverage/*.json",
         "backup-package-json": "node tools/backup-package-json.js",
