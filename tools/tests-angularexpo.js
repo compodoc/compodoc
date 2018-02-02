@@ -10,13 +10,13 @@ const TEST_FOLDER = 'angularexpo-tests',
     {
         name: 'parrot', maintainer: 'anthonynsimon', tsconfig_path: './web-app/src/'
     }, {
-        name: 'batcave', maintainer: 'hsbalar', tsconfig_path: './'
+        name: 'batcave', maintainer: 'hsbalar', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'angular2-image-gallery', maintainer: 'BenjaminBrandmeier', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
         name: 'pinterest', maintainer: 'aviabird', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
-        name: 'Movies-Finder', maintainer: 'Lazhari', tsconfig_path: './src/'
+        name: 'Movies-Finder', maintainer: 'Lazhari', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
         name: 'memory', maintainer: 'MurhafSousli', tsconfig_path: './src/'
     }, {
@@ -44,14 +44,6 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'Preserver', maintainer: 'hsbalar', tsconfig_path: './'
     }, {
-        name: 'ng2-tic-tac-toe', maintainer: 'rmdias', tsconfig_path: './', failedAccepted: true
-    }, {
-        name: 'ng2-2048', maintainer: 'Neil-Ni', tsconfig_path: './', failedAccepted: true
-    }, {
-        name: 'angular2-redux-contact-list', maintainer: 'housseindjirdeh', tsconfig_path: './', failedAccepted: true
-    }, {
-        name: 'Angular2PianoNoteTrainingGame', maintainer: 'JosephWoodward', tsconfig_path: './', failedAccepted: true
-    }, {
         name: 'ng-logo', maintainer: 'dweitz43', tsconfig_path: './src/'
     }, {
         name: 'ng2-admin', maintainer: 'akveo', tsconfig_path: './'
@@ -61,8 +53,6 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'primeng', maintainer: 'primefaces', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'sequence-alignment', maintainer: 'radotzki', tsconfig_path: './'
-    }, {
-        name: 'ng-go', maintainer: 'lys1030', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'ngx-uploader', maintainer: 'jkuri', tsconfig_path: './'
     }, {
@@ -79,8 +69,6 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'ng2-clock', maintainer: 'zackhall', tsconfig_path: './'
     }, {
         name: 'todo-list', maintainer: 'maxcabrera', tsconfig_path: './'
-    }, {
-        name: 'rdash-angular2', maintainer: 'ziyasal', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'ngconf2015demo', maintainer: 'Microsoft', tsconfig_path: './'
     }, {
@@ -99,8 +87,6 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'ng2-dragula', maintainer: 'valor-software', tsconfig_path: './'
     }, {
         name: 'angular2-tv-tracker', maintainer: 'mattlewis92', tsconfig_path: './'
-    }, {
-        name: 'ng2-dribbble', maintainer: 'mohammedzamakhan', tsconfig_path: './', failedAccepted: true
     }, {
         name: 'youtube-trends', maintainer: 'jasodeep', tsconfig_path: './src/'
     }, {
@@ -125,6 +111,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'ngx-snake', maintainer: 'SamirHodzic', tsconfig_path: './src/'
     }, {
         name: 'ng-pokedex', maintainer: 'coryrylan', tsconfig_path: './'
+    }, {
+        name: 'codegreen', maintainer: 'artusvranken', tsconfig_path: './', tsconfig_file: 'tsconfig.app.json'
     }],
     len = GIT_REPOSITORIES.length;
 
