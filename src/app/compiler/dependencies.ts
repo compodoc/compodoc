@@ -38,7 +38,8 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked');
+const marked = require('marked'),
+      traverse = require('traverse');
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -453,7 +454,7 @@ export class Dependencies {
                         }
                     }
                 } else {
-                    let IO = this.getRouteIO(file, srcFile);
+                    let IO = this.getRouteIO(file, srcFile, node);
                     if (IO.routes) {
                         let newRoutes;
                         try {
@@ -609,24 +610,6 @@ export class Dependencies {
 
             }
         });
-    }
-
-
-    private isVariableRoutes(node) {
-        let result = false;
-        if (node.declarationList.declarations) {
-            let i = 0;
-            let len = node.declarationList.declarations.length;
-            for (i; i < len; i++) {
-                if (node.declarationList.declarations[i].type) {
-                    if (node.declarationList.declarations[i].type.typeName &&
-                        node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     private findExpressionByNameInExpressions(entryNode, name) {
@@ -896,7 +879,8 @@ export class Dependencies {
         return result;
     }
 
-    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
+    private isVariableRoutes(node) {
+        let result = false;
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
@@ -904,42 +888,55 @@ export class Dependencies {
                 if (node.declarationList.declarations[i].type) {
                     if (node.declarationList.declarations[i].type.typeName &&
                         node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                            let routesInitializer = node.declarationList.declarations[i].initializer;
-                            if (ts.isArrayLiteralExpression(routesInitializer)) {
-                                if (routesInitializer.elements.length > 0) {
-                                    if (hasSpreadElementInArray(routesInitializer.elements)) {
-                                        //console.log('clean spread');
-                                        //console.log(routesInitializer.elements);
-                                    }
-                                }
-                                routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
-                            }
-                            let data = new CodeGenerator().generate(routesInitializer);
-                            this.routerParser.addRoute({
-                                name: node.declarationList.declarations[i].name.text,
-                                data: this.routerParser.cleanRawRoute(data),
-                                filename: fileName
-                            });
-                            return [{
-                                routes: data
-                            }];
+                        result = true;
                     }
                 }
+            }
+        }
+        return result;
+    }
+
+    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
+        console.log('visitEnumDeclarationForRoutes');
+        if (node.declarationList.declarations) {
+            let i = 0;
+            let len = node.declarationList.declarations.length;
+            for (i; i < len; i++) {
+                let routesInitializer = node.declarationList.declarations[i].initializer;
+                if (ts.isArrayLiteralExpression(routesInitializer)) {
+
+                    if (routesInitializer.elements.length > 0) {
+                        if (hasSpreadElementInArray(routesInitializer.elements)) {
+                            // console.log('clean spread');
+                            // console.log(routesInitializer.elements);
+                        }
+                    }
+
+                    routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
+                }
+                let data = new CodeGenerator().generate(routesInitializer);
+                this.routerParser.addRoute({
+                    name: node.declarationList.declarations[i].name.text,
+                    data: this.routerParser.cleanRawRoute(data),
+                    filename: fileName
+                });
+                return [{
+                    routes: data
+                }];
             }
         }
         return [];
     }
 
-    private getRouteIO(filename, sourceFile) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
+    private getRouteIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node) {
         let res;
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
 
-                if (ts.isVariableStatement(statement)) {
-                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
+                if (ts.isVariableStatement(statement) && this.isVariableRoutes(statement)) {
+                    if (statement.pos === node.pos && statement.end === node.end) {
+                        return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
+                    }
                 }
 
                 return directive;
