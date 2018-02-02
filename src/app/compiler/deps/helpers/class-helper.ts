@@ -604,6 +604,7 @@ export class ClassHelper {
             name: property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
+            optional: (typeof property.questionToken !== 'undefined'),
             description: '',
             line: this.getPosition(property, sourceFile).line + 1
         };

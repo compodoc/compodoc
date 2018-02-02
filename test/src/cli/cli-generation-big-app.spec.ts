@@ -500,4 +500,9 @@ describe('CLI simple generation - big app', () => {
         let dependencies = read(distFolder + '/dependencies.html');
         expect(dependencies).to.contain('typescript');
     });
+
+    it('should support optional for interfaces', () => {
+        let file = read(distFolder + '/interfaces/LabelledTodo.html');
+        expect(file).to.contain('Optional');
+    });
 });
