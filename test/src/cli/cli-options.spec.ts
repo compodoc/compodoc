@@ -29,7 +29,7 @@ describe('CLI Options', () => {
 
         it(`-d`, () => {
             expect(runHelp.stdout.toString()).to.contain('-d, --output [folder]');
-            expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation (default: ./documentation)');
+            expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation');
         });
 
         it(`-y`, () => {
@@ -79,7 +79,7 @@ describe('CLI Options', () => {
 
         it(`-e`, () => {
             expect(runHelp.stdout.toString()).to.contain('-e, --exportFormat [format]');
-            expect(runHelp.stdout.toString()).to.contain('Export in specified format (json, html (default))');
+            expect(runHelp.stdout.toString()).to.contain('Export in specified format (json, html)');
         });
 
         it(`--hideGenerator`, () => {
@@ -94,7 +94,7 @@ describe('CLI Options', () => {
 
         it(`--includesName`, () => {
             expect(runHelp.stdout.toString()).to.contain('--includesName [name]');
-            expect(runHelp.stdout.toString()).to.contain('Name of item menu of externals markdown files (default "Additional documentation")');
+            expect(runHelp.stdout.toString()).to.contain('Name of item menu of externals markdown files');
         });
 
         it(`--coverageTest`, () => {
@@ -109,7 +109,7 @@ describe('CLI Options', () => {
 
         it(`--coverageTestThresholdFail`, () => {
             expect(runHelp.stdout.toString()).to.contain('--coverageTestThresholdFail [true|false]');
-            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn) (default true)');
+            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)');
         });
 
         it(`--disableSourceCode`, () => {
