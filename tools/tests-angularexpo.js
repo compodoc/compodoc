@@ -140,11 +140,14 @@ let i = 0,
 
             process.chdir(repo.name);
 
+            console.log(`${process.cwd()}`);
+
             exec('node ../../bin/index-cli.js -p ' + repo.tsconfig_path + tsconfig, {
                 maxBuffer: 1000 * 1024
             }, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`compodoc error: ${error}`);
+                    process.chdir('../');
                     reject(stdout, stderr);
                 } else {
                     process.chdir('../');
