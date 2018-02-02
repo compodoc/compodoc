@@ -112,7 +112,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'ng-pokedex', maintainer: 'coryrylan', tsconfig_path: './'
     }, {
-        name: 'codegreen', maintainer: 'artusvranken', tsconfig_path: './', tsconfig_file: 'tsconfig.app.json'
+        name: 'codegreen', maintainer: 'artusvranken', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }],
     len = GIT_REPOSITORIES.length;
 
@@ -140,15 +140,17 @@ let i = 0,
 
             process.chdir(repo.name);
 
-            console.log(`${process.cwd()}`);
-
             exec('node ../../bin/index-cli.js -p ' + repo.tsconfig_path + tsconfig, {
                 maxBuffer: 1000 * 1024
             }, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`compodoc error: ${error}`);
                     process.chdir('../');
-                    reject(stdout, stderr);
+                    if (repo.failedAccepted) {
+                        resolve(stdout, stderr);
+                    } else {
+                        reject(stdout, stderr);
+                    }
                 } else {
                     process.chdir('../');
                     if (stdout.indexOf('Documentation generated') !== -1) {
