@@ -36,3 +36,6 @@
 
 <!-- if you can't fix the bug yourself, perhaps you can point to what might be
   causing the problem (line of code or commit) -->
+
+<!-- Love compodoc? Please consider supporting our collective:
+👉  https://opencollective.com/compodoc/donate -->
