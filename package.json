@@ -82,7 +82,7 @@
         "marked": "^0.3.12",
         "os-name": "^2.0.1",
         "traverse": "^0.6.6",
-        "ts-simple-ast": "^6.9.0",
+        "ts-simple-ast": "^6.10.0",
         "typescript": "2.4.2"
     },
     "devDependencies": {
@@ -93,7 +93,7 @@
         "@types/lodash": "^4.14.101",
         "@types/marked": "0.3.0",
         "@types/mocha": "2.2.48",
-        "@types/node": "9.4.0",
+        "@types/node": "9.4.1",
         "@types/semver": "^5.5.0",
         "chai": "^4.1.2",
         "codecov": "^3.0.0",
