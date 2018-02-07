@@ -3,6 +3,8 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
+import Ast from 'ts-simple-ast';
+import { TypeGuards } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -38,8 +40,8 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('marked'),
-      traverse = require('traverse');
+const marked = require('marked');
+const ast = new Ast();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -897,7 +899,6 @@ export class Dependencies {
     }
 
     private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
-        console.log('visitEnumDeclarationForRoutes');
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
@@ -905,12 +906,43 @@ export class Dependencies {
                 let routesInitializer = node.declarationList.declarations[i].initializer;
                 if (ts.isArrayLiteralExpression(routesInitializer)) {
 
-                    if (routesInitializer.elements.length > 0) {
+                    // Find recursively if routesInitializer has spread element
+
+                    const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
+                    const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
+                        .filter((p) => {
+                            /*let parent = p.getParentOrThrow(),
+                                parentIsArrayLiteral = TypeGuards.isArrayLiteralExpression(parent),
+                                parentArrayLiteralIsRoutesDefinition = false;
+
+                            if (parentIsArrayLiteral) {
+                                console.log(parent.getParentWhileOrThrow());
+                            }
+
+                            return parentArrayLiteralIsRoutesDefinition;*/
+                            /*let parent = p.getParentWhile((n) => {
+                                let test = false;
+                                if (TypeGuards.isVariableDeclaration(n)) {
+                                    // console.log(n.getType());
+                                    let test = false;
+                                    console.log(n.compilerNode.type.typeName.text);
+                                    if (n.compilerNode.type && n.compilerNode.type.typeName && n.compilerNode.type.typeName.text === 'Routes') {
+                                        test = true;
+                                    }
+                                    console.log(test);
+                                    return true;
+                                }
+                                return test;
+                            });*/
+                            return true;
+                        });
+
+                    /*if (routesInitializer.elements.length > 0) {
                         if (hasSpreadElementInArray(routesInitializer.elements)) {
                             // console.log('clean spread');
                             // console.log(routesInitializer.elements);
                         }
-                    }
+                    }*/
 
                     routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
                 }
