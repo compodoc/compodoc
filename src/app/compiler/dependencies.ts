@@ -910,32 +910,7 @@ export class Dependencies {
 
                     const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
                     const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
-                        .filter((p) => {
-                            /*let parent = p.getParentOrThrow(),
-                                parentIsArrayLiteral = TypeGuards.isArrayLiteralExpression(parent),
-                                parentArrayLiteralIsRoutesDefinition = false;
-
-                            if (parentIsArrayLiteral) {
-                                console.log(parent.getParentWhileOrThrow());
-                            }
-
-                            return parentArrayLiteralIsRoutesDefinition;*/
-                            /*let parent = p.getParentWhile((n) => {
-                                let test = false;
-                                if (TypeGuards.isVariableDeclaration(n)) {
-                                    // console.log(n.getType());
-                                    let test = false;
-                                    console.log(n.compilerNode.type.typeName.text);
-                                    if (n.compilerNode.type && n.compilerNode.type.typeName && n.compilerNode.type.typeName.text === 'Routes') {
-                                        test = true;
-                                    }
-                                    console.log(test);
-                                    return true;
-                                }
-                                return test;
-                            });*/
-                            return true;
-                        });
+                        .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
 
                     /*if (routesInitializer.elements.length > 0) {
                         if (hasSpreadElementInArray(routesInitializer.elements)) {
@@ -944,7 +919,7 @@ export class Dependencies {
                         }
                     }*/
 
-                    routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
+                    // routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
                 }
                 let data = new CodeGenerator().generate(routesInitializer);
                 this.routerParser.addRoute({
@@ -967,6 +942,9 @@ export class Dependencies {
 
                 if (ts.isVariableStatement(statement) && this.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
+                        console.log('cleanFile for spreads and dynamics');
+                        // this.routerParser.cleanFileSpreads(sourceFile);
+                        this.routerParser.cleanFileDynamics(sourceFile, statement);
                         return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
                     }
                 }

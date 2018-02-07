@@ -11,6 +11,10 @@ import { ImportsUtil } from './imports.util';
 
 const traverse = require('traverse');
 
+import Ast, { PropertyDeclaration, TypeGuards } from 'ts-simple-ast';
+
+const ast = new Ast();
+
 export class RouterParserUtil {
     private routes: any[] = [];
     private incompleteRoutes = [];
@@ -352,6 +356,65 @@ export class RouterParserUtil {
         console.log('');
         console.log('printModulesRoutes: ');
         console.log(this.modulesWithRoutes);
+    }
+
+    public cleanFileSpreads(sourceFile: ts.SourceFile): ts.SourceFile {
+
+    }
+
+    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.SourceFile {
+
+        console.log(variableStatement); // 208 ts.SyntaxKind.VariableStatement
+        
+
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
+        const propertyAccessExpressions = file.getDescendantsOfKind(ts.SyntaxKind.PropertyAccessExpression)
+            .filter((p) => {
+                // recursively find the parent equals the initial statement
+            });
+        
+            //.filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
+
+            /*.filter((p) => {
+                let parent = p.getParentOrThrow(),
+                    parentIsArrayLiteral = TypeGuards.isArrayLiteralExpression(parent),
+                    parentArrayLiteralIsRoutesDefinition = false;
+
+                if (parentIsArrayLiteral) {
+                    console.log(parent.getParentWhileOrThrow());
+                }
+
+                return parentArrayLiteralIsRoutesDefinition;*/
+                /*let parent = p.getParentWhile((n) => {
+                    let test = false;
+                    if (TypeGuards.isVariableDeclaration(n)) {
+                        // console.log(n.getType());
+                        let test = false;
+                        console.log(n.compilerNode.type.typeName.text);
+                        if (n.compilerNode.type && n.compilerNode.type.typeName && n.compilerNode.type.typeName.text === 'Routes') {
+                            test = true;
+                        }
+                        console.log(test);
+                        return true;
+                    }
+                    return test;
+                });
+                return true;
+            });*/
+
+        // console.log(propertyAccessExpressions);
+
+        // inline the property access expressions
+        /*for (const propertyAccessExpression of propertyAccessExpressions) {
+            console.log(propertyAccessExpression);
+            const referencedDeclaration = propertyAccessExpression.getNameNode().getSymbolOrThrow().getValueDeclarationOrThrow();
+            if (!TypeGuards.isPropertyAssignment(referencedDeclaration)) {
+                throw new Error(`Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`);
+            }
+            propertyAccessExpression.replaceWithText(referencedDeclaration.getInitializerOrThrow().getText());
+        }*/
+
+        console.log(file);
     }
 
     /**
