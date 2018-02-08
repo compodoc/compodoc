@@ -375,13 +375,111 @@ export class RouterParserUtil {
         return result;
     }
 
-    public cleanFileSpreads(sourceFile: ts.SourceFile): ts.SourceFile {
+    public cleanFileSpreads(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.VariableStatement {
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);
+        const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
+            .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
 
+        let spreadElementsInRoutesVariableStatement = [];
+
+        for (const spreadElement of spreadElementsInRoutesVariableStatement) {
+            // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
+            let foundParentVariableStatement = false;
+            let parent = spreadElement.getParentWhile((n) => {
+                if (n.getKind() === variableStatement.kind) {
+                    if (this.isVariableRoutes(n.compilerNode)) {
+                        foundParentVariableStatement = true;
+                    }
+                }
+                return true;
+            });
+            if (foundParentVariableStatement) {
+                spreadElementsInRoutesVariableStatement.push(spreadElement);
+            }
+        }
+
+        // inline the ArrayLiteralExpression SpreadElements
+        for (const spreadElement of spreadElementsInRoutesVariableStatement) {
+            let spreadElementIdentifier = spreadElement.getExpression().getText(),
+                searchedImport,
+                aliasOriginalName = '',
+                foundWithAliasInImports = false,
+                foundWithAlias = false;
+
+            // Try to find it in imports
+            const imports = file.getImportDeclarations();
+
+            imports.forEach((i) => {
+                let namedImports = i.getNamedImports(),
+                    namedImportsLength = namedImports.length,
+                    j = 0;
+
+                if (namedImportsLength > 0) {
+                    for (j; j<namedImportsLength; j++) {
+                        let importName = namedImports[j].getNameNode().getText() as string,
+                            importAlias;
+
+                        if (namedImports[j].getAliasIdentifier()) {
+                            importAlias = namedImports[j].getAliasIdentifier().getText();
+                        }
+
+                        if (importName === spreadElementIdentifier) {
+                            foundWithAliasInImports = true;
+                            searchedImport = i;
+                            break;
+                        }
+                        if (importAlias === spreadElementIdentifier) {
+                            foundWithAliasInImports = true;
+                            foundWithAlias = true;
+                            aliasOriginalName = importName;
+                            searchedImport = i;
+                            break;
+                        }
+                    }
+                }
+            });
+
+            let referencedDeclaration;
+
+            if (foundWithAliasInImports) {
+                if (typeof searchedImport !== 'undefined') {
+                    let importPath = path.resolve(path.dirname(file.getFilePath()) + '/' + searchedImport.getModuleSpecifier() + '.ts');
+                    const sourceFileImport = (typeof ast.getSourceFile(importPath) !== 'undefined') ? ast.getSourceFile(importPath) : ast.addExistingSourceFile(importPath);
+                    if (sourceFileImport) {
+                        let variableName = (foundWithAlias) ? aliasOriginalName : spreadElementIdentifier;
+                        referencedDeclaration = sourceFileImport.getVariableDeclaration(variableName);
+                    }
+                }
+            } else {
+                // if not, try directly in file
+                referencedDeclaration = spreadElement.getExpression().getSymbolOrThrow().getValueDeclarationOrThrow();
+            }
+            
+            if (!TypeGuards.isVariableDeclaration(referencedDeclaration)) {
+                console.log('error');
+                throw new Error(`Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`);
+            }
+            
+            const referencedArray = referencedDeclaration.getInitializerIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression);
+            const spreadElementArray = spreadElement.getParentIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression);
+            const insertIndex = spreadElementArray.getElements().indexOf(spreadElement);
+            spreadElementArray.removeElement(spreadElement);
+            spreadElementArray.insertElements(insertIndex, referencedArray.getElements().map(e => e.getText()));
+        }
+
+        // Get original variableStatement from edited file
+        const editedVariableStatement = file.getVariableStatement(s => {
+            return (variableStatement.pos === s.getPos())
+        });
+
+        if (editedVariableStatement) {
+            return editedVariableStatement.compilerNode;
+        }
     }
 
-    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): any {
+    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.VariableStatement {
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
+        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);
         const propertyAccessExpressions = file.getDescendantsOfKind(ts.SyntaxKind.PropertyAccessExpression)
             .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
 
@@ -418,7 +516,9 @@ export class RouterParserUtil {
             return (variableStatement.pos === s.getPos())
         });
 
-        return editedVariableStatement.compilerNode;
+        if (editedVariableStatement) {
+            return editedVariableStatement.compilerNode;
+        }
     }
 
     /**

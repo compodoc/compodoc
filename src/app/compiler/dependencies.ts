@@ -910,9 +910,15 @@ export class Dependencies {
 
                 if (ts.isVariableStatement(statement) && this.routerParser.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
-                        logger.info('Analysing routes definitions and cleaning if needed');
-                        // this.routerParser.cleanFileSpreads(sourceFile);
-                        statement = this.routerParser.cleanFileDynamics(sourceFile, statement);
+                        logger.info('Analysing routes definitions node and cleaning it if needed');
+                        /*let cleanedStatementForSpreads = this.routerParser.cleanFileSpreads(sourceFile, statement);
+                        if (typeof cleanedStatementForSpreads !== 'undefined') {
+                            statement = cleanedStatementForSpreads;
+                        }*/
+                        let cleanedStatementForDynamics = this.routerParser.cleanFileDynamics(sourceFile, statement);
+                        if (typeof cleanedStatementForDynamics !== 'undefined') {
+                            statement = cleanedStatementForDynamics;
+                        }
                         return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
                     }
                 }
