@@ -382,7 +382,7 @@ export class RouterParserUtil {
 
         let spreadElementsInRoutesVariableStatement = [];
 
-        for (const spreadElement of spreadElementsInRoutesVariableStatement) {
+        for (const spreadElement of spreadElements) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = spreadElement.getParentWhile((n) => {
@@ -454,9 +454,8 @@ export class RouterParserUtil {
                 // if not, try directly in file
                 referencedDeclaration = spreadElement.getExpression().getSymbolOrThrow().getValueDeclarationOrThrow();
             }
-            
+
             if (!TypeGuards.isVariableDeclaration(referencedDeclaration)) {
-                console.log('error');
                 throw new Error(`Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`);
             }
             
