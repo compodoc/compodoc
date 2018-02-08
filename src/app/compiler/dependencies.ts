@@ -512,7 +512,7 @@ export class Dependencies {
                             }
                         }
                     }
-                    if (ts.isVariableStatement(node) && !this.isVariableRoutes(node)) {
+                    if (ts.isVariableStatement(node) && !this.routerParser.isVariableRoutes(node)) {
                         let infos: any = this.visitVariableDeclaration(node);
                         let name = infos.name;
                         let deps: any = {
@@ -881,46 +881,14 @@ export class Dependencies {
         return result;
     }
 
-    private isVariableRoutes(node) {
-        let result = false;
-        if (node.declarationList.declarations) {
-            let i = 0;
-            let len = node.declarationList.declarations.length;
-            for (i; i < len; i++) {
-                if (node.declarationList.declarations[i].type) {
-                    if (node.declarationList.declarations[i].type.typeName &&
-                        node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
-    }
+    
 
-    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
+    private visitEnumDeclarationForRoutes(fileName, node) {
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
                 let routesInitializer = node.declarationList.declarations[i].initializer;
-                if (ts.isArrayLiteralExpression(routesInitializer)) {
-
-                    // Find recursively if routesInitializer has spread element
-
-                    const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
-                    const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
-                        .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
-
-                    /*if (routesInitializer.elements.length > 0) {
-                        if (hasSpreadElementInArray(routesInitializer.elements)) {
-                            // console.log('clean spread');
-                            // console.log(routesInitializer.elements);
-                        }
-                    }*/
-
-                    // routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
-                }
                 let data = new CodeGenerator().generate(routesInitializer);
                 this.routerParser.addRoute({
                     name: node.declarationList.declarations[i].name.text,
@@ -940,12 +908,12 @@ export class Dependencies {
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
 
-                if (ts.isVariableStatement(statement) && this.isVariableRoutes(statement)) {
+                if (ts.isVariableStatement(statement) && this.routerParser.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
-                        console.log('cleanFile for spreads and dynamics');
+                        logger.info('Analysing routes definitions and cleaning if needed');
                         // this.routerParser.cleanFileSpreads(sourceFile);
-                        this.routerParser.cleanFileDynamics(sourceFile, statement);
-                        return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
+                        statement = this.routerParser.cleanFileDynamics(sourceFile, statement);
+                        return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
                     }
                 }
 

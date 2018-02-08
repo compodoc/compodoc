@@ -358,63 +358,67 @@ export class RouterParserUtil {
         console.log(this.modulesWithRoutes);
     }
 
+    public isVariableRoutes(node) {
+        let result = false;
+        if (node.declarationList.declarations) {
+            let i = 0;
+            let len = node.declarationList.declarations.length;
+            for (i; i < len; i++) {
+                if (node.declarationList.declarations[i].type) {
+                    if (node.declarationList.declarations[i].type.typeName &&
+                        node.declarationList.declarations[i].type.typeName.text === 'Routes') {
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public cleanFileSpreads(sourceFile: ts.SourceFile): ts.SourceFile {
 
     }
 
-    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.SourceFile {
-
-        console.log(variableStatement); // 208 ts.SyntaxKind.VariableStatement
-        
+    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): any {
 
         const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
         const propertyAccessExpressions = file.getDescendantsOfKind(ts.SyntaxKind.PropertyAccessExpression)
-            .filter((p) => {
-                // recursively find the parent equals the initial statement
-            });
-        
-            //.filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
+            .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
 
-            /*.filter((p) => {
-                let parent = p.getParentOrThrow(),
-                    parentIsArrayLiteral = TypeGuards.isArrayLiteralExpression(parent),
-                    parentArrayLiteralIsRoutesDefinition = false;
+        let propertyAccessExpressionsInRoutesVariableStatement = [];
 
-                if (parentIsArrayLiteral) {
-                    console.log(parent.getParentWhileOrThrow());
-                }
-
-                return parentArrayLiteralIsRoutesDefinition;*/
-                /*let parent = p.getParentWhile((n) => {
-                    let test = false;
-                    if (TypeGuards.isVariableDeclaration(n)) {
-                        // console.log(n.getType());
-                        let test = false;
-                        console.log(n.compilerNode.type.typeName.text);
-                        if (n.compilerNode.type && n.compilerNode.type.typeName && n.compilerNode.type.typeName.text === 'Routes') {
-                            test = true;
-                        }
-                        console.log(test);
-                        return true;
+        for (const propertyAccessExpression of propertyAccessExpressions) {
+            // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
+            let foundParentVariableStatement = false;
+            let parent = propertyAccessExpression.getParentWhile((n) => {
+                if (n.getKind() === variableStatement.kind) {
+                    if (this.isVariableRoutes(n.compilerNode)) {
+                        foundParentVariableStatement = true;
                     }
-                    return test;
-                });
+                }
                 return true;
-            });*/
-
-        // console.log(propertyAccessExpressions);
+            });
+            if (foundParentVariableStatement) {
+                propertyAccessExpressionsInRoutesVariableStatement.push(propertyAccessExpression);
+            }
+        }
 
         // inline the property access expressions
-        /*for (const propertyAccessExpression of propertyAccessExpressions) {
-            console.log(propertyAccessExpression);
+        for (const propertyAccessExpression of propertyAccessExpressionsInRoutesVariableStatement) {
             const referencedDeclaration = propertyAccessExpression.getNameNode().getSymbolOrThrow().getValueDeclarationOrThrow();
-            if (!TypeGuards.isPropertyAssignment(referencedDeclaration)) {
+            if ( (!TypeGuards.isPropertyAssignment(referencedDeclaration) && TypeGuards.isEnumMember(referencedDeclaration)) && 
+                 (TypeGuards.isPropertyAssignment(referencedDeclaration) && !TypeGuards.isEnumMember(referencedDeclaration)) ) {
                 throw new Error(`Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`);
             }
             propertyAccessExpression.replaceWithText(referencedDeclaration.getInitializerOrThrow().getText());
-        }*/
+        }
 
-        console.log(file);
+        // Get original variableStatement from edited file
+        const editedVariableStatement = file.getVariableStatement(s => {
+            return (variableStatement.pos === s.getPos())
+        });
+
+        return editedVariableStatement.compilerNode;
     }
 
     /**
