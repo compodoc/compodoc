@@ -241,6 +241,41 @@ export class Dependencies {
 
         let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
         let file = srcFile.fileName.replace(cleaner, '');
+        let scannedFile = srcFile;
+
+        // Search in file for variable statement as routes definitions
+
+        const astFile = (typeof ast.getSourceFile(srcFile.fileName) !== 'undefined') ? ast.getSourceFile(srcFile.fileName) : ast.addExistingSourceFile(srcFile.fileName);
+
+        const variableRoutesStatements = astFile.getVariableStatements();
+        let hasRoutesStatements = false;
+
+        if (variableRoutesStatements.length > 0) {
+            // Clean file for spread and dynamics inside routes definitions
+            variableRoutesStatements.forEach(s => {
+                const variableDeclarations = s.getDeclarations();
+                let len = variableDeclarations.length;
+                let i = 0;
+                for (i; i < len; i++) {
+                    if (variableDeclarations[i].compilerNode.type) {
+                        if (variableDeclarations[i].compilerNode.type.typeName &&
+                            variableDeclarations[i].compilerNode.type.typeName.text === 'Routes') {
+                            hasRoutesStatements = true;
+                        }
+                    }
+                }
+            });
+        }
+
+        if (hasRoutesStatements) {
+            // Clean file for spread and dynamics inside routes definitions
+            logger.info('Analysing routes definitions and clean them if necessary');
+
+            scannedFile = this.routerParser.cleanFileSpreads(astFile).compilerNode;
+            scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
+
+            srcFile = scannedFile;
+        }
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
             if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disableInternal) {
@@ -400,7 +435,7 @@ export class Dependencies {
                         outputSymbols.interfaces.push(interfaceDeps);
                     } else if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
-                        //let tags = this.visitFunctionDeclarationJSDocTags(node);
+                        // let tags = this.visitFunctionDeclarationJSDocTags(node);
                         let name = infos.name;
                         let functionDep: IFunctionDecDep = {
                             name,
@@ -536,7 +571,7 @@ export class Dependencies {
                             this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
                             this.routerParser.addModule(name, [routingInitializer]);
                         }
-                        
+
                         outputSymbols.miscellaneous.variables.push(deps);
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
@@ -592,7 +627,6 @@ export class Dependencies {
             parseNode(file, srcFile, node);
 
         });
-
 
     }
     private debug(deps: IDep) {
@@ -881,8 +915,6 @@ export class Dependencies {
         return result;
     }
 
-    
-
     private visitEnumDeclarationForRoutes(fileName, node) {
         if (node.declarationList.declarations) {
             let i = 0;
@@ -910,15 +942,6 @@ export class Dependencies {
 
                 if (ts.isVariableStatement(statement) && this.routerParser.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
-                        logger.info('Analysing routes definitions node and cleaning it if needed');
-                        /*let cleanedStatementForSpreads = this.routerParser.cleanFileSpreads(sourceFile, statement);
-                        if (typeof cleanedStatementForSpreads !== 'undefined') {
-                            statement = cleanedStatementForSpreads;
-                        }*/
-                        let cleanedStatementForDynamics = this.routerParser.cleanFileDynamics(sourceFile, statement);
-                        if (typeof cleanedStatementForDynamics !== 'undefined') {
-                            statement = cleanedStatementForDynamics;
-                        }
                         return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
                     }
                 }

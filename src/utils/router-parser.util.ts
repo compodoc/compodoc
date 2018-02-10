@@ -11,7 +11,7 @@ import { ImportsUtil } from './imports.util';
 
 const traverse = require('traverse');
 
-import Ast, { PropertyDeclaration, TypeGuards } from 'ts-simple-ast';
+import Ast, { PropertyDeclaration, TypeGuards, SourceFile } from 'ts-simple-ast';
 
 const ast = new Ast();
 
@@ -375,8 +375,8 @@ export class RouterParserUtil {
         return result;
     }
 
-    public cleanFileSpreads(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.VariableStatement {
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);
+    public cleanFileSpreads(sourceFile: SourceFile): SourceFile {
+        let file = sourceFile;
         const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
             .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
 
@@ -386,7 +386,7 @@ export class RouterParserUtil {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = spreadElement.getParentWhile((n) => {
-                if (n.getKind() === variableStatement.kind) {
+                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
                     }
@@ -458,7 +458,7 @@ export class RouterParserUtil {
             if (!TypeGuards.isVariableDeclaration(referencedDeclaration)) {
                 throw new Error(`Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`);
             }
-            
+
             const referencedArray = referencedDeclaration.getInitializerIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression);
             const spreadElementArray = spreadElement.getParentIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression);
             const insertIndex = spreadElementArray.getElements().indexOf(spreadElement);
@@ -466,19 +466,12 @@ export class RouterParserUtil {
             spreadElementArray.insertElements(insertIndex, referencedArray.getElements().map(e => e.getText()));
         }
 
-        // Get original variableStatement from edited file
-        const editedVariableStatement = file.getVariableStatement(s => {
-            return (variableStatement.pos === s.getPos())
-        });
-
-        if (editedVariableStatement) {
-            return editedVariableStatement.compilerNode;
-        }
+        return file;
     }
 
-    public cleanFileDynamics(sourceFile: ts.SourceFile, variableStatement: ts.VariableStatement): ts.VariableStatement {
+    public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);
+        let file = sourceFile;
         const propertyAccessExpressions = file.getDescendantsOfKind(ts.SyntaxKind.PropertyAccessExpression)
             .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
 
@@ -488,7 +481,7 @@ export class RouterParserUtil {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = propertyAccessExpression.getParentWhile((n) => {
-                if (n.getKind() === variableStatement.kind) {
+                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
                     }
@@ -510,14 +503,7 @@ export class RouterParserUtil {
             propertyAccessExpression.replaceWithText(referencedDeclaration.getInitializerOrThrow().getText());
         }
 
-        // Get original variableStatement from edited file
-        const editedVariableStatement = file.getVariableStatement(s => {
-            return (variableStatement.pos === s.getPos())
-        });
-
-        if (editedVariableStatement) {
-            return editedVariableStatement.compilerNode;
-        }
+        return file;
     }
 
     /**
