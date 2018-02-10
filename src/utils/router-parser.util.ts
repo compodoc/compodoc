@@ -375,6 +375,46 @@ export class RouterParserUtil {
         return result;
     }
 
+    public cleanFileIdentifiers(sourceFile: SourceFile): SourceFile {
+        let file = sourceFile;
+        const identifiers = file.getDescendantsOfKind(ts.SyntaxKind.Identifier)
+            .filter(p => {
+                return TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()) || TypeGuards.isPropertyAssignment(p.getParentOrThrow());
+            });
+
+        let identifiersInRoutesVariableStatement = [];
+
+        for (const identifier of identifiers) {
+            // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
+            let foundParentVariableStatement = false;
+            let parent = identifier.getParentWhile((n) => {
+                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
+                    if (this.isVariableRoutes(n.compilerNode)) {
+                        foundParentVariableStatement = true;
+                    }
+                }
+                return true;
+            });
+            if (foundParentVariableStatement) {
+                identifiersInRoutesVariableStatement.push(identifier);
+            }
+        }
+
+        // inline the property access expressions
+        for (const identifier of identifiersInRoutesVariableStatement) {
+            const identifierDeclaration = identifier.getSymbolOrThrow().getValueDeclarationOrThrow();
+            if ( (!TypeGuards.isPropertyAssignment(identifierDeclaration) && TypeGuards.isVariableDeclaration(identifierDeclaration)) && 
+                    (TypeGuards.isPropertyAssignment(identifierDeclaration) && !TypeGuards.isVariableDeclaration(identifierDeclaration)) ) {
+                throw new Error(`Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`);
+            }
+            if (TypeGuards.isVariableDeclaration(identifierDeclaration)) {
+                identifier.replaceWithText(identifierDeclaration.getInitializerOrThrow().getText());
+            }
+        }
+
+        return file;
+    }
+
     public cleanFileSpreads(sourceFile: SourceFile): SourceFile {
         let file = sourceFile;
         const spreadElements = file.getDescendantsOfKind(ts.SyntaxKind.SpreadElement)

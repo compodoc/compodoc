@@ -271,6 +271,7 @@ export class Dependencies {
             // Clean file for spread and dynamics inside routes definitions
             logger.info('Analysing routes definitions and clean them if necessary');
 
+            // scannedFile = this.routerParser.cleanFileIdentifiers(astFile).compilerNode;
             scannedFile = this.routerParser.cleanFileSpreads(astFile).compilerNode;
             scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
 
