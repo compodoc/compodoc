@@ -9,6 +9,12 @@ export class SymbolHelper {
     private importsUtil = new ImportsUtil();
 
     public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
+        if (typeof name === 'undefined') {
+            return {
+                name: '',
+                type: ''
+            };
+        }
         let nsModule = name.split('.');
         let type = this.getType(name);
 

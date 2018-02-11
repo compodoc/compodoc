@@ -34,8 +34,8 @@ import { NoopInterceptor } from './shared/interceptors/noopinterceptor.intercept
         },
         {
             provide: HTTP_INTERCEPTORS,
-            useExisting: NoopInterceptor,
-            multi: true
+            useFactory: (languageService: GlobalLanguageService) => new HttpConfigurationInterceptor(languageService),
+            deps: [GlobalLanguageService]
         }
     ],
     bootstrap: [AppComponent]
