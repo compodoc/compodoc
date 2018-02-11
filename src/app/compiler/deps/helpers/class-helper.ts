@@ -115,7 +115,8 @@ export class ClassHelper {
             _return = 'any[]';
         } else {
             _return = kindToType(node.kind);
-            if (_return === '' && node.kind === ts.SyntaxKind.PropertyDeclaration && node.initializer && node.initializer.kind) {
+            if (_return === '' && node.initializer && node.initializer.kind && 
+                (node.kind === ts.SyntaxKind.PropertyDeclaration || node.kind === ts.SyntaxKind.Parameter)) {
                 _return = kindToType(node.initializer.kind);
             }
         }
@@ -872,6 +873,9 @@ export class ClassHelper {
                     _result.function = arg.type.parameters ? arg.type.parameters.map((prop) => this.visitArgument(prop)) : [];
                 }
             }
+        }
+        if (arg.initializer) {
+            _result.defaultValue = this.stringifyDefaultValue(arg.initializer);
         }
         return _result;
     }

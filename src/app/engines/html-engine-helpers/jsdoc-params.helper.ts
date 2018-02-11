@@ -23,6 +23,9 @@ export class JsdocParamsHelper implements IHtmlEngineHelper {
                     if (jsdocTags[i].comment) {
                         tag.comment = jsdocTags[i].comment;
                     }
+                    if (jsdocTags[i].defaultValue) {
+                        tag.defaultValue = jsdocTags[i].defaultValue;
+                    }
                     if (jsdocTags[i].name) {
                         if (jsdocTags[i].name.text) {
                             tag.name = jsdocTags[i].name.text;
