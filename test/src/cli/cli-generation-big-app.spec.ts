@@ -505,4 +505,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/interfaces/LabelledTodo.html');
         expect(file).to.contain('Optional');
     });
+
+    it('should support private for constructor', () => {
+        let file = read(distFolder + '/classes/PrivateConstructor.html');
+        expect(file).to.contain('<span class="modifier">Private</span>');
+    });
 });
