@@ -23,7 +23,8 @@ export const COMPODOC_DEFAULTS = {
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'
-    }
+    },
+    gaSite: 'auto'
 };
 
 

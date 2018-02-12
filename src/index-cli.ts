@@ -61,6 +61,8 @@ export class CliApplication extends Application {
             .option('--disableInternal', 'Do not show @internal in generated documentation', false)
             .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
             .option('--customFavicon [path]', 'Use a custom favicon')
+            .option('--gaID [id]', 'Google Analytics tracking ID')
+            .option('--gaSite [site]', 'Google Analytics site name (default auto', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -172,6 +174,14 @@ export class CliApplication extends Application {
 
         if (program.customFavicon) {
             this.configuration.mainData.customFavicon = program.customFavicon;
+        }
+
+        if (program.gaID) {
+            this.configuration.mainData.gaID = program.gaID;
+        }
+
+        if (program.gaSite) {
+            this.configuration.mainData.gaSite = program.gaSite;
         }
 
         if (!this.isWatching) {
