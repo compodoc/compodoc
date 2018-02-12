@@ -102,8 +102,6 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'runman', maintainer: 'MurhafSousli', tsconfig_path: './src/'
     }, {
-        name: 'ng2-finance', maintainer: 'mpetkov', tsconfig_path: './'
-    }, {
         name: 'ng-math', maintainer: 'coryrylan', tsconfig_path: './'
     }, {
         name: 'ng2-minesweeper', maintainer: 'DanielYKPan', tsconfig_path: './'
@@ -113,6 +111,20 @@ const TEST_FOLDER = 'angularexpo-tests',
         name: 'ng-pokedex', maintainer: 'coryrylan', tsconfig_path: './'
     }, {
         name: 'codegreen', maintainer: 'artusvranken', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'ng2-finance', maintainer: 'mpetkov', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'echoes-player', maintainer: 'orizens', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'a2gtm', maintainer: 'mrf28', tsconfig_path: './src/'
+    }, {
+        name: 'todo-angular-firebase', maintainer: 'r-park', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'angularspree', maintainer: 'aviabird', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'Angular-JumpStart', maintainer: 'DanWahlin', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+    }, {
+        name: 'cloudstack-ui', maintainer: 'bwsw', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }],
     len = GIT_REPOSITORIES.length;
 
