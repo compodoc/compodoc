@@ -197,6 +197,13 @@ h6 {
     margin-right: 16px;
 }
 
+.fa-file-text-o {
+    margin-left: 2px;
+}
+.fa-file-text-o.fa-fw {
+    margin-left: -1px;
+}
+
 
 /**
  * Menu
