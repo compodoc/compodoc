@@ -1,11 +1,11 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir(),
-      tsconfigPath = require.resolve('../../../tsconfig.json'),
-      env = Object.freeze({TS_NODE_PROJECT: tsconfigPath, MODE:'TESTING'});
+      tmp = temporaryDir();
 
 describe('CLI simple generation', () => {
+
+    const distFolder = tmp.name + '-simple-generation';
 
     describe('when generation with d flag - relative folder', () => {
 
@@ -17,56 +17,56 @@ describe('CLI simple generation', () => {
             emptyModuleFile,
             emptyModuleRawFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
             stdoutString = ls.stdout.toString();
-            fooComponentFile = read(`${tmp.name}/components/FooComponent.html`);
-            fooServiceFile = read(`${tmp.name}/injectables/FooService.html`);
-            moduleFile  = read(`${tmp.name}/modules/AppModule.html`);
-            componentFile = read(`${tmp.name}/components/BarComponent.html`);
-            emptyModuleFile = read(`${tmp.name}/modules/EmptyModule.html`);
-            emptyModuleRawFile = read(`${tmp.name}/modules/EmptyRawModule.html`);
+            fooComponentFile = read(`${distFolder}/components/FooComponent.html`);
+            fooServiceFile = read(`${distFolder}/injectables/FooService.html`);
+            moduleFile  = read(`${distFolder}/modules/AppModule.html`);
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
+            emptyModuleFile = read(`${distFolder}/modules/EmptyModule.html`);
+            emptyModuleRawFile = read(`${distFolder}/modules/EmptyRawModule.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
         it('should have generated main folder', () => {
-            const isFolderExists = exists(`${tmp.name}`);
+            const isFolderExists = exists(`${distFolder}`);
             expect(isFolderExists).to.be.true;
         });
 
         it('should have generated main pages', () => {
-            const isIndexExists = exists(`${tmp.name}/index.html`);
+            const isIndexExists = exists(`${distFolder}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            const isModulesExists = exists(`${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
-            const isImagesExists = exists(`${tmp.name}/images`);
+            const isImagesExists = exists(`${distFolder}/images`);
             expect(isImagesExists).to.be.true;
-            const isJSExists = exists(`${tmp.name}/js`);
+            const isJSExists = exists(`${distFolder}/js`);
             expect(isJSExists).to.be.true;
-            const isStylesExists = exists(`${tmp.name}/styles`);
+            const isStylesExists = exists(`${distFolder}/styles`);
             expect(isStylesExists).to.be.true;
-            const isFontsExists = exists(`${tmp.name}/fonts`);
+            const isFontsExists = exists(`${distFolder}/fonts`);
             expect(isFontsExists).to.be.true;
         });
 
         it('should have generated search index json', () => {
-            const isIndexExists = exists(`${tmp.name}/js/search/search_index.js`);
+            const isIndexExists = exists(`${distFolder}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
 
@@ -85,7 +85,7 @@ describe('CLI simple generation', () => {
         });
 
         it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
-            const barModuleFile  = read(`${tmp.name}/modules/BarModule.html`);
+            const barModuleFile  = read(`${distFolder}/modules/BarModule.html`);
             expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
         });
 
@@ -153,11 +153,11 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag without / at the end - relative folder', () => {
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', '../' + tmp.name], { cwd: tmp.name, env});
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -165,17 +165,17 @@ describe('CLI simple generation', () => {
             }
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should have generated main folder', () => {
-            const isFolderExists = exists(`${tmp.name}`);
+            const isFolderExists = exists(`${distFolder}`);
             expect(isFolderExists).to.be.true;
         });
 
         it('should have generated main pages', () => {
-            const isIndexExists = exists(`${tmp.name}/index.html`);
+            const isIndexExists = exists(`${distFolder}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            const isModulesExists = exists(`${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
         });
     });
@@ -188,59 +188,59 @@ describe('CLI simple generation', () => {
             componentFile,
             moduleFile;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 '../bin/index-cli.js',
                 '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', '/tmp/' + tmp.name + '/'], { cwd: tmp.name, env});
+                '-d', '/tmp/' + distFolder + '/'], { cwd: distFolder});
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
             stdoutString = ls.stdout.toString();
-            fooComponentFile = read(`/tmp/${tmp.name}/components/FooComponent.html`);
-            fooServiceFile = read(`/tmp/${tmp.name}/injectables/FooService.html`);
-            moduleFile  = read(`/tmp/${tmp.name}/modules/AppModule.html`);
-            componentFile = read(`/tmp/${tmp.name}/components/BarComponent.html`);
+            fooComponentFile = read(`/tmp/${distFolder}/components/FooComponent.html`);
+            fooServiceFile = read(`/tmp/${distFolder}/injectables/FooService.html`);
+            moduleFile  = read(`/tmp/${distFolder}/modules/AppModule.html`);
+            componentFile = read(`/tmp/${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
         it('should have generated main folder', () => {
-            const isFolderExists = exists(`/tmp/${tmp.name}`);
+            const isFolderExists = exists(`/tmp/${distFolder}`);
             expect(isFolderExists).to.be.true;
         });
 
         it('should have generated main pages', () => {
-            const isIndexExists = exists(`/tmp/${tmp.name}/index.html`);
+            const isIndexExists = exists(`/tmp/${distFolder}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isModulesExists = exists(`/tmp/${tmp.name}/modules.html`);
+            const isModulesExists = exists(`/tmp/${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
-            const isImagesExists = exists(`/tmp/${tmp.name}/images`);
+            const isImagesExists = exists(`/tmp/${distFolder}/images`);
             expect(isImagesExists).to.be.true;
-            const isJSExists = exists(`/tmp/${tmp.name}/js`);
+            const isJSExists = exists(`/tmp/${distFolder}/js`);
             expect(isJSExists).to.be.true;
-            const isStylesExists = exists(`/tmp/${tmp.name}/styles`);
+            const isStylesExists = exists(`/tmp/${distFolder}/styles`);
             expect(isStylesExists).to.be.true;
-            const isFontsExists = exists(`/tmp/${tmp.name}/fonts`);
+            const isFontsExists = exists(`/tmp/${distFolder}/fonts`);
             expect(isFontsExists).to.be.true;
         });
 
         it('should have generated search index json', () => {
-            const isIndexExists = exists(`/tmp/${tmp.name}/js/search/search_index.js`);
+            const isIndexExists = exists(`/tmp/${distFolder}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
     });
 
-    describe('when generation with d flag - absolute folder inside cwd', () => {
+    /*describe('when generation with d flag - absolute folder inside cwd', () => {
 
         let stdoutString = undefined,
             actualDir,
@@ -249,7 +249,7 @@ describe('CLI simple generation', () => {
             componentFile,
             moduleFile;
         before((done) => {
-            tmp.create();
+            tmp.create(distFolder);
 
             actualDir = process.cwd();
 
@@ -258,65 +258,65 @@ describe('CLI simple generation', () => {
             actualDir = actualDir.replace('\r\n', '');
 
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', actualDir + '/' + tmp.name], { cwd: tmp.name, env});
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', actualDir + '/' + distFolder], { cwd: distFolder});
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
             stdoutString = ls.stdout.toString();
-            fooComponentFile = read(`/tmp/${tmp.name}/components/FooComponent.html`);
-            fooServiceFile = read(`/tmp/${tmp.name}/injectables/FooService.html`);
-            moduleFile  = read(`/tmp/${tmp.name}/modules/AppModule.html`);
-            componentFile = read(`/tmp/${tmp.name}/components/BarComponent.html`);
+            fooComponentFile = read(`/tmp/${distFolder}/components/FooComponent.html`);
+            fooServiceFile = read(`/tmp/${distFolder}/injectables/FooService.html`);
+            moduleFile  = read(`/tmp/${distFolder}/modules/AppModule.html`);
+            componentFile = read(`/tmp/${distFolder}/components/BarComponent.html`);
             done();
         });
-        after(() => tmp.clean(actualDir + '/' + tmp.name + '/'));
+        after(() => tmp.clean(actualDir + '/' + distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
         it('should have generated main folder', () => {
-            const isFolderExists = exists(`${actualDir}/${tmp.name}`);
+            const isFolderExists = exists(`${actualDir}/${distFolder}`);
             expect(isFolderExists).to.be.true;
         });
 
         it('should have generated main pages', () => {
-            const isIndexExists = exists(`${actualDir}/${tmp.name}/index.html`);
+            const isIndexExists = exists(`${actualDir}/${distFolder}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isModulesExists = exists(`${actualDir}/${tmp.name}/modules.html`);
+            const isModulesExists = exists(`${actualDir}/${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
-            const isImagesExists = exists(`${actualDir}/${tmp.name}/images`);
+            const isImagesExists = exists(`${actualDir}/${distFolder}/images`);
             expect(isImagesExists).to.be.true;
-            const isJSExists = exists(`${actualDir}/${tmp.name}/js`);
+            const isJSExists = exists(`${actualDir}/${distFolder}/js`);
             expect(isJSExists).to.be.true;
-            const isStylesExists = exists(`${actualDir}/${tmp.name}/styles`);
+            const isStylesExists = exists(`${actualDir}/${distFolder}/styles`);
             expect(isStylesExists).to.be.true;
-            const isFontsExists = exists(`${actualDir}/${tmp.name}/fonts`);
+            const isFontsExists = exists(`${actualDir}/${distFolder}/fonts`);
             expect(isFontsExists).to.be.true;
         });
 
         it('should have generated search index json', () => {
-            const isIndexExists = exists(`${actualDir}/${tmp.name}/js/search/search_index.js`);
+            const isIndexExists = exists(`${actualDir}/${distFolder}/js/search/search_index.js`);
             expect(isIndexExists).to.be.true;
         });
-    });
+    });*/
 
     describe('when generation with d and a flags', () => {
 
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', './' + tmp.name + '/',
-                '-a', './screenshots/'], { env});
+                '-d', distFolder,
+                '-a', './screenshots/']);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -324,10 +324,34 @@ describe('CLI simple generation', () => {
             }
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should have copying assets folder', () => {
-            const isFolderExists = exists(`${tmp.name}/screenshots`);
+            const isFolderExists = exists(`${distFolder}/screenshots`);
+            expect(isFolderExists).to.be.true;
+        });
+    });
+
+    describe('when passing a deep path on a flag', () => {
+
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', distFolder,
+                '-a', './test/src/todomvc-ng2/screenshots/actions']);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should flatten the path to the deeper dirname', () => {
+            const isFolderExists = exists(`${distFolder}/actions`);
             expect(isFolderExists).to.be.true;
         });
     });
@@ -336,12 +360,12 @@ describe('CLI simple generation', () => {
 
         let stdoutString = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
-                '../bin/index-cli.js',
-                '../test/src/sample-files/',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', '../' + tmp.name + '/'], { cwd: tmp.name, env});
+                './bin/index-cli.js',
+                './test/src/sample-files/',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -350,26 +374,26 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean());
+        after(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
         it('should have generated main folder', () => {
-            const isFolderExists = exists(`${tmp.name}`);
+            const isFolderExists = exists(`${distFolder}`);
             expect(isFolderExists).to.be.true;
         });
 
         it('should have generated main pages', () => {
-            const isIndexExists = exists(`${tmp.name}/index.html`);
+            const isIndexExists = exists(`${distFolder}/index.html`);
             expect(isIndexExists).to.be.true;
-            const isModulesExists = exists(`${tmp.name}/modules.html`);
+            const isModulesExists = exists(`${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
         });
     });
 
-    describe('when generation without d flag', () => {
+    /*describe('when generation without d flag', () => {
 
         let stdoutString = undefined;
         before(function (done) {
@@ -414,18 +438,18 @@ describe('CLI simple generation', () => {
             const isFontsExists = exists('documentation/fonts');
             expect(isFontsExists).to.be.true;
         });
-    });
+    });*/
 
     describe('when generation with -t flag', () => {
 
         let stdoutString = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '-t',
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -434,7 +458,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should not display anything', () => {
             expect(stdoutString).to.contain('Node.js');
@@ -448,12 +472,12 @@ describe('CLI simple generation', () => {
             baseTheme = 'laravel',
             index = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--theme', baseTheme,
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -462,10 +486,10 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should add theme css', () => {
-            index = read(`${tmp.name}/index.html`);
+            index = read(`${distFolder}/index.html`);
             expect(index).to.contain('href="./styles/' + baseTheme + '.css"');
         });
     });
@@ -476,12 +500,12 @@ describe('CLI simple generation', () => {
             name = 'TodoMVC-angular2-application',
             index = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '-n', name,
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -490,10 +514,10 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should edit name', () => {
-            index = read(`${tmp.name}/index.html`);
+            index = read(`${distFolder}/index.html`);
             expect(index).to.contain(name);
         });
     });
@@ -503,12 +527,12 @@ describe('CLI simple generation', () => {
         let stdoutString = undefined,
             index = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--hideGenerator',
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -517,10 +541,10 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should not contain compodoc logo', () => {
-            index = read(`${tmp.name}/index.html`);
+            index = read(`${distFolder}/index.html`);
             expect(index).to.not.contain('src="./images/compodoc-vectorise.svg"');
         });
     });
@@ -530,12 +554,12 @@ describe('CLI simple generation', () => {
         let stdoutString = undefined,
             index = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disableSourceCode',
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -544,10 +568,10 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should not contain sourceCode tab', () => {
-            index = read(`${tmp.name}/modules/AppModule.html`);
+            index = read(`${distFolder}/modules/AppModule.html`);
             expect(index).to.not.contain('id="source-tab"');
         });
     });
@@ -557,12 +581,12 @@ describe('CLI simple generation', () => {
         let stdoutString = undefined,
           fileContents = undefined;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p', './test/src/sample-files/tsconfig.simple.json',
                 '--disableGraph',
-                '-d', './' + tmp.name + '/'], { env});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -571,7 +595,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        // after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should not generate any graph data', () => {
             expect(stdoutString).to.contain('Graph generation disabled');
@@ -579,19 +603,19 @@ describe('CLI simple generation', () => {
         });
 
         it('should not include the graph on the modules page', () => {
-            fileContents = read(`${tmp.name}/modules.html`);
+            fileContents = read(`${distFolder}/modules.html`);
             expect(fileContents).to.not.contain('dependencies.svg');
             expect(fileContents).to.not.contain('svg-pan-zoom');
         });
 
         it('should not include the graph on the overview page', () => {
-            fileContents = read(`${tmp.name}/overview.html`);
+            fileContents = read(`${distFolder}/overview.html`);
             expect(fileContents).to.not.contain('graph/dependencies.svg');
             expect(fileContents).to.not.contain('svg-pan-zoom');
         });
 
         it('should not include the graph on the individual modules pages', () => {
-            fileContents = read(`${tmp.name}/modules/AppModule.html`);
+            fileContents = read(`${distFolder}/modules/AppModule.html`);
             expect(fileContents).to.not.contain('modules/AppModule/dependencies.svg');
             expect(fileContents).to.not.contain('svg-pan-zoom');
         });
@@ -603,13 +627,13 @@ describe('CLI simple generation', () => {
             port = 6666,
             child;
         before(function (done) {
-            tmp.create();
+            tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-s',
                 '-r',
                 '-r', port,
-                '-d', './' + tmp.name + '/'], { env, timeout: 20000});
+                '-d', distFolder], { timeout: 10000});
 
             if (ls.stderr.toString() !== '') {
                 done(new Error(`shell error: ${ls.stderr.toString()}`));
@@ -619,7 +643,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        after(() => tmp.clean(tmp.name));
+        after(() => tmp.clean(distFolder));
 
         it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');

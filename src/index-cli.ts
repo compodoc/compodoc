@@ -15,6 +15,7 @@ const pkg = require('../package.json');
 const program = require('commander');
 const os = require('os');
 const osName = require('os-name');
+
 let files = [];
 let cwd = process.cwd();
 
@@ -34,7 +35,7 @@ export class CliApplication extends Application {
             .version(pkg.version)
             .usage('<src> [options]')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
-            .option('-d, --output [folder]', 'Where to store the generated documentation (default: ./documentation)', COMPODOC_DEFAULTS.folder)
+            .option('-d, --output [folder]', 'Where to store the generated documentation', COMPODOC_DEFAULTS.folder)
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
@@ -43,14 +44,15 @@ export class CliApplication extends Application {
             .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option('-w, --watch', 'Watch source files after serve and force documentation rebuild', false)
-            .option('-e, --exportFormat [format]', 'Export in specified format (json, html (default))', COMPODOC_DEFAULTS.exportFormat)
-            .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, postmark, readthedocs, stripe, vagrant)')
+            .option('-e, --exportFormat [format]', 'Export in specified format (json, html)', COMPODOC_DEFAULTS.exportFormat)
+            .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, material, postmark, readthedocs, stripe, vagrant)')
             .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
-            .option('--toggleMenuItems <items>', 'Close by default items in the menu (default [\'all\']) values : [\'all\'] or one of these [\'modules\',\'components\',\'directives\',\'classes\',\'injectables\',\'interfaces\',\'pipes\',\'additionalPages\']', list, COMPODOC_DEFAULTS.toggleMenuItems)
+            .option('--toggleMenuItems <items>', 'Close by default items in the menu values : [\'all\'] or one of these [\'modules\',\'components\',\'directives\',\'classes\',\'injectables\',\'interfaces\',\'pipes\',\'additionalPages\']', list, COMPODOC_DEFAULTS.toggleMenuItems)
             .option('--includes [path]', 'Path of external markdown files to include')
-            .option('--includesName [name]', 'Name of item menu of externals markdown files (default "Additional documentation")', COMPODOC_DEFAULTS.additionalEntryName)
+            .option('--includesName [name]', 'Name of item menu of externals markdown files', COMPODOC_DEFAULTS.additionalEntryName)
             .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
             .option('--coverageMinimumPerFile [minimum]', 'Test command of documentation coverage per file with a minimum (default 0)')
+            .option('--coverageTestThresholdFail [true|false]', 'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)', COMPODOC_DEFAULTS.coverageTestThresholdFail)
             .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
@@ -59,6 +61,8 @@ export class CliApplication extends Application {
             .option('--disableInternal', 'Do not show @internal in generated documentation', false)
             .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
             .option('--customFavicon [path]', 'Use a custom favicon')
+            .option('--gaID [id]', 'Google Analytics tracking ID')
+            .option('--gaSite [site]', 'Google Analytics site name (default auto', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -126,14 +130,6 @@ export class CliApplication extends Application {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
         }
 
-        if (program.includes) {
-            this.configuration.mainData.includes = program.includes;
-        }
-
-        if (program.includesName) {
-            this.configuration.mainData.includesName = program.includesName;
-        }
-
         if (program.coverageTest) {
             this.configuration.mainData.coverageTest = true;
             this.configuration.mainData.coverageTestThreshold = (typeof program.coverageTest === 'string') ? parseInt(program.coverageTest) : COMPODOC_DEFAULTS.defaultCoverageThreshold;
@@ -142,6 +138,10 @@ export class CliApplication extends Application {
         if (program.coverageMinimumPerFile) {
             this.configuration.mainData.coverageTestPerFile = true;
             this.configuration.mainData.coverageMinimumPerFile = (typeof program.coverageMinimumPerFile === 'string') ? parseInt(program.coverageMinimumPerFile) : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
+        }
+
+        if (program.coverageTestThresholdFail) {
+            this.configuration.mainData.coverageTestThresholdFail = (program.coverageTestThresholdFail === 'false') ? false : true;
         }
 
         if (program.disableSourceCode) {
@@ -176,6 +176,14 @@ export class CliApplication extends Application {
             this.configuration.mainData.customFavicon = program.customFavicon;
         }
 
+        if (program.gaID) {
+            this.configuration.mainData.gaID = program.gaID;
+        }
+
+        if (program.gaSite) {
+            this.configuration.mainData.gaSite = program.gaSite;
+        }
+
         if (!this.isWatching) {
             console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
             console.log(pkg.version);
@@ -184,6 +192,11 @@ export class CliApplication extends Application {
             console.log('');
             console.log(`Operating system : ${osName(os.platform(), os.release())}`);
             console.log('');
+        }
+
+        if (program.tsconfig && typeof program.tsconfig === 'boolean') {
+            logger.error(`Please provide a tsconfig file.`);
+            process.exit(1);
         }
 
         if (program.serve && !program.tsconfig && program.output) {
@@ -232,7 +245,7 @@ export class CliApplication extends Application {
                         files = handlePath(files, cwd);
                     }
 
-                    if (!files) {
+                    if (typeof files === 'undefined') {
                         let exclude = tsConfigFile.exclude || [],
                             include = tsConfigFile.include || [];
                         files = [];
@@ -243,7 +256,7 @@ export class CliApplication extends Application {
                         excludeParser.init(exclude, cwd);
                         includeParser.init(include, cwd);
 
-                        let finder = require('findit')(cwd || '.');
+                        let finder = require('findit2')(cwd || '.');
 
                         finder.on('directory', function (dir, stat, stop) {
                             let base = path.basename(dir);
@@ -278,85 +291,22 @@ export class CliApplication extends Application {
 
                         finder.on('end', () => {
                             super.setFiles(files);
-                            super.generate();
+                            if (program.coverageTest || program.coverageTestPerFile) {
+                                logger.info('Run documentation coverage test');
+                                super.testCoverage();
+                            } else {
+                                super.generate();
+                            }
                         });
                     } else {
                         super.setFiles(files);
-                        super.generate();
-                    }
-                }
-            } else if (program.tsconfig && program.args.length > 0 && program.coverageTest) {
-                /**
-                 * tsconfig file provided only with command, here coverage test
-                 */
-                logger.info('Run documentation coverage test');
-                this.configuration.mainData.tsconfig = program.tsconfig;
-                if (!this.fileEngine.existsSync(program.tsconfig)) {
-                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
-                    process.exit(1);
-                } else {
-                    let _file = path.join(
-                        path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
-                        path.basename(this.configuration.mainData.tsconfig)
-                    );
-                    // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-                    logger.info('Using tsconfig', _file);
-
-                    let tsConfigFile = readConfig(_file);
-                    files = tsConfigFile.files;
-                    if (files) {
-                        files = handlePath(files, cwd);
-                    }
-
-                    if (!files) {
-                        let exclude = tsConfigFile.exclude || [],
-                            include = tsConfigFile.include || [];
-
-                        let excludeParser = new ExcludeParserUtil(),
-                            includeParser = new IncludeParserUtil();
-
-                        let finder = require('findit')(cwd || '.');
-
-                        finder.on('directory', function (dir, stat, stop) {
-                            let base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') {
-                                stop();
-                            }
-                        });
-
-                        finder.on('file', (file, stat) => {
-                            if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.warn('Ignoring', file);
-                            } else if (excludeParser.testFile(file)) {
-                                logger.warn('Excluding', file);
-                            } else if (include.length > 0) {
-                                /**
-                                 * If include provided in tsconfig, use only this source,
-                                 * and not files found with global findit scan in working directory
-                                 */
-                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
-                                    logger.debug('Including', file);
-                                    files.push(file);
-                                } else {
-                                    if (path.extname(file) === '.ts') {
-                                        logger.warn('Excluding', file);
-                                    }
-                                }
-                            } else {
-                                logger.debug('Including', file);
-                                files.push(file);
-                            }
-                        });
-
-                        finder.on('end', () => {
-                            super.setFiles(files);
+                        if (program.coverageTest || program.coverageTestPerFile) {
+                            logger.info('Run documentation coverage test');
                             super.testCoverage();
-                        });
+                        } else {
+                            super.generate();
+                        }
                     }
-
-                    super.setFiles(files);
-                    super.testCoverage();
                 }
             } else if (program.tsconfig && program.args.length > 0) {
                 /**
@@ -383,53 +333,73 @@ export class CliApplication extends Application {
                         logger.info('Using tsconfig', _file);
 
                         let tsConfigFile = readConfig(_file);
+                        files = tsConfigFile.files;
+                        if (files) {
+                            files = handlePath(files, cwd);
+                        }
 
-                        let exclude = tsConfigFile.exclude || [],
-                            include = tsConfigFile.include || [];
+                        if (typeof files === 'undefined') {
+                            let exclude = tsConfigFile.exclude || [],
+                                include = tsConfigFile.include || [];
+                            files = [];
 
-                        let excludeParser = new ExcludeParserUtil(),
-                            includeParser = new IncludeParserUtil();
+                            let excludeParser = new ExcludeParserUtil(),
+                                includeParser = new IncludeParserUtil();
 
-                        excludeParser.init(exclude, cwd);
-                        includeParser.init(include, cwd);
+                            excludeParser.init(exclude, cwd);
+                            includeParser.init(include, cwd);
 
-                        let finder = require('findit')(path.resolve(sourceFolder));
+                            let finder = require('findit2')(path.resolve(sourceFolder));
 
-                        finder.on('directory', function (dir, stat, stop) {
-                            let base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') {
-                                stop();
-                            }
-                        });
+                            finder.on('directory', function (dir, stat, stop) {
+                                let base = path.basename(dir);
+                                if (base === '.git' || base === 'node_modules') {
+                                    stop();
+                                }
+                            });
 
-                        finder.on('file', (file, stat) => {
-                            if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.warn('Ignoring', file);
-                            } else if (excludeParser.testFile(file)) {
-                                logger.warn('Excluding', file);
-                            } else if (include.length > 0) {
-                                /**
-                                 * If include provided in tsconfig, use only this source,
-                                 * and not files found with global findit scan in working directory
-                                 */
-                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
+                            finder.on('file', (file, stat) => {
+                                if (/(spec|\.d)\.ts/.test(file)) {
+                                    logger.warn('Ignoring', file);
+                                } else if (excludeParser.testFile(file)) {
+                                    logger.warn('Excluding', file);
+                                } else if (include.length > 0) {
+                                    /**
+                                     * If include provided in tsconfig, use only this source,
+                                     * and not files found with global findit scan in working directory
+                                     */
+                                    if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
+                                        logger.debug('Including', file);
+                                        files.push(file);
+                                    } else {
+                                        if (path.extname(file) === '.ts') {
+                                            logger.warn('Excluding', file);
+                                        }
+                                    }
+                                } else {
                                     logger.debug('Including', file);
                                     files.push(file);
-                                } else {
-                                    if (path.extname(file) === '.ts') {
-                                        logger.warn('Excluding', file);
-                                    }
                                 }
-                            } else {
-                                logger.debug('Including', file);
-                                files.push(file);
-                            }
-                        });
+                            });
 
-                        finder.on('end', () => {
+                            finder.on('end', () => {
+                                super.setFiles(files);
+                                if (program.coverageTest || program.coverageTestPerFile) {
+                                    logger.info('Run documentation coverage test');
+                                    super.testCoverage();
+                                } else {
+                                    super.generate();
+                                }
+                            });
+                        } else {
                             super.setFiles(files);
-                            super.generate();
-                        });
+                            if (program.coverageTest || program.coverageTestPerFile) {
+                                logger.info('Run documentation coverage test');
+                                super.testCoverage();
+                            } else {
+                                super.generate();
+                            }
+                        }
                     }
                 }
             } else {

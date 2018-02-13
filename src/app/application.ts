@@ -1,13 +1,11 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
-import * as Shelljs from 'shelljs';
 import * as _ from 'lodash';
 import * as ts from 'typescript';
-import * as glob from 'glob';
 
 const chokidar = require('chokidar');
-const marked = require('8fold-marked');
+const marked = require('marked');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -30,7 +28,6 @@ import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { AngularVersionUtil, RouterParserUtil } from '../utils';
 
-let pkg = require('../package.json');
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
@@ -129,13 +126,13 @@ export class Application {
 
     private unhandledRejectionListener(err, p) {
         console.log('Unhandled Rejection at:', p, 'reason:', err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
         process.exit(1);
     }
 
     private uncaughtExceptionListener(err) {
         logger.error(err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');
+        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
         process.exit(1);
     }
 
@@ -214,6 +211,11 @@ export class Application {
             }
             this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(parsedData);
             logger.info('package.json file found');
+
+            if (typeof parsedData.dependencies !== 'undefined') {
+                this.processPackageDependencies(parsedData.dependencies);
+            }
+
             this.processMarkdowns().then(() => {
                 this.getDependenciesData();
             }, (errorMessage) => {
@@ -227,6 +229,18 @@ export class Application {
             }, (errorMessage1) => {
                 logger.error(errorMessage1);
             });
+        });
+    }
+
+    private processPackageDependencies(dependencies): void {
+        logger.info('Processing package.json dependencies');
+        this.configuration.mainData.packageDependencies = dependencies;
+        this.configuration.addPage({
+            name: 'dependencies',
+            id: 'packageDependencies',
+            context: 'package-dependencies',
+            depth: 0,
+            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
         });
     }
 
@@ -537,75 +551,66 @@ export class Application {
             });
     }
 
+
+    private getIncludedPathForFile(file) {
+      return path.join(this.configuration.mainData.includes, file);
+    }
+
     private prepareExternalIncludes() {
         logger.info('Adding external markdown files');
         // Scan include folder for files detailed in summary.json
         // For each file, add to this.configuration.mainData.additionalPages
         // Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-            this.fileEngine.get(process.cwd() + path.sep + this.configuration.mainData.includes + path.sep + 'summary.json')
+            this.fileEngine.get(this.getIncludedPathForFile('summary.json'))
                 .then((summaryData) => {
                     logger.info('Additional documentation: summary.json file found');
 
-                    let parsedSummaryData = JSON.parse(summaryData);
-                    let i = 0;
-                    let len = parsedSummaryData.length;
-                    let loop = () => {
-                        if (i <= len - 1) {
-                            $markdownengine.getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file)
+                    const parsedSummaryData = JSON.parse(summaryData);
+
+                    // Loop for every "collection of items", children included
+                    const loop = (items, depth = 1, father = '') => {
+                        if (depth > 5) {
+                          logger.error('Only 5 levels of depth are supported');
+                          return;
+                        }
+                        // index will be scoped on every deepth collection
+                        let i = 0;
+                        const len = items.length;
+                        const internalLoop = () => {
+                            if (i <= len - 1) {
+                                $markdownengine.getTraditionalMarkdown(this.getIncludedPathForFile(items[i].file))
                                 .then((markedData) => {
+                                    const url = cleanNameWithoutSpaceAndToLowerCase(items[i].title);
+
                                     this.configuration.addAdditionalPage({
-                                        name: parsedSummaryData[i].title,
-                                        id: parsedSummaryData[i].title,
-                                        filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                        name: items[i].title,
+                                        id: items[i].title,
+                                        filename: url,
                                         context: 'additional-page',
-                                        path: this.configuration.mainData.includesFolder,
+                                        path: this.configuration.mainData.includesFolder + father,
                                         additionalPage: markedData,
-                                        depth: 1,
+                                        depth: depth,
                                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                     });
 
-                                    if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
-                                        let j = 0;
-                                        let leng = parsedSummaryData[i].children.length;
-                                        let loopChild = () => {
-                                            if (j <= leng - 1) {
-                                                $markdownengine
-                                                    .getTraditionalMarkdown(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file)
-                                                    .then((markedData) => {
-                                                        this.configuration.addAdditionalPage({
-                                                            name: parsedSummaryData[i].children[j].title,
-                                                            id: parsedSummaryData[i].children[j].title,
-                                                            filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
-                                                            context: 'additional-page',
-                                                            path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                                            additionalPage: markedData,
-                                                            depth: 2,
-                                                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                                                        });
-                                                        j++;
-                                                        loopChild();
-                                                    }, (e) => {
-                                                        logger.error(e);
-                                                    });
-                                            } else {
-                                                i++;
-                                                loop();
-                                            }
-                                        };
-                                        loopChild();
-                                    } else {
-                                        i++;
-                                        loop();
+                                    if (items[i].children && items[i].children.length > 0) {
+                                        loop(items[i].children, depth+1, father + '/' + url);
                                     }
+                                    i++;
+                                    internalLoop();
                                 }, (e) => {
                                     logger.error(e);
                                 });
-                        } else {
-                            resolve();
-                        }
+                            } else {
+                              if (depth === 1) {
+                                resolve();
+                              }
+                            }
+                        };
+                        internalLoop();
                     };
-                    loop();
+                    loop(parsedSummaryData);
                 }, (errorMessage) => {
                     logger.error(errorMessage);
                     reject('Error during Additional documentation generation');
@@ -1214,7 +1219,7 @@ export class Application {
                         name: el.name
                     };
                     if (type === 'variable') {
-                        cl.linktype = 'miscellaneous'
+                        cl.linktype = 'miscellaneous';
                     }
                     let totalStatementDocumented = 0;
                     let totalStatements = 1;
@@ -1439,23 +1444,35 @@ export class Application {
             if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {
                 // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
                     generationPromiseResolve();
                     process.exit(0);
                 } else {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 }
             } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
                 coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.error('Documentation coverage per file is not achieved');
+                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 } else {
-                    logger.info('Documentation coverage per file is achieved');
+                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
                     generationPromiseResolve();
                     process.exit(0);
                 }
@@ -1464,27 +1481,48 @@ export class Application {
                 coverageTestPerFileResults = processCoveragePerFile();
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length === 0) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
-                    logger.info('Documentation coverage per file is achieved');
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
+                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
                     generationPromiseResolve();
                     process.exit(0);
                 } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold`);
-                    logger.error('Documentation coverage per file is not achieved');
+                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
+                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        process.exit(0);
+                    }
                 } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
-                    logger.error('Documentation coverage per file is not achieved');
+                    let messageGlobal = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`,
+                        messagePerFile = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(messageGlobal);
+                        logger.error(messagePerFile);
+                        process.exit(1);
+                    } else {
+                        logger.warn(messageGlobal);
+                        logger.error(messagePerFile);
+                        process.exit(0);
+                    }
                 } else {
-                    logger.error(`Documentation coverage (${coverageData.count}%) is not over threshold`);
-                    logger.info('Documentation coverage per file is achieved');
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
-                    process.exit(1);
+                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                        logger.error(message);
+                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        process.exit(1);
+                    } else {
+                        logger.warn(message);
+                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        process.exit(0);
+                    }
                 }
             } else {
                 resolve();
@@ -1570,9 +1608,12 @@ export class Application {
         if (!this.fileEngine.existsSync(this.configuration.mainData.assetsFolder)) {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
+            const destination = path.join(
+                                    this.configuration.mainData.output,
+                                    path.basename(this.configuration.mainData.assetsFolder));
             fs.copy(
                 path.resolve(this.configuration.mainData.assetsFolder),
-                path.resolve(this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), (err) => {
+                path.resolve(destination), (err) => {
                     if (err) {
                         logger.error('Error during resources copy ', err);
                     }
@@ -1603,15 +1644,15 @@ export class Application {
             finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
         }
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (err) => {
-            if (err) {
-                logger.error('Error during resources copy ', err);
+        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (errorCopy) => {
+            if (errorCopy) {
+                logger.error('Error during resources copy ', errorCopy);
             } else {
                 if (this.configuration.mainData.extTheme) {
                     fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme),
-                        path.resolve(finalOutput + '/styles/'), function (err1) {
-                            if (err1) {
-                                logger.error('Error during external styling theme copy ', err1);
+                        path.resolve(finalOutput + '/styles/'), function (errorCopyTheme) {
+                            if (errorCopyTheme) {
+                                logger.error('Error during external styling theme copy ', errorCopyTheme);
                             } else {
                                 logger.info('External styling theme copy succeeded');
                                 onComplete();
@@ -1620,9 +1661,9 @@ export class Application {
                 } else {
                     if (this.configuration.mainData.customFavicon !== '') {
                         logger.info(`Custom favicon supplied`);
-                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (err) => {
-                            if (err) {
-                                logger.error('Error during resources copy ', err);
+                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (errorCopyFavicon) => {// tslint:disable-line
+                            if (errorCopyFavicon) {
+                                logger.error('Error during resources copy ', errorCopyFavicon);
                             } else {
                                 onComplete();
                             }
@@ -1763,17 +1804,13 @@ export class Application {
         });
         let timerAddAndRemoveRef;
         let timerChangeRef;
-        let waiterAddAndRemove = () => {
-            clearTimeout(timerAddAndRemoveRef);
-            timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
-        };
         let runnerAddAndRemove = () => {
             startTime = new Date();
             this.generate();
         };
-        let waiterChange = () => {
-            clearTimeout(timerChangeRef);
-            timerChangeRef = setTimeout(runnerChange, 1000);
+        let waiterAddAndRemove = () => {
+            clearTimeout(timerAddAndRemoveRef);
+            timerAddAndRemoveRef = setTimeout(runnerAddAndRemove, 1000);
         };
         let runnerChange = () => {
             startTime = new Date();
@@ -1785,6 +1822,10 @@ export class Application {
             } else {
                 this.rebuildExternalDocumentation();
             }
+        };
+        let waiterChange = () => {
+            clearTimeout(timerChangeRef);
+            timerChangeRef = setTimeout(runnerChange, 1000);
         };
 
         watcher

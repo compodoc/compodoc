@@ -27,7 +27,7 @@
                             </tr>
                         {{/unless}}
                     {{/if}}
-                    {{#or this.getSignature.description}}
+                    {{#or this.getSignature.description this.getSignature.jsdoctags}}
                     <tr>
                         <td class="col-md-4">
                             {{#if this.getSignature.description}}
@@ -58,9 +58,11 @@
                                                       {{/if}}
                                                       </td>
                                                       <td>
-                                                      {{#if optional}}
-                                                          true
-                                                      {{/if}}
+                                                        {{#if optional}}
+                                                            yes
+                                                        {{else}}
+                                                            no
+                                                        {{/if}}
                                                       </td>
                                                       <td>{{{comment}}}</td>
                                                     </tr>
@@ -111,7 +113,7 @@
                             </tr>
                         {{/unless}}
                     {{/if}}
-                    {{#or this.setSignature.description}}
+                    {{#or this.setSignature.description this.setSignature.jsdoctags}}
                     <tr>
                         <td class="col-md-4">
                             {{#if this.setSignature.description}}
@@ -142,9 +144,11 @@
                                                       {{/if}}
                                                       </td>
                                                       <td>
-                                                      {{#if optional}}
-                                                          true
-                                                      {{/if}}
+                                                        {{#if optional}}
+                                                            yes
+                                                        {{else}}
+                                                            no
+                                                        {{/if}}
                                                       </td>
                                                       <td>{{{comment}}}</td>
                                                     </tr>

@@ -11,7 +11,7 @@ import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
 
-const marked = require('8fold-marked');
+const marked = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
@@ -115,6 +115,10 @@ export class ClassHelper {
             _return = 'any[]';
         } else {
             _return = kindToType(node.kind);
+            if (_return === '' && node.initializer && node.initializer.kind && 
+                (node.kind === ts.SyntaxKind.PropertyDeclaration || node.kind === ts.SyntaxKind.Parameter)) {
+                _return = kindToType(node.initializer.kind);
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
@@ -140,7 +144,6 @@ export class ClassHelper {
             description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
         }
         let className = classDeclaration.name.text;
-        let directiveInfo;
         let members;
         let implementsElements = [];
         let extendsElement;
@@ -177,7 +180,6 @@ export class ClassHelper {
         if (classDeclaration.decorators) {
             for (let i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    directiveInfo = this.visitDirectiveDecorator(classDeclaration.decorators[i], sourceFile);
                     members = this.visitMembers(classDeclaration.members, sourceFile);
                     return {
                         description,
@@ -274,52 +276,6 @@ export class ClassHelper {
         }
 
         return [];
-    }
-
-    private visitDirectiveDecorator(decorator, sourceFile: ts.SourceFile) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        let selector;
-        let exportAs;
-        let properties;
-
-        if (decorator.expression.arguments.length > 0) {
-
-            let firstArgument = decorator.expression.arguments[0],
-                properties;
-            if (firstArgument.kind && firstArgument.kind === ts.SyntaxKind.ObjectLiteralExpression) {
-                properties = decorator.expression.arguments[0].properties;
-            }
-
-            let searchInProperties = () => {
-                for (let i = 0; i < properties.length; i++) {
-                    if (properties[i].name.text === 'selector') {
-                        // TODO: this will only work if selector is initialized as a string literal
-                        selector = properties[i].initializer.text;
-                    }
-                    if (properties[i].name.text === 'exportAs') {
-                        // TODO: this will only work if selector is initialized as a string literal
-                        exportAs = properties[i].initializer.text;
-                    }
-                }
-            }
-
-            if (properties) {
-                // if decorator.expression.arguments[0].kind && decorator.expression.arguments[0].kind === ObjectLiteralExpression = 178
-                // we have object literal definition of the decorator
-                searchInProperties();
-            } else {
-                // if not, may be it is an import
-                properties = this.importsUtil.merge(firstArgument.text, sourceFile);
-                searchInProperties();
-            }
-        }
-
-        return {
-            selector,
-            exportAs
-        };
     }
 
     private isDirectiveDecorator(decorator: ts.Decorator): boolean {
@@ -649,6 +605,7 @@ export class ClassHelper {
             name: property.name.text,
             defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
             type: this.visitType(property),
+            optional: (typeof property.questionToken !== 'undefined'),
             description: '',
             line: this.getPosition(property, sourceFile).line + 1
         };
@@ -916,6 +873,9 @@ export class ClassHelper {
                     _result.function = arg.type.parameters ? arg.type.parameters.map((prop) => this.visitArgument(prop)) : [];
                 }
             }
+        }
+        if (arg.initializer) {
+            _result.defaultValue = this.stringifyDefaultValue(arg.initializer);
         }
         return _result;
     }

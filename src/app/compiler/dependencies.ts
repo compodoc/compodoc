@@ -3,6 +3,8 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
+import Ast from 'ts-simple-ast';
+import { TypeGuards } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -20,7 +22,14 @@ import { JsDocHelper } from './deps/helpers/js-doc-helper';
 import { SymbolHelper } from './deps/helpers/symbol-helper';
 import { ClassHelper } from './deps/helpers/class-helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { JsdocParserUtil, RouterParserUtil, ImportsUtil } from '../../utils';
+import {
+    JsdocParserUtil,
+    RouterParserUtil,
+    ImportsUtil,
+    isModuleWithProviders,
+    getModuleWithProviders,
+    hasSpreadElementInArray
+} from '../../utils';
 import {
     IInjectableDep,
     IPipeDep,
@@ -31,7 +40,8 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
-const marked = require('8fold-marked');
+const marked = require('marked');
+const ast = new Ast();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -231,6 +241,42 @@ export class Dependencies {
 
         let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
         let file = srcFile.fileName.replace(cleaner, '');
+        let scannedFile = srcFile;
+
+        // Search in file for variable statement as routes definitions
+
+        const astFile = (typeof ast.getSourceFile(srcFile.fileName) !== 'undefined') ? ast.getSourceFile(srcFile.fileName) : ast.addExistingSourceFile(srcFile.fileName);
+
+        const variableRoutesStatements = astFile.getVariableStatements();
+        let hasRoutesStatements = false;
+
+        if (variableRoutesStatements.length > 0) {
+            // Clean file for spread and dynamics inside routes definitions
+            variableRoutesStatements.forEach(s => {
+                const variableDeclarations = s.getDeclarations();
+                let len = variableDeclarations.length;
+                let i = 0;
+                for (i; i < len; i++) {
+                    if (variableDeclarations[i].compilerNode.type) {
+                        if (variableDeclarations[i].compilerNode.type.typeName &&
+                            variableDeclarations[i].compilerNode.type.typeName.text === 'Routes') {
+                            hasRoutesStatements = true;
+                        }
+                    }
+                }
+            });
+        }
+
+        if (hasRoutesStatements) {
+            // Clean file for spread and dynamics inside routes definitions
+            logger.info('Analysing routes definitions and clean them if necessary');
+
+            // scannedFile = this.routerParser.cleanFileIdentifiers(astFile).compilerNode;
+            scannedFile = this.routerParser.cleanFileSpreads(astFile).compilerNode;
+            scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
+
+            srcFile = scannedFile;
+        }
 
         ts.forEachChild(srcFile, (node: ts.Node) => {
             if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disableInternal) {
@@ -253,7 +299,7 @@ export class Dependencies {
                             const moduleDep = new ModuleDepFactory(this.moduleHelper)
                                 .create(file, srcFile, name, props, IO);
                             if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
-                                this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props), file);
+                                this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props, srcFile), file);
                             }
                             this.routerParser.addModule(name, moduleDep.imports);
                             outputSymbols.modules.push(moduleDep);
@@ -277,7 +323,8 @@ export class Dependencies {
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 description: IO.description,
-                                sourceCode: srcFile.getText()
+                                sourceCode: srcFile.getText(),
+                                exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };
                             if (IO.constructor) {
                                 injectableDeps.constructorObj = IO.constructor;
@@ -308,8 +355,8 @@ export class Dependencies {
                                 description: IO.description,
                                 properties: IO.properties,
                                 methods: IO.methods,
-                                pure: this.componentHelper.getComponentPure(props),
-                                ngname: this.componentHelper.getComponentName(props),
+                                pure: this.componentHelper.getComponentPure(props, srcFile),
+                                ngname: this.componentHelper.getComponentName(props, srcFile),
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(srcFile.getText())
                             };
@@ -389,12 +436,12 @@ export class Dependencies {
                         outputSymbols.interfaces.push(interfaceDeps);
                     } else if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
-                        //let tags = this.visitFunctionDeclarationJSDocTags(node);
+                        // let tags = this.visitFunctionDeclarationJSDocTags(node);
                         let name = infos.name;
                         let functionDep: IFunctionDecDep = {
                             name,
                             file: file,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'function',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
@@ -412,7 +459,7 @@ export class Dependencies {
                         let enumDeps: IEnumDecDep = {
                             name,
                             childs: infos,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'enum',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
@@ -423,7 +470,7 @@ export class Dependencies {
                         let name = infos.name;
                         let typeAliasDeps: ITypeAliasDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
@@ -445,7 +492,7 @@ export class Dependencies {
                         }
                     }
                 } else {
-                    let IO = this.getRouteIO(file, srcFile);
+                    let IO = this.getRouteIO(file, srcFile, node);
                     if (IO.routes) {
                         let newRoutes;
                         try {
@@ -501,12 +548,12 @@ export class Dependencies {
                             }
                         }
                     }
-                    if (ts.isVariableStatement(node) && !this.isVariableRoutes(node)) {
+                    if (ts.isVariableStatement(node) && !this.routerParser.isVariableRoutes(node)) {
                         let infos: any = this.visitVariableDeclaration(node);
                         let name = infos.name;
                         let deps: any = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'variable',
                             file: file
                         };
@@ -520,14 +567,20 @@ export class Dependencies {
                         if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
                             deps.description = marked(node.jsDoc[0].comment);
                         }
+                        if (isModuleWithProviders(node)) {
+                            let routingInitializer = getModuleWithProviders(node);
+                            this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
+                            this.routerParser.addModule(name, [routingInitializer]);
+                        }
+
                         outputSymbols.miscellaneous.variables.push(deps);
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
                         let name = infos.name;
-                        let deps: any = {
+                        let deps: ITypeAliasDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
@@ -541,9 +594,9 @@ export class Dependencies {
                     if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
                         let name = infos.name;
-                        let deps: any = {
+                        let deps: IFunctionDecDep = {
                             name,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'function',
                             file: file,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
@@ -559,10 +612,10 @@ export class Dependencies {
                     if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
                         let name = node.name.text;
-                        let deps = {
+                        let deps: IEnumDecDep = {
                             name,
                             childs: infos,
-                            type: 'miscellaneous',
+                            ctype: 'miscellaneous',
                             subtype: 'enum',
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
@@ -575,7 +628,6 @@ export class Dependencies {
             parseNode(file, srcFile, node);
 
         });
-
 
     }
     private debug(deps: IDep) {
@@ -595,24 +647,6 @@ export class Dependencies {
 
             }
         });
-    }
-
-
-    private isVariableRoutes(node) {
-        let result = false;
-        if (node.declarationList.declarations) {
-            let i = 0;
-            let len = node.declarationList.declarations.length;
-            for (i; i < len; i++) {
-                if (node.declarationList.declarations[i].type) {
-                    if (node.declarationList.declarations[i].type.typeName &&
-                        node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     private findExpressionByNameInExpressions(entryNode, name) {
@@ -706,7 +740,7 @@ export class Dependencies {
                 return pop.properties;
             } else {
                 logger.warn('Empty metadatas, trying to found it with imports.');
-                return this.importsUtil.merge(pop.text, sourceFile);
+                return this.importsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
             }
         }
 
@@ -882,44 +916,35 @@ export class Dependencies {
         return result;
     }
 
-    private visitEnumDeclarationForRoutes(fileName, node, sourceFile) {
+    private visitEnumDeclarationForRoutes(fileName, node) {
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
-                if (node.declarationList.declarations[i].type) {
-                    if (node.declarationList.declarations[i].type.typeName &&
-                        node.declarationList.declarations[i].type.typeName.text === 'Routes') {
-                            let routesInitializer = node.declarationList.declarations[i].initializer;
-                            if (ts.isArrayLiteralExpression(routesInitializer)) {
-                                routesInitializer = this.routerParser.cleanRoutesDefinitionWithImport(routesInitializer, node, sourceFile);
-                            }
-                            let data = new CodeGenerator().generate(routesInitializer);
-                            this.routerParser.addRoute({
-                                name: node.declarationList.declarations[i].name.text,
-                                data: this.routerParser.cleanRawRoute(data),
-                                filename: fileName
-                            });
-                            return [{
-                                routes: data
-                            }];
-                    }
-                }
+                let routesInitializer = node.declarationList.declarations[i].initializer;
+                let data = new CodeGenerator().generate(routesInitializer);
+                this.routerParser.addRoute({
+                    name: node.declarationList.declarations[i].name.text,
+                    data: this.routerParser.cleanRawRoute(data),
+                    filename: fileName
+                });
+                return [{
+                    routes: data
+                }];
             }
         }
         return [];
     }
 
-    private getRouteIO(filename, sourceFile) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
+    private getRouteIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node) {
         let res;
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
 
-                if (ts.isVariableStatement(statement)) {
-                    return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement, sourceFile));
+                if (ts.isVariableStatement(statement) && this.routerParser.isVariableRoutes(statement)) {
+                    if (statement.pos === node.pos && statement.end === node.end) {
+                        return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
+                    }
                 }
 
                 return directive;

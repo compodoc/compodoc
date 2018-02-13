@@ -1,10 +1,10 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import * as Handlebars from 'handlebars';
 import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
+import { MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/defaults';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');
@@ -13,23 +13,13 @@ const Html = new Entities();
 
 export class SearchEngine {
     public searchIndex: any;
+    private searchDocuments = [];
     public documentsStore: Object = {};
     public indexSize: number;
 
     constructor(
         private configuration: ConfigurationInterface,
-        private fileEngine: FileEngine = new FileEngine()) { }
-
-    private getSearchIndex() {
-        if (!this.searchIndex) {
-            this.searchIndex = lunr(function () {
-                this.ref('url');
-                this.field('title', { boost: 10 });
-                this.field('body');
-            });
-        }
-        return this.searchIndex;
-    }
+        private fileEngine: FileEngine = new FileEngine()) {}
 
     public indexPage(page) {
         let text;
@@ -47,17 +37,31 @@ export class SearchEngine {
             body: text
         };
 
-        if (!this.documentsStore.hasOwnProperty(doc.url)) {
+        if (!this.documentsStore.hasOwnProperty(doc.url)
+            && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
             this.documentsStore[doc.url] = doc;
-            this.getSearchIndex().add(doc);
+            this.searchDocuments.push(doc);
         }
     }
 
     public generateSearchIndexJson(outputFolder: string): Promise<void> {
+        let that = this;
+        let searchIndex = lunr(function () {
+            /* tslint:disable:no-invalid-this */
+            this.ref('url');
+            this.field('title');
+            this.field('body');
+
+            let i = 0;
+            let len = that.searchDocuments.length;
+            for (i; i < len; i++) {
+               this.add(that.searchDocuments[i]);
+            }
+        });
         return this.fileEngine.get(__dirname + '/../src/templates/partials/search-index.hbs').then(data => {
             let template: any = Handlebars.compile(data);
             let result = template({
-                index: JSON.stringify(this.getSearchIndex()),
+                index: JSON.stringify(searchIndex),
                 store: JSON.stringify(this.documentsStore)
             });
             let testOutputDir = outputFolder.match(process.cwd());

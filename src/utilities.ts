@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as util from 'util';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 

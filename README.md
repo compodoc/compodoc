@@ -8,6 +8,7 @@
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
+  <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/compodoc/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" />
 </p>
 <p align="center">
     <img src="https://saucelabs.com/browser-matrix/compodoc.svg" alt="saucelabs badge">
@@ -70,6 +71,18 @@ Official documentation has moved to [https://compodoc.github.io/website/](https:
 
 Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
 
+# Backers
+
+Support us with a monthly donation and help us continue our activities. [Become a backer][support-url]
+
+[![Backers][backers-image]][support-url]
+
+# Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor][support-url]
+
+[![Sponsors][sponsors-image]][support-url]
+
 # Contributing
 
 Want to file a bug, contribute some code, or improve documentation? Excellent!
@@ -86,7 +99,12 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 
 Everything in this repository is [licensed under the MIT License][license] unless otherwise specified.
 
-Copyright (c) 2016–2017 [Vincent Ogloblinsky]
+Copyright (c) 2016 – 2018 [Vincent Ogloblinsky]
 
 [license]: https://github.com/compodoc/compodoc/blob/master/LICENSE
 [Vincent Ogloblinsky]: http://www.vincentogloblinsky.com
+
+
+[support-url]: https://opencollective.com/compodoc#support
+[backers-image]: https://opencollective.com/compodoc/backers.svg
+[sponsors-image]: https://opencollective.com/compodoc/sponsors.svg

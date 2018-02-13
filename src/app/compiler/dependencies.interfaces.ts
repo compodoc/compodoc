@@ -1,7 +1,8 @@
 
 export interface IDep {
     id?: string;
-    type: string;
+    type?: string;
+    ctype: string;
     name: string;
 }
 
@@ -13,6 +14,7 @@ export interface IInjectableDep extends IDep {
     methods: Array<any>;
     description: string;
     sourceCode: string;
+    exampleUrls?;
 
     accessors?: Object;
     constructorObj?: Object;
@@ -25,7 +27,7 @@ export interface IInterceptorDep extends IDep {
     methods: Array<any>;
     description: string;
     sourceCode: string;
-
+    
     accessors?: Object;
     constructorObj?: Object;
     jsdoctags?: Array<string>;

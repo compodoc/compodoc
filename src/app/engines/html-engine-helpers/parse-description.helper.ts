@@ -25,6 +25,8 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
             let rootPath;
             let stringtoReplace;
             let anchor = '';
+            let label;
+            let pageName;
 
             split = splitLinkText(tagInfo.text);
 
@@ -41,6 +43,9 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
 
             if (result) {
 
+                label = result.name;
+                pageName = result.name;
+
                 if (leadingText) {
                     stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
                 } else if (leading.leadingText !== undefined) {
@@ -53,6 +58,19 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
 
                 if (result.type === 'class') {
                     result.type = 'classe';
+                } else if (result.type === 'miscellaneous' || (result.ctype && result.ctype === 'miscellaneous')) {
+                    result.type = 'miscellaneou';
+                    label = result.name;
+                    anchor = '#' + result.name;
+                    if (result.subtype === 'enum') {
+                        pageName = 'enumerations';
+                    } else if (result.subtype === 'function') {
+                        pageName = 'functions';
+                    } else if (result.subtype === 'typealias') {
+                        pageName = 'typealiases';
+                    } else if (result.subtype === 'variable') {
+                        pageName = 'variables';
+                    }
                 }
 
                 rootPath = '';
@@ -62,14 +80,14 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                         rootPath = './';
                         break;
                     case 1:
-                        rootPath = '../';
-                        break;
                     case 2:
-                        rootPath = '../../';
+                    case 3:
+                    case 4:
+                    case 5:
+                        rootPath = '../'.repeat(depth);
                         break;
                 }
 
-                let label = result.name;
                 if (leading.leadingText !== undefined) {
                     label = leading.leadingText;
                 }
@@ -77,7 +95,8 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     label = split.linkText;
                 }
 
-                newLink = `<a href="${rootPath}${result.type}s/${result.name}.html${anchor}">${label}</a>`;
+                newLink = `<a href="${rootPath}${result.type}s/${pageName}.html${anchor}">${label}</a>`;
+                
                 return string.replace(stringtoReplace, newLink);
             } else {
                 return string;

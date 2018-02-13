@@ -18,7 +18,6 @@ export default {
         'util',
         'fs-extra',
         'live-server',
-        'shelljs',
         'typescript',
         'highlight.js',
         'semver',

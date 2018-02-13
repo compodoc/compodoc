@@ -5,14 +5,18 @@ import { AboutComponent } from './about.component';
 import { TodoMVCComponent } from './todomvc/todomvc.component';
 import { CompodocComponent } from './compodoc/compodoc.component';
 
+import { ABOUT_ENUMS } from './about-routes.enum';
+
+import { pathMatchStrategy } from './path-match';
+
 const ABOUT_ROUTES: Routes = [
     {
-        path: '', component: AboutComponent,
+        path: ABOUT_ENUMS.todomvc, component: AboutComponent,
         children: [
-            { path: '', redirectTo: 'todomvc', pathMatch: 'full' },
+            { path: '', redirectTo: 'todomvc', pathMatch: pathMatchStrategy.full },
             { path: 'todomvc', component: TodoMVCComponent },
             { path: 'compodoc', component: CompodocComponent }
-        ],
+        ]
     }
 ];
 

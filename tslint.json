@@ -23,7 +23,7 @@
         "label-position": true,
         "max-line-length": [
             true,
-            140
+            180
         ],
         "member-access": true,
         "member-ordering": false,
@@ -66,9 +66,7 @@
             "check-finally",
             "check-whitespace"
         ],
-        "one-variable-per-declaration": [true,
-            "ignore-for-loop"
-        ],
+        "one-variable-per-declaration": false,
         "quotemark": [
             true,
             "single",

@@ -52,6 +52,7 @@ export class Configuration implements ConfigurationInterface {
         mainGraph: '',
         coverageTest: false,
         coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold,
+        coverageTestThresholdFail: COMPODOC_DEFAULTS.coverageTestThresholdFail,
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
         routesLength: 0,

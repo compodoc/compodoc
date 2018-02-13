@@ -41,8 +41,8 @@ let startDriver = function (cb, pageUrl) {
     });
 };
 let handleStatus = function (tests) {
-    var status = false;
-    for (var i = 0; i < tests.length; i++) {
+    let status = false;
+    for (let i = 0; i < tests.length; i++) {
         if (tests[i].state === 'passed') {
             status = true;
         }
@@ -51,12 +51,12 @@ let handleStatus = function (tests) {
 };
 let writeScreenshot = function (data, name) {
     fs.writeFile('out.png', data, 'base64', function (err) {
-        if (err) console.log(err);
+        if (err) { console.log(err); }
     });
 };
 let endTests = function (context, cb) {
     if (process.env.MODE_LOCAL === '0') {
-        var result = handleStatus(context.test.parent.tests);
+        let result = handleStatus(context.test.parent.tests);
         request({
             method: 'PUT',
             uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
@@ -71,27 +71,31 @@ let endTests = function (context, cb) {
     }
 };
 let testSearchBarWithResults = function (cb) {
-    var searchBox;
+    let searchBox;
     driver
         .findElements(webdriver.By.xpath("//div[@id='book-search-input']/input"))
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.sendKeys('exampleInput');
-            searchBox.getAttribute('value').then(function (value) {
-                expect(value).to.equal('exampleInput');
+            driver.sleep(1000).then(function() {
+                searchBox.getAttribute('value').then(function (value) {
+                    expect(value).to.equal('exampleInput');
 
-                /*driver.takeScreenshot().then(function (data) {
-                    writeScreenshot(data, 'test.png');
-                });*/
+                    /*driver.takeScreenshot().then(function (data) {
+                        writeScreenshot(data, 'test.png');
+                    });*/
 
-                driver.sleep(2000);
-
-                driver
-                    .findElements(webdriver.By.className('search-results-item'))
-                    .then(function (elems) {
-                        expect(elems.length).to.equal(1);
-                        cb();
+                    driver.sleep(1000).then(function() {
+                        driver
+                            .findElements(webdriver.By.className('search-results-item'))
+                            .then(function (elems) {
+                                expect(elems.length).to.equal(1);
+                                driver.sleep(1000).then(function() {
+                                    cb();
+                                });
+                            });
                     });
+                });
             });
         });
 };
@@ -102,18 +106,23 @@ let testSearchBarWithNoResults = function (cb) {
         .then(function (elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.clear();
-            searchBox.sendKeys('waza');
-            searchBox.getAttribute('value').then(function (value) {
-                expect(value).to.equal('waza');
-
-                driver.sleep(2000);
-
-                driver
-                    .findElements(webdriver.By.className('search-results-item'))
-                    .then(function (elems1) {
-                        expect(elems1.length).to.equal(0);
-                        cb();
+            driver.sleep(1000).then(function() {
+                searchBox.sendKeys('waza');
+                driver.sleep(1000).then(function() {
+                    searchBox.getAttribute('value').then(function (value) {
+                        expect(value).to.equal('waza');
+                        driver.sleep(4000).then(function() {
+                            driver
+                                .findElements(webdriver.By.className('search-results-item'))
+                                .then(function (elems1) {
+                                    expect(elems1.length).to.equal(0);
+                                    driver.sleep(1000).then(function() {
+                                        cb();
+                                    });
+                                });
+                        });
                     });
+                });
             });
         });
 };

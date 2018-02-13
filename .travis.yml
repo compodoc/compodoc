@@ -6,6 +6,7 @@ node_js:
   - "6"
   - "7"
   - "8"
+  - "9"
 addons:
   sauce_connect:
     username: "compodoc"
@@ -20,6 +21,9 @@ script:
     - if [ $TO_TEST == 'ALL' ];
       then npm run saucelabs-test-e2e-mocha;
       fi
+    - if [ $TO_TEST == 'OTHERS' ];
+      then npm run angularexpo;
+      fi
 after_success:
     - npm run codecov
 branches:
@@ -33,12 +37,15 @@ matrix:
     - node_js: "6"
     - node_js: "7"
     - node_js: "8"
+    - node_js: "9"
   include:
     - node_js: "4"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "6"
-      env: TO_TEST=ALL SAUCE_USERNAME=compodoc
+      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "7"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "8"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
+      env: TO_TEST=ALL SAUCE_USERNAME=compodoc
+    - node_js: "9"
+      env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc

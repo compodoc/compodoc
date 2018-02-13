@@ -28,6 +28,7 @@ import { JsdocDefaultHelper } from './html-engine-helpers/jsdoc-default.helper';
 import { LinkTypeHelper } from './html-engine-helpers/link-type.helper';
 import { IndexableSignatureHelper } from './html-engine-helpers/indexable-signature.helper';
 import { ObjectHelper } from './html-engine-helpers/object.helper';
+import { ObjectLengthHelper } from './html-engine-helpers/object-length.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 
@@ -62,6 +63,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'linkType', new LinkTypeHelper(configuration, dependenciesEngine));
         this.registerHelper(bars, 'indexableSignature', new IndexableSignatureHelper());
         this.registerHelper(bars, 'object', new ObjectHelper());
+        this.registerHelper(bars, 'objectLength', new ObjectLengthHelper());
         this.registerHelper(bars, 'parseDescription', new ParseDescriptionHelper(dependenciesEngine));
     }
 

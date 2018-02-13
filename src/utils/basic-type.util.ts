@@ -1,3 +1,17 @@
+enum BasicTypes {
+    number,
+    boolean,
+    string,
+    object,
+    date,
+    function
+}
+
+enum BasicTypeScriptTypes {
+    any,
+    void
+}
+
 export class BasicTypeUtil {
 
     /**
@@ -50,18 +64,4 @@ export class BasicTypeUtil {
 
         return undefined;
     }
-}
-
-enum BasicTypes {
-    number,
-    boolean,
-    string,
-    object,
-    date,
-    function
-}
-
-enum BasicTypeScriptTypes {
-    any,
-    void
 }

@@ -4,7 +4,11 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <code>{{{functionSignature constructor}}}</code>
+                        {{#if constructor.modifierKind}}
+                            {{#each constructor.modifierKind}}
+                                <span class="modifier">{{modifKind this}}</span>
+                            {{/each}}
+                        {{/if}}<code>{{{functionSignature constructor}}}</code>
                     </td>
                 </tr>
                 {{#if constructor.line}}
@@ -17,7 +21,7 @@
                     {{/unless}}
                 {{/if}}
 
-                {{#or constructor.jsdoctags}}
+                {{#or constructor.jsdoctags constructor.description}}
                 <tr>
                     <td class="col-md-4">
                         {{#if constructor.description}}
@@ -47,9 +51,11 @@
                                                       {{/if}}
                                                   </td>
                                                   <td>
-                                                      {{#if optional}}
-                                                          true
-                                                      {{/if}}
+                                                    {{#if optional}}
+                                                        yes
+                                                    {{else}}
+                                                        no
+                                                    {{/if}}
                                                   </td>
                                                   <td>{{{comment}}}</td>
                                                 </tr>

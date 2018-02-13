@@ -2,10 +2,19 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
+import { ImportsUtil } from '../../../../utils/imports.util';
+
 export class SymbolHelper {
     private readonly unknown = '???';
+    private importsUtil = new ImportsUtil();
 
     public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
+        if (typeof name === 'undefined') {
+            return {
+                name: '',
+                type: ''
+            };
+        }
         let nsModule = name.split('.');
         let type = this.getType(name);
 
@@ -92,7 +101,7 @@ export class SymbolHelper {
                                     hasInterceptor = true;
                                 }
                             }
-                            if (property.name.text === 'useClass') {
+                            if (property.name.text === 'useClass' || property.name.text === 'useExisting') {
                                 interceptorName = property.initializer.text;
                             }
                         }
@@ -145,28 +154,36 @@ export class SymbolHelper {
      *  122 BooleanKeyword
      *    9 StringLiteral
      */
-    private parseSymbols(node: ts.PropertyAssignment): Array<string> {
-        if (ts.isStringLiteral(node.initializer) || (ts.isPropertyAssignment(node) && node.initializer.text)) {
-            return [node.initializer.text];
-        } else if (node.initializer.kind && (node.initializer.kind === ts.SyntaxKind.TrueKeyword || node.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
-            return [(node.initializer.kind === ts.SyntaxKind.TrueKeyword) ? 'true' : 'false'];
-        } else if (ts.isPropertyAccessExpression(node.initializer)) {
-            let identifier = this.parseSymbolElements(node.initializer);
+    private parseSymbols(node: ts.ObjectLiteralElement, srcFile: ts.SourceFile): Array<string | boolean> {
+        let localNode = node;
+
+        if (ts.isShorthandPropertyAssignment(localNode)) {
+            localNode = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
+        }
+
+        if (ts.isArrayLiteralExpression(localNode.initializer)) {
+            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
+        } else if (ts.isStringLiteral(localNode.initializer) || ts.isTemplateLiteral(localNode.initializer) || (ts.isPropertyAssignment(localNode) && localNode.initializer.text)) {
+            return [localNode.initializer.text];
+        } else if (localNode.initializer.kind && (localNode.initializer.kind === ts.SyntaxKind.TrueKeyword || localNode.initializer.kind === ts.SyntaxKind.FalseKeyword)) {
+            return [(localNode.initializer.kind === ts.SyntaxKind.TrueKeyword) ? true : false];
+        } else if (ts.isPropertyAccessExpression(localNode.initializer)) {
+            let identifier = this.parseSymbolElements(localNode.initializer);
             return [
                 identifier
             ];
-        } else if (ts.isArrayLiteralExpression(node.initializer)) {
-            return node.initializer.elements.map(x => this.parseSymbolElements(x));
+        } else if (ts.isArrayLiteralExpression(localNode.initializer)) {
+            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         }
     }
 
-    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, multiLine?: boolean): Array<string> {
+    public getSymbolDeps(props: ReadonlyArray<ts.ObjectLiteralElementLike>, type: string, srcFile: ts.SourceFile, multiLine?: boolean): Array<string> {
         if (props.length === 0) { return []; }
 
         let deps = props.filter(node => {
             return node.name.text === type;
         });
-        return deps.map(x => this.parseSymbols(x)).pop() || [];
+        return deps.map(x => this.parseSymbols(x, srcFile)).pop() || [];
     }
 
     public getSymbolDepsRaw(

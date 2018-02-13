@@ -10,6 +10,7 @@ export const COMPODOC_DEFAULTS = {
     base: '/',
     defaultCoverageThreshold: 70,
     defaultCoverageMinimumPerFile: 0,
+    coverageTestThresholdFail: true,
     toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableGraph: false,
@@ -22,5 +23,13 @@ export const COMPODOC_DEFAULTS = {
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'
-    }
+    },
+    gaSite: 'auto'
 };
+
+
+/**
+ * Max length for the string of a file during Lunr search engine indexing.
+ * Prevent stack size exceeded
+ */
+export const MAX_SIZE_FILE_SEARCH_INDEX = 15000;

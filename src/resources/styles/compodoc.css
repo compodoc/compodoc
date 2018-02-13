@@ -197,6 +197,13 @@ h6 {
     margin-right: 16px;
 }
 
+.fa-file-text-o {
+    margin-left: 2px;
+}
+.fa-file-text-o.fa-fw {
+    margin-left: -1px;
+}
+
 
 /**
  * Menu
@@ -287,9 +294,22 @@ h6 {
     padding-left: 20px;
 }
 
-.menu ul.list li.for-chapter {
+.menu ul.list li.for-chapter2 {
     padding-left: 20px;
 }
+
+.menu ul.list li.for-chapter3 {
+  padding-left: 40px;
+}
+
+.menu ul.list li.for-chapter4 {
+  padding-left: 60px;
+}
+
+.menu ul.list li.for-chapter5 {
+  padding-left: 80px;
+}
+
 
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
@@ -511,6 +531,10 @@ code {
     padding-left: 20px;
 }
 
+example-url {
+    display: none;
+}
+
 i {
     font-style: italic;
 }
@@ -577,6 +601,12 @@ th[role=columnheader].statements:not(.no-sort):after {
     background: #4dc71f;
 }
 
+.content ol {
+    list-style-type: decimal;
+    margin-top: 0;
+    padding-left: 20px;
+    margin-bottom: 16px;
+}
 .content ul {
     list-style: disc;
     margin-top: 0;
@@ -635,7 +665,16 @@ th[role=columnheader].statements:not(.no-sort):after {
     margin-right: 0;
 }
 
-/* Routes graph */
+/**
+ * Modules
+ */
+.card-module {
+    min-hight: 323px
+}
+
+/**
+ * Routes graph
+ */
 
 .node text {
     font-size: 12px;
@@ -662,7 +701,9 @@ path.link {
     overflow: visible;
 }
 
-/* Miscellaneous */
+/**
+ * Miscellaneous
+ */
 
 .content.miscellaneous h2 {
     margin-bottom: 20px;
@@ -788,4 +829,16 @@ ul.index-list {
     right: 5px;
     top: 0;
     cursor: pointer;
+}
+
+/**
+ * Dependencies
+ */
+
+.package-dependencies ul {
+    list-style: none;
+    margin: 0;
+}
+.package-dependencies li {
+    margin: 5px 0;
 }

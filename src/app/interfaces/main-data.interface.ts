@@ -44,6 +44,7 @@ export interface MainDataInterface {
     mainGraph: string;
     coverageTest: boolean;
     coverageTestThreshold: number;
+    coverageTestThresholdFail: boolean;
     coverageTestPerFile: boolean;
     coverageMinimumPerFile: number;
     routesLength: number;
@@ -51,4 +52,7 @@ export interface MainDataInterface {
     exportFormat: string;
     coverageData: Object;
     customFavicon: string;
+    packageDependencies: Object[];
+    gaID: string;
+    gaSite: string;
 }

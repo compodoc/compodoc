@@ -61,7 +61,7 @@
                     {{/unless}}
                 {{/if}}
 
-                {{#or jsdoctags returnType}}
+                {{#or jsdoctags returnType description}}
                 <tr>
                     <td class="col-md-4">
                         {{#if description}}
@@ -79,6 +79,7 @@
                                                 <td>Name</td>
                                                 <td>Type</td>
                                                 <td>Optional</td>
+                                                <td>Default value</td>
                                                 <td>Description</td>
                                             </tr>
                                         </thead>
@@ -93,8 +94,13 @@
                                                   </td>
                                                   <td>
                                                   {{#if optional}}
-                                                      true
+                                                      yes
+                                                  {{else}}
+                                                      no
                                                   {{/if}}
+                                                  </td>
+                                                  <td>
+                                                      <code>{{defaultValue}}</code>
                                                   </td>
                                                   <td>{{{comment}}}</td>
                                                 </tr>

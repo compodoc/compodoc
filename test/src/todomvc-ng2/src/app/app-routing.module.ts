@@ -7,10 +7,14 @@ enum APP_ENUM {
     home = 'homeenuminfile'
 }
 
-export const APP_ROUTES: Routes = [
-    { path: 'about', loadChildren: './about/about.module#AboutModule' },
+const DEFAULT: Routes = [
     { path: '', redirectTo: APP_ENUMS.home, pathMatch: 'full'},
     { path: '**', redirectTo: APP_ENUM.home, pathMatch: 'full'}
+];
+
+export const APP_ROUTES: Routes = [
+    { path: 'about', loadChildren: './about/about.module#AboutModule' },
+    ...DEFAULT
 ];
 
 /**

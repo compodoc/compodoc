@@ -16,5 +16,6 @@ export interface JsdocTagInterface {
     tagName: jsdocTagNameInterface;
     parameterName: jsdocParameterNameInterface;
     type: any;
+    defaultValue: any;
     typeExpression: jsdocTypeExpressionInterface;
 }

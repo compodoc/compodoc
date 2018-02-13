@@ -24,12 +24,12 @@ See this folder for more details : [DOCS](./docs/README.md)
 
 ### Development process
 
-- open one terminal and run inside compodoc folder : `ǹpm run start`
+- open one terminal and run inside compodoc folder : `npm run start`
 - open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `compodoc -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems 'all'" -s`
 
 ### Debugging process
 
-- open one terminal and run inside compodoc folder : `ǹpm run start`
+- open one terminal and run inside compodoc folder : `npm run start`
 - open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node --inspect ../compodoc/bin/index-cli.js -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems 'all'" -s`
 
 ## <a name="issue"></a> Found an Issue?
@@ -231,14 +231,44 @@ Just as in the **subject**, use the imperative, present tense: "change" not Ther
 * **changelog**: used for updating the release notes in CHANGELOG.md
 * none/empty string: useful for `style`, `test` and `refactor` changes that are done across all packages (e.g. `style: add missing semicolons`)
 
-There are currently a few exceptions to the "use package name" rule:
-
-* **packaging**: used for changes that change the npm package layout in all of our packages, e.g. public path changes, package.json changes done to all packages, d.ts file/format changes, changes to bundles, etc.
-* **changelog**: used for updating the release notes in CHANGELOG.md
-* none/empty string: useful for `style`, `test` and `refactor` changes that are done across all packages (e.g. `style: add missing semicolons`)
-
-
-
 **Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
 A detailed explanation can be found in this [document][commit-message-format].
+
+
+## Financial contributions
+
+We also welcome financial contributions in full transparency on our [open collective](https://opencollective.com/compodoc).
+Anyone can file an expense. If the expense makes sense for the development of the community, it will be "merged" in the ledger of our open collective by the core contributors and the person who filed the expense will be reimbursed.
+
+
+## Credits
+
+
+### Contributors
+
+Thank you to all the people who have already contributed to compodoc!
+<a href="graphs/contributors"><img src="https://opencollective.com/compodoc/contributors.svg?width=890" /></a>
+
+
+### Backers
+
+Thank you to all our backers! [[Become a backer](https://opencollective.com/compodoc#backer)]
+
+<a href="https://opencollective.com/compodoc#backers" target="_blank"><img src="https://opencollective.com/compodoc/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Thank you to all our sponsors! (please ask your company to also support this open source project by [becoming a sponsor](https://opencollective.com/compodoc#sponsor))
+
+<a href="https://opencollective.com/compodoc/sponsor/0/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/1/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/2/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/3/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/4/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/5/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/6/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/7/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/8/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/compodoc/sponsor/9/website" target="_blank"><img src="https://opencollective.com/compodoc/sponsor/9/avatar.svg"></a>

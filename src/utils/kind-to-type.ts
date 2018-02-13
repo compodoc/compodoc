@@ -4,9 +4,11 @@ export function kindToType(kind: number): string {
     let _type = '';
     switch(kind) {
         case ts.SyntaxKind.StringKeyword:
+        case ts.SyntaxKind.StringLiteral:
             _type = 'string';
             break;
         case ts.SyntaxKind.NumberKeyword:
+        case ts.SyntaxKind.NumericLiteral:
             _type = 'number';
             break;
         case ts.SyntaxKind.ArrayType:
