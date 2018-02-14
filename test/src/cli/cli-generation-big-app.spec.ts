@@ -342,6 +342,7 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Accessors');
         expect(file).to.contain('Setter of _title');
         expect(file).to.contain('<p>Returns the runtime path</p>');
+        expect(file).to.contain('<code>title(value');
     });
 
     it('should support accessors for injectables', () => {

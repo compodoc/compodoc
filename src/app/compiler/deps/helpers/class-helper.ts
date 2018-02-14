@@ -294,7 +294,7 @@ export class ClassHelper {
     private addAccessor(accessors, nodeAccessor, sourceFile) {
         let nodeName = '';
         if (nodeAccessor.name) {
-            nodeName = nodeAccessor.name.escapedText;
+            nodeName = nodeAccessor.name.text;
             let jsdoctags = this.jsdocParserUtil.getJSDocs(nodeAccessor);
 
             if (!accessors[nodeName]) {
@@ -311,7 +311,7 @@ export class ClassHelper {
                     'type': 'void',
                     'args': nodeAccessor.parameters.map((param) => {
                         return {
-                            'name': param.name.escapedText,
+                            'name': param.name.text,
                             'type': (param.type) ? kindToType(param.type.kind) : ''
                         };
                     }),
