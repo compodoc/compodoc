@@ -1,3 +1,12 @@
+<a name="1.0.7"></a>
+# [1.0.7](https://github.com/compodoc/compodoc/compare/1.0.6...1.0.7) (2018-02-15)
+
+### Bug Fixes
+
+* **accessors:** Accessors not parsing all data correctly ([80af63b](https://github.com/compodoc/compodoc/commit/80af63b)), closes [#468](https://github.com/compodoc/compodoc/issues/468)
+* **routing:** Routes not scanned for Node.js 7 & 6 ([9435422](https://github.com/compodoc/compodoc/commit/9435422)), closes [#463](https://github.com/compodoc/compodoc/issues/463)
+* **templates:** hide cells for function parameters if field is empty ([5d32cbb](https://github.com/compodoc/compodoc/commit/5d32cbb)), closes [#464](https://github.com/compodoc/compodoc/issues/464)
+
 <a name="1.0.6"></a>
 # [1.0.6](https://github.com/compodoc/compodoc/compare/1.0.5...1.0.6) (2018-02-12)
 
