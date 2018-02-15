@@ -30,6 +30,7 @@ import { IndexableSignatureHelper } from './html-engine-helpers/indexable-signat
 import { ObjectHelper } from './html-engine-helpers/object.helper';
 import { ObjectLengthHelper } from './html-engine-helpers/object-length.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
+import { OneParameterHasHelper } from './html-engine-helpers/one-parameter-has.helper';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 
 
@@ -65,6 +66,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'object', new ObjectHelper());
         this.registerHelper(bars, 'objectLength', new ObjectLengthHelper());
         this.registerHelper(bars, 'parseDescription', new ParseDescriptionHelper(dependenciesEngine));
+        this.registerHelper(bars, 'one-parameter-has', new OneParameterHasHelper());
     }
 
     private registerHelper(bars, key: string, helper: IHtmlEngineHelper) {

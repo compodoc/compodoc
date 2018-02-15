@@ -192,41 +192,53 @@
                                     {{#jsdoc-params-valid jsdoctags}}
                                     <tr>
                                         <td class="col-md-4">
-                                          <div class="io-description">
-                                              {{#jsdoc-params jsdoctags}}
-                                                  <b>Parameters :</b>
-                                                  <table class="params">
-                                                      <thead>
-                                                          <tr>
-                                                              <td>Name</td>
-                                                              <td>Type</td>
-                                                              <td>Description</td>
-                                                          </tr>
-                                                      </thead>
-                                                      <tbody>
-                                                          {{#each tags}}
-                                                              <tr>
-                                                                <td>{{name}}</td>
-                                                                <td>
-                                                                    {{#if type}}
-                                                                      {{> link-type type=type }}
-                                                                    {{/if}}
-                                                                </td>
-                                                                <td>{{{comment}}}</td>
-                                                              </tr>
-                                                          {{/each}}
-                                                      </tbody>
-                                                  </table>
-                                              {{/jsdoc-params}}
-                                              {{#jsdoc-example jsdoctags}}
-                                                  <b>Example :</b>
-                                                  {{#each tags}}
-                                                      <div class="jsdoc-example-ul">
-                                                          {{{comment}}}
-                                                      </div>
-                                                  {{/each}}
-                                              {{/jsdoc-example}}
-                                          </div>
+                                            <div class="io-description">
+                                                {{#jsdoc-params jsdoctags}}
+                                                    <b>Parameters :</b>
+                                                    <table class="params">
+                                                        <thead>
+                                                                <tr>
+                                                                    <td>Name</td>
+                                                                    {{#one-parameter-has tags 'type'}}
+                                                                        <td>Type</td>
+                                                                    {{/one-parameter-has}}
+                                                                    {{#one-parameter-has tags 'comment'}}
+                                                                        <td>Description</td>
+                                                                    {{/one-parameter-has}}
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {{#each tags}}
+                                                                <tr>
+                                                                    <td>{{name}}</td>
+                                                                    {{#one-parameter-has ../tags 'type'}}
+                                                                        <td>
+                                                                            {{#if type}}
+                                                                                {{> link-type type=type }}
+                                                                            {{/if}}
+                                                                        </td>
+                                                                    {{/one-parameter-has}}
+                                                                    {{#one-parameter-has ../tags 'comment'}}
+                                                                        <td>
+                                                                            {{#if comment}}
+                                                                                <code>{{comment}}</code>
+                                                                            {{/if}}
+                                                                        </td>
+                                                                    {{/one-parameter-has}}
+                                                                </tr>
+                                                            {{/each}}
+                                                        </tbody>
+                                                    </table>
+                                                {{/jsdoc-params}}
+                                                {{#jsdoc-example jsdoctags}}
+                                                    <b>Example :</b>
+                                                    {{#each tags}}
+                                                        <div class="jsdoc-example-ul">
+                                                            {{{comment}}}
+                                                        </div>
+                                                    {{/each}}
+                                                {{/jsdoc-example}}
+                                            </div>
                                         </td>
                                     </tr>
                                     {{/jsdoc-params-valid}}
