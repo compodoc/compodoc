@@ -94,7 +94,7 @@ describe('CLI simple generation', () => {
         });
 
         it('it should have infos about FooService open function param', () => {
-            expect(fooServiceFile).to.contain('td><p>The entry value');
+            expect(fooServiceFile).to.contain('<p>The entry value');
         });
 
         it('it should have infos about FooService open function returns', () => {

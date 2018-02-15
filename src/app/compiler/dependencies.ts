@@ -237,15 +237,17 @@ export class Dependencies {
         outputSymbols.classes.push(deps);
     }
 
-    private getSourceFileDecorators(srcFile: ts.SourceFile, outputSymbols: any): void {
+    private getSourceFileDecorators(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
 
         let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
-        let file = srcFile.fileName.replace(cleaner, '');
-        let scannedFile = srcFile;
+        let fileName = initialSrcFile.fileName.replace(cleaner, '');
+        let scannedFile = initialSrcFile;
 
         // Search in file for variable statement as routes definitions
 
-        const astFile = (typeof ast.getSourceFile(srcFile.fileName) !== 'undefined') ? ast.getSourceFile(srcFile.fileName) : ast.addExistingSourceFile(srcFile.fileName);
+        const astFile = (typeof ast.getSourceFile(initialSrcFile.fileName) !== 'undefined') ?
+                        ast.getSourceFile(initialSrcFile.fileName) :
+                        ast.addExistingSourceFile(initialSrcFile.fileName);
 
         const variableRoutesStatements = astFile.getVariableStatements();
         let hasRoutesStatements = false;
@@ -272,17 +274,17 @@ export class Dependencies {
             logger.info('Analysing routes definitions and clean them if necessary');
 
             // scannedFile = this.routerParser.cleanFileIdentifiers(astFile).compilerNode;
-            scannedFile = this.routerParser.cleanFileSpreads(astFile).compilerNode;
+            let firstClean = this.routerParser.cleanFileSpreads(astFile);
+            scannedFile = firstClean.compilerNode;
             scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
 
-            srcFile = scannedFile;
+            scannedFile.kind = ts.SyntaxKind.SourceFile;
         }
 
-        ts.forEachChild(srcFile, (node: ts.Node) => {
-            if (this.jsDocHelper.hasJSDocInternalTag(file, srcFile, node) && this.configuration.mainData.disableInternal) {
+        ts.forEachChild(scannedFile, (initialNode: ts.Node) => {
+            if (this.jsDocHelper.hasJSDocInternalTag(fileName, scannedFile, initialNode) && this.configuration.mainData.disableInternal) {
                 return;
             }
-
             let parseNode = (file, srcFile, node, fileBody) => {
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
@@ -296,8 +298,7 @@ export class Dependencies {
                         let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
 
                         if (this.isModule(metadata)) {
-                            const moduleDep = new ModuleDepFactory(this.moduleHelper)
-                                .create(file, srcFile, name, props, IO);
+                            const moduleDep = new ModuleDepFactory(this.moduleHelper).create(file, srcFile, name, props, IO);
                             if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
                                 this.routerParser.addModuleWithRoutes(name, this.moduleHelper.getModuleImportsRaw(props, srcFile), file);
                             }
@@ -309,8 +310,7 @@ export class Dependencies {
                             if (props.length === 0) {
                                 return;
                             }
-                            const componentDep = new ComponentDepFactory(this.componentHelper, this.configuration)
-                                .create(file, srcFile, name, props, IO);
+                            const componentDep = new ComponentDepFactory(this.componentHelper, this.configuration).create(file, srcFile, name, props, IO);
                             $componentsTreeEngine.addComponent(componentDep);
                             outputSymbols.components.push(componentDep);
                             deps = componentDep;
@@ -369,8 +369,7 @@ export class Dependencies {
                             if (props.length === 0) {
                                 return;
                             }
-                            let directiveDeps = new DirectiveDepFactory(this.componentHelper, this.configuration)
-                                .create(file, srcFile, name, props, IO);
+                            let directiveDeps = new DirectiveDepFactory(this.componentHelper, this.configuration).create(file, srcFile, name, props, IO);
                             outputSymbols.directives.push(directiveDeps);
                             deps = directiveDeps;
                         } else {
@@ -625,7 +624,7 @@ export class Dependencies {
                 }
             }
 
-            parseNode(file, srcFile, node);
+            parseNode(fileName, scannedFile, initialNode);
 
         });
 
@@ -734,9 +733,10 @@ export class Dependencies {
     }
 
     private findProperties(visitedNode: ts.Decorator, sourceFile: ts.SourceFile): ReadonlyArray<ts.ObjectLiteralElementLike> {
-        if (ts.isCallExpression(visitedNode.expression) && visitedNode.expression.arguments.length > 0) {
+        if (visitedNode.expression && visitedNode.expression.arguments && visitedNode.expression.arguments.length > 0) {
             let pop = visitedNode.expression.arguments[0];
-            if (ts.isObjectLiteralExpression(pop)) {
+
+            if (pop && pop.properties && pop.properties.length >= 0) {
                 return pop.properties;
             } else {
                 logger.warn('Empty metadatas, trying to found it with imports.');
@@ -940,8 +940,7 @@ export class Dependencies {
         let res;
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
-
-                if (ts.isVariableStatement(statement) && this.routerParser.isVariableRoutes(statement)) {
+                if (this.routerParser.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
                         return directive.concat(this.visitEnumDeclarationForRoutes(filename, statement));
                     }

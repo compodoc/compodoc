@@ -62,7 +62,7 @@ export class CliApplication extends Application {
             .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
-            .option('--gaSite [site]', 'Google Analytics site name (default auto', COMPODOC_DEFAULTS.gaSite)
+            .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
 
         let outputHelp = () => {
