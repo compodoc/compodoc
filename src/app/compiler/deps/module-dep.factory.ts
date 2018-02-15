@@ -30,7 +30,7 @@ export class ModuleDepFactory {
             bootstrap: this.moduleHelper.getModuleBootstrap(properties, srcFile),
             type: 'module',
             description: IO.description,
-            sourceCode: srcFile.getText()
+            sourceCode: srcFile.text
         } as IModuleDep;
     }
 }

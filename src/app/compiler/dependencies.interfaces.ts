@@ -2,7 +2,7 @@
 export interface IDep {
     id?: string;
     type?: string;
-    ctype: string;
+    ctype?: string;
     name: string;
 }
 

@@ -126,7 +126,9 @@ export class SymbolHelper {
      */
     public parseSymbolElements(node: ts.CallExpression | ts.Identifier | ts.StringLiteral | ts.PropertyAccessExpression | ts.SpreadElement): string {
         // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
-        if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+        // if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+        if ( (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) ||
+             (ts.isNewExpression(node) && ts.isElementAccessExpression(node.expression)) ) {
             let className = this.buildIdentifierName(node.expression);
 
             // function arguments could be really complex. There are so
@@ -138,6 +140,13 @@ export class SymbolHelper {
             return text;
         } else if (ts.isPropertyAccessExpression(node)) { // parse expressions such as: Shared.Module
             return this.buildIdentifierName(node);
+        } else if (ts.isIdentifier(node)) { // parse expressions such as: MyComponent
+            if (node.text) {
+                return node.text;
+            }
+            if (node.escapedText) {
+                return node.escapedText;
+            }
         } else if (ts.isSpreadElement(node)) { // parse expressions such as: ...MYARRAY
             // Resolve MYARRAY in imports or local file variables after full scan, just return the name of the variable
             if (node.expression && node.expression.text) {
@@ -173,6 +182,9 @@ export class SymbolHelper {
                 identifier
             ];
         } else if (ts.isArrayLiteralExpression(localNode.initializer)) {
+            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
+        } else if (localNode.initializer && localNode.initializer.elements && localNode.initializer.elements.length > 0) {
+            // Node replaced by ts-simple-ast & kind = 265
             return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         }
     }

@@ -360,7 +360,7 @@ export class RouterParserUtil {
 
     public isVariableRoutes(node) {
         let result = false;
-        if (node.declarationList.declarations) {
+        if (node.declarationList && node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
