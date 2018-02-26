@@ -701,6 +701,10 @@ path.link {
     overflow: visible;
 }
 
+a[href] {
+    cursor: pointer;
+}
+
 /**
  * Miscellaneous
  */
