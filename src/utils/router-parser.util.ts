@@ -8,6 +8,7 @@ import * as JSON5 from 'json5';
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
 import { ImportsUtil } from './imports.util';
+import { logger } from '../logger';
 
 const traverse = require('traverse');
 
@@ -201,7 +202,11 @@ export class RouterParserUtil {
                 for (let i in node.children) {
                     let route = this.foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
-                        route.children = JSON5.parse(route.data);
+                        try {
+                            route.children = JSON5.parse(route.data);
+                        } catch(e) {
+                            logger.error('Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.');
+                        }
                         delete route.data;
                         route.kind = 'module';
                         routesTree.children.push(route);

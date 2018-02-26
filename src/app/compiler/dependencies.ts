@@ -188,10 +188,12 @@ export class Dependencies {
 
         // $componentsTreeEngine.createTreesForComponents();
 
-        this.routerParser.linkModulesAndRoutes();
-        this.routerParser.constructModulesTree();
+        if (!this.configuration.mainData.disableRoutesGraph) {
+            this.routerParser.linkModulesAndRoutes();
+            this.routerParser.constructModulesTree();
 
-        deps.routesTree = this.routerParser.constructRoutesTree();
+            deps.routesTree = this.routerParser.constructRoutesTree();
+        }
 
         return deps;
     }
@@ -269,7 +271,7 @@ export class Dependencies {
             });
         }
 
-        if (hasRoutesStatements) {
+        if (hasRoutesStatements && !this.configuration.mainData.disableRoutesGraph) {
             // Clean file for spread and dynamics inside routes definitions
             logger.info('Analysing routes definitions and clean them if necessary');
 

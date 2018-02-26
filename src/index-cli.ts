@@ -60,6 +60,7 @@ export class CliApplication extends Application {
             .option('--disableProtected', 'Do not show protected in generated documentation', false)
             .option('--disableInternal', 'Do not show @internal in generated documentation', false)
             .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
+            .option('--disableRoutesGraph', 'Do not add the routes graph', COMPODOC_DEFAULTS.disableRoutesGraph)
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
@@ -170,6 +171,10 @@ export class CliApplication extends Application {
 
         if (program.disableLifeCycleHooks) {
             this.configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
+        }
+
+        if (program.disableRoutesGraph) {
+            this.configuration.mainData.disableRoutesGraph = program.disableRoutesGraph;
         }
 
         if (program.customFavicon) {
