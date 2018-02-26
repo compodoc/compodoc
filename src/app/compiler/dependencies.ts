@@ -622,7 +622,7 @@ export class Dependencies {
                         outputSymbols.miscellaneous.enumerations.push(deps);
                     }
                 }
-            }
+            };
 
             parseNode(fileName, scannedFile, initialNode);
 
@@ -835,7 +835,7 @@ export class Dependencies {
                 }).reverse();
                 if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
                     kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
-                };
+                }
             }
         }
         if (jsdoctags && jsdoctags.length >= 1) {
