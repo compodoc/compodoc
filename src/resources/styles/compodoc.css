@@ -62,6 +62,10 @@ h6 {
     font-size: 16px;
 }
 
+a[href] {
+    cursor: pointer;
+}
+
 /**
  * Mobile navbar
  */
