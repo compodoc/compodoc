@@ -15,6 +15,7 @@ describe('CLI simple generation', () => {
             componentFile,
             moduleFile,
             emptyModuleFile,
+            barModuleFile,
             emptyModuleRawFile;
         before(function (done) {
             tmp.create(distFolder);
@@ -34,6 +35,7 @@ describe('CLI simple generation', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             emptyModuleFile = read(`${distFolder}/modules/EmptyModule.html`);
             emptyModuleRawFile = read(`${distFolder}/modules/EmptyRawModule.html`);
+            barModuleFile  = read(`${distFolder}/modules/BarModule.html`);
             done();
         });
         after(() => tmp.clean(distFolder));
@@ -85,7 +87,6 @@ describe('CLI simple generation', () => {
         });
 
         it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
-            const barModuleFile  = read(`${distFolder}/modules/BarModule.html`);
             expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
         });
 
@@ -108,6 +109,16 @@ describe('CLI simple generation', () => {
 
         it('it should have link to TypeScript doc', () => {
             expect(fooServiceFile).to.contain('typescriptlang.org');
+        });
+
+        it('it should have a link with this syntax {@link http://www.google.fr|Second link}', () => {
+            expect(barModuleFile).to.contain('<a href="http://www.google.fr">Second link</a>');
+        });
+        it('it should have a link with this syntax {@link http://www.google.uk Third link}', () => {
+            expect(barModuleFile).to.contain('<a href="http://www.google.uk">Third link</a>');
+        });
+        it('it should have a link with this syntax [Last link]{@link http://www.google.jp}', () => {
+            expect(barModuleFile).to.contain('<a href="http://www.google.jp">Last link</a>');
         });
 
         /**
