@@ -350,11 +350,13 @@
         </li>
         {{/if}}
 
-        {{#if routes}}
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-fw fa-code-fork"></span>Routes</a>
-        </li>
-        {{/if}}
+        {{#unless disableRoutesGraph}}
+            {{#if routes}}
+            <li class="chapter">
+                <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+            </li>
+            {{/if}}
+        {{/unless}}
 
         {{#unless disableCoverage}}
         <li class="chapter">

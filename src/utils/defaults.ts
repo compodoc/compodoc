@@ -20,13 +20,13 @@ export const COMPODOC_DEFAULTS = {
     disableProtected: false,
     disableInternal: false,
     disableLifeCycleHooks: false,
+    disableRoutesGraph: false,
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'
     },
     gaSite: 'auto'
 };
-
 
 /**
  * Max length for the string of a file during Lunr search engine indexing.

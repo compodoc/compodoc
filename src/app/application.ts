@@ -392,7 +392,9 @@ export class Application {
 
         this.configuration.resetPages();
 
-        actions.push(() => this.prepareRoutes());
+        if (!this.configuration.mainData.disableRoutesGraph) {
+            actions.push(() => this.prepareRoutes());
+        }
 
         if (diffCrawledData.modules.length > 0) {
             actions.push(() => this.prepareModules());
@@ -497,7 +499,7 @@ export class Application {
             actions.push(() => { return this.prepareInterceptors(); });
         }
 
-        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0) {
+        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0 && !this.configuration.mainData.disableRoutesGraph) {
             actions.push(() => { return this.prepareRoutes(); });
         }
 

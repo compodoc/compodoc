@@ -8,16 +8,15 @@ export class NgdEngine {
 
     constructor(
         private dependenciesEngine: DependenciesEngine,
-        private fileEngine: FileEngine = new FileEngine()) {
-
-    }
+        private fileEngine: FileEngine = new FileEngine()
+    ) {}
 
     public init(outputpath: string) {
         this.engine = new ngdT.DotEngine({
             output: outputpath,
             displayLegend: true,
             outputFormats: 'svg',
-            silent: false
+            silent: true
         });
     }
 

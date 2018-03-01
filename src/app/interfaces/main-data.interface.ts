@@ -40,6 +40,7 @@ export interface MainDataInterface {
     disableProtected: boolean;
     disableInternal: boolean;
     disableLifeCycleHooks: boolean;
+    disableRoutesGraph: boolean;
     watch: boolean;
     mainGraph: string;
     coverageTest: boolean;
