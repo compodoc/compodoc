@@ -1,3 +1,14 @@
+<a name="1.0.8"></a>
+# [1.0.8](https://github.com/compodoc/compodoc/compare/1.0.7...1.0.8) (2018-03-01)
+
+### Features
+
+* **routing:** option to disable routes graph ([62073b](https://github.com/compodoc/compodoc/commit/62073b)), closes [#472](https://github.com/compodoc/compodoc/issues/472) [#485](https://github.com/compodoc/compodoc/issues/485)
+
+### Bug Fixes
+
+* **jsdoc:** @link for external url broken ([6775ef](https://github.com/compodoc/compodoc/commit/6775ef)), closes [#305](https://github.com/compodoc/compodoc/issues/305)
+
 <a name="1.0.7"></a>
 # [1.0.7](https://github.com/compodoc/compodoc/compare/1.0.6...1.0.7) (2018-02-15)
 
