@@ -1,12 +1,8 @@
-import {
-    ElementRef
-} from "@angular/core";
+import { ElementRef } from '@angular/core';
 
 import { Direction } from '../miscellaneous/miscellaneous';
 
-﻿export class Tada {
-
-}
+export class Tada {}
 
 /**
  * The todo class
@@ -23,6 +19,8 @@ export class Todo extends Tada {
     editing: boolean;
 
     pos?: PopupPosition;
+
+    private optionalProperty?: boolean;
 
     [index: number]: string;
 
@@ -59,7 +57,7 @@ export class Todo extends Tada {
      * @returns {string}
      */
     get runtimePath() {
-      return this._options.runtimePath;
+        return this._options.runtimePath;
     }
 
     /**
@@ -83,7 +81,7 @@ export class Todo extends Tada {
     }
 
     azert() {
-      return 5;
+        return 5;
     }
 }
 

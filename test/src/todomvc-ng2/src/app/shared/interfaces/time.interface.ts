@@ -6,4 +6,5 @@ export interface TimeInterface {
      * The zone
      */
     zone: string;
+    foo?(): string;
 }

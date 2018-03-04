@@ -527,15 +527,25 @@ describe('CLI simple generation - big app', () => {
         expect(dependencies).to.contain('typescript');
     });
 
-    it('should disaply project peerDependencies', () => {
+    /*it('should display project peerDependencies', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
         let dependencies = read(distFolder + '/dependencies.html');
         expect(dependencies).to.contain('angular/forms');
+    });*/
+
+    it('should support optional for classes', () => {
+        let file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('Optional');
     });
 
     it('should support optional for interfaces', () => {
         let file = read(distFolder + '/interfaces/LabelledTodo.html');
+        expect(file).to.contain('Optional');
+    });
+
+    it('should support optional for interfaces / methods', () => {
+        let file = read(distFolder + '/interfaces/TimeInterface.html');
         expect(file).to.contain('Optional');
     });
 

@@ -65,6 +65,9 @@
                             {{#each interface.properties}}
                                 <li>
                                     {{#if name}}
+                                        {{#if optional}}
+                                            <span class="modifier">Optional</span>
+                                        {{/if}}
                                         <a href="#{{name}}">{{name}}</a>
                                     {{else}}
                                         <a href="#{{id}}">Unamed property</a>
@@ -89,6 +92,9 @@
                                     {{#each modifierKind}}
                                         <span class="modifier">{{modifKind this}}</span>
                                     {{/each}}
+                                    {{#if optional}}
+                                        <span class="modifier">Optional</span>
+                                    {{/if}}
                                     <a href="#{{name}}">{{name}}</a>
                                 </li>
                             {{/each}}

@@ -15,6 +15,9 @@
                             {{#each modifierKind}}
                                 <span class="modifier">{{modifKind this}}</span>
                             {{/each}}
+                            {{#if optional}}
+                                <span class="modifier">Optional</span>
+                            {{/if}}
                             {{name}}
                             </b>
                             <a href="#{{name}}"><span class="fa fa-link"></span></a>

@@ -16,6 +16,9 @@
                             {{#each modifierKind}}
                                 <span class="modifier">{{modifKind this}}</span>
                             {{/each}}
+                            {{#if optional}}
+                                <span class="modifier">Optional</span>
+                            {{/if}}
                             <a href="#{{name}}">{{name}}</a>
                         </li>
                     {{/each}}
@@ -37,6 +40,9 @@
                             {{#each modifierKind}}
                                 <span class="modifier">{{modifKind this}}</span>
                             {{/each}}
+                            {{#if optional}}
+                                <span class="modifier">Optional</span>
+                            {{/if}}
                             <a href="#{{name}}">{{name}}</a>
                         </li>
                     {{/each}}
