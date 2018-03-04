@@ -48,6 +48,7 @@ export class Configuration implements ConfigurationInterface {
         disableInternal: COMPODOC_DEFAULTS.disableInternal,
         disableProtected: COMPODOC_DEFAULTS.disableProtected,
         disableLifeCycleHooks: COMPODOC_DEFAULTS.disableLifeCycleHooks,
+        disableRoutesGraph: COMPODOC_DEFAULTS.disableRoutesGraph,
         watch: false,
         mainGraph: '',
         coverageTest: false,
@@ -59,14 +60,23 @@ export class Configuration implements ConfigurationInterface {
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
         coverageData: {},
-        customFavicon: ''
+        customFavicon: '',
+        packageDependencies: [],
+        packagePeerDependencies: [],
+        gaID: '',
+        gaSite: ''
     };
 
     public addPage(page: PageInterface) {
-        let indexPage = _.findIndex(this._pages, { 'name': page.name });
+        let indexPage = _.findIndex(this._pages, { name: page.name });
         if (indexPage === -1) {
             this._pages.push(page);
         }
+    }
+
+    public hasPage(name: string): boolean {
+        let indexPage = _.findIndex(this._pages, { name: name });
+        return indexPage !== -1;
     }
 
     public addAdditionalPage(page: PageInterface) {
@@ -82,15 +92,15 @@ export class Configuration implements ConfigurationInterface {
     }
 
     public resetRootMarkdownPages() {
-        let indexPage = _.findIndex(this._pages, { 'name': 'index' });
+        let indexPage = _.findIndex(this._pages, { name: 'index' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { 'name': 'changelog' });
+        indexPage = _.findIndex(this._pages, { name: 'changelog' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { 'name': 'contributing' });
+        indexPage = _.findIndex(this._pages, { name: 'contributing' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { 'name': 'license' });
+        indexPage = _.findIndex(this._pages, { name: 'license' });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { 'name': 'todo' });
+        indexPage = _.findIndex(this._pages, { name: 'todo' });
         this._pages.splice(indexPage, 1);
         this._mainData.markdowns = [];
     }

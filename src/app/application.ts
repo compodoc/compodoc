@@ -215,6 +215,9 @@ export class Application {
             if (typeof parsedData.dependencies !== 'undefined') {
                 this.processPackageDependencies(parsedData.dependencies);
             }
+            if (typeof parsedData.peerDependencies !== 'undefined') {
+                this.processPackagePeerDependencies(parsedData.peerDependencies);
+            }
 
             this.processMarkdowns().then(() => {
                 this.getDependenciesData();
@@ -230,6 +233,20 @@ export class Application {
                 logger.error(errorMessage1);
             });
         });
+    }
+
+    private processPackagePeerDependencies(dependencies): void {
+        logger.info('Processing package.json peerDependencies');
+        this.configuration.mainData.packagePeerDependencies = dependencies;
+        if (!this.configuration.hasPage('dependencies')) {
+            this.configuration.addPage({
+                name: 'dependencies',
+                id: 'packageDependencies',
+                context: 'package-dependencies',
+                depth: 0,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+            });
+        }
     }
 
     private processPackageDependencies(dependencies): void {

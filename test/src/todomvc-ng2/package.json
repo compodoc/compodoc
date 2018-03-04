@@ -6,6 +6,9 @@
     "scripts": {
         "doc": "./node_modules/.bin/compodoc -p src/tsconfig.json"
     },
+    "peerDependencies": {
+        "@angular/forms": ">=4.0.0"
+    },
     "devDependencies": {
         "@compodoc/compodoc": "https://github.com/compodoc/compodoc/tarball/develop"
     }

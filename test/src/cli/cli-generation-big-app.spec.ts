@@ -13,12 +13,15 @@ describe('CLI simple generation - big app', () => {
 
     const distFolder = tmp.name + '-big-app';
 
-    before((done) => {
+    before(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
-            '-p', './test/src/todomvc-ng2/src/tsconfig.json',
-            '-d', distFolder]);
+            '-p',
+            './test/src/todomvc-ng2/src/tsconfig.json',
+            '-d',
+            distFolder
+        ]);
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -70,17 +73,17 @@ describe('CLI simple generation - big app', () => {
     /**
      * Dynamic imports for metadatas
      */
-     it('should have metadatas - component', () => {
-         expect(footerComponentFile).to.contain('footer.component.html');
-     });
-     it('should have metadatas - component with aliased import', () => {
-         const file = read(`${distFolder}/components/HeaderComponent.html`);
-         expect(file).to.contain('header.component.html');
-     });
-     it('should have metadatas - directive', () => {
-         const file = read(`${distFolder}/directives/DoNothingDirective.html`);
-         expect(file).to.contain('[donothing]');
-     });
+    it('should have metadatas - component', () => {
+        expect(footerComponentFile).to.contain('footer.component.html');
+    });
+    it('should have metadatas - component with aliased import', () => {
+        const file = read(`${distFolder}/components/HeaderComponent.html`);
+        expect(file).to.contain('header.component.html');
+    });
+    it('should have metadatas - directive', () => {
+        const file = read(`${distFolder}/directives/DoNothingDirective.html`);
+        expect(file).to.contain('[donothing]');
+    });
 
     /**
      * Routing
@@ -201,7 +204,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Promise&lt;void&gt;');
         expect(file).to.contain('string | number');
         expect(file).to.contain('number[]');
-        expect(file).to.contain('<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>');
+        expect(file).to.contain(
+            '<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>'
+        );
         expect(file).to.contain('service is a todo store');
         expect(file).to.contain('all todos status (completed');
         expect(file).to.contain('Local array of Todos');
@@ -209,8 +214,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should have correct types for todo model', () => {
         const file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean');
-        expect(file).to.contain('testCommentFunction(dig: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number');
+        expect(file).to.contain(
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean'
+        );
+        expect(file).to.contain(
+            'testCommentFunction(dig: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number'
+        );
     });
 
     it('should have correct spread support', () => {
@@ -276,7 +285,9 @@ describe('CLI simple generation - big app', () => {
 
     it('should have inherreturn type', () => {
         const file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"');
+        expect(file).to.contain(
+            'code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"'
+        );
     });
 
     it('should support simple class with custom decorator', () => {
@@ -291,7 +302,9 @@ describe('CLI simple generation - big app', () => {
 
     it('should support TypeLiteral', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('&quot;creating&quot; | &quot;created&quot; | &quot;updating&quot; | &quot;updated&quot');
+        expect(file).to.contain(
+            '&quot;creating&quot; | &quot;created&quot; | &quot;updating&quot; | &quot;updated&quot'
+        );
     });
 
     it('should support return multiple with null & TypeLiteral', () => {
@@ -307,7 +320,7 @@ describe('CLI simple generation - big app', () => {
     it('should support @HostListener', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>mouseup(mouseX');
-        expect(file).to.contain('i>Arguments : </i><code>\'$event.clientX');
+        expect(file).to.contain("i>Arguments : </i><code>'$event.clientX");
     });
 
     it('should support extends for interface', () => {
@@ -428,14 +441,20 @@ describe('CLI simple generation - big app', () => {
     it('should have parsed correctly private, public, and static methods or properties', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>privateStaticMethod()');
-        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`);
+        expect(file).to.contain(
+            `<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`
+        );
         expect(file).to.contain('<code>protectedStaticMethod()');
-        expect(file).to.contain(`<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`);
+        expect(file).to.contain(
+            `<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`
+        );
         expect(file).to.contain('<code>publicMethod()');
         expect(file).to.contain('<code>publicStaticMethod()');
         expect(file).to.contain('<code>staticMethod()');
         expect(file).to.contain('staticReadonlyVariable');
-        expect(file).to.contain(`<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`);
+        expect(file).to.contain(
+            `<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`
+        );
     });
 
     it('should support entryComponents for modules', () => {
@@ -485,14 +504,20 @@ describe('CLI simple generation - big app', () => {
     it('should support @link to miscellaneous', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<a href="../miscellaneous/variables.html#PIT">PIT</a>');
-        expect(file).to.contain('<a href="../miscellaneous/enumerations.html#Direction">Direction</a>');
-        expect(file).to.contain('<a href="../miscellaneous/typealiases.html#ChartChange">ChartChange</a>');
+        expect(file).to.contain(
+            '<a href="../miscellaneous/enumerations.html#Direction">Direction</a>'
+        );
+        expect(file).to.contain(
+            '<a href="../miscellaneous/typealiases.html#ChartChange">ChartChange</a>'
+        );
         expect(file).to.contain('<a href="../miscellaneous/functions.html#foo">foo</a>');
     });
 
     it('should support default type on default value', () => {
         let file = read(distFolder + '/classes/TODO_STATUS.html');
-        expect(file).to.contain('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"');
+        expect(file).to.contain(
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"'
+        );
     });
 
     it('should disaply project dependencies', () => {
@@ -500,6 +525,13 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.be.true;
         let dependencies = read(distFolder + '/dependencies.html');
         expect(dependencies).to.contain('typescript');
+    });
+
+    it('should disaply project peerDependencies', () => {
+        const file = exists(distFolder + '/dependencies.html');
+        expect(file).to.be.true;
+        let dependencies = read(distFolder + '/dependencies.html');
+        expect(dependencies).to.contain('angular/forms');
     });
 
     it('should support optional for interfaces', () => {
