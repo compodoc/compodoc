@@ -78,14 +78,18 @@ export class ClassHelper {
                 for (i; i < len; i++) {
                     let type = node.type.types[i];
 
-                    _return += kindToType(type.kind);
-                    if (ts.isLiteralTypeNode(type) && type.literal) {
-                        _return += '"' + type.literal.text + '"';
+                    if (type.elementType) {
+                        const _firstPart = this.visitType(type.elementType);
+                        _return += _firstPart + kindToType(type.kind);
+                    } else {
+                        _return += kindToType(type.kind);
+                        if (ts.isLiteralTypeNode(type) && type.literal) {
+                            _return += '"' + type.literal.text + '"';
+                        }
+                        if (type.typeName) {
+                            _return += this.visitTypeName(type.typeName);
+                        }
                     }
-                    if (type.typeName) {
-                        _return += this.visitTypeName(type.typeName);
-                    }
-
                     if (i < len - 1) {
                         _return += ' | ';
                     }

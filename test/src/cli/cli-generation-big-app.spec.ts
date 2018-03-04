@@ -553,4 +553,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/classes/PrivateConstructor.html');
         expect(file).to.contain('<span class="modifier">Private</span>');
     });
+
+    it('should support union type with array', () => {
+        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('>string[] | Todo</a>');
+    });
 });
