@@ -389,7 +389,7 @@ a[href] {
 
 .breadcrumb {
     background: none;
-    padding-left: 0;
+    padding-left: 0 !important;
     margin-bottom: 10px;
     font-size: 24px;
     padding-top: 0;
