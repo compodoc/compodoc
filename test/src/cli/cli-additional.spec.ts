@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 
 const expect = chai.expect;
 const tmp = temporaryDir();
@@ -11,15 +11,21 @@ describe('CLI Additional documentation', () => {
 
     const distFolder = tmp.name + '-additional';
 
-    before((done) => {
+    before(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
-            '-p', './test/src/todomvc-ng2/src/tsconfig.json',
-            '-d', distFolder,
-            '-a', './test/src/todomvc-ng2/screenshots',
-            '--includes', './test/src/todomvc-ng2/additional-doc',
-            '--includesName', '"Additional documentation"']);
+            '-p',
+            './test/src/todomvc-ng2/src/tsconfig.json',
+            '-d',
+            distFolder,
+            '-a',
+            './test/src/todomvc-ng2/screenshots',
+            '--includes',
+            './test/src/todomvc-ng2/additional-doc',
+            '--includesName',
+            '"Additional documentation"'
+        ]);
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -32,7 +38,8 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile.indexOf('<a href="./additional-documentation/big-introduction') > -1).to.be.true;
+        expect(fooIndexFile.indexOf('<a href="./additional-documentation/big-introduction') > -1).to
+            .be.true;
         expect(fooIndexFile.indexOf('Big Introduction') > -1).to.be.true;
     });
 
@@ -51,27 +58,31 @@ describe('CLI Additional documentation', () => {
     });
 
     it('should contain up to 5 level of depth', () => {
+        expect(fooIndexFile.indexOf('for-chapter2') > -1).to.be.true;
+        expect(fooIndexFile.indexOf('for-chapter3') > -1).to.be.true;
+        expect(fooIndexFile.indexOf('for-chapter4') > -1).to.be.true;
+        expect(fooIndexFile.indexOf('for-chapter5') > -1).to.be.true;
 
-      expect(fooIndexFile.indexOf('for-chapter2') > -1).to.be.true;
-      expect(fooIndexFile.indexOf('for-chapter3') > -1).to.be.true;
-      expect(fooIndexFile.indexOf('for-chapter4') > -1).to.be.true;
-      expect(fooIndexFile.indexOf('for-chapter5') > -1).to.be.true;
-
-      expect(fooIndexFile.indexOf('for-chapter6') > -1).to.be.false;
-
+        expect(fooIndexFile.indexOf('for-chapter6') > -1).to.be.false;
     });
 
     it('should generate every link containing its parent reference', () => {
-      [
-        '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html',
-        '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
-        '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html',
-      ].map(linkRef =>
-        expect(fooIndexFile.indexOf(linkRef) > -1).to.be.true
-      );
+        [
+            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html',
+            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
+            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
+        ].map(linkRef => expect(fooIndexFile.indexOf(linkRef) > -1).to.be.true);
 
-      expect(fooIndexFile.indexOf(
-        '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
-      ) > -1).to.be.false;
+        expect(
+            fooIndexFile.indexOf(
+                '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
+            ) > -1
+        ).to.be.false;
+    });
+
+    it('should have links in correct order', () => {
+        expect(fooIndexFile).to.contain(
+            `<li class="link for-chapter3">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html" >edit-level3</a>\n                                </li>\n                                <li class="link for-chapter4">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" >edit-level4</a>\n                                </li>`
+        );
     });
 });

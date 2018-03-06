@@ -9,13 +9,7 @@ export class MarkdownEngine {
     /**
      * List of markdown files without .md extension
      */
-    private readonly markdownFiles = [
-        'README',
-        'CHANGELOG',
-        'LICENSE',
-        'CONTRIBUTING',
-        'TODO'
-    ];
+    private readonly markdownFiles = ['README', 'CHANGELOG', 'LICENSE', 'CONTRIBUTING', 'TODO'];
 
     constructor(private fileEngine = new FileEngine()) {
         const renderer = new marked.Renderer();
@@ -26,9 +20,7 @@ export class MarkdownEngine {
             }
 
             highlighted = this.escape(code);
-            return `<pre class="line-numbers"><code class="language-${
-                language
-            }">${highlighted}</code></pre>`;
+            return `<pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre>`;
         };
 
         renderer.table = (header, body) => {
@@ -46,12 +38,7 @@ export class MarkdownEngine {
 
         let self = this;
         renderer.image = function(href: string, title: string, text: string) {
-            let out =
-                '<img src="' +
-                href +
-                '" alt="' +
-                text +
-                '" class="img-responsive"';
+            let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
             if (title) {
                 out += ' title="' + title + '"';
             }
@@ -68,10 +55,12 @@ export class MarkdownEngine {
     public getTraditionalMarkdown(filepath: string): Promise<string> {
         return this.fileEngine
             .get(process.cwd() + path.sep + filepath + '.md')
-            .catch(err =>
-                this.fileEngine.get(process.cwd() + path.sep + filepath).then()
-            )
+            .catch(err => this.fileEngine.get(process.cwd() + path.sep + filepath).then())
             .then(data => marked(data));
+    }
+
+    public getTraditionalMarkdownSync(filepath: string): string {
+        return marked(this.fileEngine.getSync(process.cwd() + path.sep + filepath));
     }
 
     private getReadmeFile(): Promise<string> {
@@ -82,23 +71,20 @@ export class MarkdownEngine {
 
     public readNeighbourReadmeFile(file: string): string {
         let dirname = path.dirname(file);
-        let readmeFile =
-            dirname + path.sep + path.basename(file, '.ts') + '.md';
+        let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
         return fs.readFileSync(readmeFile, 'utf8');
     }
 
     public hasNeighbourReadmeFile(file: string): boolean {
         let dirname = path.dirname(file);
-        let readmeFile =
-            dirname + path.sep + path.basename(file, '.ts') + '.md';
+        let readmeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
         return this.fileEngine.existsSync(readmeFile);
     }
 
     private componentReadmeFile(file: string): string {
         let dirname = path.dirname(file);
         let readmeFile = dirname + path.sep + 'README.md';
-        let readmeAlternativeFile =
-            dirname + path.sep + path.basename(file, '.ts') + '.md';
+        let readmeAlternativeFile = dirname + path.sep + path.basename(file, '.ts') + '.md';
         let finalPath = '';
         if (this.fileEngine.existsSync(readmeFile)) {
             finalPath = readmeFile;
@@ -120,9 +106,8 @@ export class MarkdownEngine {
     public listRootMarkdowns(): string[] {
         let foundFiles = this.markdownFiles.filter(
             x =>
-                this.fileEngine.existsSync(
-                    process.cwd() + path.sep + x + '.md'
-                ) || this.fileEngine.existsSync(process.cwd() + path.sep + x)
+                this.fileEngine.existsSync(process.cwd() + path.sep + x + '.md') ||
+                this.fileEngine.existsSync(process.cwd() + path.sep + x)
         );
 
         return this.addEndings(foundFiles);

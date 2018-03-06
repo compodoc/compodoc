@@ -16,7 +16,7 @@ export class FileEngine {
 
     public write(filepath: string, contents: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            fs.outputFile(path.resolve(filepath), contents, (err) => {
+            fs.outputFile(path.resolve(filepath), contents, err => {
                 if (err) {
                     reject(err);
                 } else {
@@ -24,6 +24,10 @@ export class FileEngine {
                 }
             });
         });
+    }
+
+    public getSync(filepath: string): string {
+        return fs.readFileSync(path.resolve(filepath), 'utf8');
     }
 
     /**
