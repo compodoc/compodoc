@@ -186,10 +186,11 @@ export class ClassHelper {
             }
         }
 
+        members = this.visitMembers(classDeclaration.members, sourceFile);
+
         if (classDeclaration.decorators) {
             for (let i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return {
                         description,
                         inputs: members.inputs,
@@ -207,7 +208,6 @@ export class ClassHelper {
                         accessors: members.accessors
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return [
                         {
                             fileName,
@@ -225,7 +225,6 @@ export class ClassHelper {
                         }
                     ];
                 } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return [
                         {
                             fileName,
@@ -246,7 +245,6 @@ export class ClassHelper {
                         }
                     ];
                 } else {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return [
                         {
                             description,
@@ -264,7 +262,6 @@ export class ClassHelper {
                 }
             }
         } else if (description) {
-            members = this.visitMembers(classDeclaration.members, sourceFile);
             return [
                 {
                     description,
@@ -280,7 +277,6 @@ export class ClassHelper {
                 }
             ];
         } else {
-            members = this.visitMembers(classDeclaration.members, sourceFile);
             return [
                 {
                     methods: members.methods,
