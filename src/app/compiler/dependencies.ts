@@ -10,6 +10,7 @@ import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
+import { ExtendsMerger } from '../../utils/extends-merger.util';
 import { CodeGenerator } from './code-generator';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
@@ -56,6 +57,7 @@ export class Dependencies {
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private classHelper: ClassHelper;
+    private extendsMerger: ExtendsMerger;
 
     private jsdocParserUtil = new JsdocParserUtil();
     private importsUtil = new ImportsUtil();
@@ -80,6 +82,7 @@ export class Dependencies {
         this.typeChecker = this.program.getTypeChecker();
         this.classHelper = new ClassHelper(this.typeChecker, this.configuration);
         this.componentHelper = new ComponentHelper(this.classHelper);
+        this.extendsMerger = new ExtendsMerger();
     }
 
     public getDependencies() {
@@ -182,6 +185,18 @@ export class Dependencies {
                 deps.modulesForGraph.forEach(onLink);
             });
         }
+
+        /**
+         * If one thing extends another, merge them, only for internal sources
+         * - classes
+         * - components
+         * for
+         * - inputs
+         * - outputs
+         * - properties
+         * - methods
+         */
+        deps = this.extendsMerger.merge(deps);
 
         // RouterParser.printModulesRoutes();
         // RouterParser.printRoutes();

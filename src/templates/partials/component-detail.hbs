@@ -232,9 +232,20 @@
                     </tr>
                     {{#if line}}
                         {{#unless ../disableSourceCode}}
+                            {{#if inheritance}}
+                                <tr>
+                                    <td class="col-md-4" colspan="2">
+                                        <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
+                                    </td>
+                                </tr>
+                            {{/if}}
                             <tr>
                                 <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                                    {{#if inheritance}}
+                                        <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
+                                    {{else}}
+                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                                    {{/if}}
                                 </td>
                             </tr>
                         {{/unless}}
@@ -267,9 +278,20 @@
                     </tr>
                     {{#if line}}
                         {{#unless ../disableSourceCode}}
+                            {{#if inheritance}}
+                                <tr>
+                                    <td class="col-md-4" colspan="2">
+                                        <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
+                                    </td>
+                                </tr>
+                            {{/if}}
                             <tr>
                                 <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                                    {{#if inheritance}}
+                                        <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
+                                    {{else}}
+                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
+                                    {{/if}}
                                 </td>
                             </tr>
                         {{/unless}}
