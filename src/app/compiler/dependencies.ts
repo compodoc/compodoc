@@ -248,8 +248,12 @@ export class Dependencies {
         if (IO.accessors) {
             deps.accessors = IO.accessors;
         }
-        this.debug(deps);
-        outputSymbols.classes.push(deps);
+        if (typeof IO.ignore === 'undefined') {
+            this.debug(deps);
+            outputSymbols.classes.push(deps);
+        } else {
+            this.ignore(deps);
+        }
     }
 
     private getSourceFileDecorators(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
@@ -331,10 +335,12 @@ export class Dependencies {
                                     file
                                 );
                             }
-                            this.routerParser.addModule(name, moduleDep.imports);
-                            outputSymbols.modules.push(moduleDep);
-                            outputSymbols.modulesForGraph.push(moduleDep);
                             deps = moduleDep;
+                            if (typeof IO.ignore === 'undefined') {
+                                this.routerParser.addModule(name, moduleDep.imports);
+                                outputSymbols.modules.push(moduleDep);
+                                outputSymbols.modulesForGraph.push(moduleDep);
+                            }
                         } else if (this.isComponent(metadata)) {
                             if (props.length === 0) {
                                 return;
@@ -343,9 +349,11 @@ export class Dependencies {
                                 this.componentHelper,
                                 this.configuration
                             ).create(file, srcFile, name, props, IO);
-                            $componentsTreeEngine.addComponent(componentDep);
-                            outputSymbols.components.push(componentDep);
                             deps = componentDep;
+                            if (typeof IO.ignore === 'undefined') {
+                                $componentsTreeEngine.addComponent(componentDep);
+                                outputSymbols.components.push(componentDep);
+                            }
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
                                 name,
@@ -369,17 +377,18 @@ export class Dependencies {
                             if (IO.accessors) {
                                 injectableDeps.accessors = IO.accessors;
                             }
-                            if (IO.implements && IO.implements.length > 0) {
-                                if (_.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
-                                    outputSymbols.interceptors.push(injectableDeps);
+                            deps = injectableDeps;
+                            if (typeof IO.ignore === 'undefined') {
+                                if (IO.implements && IO.implements.length > 0) {
+                                    if (_.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
+                                        outputSymbols.interceptors.push(injectableDeps);
+                                    } else {
+                                        outputSymbols.injectables.push(injectableDeps);
+                                    }
                                 } else {
                                     outputSymbols.injectables.push(injectableDeps);
                                 }
-                            } else {
-                                outputSymbols.injectables.push(injectableDeps);
                             }
-
-                            deps = injectableDeps;
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
                                 name,
@@ -399,8 +408,10 @@ export class Dependencies {
                             if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                                 pipeDeps.jsdoctags = IO.jsdoctags[0].tags;
                             }
-                            outputSymbols.pipes.push(pipeDeps);
                             deps = pipeDeps;
+                            if (typeof IO.ignore === 'undefined') {
+                                outputSymbols.pipes.push(pipeDeps);
+                            }
                         } else if (this.isDirective(metadata)) {
                             if (props.length === 0) {
                                 return;
@@ -409,8 +420,10 @@ export class Dependencies {
                                 this.componentHelper,
                                 this.configuration
                             ).create(file, srcFile, name, props, IO);
-                            outputSymbols.directives.push(directiveDeps);
                             deps = directiveDeps;
+                            if (typeof IO.ignore === 'undefined') {
+                                outputSymbols.directives.push(directiveDeps);
+                            }
                         } else {
                             // Just a class
                             if (!classWithCustomDecorator) {
@@ -419,7 +432,12 @@ export class Dependencies {
                             }
                         }
                         this.cache.set(name, deps);
-                        this.debug(deps);
+
+                        if (typeof IO.ignore === 'undefined') {
+                            this.debug(deps);
+                        } else {
+                            this.ignore(deps);
+                        }
                     };
 
                     let filterByDecorators = filteredNode => {
@@ -470,8 +488,12 @@ export class Dependencies {
                         if (IO.extends) {
                             interfaceDeps.extends = IO.extends;
                         }
-                        this.debug(interfaceDeps);
-                        outputSymbols.interfaces.push(interfaceDeps);
+                        if (typeof IO.ignore === 'undefined') {
+                            this.debug(interfaceDeps);
+                            outputSymbols.interfaces.push(interfaceDeps);
+                        } else {
+                            this.ignore(interfaceDeps);
+                        }
                     } else if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
                         // let tags = this.visitFunctionDeclarationJSDocTags(node);
@@ -489,8 +511,9 @@ export class Dependencies {
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
-
-                        outputSymbols.miscellaneous.functions.push(functionDep);
+                        if (typeof infos.ignore === 'undefined') {
+                            outputSymbols.miscellaneous.functions.push(functionDep);
+                        }
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
                         let name = node.name.text;
@@ -683,6 +706,7 @@ export class Dependencies {
             parseNode(fileName, scannedFile, initialNode);
         });
     }
+
     private debug(deps: IDep) {
         if (deps) {
             logger.debug('found', `${deps.name}`);
@@ -697,6 +721,14 @@ export class Dependencies {
                 });
             }
         });
+    }
+
+    private ignore(deps: IDep) {
+        if (deps) {
+            logger.warn('ignore', `${deps.name}`);
+        } else {
+            return;
+        }
     }
 
     private findExpressionByNameInExpressions(entryNode, name) {
@@ -914,6 +946,15 @@ export class Dependencies {
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
+                _.forEach(jsdoctags[0].tags, tag => {
+                    if (tag.tagName) {
+                        if (tag.tagName.text) {
+                            if (tag.tagName.text.indexOf('ignore') > -1) {
+                                result.ignore = true;
+                            }
+                        }
+                    }
+                });
             }
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
