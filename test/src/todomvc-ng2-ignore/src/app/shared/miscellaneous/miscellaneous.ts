@@ -2,8 +2,11 @@
  * PI constant
  * See {@link Todo} for service using it
  */
-export const PI:number = 3.14;
+export const PI: number = 3.14;
 
+/**
+ * @ignore
+ */
 export let PIT = 4;
 
 /**
@@ -16,15 +19,16 @@ export function foo(status: string) {
 }
 
 export class StringIndexedItems<T> {
-  [index: string]: T;
+    [index: string]: T;
 }
 
 export interface TOTsdosds<T> {
-  [yala: string]: T;
+    [yala: string]: T;
 }
 
 /**
  * Directions of the app
+ * @ignore
  */
 export enum Direction {
     Up,
@@ -44,4 +48,7 @@ export type Flags = {
 export let yo:{ [index:string] : {message: string} } = {};
 */
 
-export type ChartChange = "creating" | "created" | "updating" | "updated";
+/**
+ * @ignore
+ */
+export type ChartChange = 'creating' | 'created' | 'updating' | 'updated';

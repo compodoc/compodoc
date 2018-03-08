@@ -141,3 +141,18 @@ export function getNamesCompareFn(name?) {
     };
     return t;
 }
+
+export function isIgnore(member): boolean {
+    if (member.jsDoc) {
+        for (const doc of member.jsDoc) {
+            if (doc.tags) {
+                for (const tag of doc.tags) {
+                    if (tag.tagName.text.indexOf('ignore') > -1) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}

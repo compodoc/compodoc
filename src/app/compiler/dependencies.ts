@@ -29,7 +29,8 @@ import {
     ImportsUtil,
     isModuleWithProviders,
     getModuleWithProviders,
-    hasSpreadElementInArray
+    hasSpreadElementInArray,
+    isIgnore
 } from '../../utils';
 import {
     IInjectableDep,
@@ -527,7 +528,9 @@ export class Dependencies {
                             ),
                             file: file
                         };
-                        outputSymbols.miscellaneous.enumerations.push(enumDeps);
+                        if (!isIgnore(node)) {
+                            outputSymbols.miscellaneous.enumerations.push(enumDeps);
+                        }
                     } else if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
                         let name = infos.name;
@@ -545,7 +548,9 @@ export class Dependencies {
                                 typeAliasDeps.rawtype = kindToType(node.type.kind);
                             }
                         }
-                        outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
+                        if (!isIgnore(node)) {
+                            outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
+                        }
                     } else if (ts.isModuleDeclaration(node)) {
                         if (node.body) {
                             if (node.body.statements && node.body.statements.length > 0) {
@@ -648,8 +653,9 @@ export class Dependencies {
                             this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
                             this.routerParser.addModule(name, [routingInitializer]);
                         }
-
-                        outputSymbols.miscellaneous.variables.push(deps);
+                        if (!isIgnore(node)) {
+                            outputSymbols.miscellaneous.variables.push(deps);
+                        }
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
@@ -665,12 +671,14 @@ export class Dependencies {
                         if (node.type) {
                             deps.kind = node.type.kind;
                         }
-                        outputSymbols.miscellaneous.typealiases.push(deps);
+                        if (!isIgnore(node)) {
+                            outputSymbols.miscellaneous.typealiases.push(deps);
+                        }
                     }
                     if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
                         let name = infos.name;
-                        let deps: IFunctionDecDep = {
+                        let functionDep: IFunctionDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'function',
@@ -678,17 +686,19 @@ export class Dependencies {
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
-                            deps.args = infos.args;
+                            functionDep.args = infos.args;
                         }
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
-                            deps.jsdoctags = infos.jsdoctags;
+                            functionDep.jsdoctags = infos.jsdoctags;
                         }
-                        outputSymbols.miscellaneous.functions.push(deps);
+                        if (typeof infos.ignore === 'undefined') {
+                            outputSymbols.miscellaneous.functions.push(functionDep);
+                        }
                     }
                     if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
                         let name = node.name.text;
-                        let deps: IEnumDecDep = {
+                        let enumDeps: IEnumDecDep = {
                             name,
                             childs: infos,
                             ctype: 'miscellaneous',
@@ -698,7 +708,9 @@ export class Dependencies {
                             ),
                             file: file
                         };
-                        outputSymbols.miscellaneous.enumerations.push(deps);
+                        if (!isIgnore(node)) {
+                            outputSymbols.miscellaneous.enumerations.push(enumDeps);
+                        }
                     }
                 }
             };

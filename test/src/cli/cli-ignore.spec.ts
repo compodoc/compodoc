@@ -115,7 +115,18 @@ describe('CLI ignore JSDoc tag support', () => {
         expect(file).to.not.contain('<code>LogMethod');
     });
 
-    /**
-     * TODO : enums, type alias, variables
-     */
+    it('Simple enum ignored', () => {
+        const file = read(distFolder + '/miscellaneous/enumerations.html');
+        expect(file).to.not.contain('<a href="#Direction">');
+    });
+
+    it('Simple variable ignored', () => {
+        const file = read(distFolder + '/miscellaneous/variables.html');
+        expect(file).to.not.contain('<code>PIT');
+    });
+
+    it('Simple type alias ignored', () => {
+        const file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.not.contain('<code>ChartChange');
+    });
 });

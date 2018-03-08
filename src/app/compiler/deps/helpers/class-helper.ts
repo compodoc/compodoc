@@ -10,6 +10,7 @@ import { ConfigurationInterface } from '../../../interfaces/configuration.interf
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
+import { isIgnore } from '../../../../utils/utils';
 
 const marked = require('marked');
 
@@ -230,21 +231,6 @@ export class ClassHelper {
         return false;
     }
 
-    private isIgnore(member): boolean {
-        if (member.jsDoc) {
-            for (const doc of member.jsDoc) {
-                if (doc.tags) {
-                    for (const tag of doc.tags) {
-                        if (tag.tagName.text.indexOf('ignore') > -1) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     private isPublic(member): boolean {
         if (member.modifiers) {
             const isPublic: boolean = member.modifiers.some(
@@ -306,7 +292,7 @@ export class ClassHelper {
         if (symbol) {
             rawDescription = symbol.getDocumentationComment();
             description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
-            if (symbol.valueDeclaration && this.isIgnore(symbol.valueDeclaration)) {
+            if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [
                     {
                         ignore: true
@@ -314,7 +300,7 @@ export class ClassHelper {
                 ];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
-                if (this.isIgnore(symbol.declarations[0])) {
+                if (isIgnore(symbol.declarations[0])) {
                     return [
                         {
                             ignore: true
@@ -497,7 +483,7 @@ export class ClassHelper {
 
             kind = member.kind;
 
-            if (this.isIgnore(member)) {
+            if (isIgnore(member)) {
                 continue;
             }
 
