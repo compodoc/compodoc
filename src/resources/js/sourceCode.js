@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var $tabSource = document.querySelector('#source-tab'),
-        $prismPre = document.querySelector('pre');
+        $prismPre = document.querySelector('pre.compodoc-sourcecode');
     if ($prismPre) {
         $prismCode = $prismPre.querySelector('code'),
         $content = document.querySelector('.content'),
