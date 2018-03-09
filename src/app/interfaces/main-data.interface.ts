@@ -54,6 +54,7 @@ export interface MainDataInterface {
     coverageData: Object;
     customFavicon: string;
     packageDependencies: Object[];
+    packagePeerDependencies: Object[];
     gaID: string;
     gaSite: string;
 }

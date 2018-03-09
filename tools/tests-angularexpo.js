@@ -116,8 +116,6 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'echoes-player', maintainer: 'orizens', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
-        name: 'a2gtm', maintainer: 'mrf28', tsconfig_path: './src/'
-    }, {
         name: 'todo-angular-firebase', maintainer: 'r-park', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
         name: 'angularspree', maintainer: 'aviabird', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'

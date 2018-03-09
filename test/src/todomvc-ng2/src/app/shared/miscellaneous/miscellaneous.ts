@@ -45,3 +45,7 @@ export let yo:{ [index:string] : {message: string} } = {};
 */
 
 export type ChartChange = "creating" | "created" | "updating" | "updated";
+
+export type TableColumnTarget = number | string | (number | string)[];
+
+export type TableSyncRenderer = Type<TableCellRendererBase> | TemplateRef<any>;

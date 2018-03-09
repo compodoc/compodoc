@@ -10,6 +10,7 @@ import { ConfigurationInterface } from '../../../interfaces/configuration.interf
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
+import { isIgnore } from '../../../../utils/utils';
 
 const marked = require('marked');
 
@@ -19,9 +20,12 @@ export class ClassHelper {
 
     constructor(
         private typeChecker: ts.TypeChecker,
-        private configuration: ConfigurationInterface) {
+        private configuration: ConfigurationInterface
+    ) {}
 
-    }
+    /**
+     * HELPERS
+     */
 
     public stringifyDefaultValue(node: ts.Node): string {
         /**
@@ -36,112 +40,274 @@ export class ClassHelper {
         }
     }
 
-    private visitTypeName(typeName: ts.Identifier) {
-      if(typeName.text) {
-        return typeName.text;
-      }
-      return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
-    }
+    private getDecoratorOfType(node, decoratorType) {
+        let decorators = node.decorators || [];
 
-    public visitType(node): string {
-        let _return = 'void';
-
-        if (!node) {
-            return _return;
+        for (let i = 0; i < decorators.length; i++) {
+            if (decorators[i].expression.expression) {
+                if (decorators[i].expression.expression.text === decoratorType) {
+                    return decorators[i];
+                }
+            }
         }
 
-        if (node.typeName) {
-            _return = this.visitTypeName(node.typeName);
-        } else if (node.type) {
-            if (node.type.kind) {
-                _return = kindToType(node.type.kind);
-            }
-            if (node.type.typeName) {
-                _return = this.visitTypeName(node.type.typeName);
-            }
-            if (node.type.typeArguments) {
-                _return += '<';
-                const typeArguments = [];
-                for (const argument of node.type.typeArguments) {
-                    typeArguments.push(this.visitType(argument));
-                }
-                _return += typeArguments.join(' | ');
-                _return += '>';
-            }
-            if (node.type.elementType) {
-                const _firstPart = this.visitType(node.type.elementType);
-                _return = _firstPart + kindToType(node.type.kind);
-            }
-            if (node.type.types &&  ts.isUnionTypeNode(node.type)) {
-                _return = '';
-                let i = 0;
-                let len = node.type.types.length;
-                for (i; i < len; i++) {
-                    let type = node.type.types[i];
+        return undefined;
+    }
 
-                    _return += kindToType(type.kind);
-                    if (ts.isLiteralTypeNode(type) && type.literal) {
-                        _return += '"' + type.literal.text + '"';
-                    }
-                    if (type.typeName) {
-                        _return += this.visitTypeName(type.typeName);
-                    }
+    private formatDecorators(decorators) {
+        let _decorators = [];
 
-                    if (i < len - 1) {
-                        _return += ' | ';
+        _.forEach(decorators, (decorator: any) => {
+            if (decorator.expression) {
+                if (decorator.expression.text) {
+                    _decorators.push({
+                        name: decorator.expression.text
+                    });
+                }
+                if (decorator.expression.expression) {
+                    let info: any = {
+                        name: decorator.expression.expression.text
+                    };
+                    if (decorator.expression.expression.arguments) {
+                        if (decorator.expression.expression.arguments.length > 0) {
+                            info.args = decorator.expression.expression.arguments;
+                        }
                     }
+                    _decorators.push(info);
                 }
             }
-        } else if (node.elementType) {
-            _return = kindToType(node.elementType.kind) + kindToType(node.kind);
-        } else if (node.types && ts.isUnionTypeNode(node)) {
-            _return = '';
-            let i = 0;
-            let len = node.types.length;
-            for (i; i < len; i++) {
-                let type = node.types[i];
-                _return += kindToType(type.kind);
-                if (ts.isLiteralTypeNode(type) && type.literal) {
-                    _return += '"' + type.literal.text + '"';
-                }
-                if (type.typeName) {
-                    _return += this.visitTypeName(type.typeName);
-                }
-                if (i < len - 1) {
-                    _return += ' | ';
-                }
-            }
-        } else if (node.dotDotDotToken) {
-            _return = 'any[]';
+        });
+
+        return _decorators;
+    }
+
+    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
+        let position: ts.LineAndCharacter;
+        if (node.name && node.name.end) {
+            position = ts.getLineAndCharacterOfPosition(sourceFile, node.name.end);
         } else {
-            _return = kindToType(node.kind);
-            if (_return === '' && node.initializer && node.initializer.kind && 
-                (node.kind === ts.SyntaxKind.PropertyDeclaration || node.kind === ts.SyntaxKind.Parameter)) {
-                _return = kindToType(node.initializer.kind);
-            }
+            position = ts.getLineAndCharacterOfPosition(sourceFile, node.pos);
         }
-        if (node.typeArguments && node.typeArguments.length > 0) {
-            _return += '<';
-            for (const argument of node.typeArguments) {
-                _return += this.visitType(argument);
-            }
-            _return += '>';
-        }
-
-        return _return;
+        return position;
     }
+
+    private addAccessor(accessors, nodeAccessor, sourceFile) {
+        let nodeName = '';
+        if (nodeAccessor.name) {
+            nodeName = nodeAccessor.name.text;
+            let jsdoctags = this.jsdocParserUtil.getJSDocs(nodeAccessor);
+
+            if (!accessors[nodeName]) {
+                accessors[nodeName] = {
+                    name: nodeName,
+                    setSignature: undefined,
+                    getSignature: undefined
+                };
+            }
+
+            if (nodeAccessor.kind === ts.SyntaxKind.SetAccessor) {
+                let setSignature = {
+                    name: nodeName,
+                    type: 'void',
+                    args: nodeAccessor.parameters.map(param => {
+                        return {
+                            name: param.name.text,
+                            type: param.type ? kindToType(param.type.kind) : ''
+                        };
+                    }),
+                    returnType: nodeAccessor.type ? this.visitType(nodeAccessor.type) : 'void',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
+                };
+
+                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        setSignature.description = marked(comment);
+                    }
+                }
+
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+                if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
+                    setSignature.jsdoctags = mergeTagsAndArgs(
+                        setSignature.args,
+                        setSignature.jsdoctags
+                    );
+                } else if (setSignature.args && setSignature.args.length > 0) {
+                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args);
+                }
+
+                accessors[nodeName].setSignature = setSignature;
+            }
+            if (nodeAccessor.kind === ts.SyntaxKind.GetAccessor) {
+                let getSignature = {
+                    name: nodeName,
+                    type: nodeAccessor.type ? kindToType(nodeAccessor.type.kind) : '',
+                    returnType: nodeAccessor.type ? this.visitType(nodeAccessor.type) : '',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
+                };
+
+                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
+                    let comment = nodeAccessor.jsDoc[0].comment;
+                    if (typeof comment !== 'undefined') {
+                        getSignature.description = marked(comment);
+                    }
+                }
+
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        getSignature.jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+
+                accessors[nodeName].getSignature = getSignature;
+            }
+        }
+    }
+
+    private isDirectiveDecorator(decorator: ts.Decorator): boolean {
+        if (decorator.expression.expression) {
+            let decoratorIdentifierText = decorator.expression.expression.text;
+            return (
+                decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component'
+            );
+        } else {
+            return false;
+        }
+    }
+
+    private isServiceDecorator(decorator) {
+        return decorator.expression.expression
+            ? decorator.expression.expression.text === 'Injectable'
+            : false;
+    }
+
+    private isPrivate(member): boolean {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        if (member.modifiers) {
+            const isPrivate: boolean = member.modifiers.some(
+                modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword
+            );
+            if (isPrivate) {
+                return true;
+            }
+        }
+        return this.isHiddenMember(member);
+    }
+
+    private isProtected(member): boolean {
+        if (member.modifiers) {
+            const isProtected: boolean = member.modifiers.some(
+                modifier => modifier.kind === ts.SyntaxKind.ProtectedKeyword
+            );
+            if (isProtected) {
+                return true;
+            }
+        }
+        return this.isHiddenMember(member);
+    }
+
+    private isInternal(member): boolean {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const internalTags: string[] = ['internal'];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private isPublic(member): boolean {
+        if (member.modifiers) {
+            const isPublic: boolean = member.modifiers.some(
+                modifier => modifier.kind === ts.SyntaxKind.PublicKeyword
+            );
+            if (isPublic) {
+                return true;
+            }
+        }
+        return this.isHiddenMember(member);
+    }
+
+    private isHiddenMember(member): boolean {
+        /**
+         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
+         */
+        const internalTags: string[] = ['hidden'];
+        if (member.jsDoc) {
+            for (const doc of member.jsDoc) {
+                if (doc.tags) {
+                    for (const tag of doc.tags) {
+                        if (internalTags.indexOf(tag.tagName.text) > -1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private isPipeDecorator(decorator) {
+        return decorator.expression.expression
+            ? decorator.expression.expression.text === 'Pipe'
+            : false;
+    }
+
+    private isModuleDecorator(decorator) {
+        return decorator.expression.expression
+            ? decorator.expression.expression.text === 'NgModule'
+            : false;
+    }
+
+    /**
+     * VISITERS
+     */
 
     public visitClassDeclaration(
         fileName: string,
         classDeclaration: ts.ClassDeclaration | ts.InterfaceDeclaration,
-        sourceFile?: ts.SourceFile): any {
+        sourceFile?: ts.SourceFile
+    ): any {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
+        let rawDescription;
         let description = '';
         if (symbol) {
+            rawDescription = symbol.getDocumentationComment();
             description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
+            if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
+                return [
+                    {
+                        ignore: true
+                    }
+                ];
+            }
+            if (symbol.declarations && symbol.declarations.length > 0) {
+                if (isIgnore(symbol.declarations[0])) {
+                    return [
+                        {
+                            ignore: true
+                        }
+                    ];
+                }
+            }
         }
         let className = classDeclaration.name.text;
         let members;
@@ -177,10 +343,11 @@ export class ClassHelper {
             }
         }
 
+        members = this.visitMembers(classDeclaration.members, sourceFile);
+
         if (classDeclaration.decorators) {
             for (let i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
                     return {
                         description,
                         inputs: members.inputs,
@@ -198,171 +365,91 @@ export class ClassHelper {
                         accessors: members.accessors
                     };
                 } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
-                    return [{
-                        fileName,
-                        className,
-                        description,
-                        methods: members.methods,
-                        indexSignatures: members.indexSignatures,
-                        properties: members.properties,
-                        kind: members.kind,
-                        constructor: members.constructor,
-                        jsdoctags: jsdoctags,
-                        extends: extendsElement,
-                        implements: implementsElements,
-                        accessors: members.accessors
-                    }];
+                    return [
+                        {
+                            fileName,
+                            className,
+                            description,
+                            methods: members.methods,
+                            indexSignatures: members.indexSignatures,
+                            properties: members.properties,
+                            kind: members.kind,
+                            constructor: members.constructor,
+                            jsdoctags: jsdoctags,
+                            extends: extendsElement,
+                            implements: implementsElements,
+                            accessors: members.accessors
+                        }
+                    ];
                 } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
-                    return [{
-                        fileName,
-                        className,
-                        description,
-                        jsdoctags: jsdoctags,
-                        properties: members.properties,
-                        methods: members.methods
-                    }];
+                    return [
+                        {
+                            fileName,
+                            className,
+                            description,
+                            jsdoctags: jsdoctags,
+                            properties: members.properties,
+                            methods: members.methods
+                        }
+                    ];
                 } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
-                    return [{
-                        fileName,
-                        className,
-                        description,
-                        jsdoctags: jsdoctags
-                    }];
+                    return [
+                        {
+                            fileName,
+                            className,
+                            description,
+                            jsdoctags: jsdoctags
+                        }
+                    ];
                 } else {
-                    members = this.visitMembers(classDeclaration.members, sourceFile);
-                    return [{
-                        description,
-                        methods: members.methods,
-                        indexSignatures: members.indexSignatures,
-                        properties: members.properties,
-                        kind: members.kind,
-                        constructor: members.constructor,
-                        jsdoctags: jsdoctags,
-                        extends: extendsElement,
-                        implements: implementsElements,
-                        accessors: members.accessors
-                    }];
+                    return [
+                        {
+                            description,
+                            methods: members.methods,
+                            indexSignatures: members.indexSignatures,
+                            properties: members.properties,
+                            kind: members.kind,
+                            constructor: members.constructor,
+                            jsdoctags: jsdoctags,
+                            extends: extendsElement,
+                            implements: implementsElements,
+                            accessors: members.accessors
+                        }
+                    ];
                 }
             }
         } else if (description) {
-            members = this.visitMembers(classDeclaration.members, sourceFile);
-            return [{
-                description,
-                methods: members.methods,
-                indexSignatures: members.indexSignatures,
-                properties: members.properties,
-                kind: members.kind,
-                constructor: members.constructor,
-                jsdoctags: jsdoctags,
-                extends: extendsElement,
-                implements: implementsElements,
-                accessors: members.accessors
-            }];
+            return [
+                {
+                    description,
+                    methods: members.methods,
+                    indexSignatures: members.indexSignatures,
+                    properties: members.properties,
+                    kind: members.kind,
+                    constructor: members.constructor,
+                    jsdoctags: jsdoctags,
+                    extends: extendsElement,
+                    implements: implementsElements,
+                    accessors: members.accessors
+                }
+            ];
         } else {
-            members = this.visitMembers(classDeclaration.members, sourceFile);
-            return [{
-                methods: members.methods,
-                indexSignatures: members.indexSignatures,
-                properties: members.properties,
-                kind: members.kind,
-                constructor: members.constructor,
-                jsdoctags: jsdoctags,
-                extends: extendsElement,
-                implements: implementsElements,
-                accessors: members.accessors
-            }];
+            return [
+                {
+                    methods: members.methods,
+                    indexSignatures: members.indexSignatures,
+                    properties: members.properties,
+                    kind: members.kind,
+                    constructor: members.constructor,
+                    jsdoctags: jsdoctags,
+                    extends: extendsElement,
+                    implements: implementsElements,
+                    accessors: members.accessors
+                }
+            ];
         }
 
         return [];
-    }
-
-    private isDirectiveDecorator(decorator: ts.Decorator): boolean {
-        if (decorator.expression.expression) {
-            let decoratorIdentifierText = decorator.expression.expression.text;
-            return decoratorIdentifierText === 'Directive' || decoratorIdentifierText === 'Component';
-        } else {
-            return false;
-        }
-    }
-
-    private isServiceDecorator(decorator) {
-        return (decorator.expression.expression) ? decorator.expression.expression.text === 'Injectable' : false;
-    }
-
-    private addAccessor(accessors, nodeAccessor, sourceFile) {
-        let nodeName = '';
-        if (nodeAccessor.name) {
-            nodeName = nodeAccessor.name.text;
-            let jsdoctags = this.jsdocParserUtil.getJSDocs(nodeAccessor);
-
-            if (!accessors[nodeName]) {
-                accessors[nodeName] = {
-                    'name': nodeName,
-                    'setSignature': undefined,
-                    'getSignature': undefined
-                }
-            }
-
-            if (nodeAccessor.kind === ts.SyntaxKind.SetAccessor) {
-                let setSignature = {
-                    'name': nodeName,
-                    'type': 'void',
-                    'args': nodeAccessor.parameters.map((param) => {
-                        return {
-                            'name': param.name.text,
-                            'type': (param.type) ? kindToType(param.type.kind) : ''
-                        };
-                    }),
-                    returnType: (nodeAccessor.type) ? this.visitType(nodeAccessor.type) : 'void',
-                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
-                };
-
-                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
-                    if (typeof comment !== 'undefined') {
-                        setSignature.description = marked(comment);
-                    }
-                }
-
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
-                }
-                if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
-                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args, setSignature.jsdoctags);
-                } else if (setSignature.args && setSignature.args.length > 0) {
-                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args);
-                }
-
-                accessors[nodeName].setSignature = setSignature;
-            }
-            if (nodeAccessor.kind === ts.SyntaxKind.GetAccessor) {
-                let getSignature = {
-                    'name': nodeName,
-                    'type': (nodeAccessor.type) ? kindToType(nodeAccessor.type.kind) : '',
-                    returnType: (nodeAccessor.type) ? this.visitType(nodeAccessor.type) : '',
-                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
-                }
-
-                if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
-                    if (typeof comment !== 'undefined') {
-                        getSignature.description = marked(comment);
-                    }
-                }
-
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        getSignature.jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
-                }
-
-                accessors[nodeName].getSignature = getSignature;
-            }
-        }
     }
 
     private visitMembers(members, sourceFile) {
@@ -394,8 +481,11 @@ export class ClassHelper {
             hostBinding = this.getDecoratorOfType(member, 'HostBinding');
             hostListener = this.getDecoratorOfType(member, 'HostListener');
 
-
             kind = member.kind;
+
+            if (isIgnore(member)) {
+                continue;
+            }
 
             if (inputDecorator) {
                 inputs.push(this.visitInputAndHostBinding(member, inputDecorator, sourceFile));
@@ -409,27 +499,37 @@ export class ClassHelper {
             } else if (hostListener) {
                 hostListeners.push(this.visitHostListener(member, hostListener, sourceFile));
             } else if (!this.isHiddenMember(member)) {
-
                 if (!(this.isPrivate(member) && this.configuration.mainData.disablePrivate)) {
-
-                     if (!(this.isInternal(member) && this.configuration.mainData.disableInternal)) {
-
-                         if (!(this.isProtected(member) && this.configuration.mainData.disableProtected)) {
-
-
+                    if (!(this.isInternal(member) && this.configuration.mainData.disableInternal)) {
+                        if (
+                            !(
+                                this.isProtected(member) &&
+                                this.configuration.mainData.disableProtected
+                            )
+                        ) {
                             if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
                                 methods.push(this.visitMethodDeclaration(member, sourceFile));
-                            } else if (ts.isPropertyDeclaration(member) ||
-                                ts.isPropertySignature(member)) {
+                            } else if (
+                                ts.isPropertyDeclaration(member) ||
+                                ts.isPropertySignature(member)
+                            ) {
                                 properties.push(this.visitProperty(member, sourceFile));
                             } else if (ts.isCallSignatureDeclaration(member)) {
                                 properties.push(this.visitCallDeclaration(member, sourceFile));
-                            } else if (ts.isGetAccessorDeclaration(member) || ts.isSetAccessorDeclaration(member)) {
+                            } else if (
+                                ts.isGetAccessorDeclaration(member) ||
+                                ts.isSetAccessorDeclaration(member)
+                            ) {
                                 this.addAccessor(accessors, members[i], sourceFile);
                             } else if (ts.isIndexSignatureDeclaration(member)) {
-                                indexSignatures.push(this.visitIndexDeclaration(member, sourceFile));
+                                indexSignatures.push(
+                                    this.visitIndexDeclaration(member, sourceFile)
+                                );
                             } else if (ts.isConstructorDeclaration(member)) {
-                                let _constructorProperties = this.visitConstructorProperties(member, sourceFile);
+                                let _constructorProperties = this.visitConstructorProperties(
+                                    member,
+                                    sourceFile
+                                );
                                 let j = 0;
                                 let len = _constructorProperties.length;
                                 for (j; j < len; j++) {
@@ -437,11 +537,8 @@ export class ClassHelper {
                                 }
                                 constructor = this.visitConstructorDeclaration(member, sourceFile);
                             }
-
                         }
-
                     }
-
                 }
             }
         }
@@ -464,7 +561,7 @@ export class ClassHelper {
             indexSignatures,
             kind,
             constructor
-        }
+        };
 
         if (Object.keys(accessors).length) {
             result['accessors'] = accessors;
@@ -473,11 +570,130 @@ export class ClassHelper {
         return result;
     }
 
+    private visitTypeName(typeName: ts.Identifier) {
+        if (typeName.text) {
+            return typeName.text;
+        }
+        return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
+    }
+
+    public visitType(node): string {
+        let _return = 'void';
+
+        if (!node) {
+            return _return;
+        }
+
+        if (node.typeName) {
+            _return = this.visitTypeName(node.typeName);
+        } else if (node.type) {
+            if (node.type.kind) {
+                _return = kindToType(node.type.kind);
+            }
+            if (node.type.typeName) {
+                _return = this.visitTypeName(node.type.typeName);
+            }
+            if (node.type.typeArguments) {
+                _return += '<';
+                const typeArguments = [];
+                for (const argument of node.type.typeArguments) {
+                    typeArguments.push(this.visitType(argument));
+                }
+                _return += typeArguments.join(' | ');
+                _return += '>';
+            }
+            if (node.type.elementType) {
+                const _firstPart = this.visitType(node.type.elementType);
+                _return = _firstPart + kindToType(node.type.kind);
+                if (node.type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                    _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
+                }
+            }
+            if (node.type.types && ts.isUnionTypeNode(node.type)) {
+                _return = '';
+                let i = 0;
+                let len = node.type.types.length;
+                for (i; i < len; i++) {
+                    let type = node.type.types[i];
+
+                    if (type.elementType) {
+                        const _firstPart = this.visitType(type.elementType);
+                        if (type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                            _return += '(' + _firstPart + ')' + kindToType(type.kind);
+                        } else {
+                            _return += _firstPart + kindToType(type.kind);
+                        }
+                    } else {
+                        _return += kindToType(type.kind);
+                        if (ts.isLiteralTypeNode(type) && type.literal) {
+                            _return += '"' + type.literal.text + '"';
+                        }
+                        if (type.typeName) {
+                            _return += this.visitTypeName(type.typeName);
+                        }
+                        if (type.typeArguments) {
+                            _return += '<';
+                            const typeArguments = [];
+                            for (const argument of type.typeArguments) {
+                                typeArguments.push(this.visitType(argument));
+                            }
+                            _return += typeArguments.join(' | ');
+                            _return += '>';
+                        }
+                    }
+                    if (i < len - 1) {
+                        _return += ' | ';
+                    }
+                }
+            }
+        } else if (node.elementType) {
+            _return = kindToType(node.elementType.kind) + kindToType(node.kind);
+        } else if (node.types && ts.isUnionTypeNode(node)) {
+            _return = '';
+            let i = 0;
+            let len = node.types.length;
+            for (i; i < len; i++) {
+                let type = node.types[i];
+                _return += kindToType(type.kind);
+                if (ts.isLiteralTypeNode(type) && type.literal) {
+                    _return += '"' + type.literal.text + '"';
+                }
+                if (type.typeName) {
+                    _return += this.visitTypeName(type.typeName);
+                }
+                if (i < len - 1) {
+                    _return += ' | ';
+                }
+            }
+        } else if (node.dotDotDotToken) {
+            _return = 'any[]';
+        } else {
+            _return = kindToType(node.kind);
+            if (
+                _return === '' &&
+                node.initializer &&
+                node.initializer.kind &&
+                (node.kind === ts.SyntaxKind.PropertyDeclaration ||
+                    node.kind === ts.SyntaxKind.Parameter)
+            ) {
+                _return = kindToType(node.initializer.kind);
+            }
+        }
+        if (node.typeArguments && node.typeArguments.length > 0) {
+            _return += '<';
+            for (const argument of node.typeArguments) {
+                _return += this.visitType(argument);
+            }
+            _return += '>';
+        }
+        return _return;
+    }
+
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let result: any = {
             id: 'call-declaration-' + Date.now(),
             description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
-            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
@@ -490,82 +706,52 @@ export class ClassHelper {
         return result;
     }
 
-    private visitIndexDeclaration(method: ts.IndexSignatureDeclaration, sourceFile?: ts.SourceFile) {
+    private visitIndexDeclaration(
+        method: ts.IndexSignatureDeclaration,
+        sourceFile?: ts.SourceFile
+    ) {
         return {
             id: 'index-declaration-' + Date.now(),
             description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
-            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
     }
 
-    private isPrivate(member): boolean {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        if (member.modifiers) {
-            const isPrivate: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword);
-            if (isPrivate) {
-                return true;
-            }
-        }
-        return this.isHiddenMember(member);
-    }
-
-    private isProtected(member): boolean {
-        if (member.modifiers) {
-            const isProtected: boolean = member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.ProtectedKeyword);
-            if (isProtected) {
-                return true;
-            }
-        }
-        return this.isHiddenMember(member);
-    }
-
-    private isInternal(member): boolean {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        const internalTags: string[] = ['internal'];
-        if (member.jsDoc) {
-            for (const doc of member.jsDoc) {
-                if (doc.tags) {
-                    for (const tag of doc.tags) {
-                        if (internalTags.indexOf(tag.tagName.text) > -1) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-
-    private visitConstructorDeclaration(method: ts.ConstructorDeclaration, sourceFile?: ts.SourceFile) {
+    private visitConstructorDeclaration(
+        method: ts.ConstructorDeclaration,
+        sourceFile?: ts.SourceFile
+    ) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         let result: any = {
             name: 'constructor',
             description: '',
-            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             line: this.getPosition(method, sourceFile).line + 1
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (method.symbol) {
-            result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
+            result.description = marked(
+                ts.displayPartsToString(method.symbol.getDocumentationComment())
+            );
         }
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                let kinds = method.modifiers.map((modifier) => {
-                    return modifier.kind;
-                }).reverse();
-                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
-                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                let kinds = method.modifiers
+                    .map(modifier => {
+                        return modifier.kind;
+                    })
+                    .reverse();
+                if (
+                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                ) {
+                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -583,29 +769,17 @@ export class ClassHelper {
         return result;
     }
 
-    private getDecoratorOfType(node, decoratorType) {
-        let decorators = node.decorators || [];
-
-        for (let i = 0; i < decorators.length; i++) {
-            if (decorators[i].expression.expression) {
-                if (decorators[i].expression.expression.text === decoratorType) {
-                    return decorators[i];
-                }
-            }
-        }
-
-        return undefined;
-    }
-
     private visitProperty(property: ts.PropertySignature, sourceFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         let result: any = {
             name: property.name.text,
-            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined,
+            defaultValue: property.initializer
+                ? this.stringifyDefaultValue(property.initializer)
+                : undefined,
             type: this.visitType(property),
-            optional: (typeof property.questionToken !== 'undefined'),
+            optional: typeof property.questionToken !== 'undefined',
             description: '',
             line: this.getPosition(property, sourceFile).line + 1
         };
@@ -616,7 +790,9 @@ export class ClassHelper {
         }
 
         if (property.symbol) {
-            result.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
+            result.description = marked(
+                ts.displayPartsToString(property.symbol.getDocumentationComment())
+            );
         }
 
         if (property.decorators) {
@@ -625,11 +801,16 @@ export class ClassHelper {
 
         if (property.modifiers) {
             if (property.modifiers.length > 0) {
-                let kinds = property.modifiers.map((modifier) => {
-                    return modifier.kind;
-                }).reverse();
-                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
-                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                let kinds = property.modifiers
+                    .map(modifier => {
+                        return modifier.kind;
+                    })
+                    .reverse();
+                if (
+                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                ) {
+                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -639,6 +820,7 @@ export class ClassHelper {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
+
         return result;
     }
 
@@ -659,40 +841,13 @@ export class ClassHelper {
         }
     }
 
-    private isPublic(member): boolean {
-        if (member.modifiers) {
-            const isPublic: boolean = member.modifiers.some((modifier) => modifier.kind === ts.SyntaxKind.PublicKeyword);
-            if (isPublic) {
-                return true;
-            }
-        }
-        return this.isHiddenMember(member);
-    }
-
-    private isHiddenMember(member): boolean {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
-        const internalTags: string[] = ['hidden'];
-        if (member.jsDoc) {
-            for (const doc of member.jsDoc) {
-                if (doc.tags) {
-                    for (const tag of doc.tags) {
-                        if (internalTags.indexOf(tag.tagName.text) > -1) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
         let inArgs = inDecorator.expression.arguments;
         let _return: any = {};
-        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
-        _return.defaultValue = property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined;
+        _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer
+            ? this.stringifyDefaultValue(property.initializer)
+            : undefined;
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
@@ -726,38 +881,11 @@ export class ClassHelper {
         return _return;
     }
 
-
-    private formatDecorators(decorators) {
-        let _decorators = [];
-
-        _.forEach(decorators, (decorator: any) => {
-            if (decorator.expression) {
-                if (decorator.expression.text) {
-                    _decorators.push({
-                        name: decorator.expression.text
-                    });
-                }
-                if (decorator.expression.expression) {
-                    let info: any = {
-                        name: decorator.expression.expression.text
-                    };
-                    if (decorator.expression.expression.arguments) {
-                        if (decorator.expression.expression.arguments.length > 0) {
-                            info.args = decorator.expression.expression.arguments;
-                        }
-                    }
-                    _decorators.push(info);
-                }
-            }
-        });
-
-        return _decorators;
-    }
-
     private visitMethodDeclaration(method: ts.MethodDeclaration, sourceFile: ts.SourceFile) {
         let result: any = {
             name: method.name.text,
-            args: method.parameters ? method.parameters.map((prop) => this.visitArgument(prop)) : [],
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
+            optional: typeof method.questionToken !== 'undefined',
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
@@ -768,21 +896,26 @@ export class ClassHelper {
             if (method.symbol) {
                 let symbol: ts.Symbol = method.symbol;
                 if (symbol.valueDeclaration) {
-                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
+                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                        symbol,
+                        symbol.valueDeclaration
+                    );
                     if (symbolType) {
                         try {
                             const signature = this.typeChecker.getSignatureFromDeclaration(method);
                             const returnType = signature.getReturnType();
                             result.returnType = this.typeChecker.typeToString(returnType);
                             // tslint:disable-next-line:no-empty
-                        } catch (error) { }
+                        } catch (error) {}
                     }
                 }
             }
         }
 
         if (method.symbol) {
-            result.description = marked(ts.displayPartsToString(method.symbol.getDocumentationComment()));
+            result.description = marked(
+                ts.displayPartsToString(method.symbol.getDocumentationComment())
+            );
         }
 
         if (method.decorators) {
@@ -791,11 +924,16 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                let kinds = method.modifiers.map((modifier) => {
-                    return modifier.kind;
-                }).reverse();
-                if (_.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 && _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1) {
-                    kinds = kinds.filter((kind) => kind !== ts.SyntaxKind.PublicKeyword);
+                let kinds = method.modifiers
+                    .map(modifier => {
+                        return modifier.kind;
+                    })
+                    .reverse();
+                if (
+                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                ) {
+                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -813,23 +951,22 @@ export class ClassHelper {
         return result;
     }
 
-    private isPipeDecorator(decorator) {
-        return (decorator.expression.expression) ? decorator.expression.expression.text === 'Pipe' : false;
-    }
-
-    private isModuleDecorator(decorator) {
-        return (decorator.expression.expression) ? decorator.expression.expression.text === 'NgModule' : false;
-    }
-
-
-    private visitOutput(property: ts.PropertyDeclaration, outDecorator: ts.Decorator, sourceFile?: ts.SourceFile) {
+    private visitOutput(
+        property: ts.PropertyDeclaration,
+        outDecorator: ts.Decorator,
+        sourceFile?: ts.SourceFile
+    ) {
         let inArgs = outDecorator.expression.arguments;
         let _return: any = {
-            name: (inArgs.length > 0) ? inArgs[0].text : property.name.text,
-            defaultValue: property.initializer ? this.stringifyDefaultValue(property.initializer) : undefined
+            name: inArgs.length > 0 ? inArgs[0].text : property.name.text,
+            defaultValue: property.initializer
+                ? this.stringifyDefaultValue(property.initializer)
+                : undefined
         };
         if (property.symbol) {
-            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
+            _return.description = marked(
+                ts.displayPartsToString(property.symbol.getDocumentationComment())
+            );
         }
         if (!_return.description) {
             if (property.jsDoc && property.jsDoc.length > 0) {
@@ -855,7 +992,6 @@ export class ClassHelper {
         return _return;
     }
 
-
     private visitArgument(arg: ts.ParameterDeclaration) {
         let _result: any = {
             name: arg.name.text,
@@ -870,7 +1006,9 @@ export class ClassHelper {
         if (arg.type) {
             if (arg.type.kind) {
                 if (ts.isFunctionTypeNode(arg.type)) {
-                    _result.function = arg.type.parameters ? arg.type.parameters.map((prop) => this.visitArgument(prop)) : [];
+                    _result.function = arg.type.parameters
+                        ? arg.type.parameters.map(prop => this.visitArgument(prop))
+                        : [];
                 }
             }
         }
@@ -880,26 +1018,23 @@ export class ClassHelper {
         return _result;
     }
 
-    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
-        let position: ts.LineAndCharacter;
-        if (node.name && node.name.end) {
-            position = ts.getLineAndCharacterOfPosition(sourceFile, node.name.end);
-        } else {
-            position = ts.getLineAndCharacterOfPosition(sourceFile, node.pos);
-        }
-        return position;
-    }
-
     private visitHostListener(property, hostListenerDecorator, sourceFile?) {
         let inArgs = hostListenerDecorator.expression.arguments;
         let _return: any = {};
-        _return.name = (inArgs.length > 0) ? inArgs[0].text : property.name.text;
-        _return.args = property.parameters ? property.parameters.map((prop) => this.visitArgument(prop)) : [];
-        _return.argsDecorator = (inArgs.length > 1) ? inArgs[1].elements.map((prop) => {
-            return prop.text;
-        }) : [];
+        _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
+        _return.args = property.parameters
+            ? property.parameters.map(prop => this.visitArgument(prop))
+            : [];
+        _return.argsDecorator =
+            inArgs.length > 1
+                ? inArgs[1].elements.map(prop => {
+                      return prop.text;
+                  })
+                : [];
         if (property.symbol) {
-            _return.description = marked(ts.displayPartsToString(property.symbol.getDocumentationComment()));
+            _return.description = marked(
+                ts.displayPartsToString(property.symbol.getDocumentationComment())
+            );
         }
         if (!_return.description) {
             if (property.jsDoc) {

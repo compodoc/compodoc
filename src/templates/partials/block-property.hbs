@@ -15,6 +15,9 @@
                             {{#each modifierKind}}
                                 <span class="modifier">{{modifKind this}}</span>
                             {{/each}}
+                            {{#if optional}}
+                                <span class="modifier">Optional</span>
+                            {{/if}}
                             {{name}}
                             </b>
                             <a href="#{{name}}"><span class="fa fa-link"></span></a>
@@ -56,9 +59,20 @@
                 {{/if}}
                 {{#if line}}
                     {{#unless ../disableSourceCode}}
+                        {{#if inheritance}}
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
+                                </td>
+                            </tr>
+                        {{/if}}
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                                {{#if inheritance}}
+                                    <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
+                                {{else}}
+                                    <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                                {{/if}}
                             </td>
                         </tr>
                     {{/unless}}

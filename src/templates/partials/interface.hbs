@@ -65,6 +65,9 @@
                             {{#each interface.properties}}
                                 <li>
                                     {{#if name}}
+                                        {{#if optional}}
+                                            <span class="modifier">Optional</span>
+                                        {{/if}}
                                         <a href="#{{name}}">{{name}}</a>
                                     {{else}}
                                         <a href="#{{id}}">Unamed property</a>
@@ -89,6 +92,9 @@
                                     {{#each modifierKind}}
                                         <span class="modifier">{{modifKind this}}</span>
                                     {{/each}}
+                                    {{#if optional}}
+                                        <span class="modifier">Optional</span>
+                                    {{/if}}
                                     <a href="#{{name}}">{{name}}</a>
                                 </li>
                             {{/each}}
@@ -278,7 +284,7 @@
 
     {{#unless disableSourceCode}}
     <div class="tab-pane fade tab-source-code" id="c-source">
-        <pre class="line-numbers"><code class="language-typescript">{{ interface.sourceCode}}</code></pre>
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">{{ interface.sourceCode}}</code></pre>
     </div>
     {{/unless}}
 </div>

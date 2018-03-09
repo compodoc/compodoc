@@ -6,6 +6,7 @@ import * as ts from 'typescript';
 
 const chokidar = require('chokidar');
 const marked = require('marked');
+const traverse = require('traverse');
 
 import { logger } from '../logger';
 import { HtmlEngine } from './engines/html.engine';
@@ -79,9 +80,17 @@ export class Application {
         this.configuration = new Configuration();
         this.dependenciesEngine = new DependenciesEngine();
         this.ngdEngine = new NgdEngine(this.dependenciesEngine);
-        this.htmlEngine = new HtmlEngine(this.configuration, this.dependenciesEngine, this.fileEngine);
+        this.htmlEngine = new HtmlEngine(
+            this.configuration,
+            this.dependenciesEngine,
+            this.fileEngine
+        );
         this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
-        this.exportEngine = new ExportEngine(this.configuration, this.dependenciesEngine, this.fileEngine);
+        this.exportEngine = new ExportEngine(
+            this.configuration,
+            this.dependenciesEngine,
+            this.fileEngine
+        );
 
         for (let option in options) {
             if (typeof this.configuration.mainData[option] !== 'undefined') {
@@ -102,19 +111,21 @@ export class Application {
      * Start compodoc process
      */
     protected generate(): Promise<{}> {
-
         process.on('unhandledRejection', this.unhandledRejectionListener);
         process.on('uncaughtException', this.uncaughtExceptionListener);
 
-        if (this.configuration.mainData.output.charAt(this.configuration.mainData.output.length - 1) !== '/') {
+        if (
+            this.configuration.mainData.output.charAt(
+                this.configuration.mainData.output.length - 1
+            ) !== '/'
+        ) {
             this.configuration.mainData.output += '/';
         }
 
         if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
             this.processPackageJson();
         } else {
-            this.htmlEngine.init()
-                .then(() => this.processPackageJson());
+            this.htmlEngine.init().then(() => this.processPackageJson());
         }
         return generationPromise;
     }
@@ -126,13 +137,17 @@ export class Application {
 
     private unhandledRejectionListener(err, p) {
         console.log('Unhandled Rejection at:', p, 'reason:', err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
+        logger.error(
+            'Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)'
+        ); // tslint:disable-line
         process.exit(1);
     }
 
     private uncaughtExceptionListener(err) {
         logger.error(err);
-        logger.error('Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)');// tslint:disable-line
+        logger.error(
+            'Sorry, but there was a problem during parsing or generation of the documentation. Please fill an issue on github. (https://github.com/compodoc/compodoc/issues/new)'
+        ); // tslint:disable-line
         process.exit(1);
     }
 
@@ -166,7 +181,7 @@ export class Application {
     public hasWatchedFilesTSFiles(): boolean {
         let result = false;
 
-        _.forEach(this.updatedFiles, (file) => {
+        _.forEach(this.updatedFiles, file => {
             if (path.extname(file) === '.ts') {
                 result = true;
             }
@@ -182,7 +197,7 @@ export class Application {
     public hasWatchedFilesRootMarkdownFiles(): boolean {
         let result = false;
 
-        _.forEach(this.updatedFiles, (file) => {
+        _.forEach(this.updatedFiles, file => {
             if (path.extname(file) === '.md' && path.dirname(file) === process.cwd()) {
                 result = true;
             }
@@ -201,35 +216,68 @@ export class Application {
 
     private processPackageJson(): void {
         logger.info('Searching package.json file');
-        this.fileEngine.get(process.cwd() + path.sep + 'package.json').then((packageData) => {
-            let parsedData = JSON.parse(packageData);
-            if (typeof parsedData.name !== 'undefined' && this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title) {
-                this.configuration.mainData.documentationMainName = parsedData.name + ' documentation';
-            }
-            if (typeof parsedData.description !== 'undefined') {
-                this.configuration.mainData.documentationMainDescription = parsedData.description;
-            }
-            this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(parsedData);
-            logger.info('package.json file found');
+        this.fileEngine.get(process.cwd() + path.sep + 'package.json').then(
+            packageData => {
+                let parsedData = JSON.parse(packageData);
+                if (
+                    typeof parsedData.name !== 'undefined' &&
+                    this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title
+                ) {
+                    this.configuration.mainData.documentationMainName =
+                        parsedData.name + ' documentation';
+                }
+                if (typeof parsedData.description !== 'undefined') {
+                    this.configuration.mainData.documentationMainDescription =
+                        parsedData.description;
+                }
+                this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(
+                    parsedData
+                );
+                logger.info('package.json file found');
 
-            if (typeof parsedData.dependencies !== 'undefined') {
-                this.processPackageDependencies(parsedData.dependencies);
-            }
+                if (typeof parsedData.dependencies !== 'undefined') {
+                    this.processPackageDependencies(parsedData.dependencies);
+                }
+                if (typeof parsedData.peerDependencies !== 'undefined') {
+                    this.processPackagePeerDependencies(parsedData.peerDependencies);
+                }
 
-            this.processMarkdowns().then(() => {
-                this.getDependenciesData();
-            }, (errorMessage) => {
+                this.processMarkdowns().then(
+                    () => {
+                        this.getDependenciesData();
+                    },
+                    errorMessage => {
+                        logger.error(errorMessage);
+                    }
+                );
+            },
+            errorMessage => {
                 logger.error(errorMessage);
+                logger.error('Continuing without package.json file');
+                this.processMarkdowns().then(
+                    () => {
+                        this.getDependenciesData();
+                    },
+                    errorMessage1 => {
+                        logger.error(errorMessage1);
+                    }
+                );
+            }
+        );
+    }
+
+    private processPackagePeerDependencies(dependencies): void {
+        logger.info('Processing package.json peerDependencies');
+        this.configuration.mainData.packagePeerDependencies = dependencies;
+        if (!this.configuration.hasPage('dependencies')) {
+            this.configuration.addPage({
+                name: 'dependencies',
+                id: 'packageDependencies',
+                context: 'package-dependencies',
+                depth: 0,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
-        }, (errorMessage) => {
-            logger.error(errorMessage);
-            logger.error('Continuing without package.json file');
-            this.processMarkdowns().then(() => {
-                this.getDependenciesData();
-            }, (errorMessage1) => {
-                logger.error(errorMessage1);
-            });
-        });
+        }
     }
 
     private processPackageDependencies(dependencies): void {
@@ -245,7 +293,9 @@ export class Application {
     }
 
     private processMarkdowns(): Promise<any> {
-        logger.info('Searching README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md files');
+        logger.info(
+            'Searching README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md files'
+        );
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -253,47 +303,50 @@ export class Application {
             let numberOfMarkdowns = 5;
             let loop = () => {
                 if (i < numberOfMarkdowns) {
-                    $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then((readmeData: string) => {
-                        this.configuration.addPage({
-                            name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
-                            context: 'getting-started',
-                            id: 'getting-started',
-                            markdown: readmeData,
-                            depth: 0,
-                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                        });
-                        if (markdowns[i] === 'readme') {
-                            this.configuration.mainData.readme = true;
+                    $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
+                        (readmeData: string) => {
                             this.configuration.addPage({
-                                name: 'overview',
-                                id: 'overview',
-                                context: 'overview',
-                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                            });
-                        } else {
-                            this.configuration.mainData.markdowns.push({
-                                name: markdowns[i],
-                                uppername: markdowns[i].toUpperCase(),
+                                name: markdowns[i] === 'readme' ? 'index' : markdowns[i],
+                                context: 'getting-started',
+                                id: 'getting-started',
+                                markdown: readmeData,
                                 depth: 0,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });
+                            if (markdowns[i] === 'readme') {
+                                this.configuration.mainData.readme = true;
+                                this.configuration.addPage({
+                                    name: 'overview',
+                                    id: 'overview',
+                                    context: 'overview',
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                                });
+                            } else {
+                                this.configuration.mainData.markdowns.push({
+                                    name: markdowns[i],
+                                    uppername: markdowns[i].toUpperCase(),
+                                    depth: 0,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                                });
+                            }
+                            logger.info(`${markdowns[i].toUpperCase()}.md file found`);
+                            i++;
+                            loop();
+                        },
+                        errorMessage => {
+                            logger.warn(errorMessage);
+                            logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
+                            if (markdowns[i] === 'readme') {
+                                this.configuration.addPage({
+                                    name: 'index',
+                                    id: 'index',
+                                    context: 'overview'
+                                });
+                            }
+                            i++;
+                            loop();
                         }
-                        logger.info(`${markdowns[i].toUpperCase()}.md file found`);
-                        i++;
-                        loop();
-                    }, (errorMessage) => {
-                        logger.warn(errorMessage);
-                        logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
-                        if (markdowns[i] === 'readme') {
-                            this.configuration.addPage({
-                                name: 'index',
-                                id: 'index',
-                                context: 'overview'
-                            });
-                        }
-                        i++;
-                        loop();
-                    });
+                    );
                 } else {
                     resolve();
                 }
@@ -303,13 +356,17 @@ export class Application {
     }
 
     private rebuildRootMarkdowns(): void {
-        logger.info('Regenerating README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md pages');
+        logger.info(
+            'Regenerating README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE.md, TODO.md pages'
+        );
 
         let actions = [];
 
         this.configuration.resetRootMarkdownPages();
 
-        actions.push(() => { return this.processMarkdowns(); });
+        actions.push(() => {
+            return this.processMarkdowns();
+        });
 
         promiseSequential(actions)
             .then(res => {
@@ -327,7 +384,8 @@ export class Application {
     private getMicroDependenciesData(): void {
         logger.info('Get diff dependencies data');
         let crawler = new Dependencies(
-            this.updatedFiles, {
+            this.updatedFiles,
+            {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
             },
             this.configuration,
@@ -352,7 +410,9 @@ export class Application {
         this.configuration.resetAdditionalPages();
 
         if (this.configuration.mainData.includes !== '') {
-            actions.push(() => { return this.prepareExternalIncludes(); });
+            actions.push(() => {
+                return this.prepareExternalIncludes();
+            });
         }
 
         promiseSequential(actions)
@@ -369,7 +429,8 @@ export class Application {
         logger.info('Get dependencies data');
 
         let crawler = new Dependencies(
-            this.files, {
+            this.files,
+            {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
             },
             this.configuration,
@@ -427,10 +488,12 @@ export class Application {
             actions.push(() => this.prepareInterfaces());
         }
 
-        if (diffCrawledData.miscellaneous.variables.length > 0 ||
+        if (
+            diffCrawledData.miscellaneous.variables.length > 0 ||
             diffCrawledData.miscellaneous.functions.length > 0 ||
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
-            diffCrawledData.miscellaneous.enumerations.length > 0) {
+            diffCrawledData.miscellaneous.enumerations.length > 0
+        ) {
             actions.push(() => this.prepareMiscellaneous());
         }
 
@@ -484,63 +547,108 @@ export class Application {
     private prepareEverything() {
         let actions = [];
 
-        actions.push(() => { return this.prepareModules(); });
-        actions.push(() => { return this.prepareComponents(); });
+        actions.push(() => {
+            return this.prepareModules();
+        });
+        actions.push(() => {
+            return this.prepareComponents();
+        });
 
         if (this.dependenciesEngine.directives.length > 0) {
-            actions.push(() => { return this.prepareDirectives(); });
+            actions.push(() => {
+                return this.prepareDirectives();
+            });
         }
 
         if (this.dependenciesEngine.injectables.length > 0) {
-            actions.push(() => { return this.prepareInjectables(); });
+            actions.push(() => {
+                return this.prepareInjectables();
+            });
         }
 
         if (this.dependenciesEngine.interceptors.length > 0) {
-            actions.push(() => { return this.prepareInterceptors(); });
+            actions.push(() => {
+                return this.prepareInterceptors();
+            });
         }
 
-        if (this.dependenciesEngine.routes && this.dependenciesEngine.routes.children.length > 0 && !this.configuration.mainData.disableRoutesGraph) {
-            actions.push(() => { return this.prepareRoutes(); });
+        if (
+            this.dependenciesEngine.routes &&
+            this.dependenciesEngine.routes.children.length > 0 &&
+            !this.configuration.mainData.disableRoutesGraph
+        ) {
+            actions.push(() => {
+                return this.prepareRoutes();
+            });
         }
 
         if (this.dependenciesEngine.pipes.length > 0) {
-            actions.push(() => { return this.preparePipes(); });
+            actions.push(() => {
+                return this.preparePipes();
+            });
         }
 
         if (this.dependenciesEngine.classes.length > 0) {
-            actions.push(() => { return this.prepareClasses(); });
+            actions.push(() => {
+                return this.prepareClasses();
+            });
         }
 
         if (this.dependenciesEngine.interfaces.length > 0) {
-            actions.push(() => { return this.prepareInterfaces(); });
+            actions.push(() => {
+                return this.prepareInterfaces();
+            });
         }
 
-        if (this.dependenciesEngine.miscellaneous.variables.length > 0 ||
+        if (
+            this.dependenciesEngine.miscellaneous.variables.length > 0 ||
             this.dependenciesEngine.miscellaneous.functions.length > 0 ||
             this.dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-            this.dependenciesEngine.miscellaneous.enumerations.length > 0) {
-            actions.push(() => { return this.prepareMiscellaneous(); });
+            this.dependenciesEngine.miscellaneous.enumerations.length > 0
+        ) {
+            actions.push(() => {
+                return this.prepareMiscellaneous();
+            });
         }
 
         if (!this.configuration.mainData.disableCoverage) {
-            actions.push(() => { return this.prepareCoverage(); });
+            actions.push(() => {
+                return this.prepareCoverage();
+            });
         }
 
         if (this.configuration.mainData.includes !== '') {
-            actions.push(() => { return this.prepareExternalIncludes(); });
+            actions.push(() => {
+                return this.prepareExternalIncludes();
+            });
         }
 
         promiseSequential(actions)
             .then(res => {
                 if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
-                    if (COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(this.configuration.mainData.exportFormat) > -1) {
-                        logger.info(`Generating documentation in export format ${this.configuration.mainData.exportFormat}`);
-                        this.exportEngine.export(this.configuration.mainData.output, this.configuration.mainData).then(() => {
-                            generationPromiseResolve();
-                            this.endCallback();
-                            logger.info('Documentation generated in ' + this.configuration.mainData.output +
-                                ' in ' + this.getElapsedTime() + ' seconds');
-                        });
+                    if (
+                        COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(
+                            this.configuration.mainData.exportFormat
+                        ) > -1
+                    ) {
+                        logger.info(
+                            `Generating documentation in export format ${
+                                this.configuration.mainData.exportFormat
+                            }`
+                        );
+                        this.exportEngine
+                            .export(this.configuration.mainData.output, this.configuration.mainData)
+                            .then(() => {
+                                generationPromiseResolve();
+                                this.endCallback();
+                                logger.info(
+                                    'Documentation generated in ' +
+                                        this.configuration.mainData.output +
+                                        ' in ' +
+                                        this.getElapsedTime() +
+                                        ' seconds'
+                                );
+                            });
                     } else {
                         logger.warn(`Exported format not supported`);
                     }
@@ -553,9 +661,8 @@ export class Application {
             });
     }
 
-
     private getIncludedPathForFile(file) {
-      return path.join(this.configuration.mainData.includes, file);
+        return path.join(this.configuration.mainData.includes, file);
     }
 
     private prepareExternalIncludes() {
@@ -564,92 +671,112 @@ export class Application {
         // For each file, add to this.configuration.mainData.additionalPages
         // Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-            this.fileEngine.get(this.getIncludedPathForFile('summary.json'))
-                .then((summaryData) => {
+            this.fileEngine.get(this.getIncludedPathForFile('summary.json')).then(
+                summaryData => {
                     logger.info('Additional documentation: summary.json file found');
 
                     const parsedSummaryData = JSON.parse(summaryData);
 
-                    // Loop for every "collection of items", children included
-                    const loop = (items, depth = 1, father = '') => {
-                        if (depth > 5) {
-                          logger.error('Only 5 levels of depth are supported');
-                          return;
-                        }
-                        // index will be scoped on every deepth collection
-                        let i = 0;
-                        const len = items.length;
-                        const internalLoop = () => {
-                            if (i <= len - 1) {
-                                $markdownengine.getTraditionalMarkdown(this.getIncludedPathForFile(items[i].file))
-                                .then((markedData) => {
-                                    const url = cleanNameWithoutSpaceAndToLowerCase(items[i].title);
+                    let that = this,
+                        level = 0;
 
-                                    this.configuration.addAdditionalPage({
-                                        name: items[i].title,
-                                        id: items[i].title,
+                    traverse(parsedSummaryData).forEach(function() {
+                        if (this.notRoot && typeof this.node === 'object') {
+                            let rawPath = this.path;
+                            let file = this.node['file'];
+                            let title = this.node['title'];
+                            let finalPath = that.configuration.mainData.includesFolder;
+
+                            let finalDepth = rawPath.filter(el => {
+                                return !isNaN(parseInt(el));
+                            });
+
+                            if (typeof file !== 'undefined' && typeof title !== 'undefined') {
+                                const url = cleanNameWithoutSpaceAndToLowerCase(title);
+
+                                let lastElementRootTree = null;
+                                finalDepth.forEach(el => {
+                                    let elementTree =
+                                        lastElementRootTree === null
+                                            ? parsedSummaryData
+                                            : lastElementRootTree;
+                                    if (typeof elementTree.children !== 'undefined') {
+                                        elementTree = elementTree['children'][el];
+                                    } else {
+                                        elementTree = elementTree[el];
+                                    }
+                                    finalPath +=
+                                        '/' +
+                                        cleanNameWithoutSpaceAndToLowerCase(elementTree.title);
+                                    lastElementRootTree = elementTree;
+                                });
+
+                                finalPath = finalPath.replace('/' + url, '');
+                                let markdownFile = $markdownengine.getTraditionalMarkdownSync(
+                                    that.getIncludedPathForFile(file)
+                                );
+
+                                if (finalDepth.length > 5) {
+                                    logger.error('Only 5 levels of depth are supported');
+                                } else {
+                                    that.configuration.addAdditionalPage({
+                                        name: title,
+                                        id: title,
                                         filename: url,
                                         context: 'additional-page',
-                                        path: this.configuration.mainData.includesFolder + father,
-                                        additionalPage: markedData,
-                                        depth: depth,
+                                        path: finalPath,
+                                        additionalPage: markdownFile,
+                                        depth: finalDepth.length,
                                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                                     });
-
-                                    if (items[i].children && items[i].children.length > 0) {
-                                        loop(items[i].children, depth+1, father + '/' + url);
-                                    }
-                                    i++;
-                                    internalLoop();
-                                }, (e) => {
-                                    logger.error(e);
-                                });
-                            } else {
-                              if (depth === 1) {
-                                resolve();
-                              }
+                                }
                             }
-                        };
-                        internalLoop();
-                    };
-                    loop(parsedSummaryData);
-                }, (errorMessage) => {
+                        }
+                    });
+
+                    resolve();
+                },
+                errorMessage => {
                     logger.error(errorMessage);
                     reject('Error during Additional documentation generation');
-                });
+                }
+            );
         });
     }
 
     public prepareModules(someModules?): Promise<any> {
         logger.info('Prepare modules');
         let i = 0;
-        let _modules = (someModules) ? someModules : this.dependenciesEngine.getModules();
+        let _modules = someModules ? someModules : this.dependenciesEngine.getModules();
 
         return new Promise((resolve, reject) => {
-
             this.configuration.mainData.modules = _modules.map(ngModule => {
                 ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
-                                return this.dependenciesEngine.getDirectives().some(
-                                    directive => (directive as any).name === metaDataItem.name
-                                );
+                                return this.dependenciesEngine
+                                    .getDirectives()
+                                    .some(
+                                        directive => (directive as any).name === metaDataItem.name
+                                    );
 
                             case 'component':
-                                return this.dependenciesEngine.getComponents().some(
-                                    component => (component as any).name === metaDataItem.name
-                                );
+                                return this.dependenciesEngine
+                                    .getComponents()
+                                    .some(
+                                        component => (component as any).name === metaDataItem.name
+                                    );
 
                             case 'module':
-                                return this.dependenciesEngine.getModules().some(
-                                    module => (module as any).name === metaDataItem.name
-                                );
+                                return this.dependenciesEngine
+                                    .getModules()
+                                    .some(module => (module as any).name === metaDataItem.name);
 
                             case 'pipe':
-                                return this.dependenciesEngine.getPipes().some(
-                                    pipe => (pipe as any).name === metaDataItem.name
-                                );
+                                return this.dependenciesEngine
+                                    .getPipes()
+                                    .some(pipe => (pipe as any).name === metaDataItem.name);
 
                             default:
                                 return true;
@@ -657,15 +784,29 @@ export class Application {
                     });
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
-                    return this.dependenciesEngine.getInjectables().some(injectable => (injectable as any).name === provider.name) ||
-                           this.dependenciesEngine.getInterceptors().some(interceptor => (interceptor as any).name === provider.name);
+                    return (
+                        this.dependenciesEngine
+                            .getInjectables()
+                            .some(injectable => (injectable as any).name === provider.name) ||
+                        this.dependenciesEngine
+                            .getInterceptors()
+                            .some(interceptor => (interceptor as any).name === provider.name)
+                    );
                 });
                 // Try fixing type undefined for each providers
-                _.forEach(ngModule.providers, (provider) => {
-                    if (this.dependenciesEngine.getInjectables().find(injectable => (injectable as any).name === provider.name)) {
+                _.forEach(ngModule.providers, provider => {
+                    if (
+                        this.dependenciesEngine
+                            .getInjectables()
+                            .find(injectable => (injectable as any).name === provider.name)
+                    ) {
                         provider.type = 'injectable';
                     }
-                    if (this.dependenciesEngine.getInterceptors().find(interceptor => (interceptor as any).name === provider.name)) {
+                    if (
+                        this.dependenciesEngine
+                            .getInterceptors()
+                            .find(interceptor => (interceptor as any).name === provider.name)
+                    ) {
                         provider.type = 'interceptor';
                     }
                 });
@@ -682,9 +823,19 @@ export class Application {
             let len = this.configuration.mainData.modules.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.modules[i].file)) {
-                        logger.info(` ${this.configuration.mainData.modules[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.modules[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.modules[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.modules[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.modules[i].file
+                        );
                         this.configuration.mainData.modules[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -708,16 +859,28 @@ export class Application {
 
     public preparePipes = (somePipes?) => {
         logger.info('Prepare pipes');
-        this.configuration.mainData.pipes = (somePipes) ? somePipes : this.dependenciesEngine.getPipes();
+        this.configuration.mainData.pipes = somePipes
+            ? somePipes
+            : this.dependenciesEngine.getPipes();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.pipes.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.pipes[i].file)) {
-                        logger.info(` ${this.configuration.mainData.pipes[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.pipes[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.pipes[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.pipes[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.pipes[i].file
+                        );
                         this.configuration.mainData.pipes[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -737,20 +900,32 @@ export class Application {
             };
             loop();
         });
-    }
+    };
 
     public prepareClasses = (someClasses?) => {
         logger.info('Prepare classes');
-        this.configuration.mainData.classes = (someClasses) ? someClasses : this.dependenciesEngine.getClasses();
+        this.configuration.mainData.classes = someClasses
+            ? someClasses
+            : this.dependenciesEngine.getClasses();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.classes.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.classes[i].file)) {
-                        logger.info(` ${this.configuration.mainData.classes[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.classes[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.classes[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.classes[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.classes[i].file
+                        );
                         this.configuration.mainData.classes[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -770,20 +945,32 @@ export class Application {
             };
             loop();
         });
-    }
+    };
 
     public prepareInterfaces(someInterfaces?) {
         logger.info('Prepare interfaces');
-        this.configuration.mainData.interfaces = (someInterfaces) ? someInterfaces : this.dependenciesEngine.getInterfaces();
+        this.configuration.mainData.interfaces = someInterfaces
+            ? someInterfaces
+            : this.dependenciesEngine.getInterfaces();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.interfaces.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file)) {
-                        logger.info(` ${this.configuration.mainData.interfaces[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.interfaces[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.interfaces[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.interfaces[i].file
+                        );
                         this.configuration.mainData.interfaces[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -807,10 +994,11 @@ export class Application {
 
     public prepareMiscellaneous(someMisc?) {
         logger.info('Prepare miscellaneous');
-        this.configuration.mainData.miscellaneous = (someMisc) ? someMisc : this.dependenciesEngine.getMiscellaneous();
+        this.configuration.mainData.miscellaneous = someMisc
+            ? someMisc
+            : this.dependenciesEngine.getMiscellaneous();
 
         return new Promise((resolve, reject) => {
-
             if (this.configuration.mainData.miscellaneous.functions.length > 0) {
                 this.configuration.addPage({
                     path: 'miscellaneous',
@@ -863,29 +1051,42 @@ export class Application {
         if (!this.fileEngine.existsSync(templatePath)) {
             let err = `Cannot read template for ${component.name}`;
             logger.error(err);
-            return new Promise((resolve, reject) => { });
+            return new Promise((resolve, reject) => {});
         }
 
-        return this.fileEngine.get(templatePath)
-            .then(data => component.templateData = data,
+        return this.fileEngine.get(templatePath).then(
+            data => (component.templateData = data),
             err => {
                 logger.error(err);
                 return Promise.reject('');
-            });
+            }
+        );
     }
 
     public prepareComponents(someComponents?) {
         logger.info('Prepare components');
-        this.configuration.mainData.components = (someComponents) ? someComponents : this.dependenciesEngine.getComponents();
+        this.configuration.mainData.components = someComponents
+            ? someComponents
+            : this.dependenciesEngine.getComponents();
 
         return new Promise((mainResolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.components.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.components[i].file)) {
-                        logger.info(` ${this.configuration.mainData.components[i].name} has a README file, include it`);
-                        let readmeFile = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.components[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.components[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.components[i].name
+                            } has a README file, include it`
+                        );
+                        let readmeFile = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.components[i].file
+                        );
                         this.configuration.mainData.components[i].readme = marked(readmeFile);
                         this.configuration.addPage({
                             path: 'components',
@@ -897,13 +1098,20 @@ export class Application {
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                         });
                         if (this.configuration.mainData.components[i].templateUrl.length > 0) {
-                            logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
-                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(() => {
-                                i++;
-                                loop();
-                            }, (e) => {
-                                logger.error(e);
-                            });
+                            logger.info(
+                                ` ${
+                                    this.configuration.mainData.components[i].name
+                                } has a templateUrl, include it`
+                            );
+                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(
+                                () => {
+                                    i++;
+                                    loop();
+                                },
+                                e => {
+                                    logger.error(e);
+                                }
+                            );
                         } else {
                             i++;
                             loop();
@@ -919,13 +1127,20 @@ export class Application {
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                         });
                         if (this.configuration.mainData.components[i].templateUrl.length > 0) {
-                            logger.info(` ${this.configuration.mainData.components[i].name} has a templateUrl, include it`);
-                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(() => {
-                                i++;
-                                loop();
-                            }, (e) => {
-                                logger.error(e);
-                            });
+                            logger.info(
+                                ` ${
+                                    this.configuration.mainData.components[i].name
+                                } has a templateUrl, include it`
+                            );
+                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(
+                                () => {
+                                    i++;
+                                    loop();
+                                },
+                                e => {
+                                    logger.error(e);
+                                }
+                            );
                         } else {
                             i++;
                             loop();
@@ -942,16 +1157,28 @@ export class Application {
     public prepareDirectives(someDirectives?) {
         logger.info('Prepare directives');
 
-        this.configuration.mainData.directives = (someDirectives) ? someDirectives : this.dependenciesEngine.getDirectives();
+        this.configuration.mainData.directives = someDirectives
+            ? someDirectives
+            : this.dependenciesEngine.getDirectives();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.directives.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.directives[i].file)) {
-                        logger.info(` ${this.configuration.mainData.directives[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.directives[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.directives[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.directives[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.directives[i].file
+                        );
                         this.configuration.mainData.directives[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -976,16 +1203,28 @@ export class Application {
     public prepareInjectables(someInjectables?): Promise<void> {
         logger.info('Prepare injectables');
 
-        this.configuration.mainData.injectables = (someInjectables) ? someInjectables : this.dependenciesEngine.getInjectables();
+        this.configuration.mainData.injectables = someInjectables
+            ? someInjectables
+            : this.dependenciesEngine.getInjectables();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.injectables.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.injectables[i].file)) {
-                        logger.info(` ${this.configuration.mainData.injectables[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.injectables[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.injectables[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.injectables[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.injectables[i].file
+                        );
                         this.configuration.mainData.injectables[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -1010,16 +1249,28 @@ export class Application {
     public prepareInterceptors(someInterceptors?): Promise<void> {
         logger.info('Prepare interceptors');
 
-        this.configuration.mainData.interceptors = (someInterceptors) ? someInterceptors : this.dependenciesEngine.getInterceptors();
+        this.configuration.mainData.interceptors = someInterceptors
+            ? someInterceptors
+            : this.dependenciesEngine.getInterceptors();
 
         return new Promise((resolve, reject) => {
             let i = 0;
             let len = this.configuration.mainData.interceptors.length;
             let loop = () => {
                 if (i < len) {
-                    if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.interceptors[i].file)) {
-                        logger.info(` ${this.configuration.mainData.interceptors[i].name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.interceptors[i].file);
+                    if (
+                        $markdownengine.hasNeighbourReadmeFile(
+                            this.configuration.mainData.interceptors[i].file
+                        )
+                    ) {
+                        logger.info(
+                            ` ${
+                                this.configuration.mainData.interceptors[i].name
+                            } has a README file, include it`
+                        );
+                        let readme = $markdownengine.readNeighbourReadmeFile(
+                            this.configuration.mainData.interceptors[i].file
+                        );
                         this.configuration.mainData.interceptors[i].readme = marked(readme);
                     }
                     this.configuration.addPage({
@@ -1046,7 +1297,6 @@ export class Application {
         this.configuration.mainData.routes = this.dependenciesEngine.getRoutes();
 
         return new Promise((resolve, reject) => {
-
             this.configuration.addPage({
                 name: 'routes',
                 id: 'routes',
@@ -1056,17 +1306,24 @@ export class Application {
             });
 
             if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                this.routerParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
-                    logger.info(' Routes index generated');
-                    resolve();
-                }, (e) => {
-                    logger.error(e);
-                    reject();
-                });
+                this.routerParser
+                    .generateRoutesIndex(
+                        this.configuration.mainData.output,
+                        this.configuration.mainData.routes
+                    )
+                    .then(
+                        () => {
+                            logger.info(' Routes index generated');
+                            resolve();
+                        },
+                        e => {
+                            logger.error(e);
+                            reject();
+                        }
+                    );
             } else {
                 resolve();
             }
-
         });
     }
 
@@ -1079,7 +1336,7 @@ export class Application {
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
-            let getStatus = function (percent) {
+            let getStatus = function(percent) {
                 let status;
                 if (percent <= 25) {
                     status = 'low';
@@ -1092,14 +1349,16 @@ export class Application {
                 }
                 return status;
             };
-            let processComponentsAndDirectives = (list) => {
+            let processComponentsAndDirectives = list => {
                 _.forEach(list, (element: any) => {
-                    if (!element.propertiesClass ||
+                    if (
+                        !element.propertiesClass ||
                         !element.methodsClass ||
                         !element.hostBindings ||
                         !element.hostListeners ||
                         !element.inputsClass ||
-                        !element.outputsClass) {
+                        !element.outputsClass
+                    ) {
                         return;
                     }
                     let cl: any = {
@@ -1115,11 +1374,16 @@ export class Application {
                         element.inputsClass.length +
                         element.hostBindings.length +
                         element.hostListeners.length +
-                        element.outputsClass.length + 1; // +1 for element decorator comment
+                        element.outputsClass.length +
+                        1; // +1 for element decorator comment
 
                     if (element.constructorObj) {
                         totalStatements += 1;
-                        if (element.constructorObj && element.constructorObj.description && element.constructorObj.description !== '') {
+                        if (
+                            element.constructorObj &&
+                            element.constructorObj.description &&
+                            element.constructorObj.description !== ''
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     }
@@ -1128,55 +1392,87 @@ export class Application {
                     }
 
                     _.forEach(element.propertiesClass, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            property.description &&
+                            property.description !== '' &&
+                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.methodsClass, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            method.description &&
+                            method.description !== '' &&
+                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostBindings, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            property.description &&
+                            property.description !== '' &&
+                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostListeners, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            method.description &&
+                            method.description !== '' &&
+                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.inputsClass, (input: any) => {
-                        if (input.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (input.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (input.description && input.description !== '' && input.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            input.description &&
+                            input.description !== '' &&
+                            input.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.outputsClass, (output: any) => {
-                        if (output.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                        if (output.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
-                        if (output.description && output.description !== '' && output.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                        if (
+                            output.description &&
+                            output.description !== '' &&
+                            output.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        ) {
                             totalStatementDocumented += 1;
                         }
                     });
 
-                    cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                    cl.coveragePercent = Math.floor(
+                        totalStatementDocumented / totalStatements * 100
+                    );
                     if (totalStatements === 0) {
                         cl.coveragePercent = 0;
                     }
@@ -1190,17 +1486,23 @@ export class Application {
                 logger.info('Process documentation coverage per file');
                 logger.info('-------------------');
 
-                let overFiles = files.filter((f) => {
-                    let overTest = f.coveragePercent >= this.configuration.mainData.coverageMinimumPerFile;
+                let overFiles = files.filter(f => {
+                    let overTest =
+                        f.coveragePercent >= this.configuration.mainData.coverageMinimumPerFile;
                     if (overTest) {
-                        logger.info(`${f.coveragePercent} % for file ${f.filePath} - over minimum per file`);
+                        logger.info(
+                            `${f.coveragePercent} % for file ${f.filePath} - over minimum per file`
+                        );
                     }
                     return overTest;
                 });
-                let underFiles = files.filter((f) => {
-                    let underTest = f.coveragePercent < this.configuration.mainData.coverageMinimumPerFile;
+                let underFiles = files.filter(f => {
+                    let underTest =
+                        f.coveragePercent < this.configuration.mainData.coverageMinimumPerFile;
                     if (underTest) {
-                        logger.error(`${f.coveragePercent} % for file ${f.filePath} - under minimum per file`);
+                        logger.error(
+                            `${f.coveragePercent} % for file ${f.filePath} - under minimum per file`
+                        );
                     }
                     return underTest;
                 });
@@ -1226,14 +1528,21 @@ export class Application {
                     let totalStatementDocumented = 0;
                     let totalStatements = 1;
 
-                    if (el.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (el.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (el.description && el.description !== '' && el.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        el.description &&
+                        el.description !== '' &&
+                        el.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
 
-                    cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                    cl.coveragePercent = Math.floor(
+                        totalStatementDocumented / totalStatements * 100
+                    );
                     cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
                     cl.status = getStatus(cl.coveragePercent);
                     totalProjectStatementDocumented += cl.coveragePercent;
@@ -1245,8 +1554,7 @@ export class Application {
             processComponentsAndDirectives(this.configuration.mainData.directives);
 
             _.forEach(this.configuration.mainData.classes, (classe: any) => {
-                if (!classe.properties ||
-                    !classe.methods) {
+                if (!classe.properties || !classe.methods) {
                     return;
                 }
                 let cl: any = {
@@ -1260,7 +1568,11 @@ export class Application {
 
                 if (classe.constructorObj) {
                     totalStatements += 1;
-                    if (classe.constructorObj && classe.constructorObj.description && classe.constructorObj.description !== '') {
+                    if (
+                        classe.constructorObj &&
+                        classe.constructorObj.description &&
+                        classe.constructorObj.description !== ''
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 }
@@ -1269,23 +1581,33 @@ export class Application {
                 }
 
                 _.forEach(classe.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        property.description &&
+                        property.description !== '' &&
+                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(classe.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        method.description &&
+                        method.description !== '' &&
+                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
 
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
                 if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
@@ -1295,8 +1617,7 @@ export class Application {
                 files.push(cl);
             });
             _.forEach(this.configuration.mainData.injectables, (injectable: any) => {
-                if (!injectable.properties ||
-                    !injectable.methods) {
+                if (!injectable.properties || !injectable.methods) {
                     return;
                 }
                 let cl: any = {
@@ -1310,9 +1631,11 @@ export class Application {
 
                 if (injectable.constructorObj) {
                     totalStatements += 1;
-                    if (injectable.constructorObj &&
+                    if (
+                        injectable.constructorObj &&
                         injectable.constructorObj.description &&
-                        injectable.constructorObj.description !== '') {
+                        injectable.constructorObj.description !== ''
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 }
@@ -1321,23 +1644,33 @@ export class Application {
                 }
 
                 _.forEach(injectable.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        property.description &&
+                        property.description !== '' &&
+                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(injectable.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        method.description &&
+                        method.description !== '' &&
+                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
 
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
                 if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
@@ -1347,8 +1680,7 @@ export class Application {
                 files.push(cl);
             });
             _.forEach(this.configuration.mainData.interfaces, (inter: any) => {
-                if (!inter.properties ||
-                    !inter.methods) {
+                if (!inter.properties || !inter.methods) {
                     return;
                 }
                 let cl: any = {
@@ -1362,7 +1694,11 @@ export class Application {
 
                 if (inter.constructorObj) {
                     totalStatements += 1;
-                    if (inter.constructorObj && inter.constructorObj.description && inter.constructorObj.description !== '') {
+                    if (
+                        inter.constructorObj &&
+                        inter.constructorObj.description &&
+                        inter.constructorObj.description !== ''
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 }
@@ -1371,23 +1707,33 @@ export class Application {
                 }
 
                 _.forEach(inter.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (property.description && property.description !== '' && property.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        property.description &&
+                        property.description !== '' &&
+                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(inter.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) { // Doesn't handle private for coverage
+                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if (method.description && method.description !== '' && method.modifierKind !== ts.SyntaxKind.PrivateKeyword) {
+                    if (
+                        method.description &&
+                        method.description !== '' &&
+                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                    ) {
                         totalStatementDocumented += 1;
                     }
                 });
 
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
                 if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
@@ -1409,19 +1755,28 @@ export class Application {
                     totalStatementDocumented += 1;
                 }
 
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
+                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
                 cl.status = getStatus(cl.coveragePercent);
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
 
-            processFunctionsAndVariables(this.configuration.mainData.miscellaneous.functions, 'function');
-            processFunctionsAndVariables(this.configuration.mainData.miscellaneous.variables, 'variable');
+            processFunctionsAndVariables(
+                this.configuration.mainData.miscellaneous.functions,
+                'function'
+            );
+            processFunctionsAndVariables(
+                this.configuration.mainData.miscellaneous.variables,
+                'variable'
+            );
 
             files = _.sortBy(files, ['filePath']);
             let coverageData = {
-                count: (files.length > 0) ? Math.floor(totalProjectStatementDocumented / files.length) : 0,
+                count:
+                    files.length > 0
+                        ? Math.floor(totalProjectStatementDocumented / files.length)
+                        : 0,
                 status: '',
                 files
             };
@@ -1438,19 +1793,33 @@ export class Application {
             coverageData.files = files;
             this.configuration.mainData.coverageData = coverageData;
             if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                this.htmlEngine.generateCoverageBadge(this.configuration.mainData.output, coverageData);
+                this.htmlEngine.generateCoverageBadge(
+                    this.configuration.mainData.output,
+                    coverageData
+                );
             }
             files = _.sortBy(files, ['coveragePercent']);
 
             let coverageTestPerFileResults;
-            if (this.configuration.mainData.coverageTest && !this.configuration.mainData.coverageTestPerFile) {
+            if (
+                this.configuration.mainData.coverageTest &&
+                !this.configuration.mainData.coverageTestPerFile
+            ) {
                 // Global coverage test and not per file
                 if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
+                    logger.info(
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${
+                            this.configuration.mainData.coverageTestThreshold
+                        }%)`
+                    );
                     generationPromiseResolve();
                     process.exit(0);
                 } else {
-                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
+                    let message = `Documentation coverage (${
+                        coverageData.count
+                    }%) is not over threshold (${
+                        this.configuration.mainData.coverageTestThreshold
+                    }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -1460,11 +1829,16 @@ export class Application {
                         process.exit(0);
                     }
                 }
-            } else if (!this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
+            } else if (
+                !this.configuration.mainData.coverageTest &&
+                this.configuration.mainData.coverageTestPerFile
+            ) {
                 coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
-                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
+                    let message = `Documentation coverage per file is not over threshold (${
+                        this.configuration.mainData.coverageMinimumPerFile
+                    }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -1474,23 +1848,48 @@ export class Application {
                         process.exit(0);
                     }
                 } else {
-                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                    logger.info(
+                        `Documentation coverage per file is over threshold (${
+                            this.configuration.mainData.coverageMinimumPerFile
+                        }%)`
+                    );
                     generationPromiseResolve();
                     process.exit(0);
                 }
-            } else if (this.configuration.mainData.coverageTest && this.configuration.mainData.coverageTestPerFile) {
+            } else if (
+                this.configuration.mainData.coverageTest &&
+                this.configuration.mainData.coverageTestPerFile
+            ) {
                 // Per file coverage test and global
                 coverageTestPerFileResults = processCoveragePerFile();
-                if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
-                    coverageTestPerFileResults.underFiles.length === 0) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                if (
+                    coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
+                    coverageTestPerFileResults.underFiles.length === 0
+                ) {
+                    logger.info(
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${
+                            this.configuration.mainData.coverageTestThreshold
+                        }%)`
+                    );
+                    logger.info(
+                        `Documentation coverage per file is over threshold (${
+                            this.configuration.mainData.coverageMinimumPerFile
+                        }%)`
+                    );
                     generationPromiseResolve();
                     process.exit(0);
-                } else if (coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
-                    coverageTestPerFileResults.underFiles.length > 0) {
-                    logger.info(`Documentation coverage (${coverageData.count}%) is over threshold (${this.configuration.mainData.coverageTestThreshold}%)`);
-                    let message = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
+                } else if (
+                    coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
+                    coverageTestPerFileResults.underFiles.length > 0
+                ) {
+                    logger.info(
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${
+                            this.configuration.mainData.coverageTestThreshold
+                        }%)`
+                    );
+                    let message = `Documentation coverage per file is not over threshold (${
+                        this.configuration.mainData.coverageMinimumPerFile
+                    }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -1499,10 +1898,18 @@ export class Application {
                         logger.warn(message);
                         process.exit(0);
                     }
-                } else if (coverageData.count < this.configuration.mainData.coverageTestThreshold &&
-                    coverageTestPerFileResults.underFiles.length > 0) {
-                    let messageGlobal = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`,
-                        messagePerFile = `Documentation coverage per file is not over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`;
+                } else if (
+                    coverageData.count < this.configuration.mainData.coverageTestThreshold &&
+                    coverageTestPerFileResults.underFiles.length > 0
+                ) {
+                    let messageGlobal = `Documentation coverage (${
+                            coverageData.count
+                        }%) is not over threshold (${
+                            this.configuration.mainData.coverageTestThreshold
+                        }%)`,
+                        messagePerFile = `Documentation coverage per file is not over threshold (${
+                            this.configuration.mainData.coverageMinimumPerFile
+                        }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(messageGlobal);
@@ -1514,15 +1921,27 @@ export class Application {
                         process.exit(0);
                     }
                 } else {
-                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${this.configuration.mainData.coverageTestThreshold}%)`;
+                    let message = `Documentation coverage (${
+                        coverageData.count
+                    }%) is not over threshold (${
+                        this.configuration.mainData.coverageTestThreshold
+                    }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
-                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        logger.info(
+                            `Documentation coverage per file is over threshold (${
+                                this.configuration.mainData.coverageMinimumPerFile
+                            }%)`
+                        );
                         process.exit(1);
                     } else {
                         logger.warn(message);
-                        logger.info(`Documentation coverage per file is over threshold (${this.configuration.mainData.coverageMinimumPerFile}%)`);
+                        logger.info(
+                            `Documentation coverage per file is over threshold (${
+                                this.configuration.mainData.coverageMinimumPerFile
+                            }%)`
+                        );
                         process.exit(0);
                     }
                 }
@@ -1566,22 +1985,25 @@ export class Application {
     public processPages() {
         logger.info('Process pages');
         let pages = this.configuration.pages;
-        Promise.all(pages.map((page) => this.processPage(page)))
+        Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                    if (this.configuration.mainData.additionalPages.length > 0) {
-                        this.processAdditionalPages();
-                    } else {
-                        if (this.configuration.mainData.assetsFolder !== '') {
-                            this.processAssetsFolder();
+                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                    () => {
+                        if (this.configuration.mainData.additionalPages.length > 0) {
+                            this.processAdditionalPages();
+                        } else {
+                            if (this.configuration.mainData.assetsFolder !== '') {
+                                this.processAssetsFolder();
+                            }
+                            this.processResources();
                         }
-                        this.processResources();
+                    },
+                    e => {
+                        logger.error(e);
                     }
-                }, (e) => {
-                    logger.error(e);
-                });
+                );
             })
-            .catch((e) => {
+            .catch(e => {
                 logger.error(e);
             });
     }
@@ -1591,14 +2013,16 @@ export class Application {
         let pages = this.configuration.mainData.additionalPages;
         Promise.all(pages.map((page, i) => this.processPage(page)))
             .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(() => {
-                    if (this.configuration.mainData.assetsFolder !== '') {
-                        this.processAssetsFolder();
-                    }
-                    this.processResources();
-                });
+                this.searchEngine
+                    .generateSearchIndexJson(this.configuration.mainData.output)
+                    .then(() => {
+                        if (this.configuration.mainData.assetsFolder !== '') {
+                            this.processAssetsFolder();
+                        }
+                        this.processResources();
+                    });
             })
-            .catch((e) => {
+            .catch(e => {
                 logger.error(e);
                 return Promise.reject(e);
             });
@@ -1608,18 +2032,23 @@ export class Application {
         logger.info('Copy assets folder');
 
         if (!this.fileEngine.existsSync(this.configuration.mainData.assetsFolder)) {
-            logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
+            logger.error(
+                `Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`
+            );
         } else {
             const destination = path.join(
-                                    this.configuration.mainData.output,
-                                    path.basename(this.configuration.mainData.assetsFolder));
+                this.configuration.mainData.output,
+                path.basename(this.configuration.mainData.assetsFolder)
+            );
             fs.copy(
                 path.resolve(this.configuration.mainData.assetsFolder),
-                path.resolve(destination), (err) => {
+                path.resolve(destination),
+                err => {
                     if (err) {
                         logger.error('Error during resources copy ', err);
                     }
-                });
+                }
+            );
         }
     }
 
@@ -1627,11 +2056,21 @@ export class Application {
         logger.info('Copy main resources');
 
         const onComplete = () => {
-            logger.info('Documentation generated in ' + this.configuration.mainData.output +
-                ' in ' + this.getElapsedTime() +
-                ' seconds using ' + this.configuration.mainData.theme + ' theme');
+            logger.info(
+                'Documentation generated in ' +
+                    this.configuration.mainData.output +
+                    ' in ' +
+                    this.getElapsedTime() +
+                    ' seconds using ' +
+                    this.configuration.mainData.theme +
+                    ' theme'
+            );
             if (this.configuration.mainData.serve) {
-                logger.info(`Serving documentation from ${this.configuration.mainData.output} at http://127.0.0.1:${this.configuration.mainData.port}`);
+                logger.info(
+                    `Serving documentation from ${
+                        this.configuration.mainData.output
+                    } at http://127.0.0.1:${this.configuration.mainData.port}`
+                );
                 this.runWebServer(this.configuration.mainData.output);
             } else {
                 generationPromiseResolve();
@@ -1646,36 +2085,60 @@ export class Application {
             finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
         }
 
-        fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(finalOutput), (errorCopy) => {
-            if (errorCopy) {
-                logger.error('Error during resources copy ', errorCopy);
-            } else {
-                if (this.configuration.mainData.extTheme) {
-                    fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.extTheme),
-                        path.resolve(finalOutput + '/styles/'), function (errorCopyTheme) {
-                            if (errorCopyTheme) {
-                                logger.error('Error during external styling theme copy ', errorCopyTheme);
-                            } else {
-                                logger.info('External styling theme copy succeeded');
-                                onComplete();
-                            }
-                        });
+        fs.copy(
+            path.resolve(__dirname + '/../src/resources/'),
+            path.resolve(finalOutput),
+            errorCopy => {
+                if (errorCopy) {
+                    logger.error('Error during resources copy ', errorCopy);
                 } else {
-                    if (this.configuration.mainData.customFavicon !== '') {
-                        logger.info(`Custom favicon supplied`);
-                        fs.copy(path.resolve(process.cwd() + path.sep + this.configuration.mainData.customFavicon), path.resolve(finalOutput + '/images/favicon.ico'), (errorCopyFavicon) => {// tslint:disable-line
-                            if (errorCopyFavicon) {
-                                logger.error('Error during resources copy ', errorCopyFavicon);
-                            } else {
-                                onComplete();
+                    if (this.configuration.mainData.extTheme) {
+                        fs.copy(
+                            path.resolve(
+                                process.cwd() + path.sep + this.configuration.mainData.extTheme
+                            ),
+                            path.resolve(finalOutput + '/styles/'),
+                            function(errorCopyTheme) {
+                                if (errorCopyTheme) {
+                                    logger.error(
+                                        'Error during external styling theme copy ',
+                                        errorCopyTheme
+                                    );
+                                } else {
+                                    logger.info('External styling theme copy succeeded');
+                                    onComplete();
+                                }
                             }
-                        });
+                        );
                     } else {
-                        onComplete();
+                        if (this.configuration.mainData.customFavicon !== '') {
+                            logger.info(`Custom favicon supplied`);
+                            fs.copy(
+                                path.resolve(
+                                    process.cwd() +
+                                        path.sep +
+                                        this.configuration.mainData.customFavicon
+                                ),
+                                path.resolve(finalOutput + '/images/favicon.ico'),
+                                errorCopyFavicon => {
+                                    // tslint:disable-line
+                                    if (errorCopyFavicon) {
+                                        logger.error(
+                                            'Error during resources copy ',
+                                            errorCopyFavicon
+                                        );
+                                    } else {
+                                        onComplete();
+                                    }
+                                }
+                            );
+                        } else {
+                            onComplete();
+                        }
                     }
                 }
             }
-        });
+        );
     }
 
     /**
@@ -1688,7 +2151,6 @@ export class Application {
     }
 
     public processGraphs() {
-
         if (this.configuration.mainData.disableGraph) {
             logger.info('Graph generation disabled');
             this.processPages();
@@ -1706,23 +2168,37 @@ export class Application {
                     }
                     finalPath += 'modules/' + modules[i].name;
                     let _rawModule = this.dependenciesEngine.getRawModule(modules[i].name);
-                    if (_rawModule.declarations.length > 0 ||
+                    if (
+                        _rawModule.declarations.length > 0 ||
                         _rawModule.bootstrap.length > 0 ||
                         _rawModule.imports.length > 0 ||
                         _rawModule.exports.length > 0 ||
-                        _rawModule.providers.length > 0) {
-                        this.ngdEngine.renderGraph(modules[i].file, finalPath, 'f', modules[i].name).then(() => {
-                            this.ngdEngine.readGraph(path.resolve(finalPath + path.sep + 'dependencies.svg'), modules[i].name)
-                                .then((data) => {
-                                    modules[i].graph = data as string;
-                                    i++;
-                                    loop();
-                                }, (err) => {
-                                    logger.error('Error during graph read: ', err);
-                                });
-                        }, (errorMessage) => {
-                            logger.error(errorMessage);
-                        });
+                        _rawModule.providers.length > 0
+                    ) {
+                        this.ngdEngine
+                            .renderGraph(modules[i].file, finalPath, 'f', modules[i].name)
+                            .then(
+                                () => {
+                                    this.ngdEngine
+                                        .readGraph(
+                                            path.resolve(finalPath + path.sep + 'dependencies.svg'),
+                                            modules[i].name
+                                        )
+                                        .then(
+                                            data => {
+                                                modules[i].graph = data as string;
+                                                i++;
+                                                loop();
+                                            },
+                                            err => {
+                                                logger.error('Error during graph read: ', err);
+                                            }
+                                        );
+                                },
+                                errorMessage => {
+                                    logger.error(errorMessage);
+                                }
+                            );
                     } else {
                         i++;
                         loop();
@@ -1738,20 +2214,40 @@ export class Application {
             finalMainGraphPath += 'graph';
             this.ngdEngine.init(path.resolve(finalMainGraphPath));
 
-            this.ngdEngine.renderGraph(this.configuration.mainData.tsconfig, path.resolve(finalMainGraphPath), 'p').then(() => {
-                this.ngdEngine.readGraph(path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'), 'Main graph').then((data) => {
-                    this.configuration.mainData.mainGraph = data as string;
-                    loop();
-                }, (err) => {
-                    logger.error('Error during main graph reading : ', err);
-                    this.configuration.mainData.disableMainGraph = true;
-                    loop();
-                });
-            }, (err) => {
-                logger.error('Ooops error during main graph generation, moving on next part with main graph disabled : ', err);
-                this.configuration.mainData.disableMainGraph = true;
-                loop();
-            });
+            this.ngdEngine
+                .renderGraph(
+                    this.configuration.mainData.tsconfig,
+                    path.resolve(finalMainGraphPath),
+                    'p'
+                )
+                .then(
+                    () => {
+                        this.ngdEngine
+                            .readGraph(
+                                path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'),
+                                'Main graph'
+                            )
+                            .then(
+                                data => {
+                                    this.configuration.mainData.mainGraph = data as string;
+                                    loop();
+                                },
+                                err => {
+                                    logger.error('Error during main graph reading : ', err);
+                                    this.configuration.mainData.disableMainGraph = true;
+                                    loop();
+                                }
+                            );
+                    },
+                    err => {
+                        logger.error(
+                            'Ooops error during main graph generation, moving on next part with main graph disabled : ',
+                            err
+                        );
+                        this.configuration.mainData.disableMainGraph = true;
+                        loop();
+                    }
+                );
         }
     }
 
@@ -1830,38 +2326,41 @@ export class Application {
             timerChangeRef = setTimeout(runnerChange, 1000);
         };
 
-        watcher
-            .on('ready', () => {
-                if (!watcherReady) {
-                    watcherReady = true;
-                    watcher
-                        .on('add', (file) => {
-                            logger.debug(`File ${file} has been added`);
-                            // Test extension, if ts
-                            // rescan everything
-                            if (path.extname(file) === '.ts') {
-                                waiterAddAndRemove();
-                            }
-                        })
-                        .on('change', (file) => {
-                            logger.debug(`File ${file} has been changed`);
-                            // Test extension, if ts
-                            // rescan only file
-                            if (path.extname(file) === '.ts' || path.extname(file) === '.md' || path.extname(file) === '.json') {
-                                this.watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
-                                waiterChange();
-                            }
-                        })
-                        .on('unlink', (file) => {
-                            logger.debug(`File ${file} has been removed`);
-                            // Test extension, if ts
-                            // rescan everything
-                            if (path.extname(file) === '.ts') {
-                                waiterAddAndRemove();
-                            }
-                        });
-                }
-            });
+        watcher.on('ready', () => {
+            if (!watcherReady) {
+                watcherReady = true;
+                watcher
+                    .on('add', file => {
+                        logger.debug(`File ${file} has been added`);
+                        // Test extension, if ts
+                        // rescan everything
+                        if (path.extname(file) === '.ts') {
+                            waiterAddAndRemove();
+                        }
+                    })
+                    .on('change', file => {
+                        logger.debug(`File ${file} has been changed`);
+                        // Test extension, if ts
+                        // rescan only file
+                        if (
+                            path.extname(file) === '.ts' ||
+                            path.extname(file) === '.md' ||
+                            path.extname(file) === '.json'
+                        ) {
+                            this.watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                            waiterChange();
+                        }
+                    })
+                    .on('unlink', file => {
+                        logger.debug(`File ${file} has been removed`);
+                        // Test extension, if ts
+                        // rescan everything
+                        if (path.extname(file) === '.ts') {
+                            waiterAddAndRemove();
+                        }
+                    });
+            }
+        });
     }
 
     /**
@@ -1870,7 +2369,6 @@ export class Application {
     get application(): Application {
         return this;
     }
-
 
     get isCLI(): boolean {
         return false;

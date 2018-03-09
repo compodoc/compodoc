@@ -7,6 +7,7 @@
   <a href="https://www.npmjs.com/package/@compodoc/compodoc"><img src="https://badge.fury.io/js/%40compodoc%2Fcompodoc.svg" alt="npm badge"></a>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
+  <a href="https://npmcharts.com/compare/@compodoc/compodoc?minimal=true"><img src="https://img.shields.io/npm/dm/@compodoc/compodoc.svg?style=flat" alt="NPM Downloads"></a>
   <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
   <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/compodoc/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" />
 </p>
@@ -43,7 +44,7 @@ The demo features documentation generated for a simple [TodoMVC application].
 
 - **Automatic table of contents** — API table of contents is generated using elements found during files parsing.
 
-- **JSDoc light support** — Support for `@param`, `@returns`, `@link` and `@example` tags.
+- **JSDoc light support** — Support for `@param`, `@returns`, `@link`, `@ignore` and `@example` tags.
 
 - **Documentation coverage** — Get the documentation coverage report of your project.
 

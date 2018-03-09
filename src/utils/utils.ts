@@ -28,7 +28,7 @@ export const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
 
 export function markedtags(tags: Array<any>) {
     let mtags = tags;
-    _.forEach(mtags, (tag) => {
+    _.forEach(mtags, tag => {
         tag.comment = marked(LinkParser.resolveLinks(tag.comment));
     });
     return mtags;
@@ -36,12 +36,12 @@ export function markedtags(tags: Array<any>) {
 
 export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Array<any> {
     let margs = _.cloneDeep(args);
-    _.forEach(margs, (arg) => {
+    _.forEach(margs, arg => {
         arg.tagName = {
             text: 'param'
         };
         if (jsdoctags) {
-            _.forEach(jsdoctags, (jsdoctag) => {
+            _.forEach(jsdoctags, jsdoctag => {
                 if (jsdoctag.name && jsdoctag.name.text === arg.name) {
                     arg.tagName = jsdoctag.tagName;
                     arg.name = jsdoctag.name;
@@ -53,7 +53,7 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
     });
     // Add example & returns
     if (jsdoctags) {
-        _.forEach(jsdoctags, (jsdoctag) => {
+        _.forEach(jsdoctags, jsdoctag => {
             if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
                 margs.push({
                     tagName: jsdoctag.tagName,
@@ -81,14 +81,14 @@ export function readConfig(configFile: string): any {
 }
 
 export function stripBom(source: string): string {
-    if (source.charCodeAt(0) === 0xFEFF) {
+    if (source.charCodeAt(0) === 0xfeff) {
         return source.slice(1);
     }
     return source;
 }
 
 export function hasBom(source: string): boolean {
-    return (source.charCodeAt(0) === 0xFEFF);
+    return source.charCodeAt(0) === 0xfeff;
 }
 
 export function handlePath(files: Array<string>, cwd: string): Array<string> {
@@ -120,7 +120,7 @@ export function cleanLifecycleHooksFromMethods(methods: Array<any>): Array<any> 
 }
 
 export function cleanSourcesForWatch(list) {
-    return list.filter((element) => {
+    return list.filter(element => {
         if (fs.existsSync(process.cwd() + path.sep + element)) {
             return element;
         }
@@ -140,4 +140,19 @@ export function getNamesCompareFn(name?) {
         }
     };
     return t;
+}
+
+export function isIgnore(member): boolean {
+    if (member.jsDoc) {
+        for (const doc of member.jsDoc) {
+            if (doc.tags) {
+                for (const tag of doc.tags) {
+                    if (tag.tagName.text.indexOf('ignore') > -1) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
