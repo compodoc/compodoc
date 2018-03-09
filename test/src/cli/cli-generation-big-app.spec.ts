@@ -558,4 +558,14 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/TodoComponent.html');
         expect(file).to.contain('>string[] | Todo</a>');
     });
+
+    it('should support multiple union types with array', () => {
+        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<code>(string | number)[]</code>');
+    });
+
+    it('should support multiple union types with array again', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('<code>number | string | (number | string)[]</code>');
+    });
 });

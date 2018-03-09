@@ -605,6 +605,9 @@ export class ClassHelper {
             if (node.type.elementType) {
                 const _firstPart = this.visitType(node.type.elementType);
                 _return = _firstPart + kindToType(node.type.kind);
+                if (node.type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                    _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
+                }
             }
             if (node.type.types && ts.isUnionTypeNode(node.type)) {
                 _return = '';
@@ -615,7 +618,11 @@ export class ClassHelper {
 
                     if (type.elementType) {
                         const _firstPart = this.visitType(type.elementType);
-                        _return += _firstPart + kindToType(type.kind);
+                        if (type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                            _return += '(' + _firstPart + ')' + kindToType(type.kind);
+                        } else {
+                            _return += _firstPart + kindToType(type.kind);
+                        }
                     } else {
                         _return += kindToType(type.kind);
                         if (ts.isLiteralTypeNode(type) && type.literal) {

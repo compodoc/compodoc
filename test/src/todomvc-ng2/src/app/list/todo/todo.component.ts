@@ -26,6 +26,8 @@ export class TodoComponent {
 
     unionVariable: string[] | Todo;
 
+    public filter(term: string, fields?: (string | number)[]): void;
+
     /**
      * Local reference of TodoStore
      */
