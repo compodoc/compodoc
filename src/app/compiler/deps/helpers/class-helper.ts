@@ -631,6 +631,15 @@ export class ClassHelper {
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
                         }
+                        if (type.typeArguments) {
+                            _return += '<';
+                            const typeArguments = [];
+                            for (const argument of type.typeArguments) {
+                                typeArguments.push(this.visitType(argument));
+                            }
+                            _return += typeArguments.join(' | ');
+                            _return += '>';
+                        }
                     }
                     if (i < len - 1) {
                         _return += ' | ';
@@ -677,7 +686,6 @@ export class ClassHelper {
             }
             _return += '>';
         }
-
         return _return;
     }
 

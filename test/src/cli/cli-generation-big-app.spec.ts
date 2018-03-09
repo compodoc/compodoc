@@ -568,4 +568,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
         expect(file).to.contain('<code>number | string | (number | string)[]</code>');
     });
+
+    it('should support union type with generic', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('<code>Type&lt;TableCellRendererBase&gt; | TemplateRef&lt;any&gt;</code>');
+    });
 });
