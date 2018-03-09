@@ -450,7 +450,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **routes:** handle no lazy module ([aa85c63](https://github.com/compodoc/compodoc/commit/aa85c63))
 
 <a name="0.0.41"></a>
-## 0.0.41 (2017-02-10)
+## [0.0.41](https://github.com/compodoc/compodoc/compare/0.0.40...0.0.41) (2017-02-10)
 
 ### Bug Fixes
 
@@ -463,7 +463,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app** @example for pipe, component and directive decorators ([706322d](https://github.com/compodoc/compodoc/commit/706322d))
 
 <a name="0.0.40"></a>
-## 0.0.40 (2017-02-08)
+## [0.0.40](https://github.com/compodoc/compodoc/compare/0.0.39...0.0.40) (2017-02-08)
 
 ### Bug Fixes
 
@@ -471,7 +471,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** exclude part of the project from documentation generation ([a7374a9](https://github.com/compodoc/compodoc/commit/a7374a9)), closes [#102](https://github.com/compodoc/compodoc/issues/102)
 
 <a name="0.0.39"></a>
-## 0.0.39 (2017-02-06)
+## [0.0.39](https://github.com/compodoc/compodoc/compare/0.0.38...0.0.39) (2017-02-06)
 
 ### Bug Fixes
 
@@ -493,7 +493,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 
 
 <a name="0.0.38"></a>
-## 0.0.38 (2017-01-27)
+## [0.0.38](https://github.com/compodoc/compodoc/compare/0.0.36...0.0.37) (2017-01-27)
 
 ### Bug Fixes
 
@@ -502,7 +502,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** test if constructor available ([bd1cb92](https://github.com/compodoc/compodoc/commit/bd1cb92))
 
 <a name="0.0.37"></a>
-## 0.0.37 (2017-01-26)
+## [0.0.37](https://github.com/compodoc/compodoc/compare/0.0.36...0.0.37) (2017-01-26)
 
 ### Features
 
@@ -512,7 +512,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** include constructor method in docs ([ddd00dc](https://github.com/compodoc/compodoc/commit/ddd00dc)), closes [#94](https://github.com/compodoc/compodoc/issues/94)
 
 <a name="0.0.36"></a>
-## 0.0.36 (2017-01-23)
+## [0.0.36](https://github.com/compodoc/compodoc/compare/0.0.35...0.0.36) (2017-01-23)
 
 ### Bug Fixes
 
@@ -533,7 +533,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** parsing .d.ts ([e38b571](https://github.com/compodoc/compodoc/commit/e38b571))
 
 <a name="0.0.35"></a>
-## 0.0.35 (2017-01-20)
+## [0.0.35](https://github.com/compodoc/compodoc/compare/0.0.34...0.0.35) (2017-01-20)
 
 ### Bug Fixes
 
@@ -548,7 +548,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** show component output `$event` type ([fa894f0](https://github.com/compodoc/compodoc/commit/fa894f0)), closes [#60](https://github.com/compodoc/compodoc/issues/60)
 
 <a name="0.0.34"></a>
-## 0.0.34 (2017-01-19)
+## [0.0.34](https://github.com/compodoc/compodoc/compare/0.0.33...0.0.34) (2017-01-19)
 
 ### Bug Fixes
 
@@ -559,7 +559,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** support external assets folder ([90ba24d](https://github.com/compodoc/compodoc/commit/90ba24d)), closes [#71](https://github.com/compodoc/compodoc/issues/71)
 
 <a name="0.0.33"></a>
-## 0.0.33 (2017-01-17)
+## [0.0.33](https://github.com/compodoc/compodoc/compare/0.0.32...0.0.33) (2017-01-17)
 
 ### Bug Fixes
 
@@ -574,14 +574,14 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** documentation coverage ([ddca8d4](https://github.com/compodoc/compodoc/commit/ddca8d4)), closes [#67](https://github.com/compodoc/compodoc/issues/67)
 
 <a name="0.0.32"></a>
-## 0.0.32 (2017-01-12)
+## [0.0.32](https://github.com/compodoc/compodoc/compare/0.0.31...0.0.32) (2017-01-12)
 
 ### Bug Fix
 
 * **app:** src argument handling ([14550f3](https://github.com/compodoc/compodoc/commit/14550f3)), closes [#63](https://github.com/compodoc/compodoc/issues/63)
 
 <a name="0.0.31"></a>
-## 0.0.31 (2017-01-11)
+## [0.0.31](https://github.com/compodoc/compodoc/compare/0.0.30...0.0.31) (2017-01-11)
 
 ### Bug Fixes
 
@@ -593,7 +593,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** link to Angular types ([0b33f74](https://github.com/compodoc/compodoc/commit/0b33f74)), closes [#57](https://github.com/compodoc/compodoc/issues/57)
 
 <a name="0.0.30"></a>
-## 0.0.30 (2017-01-10)
+## [0.0.30](https://github.com/compodoc/compodoc/compare/0.0.29...0.0.30) (2017-01-10)
 
 ### Bug Fixes
 
@@ -607,7 +607,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** support TS shorthand for properties defined in constructor ([2965762](https://github.com/compodoc/compodoc/commit/2965762)), closes [#56](https://github.com/compodoc/compodoc/issues/56)
 
 <a name="0.0.29"></a>
-## 0.0.29 (2017-01-07)
+## [0.0.29](https://github.com/compodoc/compodoc/compare/0.0.28...0.0.29) (2017-01-07)
 
 ### Bug Fixes
 
@@ -619,7 +619,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **cli:** Source folder option handling ([c3e86c6](https://github.com/compodoc/compodoc/commit/c3e86c6)), closes [#48](https://github.com/compodoc/compodoc/issues/48)
 
 <a name="0.0.28"></a>
-## 0.0.28 (2017-01-03)
+## [0.0.28](https://github.com/compodoc/compodoc/compare/0.0.27...0.0.28) (2017-01-03)
 
 ### Bug Fixes
 
@@ -627,21 +627,21 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **design:** search input color ([a0fd0fe](https://github.com/compodoc/compodoc/commit/a0fd0fe))
 
 <a name="0.0.27"></a>
-## 0.0.27 (2017-01-03)
+## [0.0.27](https://github.com/compodoc/compodoc/compare/0.0.26...0.0.27) (2017-01-03)
 
 ### Bug Fixes
 
 * **app:** graph generation with path with spaces ([e833251](https://github.com/compodoc/compodoc/commit/e833251)), closes [#43](https://github.com/compodoc/compodoc/issues/43), [#44](https://github.com/compodoc/compodoc/issues/44)
 
 <a name="0.0.26"></a>
-## 0.0.26 (2016-12-31)
+## [0.0.26](https://github.com/compodoc/compodoc/compare/0.0.25...0.0.26) (2016-12-31)
 
 ### Bug Fixes
 
 * **app:** bin renaming ([557a0d1](https://github.com/compodoc/compodoc/commit/557a0d1))
 
 <a name="0.0.25"></a>
-## 0.0.25 (2016-12-31)
+## [0.0.25](https://github.com/compodoc/compodoc/compare/0.0.24...0.0.25) (2016-12-31)
 
 ### Features
 
@@ -649,7 +649,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** toggle buttons for menu ([4037259](https://github.com/compodoc/compodoc/commit/4037259))
 
 <a name="0.0.24"></a>
-## 0.0.24 (2016-12-28)
+## [0.0.24](https://github.com/compodoc/compodoc/compare/0.0.23...0.0.24) (2016-12-28)
 
 ### Bug Fixes
 
@@ -660,7 +660,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** library mode support, for gulp-compodoc ([5a65d87](https://github.com/compodoc/compodoc/commit/5a65d87))
 
 <a name="0.0.23"></a>
-## 0.0.23 (2016-12-15)
+## [0.0.23](https://github.com/compodoc/compodoc/compare/0.0.22...0.0.23) (2016-12-15)
 
 ### Bug Fixes
 
@@ -671,7 +671,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **doc:** details for supported comments ([86851ca](https://github.com/compodoc/compodoc/commit/86851ca)), closes [#36](https://github.com/compodoc/compodoc/issues/36)
 
 <a name="0.0.22"></a>
-## 0.0.22 (2016-12-12)
+## [0.0.22](https://github.com/compodoc/compodoc/compare/0.0.21...0.0.22) (2016-12-12)
 
 ### Bug Fixes
 
@@ -682,14 +682,14 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **routes:** extend routes page : empty path, pathMatch ([4474973](https://github.com/compodoc/compodoc/commit/4474973))
 
 <a name="0.0.21"></a>
-## 0.0.21 (2016-12-12)
+## [0.0.21](https://github.com/compodoc/compodoc/compare/0.0.20...0.0.21) (2016-12-12)
 
 ### Bug Fixes
 
 * **app:** es6 object.assign support ([6c25f59](https://github.com/compodoc/compodoc/commit/6c25f59))
 
 <a name="0.0.20"></a>
-## 0.0.20 (2016-12-12)
+## [0.0.20](https://github.com/compodoc/compodoc/compare/0.0.19...0.0.20) (2016-12-12)
 
 ### Features
 
@@ -697,7 +697,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** add interfaces management ([896f233](https://github.com/compodoc/compodoc/commit/896f233))
 
 <a name="0.0.19"></a>
-## 0.0.19 (2016-12-08)
+## [0.0.19](https://github.com/compodoc/compodoc/compare/0.0.18...0.0.19) (2016-12-08)
 
 ### Bug Fixes
 
@@ -707,21 +707,21 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:**  default serving port flag ([ea5ec23](https://github.com/compodoc/compodoc/commit/ea5ec23)), closes [#29](https://github.com/compodoc/compodoc/issues/29)
 
 <a name="0.0.18"></a>
-## 0.0.18 (2016-12-05)
+## [0.0.18](https://github.com/compodoc/compodoc/compare/0.0.17...0.0.18) (2016-12-05)
 
 ### Features
 
 * **design:**  7 new themes ([740e165](https://github.com/compodoc/compodoc/commit/740e165))
 
 <a name="0.0.17"></a>
-## 0.0.17 (2016-12-01)
+## [0.0.17](https://github.com/compodoc/compodoc/compare/0.0.16...0.0.17) (2016-12-01)
 
 ### Bug Fixes
 
 * **chore:**  update supported version to Node.js 7+ ([8a8e0f6](https://github.com/compodoc/compodoc/commit/8a8e0f6)), closes [#18](https://github.com/compodoc/compodoc/issues/18)
 
 <a name="0.0.16"></a>
-## 0.0.16 (2016-11-29)
+## [0.0.16](https://github.com/compodoc/compodoc/compare/0.0.15...0.0.16) (2016-11-29)
 
 ### Bug Fixes
 
@@ -732,7 +732,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** delete top navbar, prepare for next design release ([9c1d7c2](https://github.com/compodoc/compodoc/commit/9c1d7c2))
 
 <a name="0.0.15"></a>
-## 0.0.15 (2016-11-16)
+## [0.0.15](https://github.com/compodoc/compodoc/compare/0.0.14...0.0.15) (2016-11-16)
 
 ### Bug Fixes
 
@@ -741,7 +741,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **parsing:** don't create ts program for each child on a file, 300% boost ! ([9f754cd](https://github.com/compodoc/compodoc/commit/9f754cd))
 
 <a name="0.0.14"></a>
-## 0.0.14 (2016-11-15)
+## [0.0.14](https://github.com/compodoc/compodoc/compare/0.0.13...0.0.14) (2016-11-15)
 
 ### Bug Fixes
 
@@ -752,35 +752,35 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** syntax highlighting for markdowns files ([c4800a7](https://github.com/compodoc/compodoc/commit/c4800a7)), closes [#19](https://github.com/compodoc/compodoc/issues/19)
 
 <a name="0.0.13"></a>
-## 0.0.13 (2016-11-15)
+## [0.0.13](https://github.com/compodoc/compodoc/compare/0.0.12...0.0.13) (2016-11-15)
 
 ### Features
 
 * **app:** support of one README.md file for each component ([f1c626d](https://github.com/compodoc/compodoc/commit/f1c626d)), closes [#10](https://github.com/compodoc/compodoc/issues/10)
 
 <a name="0.0.12"></a>
-## 0.0.12 (2016-11-13)
+## [0.0.12](https://github.com/compodoc/compodoc/compare/0.0.11...0.0.12) (2016-11-13)
 
 ### Features
 
 * **app:** provide external styling theme file ([3e4f98c](https://github.com/compodoc/compodoc/commit/3e4f98c)), closes [#9](https://github.com/compodoc/compodoc/issues/9)
 
 <a name="0.0.11"></a>
-## 0.0.11 (2016-11-13)
+## [0.0.11](https://github.com/compodoc/compodoc/compare/0.0.10...0.0.11) (2016-11-13)
 
 ### Bug Fixes
 
 * **dependencies:** windows file path issue ([2567f87](https://github.com/compodoc/compodoc/commit/2567f87)), closes [#14](https://github.com/compodoc/compodoc/issues/14)
 
 <a name="0.0.10"></a>
-## 0.0.10 (2016-11-12)
+## [0.0.10](https://github.com/compodoc/compodoc/compare/0.0.9...0.0.10) (2016-11-12)
 
 ### Bug Fixes
 
 * **app:** logo is overlaying menu ([71aad4b](https://github.com/compodoc/compodoc/commit/71aad4b)), closes [#13](https://github.com/compodoc/compodoc/issues/13)
 
 <a name="0.0.9"></a>
-## 0.0.9 (2016-11-12)
+## [0.0.9](https://github.com/compodoc/compodoc/compare/0.0.8...0.0.9) (2016-11-12)
 
 ### Bug Fixes
 
@@ -794,14 +794,14 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** display error for routes parsing ([69a52d7](https://github.com/compodoc/compodoc/commit/69a52d7))
 
 <a name="0.0.8"></a>
-## 0.0.8 (2016-11-11)
+## [0.0.8](https://github.com/compodoc/compodoc/compare/0.0.7...0.0.8) (2016-11-11)
 
 ### Bug Fixes
 
 * **app:** isGlobal npm context test ([3ddc9ce](https://github.com/compodoc/compodoc/commit/3ddc9ce))
 
 <a name="0.0.7"></a>
-## 0.0.7 (2016-11-11)
+## [0.0.7](https://github.com/compodoc/compodoc/compare/0.0.6...0.0.7) (2016-11-11)
 
 ### Bug Fixes
 
@@ -819,14 +819,14 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * -f flag is now -p flag. More similar to tsc flags.
 
 <a name="0.0.6"></a>
-## 0.0.6 (2016-11-10)
+## [0.0.6](https://github.com/compodoc/compodoc/compare/0.0.5...0.0.6) (2016-11-10)
 
 ### Bug Fixes
 
 * **app:** handlebars not in the dependencies list ([38aa0d6d](https://github.com/compodoc/compodoc/commit/38aa0d6d))
 
 <a name="0.0.5"></a>
-## 0.0.5 (2016-11-09)
+## [0.0.5](https://github.com/compodoc/compodoc/compare/0.0.4...0.0.5) (2016-11-09)
 
 ### Bug Fixes
 
@@ -834,7 +834,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** fix class items ([295e9f81](https://github.com/compodoc/compodoc/commit/295e9f81))
 
 <a name="0.0.4"></a>
-## 0.0.4 (2016-11-08)
+## [0.0.4](https://github.com/compodoc/compodoc/compare/0.0.3...0.0.4) (2016-11-08)
 
 ### Bug Fixes
 
@@ -845,7 +845,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** routes support ([8fe00e6f](https://github.com/compodoc/compodoc/commit/8fe00e6f))
 
 <a name="0.0.3"></a>
-## 0.0.3 (2016-11-08)
+## [0.0.3](https://github.com/compodoc/compodoc/compare/0.0.2...0.0.3) (2016-11-08)
 
 ### Bug Fixes
 
@@ -857,7 +857,7 @@ Stopping beta period. The release cycle will be more quicker than before, when b
 * **app:** simple classes support ([35f2cc5](https://github.com/compodoc/compodoc/commit/35f2cc5))
 
 <a name="0.0.2"></a>
-## 0.0.2 (2016-11-07)
+## [0.0.2](https://github.com/compodoc/compodoc/compare/0.0.1...0.0.2) (2016-11-07)
 
 ### Bug Fixes
 
