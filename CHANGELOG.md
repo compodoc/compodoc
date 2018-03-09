@@ -1,3 +1,21 @@
+<a name="1.0.9"></a>
+# [1.0.9](https://github.com/compodoc/compodoc/compare/1.0.8...1.0.9) (2018-03-09)
+
+### Features
+
+* **dependencies:** display peer dependencies in dependencies page ([eece547f](https://github.com/compodoc/compodoc/commit/eece547f)), closes [#478](https://github.com/compodoc/compodoc/issues/478)
+* **dependencies:** inheritance support for components and classes ([b94e9c75](https://github.com/compodoc/compodoc/commit/b94e9c75)), closes [#324](https://github.com/compodoc/compodoc/issues/324) [#152](https://github.com/compodoc/compodoc/issues/152)
+* **dependencies:** @ignore JSDoc tag support ([98326bdf](https://github.com/compodoc/compodoc/commit/98326bdf)), closes [#486](https://github.com/compodoc/compodoc/issues/486)
+* **UI:** Link to code line issue with multiple code blocks ([aec0014a](https://github.com/compodoc/compodoc/commit/aec0014a)), closes [#466](https://github.com/compodoc/compodoc/issues/466)
+
+### Bug Fixes
+
+* **dependencies:** Optional methods/property for TS interfaces/classes ([a3ce87fc](https://github.com/compodoc/compodoc/commit/a3ce87fc)), closes [#484](https://github.com/compodoc/compodoc/issues/484)
+* **dependencies:** union types with array ([9b0be6dd](https://github.com/compodoc/compodoc/commit/9b0be6dd)), closes [#496](https://github.com/compodoc/compodoc/issues/496)
+* **dependencies:** union types with generics ([eec9c4be](https://github.com/compodoc/compodoc/commit/eec9c4be)), closes [#501](https://github.com/compodoc/compodoc/issues/501)
+* **additional:** external docs change sorting ([646d7ecc](https://github.com/compodoc/compodoc/commit/646d7ecc)), closes [#471](https://github.com/compodoc/compodoc/issues/471) [#482](https://github.com/compodoc/compodoc/issues/482)
+* **dependencies:** multiple union types with array ([182a1593](https://github.com/compodoc/compodoc/commit/182a1593)), closes [#498](https://github.com/compodoc/compodoc/issues/498) [#499](https://github.com/compodoc/compodoc/issues/499)
+
 <a name="1.0.8"></a>
 # [1.0.8](https://github.com/compodoc/compodoc/compare/1.0.7...1.0.8) (2018-03-01)
 
