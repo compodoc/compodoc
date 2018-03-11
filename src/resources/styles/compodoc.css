@@ -161,10 +161,10 @@ a[href] {
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    width: calc(100% - 300px);
+    width: calc(100% - 320px);
     position: absolute;
     top: 0;
-    left: 300px;
+    left: 320px;
     padding: 15px 30px;
 }
 
@@ -260,7 +260,7 @@ a[href] {
     border-right: 1px solid #e7e7e7;
     height: 100%;
     padding: 0;
-    width: 300px;
+    width: 320px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -318,6 +318,14 @@ a[href] {
 .menu ul.list li.chapter .simple {
     padding: 10px 15px;
     position: relative;
+}
+
+.menu ul.list li.chapter .inner .simple {
+    padding-left: 35px;
+}
+
+.menu ul.list li.chapter .inner ul.links {
+    padding-left: 40px;
 }
 
 .menu .panel-group {

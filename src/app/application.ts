@@ -751,6 +751,12 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             this.configuration.mainData.modules = _modules.map(ngModule => {
+                ngModule.compodocLinks = {
+                    components: [],
+                    directives: [],
+                    injectables: [],
+                    pipes: []
+                };
                 ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
@@ -758,14 +764,26 @@ export class Application {
                                 return this.dependenciesEngine
                                     .getDirectives()
                                     .some(
-                                        directive => (directive as any).name === metaDataItem.name
+                                        directive => {
+                                            let selectedDirective = (directive as any).name === metaDataItem.name;
+                                            if (selectedDirective && !ngModule.compodocLinks.directives.includes(directive)) {
+                                                ngModule.compodocLinks.directives.push(directive);
+                                            }
+                                            return selectedDirective;
+                                        }
                                     );
 
                             case 'component':
                                 return this.dependenciesEngine
                                     .getComponents()
                                     .some(
-                                        component => (component as any).name === metaDataItem.name
+                                        component => {
+                                            let selectedComponent = (component as any).name === metaDataItem.name;
+                                            if (selectedComponent && !ngModule.compodocLinks.components.includes(component)) {
+                                                ngModule.compodocLinks.components.push(component);
+                                            }
+                                            return selectedComponent;
+                                        }
                                     );
 
                             case 'module':
@@ -776,7 +794,13 @@ export class Application {
                             case 'pipe':
                                 return this.dependenciesEngine
                                     .getPipes()
-                                    .some(pipe => (pipe as any).name === metaDataItem.name);
+                                    .some(pipe => {
+                                        let selectedPipe = (pipe as any).name === metaDataItem.name;
+                                        if (selectedPipe && !ngModule.compodocLinks.pipes.includes(pipe)) {
+                                            ngModule.compodocLinks.pipes.push(pipe);
+                                        }
+                                        return selectedPipe;
+                                    });
 
                             default:
                                 return true;
@@ -787,7 +811,13 @@ export class Application {
                     return (
                         this.dependenciesEngine
                             .getInjectables()
-                            .some(injectable => (injectable as any).name === provider.name) ||
+                            .some(injectable => {
+                                let selectedInjectable = (injectable as any).name === provider.name;
+                                if (selectedInjectable && !ngModule.compodocLinks.injectables.includes(injectable)) {
+                                    ngModule.compodocLinks.injectables.push(injectable);
+                                }
+                                return selectedInjectable;
+                            }) ||
                         this.dependenciesEngine
                             .getInterceptors()
                             .some(interceptor => (interceptor as any).name === provider.name)
@@ -812,6 +842,7 @@ export class Application {
                 });
                 return ngModule;
             });
+
             this.configuration.addPage({
                 name: 'modules',
                 id: 'modules',
