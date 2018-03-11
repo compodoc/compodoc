@@ -900,7 +900,7 @@ export class Application {
             };
             loop();
         });
-    };
+    }
 
     public prepareClasses = (someClasses?) => {
         logger.info('Prepare classes');
@@ -945,7 +945,7 @@ export class Application {
             };
             loop();
         });
-    };
+    }
 
     public prepareInterfaces(someInterfaces?) {
         logger.info('Prepare interfaces');
