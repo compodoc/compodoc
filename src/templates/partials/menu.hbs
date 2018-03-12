@@ -159,7 +159,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.directives}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{name}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -185,7 +185,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.injectables}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{name}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -200,7 +200,7 @@
                                         data-target="#xs-pipes-links-{{id}}"
                                     {{/compare}}>
                                     <span class="fa fa-fw fa-plus"></span>
-                                    <span>Injectables</span>
+                                    <span>Pipes</span>
                                     <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
                                 </div>
                                 <ul class="links collapse"
@@ -211,7 +211,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.pipes}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{name}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
