@@ -3,8 +3,7 @@ import * as util from 'util';
 
 import * as _ from 'lodash';
 import * as ts from 'typescript';
-import Ast from 'ts-simple-ast';
-import { TypeGuards } from 'ts-simple-ast';
+import Ast, { TypeGuards } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';

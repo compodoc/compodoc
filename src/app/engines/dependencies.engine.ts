@@ -1,8 +1,9 @@
+import * as _ from 'lodash';
+
 import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 
 import { getNamesCompareFn } from '../../utils/utils';
-import * as _ from 'lodash';
 import { IModuleDep } from '../compiler/deps/module-dep.factory';
 import { IComponentDep } from '../compiler/deps/component-dep.factory';
 import { IDirectiveDep } from '../compiler/deps/directive-dep.factory';
@@ -73,7 +74,7 @@ export class DependenciesEngine {
             i = 0,
             len = this.modules.length;
 
-        let mergeTypes = (entry) => {
+        let mergeTypes = entry => {
             let directive = this.findInCompodocDependencies(entry.name, this.directives);
             if (typeof directive.data !== 'undefined') {
                 entry.type = 'directive';
@@ -86,24 +87,23 @@ export class DependenciesEngine {
             if (typeof pipe.data !== 'undefined') {
                 entry.type = 'pipe';
             }
-        }
+        };
 
-        this.modules.forEach((module) => {
-            module.declarations.forEach((declaration) => {
+        this.modules.forEach(module => {
+            module.declarations.forEach(declaration => {
                 mergeTypes(declaration);
             });
-            module.exports.forEach((expt) => {
+            module.exports.forEach(expt => {
                 mergeTypes(expt);
             });
-            module.entryComponents.forEach((ent) => {
+            module.entryComponents.forEach(ent => {
                 mergeTypes(ent);
             });
-        })
-
+        });
     }
 
     public init(data: ParsedData) {
-        traverse(data).forEach(function (node) {
+        traverse(data).forEach(function(node) {
             if (node) {
                 if (node.parent) delete node.parent;
                 if (node.initializer) delete node.initializer;
@@ -152,7 +152,8 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(type, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(type, this.miscellaneous.typealiases),
             () => this.findInCompodocDependencies(type, this.miscellaneous.enumerations),
-            () => this.angularApiUtil.findApi(type)];
+            () => this.angularApiUtil.findApi(type)
+        ];
 
         for (let searchFunction of searchFunctions) {
             let result = searchFunction();
@@ -168,49 +169,49 @@ export class DependenciesEngine {
     public update(updatedData): void {
         if (updatedData.modules.length > 0) {
             _.forEach(updatedData.modules, (module: IModuleDep) => {
-                let _index = _.findIndex(this.modules, { 'name': module.name });
+                let _index = _.findIndex(this.modules, { name: module.name });
                 this.modules[_index] = module;
             });
         }
         if (updatedData.components.length > 0) {
             _.forEach(updatedData.components, (component: IComponentDep) => {
-                let _index = _.findIndex(this.components, { 'name': component.name });
+                let _index = _.findIndex(this.components, { name: component.name });
                 this.components[_index] = component;
             });
         }
         if (updatedData.directives.length > 0) {
             _.forEach(updatedData.directives, (directive: IDirectiveDep) => {
-                let _index = _.findIndex(this.directives, { 'name': directive.name });
+                let _index = _.findIndex(this.directives, { name: directive.name });
                 this.directives[_index] = directive;
             });
         }
         if (updatedData.injectables.length > 0) {
             _.forEach(updatedData.injectables, (injectable: IInjectableDep) => {
-                let _index = _.findIndex(this.injectables, { 'name': injectable.name });
+                let _index = _.findIndex(this.injectables, { name: injectable.name });
                 this.injectables[_index] = injectable;
             });
         }
         if (updatedData.interceptors.length > 0) {
             _.forEach(updatedData.interceptors, (interceptor: IInterceptorDep) => {
-                let _index = _.findIndex(this.interceptors, { 'name': interceptor.name });
+                let _index = _.findIndex(this.interceptors, { name: interceptor.name });
                 this.interceptors[_index] = interceptor;
             });
         }
         if (updatedData.interfaces.length > 0) {
             _.forEach(updatedData.interfaces, (int: IInterfaceDep) => {
-                let _index = _.findIndex(this.interfaces, { 'name': int.name });
+                let _index = _.findIndex(this.interfaces, { name: int.name });
                 this.interfaces[_index] = int;
             });
         }
         if (updatedData.pipes.length > 0) {
             _.forEach(updatedData.pipes, (pipe: IPipeDep) => {
-                let _index = _.findIndex(this.pipes, { 'name': pipe.name });
+                let _index = _.findIndex(this.pipes, { name: pipe.name });
                 this.pipes[_index] = pipe;
             });
         }
         if (updatedData.classes.length > 0) {
             _.forEach(updatedData.classes, (classe: any) => {
-                let _index = _.findIndex(this.classes, { 'name': classe.name });
+                let _index = _.findIndex(this.classes, { name: classe.name });
                 this.classes[_index] = classe;
             });
         }
@@ -220,8 +221,8 @@ export class DependenciesEngine {
         if (updatedData.miscellaneous.variables.length > 0) {
             _.forEach(updatedData.miscellaneous.variables, (variable: any) => {
                 let _index = _.findIndex(this.miscellaneous.variables, {
-                    'name': variable.name,
-                    'file': variable.file
+                    name: variable.name,
+                    file: variable.file
                 });
                 this.miscellaneous.variables[_index] = variable;
             });
@@ -229,8 +230,8 @@ export class DependenciesEngine {
         if (updatedData.miscellaneous.functions.length > 0) {
             _.forEach(updatedData.miscellaneous.functions, (func: IFunctionDecDep) => {
                 let _index = _.findIndex(this.miscellaneous.functions, {
-                    'name': func.name,
-                    'file': func.file
+                    name: func.name,
+                    file: func.file
                 });
                 this.miscellaneous.functions[_index] = func;
             });
@@ -238,8 +239,8 @@ export class DependenciesEngine {
         if (updatedData.miscellaneous.typealiases.length > 0) {
             _.forEach(updatedData.miscellaneous.typealiases, (typealias: ITypeAliasDecDep) => {
                 let _index = _.findIndex(this.miscellaneous.typealiases, {
-                    'name': typealias.name,
-                    'file': typealias.file
+                    name: typealias.name,
+                    file: typealias.file
                 });
                 this.miscellaneous.typealiases[_index] = typealias;
             });
@@ -247,8 +248,8 @@ export class DependenciesEngine {
         if (updatedData.miscellaneous.enumerations.length > 0) {
             _.forEach(updatedData.miscellaneous.enumerations, (enumeration: IEnumDecDep) => {
                 let _index = _.findIndex(this.miscellaneous.enumerations, {
-                    'name': enumeration.name,
-                    'file': enumeration.file
+                    name: enumeration.name,
+                    file: enumeration.file
                 });
                 this.miscellaneous.enumerations[_index] = enumeration;
             });
@@ -257,21 +258,22 @@ export class DependenciesEngine {
     }
 
     public findInCompodoc(name: string) {
-        let mergedData = _.concat([], 
-            this.modules, 
-            this.components, 
+        let mergedData = _.concat(
+            [],
+            this.modules,
+            this.components,
             this.directives,
-            this.injectables, 
-            this.interceptors, 
-            this.interfaces, 
-            this.pipes, 
-            this.classes, 
+            this.injectables,
+            this.interceptors,
+            this.interfaces,
+            this.pipes,
+            this.classes,
             this.miscellaneous.enumerations,
             this.miscellaneous.typealiases,
             this.miscellaneous.variables,
             this.miscellaneous.functions
         );
-        let result = _.find(mergedData, { 'name': name } as any);
+        let result = _.find(mergedData, { name: name } as any);
         return result || false;
     }
 

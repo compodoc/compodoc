@@ -4,6 +4,7 @@ import * as ts from 'typescript';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import * as JSON5 from 'json5';
+import Ast, { PropertyDeclaration, TypeGuards, SourceFile } from 'ts-simple-ast';
 
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -11,8 +12,6 @@ import { ImportsUtil } from './imports.util';
 import { logger } from '../logger';
 
 const traverse = require('traverse');
-
-import Ast, { PropertyDeclaration, TypeGuards, SourceFile } from 'ts-simple-ast';
 
 const ast = new Ast();
 
@@ -204,8 +203,10 @@ export class RouterParserUtil {
                     if (route && route.data) {
                         try {
                             route.children = JSON5.parse(route.data);
-                        } catch(e) {
-                            logger.error('Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.');
+                        } catch (e) {
+                            logger.error(
+                                'Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.'
+                            );
                         }
                         delete route.data;
                         route.kind = 'module';
