@@ -8,7 +8,7 @@ export class OrLengthHelper implements IHtmlEngineHelper {
         // We start at 1 because of options
         for (let i = 1; i < len; i++) {
             if (typeof arguments[i] !== 'undefined') {
-                if (arguments[i].length > 0) {
+                if (Object.keys(arguments[i]).length > 0) {
                     return options.fn(context);
                 }
             }

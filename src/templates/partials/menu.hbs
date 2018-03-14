@@ -50,7 +50,7 @@
                         </a>
                     </li>
                 {{/each}}
-                {{#objectLength packageDependencies ">" 0}}
+                {{#orLength packageDependencies packagePeerDependencies}}
                     <li class="link">
                         <a href="{{relativeURL depth pageType 'root'}}dependencies.html"
                             {{#compare name "===" 'dependencies' }} class="active" {{/compare}}
@@ -58,7 +58,7 @@
                             <span class="fa fa-fw fa-list"></span>Dependencies
                         </a>
                     </li>
-                {{/objectLength}}
+                {{/orLength}}
             </ul>
         </li>
 

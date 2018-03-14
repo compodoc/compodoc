@@ -1,21 +1,27 @@
-<ol class="breadcrumb">
-    <li>Dependencies</li>
-</ol>
-<ul class="dependencies-list">
-    {{#each packageDependencies}}
-    <li>
-        <b>{{@key}}</b> : {{this}}</li>
-    {{/each}}
-</ul>
+{{#if packageDependencies}}
+    <ol class="breadcrumb">
+        <li>Dependencies</li>
+    </ol>
+    <ul class="dependencies-list">
+        {{#each packageDependencies}}
+        <li>
+            <b>{{@key}}</b> : {{this}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
+
 {{#if packagePeerDependencies}}
-<br/>
-<ol class="breadcrumb">
-    <li>Peer Dependencies</li>
-</ol>
-<ul class="dependencies-list">
-    {{#each packagePeerDependencies}}
-    <li>
-        <b>{{@key}}</b> : {{this}}</li>
-    {{/each}}
-</ul>
+
+    {{#if packageDependencies}}
+    <br/>
+    {{/if}}
+    <ol class="breadcrumb">
+        <li>Peer Dependencies</li>
+    </ol>
+    <ul class="dependencies-list">
+        {{#each packagePeerDependencies}}
+        <li>
+            <b>{{@key}}</b> : {{this}}</li>
+        {{/each}}
+    </ul>
 {{/if}}
