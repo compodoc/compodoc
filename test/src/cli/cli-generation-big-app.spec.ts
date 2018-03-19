@@ -573,4 +573,17 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
         expect(file).to.contain('<code>Type&lt;TableCellRendererBase&gt; | TemplateRef&lt;any&gt;</code>');
     });
+
+    it('should support multiple union types with array', () => {
+        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<code>(string | number)[]</code>');
+    });
+
+    it('should support alone elements in their own entry menu', () => {
+        let file = read(distFolder + '/index.html');
+        expect(file).to.contain('<a href="./components/JigsawTab.html" >JigsawTab</a>');
+        expect(file).to.contain('<a href="./directives/DoNothingDirective2.html" >DoNothingDirective2</a>');
+        expect(file).to.contain('<a href="./injectables/EmitterService.html" >EmitterService</a>');
+        expect(file).to.contain('<a href="./pipes/FirstUpperPipe2.html" >FirstUpperPipe2</a>');
+    });
 });
