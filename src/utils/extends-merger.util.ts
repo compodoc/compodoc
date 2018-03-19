@@ -1,10 +1,12 @@
 import { find, concat, cloneDeep } from 'lodash';
+import { ConfigurationInterface } from '../app/interfaces/configuration.interface';
+import { cleanLifecycleHooksFromMethods } from '.';
 
 export class ExtendsMerger {
     private components;
     private classes;
 
-    public merge(deps) {
+    public merge(deps, configuration: ConfigurationInterface) {
         this.components = deps.components;
         this.classes = deps.classes;
 
@@ -50,6 +52,19 @@ export class ExtendsMerger {
                             ...component.propertiesClass,
                             ...newProperties
                         ];
+                    }
+                    if (typeof ext.hostBindings !== 'undefined' && ext.hostBindings.length > 0) {
+                        let newHostBindings = cloneDeep(ext.hostBindings);
+                        newHostBindings = this.markInheritance(newHostBindings, ext);
+                        component.hostBindings = [...component.hostBindings, ...newHostBindings];
+                    }
+                    if (typeof ext.hostListeners !== 'undefined' && ext.hostListeners.length > 0) {
+                        let newHostListeners = cloneDeep(ext.hostListeners);
+                        newHostListeners = this.markInheritance(newHostListeners, ext);
+                        component.hostListeners = [...component.hostListeners, ...newHostListeners];
+                    }
+                    if (configuration.mainData.disableLifeCycleHooks) {
+                        component.methodsClass = cleanLifecycleHooksFromMethods(component.methodsClass);
                     }
                 }
             }

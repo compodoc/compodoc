@@ -191,7 +191,7 @@
 </section>
 
 {{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners component.accessors}}
-    {{> index-directive methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners accessors=component.accessors}}
+    {{> index methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners accessors=component.accessors}}
 {{/orLength}}
 
 {{#if component.constructorObj}}
@@ -199,102 +199,11 @@
 {{/if}}
 
 {{#if component.inputsClass}}
-    <section>
-        <h3 id="inputs">Inputs</h3>
-        {{#each component.inputsClass}}
-            <table class="table table-sm table-bordered">
-                <tbody>
-                    <tr>
-                        <td class="col-md-2">
-                            <a name="{{name}}"></a>
-                            <code>{{name}}</code>
-                        </td>
-                        <td class="col-md-10">
-                          {{#if description}}
-                            <div>{{{parseDescription description ../depth}}}</div>
-                          {{/if}}
-                          {{#if type}}
-                              <p>
-                                <em>Type:</em>{{> link-type type=type }}
-                              </p>
-                          {{/if}}
-                          {{#if defaultValue}}
-                            <p>
-                              <em>Default value: </em><code>{{defaultValue}}</code>
-                            </p>
-                          {{/if}}
-                        </td>
-                    </tr>
-                    {{#if line}}
-                        {{#unless ../disableSourceCode}}
-                            {{#if inheritance}}
-                                <tr>
-                                    <td class="col-md-4" colspan="2">
-                                        <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
-                                    </td>
-                                </tr>
-                            {{/if}}
-                            <tr>
-                                <td class="col-md-2" colspan="2">
-                                    {{#if inheritance}}
-                                        <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
-                                    {{else}}
-                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/unless}}
-                    {{/if}}
-                </tbody>
-            </table>
-        {{/each}}
-    </section>
+    {{> block-input element=component file=component.file }}
 {{/if}}
 
 {{#if component.outputsClass}}
-    <section>
-        <h3 id="outputs">Outputs</h3>
-        {{#each component.outputsClass}}
-            <table class="table table-sm table-bordered">
-                <tbody>
-                    <tr>
-                        <td class="col-md-2">
-                            <a name="{{name}}"></a>
-                            <code>{{name}}</code>
-                        </td>
-                        <td class="col-md-10">
-                          {{#if description}}
-                            <div>{{{parseDescription description ../depth}}}</div>
-                          {{/if}}
-                          {{#if type}}
-                            <em><code>$event</code> type:</em>{{> link-type type=type }}
-                          {{/if}}
-                        </td>
-                    </tr>
-                    {{#if line}}
-                        {{#unless ../disableSourceCode}}
-                            {{#if inheritance}}
-                                <tr>
-                                    <td class="col-md-4" colspan="2">
-                                        <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
-                                    </td>
-                                </tr>
-                            {{/if}}
-                            <tr>
-                                <td class="col-md-2" colspan="2">
-                                    {{#if inheritance}}
-                                        <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
-                                    {{else}}
-                                        <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../component.file}}:{{{line}}}</a></div>
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{/unless}}
-                    {{/if}}
-                </tbody>
-            </table>
-        {{/each}}
-    </section>
+    {{> block-output element=component file=component.file }}
 {{/if}}
 
 {{#if component.hostBindings}}

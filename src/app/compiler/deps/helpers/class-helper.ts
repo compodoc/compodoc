@@ -422,6 +422,10 @@ export class ClassHelper {
             return [
                 {
                     description,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
                     methods: members.methods,
                     indexSignatures: members.indexSignatures,
                     properties: members.properties,
@@ -437,6 +441,10 @@ export class ClassHelper {
             return [
                 {
                     methods: members.methods,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
                     indexSignatures: members.indexSignatures,
                     properties: members.properties,
                     kind: members.kind,

@@ -601,4 +601,12 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code><a href="../injectables/EmitterService.html" target="_self" >EmitterService</a></code>');
     });
+
+    it('should support component inheritance with base class without @component decorator', () => {
+        let file = read(distFolder + '/components/DumbComponent.html');
+        expect(file).to.contain('<code>parentInput</code>');
+        expect(file).to.contain('<code>parentoutput</code>');
+        expect(file).to.contain('<code>style.color');
+        expect(file).to.contain('<code>mouseup');
+    });
 });

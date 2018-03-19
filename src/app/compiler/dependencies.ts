@@ -7,7 +7,7 @@ import Ast, { TypeGuards } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
-import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
+import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { ExtendsMerger } from '../../utils/extends-merger.util';
 import { CodeGenerator } from './code-generator';
@@ -196,7 +196,7 @@ export class Dependencies {
          * - properties
          * - methods
          */
-        deps = this.extendsMerger.merge(deps);
+        deps = this.extendsMerger.merge(deps, this.configuration);
 
         // RouterParser.printModulesRoutes();
         // RouterParser.printRoutes();
@@ -247,6 +247,21 @@ export class Dependencies {
         }
         if (IO.accessors) {
             deps.accessors = IO.accessors;
+        }
+        if (IO.inputs) {
+            deps.inputsClass = IO.inputs;
+        }
+        if (IO.outputs) {
+            deps.outputsClass = IO.outputs;
+        }
+        if (IO.hostBindings) {
+            deps.hostBindings = IO.hostBindings;
+        }
+        if (IO.hostListeners) {
+            deps.hostListeners = IO.hostListeners;
+        }
+        if (this.configuration.mainData.disableLifeCycleHooks) {
+            deps.methods = cleanLifecycleHooksFromMethods(deps.methods);
         }
         if (typeof IO.ignore === 'undefined') {
             this.debug(deps);
