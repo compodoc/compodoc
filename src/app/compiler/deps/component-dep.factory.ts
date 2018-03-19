@@ -21,7 +21,7 @@ export class ComponentDepFactory {
             // animations?: string[]; // TODO
             changeDetection: this.helper.getComponentChangeDetection(props, srcFile),
             encapsulation: this.helper.getComponentEncapsulation(props, srcFile),
-            // entryComponents?: string; // TODO waiting doc infos
+            entryComponents: this.helper.getComponentEntryComponents(props, srcFile),
             exportAs: this.helper.getComponentExportAs(props, srcFile),
             host: this.helper.getComponentHost(props),
             inputs: this.helper.getComponentInputsMetadata(props, srcFile),
@@ -49,6 +49,9 @@ export class ComponentDepFactory {
             sourceCode: srcFile.getText(),
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
+        if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
+            componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(props, srcFile);
+        }
         if (this.configuration.mainData.disableLifeCycleHooks) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
@@ -93,6 +96,8 @@ export interface IComponentDep extends IDep {
     propertiesClass: Array<any>;
     methodsClass: Array<any>;
 
+    entryComponents: Array<any>;
+
     hostBindings: Array<any>;
     hostListeners: Array<any>;
 
@@ -105,4 +110,6 @@ export interface IComponentDep extends IDep {
     extends?: any;
     implements?: any;
     accessors?: Object;
+
+    preserveWhitespaces?: any;
 }

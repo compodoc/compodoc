@@ -73,6 +73,12 @@ export class ComponentHelper {
             .map((name) => this.symbolHelper.parseDeepIndentifier(name));
     }
 
+    public getComponentEntryComponents(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+        return this.symbolHelper
+            .getSymbolDeps(props, 'entryComponents', srcFile)
+            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
+    }
+
     public getComponentViewProviders(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'viewProviders', srcFile)
@@ -91,6 +97,10 @@ export class ComponentHelper {
             });
         }
         return exampleUrls;
+    }
+
+    public getComponentPreserveWhitespaces(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): string {
+        return this.symbolHelper.getSymbolDeps(props, 'preserveWhitespaces', srcFile).pop();
     }
 
     public getComponentSelector(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): string {

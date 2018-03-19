@@ -586,4 +586,19 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<a href="./injectables/EmitterService.html" >EmitterService</a>');
         expect(file).to.contain('<a href="./pipes/FirstUpperPipe2.html" >FirstUpperPipe2</a>');
     });
+
+    it('should support component metadata preserveWhiteSpaces', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<td class="col-md-3">preserveWhitespaces</td>');
+    });
+
+    it('should support component metadata entryComponents', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<code><a href="../classes/Todo.html" target="_self" >TodoComponent</a></code>');
+    });
+
+    it('should support component metadata providers', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<code><a href="../injectables/EmitterService.html" target="_self" >EmitterService</a></code>');
+    });
 });

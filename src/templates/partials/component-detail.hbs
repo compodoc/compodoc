@@ -77,7 +77,11 @@
             {{#if component.entryComponents}}
             <tr>
                 <td class="col-md-3">entryComponents</td>
-                <td class="col-md-9"><code>{{component.entryComponents}}</code></td>
+                <td class="col-md-9">
+                    {{#each component.entryComponents}}
+                        {{> link-type type=name }}
+                    {{/each}}
+                </td>
             </tr>
             {{/if}}
 
@@ -95,16 +99,9 @@
             </tr>
             {{/if}}
 
-            {{#if component.inputs}}
-            <tr>
-                <td class="col-md-3">inputs</td>
-                <td class="col-md-9"><code>{{breakComma component.inputs}}</code></td>
-            </tr>
-            {{/if}}
-
             {{#if component.interpolation}}
             <tr>
-                <td class="col-md-3">host</td>
+                <td class="col-md-3">interpolation</td>
                 <td class="col-md-9"><code>{{component.interpolation}}</code></td>
             </tr>
             {{/if}}
@@ -116,22 +113,20 @@
             </tr>
             {{/if}}
 
-            {{#if component.outputs}}
+            {{#hasOwn component 'preserveWhitespaces'}}
             <tr>
-                <td class="col-md-3">outputs</td>
-                <td class="col-md-9"><code>{{breakComma component.outputs}}</code></td>
+                <td class="col-md-3">preserveWhitespaces</td>
+                <td class="col-md-9"><code>{{component.preserveWhitespaces}}</code></td>
             </tr>
-            {{/if}}
+            {{/hasOwn}}
 
             {{#if component.providers}}
             <tr>
                 <td class="col-md-3">providers</td>
                 <td class="col-md-9">
-                    <code>
                     {{#each component.providers}}
-                        {{name}}
+                        {{> link-type type=name }}
                     {{/each}}
-                    </code>
                 </td>
             </tr>
             {{/if}}
@@ -184,7 +179,7 @@
                 <td class="col-md-9">
                     <code>
                     {{#each component.viewProviders}}
-                        {{name}}
+                        {{> link-type type=name }}
                     {{/each}}
                     </code>
                 </td>
