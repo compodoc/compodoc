@@ -17,6 +17,10 @@ export class FooService {
         return 'test';
     }
 
+    /**
+     * @param {string} val The entry value
+     * @return {string} Another string
+     */
     close(work: (toto: string) => void): string {
         return 'test';
     }

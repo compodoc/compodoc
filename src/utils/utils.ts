@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { LinkParser } from './link-parser';
 
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
+import { kindToType } from './kind-to-type';
 
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
@@ -60,11 +61,15 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
                     comment: jsdoctag.comment
                 });
             }
-            if (jsdoctag.tagName && jsdoctag.tagName.text === 'returns') {
-                margs.push({
+            if (jsdoctag.tagName && (jsdoctag.tagName.text === 'returns' || jsdoctag.tagName.text === 'return')) {
+                let ret = {
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment
-                });
+                }
+                if (jsdoctag.typeExpression && jsdoctag.typeExpression.type) {
+                    ret.returnType = kindToType(jsdoctag.typeExpression.type.kind);
+                }
+                margs.push(ret);
             }
         });
     }

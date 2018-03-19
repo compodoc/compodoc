@@ -102,6 +102,10 @@ describe('CLI simple generation', () => {
             expect(fooServiceFile).to.contain('<p>The string</p>');
         });
 
+        it('it should have infos about FooService close function return JSDoc tag', () => {
+            expect(fooServiceFile).to.contain('<p>Another string</p>');
+        });
+
         it('it should have infos about FooService open function example', () => {
             expect(fooServiceFile).to.contain('<b>Example :</b>');
             expect(fooServiceFile).to.contain('FooService.open(');
