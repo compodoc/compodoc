@@ -1,12 +1,10 @@
 import * as path from 'path';
-import * as ts from 'typescript';
 
-import Ast, { PropertyDeclaration } from 'ts-simple-ast';
+import Ast, { PropertyDeclaration, ts, SyntaxKind } from 'ts-simple-ast';
 
 const ast = new Ast();
 
 export class ImportsUtil {
-
     /**
      * Find for a sourceFile a variable value in a local enum
      * @param srcFile
@@ -53,16 +51,16 @@ export class ImportsUtil {
      */
     private findInObjectVariableDeclaration(variableDeclaration, variablesAttributes) {
         let variableKind = variableDeclaration.getKind();
-        if (variableKind && variableKind === ts.SyntaxKind.VariableDeclaration) {
+        if (variableKind && variableKind === SyntaxKind.VariableDeclaration) {
             let initializer = variableDeclaration.getInitializer();
             if (initializer) {
                 let initializerKind = initializer.getKind();
-                if (initializerKind && initializerKind === ts.SyntaxKind.ObjectLiteralExpression) {
+                if (initializerKind && initializerKind === SyntaxKind.ObjectLiteralExpression) {
                     let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression,
                         finalValue = '';
                     // Find thestring from AVAR.BVAR.thestring inside properties
                     let depth = 0;
-                    let loopProperties = (properties) => {
+                    let loopProperties = properties => {
                         properties.forEach(prop => {
                             if (prop.name) {
                                 if (variablesAttributes[depth + 1]) {
@@ -100,19 +98,22 @@ export class ImportsUtil {
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
+        const file =
+            typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
+                ? ast.getSourceFile(sourceFile.fileName)
+                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
          * Loop through all imports, and find one matching inputVariableName
          */
-        imports.forEach((i) => {
+        imports.forEach(i => {
             let namedImports = i.getNamedImports(),
                 namedImportsLength = namedImports.length,
                 j = 0;
 
             if (namedImportsLength > 0) {
-                for (j; j<namedImportsLength; j++) {
+                for (j; j < namedImportsLength; j++) {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
@@ -134,20 +135,31 @@ export class ImportsUtil {
         });
 
         if (typeof searchedImport !== 'undefined') {
-            let importPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
-            const sourceFileImport = (typeof ast.getSourceFile(importPath) !== 'undefined') ? ast.getSourceFile(importPath) : ast.addExistingSourceFile(importPath);// tslint:disable-line
+            let importPath = path.resolve(
+                path.dirname(sourceFile.fileName) +
+                    '/' +
+                    searchedImport.getModuleSpecifier() +
+                    '.ts'
+            );
+            const sourceFileImport =
+                typeof ast.getSourceFile(importPath) !== 'undefined'
+                    ? ast.getSourceFile(importPath)
+                    : ast.addExistingSourceFile(importPath); // tslint:disable-line
 
             if (sourceFileImport) {
-                let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
+                let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;
                 let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
                 if (variableDeclaration) {
                     let variableKind = variableDeclaration.getKind();
 
-                    if (variableKind && variableKind === ts.SyntaxKind.VariableDeclaration) {
+                    if (variableKind && variableKind === SyntaxKind.VariableDeclaration) {
                         let initializer = variableDeclaration.getInitializer();
                         if (initializer) {
                             let initializerKind = initializer.getKind();
-                            if (initializerKind && initializerKind === ts.SyntaxKind.ObjectLiteralExpression) {
+                            if (
+                                initializerKind &&
+                                initializerKind === SyntaxKind.ObjectLiteralExpression
+                            ) {
                                 let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
                                 return compilerNode.properties;
                             }
@@ -178,19 +190,22 @@ export class ImportsUtil {
             aliasOriginalName = '',
             foundWithAlias = false;
 
-        const file = (typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined') ? ast.getSourceFile(sourceFile.fileName) : ast.addExistingSourceFile(sourceFile.fileName);// tslint:disable-line
+        const file =
+            typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
+                ? ast.getSourceFile(sourceFile.fileName)
+                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
          * Loop through all imports, and find one matching inputVariableName
          */
-        imports.forEach((i) => {
+        imports.forEach(i => {
             let namedImports = i.getNamedImports(),
                 namedImportsLength = namedImports.length,
                 j = 0;
 
             if (namedImportsLength > 0) {
-                for (j; j<namedImportsLength; j++) {
+                for (j; j < namedImportsLength; j++) {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
@@ -211,14 +226,21 @@ export class ImportsUtil {
             }
         });
 
-        let fileToSearchIn,
-            variableDeclaration;
+        let fileToSearchIn, variableDeclaration;
         if (typeof searchedImport !== 'undefined') {
-            let imporPath = path.resolve(path.dirname(sourceFile.fileName) + '/' + searchedImport.getModuleSpecifier() + '.ts');
-            const sourceFileImport = (typeof ast.getSourceFile(imporPath) !== 'undefined') ? ast.getSourceFile(imporPath) : ast.addExistingSourceFile(imporPath);// tslint:disable-line
+            let imporPath = path.resolve(
+                path.dirname(sourceFile.fileName) +
+                    '/' +
+                    searchedImport.getModuleSpecifier() +
+                    '.ts'
+            );
+            const sourceFileImport =
+                typeof ast.getSourceFile(imporPath) !== 'undefined'
+                    ? ast.getSourceFile(imporPath)
+                    : ast.addExistingSourceFile(imporPath); // tslint:disable-line
             if (sourceFileImport) {
                 fileToSearchIn = sourceFileImport;
-                let variableName = (foundWithAlias) ? aliasOriginalName : metadataVariableName;
+                let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;
                 variableDeclaration = fileToSearchIn.getVariableDeclaration(variableName);
             }
         } else {
@@ -233,11 +255,19 @@ export class ImportsUtil {
         // Try find it in enums
         if (variablesAttributes.length > 0) {
             if (typeof fileToSearchIn !== 'undefined') {
-                let val = this.findInEnums(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+                let val = this.findInEnums(
+                    fileToSearchIn,
+                    metadataVariableName,
+                    variablesAttributes[1]
+                );
                 if (val !== '') {
                     return val;
                 }
-                val = this.findInClasses(fileToSearchIn, metadataVariableName, variablesAttributes[1]);
+                val = this.findInClasses(
+                    fileToSearchIn,
+                    metadataVariableName,
+                    variablesAttributes[1]
+                );
                 if (val !== '') {
                     return val;
                 }

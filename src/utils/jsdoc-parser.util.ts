@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import { ts, SyntaxKind } from 'ts-simple-ast';
 import { JSDocParameterTag } from 'typescript';
 import * as _ from 'lodash';
 
@@ -8,21 +8,33 @@ export class JsdocParserUtil {
     public isVariableLike(node: ts.Node): node is ts.VariableLikeDeclaration {
         if (node) {
             switch (node.kind) {
-                case ts.SyntaxKind.BindingElement:
-                case ts.SyntaxKind.EnumMember:
-                case ts.SyntaxKind.Parameter:
-                case ts.SyntaxKind.PropertyAssignment:
-                case ts.SyntaxKind.PropertyDeclaration:
-                case ts.SyntaxKind.PropertySignature:
-                case ts.SyntaxKind.ShorthandPropertyAssignment:
-                case ts.SyntaxKind.VariableDeclaration:
+                case SyntaxKind.BindingElement:
+                case SyntaxKind.EnumMember:
+                case SyntaxKind.Parameter:
+                case SyntaxKind.PropertyAssignment:
+                case SyntaxKind.PropertyDeclaration:
+                case SyntaxKind.PropertySignature:
+                case SyntaxKind.ShorthandPropertyAssignment:
+                case SyntaxKind.VariableDeclaration:
                     return true;
             }
         }
         return false;
     }
 
-    private getJSDocTags(node: ts.Node, kind: ts.SyntaxKind): ts.JSDocTag[] {
+    public getMainCommentOfNode(node: ts.Node): string {
+        let description: string = '';
+        if (node.jsDoc) {
+            if (node.jsDoc.length > 0) {
+                if (typeof node.jsDoc[0].comment !== 'undefined') {
+                    description = node.jsDoc[0].comment;
+                }
+            }
+        }
+        return description;
+    }
+
+    private getJSDocTags(node: ts.Node, kind: SyntaxKind): ts.JSDocTag[] {
         const docs = this.getJSDocs(node);
         if (docs) {
             const result: ts.JSDocTag[] = [];
@@ -51,7 +63,6 @@ export class JsdocParserUtil {
         return cache;
     }
 
-
     // Try to recognize this pattern when node is initializer
     // of variable declaration and JSDoc comments are on containing variable statement.
     // /**
@@ -65,28 +76,28 @@ export class JsdocParserUtil {
             this.isVariableLike(parent) &&
             parent.initializer === node &&
             ts.isVariableStatement(parent.parent.parent);
-        const isVariableOfVariableDeclarationStatement = this.isVariableLike(node) &&
-            ts.isVariableStatement(parent.parent);
-        const variableStatementNode =
-            isInitializerOfVariableDeclarationInStatement ? parent.parent.parent :
-                isVariableOfVariableDeclarationStatement ? parent.parent :
-                    undefined;
+        const isVariableOfVariableDeclarationStatement =
+            this.isVariableLike(node) && ts.isVariableStatement(parent.parent);
+        const variableStatementNode = isInitializerOfVariableDeclarationInStatement
+            ? parent.parent.parent
+            : isVariableOfVariableDeclarationStatement ? parent.parent : undefined;
         if (variableStatementNode) {
             cache = this.getJSDocsWorker(variableStatementNode, cache);
         }
 
         // Also recognize when the node is the RHS of an assignment expression
         const isSourceOfAssignmentExpressionStatement =
-            parent && parent.parent &&
+            parent &&
+            parent.parent &&
             ts.isBinaryExpression(parent) &&
-            parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+            parent.operatorToken.kind === SyntaxKind.EqualsToken &&
             ts.isExpressionStatement(parent.parent);
         if (isSourceOfAssignmentExpressionStatement) {
             cache = this.getJSDocsWorker(parent.parent, cache);
         }
 
-        const isModuleDeclaration = ts.isModuleDeclaration(node) &&
-            parent && ts.isModuleDeclaration(parent);
+        const isModuleDeclaration =
+            ts.isModuleDeclaration(node) && parent && ts.isModuleDeclaration(parent);
         const isPropertyAssignmentExpression = parent && ts.isPropertyAssignment(parent);
         if (isModuleDeclaration || isPropertyAssignmentExpression) {
             cache = this.getJSDocsWorker(parent, cache);
@@ -106,9 +117,14 @@ export class JsdocParserUtil {
         return cache;
     }
 
-    private getJSDocParameterTags(param: ts.ParameterDeclaration): ReadonlyArray<ts.JSDocParameterTag> {
+    private getJSDocParameterTags(
+        param: ts.ParameterDeclaration
+    ): ReadonlyArray<ts.JSDocParameterTag> {
         const func = param.parent as ts.FunctionLikeDeclaration;
-        const tags = this.getJSDocTags(func, ts.SyntaxKind.JSDocParameterTag) as ts.JSDocParameterTag[];
+        const tags = this.getJSDocTags(
+            func,
+            SyntaxKind.JSDocParameterTag
+        ) as ts.JSDocParameterTag[];
 
         if (!param.name) {
             // this is an anonymous jsdoc param from a `function(type1, type2): type3` specification
@@ -120,11 +136,11 @@ export class JsdocParserUtil {
             }
         } else if (ts.isIdentifier(param.name)) {
             const name = param.name.text;
-            return _.filter(tags, (tag) => {
-              if (ts && ts.isJSDocParameterTag(tag)) {
-                  let t: JSDocParameterTagExt = tag;
-                  return t.parameterName.text === name;
-              }
+            return _.filter(tags, tag => {
+                if (ts && ts.isJSDocParameterTag(tag)) {
+                    let t: JSDocParameterTagExt = tag;
+                    return t.parameterName.text === name;
+                }
             });
         } else {
             // TODO: it's a destructured parameter, so it should look up an "object type" series of multiple lines

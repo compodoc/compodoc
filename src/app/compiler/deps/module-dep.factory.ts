@@ -1,21 +1,18 @@
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
 import { ComponentCache } from './helpers/component-helper';
-import * as ts from 'typescript';
-
-
+import { ts } from 'ts-simple-ast';
 
 export class ModuleDepFactory {
-    constructor(private moduleHelper: ModuleHelper) {
-
-    }
+    constructor(private moduleHelper: ModuleHelper) {}
 
     public create(
         file: any,
         srcFile: ts.SourceFile,
         name: string,
         properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
-        IO: any): IModuleDep {
+        IO: any
+    ): IModuleDep {
         return {
             name,
             id: 'module-' + name + '-' + Date.now(),

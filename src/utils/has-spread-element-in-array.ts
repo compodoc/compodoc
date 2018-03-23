@@ -1,9 +1,9 @@
-import * as ts from 'typescript';
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 export function hasSpreadElementInArray(arr): boolean {
     let result = false;
     arr.map(el => {
-        if (el.kind && el.kind === ts.SyntaxKind.SpreadElement) {
+        if (el.kind && el.kind === SyntaxKind.SpreadElement) {
             result = true;
         }
     });

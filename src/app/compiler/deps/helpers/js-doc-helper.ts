@@ -1,7 +1,11 @@
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 
 export class JsDocHelper {
-    public hasJSDocInternalTag(filename: string, sourceFile: ts.SourceFile, node: ts.Node): boolean {
+    public hasJSDocInternalTag(
+        filename: string,
+        sourceFile: ts.SourceFile,
+        node: ts.Node
+    ): boolean {
         if (typeof sourceFile.statements !== 'undefined') {
             return this.checkStatements(sourceFile.statements, node);
         }

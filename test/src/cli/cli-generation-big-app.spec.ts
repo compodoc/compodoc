@@ -520,11 +520,11 @@ describe('CLI simple generation - big app', () => {
         );
     });
 
-    it('should disaply project dependencies', () => {
+    it('should display project dependencies', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
         let dependencies = read(distFolder + '/dependencies.html');
-        expect(dependencies).to.contain('typescript');
+        expect(dependencies).to.contain('commander');
     });
 
     /*it('should display project peerDependencies', () => {
@@ -571,7 +571,9 @@ describe('CLI simple generation - big app', () => {
 
     it('should support union type with generic', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>Type&lt;TableCellRendererBase&gt; | TemplateRef&lt;any&gt;</code>');
+        expect(file).to.contain(
+            '<code>Type&lt;TableCellRendererBase&gt; | TemplateRef&lt;any&gt;</code>'
+        );
     });
 
     it('should support multiple union types with array', () => {
@@ -582,7 +584,9 @@ describe('CLI simple generation - big app', () => {
     it('should support alone elements in their own entry menu', () => {
         let file = read(distFolder + '/index.html');
         expect(file).to.contain('<a href="./components/JigsawTab.html" >JigsawTab</a>');
-        expect(file).to.contain('<a href="./directives/DoNothingDirective2.html" >DoNothingDirective2</a>');
+        expect(file).to.contain(
+            '<a href="./directives/DoNothingDirective2.html" >DoNothingDirective2</a>'
+        );
         expect(file).to.contain('<a href="./injectables/EmitterService.html" >EmitterService</a>');
         expect(file).to.contain('<a href="./pipes/FirstUpperPipe2.html" >FirstUpperPipe2</a>');
     });
@@ -594,12 +598,16 @@ describe('CLI simple generation - big app', () => {
 
     it('should support component metadata entryComponents', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<code><a href="../classes/Todo.html" target="_self" >TodoComponent</a></code>');
+        expect(file).to.contain(
+            '<code><a href="../classes/Todo.html" target="_self" >TodoComponent</a></code>'
+        );
     });
 
     it('should support component metadata providers', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<code><a href="../injectables/EmitterService.html" target="_self" >EmitterService</a></code>');
+        expect(file).to.contain(
+            '<code><a href="../injectables/EmitterService.html" target="_self" >EmitterService</a></code>'
+        );
     });
 
     it('should support component inheritance with base class without @component decorator', () => {

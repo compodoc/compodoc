@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
 
 import { LinkParser } from './link-parser';
@@ -61,11 +61,14 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
                     comment: jsdoctag.comment
                 });
             }
-            if (jsdoctag.tagName && (jsdoctag.tagName.text === 'returns' || jsdoctag.tagName.text === 'return')) {
+            if (
+                jsdoctag.tagName &&
+                (jsdoctag.tagName.text === 'returns' || jsdoctag.tagName.text === 'return')
+            ) {
                 let ret = {
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment
-                }
+                };
                 if (jsdoctag.typeExpression && jsdoctag.typeExpression.type) {
                     ret.returnType = kindToType(jsdoctag.typeExpression.type.kind);
                 }

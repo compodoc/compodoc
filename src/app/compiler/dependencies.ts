@@ -2,8 +2,7 @@ import * as path from 'path';
 import * as util from 'util';
 
 import * as _ from 'lodash';
-import * as ts from 'typescript';
-import Ast, { TypeGuards } from 'ts-simple-ast';
+import Ast, { ts, TypeGuards, SyntaxKind } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
@@ -314,7 +313,7 @@ export class Dependencies {
             scannedFile = firstClean.compilerNode;
             scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
 
-            scannedFile.kind = ts.SyntaxKind.SourceFile;
+            scannedFile.kind = SyntaxKind.SourceFile;
         }
 
         ts.forEachChild(scannedFile, (initialNode: ts.Node) => {
@@ -962,10 +961,10 @@ export class Dependencies {
                     })
                     .reverse();
                 if (
-                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
-                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                    _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
                 ) {
-                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
+                    kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
             }
         }

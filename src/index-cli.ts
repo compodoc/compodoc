@@ -26,7 +26,6 @@ export class CliApplication extends Application {
      * Run compodoc from the command line.
      */
     protected generate(): any {
-
         function list(val) {
             return val.split(',');
         }
@@ -35,32 +34,93 @@ export class CliApplication extends Application {
             .version(pkg.version)
             .usage('<src> [options]')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
-            .option('-d, --output [folder]', 'Where to store the generated documentation', COMPODOC_DEFAULTS.folder)
+            .option(
+                '-d, --output [folder]',
+                'Where to store the generated documentation',
+                COMPODOC_DEFAULTS.folder
+            )
             .option('-y, --extTheme [file]', 'External styling theme file')
             .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
-            .option('-a, --assetsFolder [folder]', 'External assets folder to copy in generated documentation folder')
+            .option(
+                '-a, --assetsFolder [folder]',
+                'External assets folder to copy in generated documentation folder'
+            )
             .option('-o, --open', 'Open the generated documentation', false)
-            .option('-t, --silent', 'In silent mode, log messages aren\'t logged in the console', false)
-            .option('-s, --serve', 'Serve generated documentation (default http://localhost:8080/)', false)
+            .option(
+                '-t, --silent',
+                "In silent mode, log messages aren't logged in the console",
+                false
+            )
+            .option(
+                '-s, --serve',
+                'Serve generated documentation (default http://localhost:8080/)',
+                false
+            )
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
-            .option('-w, --watch', 'Watch source files after serve and force documentation rebuild', false)
-            .option('-e, --exportFormat [format]', 'Export in specified format (json, html)', COMPODOC_DEFAULTS.exportFormat)
-            .option('--theme [theme]', 'Choose one of available themes, default is \'gitbook\' (laravel, original, material, postmark, readthedocs, stripe, vagrant)')
-            .option('--hideGenerator', 'Do not print the Compodoc link at the bottom of the page', false)
-            .option('--toggleMenuItems <items>', 'Close by default items in the menu values : [\'all\'] or one of these [\'modules\',\'components\',\'directives\',\'classes\',\'injectables\',\'interfaces\',\'pipes\',\'additionalPages\']', list, COMPODOC_DEFAULTS.toggleMenuItems)
+            .option(
+                '-w, --watch',
+                'Watch source files after serve and force documentation rebuild',
+                false
+            )
+            .option(
+                '-e, --exportFormat [format]',
+                'Export in specified format (json, html)',
+                COMPODOC_DEFAULTS.exportFormat
+            )
+            .option(
+                '--theme [theme]',
+                "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
+            )
+            .option(
+                '--hideGenerator',
+                'Do not print the Compodoc link at the bottom of the page',
+                false
+            )
+            .option(
+                '--toggleMenuItems <items>',
+                "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','classes','injectables','interfaces','pipes','additionalPages']",
+                list,
+                COMPODOC_DEFAULTS.toggleMenuItems
+            )
             .option('--includes [path]', 'Path of external markdown files to include')
-            .option('--includesName [name]', 'Name of item menu of externals markdown files', COMPODOC_DEFAULTS.additionalEntryName)
-            .option('--coverageTest [threshold]', 'Test command of documentation coverage with a threshold (default 70)')
-            .option('--coverageMinimumPerFile [minimum]', 'Test command of documentation coverage per file with a minimum (default 0)')
-            .option('--coverageTestThresholdFail [true|false]', 'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)', COMPODOC_DEFAULTS.coverageTestThresholdFail)
-            .option('--disableSourceCode', 'Do not add source code tab and links to source code', false)
+            .option(
+                '--includesName [name]',
+                'Name of item menu of externals markdown files',
+                COMPODOC_DEFAULTS.additionalEntryName
+            )
+            .option(
+                '--coverageTest [threshold]',
+                'Test command of documentation coverage with a threshold (default 70)'
+            )
+            .option(
+                '--coverageMinimumPerFile [minimum]',
+                'Test command of documentation coverage per file with a minimum (default 0)'
+            )
+            .option(
+                '--coverageTestThresholdFail [true|false]',
+                'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)',
+                COMPODOC_DEFAULTS.coverageTestThresholdFail
+            )
+            .option(
+                '--disableSourceCode',
+                'Do not add source code tab and links to source code',
+                false
+            )
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivate', 'Do not show private in generated documentation', false)
             .option('--disableProtected', 'Do not show protected in generated documentation', false)
             .option('--disableInternal', 'Do not show @internal in generated documentation', false)
-            .option('--disableLifeCycleHooks', 'Do not show Angular lifecycle hooks in generated documentation', false)
-            .option('--disableRoutesGraph', 'Do not add the routes graph', COMPODOC_DEFAULTS.disableRoutesGraph)
+            .option(
+                '--disableLifeCycleHooks',
+                'Do not show Angular lifecycle hooks in generated documentation',
+                false
+            )
+            .option(
+                '--disableRoutesGraph',
+                'Do not add the routes graph',
+                COMPODOC_DEFAULTS.disableRoutesGraph
+            )
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
@@ -133,16 +193,23 @@ export class CliApplication extends Application {
 
         if (program.coverageTest) {
             this.configuration.mainData.coverageTest = true;
-            this.configuration.mainData.coverageTestThreshold = (typeof program.coverageTest === 'string') ? parseInt(program.coverageTest) : COMPODOC_DEFAULTS.defaultCoverageThreshold;
+            this.configuration.mainData.coverageTestThreshold =
+                typeof program.coverageTest === 'string'
+                    ? parseInt(program.coverageTest)
+                    : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
 
         if (program.coverageMinimumPerFile) {
             this.configuration.mainData.coverageTestPerFile = true;
-            this.configuration.mainData.coverageMinimumPerFile = (typeof program.coverageMinimumPerFile === 'string') ? parseInt(program.coverageMinimumPerFile) : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
+            this.configuration.mainData.coverageMinimumPerFile =
+                typeof program.coverageMinimumPerFile === 'string'
+                    ? parseInt(program.coverageMinimumPerFile)
+                    : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
 
         if (program.coverageTestThresholdFail) {
-            this.configuration.mainData.coverageTestThresholdFail = (program.coverageTestThresholdFail === 'false') ? false : true;
+            this.configuration.mainData.coverageTestThresholdFail =
+                program.coverageTestThresholdFail === 'false' ? false : true;
         }
 
         if (program.disableSourceCode) {
@@ -210,7 +277,11 @@ export class CliApplication extends Application {
                 logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
+                logger.info(
+                    `Serving documentation from ${program.output} at http://127.0.0.1:${
+                        program.port
+                    }`
+                );
                 super.runWebServer(program.output);
             }
         } else if (program.serve && !program.tsconfig && !program.output) {
@@ -219,7 +290,11 @@ export class CliApplication extends Application {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
-                logger.info(`Serving documentation from ${program.output} at http://127.0.0.1:${program.port}`);
+                logger.info(
+                    `Serving documentation from ${program.output} at http://127.0.0.1:${
+                        program.port
+                    }`
+                );
                 super.runWebServer(program.output);
             }
         } else {
@@ -233,15 +308,23 @@ export class CliApplication extends Application {
                  */
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 if (!this.fileEngine.existsSync(program.tsconfig)) {
-                    logger.error(`"${program.tsconfig}" file was not found in the current directory`);
+                    logger.error(
+                        `"${program.tsconfig}" file was not found in the current directory`
+                    );
                     process.exit(1);
                 } else {
                     let _file = path.join(
-                        path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                        path.join(
+                            process.cwd(),
+                            path.dirname(this.configuration.mainData.tsconfig)
+                        ),
                         path.basename(this.configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
-                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                    cwd = _file
+                        .split(path.sep)
+                        .slice(0, -1)
+                        .join(path.sep);
                     logger.info('Using tsconfig', _file);
 
                     let tsConfigFile = readConfig(_file);
@@ -263,7 +346,7 @@ export class CliApplication extends Application {
 
                         let finder = require('findit2')(cwd || '.');
 
-                        finder.on('directory', function (dir, stat, stop) {
+                        finder.on('directory', function(dir, stat, stop) {
                             let base = path.basename(dir);
                             if (base === '.git' || base === 'node_modules') {
                                 stop();
@@ -273,7 +356,10 @@ export class CliApplication extends Application {
                         finder.on('file', (file, stat) => {
                             if (/(spec|\.d)\.ts/.test(file)) {
                                 logger.warn('Ignoring', file);
-                            } else if (excludeParser.testFile(file) && path.extname(file) === '.ts') {
+                            } else if (
+                                excludeParser.testFile(file) &&
+                                path.extname(file) === '.ts'
+                            ) {
                                 logger.warn('Excluding', file);
                             } else if (include.length > 0) {
                                 /**
@@ -320,21 +406,31 @@ export class CliApplication extends Application {
                 this.configuration.mainData.tsconfig = program.tsconfig;
                 let sourceFolder = program.args[0];
                 if (!this.fileEngine.existsSync(sourceFolder)) {
-                    logger.error(`Provided source folder ${sourceFolder} was not found in the current directory`);
+                    logger.error(
+                        `Provided source folder ${sourceFolder} was not found in the current directory`
+                    );
                     process.exit(1);
                 } else {
                     logger.info('Using provided source folder');
 
                     if (!this.fileEngine.existsSync(program.tsconfig)) {
-                        logger.error(`"${program.tsconfig}" file was not found in the current directory`);
+                        logger.error(
+                            `"${program.tsconfig}" file was not found in the current directory`
+                        );
                         process.exit(1);
                     } else {
                         let _file = path.join(
-                            path.join(process.cwd(), path.dirname(this.configuration.mainData.tsconfig)),
+                            path.join(
+                                process.cwd(),
+                                path.dirname(this.configuration.mainData.tsconfig)
+                            ),
                             path.basename(this.configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory
-                        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
+                        cwd = _file
+                            .split(path.sep)
+                            .slice(0, -1)
+                            .join(path.sep);
                         logger.info('Using tsconfig', _file);
 
                         let tsConfigFile = readConfig(_file);
@@ -356,7 +452,7 @@ export class CliApplication extends Application {
 
                             let finder = require('findit2')(path.resolve(sourceFolder));
 
-                            finder.on('directory', function (dir, stat, stop) {
+                            finder.on('directory', function(dir, stat, stop) {
                                 let base = path.basename(dir);
                                 if (base === '.git' || base === 'node_modules') {
                                     stop();
@@ -373,7 +469,10 @@ export class CliApplication extends Application {
                                      * If include provided in tsconfig, use only this source,
                                      * and not files found with global findit scan in working directory
                                      */
-                                    if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
+                                    if (
+                                        path.extname(file) === '.ts' &&
+                                        includeParser.testFile(file)
+                                    ) {
                                         logger.debug('Including', file);
                                         files.push(file);
                                     } else {

@@ -1,5 +1,7 @@
-import * as ts from 'typescript';
 import * as _ from 'lodash';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
+
 import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
 
 import { ImportsUtil } from '../../../../utils/imports.util';
@@ -87,14 +89,14 @@ export class SymbolHelper {
      * { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
      */
     public parseProviderConfiguration(node: ts.ObjectLiteralExpression): string {
-        if (node.kind && node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+        if (node.kind && node.kind === SyntaxKind.ObjectLiteralExpression) {
             // Search for provide: HTTP_INTERCEPTORS
             // and if true, return type: 'interceptor' + name
             let interceptorName, hasInterceptor;
             if (node.properties) {
                 if (node.properties.length > 0) {
                     _.forEach(node.properties, property => {
-                        if (property.kind && property.kind === ts.SyntaxKind.PropertyAssignment) {
+                        if (property.kind && property.kind === SyntaxKind.PropertyAssignment) {
                             if (property.name.text === 'provide') {
                                 if (property.initializer.text === 'HTTP_INTERCEPTORS') {
                                     hasInterceptor = true;
@@ -197,10 +199,10 @@ export class SymbolHelper {
             return [localNode.initializer.text];
         } else if (
             localNode.initializer.kind &&
-            (localNode.initializer.kind === ts.SyntaxKind.TrueKeyword ||
-                localNode.initializer.kind === ts.SyntaxKind.FalseKeyword)
+            (localNode.initializer.kind === SyntaxKind.TrueKeyword ||
+                localNode.initializer.kind === SyntaxKind.FalseKeyword)
         ) {
-            return [localNode.initializer.kind === ts.SyntaxKind.TrueKeyword ? true : false];
+            return [localNode.initializer.kind === SyntaxKind.TrueKeyword ? true : false];
         } else if (ts.isPropertyAccessExpression(localNode.initializer)) {
             let identifier = this.parseSymbolElements(localNode.initializer);
             return [identifier];

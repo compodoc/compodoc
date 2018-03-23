@@ -1,10 +1,9 @@
 import * as util from 'util';
 import * as path from 'path';
-import * as ts from 'typescript';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import * as JSON5 from 'json5';
-import Ast, { PropertyDeclaration, TypeGuards, SourceFile } from 'ts-simple-ast';
+import Ast, { PropertyDeclaration, TypeGuards, SourceFile, ts, SyntaxKind } from 'ts-simple-ast';
 
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -407,7 +406,7 @@ export class RouterParserUtil {
 
     public cleanFileIdentifiers(sourceFile: SourceFile): SourceFile {
         let file = sourceFile;
-        const identifiers = file.getDescendantsOfKind(ts.SyntaxKind.Identifier).filter(p => {
+        const identifiers = file.getDescendantsOfKind(SyntaxKind.Identifier).filter(p => {
             return (
                 TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()) ||
                 TypeGuards.isPropertyAssignment(p.getParentOrThrow())
@@ -420,7 +419,7 @@ export class RouterParserUtil {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = identifier.getParentWhile(n => {
-                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
+                if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
                     }
@@ -458,7 +457,7 @@ export class RouterParserUtil {
     public cleanFileSpreads(sourceFile: SourceFile): SourceFile {
         let file = sourceFile;
         const spreadElements = file
-            .getDescendantsOfKind(ts.SyntaxKind.SpreadElement)
+            .getDescendantsOfKind(SyntaxKind.SpreadElement)
             .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
 
         let spreadElementsInRoutesVariableStatement = [];
@@ -467,7 +466,7 @@ export class RouterParserUtil {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = spreadElement.getParentWhile(n => {
-                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
+                if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
                     }
@@ -558,10 +557,10 @@ export class RouterParserUtil {
             }
 
             const referencedArray = referencedDeclaration.getInitializerIfKindOrThrow(
-                ts.SyntaxKind.ArrayLiteralExpression
+                SyntaxKind.ArrayLiteralExpression
             );
             const spreadElementArray = spreadElement.getParentIfKindOrThrow(
-                ts.SyntaxKind.ArrayLiteralExpression
+                SyntaxKind.ArrayLiteralExpression
             );
             const insertIndex = spreadElementArray.getElements().indexOf(spreadElement);
             spreadElementArray.removeElement(spreadElement);
@@ -577,7 +576,7 @@ export class RouterParserUtil {
     public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
         let file = sourceFile;
         const propertyAccessExpressions = file
-            .getDescendantsOfKind(ts.SyntaxKind.PropertyAccessExpression)
+            .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
             .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
 
         let propertyAccessExpressionsInRoutesVariableStatement = [];
@@ -586,7 +585,7 @@ export class RouterParserUtil {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
             let parent = propertyAccessExpression.getParentWhile(n => {
-                if (n.getKind() === ts.SyntaxKind.VariableStatement) {
+                if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
                     }
@@ -664,12 +663,11 @@ export class RouterParserUtil {
                     case 'outlet':
                     case 'pathMatch':
                         if (propertyInitializer) {
-                            if (propertyInitializer.kind !== ts.SyntaxKind.StringLiteral) {
+                            if (propertyInitializer.kind !== SyntaxKind.StringLiteral) {
                                 // Identifier(71) won't break parsing, but it will be better to retrive them
                                 // PropertyAccessExpression(179) ex: MYIMPORT.path will break it, find it in import
                                 if (
-                                    propertyInitializer.kind ===
-                                    ts.SyntaxKind.PropertyAccessExpression
+                                    propertyInitializer.kind === SyntaxKind.PropertyAccessExpression
                                 ) {
                                     let lastObjectLiteralAttributeName = propertyInitializer.name.getText(),
                                         firstObjectLiteralAttributeName;

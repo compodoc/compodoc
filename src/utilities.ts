@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
 
 import { logger } from './logger';
@@ -75,7 +75,7 @@ export function detectIndent(str, count, indent?): string {
 
         indent = count > 1 ? repeating(count, indent) : indent;
 
-        return str.replace(/^(?!\s*$)/mg, indent);
+        return str.replace(/^(?!\s*$)/gm, indent);
     };
 
     return indentString(stripIndent(str), count || 0, indent);
@@ -83,8 +83,8 @@ export function detectIndent(str, count, indent?): string {
 
 // Create a compilerHost object to allow the compiler to read and write files
 export function compilerHost(transpileOptions: any): ts.CompilerHost {
-
-    const inputFileName = transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
+    const inputFileName =
+        transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
 
     const toReturn: ts.CompilerHost = {
         getSourceFile: (fileName: string) => {
@@ -119,7 +119,7 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
             }
             return undefined;
         },
-        writeFile: (name, text) => { },
+        writeFile: (name, text) => {},
         getDefaultLibFileName: () => 'lib.d.ts',
         useCaseSensitiveFileNames: () => false,
         getCanonicalFileName: fileName => fileName,
@@ -137,7 +137,7 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
 export function findMainSourceFolder(files: string[]) {
     let mainFolder = '';
     let mainFolderCount = 0;
-    let rawFolders = files.map((filepath) => {
+    let rawFolders = files.map(filepath => {
         let shortPath = filepath.replace(process.cwd() + path.sep, '');
         return path.dirname(shortPath);
     });
@@ -146,7 +146,7 @@ export function findMainSourceFolder(files: string[]) {
 
     for (let i = 0; i < rawFolders.length; i++) {
         let sep = rawFolders[i].split(path.sep);
-        sep.map((folder) => {
+        sep.map(folder => {
             if (folders[folder]) {
                 folders[folder] += 1;
             } else {

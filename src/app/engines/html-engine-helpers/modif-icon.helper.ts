@@ -1,21 +1,21 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
-import * as ts from 'typescript';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 export class ModifIconHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, kind: ts.SyntaxKind): string {
-
+    public helperFunc(context: any, kind: SyntaxKind): string {
         let _kindText = '';
         switch (kind) {
-            case ts.SyntaxKind.PrivateKeyword:
+            case SyntaxKind.PrivateKeyword:
                 _kindText = 'lock'; // private
                 break;
-            case ts.SyntaxKind.ProtectedKeyword:
+            case SyntaxKind.ProtectedKeyword:
                 _kindText = 'lock'; // protected
                 break;
-            case ts.SyntaxKind.StaticKeyword:
+            case SyntaxKind.StaticKeyword:
                 _kindText = 'reset'; // static
                 break;
-            case ts.SyntaxKind.ExportKeyword:
+            case SyntaxKind.ExportKeyword:
                 _kindText = 'export'; // export
                 break;
             default:

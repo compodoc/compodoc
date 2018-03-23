@@ -2,7 +2,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as _ from 'lodash';
-import * as ts from 'typescript';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 const chokidar = require('chokidar');
 const marked = require('marked');
@@ -761,30 +762,30 @@ export class Application {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
-                                return this.dependenciesEngine
-                                    .getDirectives()
-                                    .some(
-                                        directive => {
-                                            let selectedDirective = (directive as any).name === metaDataItem.name;
-                                            if (selectedDirective && !ngModule.compodocLinks.directives.includes(directive)) {
-                                                ngModule.compodocLinks.directives.push(directive);
-                                            }
-                                            return selectedDirective;
-                                        }
-                                    );
+                                return this.dependenciesEngine.getDirectives().some(directive => {
+                                    let selectedDirective =
+                                        (directive as any).name === metaDataItem.name;
+                                    if (
+                                        selectedDirective &&
+                                        !ngModule.compodocLinks.directives.includes(directive)
+                                    ) {
+                                        ngModule.compodocLinks.directives.push(directive);
+                                    }
+                                    return selectedDirective;
+                                });
 
                             case 'component':
-                                return this.dependenciesEngine
-                                    .getComponents()
-                                    .some(
-                                        component => {
-                                            let selectedComponent = (component as any).name === metaDataItem.name;
-                                            if (selectedComponent && !ngModule.compodocLinks.components.includes(component)) {
-                                                ngModule.compodocLinks.components.push(component);
-                                            }
-                                            return selectedComponent;
-                                        }
-                                    );
+                                return this.dependenciesEngine.getComponents().some(component => {
+                                    let selectedComponent =
+                                        (component as any).name === metaDataItem.name;
+                                    if (
+                                        selectedComponent &&
+                                        !ngModule.compodocLinks.components.includes(component)
+                                    ) {
+                                        ngModule.compodocLinks.components.push(component);
+                                    }
+                                    return selectedComponent;
+                                });
 
                             case 'module':
                                 return this.dependenciesEngine
@@ -792,15 +793,16 @@ export class Application {
                                     .some(module => (module as any).name === metaDataItem.name);
 
                             case 'pipe':
-                                return this.dependenciesEngine
-                                    .getPipes()
-                                    .some(pipe => {
-                                        let selectedPipe = (pipe as any).name === metaDataItem.name;
-                                        if (selectedPipe && !ngModule.compodocLinks.pipes.includes(pipe)) {
-                                            ngModule.compodocLinks.pipes.push(pipe);
-                                        }
-                                        return selectedPipe;
-                                    });
+                                return this.dependenciesEngine.getPipes().some(pipe => {
+                                    let selectedPipe = (pipe as any).name === metaDataItem.name;
+                                    if (
+                                        selectedPipe &&
+                                        !ngModule.compodocLinks.pipes.includes(pipe)
+                                    ) {
+                                        ngModule.compodocLinks.pipes.push(pipe);
+                                    }
+                                    return selectedPipe;
+                                });
 
                             default:
                                 return true;
@@ -809,15 +811,16 @@ export class Application {
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
                     return (
-                        this.dependenciesEngine
-                            .getInjectables()
-                            .some(injectable => {
-                                let selectedInjectable = (injectable as any).name === provider.name;
-                                if (selectedInjectable && !ngModule.compodocLinks.injectables.includes(injectable)) {
-                                    ngModule.compodocLinks.injectables.push(injectable);
-                                }
-                                return selectedInjectable;
-                            }) ||
+                        this.dependenciesEngine.getInjectables().some(injectable => {
+                            let selectedInjectable = (injectable as any).name === provider.name;
+                            if (
+                                selectedInjectable &&
+                                !ngModule.compodocLinks.injectables.includes(injectable)
+                            ) {
+                                ngModule.compodocLinks.injectables.push(injectable);
+                            }
+                            return selectedInjectable;
+                        }) ||
                         this.dependenciesEngine
                             .getInterceptors()
                             .some(interceptor => (interceptor as any).name === provider.name)
@@ -931,7 +934,7 @@ export class Application {
             };
             loop();
         });
-    }
+    };
 
     public prepareClasses = (someClasses?) => {
         logger.info('Prepare classes');
@@ -976,7 +979,7 @@ export class Application {
             };
             loop();
         });
-    }
+    };
 
     public prepareInterfaces(someInterfaces?) {
         logger.info('Prepare interfaces');
@@ -1423,79 +1426,79 @@ export class Application {
                     }
 
                     _.forEach(element.propertiesClass, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             property.description &&
                             property.description !== '' &&
-                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            property.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.methodsClass, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             method.description &&
                             method.description !== '' &&
-                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            method.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostBindings, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             property.description &&
                             property.description !== '' &&
-                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            property.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostListeners, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             method.description &&
                             method.description !== '' &&
-                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            method.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.inputsClass, (input: any) => {
-                        if (input.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (input.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             input.description &&
                             input.description !== '' &&
-                            input.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            input.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.outputsClass, (output: any) => {
-                        if (output.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (output.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             output.description &&
                             output.description !== '' &&
-                            output.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            output.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
@@ -1559,14 +1562,14 @@ export class Application {
                     let totalStatementDocumented = 0;
                     let totalStatements = 1;
 
-                    if (el.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (el.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         el.description &&
                         el.description !== '' &&
-                        el.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        el.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1612,27 +1615,27 @@ export class Application {
                 }
 
                 _.forEach(classe.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(classe.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1675,27 +1678,27 @@ export class Application {
                 }
 
                 _.forEach(injectable.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(injectable.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1738,27 +1741,27 @@ export class Application {
                 }
 
                 _.forEach(inter.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(inter.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }

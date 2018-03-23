@@ -1,23 +1,28 @@
 import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
 import { ComponentCache } from './component-helper';
 import { Deps } from '../../dependencies.interfaces';
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 
 export class ModuleHelper {
     constructor(
         private cache: ComponentCache,
-        private symbolHelper: SymbolHelper = new SymbolHelper()) {
+        private symbolHelper: SymbolHelper = new SymbolHelper()
+    ) {}
 
-    }
-
-    public getModuleProviders(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+    public getModuleProviders(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers', srcFile)
-            .map((providerName) => this.symbolHelper.parseDeepIndentifier(providerName));
+            .map(providerName => this.symbolHelper.parseDeepIndentifier(providerName));
     }
 
-    public getModuleDeclations(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'declarations', srcFile).map((name) => {
+    public getModuleDeclations(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Deps[] {
+        return this.symbolHelper.getSymbolDeps(props, 'declarations', srcFile).map(name => {
             let component = this.cache.get(name);
 
             if (component) {
@@ -28,8 +33,11 @@ export class ModuleHelper {
         });
     }
 
-    public getModuleEntryComponents(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Deps[] {
-        return this.symbolHelper.getSymbolDeps(props, 'entryComponents', srcFile).map((name) => {
+    public getModuleEntryComponents(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Deps[] {
+        return this.symbolHelper.getSymbolDeps(props, 'entryComponents', srcFile).map(name => {
             let component = this.cache.get(name);
 
             if (component) {
@@ -40,23 +48,35 @@ export class ModuleHelper {
         });
     }
 
-    public getModuleImports(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+    public getModuleImports(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'imports', srcFile)
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
+            .map(name => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getModuleExports(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+    public getModuleExports(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'exports', srcFile)
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
+            .map(name => this.symbolHelper.parseDeepIndentifier(name));
     }
 
-    public getModuleImportsRaw(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<ts.ObjectLiteralElementLike> {
+    public getModuleImportsRaw(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<ts.ObjectLiteralElementLike> {
         return this.symbolHelper.getSymbolDepsRaw(props, 'imports');
     }
 
-    public getModuleId(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+    public getModuleId(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<IParseDeepIdentifierResult> {
         let _id = this.symbolHelper.getSymbolDeps(props, 'id', srcFile),
             id;
         if (_id.length === 1) {
@@ -65,14 +85,20 @@ export class ModuleHelper {
         return id;
     }
 
-    public getModuleSchemas(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile) {
+    public getModuleSchemas(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ) {
         let schemas = this.symbolHelper.getSymbolDeps(props, 'schemas', srcFile);
         return schemas;
     }
 
-    public getModuleBootstrap(props: ReadonlyArray<ts.ObjectLiteralElementLike>, srcFile: ts.SourceFile): Array<IParseDeepIdentifierResult> {
+    public getModuleBootstrap(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'bootstrap', srcFile)
-            .map((name) => this.symbolHelper.parseDeepIndentifier(name));
+            .map(name => this.symbolHelper.parseDeepIndentifier(name));
     }
 }

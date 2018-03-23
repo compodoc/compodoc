@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 export class CodeGenerator {
     public generate(node: ts.Node): string {
@@ -34,107 +34,46 @@ export class CodeGenerator {
 }
 
 class TsKindsToText {
-    constructor(
-        public output: (node: ts.Node) => Array<string>,
-        public kinds: Array<ts.SyntaxKind>) { }
+    constructor(public output: (node: ts.Node) => Array<string>, public kinds: Array<SyntaxKind>) {}
 }
 
 const TsKindConversion: Array<TsKindsToText> = [
-    new TsKindsToText(
-        node => ['\"', node.text, '\"'],
-        [ts.SyntaxKind.FirstLiteralToken, ts.SyntaxKind.Identifier]),
-    new TsKindsToText(
-        node => ['\"', node.text, '\"'],
-        [ts.SyntaxKind.StringLiteral]),
-    new TsKindsToText(
-        node => [],
-        [ts.SyntaxKind.ArrayLiteralExpression]),
-    new TsKindsToText(
-        node => ['import', ' '],
-        [ts.SyntaxKind.ImportKeyword]),
-    new TsKindsToText(
-        node => ['from', ' '],
-        [ts.SyntaxKind.FromKeyword]),
-    new TsKindsToText(
-        node => ['\n', 'export', ' '],
-        [ts.SyntaxKind.ExportKeyword]),
-    new TsKindsToText(
-        node => ['class', ' '],
-        [ts.SyntaxKind.ClassKeyword]),
-    new TsKindsToText(
-        node => ['this'],
-        [ts.SyntaxKind.ThisKeyword]),
-    new TsKindsToText(
-        node => ['constructor'],
-        [ts.SyntaxKind.ConstructorKeyword]),
-    new TsKindsToText(
-        node => ['false'],
-        [ts.SyntaxKind.FalseKeyword]),
-    new TsKindsToText(
-        node => ['true'],
-        [ts.SyntaxKind.TrueKeyword]),
-    new TsKindsToText(
-        node => ['null'],
-        [ts.SyntaxKind.NullKeyword]),
-    new TsKindsToText(
-        node => [],
-        [ts.SyntaxKind.AtToken]),
-    new TsKindsToText(
-        node => ['+'],
-        [ts.SyntaxKind.PlusToken]),
-    new TsKindsToText(
-        node => [' => '],
-        [ts.SyntaxKind.EqualsGreaterThanToken]),
-    new TsKindsToText(
-        node => ['('],
-        [ts.SyntaxKind.OpenParenToken]),
-    new TsKindsToText(
-        node => ['{', ' '],
-        [ts.SyntaxKind.ImportClause, ts.SyntaxKind.ObjectLiteralExpression]),
-    new TsKindsToText(
-        node => ['{', '\n'],
-        [ts.SyntaxKind.Block]),
-    new TsKindsToText(
-        node => ['}'],
-        [ts.SyntaxKind.CloseBraceToken]),
-    new TsKindsToText(
-        node => [')'],
-        [ts.SyntaxKind.CloseParenToken]),
-    new TsKindsToText(
-        node => ['['],
-        [ts.SyntaxKind.OpenBracketToken]),
-    new TsKindsToText(
-        node => [']'],
-        [ts.SyntaxKind.CloseBracketToken]),
-    new TsKindsToText(
-        node => [';', '\n'],
-        [ts.SyntaxKind.SemicolonToken]),
-    new TsKindsToText(
-        node => [',', ' '],
-        [ts.SyntaxKind.CommaToken]),
-    new TsKindsToText(
-        node => [' ', ':', ' '],
-        [ts.SyntaxKind.ColonToken]),
-    new TsKindsToText(
-        node => ['.'],
-        [ts.SyntaxKind.DotToken]),
-    new TsKindsToText(
-        node => [],
-        [ts.SyntaxKind.DoStatement]),
-    new TsKindsToText(
-        node => [],
-        [ts.SyntaxKind.Decorator]),
-    new TsKindsToText(
-        node => [' = '],
-        [ts.SyntaxKind.FirstAssignment]),
-    new TsKindsToText(
-        node => [' '],
-        [ts.SyntaxKind.FirstPunctuation]),
-    new TsKindsToText(
-        node => ['private', ' '],
-        [ts.SyntaxKind.PrivateKeyword]),
-    new TsKindsToText(
-        node => ['public', ' '],
-        [ts.SyntaxKind.PublicKeyword])
-
+    new TsKindsToText(node => ['"', node.text, '"'], [
+        SyntaxKind.FirstLiteralToken,
+        SyntaxKind.Identifier
+    ]),
+    new TsKindsToText(node => ['"', node.text, '"'], [SyntaxKind.StringLiteral]),
+    new TsKindsToText(node => [], [SyntaxKind.ArrayLiteralExpression]),
+    new TsKindsToText(node => ['import', ' '], [SyntaxKind.ImportKeyword]),
+    new TsKindsToText(node => ['from', ' '], [SyntaxKind.FromKeyword]),
+    new TsKindsToText(node => ['\n', 'export', ' '], [SyntaxKind.ExportKeyword]),
+    new TsKindsToText(node => ['class', ' '], [SyntaxKind.ClassKeyword]),
+    new TsKindsToText(node => ['this'], [SyntaxKind.ThisKeyword]),
+    new TsKindsToText(node => ['constructor'], [SyntaxKind.ConstructorKeyword]),
+    new TsKindsToText(node => ['false'], [SyntaxKind.FalseKeyword]),
+    new TsKindsToText(node => ['true'], [SyntaxKind.TrueKeyword]),
+    new TsKindsToText(node => ['null'], [SyntaxKind.NullKeyword]),
+    new TsKindsToText(node => [], [SyntaxKind.AtToken]),
+    new TsKindsToText(node => ['+'], [SyntaxKind.PlusToken]),
+    new TsKindsToText(node => [' => '], [SyntaxKind.EqualsGreaterThanToken]),
+    new TsKindsToText(node => ['('], [SyntaxKind.OpenParenToken]),
+    new TsKindsToText(node => ['{', ' '], [
+        SyntaxKind.ImportClause,
+        SyntaxKind.ObjectLiteralExpression
+    ]),
+    new TsKindsToText(node => ['{', '\n'], [SyntaxKind.Block]),
+    new TsKindsToText(node => ['}'], [SyntaxKind.CloseBraceToken]),
+    new TsKindsToText(node => [')'], [SyntaxKind.CloseParenToken]),
+    new TsKindsToText(node => ['['], [SyntaxKind.OpenBracketToken]),
+    new TsKindsToText(node => [']'], [SyntaxKind.CloseBracketToken]),
+    new TsKindsToText(node => [';', '\n'], [SyntaxKind.SemicolonToken]),
+    new TsKindsToText(node => [',', ' '], [SyntaxKind.CommaToken]),
+    new TsKindsToText(node => [' ', ':', ' '], [SyntaxKind.ColonToken]),
+    new TsKindsToText(node => ['.'], [SyntaxKind.DotToken]),
+    new TsKindsToText(node => [], [SyntaxKind.DoStatement]),
+    new TsKindsToText(node => [], [SyntaxKind.Decorator]),
+    new TsKindsToText(node => [' = '], [SyntaxKind.FirstAssignment]),
+    new TsKindsToText(node => [' '], [SyntaxKind.FirstPunctuation]),
+    new TsKindsToText(node => ['private', ' '], [SyntaxKind.PrivateKeyword]),
+    new TsKindsToText(node => ['public', ' '], [SyntaxKind.PublicKeyword])
 ];
