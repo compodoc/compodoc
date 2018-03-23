@@ -11,6 +11,8 @@ import { FileEngine } from './app/engines/file.engine';
 import { ExcludeParserUtil } from './utils/exclude-parser.util';
 import { IncludeParserUtil } from './utils/include-parser.util';
 
+import { ts } from 'ts-simple-ast';
+
 const pkg = require('../package.json');
 const program = require('commander');
 const os = require('os');
@@ -259,6 +261,8 @@ export class CliApplication extends Application {
         if (!this.isWatching) {
             console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
             console.log(pkg.version);
+            console.log('');
+            console.log(`Typescript version : ${ts.version}`);
             console.log('');
             console.log(`Node.js version : ${process.version}`);
             console.log('');
