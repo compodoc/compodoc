@@ -3,4 +3,4 @@
 --colors
 --harmony
 --timeout 120000
-test/dist/cli/cli-duplicates.spec.js
+test/dist/cli/**/*.spec.js
