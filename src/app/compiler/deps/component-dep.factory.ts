@@ -1,7 +1,7 @@
 import { IDep } from '../dependencies.interfaces';
 import { Configuration } from '../../configuration';
 import { ComponentHelper } from './helpers/component-helper';
-import { cleanLifecycleHooksFromMethods } from '../../../utils/utils';
+import { cleanLifecycleHooksFromMethods, uniqid } from '../../../utils';
 import { ClassHelper } from './helpers/class-helper';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 
@@ -16,7 +16,7 @@ export class ComponentDepFactory {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
         let componentDep: IComponentDep = {
             name,
-            id: 'component-' + name + '-' + Date.now(),
+            id: 'component-' + name + '-' + uniqid(),
             file: file,
             // animations?: string[]; // TODO
             changeDetection: this.helper.getComponentChangeDetection(props, srcFile),

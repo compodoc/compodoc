@@ -1,7 +1,7 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
-import { cleanLifecycleHooksFromMethods } from '../../../utils/utils';
+import { cleanLifecycleHooksFromMethods, uniqid } from '../../../utils';
 
 export class DirectiveDepFactory {
     constructor(
@@ -13,7 +13,7 @@ export class DirectiveDepFactory {
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
         let directiveDeps: IDirectiveDep = {
             name,
-            id: 'directive-' + name + '-' + Date.now(),
+            id: 'directive-' + name + '-' + uniqid(),
             file: file,
             type: 'directive',
             description: IO.description,

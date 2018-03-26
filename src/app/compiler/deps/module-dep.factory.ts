@@ -2,6 +2,7 @@ import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
 import { ComponentCache } from './helpers/component-helper';
 import { ts } from 'ts-simple-ast';
+import { uniqid } from '../../../utils';
 
 export class ModuleDepFactory {
     constructor(private moduleHelper: ModuleHelper) {}
@@ -15,7 +16,7 @@ export class ModuleDepFactory {
     ): IModuleDep {
         return {
             name,
-            id: 'module-' + name + '-' + Date.now(),
+            id: 'module-' + name + '-' + uniqid(),
             file: file,
             ngid: this.moduleHelper.getModuleId(properties, srcFile),
             providers: this.moduleHelper.getModuleProviders(properties, srcFile),

@@ -28,7 +28,8 @@ import {
     isModuleWithProviders,
     getModuleWithProviders,
     hasSpreadElementInArray,
-    isIgnore
+    isIgnore,
+    uniqid
 } from '../../utils';
 import {
     IInjectableDep,
@@ -215,7 +216,7 @@ export class Dependencies {
         let IO = this.getClassIO(file, srcFile, node, fileBody);
         let deps: any = {
             name,
-            id: 'class-' + name + '-' + Date.now(),
+            id: 'class-' + name + '-' + uniqid(),
             file: file,
             type: 'class',
             sourceCode: srcFile.getText()
@@ -371,7 +372,7 @@ export class Dependencies {
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
                                 name,
-                                id: 'injectable-' + name + '-' + Date.now(),
+                                id: 'injectable-' + name + '-' + uniqid(),
                                 file: file,
                                 type: 'injectable',
                                 properties: IO.properties,
@@ -406,7 +407,7 @@ export class Dependencies {
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
                                 name,
-                                id: 'pipe-' + name + '-' + Date.now(),
+                                id: 'pipe-' + name + '-' + uniqid(),
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
@@ -479,7 +480,7 @@ export class Dependencies {
                         let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
                         let interfaceDeps: IInterfaceDep = {
                             name,
-                            id: 'interface-' + name + '-' + Date.now(),
+                            id: 'interface-' + name + '-' + uniqid(),
                             file: file,
                             type: 'interface',
                             sourceCode: srcFile.getText()

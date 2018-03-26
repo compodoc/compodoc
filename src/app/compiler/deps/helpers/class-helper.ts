@@ -11,7 +11,7 @@ import { ConfigurationInterface } from '../../../interfaces/configuration.interf
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
-import { isIgnore } from '../../../../utils/utils';
+import { isIgnore, uniqid } from '../../../../utils';
 
 const marked = require('marked');
 
@@ -694,7 +694,7 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let result: any = {
-            id: 'call-declaration-' + Date.now(),
+            id: 'call-declaration-' + uniqid(),
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -716,7 +716,7 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let result = {
-            id: 'index-declaration-' + Date.now(),
+            id: 'index-declaration-' + uniqid(),
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
