@@ -14,12 +14,12 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
             let foundInOneModule = false;
             modules.forEach(module => {
                 module.declarations.forEach(declaration => {
-                    if (declaration.name === element.name) {
+                    if (declaration.name === element.name && !element.isDuplicate) {
                         foundInOneModule = true;
                     }
                 });
                 module.providers.forEach(provider => {
-                    if (provider.name === element.name) {
+                    if (provider.name === element.name && !element.isDuplicate) {
                         foundInOneModule = true;
                     }
                 });
@@ -29,22 +29,21 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
             }
         });
 
-        switch (elementType) {
-            case 'component':
-                context.components = alones;
-                break;
-            case 'directive':
-                context.directives = alones;
-                break;
-            case 'injectable':
-                context.injectables = alones;
-                break;
-            case 'pipe':
-                context.pipes = alones;
-                break;
-        }
-
         if (alones.length > 0) {
+            switch (elementType) {
+                case 'component':
+                    context.components = alones;
+                    break;
+                case 'directive':
+                    context.directives = alones;
+                    break;
+                case 'injectable':
+                    context.injectables = alones;
+                    break;
+                case 'pipe':
+                    context.pipes = alones;
+                    break;
+            }
             return options.fn(context);
         }
     }

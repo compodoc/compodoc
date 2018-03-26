@@ -124,6 +124,7 @@ export class DependenciesEngine {
         this.prepareMiscellaneous();
         this.updateModulesDeclarationsExportsTypes();
         this.routes = this.rawData.routesTree;
+        this.manageDuplicatesName();
     }
 
     private findInCompodocDependencies(type, data): IApiSourceResult<any> {
@@ -139,6 +140,33 @@ export class DependenciesEngine {
             }
         }
         return _result;
+    }
+
+    private manageDuplicatesName() {
+        let processDuplicates = (element, index, array) => {
+            let counterDuplicate = 0;
+            array.forEach(arrayElement => {
+                if (
+                    arrayElement.name === element.name &&
+                    arrayElement.id !== element.id &&
+                    !arrayElement.isDuplicate
+                ) {
+                    counterDuplicate += 1;
+                    element.isDuplicate = true;
+                    element.duplicateId = counterDuplicate;
+                    element.duplicateName = element.name + '-' + element.duplicateId;
+                }
+            });
+            return element;
+        };
+        this.classes = this.classes.map(processDuplicates);
+        this.interfaces = this.interfaces.map(processDuplicates);
+        this.injectables = this.injectables.map(processDuplicates);
+        this.pipes = this.pipes.map(processDuplicates);
+        this.interceptors = this.interceptors.map(processDuplicates);
+        this.modules = this.modules.map(processDuplicates);
+        this.components = this.components.map(processDuplicates);
+        this.directives = this.directives.map(processDuplicates);
     }
 
     public find(type: string): IApiSourceResult<any> | undefined {
