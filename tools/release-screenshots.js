@@ -6,11 +6,17 @@ const webshot = require('webshot'),
     exec = helpers.exec,
     fs = helpers.fs,
     tmp = helpers.temporaryDir(),
-
-    THEMES = ['gitbook', 'laravel', 'original', 'postmark', 'readthedocs', 'stripe', 'vagrant'],
-
+    THEMES = [
+        'gitbook',
+        'laravel',
+        'original',
+        'postmark',
+        'readthedocs',
+        'stripe',
+        'vagrant',
+        'material'
+    ],
     len = THEMES.length,
-
     SHOT_OPTIONS = {
         windowSize: {
             width: 1024,
@@ -18,7 +24,6 @@ const webshot = require('webshot'),
         },
         customCSS: '.menu{overflow-y:hidden!important;}'
     },
-
     shot = function(file) {
         return new Promise(function(resolve, reject) {
             webshot('http://localhost:8080', file, SHOT_OPTIONS, function(err) {
@@ -27,64 +32,75 @@ const webshot = require('webshot'),
             });
         });
     },
-
     document = function(theme) {
         console.log('Document with ' + theme);
-        var command = 'node ../bin/index.js -p ./src/tsconfig.json -n \'TodoMVC Angular 2 documentation\' ';
+        var command =
+            "node ../bin/index-cli.js -p ./src/tsconfig.json -n 'TodoMVC Angular 2 documentation' ";
         if (theme !== 'gitbook') {
-            command += ' -h ' + theme
+            command += ' --theme ' + theme;
         }
         return new Promise(function(resolve, reject) {
-            exec(command, {
-                env: {
-                    MODE: 'TESTING'
+            exec(
+                command,
+                {
+                    env: {
+                        MODE: 'TESTING'
+                    }
+                },
+                (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        reject();
+                    } else {
+                        shot('../screenshots/theme-' + theme + '.png').then(function() {
+                            resolve();
+                        });
+                    }
                 }
-            }, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    reject();
-                } else {
-                    shot('../screenshots/theme-' + theme + '.png').then(function() {
-                        resolve();
-                    })
-                }
-            });
+            );
         });
     };
 
 var i = 0;
 
 tmp.create();
-exec('cd ' + tmp.name + ' && git clone https://github.com/compodoc/compodoc-demo-todomvc-angular.git .', {}, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`exec error: ${error}`);
-    } else {
-        console.log('todomvc-ng2 git clone');
-        process.chdir(tmp.name);
+exec(
+    'cd ' +
+        tmp.name +
+        ' && git clone https://github.com/compodoc/compodoc-demo-todomvc-angular.git .',
+    {},
+    (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+        } else {
+            console.log('todomvc-ng2 git clone');
+            process.chdir(tmp.name);
 
-        liveServer.start({
-            root: './documentation',
-            open: false,
-            quiet: true,
-            logLevel: 0
-        });
+            liveServer.start({
+                root: './documentation',
+                open: false,
+                quiet: true,
+                logLevel: 0
+            });
 
-        let loop = function() {
-            if (i < len) {
-                document(THEMES[i]).then(function() {
-                    i++
-                    loop();
-                })
-                .catch((error) => {
-                    console.log('document error: ', error);
-                });
-            } else {
-                console.log('END');
-                liveServer.shutdown();
-                process.exit(0);
-                rimraf(tmp.name);
-            }
-        };
-        loop();
+            let loop = function() {
+                if (i < len) {
+                    document(THEMES[i])
+                        .then(function() {
+                            i++;
+                            loop();
+                        })
+                        .catch(error => {
+                            console.log('document error: ', error);
+                        });
+                } else {
+                    console.log('END');
+                    liveServer.shutdown();
+                    process.exit(0);
+                    rimraf(tmp.name);
+                }
+            };
+            loop();
+        }
     }
-});
+);
