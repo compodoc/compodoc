@@ -612,7 +612,7 @@ describe('CLI simple generation', () => {
         });
         after(() => tmp.clean(distFolder));
 
-        it('should not contain sourceCode tab', () => {
+        it('should not contain domTree tab', () => {
             index = read(`${distFolder}/components/BarComponent.html`);
             expect(index).to.not.contain('id="tree-tab"');
         });

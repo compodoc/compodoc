@@ -763,56 +763,62 @@ export class Application {
                         switch (metaDataItem.type) {
                             case 'directive':
                                 return this.dependenciesEngine.getDirectives().some(directive => {
+                                    let selectedDirective;
                                     if (typeof metaDataItem.id !== 'undefined') {
-                                        let selectedDirective =
+                                        selectedDirective =
                                             (directive as any).id === metaDataItem.id;
-                                        if (
-                                            selectedDirective &&
-                                            !ngModule.compodocLinks.directives.includes(directive)
-                                        ) {
-                                            ngModule.compodocLinks.directives.push(directive);
-                                        }
-                                        return selectedDirective;
+                                    } else {
+                                        selectedDirective =
+                                            (directive as any).name === metaDataItem.name;
                                     }
+                                    if (
+                                        selectedDirective &&
+                                        !ngModule.compodocLinks.directives.includes(directive)
+                                    ) {
+                                        ngModule.compodocLinks.directives.push(directive);
+                                    }
+                                    return selectedDirective;
                                 });
 
                             case 'component':
                                 return this.dependenciesEngine.getComponents().some(component => {
+                                    let selectedComponent;
                                     if (typeof metaDataItem.id !== 'undefined') {
-                                        let selectedComponent =
+                                        selectedComponent =
                                             (component as any).id === metaDataItem.id;
-                                        if (
-                                            selectedComponent &&
-                                            !ngModule.compodocLinks.components.includes(component)
-                                        ) {
-                                            ngModule.compodocLinks.components.push(component);
-                                        }
-                                        return selectedComponent;
+                                    } else {
+                                        selectedComponent =
+                                            (component as any).name === metaDataItem.name;
                                     }
+                                    if (
+                                        selectedComponent &&
+                                        !ngModule.compodocLinks.components.includes(component)
+                                    ) {
+                                        ngModule.compodocLinks.components.push(component);
+                                    }
+                                    return selectedComponent;
                                 });
 
                             case 'module':
                                 return this.dependenciesEngine
                                     .getModules()
-                                    .some(module => {
-                                        if (typeof metaDataItem.id !== 'undefined') {
-                                            let selectedModule = (module as any).id === metaDataItem.id;
-                                            return selectedModule;
-                                        }
-                                    });
+                                    .some(module => (module as any).name === metaDataItem.name);
 
                             case 'pipe':
                                 return this.dependenciesEngine.getPipes().some(pipe => {
+                                    let selectedPipe;
                                     if (typeof metaDataItem.id !== 'undefined') {
-                                        let selectedPipe = (pipe as any).id === metaDataItem.id;
-                                        if (
-                                            selectedPipe &&
-                                            !ngModule.compodocLinks.pipes.includes(pipe)
-                                        ) {
-                                            ngModule.compodocLinks.pipes.push(pipe);
-                                        }
-                                        return selectedPipe;
+                                        selectedPipe = (pipe as any).id === metaDataItem.id;
+                                    } else {
+                                        selectedPipe = (pipe as any).name === metaDataItem.name;
                                     }
+                                    if (
+                                        selectedPipe &&
+                                        !ngModule.compodocLinks.pipes.includes(pipe)
+                                    ) {
+                                        ngModule.compodocLinks.pipes.push(pipe);
+                                    }
+                                    return selectedPipe;
                                 });
 
                             default:
