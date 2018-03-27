@@ -591,6 +591,33 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when generation with --disableDomTree flag', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableDomTree',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain sourceCode tab', () => {
+            index = read(`${distFolder}/components/BarComponent.html`);
+            expect(index).to.not.contain('id="tree-tab"');
+        });
+    });
+
     describe('when generation with --disableGraph flag', () => {
 
         let stdoutString = undefined,

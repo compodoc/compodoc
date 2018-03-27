@@ -13,6 +13,7 @@ export const COMPODOC_DEFAULTS = {
     coverageTestThresholdFail: true,
     toggleMenuItems: ['all'],
     disableSourceCode: false,
+    disableDomTree: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,

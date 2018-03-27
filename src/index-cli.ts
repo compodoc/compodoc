@@ -108,6 +108,7 @@ export class CliApplication extends Application {
                 'Do not add source code tab and links to source code',
                 false
             )
+            .option('--disableDomTree', 'Do not add dom tree tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivate', 'Do not show private in generated documentation', false)
@@ -216,6 +217,10 @@ export class CliApplication extends Application {
 
         if (program.disableSourceCode) {
             this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+        }
+
+        if (program.disableDomTree) {
+            this.configuration.mainData.disableDomTree = program.disableDomTree;
         }
 
         if (program.disableGraph) {

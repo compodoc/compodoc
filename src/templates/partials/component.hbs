@@ -24,9 +24,11 @@
         <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
     </li>
     {{/if}}
+    {{#unless disableDomTree}}
     <li>
         <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
     </li>
+    {{/unless}}
     {{#if component.exampleUrls}}
     <li>
         <a href="#example" role="tab" id="example-tab" data-toggle="tab" data-link="example">Examples</a>
