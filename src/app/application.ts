@@ -458,11 +458,11 @@ export class Application {
             actions.push(() => this.prepareRoutes());
         }
 
-        if (diffCrawledData.modules.length > 0) {
-            actions.push(() => this.prepareModules());
-        }
         if (diffCrawledData.components.length > 0) {
             actions.push(() => this.prepareComponents());
+        }
+        if (diffCrawledData.modules.length > 0) {
+            actions.push(() => this.prepareModules());
         }
 
         if (diffCrawledData.directives.length > 0) {
@@ -549,10 +549,10 @@ export class Application {
         let actions = [];
 
         actions.push(() => {
-            return this.prepareModules();
+            return this.prepareComponents();
         });
         actions.push(() => {
-            return this.prepareComponents();
+            return this.prepareModules();
         });
 
         if (this.dependenciesEngine.directives.length > 0) {
@@ -763,45 +763,56 @@ export class Application {
                         switch (metaDataItem.type) {
                             case 'directive':
                                 return this.dependenciesEngine.getDirectives().some(directive => {
-                                    let selectedDirective =
-                                        (directive as any).name === metaDataItem.name;
-                                    if (
-                                        selectedDirective &&
-                                        !ngModule.compodocLinks.directives.includes(directive)
-                                    ) {
-                                        ngModule.compodocLinks.directives.push(directive);
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        let selectedDirective =
+                                            (directive as any).id === metaDataItem.id;
+                                        if (
+                                            selectedDirective &&
+                                            !ngModule.compodocLinks.directives.includes(directive)
+                                        ) {
+                                            ngModule.compodocLinks.directives.push(directive);
+                                        }
+                                        return selectedDirective;
                                     }
-                                    return selectedDirective;
                                 });
 
                             case 'component':
                                 return this.dependenciesEngine.getComponents().some(component => {
-                                    let selectedComponent =
-                                        (component as any).name === metaDataItem.name;
-                                    if (
-                                        selectedComponent &&
-                                        !ngModule.compodocLinks.components.includes(component)
-                                    ) {
-                                        ngModule.compodocLinks.components.push(component);
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        let selectedComponent =
+                                            (component as any).id === metaDataItem.id;
+                                        if (
+                                            selectedComponent &&
+                                            !ngModule.compodocLinks.components.includes(component)
+                                        ) {
+                                            ngModule.compodocLinks.components.push(component);
+                                        }
+                                        return selectedComponent;
                                     }
-                                    return selectedComponent;
                                 });
 
                             case 'module':
                                 return this.dependenciesEngine
                                     .getModules()
-                                    .some(module => (module as any).name === metaDataItem.name);
+                                    .some(module => {
+                                        if (typeof metaDataItem.id !== 'undefined') {
+                                            let selectedModule = (module as any).id === metaDataItem.id;
+                                            return selectedModule;
+                                        }
+                                    });
 
                             case 'pipe':
                                 return this.dependenciesEngine.getPipes().some(pipe => {
-                                    let selectedPipe = (pipe as any).name === metaDataItem.name;
-                                    if (
-                                        selectedPipe &&
-                                        !ngModule.compodocLinks.pipes.includes(pipe)
-                                    ) {
-                                        ngModule.compodocLinks.pipes.push(pipe);
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        let selectedPipe = (pipe as any).id === metaDataItem.id;
+                                        if (
+                                            selectedPipe &&
+                                            !ngModule.compodocLinks.pipes.includes(pipe)
+                                        ) {
+                                            ngModule.compodocLinks.pipes.push(pipe);
+                                        }
+                                        return selectedPipe;
                                     }
-                                    return selectedPipe;
                                 });
 
                             default:
@@ -1243,7 +1254,7 @@ export class Application {
                     let page = {
                         path: 'directives',
                         name: directive.name,
-                        id: directive,
+                        id: directive.id,
                         context: 'directive',
                         directive: directive,
                         depth: 1,

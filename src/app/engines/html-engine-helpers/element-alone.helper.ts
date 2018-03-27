@@ -14,12 +14,12 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
             let foundInOneModule = false;
             modules.forEach(module => {
                 module.declarations.forEach(declaration => {
-                    if (declaration.name === element.name && !element.isDuplicate) {
+                    if (declaration.id === element.id) {
                         foundInOneModule = true;
                     }
                 });
                 module.providers.forEach(provider => {
-                    if (provider.name === element.name && !element.isDuplicate) {
+                    if (provider.id === element.id) {
                         foundInOneModule = true;
                     }
                 });
