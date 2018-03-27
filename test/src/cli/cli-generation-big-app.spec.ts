@@ -617,4 +617,10 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<code>style.color');
         expect(file).to.contain('<code>mouseup');
     });
+
+    it('should display short filename + long filename in title for index of miscellaneous', () => {
+        let file = read(distFolder + '/miscellaneous/variables.html');
+        expect(file).to.contain('(test/.../miscellaneous.ts)');
+        expect(file).to.contain('title="test/src/todomvc-ng2/src/app/shared/miscellaneous/miscellaneous.ts"');
+    });
 });

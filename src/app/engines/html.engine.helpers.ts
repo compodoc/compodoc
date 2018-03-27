@@ -34,6 +34,7 @@ import { OneParameterHasHelper } from './html-engine-helpers/one-parameter-has.h
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { ElementAloneHelper } from './html-engine-helpers/element-alone.helper';
 import { HasOwnHelper } from './html-engine-helpers/has-own.helper';
+import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(
@@ -70,6 +71,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'one-parameter-has', new OneParameterHasHelper());
         this.registerHelper(bars, 'element-alone', new ElementAloneHelper(dependenciesEngine));
         this.registerHelper(bars, 'hasOwn', new HasOwnHelper());
+        this.registerHelper(bars, 'short-url', new ShortURLHelper());
     }
 
     private registerHelper(bars, key: string, helper: IHtmlEngineHelper) {
