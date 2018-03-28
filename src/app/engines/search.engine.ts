@@ -26,7 +26,10 @@ export class SearchEngine {
         let text;
         this.amountOfMemory += page.rawData.length;
         if (this.amountOfMemory < MAX_SIZE_FILE_CHEERIO_PARSING) {
-            let $ = cheerio.load(page.rawData);
+            let indexStartContent = page.rawData.indexOf('<!-- START CONTENT -->');
+            let indexEndContent = page.rawData.indexOf('<!-- END CONTENT -->');
+
+            let $ = cheerio.load(page.rawData.substring(indexStartContent + 1, indexEndContent));
 
             text = $('.content').html();
             text = Html.decode(text);
