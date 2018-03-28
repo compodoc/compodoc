@@ -2074,7 +2074,7 @@ export class Application {
 
     public processPages() {
         logger.info('Process pages');
-        let pages = this.configuration.pages;
+        let pages = _.sortBy(this.configuration.pages, ['name']);
         Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
                 this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
