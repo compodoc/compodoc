@@ -4,7 +4,7 @@ import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
-import { MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/defaults';
+import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/defaults';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');
@@ -16,6 +16,7 @@ export class SearchEngine {
     private searchDocuments = [];
     public documentsStore: Object = {};
     public indexSize: number;
+    public amountOfMemory = 0;
 
     constructor(
         private configuration: ConfigurationInterface,
@@ -23,24 +24,27 @@ export class SearchEngine {
 
     public indexPage(page) {
         let text;
-        let $ = cheerio.load(page.rawData);
+        this.amountOfMemory += page.rawData.length;
+        if (this.amountOfMemory < MAX_SIZE_FILE_CHEERIO_PARSING) {
+            let $ = cheerio.load(page.rawData);
 
-        text = $('.content').html();
-        text = Html.decode(text);
-        text = text.replace(/(<([^>]+)>)/ig, '');
+            text = $('.content').html();
+            text = Html.decode(text);
+            text = text.replace(/(<([^>]+)>)/ig, '');
 
-        page.url = page.url.replace(this.configuration.mainData.output, '');
+            page.url = page.url.replace(this.configuration.mainData.output, '');
 
-        let doc = {
-            url: page.url,
-            title: page.infos.context + ' - ' + page.infos.name,
-            body: text
-        };
+            let doc = {
+                url: page.url,
+                title: page.infos.context + ' - ' + page.infos.name,
+                body: text
+            };
 
-        if (!this.documentsStore.hasOwnProperty(doc.url)
-            && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
-            this.documentsStore[doc.url] = doc;
-            this.searchDocuments.push(doc);
+            if (!this.documentsStore.hasOwnProperty(doc.url)
+                && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
+                this.documentsStore[doc.url] = doc;
+                this.searchDocuments.push(doc);
+            }
         }
     }
 
