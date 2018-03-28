@@ -122,7 +122,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'Angular-JumpStart', maintainer: 'DanWahlin', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
     }, {
-        name: 'cloudstack-ui', maintainer: 'bwsw', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json'
+        name: 'cloudstack-ui', maintainer: 'bwsw', tsconfig_path: './src/', tsconfig_file: 'tsconfig.app.json', failedAccepted: true
     }],
     len = GIT_REPOSITORIES.length;
 
