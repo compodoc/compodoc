@@ -10,27 +10,29 @@ export class SymbolHelper {
     private readonly unknown = '???';
     private importsUtil = new ImportsUtil();
 
-    public parseDeepIndentifier(name: string): IParseDeepIdentifierResult {
+    public parseDeepIndentifier(name: string, srcFile?: ts.SourceFile): IParseDeepIdentifierResult {
+        let result = {
+            name: '',
+            type: ''
+        };
         if (typeof name === 'undefined') {
-            return {
-                name: '',
-                type: ''
-            };
+            return result;
         }
         let nsModule = name.split('.');
         let type = this.getType(name);
 
         if (nsModule.length > 1) {
-            return {
-                ns: nsModule[0],
-                name: name,
-                type: type
-            };
+            result.ns = nsModule[0];
+            result.name = name;
+            result.type = type;
+            return result;
         }
-        return {
-            name: name,
-            type: type
-        };
+        if (typeof srcFile !== 'undefined') {
+            result.file = this.importsUtil.getFileNameOfImport(name, srcFile);
+        }
+        result.name = name;
+        result.type = type;
+        return result;
     }
 
     public getType(name: string): string {

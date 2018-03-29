@@ -5,7 +5,6 @@ import { FooterComponent } from './footer.component';
 
 /**
  * The footer module
- * @ignore
  */
 @NgModule({
     imports: [BrowserModule],

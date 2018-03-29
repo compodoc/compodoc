@@ -178,6 +178,55 @@ export class ImportsUtil {
         return [];
     }
 
+    public getFileNameOfImport(variableName: string, sourceFile: ts.SourceFile) {
+        const file =
+            typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
+                ? ast.getSourceFile(sourceFile.fileName)
+                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
+        const imports = file.getImportDeclarations();
+        let searchedImport,
+            aliasOriginalName = '',
+            finalPath = '',
+            foundWithAlias = false;
+        imports.forEach(i => {
+            let namedImports = i.getNamedImports(),
+                namedImportsLength = namedImports.length,
+                j = 0;
+
+            if (namedImportsLength > 0) {
+                for (j; j < namedImportsLength; j++) {
+                    let importName = namedImports[j].getNameNode().getText() as string,
+                        importAlias;
+
+                    if (namedImports[j].getAliasIdentifier()) {
+                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    }
+                    if (importName === variableName) {
+                        searchedImport = i;
+                        break;
+                    }
+                    if (importAlias === variableName) {
+                        foundWithAlias = true;
+                        aliasOriginalName = importName;
+                        searchedImport = i;
+                        break;
+                    }
+                }
+            }
+        });
+        if (typeof searchedImport !== 'undefined') {
+            let importPath = path.resolve(
+                path.dirname(sourceFile.fileName) +
+                    '/' +
+                    searchedImport.getModuleSpecifier() +
+                    '.ts'
+            );
+            let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+            finalPath = importPath.replace(cleaner, '');
+        }
+        return finalPath;
+    }
+
     /**
      * Find in imports something like VAR.AVAR.BVAR.thestring
      * @param  {string} inputVariableName                   like VAR.AVAR.BVAR.thestring
@@ -228,16 +277,16 @@ export class ImportsUtil {
 
         let fileToSearchIn, variableDeclaration;
         if (typeof searchedImport !== 'undefined') {
-            let imporPath = path.resolve(
+            let importPath = path.resolve(
                 path.dirname(sourceFile.fileName) +
                     '/' +
                     searchedImport.getModuleSpecifier() +
                     '.ts'
             );
             const sourceFileImport =
-                typeof ast.getSourceFile(imporPath) !== 'undefined'
-                    ? ast.getSourceFile(imporPath)
-                    : ast.addExistingSourceFile(imporPath); // tslint:disable-line
+                typeof ast.getSourceFile(importPath) !== 'undefined'
+                    ? ast.getSourceFile(importPath)
+                    : ast.addExistingSourceFile(importPath); // tslint:disable-line
             if (sourceFileImport) {
                 fileToSearchIn = sourceFileImport;
                 let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;

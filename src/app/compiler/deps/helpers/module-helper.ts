@@ -29,7 +29,7 @@ export class ModuleHelper {
                 return component;
             }
 
-            return this.symbolHelper.parseDeepIndentifier(name);
+            return this.symbolHelper.parseDeepIndentifier(name, srcFile);
         });
     }
 
@@ -44,7 +44,7 @@ export class ModuleHelper {
                 return component;
             }
 
-            return this.symbolHelper.parseDeepIndentifier(name);
+            return this.symbolHelper.parseDeepIndentifier(name, srcFile);
         });
     }
 
@@ -63,7 +63,7 @@ export class ModuleHelper {
     ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'exports', srcFile)
-            .map(name => this.symbolHelper.parseDeepIndentifier(name));
+            .map(name => this.symbolHelper.parseDeepIndentifier(name, srcFile));
     }
 
     public getModuleImportsRaw(
@@ -99,6 +99,6 @@ export class ModuleHelper {
     ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'bootstrap', srcFile)
-            .map(name => this.symbolHelper.parseDeepIndentifier(name));
+            .map(name => this.symbolHelper.parseDeepIndentifier(name, srcFile));
     }
 }

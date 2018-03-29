@@ -75,17 +75,20 @@ export class DependenciesEngine {
             len = this.modules.length;
 
         let mergeTypes = entry => {
-            let directive = this.findInCompodocDependencies(entry.name, this.directives);
+            let directive = this.findInCompodocDependencies(entry.name, this.directives, entry.file);
             if (typeof directive.data !== 'undefined') {
                 entry.type = 'directive';
+                entry.id = directive.data.id;
             }
-            let component = this.findInCompodocDependencies(entry.name, this.components);
+            let component = this.findInCompodocDependencies(entry.name, this.components, entry.file);
             if (typeof component.data !== 'undefined') {
                 entry.type = 'component';
+                entry.id = component.data.id;
             }
-            let pipe = this.findInCompodocDependencies(entry.name, this.pipes);
+            let pipe = this.findInCompodocDependencies(entry.name, this.pipes, entry.file);
             if (typeof pipe.data !== 'undefined') {
                 entry.type = 'pipe';
+                entry.id = pipe.data.id;
             }
         };
 
@@ -127,15 +130,21 @@ export class DependenciesEngine {
         this.manageDuplicatesName();
     }
 
-    private findInCompodocDependencies(type, data): IApiSourceResult<any> {
+    private findInCompodocDependencies(name, data, file?): IApiSourceResult<any> {
         let _result = {
             source: 'internal',
             data: undefined
         };
         for (let i = 0; i < data.length; i++) {
-            if (typeof type !== 'undefined') {
-                if (type.indexOf(data[i].name) !== -1) {
-                    _result.data = data[i];
+            if (typeof name !== 'undefined') {
+                if (typeof file !== 'undefined') {
+                    if (name.indexOf(data[i].name) !== -1 && file.indexOf(data[i].file) !== -1) {
+                        _result.data = data[i];
+                    }
+                } else {
+                    if (name.indexOf(data[i].name) !== -1) {
+                        _result.data = data[i];
+                    }
                 }
             }
         }
@@ -169,18 +178,18 @@ export class DependenciesEngine {
         this.directives = this.directives.map(processDuplicates);
     }
 
-    public find(type: string): IApiSourceResult<any> | undefined {
+    public find(name: string): IApiSourceResult<any> | undefined {
         let searchFunctions: Array<() => IApiSourceResult<any>> = [
-            () => this.findInCompodocDependencies(type, this.injectables),
-            () => this.findInCompodocDependencies(type, this.interceptors),
-            () => this.findInCompodocDependencies(type, this.interfaces),
-            () => this.findInCompodocDependencies(type, this.classes),
-            () => this.findInCompodocDependencies(type, this.components),
-            () => this.findInCompodocDependencies(type, this.miscellaneous.variables),
-            () => this.findInCompodocDependencies(type, this.miscellaneous.functions),
-            () => this.findInCompodocDependencies(type, this.miscellaneous.typealiases),
-            () => this.findInCompodocDependencies(type, this.miscellaneous.enumerations),
-            () => this.angularApiUtil.findApi(type)
+            () => this.findInCompodocDependencies(name, this.injectables),
+            () => this.findInCompodocDependencies(name, this.interceptors),
+            () => this.findInCompodocDependencies(name, this.interfaces),
+            () => this.findInCompodocDependencies(name, this.classes),
+            () => this.findInCompodocDependencies(name, this.components),
+            () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
+            () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
+            () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
+            () => this.findInCompodocDependencies(name, this.miscellaneous.enumerations),
+            () => this.angularApiUtil.findApi(name)
         ];
 
         for (let searchFunction of searchFunctions) {

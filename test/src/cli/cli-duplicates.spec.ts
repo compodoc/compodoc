@@ -99,4 +99,17 @@ describe('CLI duplicates support', () => {
         const file = exists(distFolder + '/directives/DoNothingDirective-1.html');
         expect(file).to.be.true;
     });
+
+    it('should support component inside module', () => {
+        let file = read(distFolder + '/index.html');
+        file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule')
+        expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/ValidationDemo.html" >ValidationDemo</a>`);
+    });
+
+    it('should support component inside module with duplicate', () => {
+        let file = read(distFolder + '/index.html');
+        file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule')
+        expect(file).to.contain(`id="components-links-module-FooterModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/FooterComponent.html" >FooterComponent</a>`);
+        expect(file).to.contain(`<li class="link">\n                                            <a href="./components/FooterComponent-1.html" >FooterComponent</a>`);
+    });
 });
