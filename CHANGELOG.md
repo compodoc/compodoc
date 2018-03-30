@@ -1,3 +1,10 @@
+<a name="1.1.1"></a>
+# [1.1.1](https://github.com/compodoc/compodoc/compare/1.1.0...1.1.1) (2018-03-30)
+
+### Bug fixes
+
+* **npm:** uuid not in dependencies ([bd1d20](https://github.com/compodoc/compodoc/commit/bd1d20)), closes [#523](https://github.com/compodoc/compodoc/issues/523)
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/compodoc/compodoc/compare/1.0.9...1.1.0) (2018-03-30)
 
