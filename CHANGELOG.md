@@ -1,3 +1,30 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/compodoc/compodoc/compare/1.0.9...1.1.0) (2018-03-30)
+
+__Main feature :__
+
+New menu organisation : components, directives or injectables of a module are displayed directly in the module menu entry
+
+__Main structural change :__
+
+Drop direct TypeScript dependency, Compodoc now relies on ts-simple-ast TypeScript dependency.
+
+### Features
+
+* **UI:** Component, directive, pipe and injectable not linked inside a module should appear in the menu alone ([b0106382](https://github.com/compodoc/compodoc/commit/b0106382)), closes [#510](https://github.com/compodoc/compodoc/issues/510)
+* **UI:** Display filename in index of miscellaneous ([4ddeda4f](https://github.com/compodoc/compodoc/commit/4ddeda4f)), closes [#520](https://github.com/compodoc/compodoc/issues/520)
+* **CLI:** disableDomTree option ([c71ca965](https://github.com/compodoc/compodoc/commit/c71ca965)), closes [#517](https://github.com/compodoc/compodoc/issues/517)
+
+### Bug Fixes
+
+* **UI:** group components, directives, injectables, pipes based on module ([46cbb07a](https://github.com/compodoc/compodoc/commit/46cbb07a)), closes [#145](https://github.com/compodoc/compodoc/issues/145) [#258](https://github.com/compodoc/compodoc/issues/258)
+* **UI:** Dependency-Link not shown in side-nav if no dependencies and peerDependencies ([5ffe9d22](https://github.com/compodoc/compodoc/commit/5ffe9d22)), closes [#506](https://github.com/compodoc/compodoc/issues/506)
+* **dependencies:** return's comment of method is missing ([05cd3a4c](https://github.com/compodoc/compodoc/commit/05cd3a4c)), closes [#512](https://github.com/compodoc/compodoc/issues/512)
+* **dependencies:** Display component providers ([78045092](https://github.com/compodoc/compodoc/commit/78045092)), closes [#514](https://github.com/compodoc/compodoc/issues/514)
+* **dependencies:** component inheritance with simple base class + disabledLifeCycleHooks support ([bd940053](https://github.com/compodoc/compodoc/commit/bd940053)), closes [#505](https://github.com/compodoc/compodoc/issues/505)
+* **dependencies:** support entity with same name ([01ac07a3](https://github.com/compodoc/compodoc/commit/01ac07a3)), closes [#474](https://github.com/compodoc/compodoc/issues/474) [#233](https://github.com/compodoc/compodoc/issues/233)
+
+
 <a name="1.0.9"></a>
 # [1.0.9](https://github.com/compodoc/compodoc/compare/1.0.8...1.0.9) (2018-03-09)
 
