@@ -526,7 +526,7 @@ export class RouterParserUtil {
                     let importPath = path.resolve(
                         path.dirname(file.getFilePath()) +
                             '/' +
-                            searchedImport.getModuleSpecifier() +
+                            searchedImport.getModuleSpecifierValue() +
                             '.ts'
                     );
                     const sourceFileImport =

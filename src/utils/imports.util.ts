@@ -138,7 +138,7 @@ export class ImportsUtil {
             let importPath = path.resolve(
                 path.dirname(sourceFile.fileName) +
                     '/' +
-                    searchedImport.getModuleSpecifier() +
+                    searchedImport.getModuleSpecifierValue() +
                     '.ts'
             );
             const sourceFileImport =
@@ -218,7 +218,7 @@ export class ImportsUtil {
             let importPath = path.resolve(
                 path.dirname(sourceFile.fileName) +
                     '/' +
-                    searchedImport.getModuleSpecifier() +
+                    searchedImport.getModuleSpecifierValue() +
                     '.ts'
             );
             let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
@@ -280,7 +280,7 @@ export class ImportsUtil {
             let importPath = path.resolve(
                 path.dirname(sourceFile.fileName) +
                     '/' +
-                    searchedImport.getModuleSpecifier() +
+                    searchedImport.getModuleSpecifierValue() +
                     '.ts'
             );
             const sourceFileImport =
