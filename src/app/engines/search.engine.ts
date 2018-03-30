@@ -4,7 +4,7 @@ import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
-import { MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/defaults';
+import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/defaults';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');
@@ -16,6 +16,7 @@ export class SearchEngine {
     private searchDocuments = [];
     public documentsStore: Object = {};
     public indexSize: number;
+    public amountOfMemory = 0;
 
     constructor(
         private configuration: ConfigurationInterface,
@@ -23,24 +24,30 @@ export class SearchEngine {
 
     public indexPage(page) {
         let text;
-        let $ = cheerio.load(page.rawData);
+        this.amountOfMemory += page.rawData.length;
+        if (this.amountOfMemory < MAX_SIZE_FILE_CHEERIO_PARSING) {
+            let indexStartContent = page.rawData.indexOf('<!-- START CONTENT -->');
+            let indexEndContent = page.rawData.indexOf('<!-- END CONTENT -->');
 
-        text = $('.content').html();
-        text = Html.decode(text);
-        text = text.replace(/(<([^>]+)>)/ig, '');
+            let $ = cheerio.load(page.rawData.substring(indexStartContent + 1, indexEndContent));
 
-        page.url = page.url.replace(this.configuration.mainData.output, '');
+            text = $('.content').html();
+            text = Html.decode(text);
+            text = text.replace(/(<([^>]+)>)/ig, '');
 
-        let doc = {
-            url: page.url,
-            title: page.infos.context + ' - ' + page.infos.name,
-            body: text
-        };
+            page.url = page.url.replace(this.configuration.mainData.output, '');
 
-        if (!this.documentsStore.hasOwnProperty(doc.url)
-            && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
-            this.documentsStore[doc.url] = doc;
-            this.searchDocuments.push(doc);
+            let doc = {
+                url: page.url,
+                title: page.infos.context + ' - ' + page.infos.name,
+                body: text
+            };
+
+            if (!this.documentsStore.hasOwnProperty(doc.url)
+                && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
+                this.documentsStore[doc.url] = doc;
+                this.searchDocuments.push(doc);
+            }
         }
     }
 

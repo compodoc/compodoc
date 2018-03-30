@@ -1,5 +1,5 @@
 import { SymbolHelper } from './symbol-helper';
-import * as ts from 'typescript';
+import { ts, SyntaxKind } from 'ts-simple-ast';
 import { expect } from 'chai';
 
 describe(SymbolHelper.name, () => {
@@ -10,10 +10,12 @@ describe(SymbolHelper.name, () => {
     });
 
     describe('parseProviderConfiguration', () => {
-
         it('should handle property is identifier', () => {
             // { provide: APP_BASE_HREF, useValue: '/' }
-            const provideProperty = ts.createPropertyAssignment('provide', ts.createIdentifier('APP_BASE_HREF'));
+            const provideProperty = ts.createPropertyAssignment(
+                'provide',
+                ts.createIdentifier('APP_BASE_HREF')
+            );
             const useValue = ts.createPropertyAssignment('useValue', ts.createLiteral('/'));
 
             const obj = ts.createObjectLiteral([provideProperty, useValue]);
@@ -37,13 +39,21 @@ describe(SymbolHelper.name, () => {
             // { useFactory: (d1, d2) => new Date() }
 
             const dateCall = ts.createNew(ts.createIdentifier('Date'), [], []);
-            const arrowFunc = ts.createArrowFunction([], [],
+            const arrowFunc = ts.createArrowFunction(
+                [],
+                [],
                 [
                     ts.createParameter([], [], undefined, 'd1'),
-                    ts.createParameter([], [], undefined, 'd2')],
-                undefined, ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), dateCall);
+                    ts.createParameter([], [], undefined, 'd2')
+                ],
+                undefined,
+                ts.createToken(SyntaxKind.EqualsGreaterThanToken),
+                dateCall
+            );
 
-            const obj = ts.createObjectLiteral([ts.createPropertyAssignment('useFactory', arrowFunc)]);
+            const obj = ts.createObjectLiteral([
+                ts.createPropertyAssignment('useFactory', arrowFunc)
+            ]);
             const result = helper.parseProviderConfiguration(obj);
 
             expect(result).to.equal('{ useFactory: (d1, d2) => new Date() }');
@@ -59,7 +69,6 @@ describe(SymbolHelper.name, () => {
             const result = helper.buildIdentifierName(propertyAccess);
 
             expect(result).to.equal('RouterModule.forRoot');
-
         });
     });
 

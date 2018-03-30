@@ -157,6 +157,31 @@ describe('CLI disable flags', () => {
         });
     });
 
+    describe('disabling excluding methods with --disableLifeCycleHooks for component inheritance', () => {
+
+        let componentFile;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files-extends/src/tsconfig.json',
+                '--disableLifeCycleHooks',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            componentFile = read(`${distFolder}/components/AppComponent.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should exclude lifecyle hooks', () => {
+            expect(componentFile).not.to.contain('<code>ngOnInit');
+        });
+    });
+
     describe('disabling excluding methods with --disableLifeCycleHooks --disableInternal --disableProtected --disablePrivate', () => {
 
         let componentFile;

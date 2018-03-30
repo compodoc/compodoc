@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>Classes</li>
-  <li>{{name}}</li>
+  <li>{{class.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -75,11 +75,15 @@
         {{/if}}
 
         {{#orLength class.properties class.methods class.accessors}}
-            {{> index methods=class.methods properties=class.properties accessors=class.accessors}}
+            {{> index methods=class.methods properties=class.properties inputs=class.inputsClass outputs=class.outputsClass hostBindings=class.hostBindings hostListeners=class.hostListeners accessors=class.accessors}}
         {{/orLength}}
 
         {{#if class.constructorObj}}
             {{> block-constructor constructor=class.constructorObj file=class.file }}
+        {{/if}}
+
+        {{#if class.properties}}
+            {{> block-property properties=class.properties file=class.file }}
         {{/if}}
 
         {{#if class.methods}}
@@ -90,8 +94,20 @@
             {{> block-index indexables=class.indexSignatures file=class.file }}
         {{/if}}
 
-        {{#if class.properties}}
-            {{> block-property properties=class.properties file=class.file }}
+        {{#if class.inputsClass}}
+            {{> block-input element=class file=class.file }}
+        {{/if}}
+
+        {{#if class.outputsClass}}
+            {{> block-output element=class file=class.file }}
+        {{/if}}
+
+        {{#if class.hostBindings}}
+            {{> block-property properties=class.hostBindings file=class.file title="HostBindings" }}
+        {{/if}}
+
+        {{#if class.hostListeners}}
+            {{> block-method methods=class.hostListeners file=class.file title="HostListeners" }}
         {{/if}}
 
         {{#if class.accessors}}

@@ -9,6 +9,7 @@ import { FileEngine } from './file.engine';
 
 export class HtmlEngine {
     private cache: { page: string } = {} as any;
+    private compiledPage;
 
     constructor(
         configuration: ConfigurationInterface,
@@ -41,7 +42,6 @@ export class HtmlEngine {
             'interface',
             'routes',
             'index',
-            'index-directive',
             'index-misc',
             'search-results',
             'search-input',
@@ -53,6 +53,8 @@ export class HtmlEngine {
             'block-constructor',
             'block-typealias',
             'block-accessors',
+            'block-input',
+            'block-output',
             'coverage-report',
             'miscellaneous-functions',
             'miscellaneous-variables',
@@ -70,7 +72,10 @@ export class HtmlEngine {
             })).then(() => {
                 return this.fileEngine
                     .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
-                    .then(data => this.cache.page = data);
+                    .then(data => {
+                        this.cache.page = data;
+                        this.compiledPage = Handlebars.compile(this.cache.page);
+                    });
             }).then(() => { });
     }
 
@@ -78,8 +83,10 @@ export class HtmlEngine {
         let o = mainData;
         (Object as any).assign(o, page);
 
-        let template: any = Handlebars.compile(this.cache.page);
-        return template({
+        // let mem = process.memoryUsage();
+        // console.log(`heapTotal: ${mem.heapTotal} | heapUsed: ${mem.heapUsed}`);
+
+        return this.compiledPage({
             data: o
         });
     }

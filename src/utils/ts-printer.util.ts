@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 
 export class TsPrinterUtil {
     private printer: ts.Printer;
@@ -10,6 +10,10 @@ export class TsPrinterUtil {
     }
 
     public print(node: ts.Node): string {
-        return this.printer.printNode(ts.EmitHint.Unspecified, node, ts.createSourceFile('', '', ts.ScriptTarget.Latest));
+        return this.printer.printNode(
+            ts.EmitHint.Unspecified,
+            node,
+            ts.createSourceFile('', '', ts.ScriptTarget.Latest)
+        );
     }
 }

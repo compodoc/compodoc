@@ -2,7 +2,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as _ from 'lodash';
-import * as ts from 'typescript';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 const chokidar = require('chokidar');
 const marked = require('marked');
@@ -457,11 +458,11 @@ export class Application {
             actions.push(() => this.prepareRoutes());
         }
 
-        if (diffCrawledData.modules.length > 0) {
-            actions.push(() => this.prepareModules());
-        }
         if (diffCrawledData.components.length > 0) {
             actions.push(() => this.prepareComponents());
+        }
+        if (diffCrawledData.modules.length > 0) {
+            actions.push(() => this.prepareModules());
         }
 
         if (diffCrawledData.directives.length > 0) {
@@ -548,10 +549,10 @@ export class Application {
         let actions = [];
 
         actions.push(() => {
-            return this.prepareModules();
+            return this.prepareComponents();
         });
         actions.push(() => {
-            return this.prepareComponents();
+            return this.prepareModules();
         });
 
         if (this.dependenciesEngine.directives.length > 0) {
@@ -751,22 +752,52 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             this.configuration.mainData.modules = _modules.map(ngModule => {
+                ngModule.compodocLinks = {
+                    components: [],
+                    directives: [],
+                    injectables: [],
+                    pipes: []
+                };
                 ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
-                                return this.dependenciesEngine
-                                    .getDirectives()
-                                    .some(
-                                        directive => (directive as any).name === metaDataItem.name
-                                    );
+                                return this.dependenciesEngine.getDirectives().some(directive => {
+                                    let selectedDirective;
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        selectedDirective =
+                                            (directive as any).id === metaDataItem.id;
+                                    } else {
+                                        selectedDirective =
+                                            (directive as any).name === metaDataItem.name;
+                                    }
+                                    if (
+                                        selectedDirective &&
+                                        !ngModule.compodocLinks.directives.includes(directive)
+                                    ) {
+                                        ngModule.compodocLinks.directives.push(directive);
+                                    }
+                                    return selectedDirective;
+                                });
 
                             case 'component':
-                                return this.dependenciesEngine
-                                    .getComponents()
-                                    .some(
-                                        component => (component as any).name === metaDataItem.name
-                                    );
+                                return this.dependenciesEngine.getComponents().some(component => {
+                                    let selectedComponent;
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        selectedComponent =
+                                            (component as any).id === metaDataItem.id;
+                                    } else {
+                                        selectedComponent =
+                                            (component as any).name === metaDataItem.name;
+                                    }
+                                    if (
+                                        selectedComponent &&
+                                        !ngModule.compodocLinks.components.includes(component)
+                                    ) {
+                                        ngModule.compodocLinks.components.push(component);
+                                    }
+                                    return selectedComponent;
+                                });
 
                             case 'module':
                                 return this.dependenciesEngine
@@ -774,9 +805,21 @@ export class Application {
                                     .some(module => (module as any).name === metaDataItem.name);
 
                             case 'pipe':
-                                return this.dependenciesEngine
-                                    .getPipes()
-                                    .some(pipe => (pipe as any).name === metaDataItem.name);
+                                return this.dependenciesEngine.getPipes().some(pipe => {
+                                    let selectedPipe;
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        selectedPipe = (pipe as any).id === metaDataItem.id;
+                                    } else {
+                                        selectedPipe = (pipe as any).name === metaDataItem.name;
+                                    }
+                                    if (
+                                        selectedPipe &&
+                                        !ngModule.compodocLinks.pipes.includes(pipe)
+                                    ) {
+                                        ngModule.compodocLinks.pipes.push(pipe);
+                                    }
+                                    return selectedPipe;
+                                });
 
                             default:
                                 return true;
@@ -785,9 +828,16 @@ export class Application {
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
                     return (
-                        this.dependenciesEngine
-                            .getInjectables()
-                            .some(injectable => (injectable as any).name === provider.name) ||
+                        this.dependenciesEngine.getInjectables().some(injectable => {
+                            let selectedInjectable = (injectable as any).name === provider.name;
+                            if (
+                                selectedInjectable &&
+                                !ngModule.compodocLinks.injectables.includes(injectable)
+                            ) {
+                                ngModule.compodocLinks.injectables.push(injectable);
+                            }
+                            return selectedInjectable;
+                        }) ||
                         this.dependenciesEngine
                             .getInterceptors()
                             .some(interceptor => (interceptor as any).name === provider.name)
@@ -812,6 +862,7 @@ export class Application {
                 });
                 return ngModule;
             });
+
             this.configuration.addPage({
                 name: 'modules',
                 id: 'modules',
@@ -868,30 +919,35 @@ export class Application {
             let len = this.configuration.mainData.pipes.length;
             let loop = () => {
                 if (i < len) {
+                    let pipe = this.configuration.mainData.pipes[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.pipes[i].file
+                            pipe.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.pipes[i].name
+                                pipe.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.pipes[i].file
+                            pipe.file
                         );
-                        this.configuration.mainData.pipes[i].readme = marked(readme);
+                        pipe.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'pipes',
-                        name: this.configuration.mainData.pipes[i].name,
-                        id: this.configuration.mainData.pipes[i].id,
+                        name: pipe.name,
+                        id: pipe.id,
                         context: 'pipe',
-                        pipe: this.configuration.mainData.pipes[i],
+                        pipe: pipe,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (pipe.isDuplicate) {
+                        page.name += '-' + pipe.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -913,30 +969,35 @@ export class Application {
             let len = this.configuration.mainData.classes.length;
             let loop = () => {
                 if (i < len) {
+                    let classe = this.configuration.mainData.classes[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.classes[i].file
+                            classe.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.classes[i].name
+                                classe.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.classes[i].file
+                            classe.file
                         );
-                        this.configuration.mainData.classes[i].readme = marked(readme);
+                        classe.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'classes',
-                        name: this.configuration.mainData.classes[i].name,
-                        id: this.configuration.mainData.classes[i].id,
+                        name: classe.name,
+                        id: classe.id,
                         context: 'class',
-                        class: this.configuration.mainData.classes[i],
+                        class: classe,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (classe.isDuplicate) {
+                        page.name += '-' + classe.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -958,30 +1019,35 @@ export class Application {
             let len = this.configuration.mainData.interfaces.length;
             let loop = () => {
                 if (i < len) {
+                    let interf = this.configuration.mainData.interfaces[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.interfaces[i].file
+                            interf.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.interfaces[i].name
+                                interf.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.interfaces[i].file
+                            interf.file
                         );
-                        this.configuration.mainData.interfaces[i].readme = marked(readme);
+                        interf.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'interfaces',
-                        name: this.configuration.mainData.interfaces[i].name,
-                        id: this.configuration.mainData.interfaces[i].id,
+                        name: interf.name,
+                        id: interf.id,
                         context: 'interface',
-                        interface: this.configuration.mainData.interfaces[i],
+                        interface: interf,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (interf.isDuplicate) {
+                        page.name += '-' + interf.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1074,36 +1140,41 @@ export class Application {
             let len = this.configuration.mainData.components.length;
             let loop = () => {
                 if (i <= len - 1) {
+                    let component = this.configuration.mainData.components[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.components[i].file
+                            component.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.components[i].name
+                                component.name
                             } has a README file, include it`
                         );
                         let readmeFile = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.components[i].file
+                            component.file
                         );
-                        this.configuration.mainData.components[i].readme = marked(readmeFile);
-                        this.configuration.addPage({
+                        component.readme = marked(readmeFile);
+                        let page = {
                             path: 'components',
-                            name: this.configuration.mainData.components[i].name,
-                            id: this.configuration.mainData.components[i].id,
+                            name: component.name,
+                            id: component.id,
                             context: 'component',
-                            component: this.configuration.mainData.components[i],
+                            component: component,
                             depth: 1,
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                        });
-                        if (this.configuration.mainData.components[i].templateUrl.length > 0) {
+                        };
+                        if (component.isDuplicate) {
+                            page.name += '-' + component.duplicateId;
+                        }
+                        this.configuration.addPage(page);
+                        if (component.templateUrl.length > 0) {
                             logger.info(
                                 ` ${
-                                    this.configuration.mainData.components[i].name
+                                    component.name
                                 } has a templateUrl, include it`
                             );
-                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(
+                            this.handleTemplateurl(component).then(
                                 () => {
                                     i++;
                                     loop();
@@ -1117,22 +1188,26 @@ export class Application {
                             loop();
                         }
                     } else {
-                        this.configuration.addPage({
+                        let page = {
                             path: 'components',
-                            name: this.configuration.mainData.components[i].name,
-                            id: this.configuration.mainData.components[i].id,
+                            name: component.name,
+                            id: component.id,
                             context: 'component',
-                            component: this.configuration.mainData.components[i],
+                            component: component,
                             depth: 1,
                             pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                        });
-                        if (this.configuration.mainData.components[i].templateUrl.length > 0) {
+                        };
+                        if (component.isDuplicate) {
+                            page.name += '-' + component.duplicateId;
+                        }
+                        this.configuration.addPage(page);
+                        if (component.templateUrl.length > 0) {
                             logger.info(
                                 ` ${
-                                    this.configuration.mainData.components[i].name
+                                    component.name
                                 } has a templateUrl, include it`
                             );
-                            this.handleTemplateurl(this.configuration.mainData.components[i]).then(
+                            this.handleTemplateurl(component).then(
                                 () => {
                                     i++;
                                     loop();
@@ -1166,30 +1241,35 @@ export class Application {
             let len = this.configuration.mainData.directives.length;
             let loop = () => {
                 if (i < len) {
+                    let directive = this.configuration.mainData.directives[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.directives[i].file
+                            directive.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.directives[i].name
+                                directive.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.directives[i].file
+                            directive.file
                         );
-                        this.configuration.mainData.directives[i].readme = marked(readme);
+                        directive.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'directives',
-                        name: this.configuration.mainData.directives[i].name,
-                        id: this.configuration.mainData.directives[i].id,
+                        name: directive.name,
+                        id: directive.id,
                         context: 'directive',
-                        directive: this.configuration.mainData.directives[i],
+                        directive: directive,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (directive.isDuplicate) {
+                        page.name += '-' + directive.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1212,30 +1292,35 @@ export class Application {
             let len = this.configuration.mainData.injectables.length;
             let loop = () => {
                 if (i < len) {
+                    let injec = this.configuration.mainData.injectables[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.injectables[i].file
+                            injec.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.injectables[i].name
+                                injec.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.injectables[i].file
+                            injec.file
                         );
-                        this.configuration.mainData.injectables[i].readme = marked(readme);
+                        injec.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'injectables',
-                        name: this.configuration.mainData.injectables[i].name,
-                        id: this.configuration.mainData.injectables[i].id,
+                        name: injec.name,
+                        id: injec.id,
                         context: 'injectable',
-                        injectable: this.configuration.mainData.injectables[i],
+                        injectable: injec,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (injec.isDuplicate) {
+                        page.name += '-' + injec.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1258,30 +1343,35 @@ export class Application {
             let len = this.configuration.mainData.interceptors.length;
             let loop = () => {
                 if (i < len) {
+                    let interceptor = this.configuration.mainData.interceptors[i];
                     if (
                         $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.interceptors[i].file
+                            interceptor.file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.interceptors[i].name
+                                interceptor.name
                             } has a README file, include it`
                         );
                         let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.interceptors[i].file
+                            interceptor.file
                         );
-                        this.configuration.mainData.interceptors[i].readme = marked(readme);
+                        interceptor.readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    let page = {
                         path: 'interceptors',
-                        name: this.configuration.mainData.interceptors[i].name,
-                        id: this.configuration.mainData.interceptors[i].id,
+                        name: interceptor.name,
+                        id: interceptor.id,
                         context: 'interceptor',
-                        injectable: this.configuration.mainData.interceptors[i],
+                        injectable: interceptor,
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                    });
+                    };
+                    if (interceptor.isDuplicate) {
+                        page.name += '-' + interceptor.duplicateId;
+                    }
+                    this.configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1392,79 +1482,79 @@ export class Application {
                     }
 
                     _.forEach(element.propertiesClass, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             property.description &&
                             property.description !== '' &&
-                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            property.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.methodsClass, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             method.description &&
                             method.description !== '' &&
-                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            method.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostBindings, (property: any) => {
-                        if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             property.description &&
                             property.description !== '' &&
-                            property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            property.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.hostListeners, (method: any) => {
-                        if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             method.description &&
                             method.description !== '' &&
-                            method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            method.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.inputsClass, (input: any) => {
-                        if (input.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (input.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             input.description &&
                             input.description !== '' &&
-                            input.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            input.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
                     });
                     _.forEach(element.outputsClass, (output: any) => {
-                        if (output.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                        if (output.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
                         }
                         if (
                             output.description &&
                             output.description !== '' &&
-                            output.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                            output.modifierKind !== SyntaxKind.PrivateKeyword
                         ) {
                             totalStatementDocumented += 1;
                         }
@@ -1528,14 +1618,14 @@ export class Application {
                     let totalStatementDocumented = 0;
                     let totalStatements = 1;
 
-                    if (el.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (el.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         el.description &&
                         el.description !== '' &&
-                        el.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        el.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1581,27 +1671,27 @@ export class Application {
                 }
 
                 _.forEach(classe.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(classe.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1644,27 +1734,27 @@ export class Application {
                 }
 
                 _.forEach(injectable.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(injectable.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1707,27 +1797,27 @@ export class Application {
                 }
 
                 _.forEach(inter.properties, (property: any) => {
-                    if (property.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         property.description &&
                         property.description !== '' &&
-                        property.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        property.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
                 });
                 _.forEach(inter.methods, (method: any) => {
-                    if (method.modifierKind === ts.SyntaxKind.PrivateKeyword) {
+                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                         // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
                     if (
                         method.description &&
                         method.description !== '' &&
-                        method.modifierKind !== ts.SyntaxKind.PrivateKeyword
+                        method.modifierKind !== SyntaxKind.PrivateKeyword
                     ) {
                         totalStatementDocumented += 1;
                     }
@@ -1984,7 +2074,7 @@ export class Application {
 
     public processPages() {
         logger.info('Process pages');
-        let pages = this.configuration.pages;
+        let pages = _.sortBy(this.configuration.pages, ['name']);
         Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
                 this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(

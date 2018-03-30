@@ -7,7 +7,7 @@ export class JsdocReturnsCommentHelper implements IHtmlEngineHelper {
         let result;
         for (i; i < len; i++) {
             if (jsdocTags[i].tagName) {
-                if (jsdocTags[i].tagName.text === 'returns') {
+                if (jsdocTags[i].tagName.text === 'returns' || jsdocTags[i].tagName.text === 'return') {
                     result = jsdocTags[i].comment;
                     break;
                 }

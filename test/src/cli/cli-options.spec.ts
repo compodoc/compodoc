@@ -114,6 +114,11 @@ describe('CLI Options', () => {
 
         it(`--disableSourceCode`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableSourceCode');
+            expect(runHelp.stdout.toString()).to.contain('Do not add dom tree tab');
+        });
+
+        it(`--disableDomTree`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableDomTree');
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
         });
 

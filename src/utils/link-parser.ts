@@ -46,7 +46,6 @@ export function splitLinkText(text) {
 }
 
 export let LinkParser = (function() {
-
     let processTheLink = function(string, tagInfo, leadingText) {
         let leading = extractLeadingText(string, tagInfo.completeTag),
             linkText,
@@ -54,7 +53,7 @@ export let LinkParser = (function() {
             target,
             stringtoReplace;
 
-        linkText = (leadingText) ? leadingText : (leading.leadingText || '');
+        linkText = leadingText ? leadingText : leading.leadingText || '';
 
         split = splitLinkText(tagInfo.text);
         target = split.target;
@@ -75,6 +74,11 @@ export let LinkParser = (function() {
      */
 
     let replaceLinkTag = function(str: string) {
+        if (typeof str === 'undefined') {
+            return {
+                newString: ''
+            };
+        }
 
         // new RegExp('\\[((?:.|\n)+?)]\\{@link\\s+((?:.|\n)+?)\\}', 'i').exec('ee [TO DO]{@link Todo} fo') -> "[TO DO]{@link Todo}", "TO DO", "Todo"
         // new RegExp('\\{@link\\s+((?:.|\n)+?)\\}', 'i').exec('ee [TODO]{@link Todo} fo') -> "{@link Todo}", "Todo"
@@ -86,7 +90,7 @@ export let LinkParser = (function() {
             previousString,
             tagInfo = [];
 
-        tagRegExp = (str.indexOf(']{') !== -1) ? tagRegExpFull : tagRegExpLight;
+        tagRegExp = str.indexOf(']{') !== -1 ? tagRegExpFull : tagRegExpLight;
 
         function replaceMatch(replacer, tag, match, text, linkText?) {
             let matchedTag = {

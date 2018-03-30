@@ -1,11 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as ts from 'typescript';
+import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
 
 import { LinkParser } from './link-parser';
 
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
+import { kindToType } from './kind-to-type';
 
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
@@ -60,11 +61,18 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
                     comment: jsdoctag.comment
                 });
             }
-            if (jsdoctag.tagName && jsdoctag.tagName.text === 'returns') {
-                margs.push({
+            if (
+                jsdoctag.tagName &&
+                (jsdoctag.tagName.text === 'returns' || jsdoctag.tagName.text === 'return')
+            ) {
+                let ret = {
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment
-                });
+                };
+                if (jsdoctag.typeExpression && jsdoctag.typeExpression.type) {
+                    ret.returnType = kindToType(jsdoctag.typeExpression.type.kind);
+                }
+                margs.push(ret);
             }
         });
     }
@@ -155,4 +163,58 @@ export function isIgnore(member): boolean {
         }
     }
     return false;
+}
+
+// https://tc39.github.io/ecma262/#sec-array.prototype.includes
+if (!Array.prototype.includes) {
+    Object.defineProperty(Array.prototype, 'includes', {
+        value: function(searchElement, fromIndex) {
+            if (this == null) {
+                throw new TypeError('"this" is null or not defined');
+            }
+
+            // 1. Let O be ? ToObject(this value).
+            var o = Object(this);
+
+            // 2. Let len be ? ToLength(? Get(O, "length")).
+            var len = o.length >>> 0;
+
+            // 3. If len is 0, return false.
+            if (len === 0) {
+                return false;
+            }
+
+            // 4. Let n be ? ToInteger(fromIndex).
+            //    (If fromIndex is undefined, this step produces the value 0.)
+            var n = fromIndex | 0;
+
+            // 5. If n ≥ 0, then
+            //  a. Let k be n.
+            // 6. Else n < 0,
+            //  a. Let k be len + n.
+            //  b. If k < 0, let k be 0.
+            var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+            function sameValueZero(x, y) {
+                return (
+                    x === y ||
+                    (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y))
+                );
+            }
+
+            // 7. Repeat, while k < len
+            while (k < len) {
+                // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+                // b. If SameValueZero(searchElement, elementK) is true, return true.
+                if (sameValueZero(o[k], searchElement)) {
+                    return true;
+                }
+                // c. Increase k by 1.
+                k++;
+            }
+
+            // 8. Return false
+            return false;
+        }
+    });
 }

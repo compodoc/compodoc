@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li>Directives</li>
-  <li>{{name}}</li>
+  <li>{{directive.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -100,7 +100,7 @@
         </section>
 
         {{#orLength directive.propertiesClass directive.methodsClass directive.inputsClass directive.outputClass directive.hostBindings directive.hostListeners directive.accessors}}
-            {{> index-directive methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass outputs=directive.outputsClass hostBindings=directive.hostBindings hostListeners=directive.hostListeners accessors=directive.accessors }}
+            {{> index methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass outputs=directive.outputsClass hostBindings=directive.hostBindings hostListeners=directive.hostListeners accessors=directive.accessors }}
         {{/orLength}}
 
         {{#if directive.constructorObj}}
@@ -108,80 +108,11 @@
         {{/if}}
 
         {{#if directive.inputsClass}}
-            <section>
-                <h3 id="inputs">Inputs</h3>
-                {{#each directive.inputsClass}}
-                    <table class="table table-sm table-bordered">
-                        <tbody>
-                            <tr>
-                                <td class="col-md-2">
-                                    <a name="{{name}}"></a>
-                                    <code>{{name}}</code>
-                                </td>
-                                <td class="col-md-10">
-                                  {{#if description}}
-                                    <div>{{{parseDescription description ../depth}}}</div>
-                                  {{/if}}
-                                  {{#if type}}
-                                      <p>
-                                        <em>Type:</em>{{> link-type type=type }}
-                                      </p>
-                                  {{/if}}
-                                  {{#if defaultValue}}
-                                    <p>
-                                      <em>Default value: </em><code>{{defaultValue}}</code>
-                                    </p>
-                                  {{/if}}
-                                </td>
-                            </tr>
-                            {{#if line}}
-                                {{#unless ../disableSourceCode}}
-                                    <tr>
-                                        <td class="col-md-2" colspan="2">
-                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
-                                        </td>
-                                    </tr>
-                                {{/unless}}
-                            {{/if}}
-                        </tbody>
-                    </table>
-                {{/each}}
-            </section>
+            {{> block-input element=directive file=directive.file }}
         {{/if}}
 
         {{#if directive.outputsClass}}
-            <section>
-                <h3 id="outputs">Outputs</h3>
-                {{#each directive.outputsClass}}
-                    <table class="table table-sm table-bordered">
-                        <tbody>
-                            <tr>
-                                <td class="col-md-2">
-                                    <a name="{{name}}"></a>
-                                    <code>{{name}}</code>
-                                </td>
-                                <td class="col-md-10">
-                                  {{#if description}}
-                                    <div>{{{parseDescription description ../depth}}}</div>
-                                  {{/if}}
-                                  {{#if type}}
-                                    <em><code>$event</code> type:</em>{{> link-type type=type }}
-                                  {{/if}}
-                                </td>
-                            </tr>
-                            {{#if line}}
-                                {{#unless ../disableSourceCode}}
-                                    <tr>
-                                        <td class="col-md-2" colspan="2">
-                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../directive.file}}:{{{line}}}</a></div>
-                                        </td>
-                                    </tr>
-                                {{/unless}}
-                            {{/if}}
-                        </tbody>
-                    </table>
-                {{/each}}
-            </section>
+            {{> block-output element=directive file=directive.file }}
         {{/if}}
 
         {{#if directive.hostBindings}}

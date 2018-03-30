@@ -1,30 +1,31 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 import * as Handlebars from 'handlebars';
-import * as ts from 'typescript';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 export class ModifKindHelper implements IHtmlEngineHelper {
     /**
-     * Transform ts.SyntaxKind into string
+     * Transform SyntaxKind into string
      * @param  {any}           context Handlebars context
-     * @param  {ts.SyntaxKind[]} kind  ts.SyntaxKind concatenated
+     * @param  {SyntaxKind[]} kind  SyntaxKind concatenated
      * @return {string}                Parsed string
      */
-    public helperFunc(context: any, kind: ts.SyntaxKind[]) {
+    public helperFunc(context: any, kind: SyntaxKind[]) {
         let _kindText = '';
         switch (kind) {
-            case ts.SyntaxKind.PrivateKeyword:
+            case SyntaxKind.PrivateKeyword:
                 _kindText = 'Private';
                 break;
-            case ts.SyntaxKind.ReadonlyKeyword:
+            case SyntaxKind.ReadonlyKeyword:
                 _kindText = 'Readonly';
                 break;
-            case ts.SyntaxKind.ProtectedKeyword:
+            case SyntaxKind.ProtectedKeyword:
                 _kindText = 'Protected';
                 break;
-            case ts.SyntaxKind.PublicKeyword:
+            case SyntaxKind.PublicKeyword:
                 _kindText = 'Public';
                 break;
-            case ts.SyntaxKind.StaticKeyword:
+            case SyntaxKind.StaticKeyword:
                 _kindText = 'Static';
                 break;
         }

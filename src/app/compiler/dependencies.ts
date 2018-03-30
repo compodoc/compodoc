@@ -2,13 +2,11 @@ import * as path from 'path';
 import * as util from 'util';
 
 import * as _ from 'lodash';
-import * as ts from 'typescript';
-import Ast from 'ts-simple-ast';
-import { TypeGuards } from 'ts-simple-ast';
+import Ast, { ts, TypeGuards, SyntaxKind } from 'ts-simple-ast';
 
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
-import { markedtags, mergeTagsAndArgs } from '../../utils/utils';
+import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { ExtendsMerger } from '../../utils/extends-merger.util';
 import { CodeGenerator } from './code-generator';
@@ -30,7 +28,8 @@ import {
     isModuleWithProviders,
     getModuleWithProviders,
     hasSpreadElementInArray,
-    isIgnore
+    isIgnore,
+    uniqid
 } from '../../utils';
 import {
     IInjectableDep,
@@ -197,7 +196,7 @@ export class Dependencies {
          * - properties
          * - methods
          */
-        deps = this.extendsMerger.merge(deps);
+        deps = this.extendsMerger.merge(deps, this.configuration);
 
         // RouterParser.printModulesRoutes();
         // RouterParser.printRoutes();
@@ -217,7 +216,7 @@ export class Dependencies {
         let IO = this.getClassIO(file, srcFile, node, fileBody);
         let deps: any = {
             name,
-            id: 'class-' + name + '-' + Date.now(),
+            id: 'class-' + name + '-' + uniqid(),
             file: file,
             type: 'class',
             sourceCode: srcFile.getText()
@@ -248,6 +247,21 @@ export class Dependencies {
         }
         if (IO.accessors) {
             deps.accessors = IO.accessors;
+        }
+        if (IO.inputs) {
+            deps.inputsClass = IO.inputs;
+        }
+        if (IO.outputs) {
+            deps.outputsClass = IO.outputs;
+        }
+        if (IO.hostBindings) {
+            deps.hostBindings = IO.hostBindings;
+        }
+        if (IO.hostListeners) {
+            deps.hostListeners = IO.hostListeners;
+        }
+        if (this.configuration.mainData.disableLifeCycleHooks) {
+            deps.methods = cleanLifecycleHooksFromMethods(deps.methods);
         }
         if (typeof IO.ignore === 'undefined') {
             this.debug(deps);
@@ -300,7 +314,7 @@ export class Dependencies {
             scannedFile = firstClean.compilerNode;
             scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
 
-            scannedFile.kind = ts.SyntaxKind.SourceFile;
+            scannedFile.kind = SyntaxKind.SourceFile;
         }
 
         ts.forEachChild(scannedFile, (initialNode: ts.Node) => {
@@ -358,7 +372,7 @@ export class Dependencies {
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
                                 name,
-                                id: 'injectable-' + name + '-' + Date.now(),
+                                id: 'injectable-' + name + '-' + uniqid(),
                                 file: file,
                                 type: 'injectable',
                                 properties: IO.properties,
@@ -393,7 +407,7 @@ export class Dependencies {
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
                                 name,
-                                id: 'pipe-' + name + '-' + Date.now(),
+                                id: 'pipe-' + name + '-' + uniqid(),
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
@@ -466,7 +480,7 @@ export class Dependencies {
                         let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
                         let interfaceDeps: IInterfaceDep = {
                             name,
-                            id: 'interface-' + name + '-' + Date.now(),
+                            id: 'interface-' + name + '-' + uniqid(),
                             file: file,
                             type: 'interface',
                             sourceCode: srcFile.getText()
@@ -948,10 +962,10 @@ export class Dependencies {
                     })
                     .reverse();
                 if (
-                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
-                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                    _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
                 ) {
-                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
+                    kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
             }
         }

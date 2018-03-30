@@ -41,6 +41,7 @@ export class Configuration implements ConfigurationInterface {
         includesName: COMPODOC_DEFAULTS.additionalEntryName,
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
+        disableDomTree: COMPODOC_DEFAULTS.disableDomTree,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
         disableMainGraph: COMPODOC_DEFAULTS.disableMainGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,

@@ -1,24 +1,22 @@
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
 import { ComponentCache } from './helpers/component-helper';
-import * as ts from 'typescript';
-
-
+import { ts } from 'ts-simple-ast';
+import { uniqid } from '../../../utils';
 
 export class ModuleDepFactory {
-    constructor(private moduleHelper: ModuleHelper) {
-
-    }
+    constructor(private moduleHelper: ModuleHelper) {}
 
     public create(
         file: any,
         srcFile: ts.SourceFile,
         name: string,
         properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
-        IO: any): IModuleDep {
+        IO: any
+    ): IModuleDep {
         return {
             name,
-            id: 'module-' + name + '-' + Date.now(),
+            id: 'module-' + name + '-' + uniqid(),
             file: file,
             ngid: this.moduleHelper.getModuleId(properties, srcFile),
             providers: this.moduleHelper.getModuleProviders(properties, srcFile),

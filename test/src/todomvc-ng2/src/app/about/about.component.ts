@@ -17,7 +17,10 @@ import { Subscription } from 'rxjs/Subscription';
  */
 @Component({
     selector: 'about',
-    templateUrl: './about.component.html'
+    templateUrl: './about.component.html',
+    providers: [EmitterService],
+    entryComponents: [TodoComponent, ListComponent],
+    preserveWhitespaces: false
 })
 export class AboutComponent {
 

@@ -4,13 +4,14 @@ import { kindToType } from '../../../../utils/kind-to-type';
 import * as _ from 'lodash';
 import * as util from 'util';
 import * as path from 'path';
-import * as ts from 'typescript';
+
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
-import { isIgnore } from '../../../../utils/utils';
+import { isIgnore, uniqid } from '../../../../utils';
 
 const marked = require('marked');
 
@@ -33,9 +34,9 @@ export class ClassHelper {
          */
         if (node.getText()) {
             return node.getText();
-        } else if (node.kind === ts.SyntaxKind.FalseKeyword) {
+        } else if (node.kind === SyntaxKind.FalseKeyword) {
             return 'false';
-        } else if (node.kind === ts.SyntaxKind.TrueKeyword) {
+        } else if (node.kind === SyntaxKind.TrueKeyword) {
             return 'true';
         }
     }
@@ -105,7 +106,7 @@ export class ClassHelper {
                 };
             }
 
-            if (nodeAccessor.kind === ts.SyntaxKind.SetAccessor) {
+            if (nodeAccessor.kind === SyntaxKind.SetAccessor) {
                 let setSignature = {
                     name: nodeName,
                     type: 'void',
@@ -142,7 +143,7 @@ export class ClassHelper {
 
                 accessors[nodeName].setSignature = setSignature;
             }
-            if (nodeAccessor.kind === ts.SyntaxKind.GetAccessor) {
+            if (nodeAccessor.kind === SyntaxKind.GetAccessor) {
                 let getSignature = {
                     name: nodeName,
                     type: nodeAccessor.type ? kindToType(nodeAccessor.type.kind) : '',
@@ -191,7 +192,7 @@ export class ClassHelper {
          */
         if (member.modifiers) {
             const isPrivate: boolean = member.modifiers.some(
-                modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword
+                modifier => modifier.kind === SyntaxKind.PrivateKeyword
             );
             if (isPrivate) {
                 return true;
@@ -203,7 +204,7 @@ export class ClassHelper {
     private isProtected(member): boolean {
         if (member.modifiers) {
             const isProtected: boolean = member.modifiers.some(
-                modifier => modifier.kind === ts.SyntaxKind.ProtectedKeyword
+                modifier => modifier.kind === SyntaxKind.ProtectedKeyword
             );
             if (isProtected) {
                 return true;
@@ -234,7 +235,7 @@ export class ClassHelper {
     private isPublic(member): boolean {
         if (member.modifiers) {
             const isPublic: boolean = member.modifiers.some(
-                modifier => modifier.kind === ts.SyntaxKind.PublicKeyword
+                modifier => modifier.kind === SyntaxKind.PublicKeyword
             );
             if (isPublic) {
                 return true;
@@ -283,15 +284,10 @@ export class ClassHelper {
         classDeclaration: ts.ClassDeclaration | ts.InterfaceDeclaration,
         sourceFile?: ts.SourceFile
     ): any {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
-        let rawDescription;
         let description = '';
         if (symbol) {
-            rawDescription = symbol.getDocumentationComment();
-            description = marked(ts.displayPartsToString(symbol.getDocumentationComment()));
+            description = marked(this.jsdocParserUtil.getMainCommentOfNode(classDeclaration));
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [
                     {
@@ -422,6 +418,10 @@ export class ClassHelper {
             return [
                 {
                     description,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
                     methods: members.methods,
                     indexSignatures: members.indexSignatures,
                     properties: members.properties,
@@ -437,6 +437,10 @@ export class ClassHelper {
             return [
                 {
                     methods: members.methods,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
                     indexSignatures: members.indexSignatures,
                     properties: members.properties,
                     kind: members.kind,
@@ -605,7 +609,7 @@ export class ClassHelper {
             if (node.type.elementType) {
                 const _firstPart = this.visitType(node.type.elementType);
                 _return = _firstPart + kindToType(node.type.kind);
-                if (node.type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                if (node.type.elementType.kind === SyntaxKind.ParenthesizedType) {
                     _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
                 }
             }
@@ -618,7 +622,7 @@ export class ClassHelper {
 
                     if (type.elementType) {
                         const _firstPart = this.visitType(type.elementType);
-                        if (type.elementType.kind === ts.SyntaxKind.ParenthesizedType) {
+                        if (type.elementType.kind === SyntaxKind.ParenthesizedType) {
                             _return += '(' + _firstPart + ')' + kindToType(type.kind);
                         } else {
                             _return += _firstPart + kindToType(type.kind);
@@ -673,8 +677,7 @@ export class ClassHelper {
                 _return === '' &&
                 node.initializer &&
                 node.initializer.kind &&
-                (node.kind === ts.SyntaxKind.PropertyDeclaration ||
-                    node.kind === ts.SyntaxKind.Parameter)
+                (node.kind === SyntaxKind.PropertyDeclaration || node.kind === SyntaxKind.Parameter)
             ) {
                 _return = kindToType(node.initializer.kind);
             }
@@ -691,12 +694,14 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let result: any = {
-            id: 'call-declaration-' + Date.now(),
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+            id: 'call-declaration-' + uniqid(),
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
+        if (method.jsDoc) {
+            result.description = marked(marked(this.jsdocParserUtil.getMainCommentOfNode(method)));
+        }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
@@ -710,13 +715,16 @@ export class ClassHelper {
         method: ts.IndexSignatureDeclaration,
         sourceFile?: ts.SourceFile
     ) {
-        return {
-            id: 'index-declaration-' + Date.now(),
-            description: marked(ts.displayPartsToString(method.symbol.getDocumentationComment())),
+        let result = {
+            id: 'index-declaration-' + uniqid(),
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
         };
+        if (method.jsDoc) {
+            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+        }
+        return result;
     }
 
     private visitConstructorDeclaration(
@@ -734,10 +742,8 @@ export class ClassHelper {
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
-        if (method.symbol) {
-            result.description = marked(
-                ts.displayPartsToString(method.symbol.getDocumentationComment())
-            );
+        if (method.jsDoc) {
+            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
         }
 
         if (method.modifiers) {
@@ -748,10 +754,10 @@ export class ClassHelper {
                     })
                     .reverse();
                 if (
-                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
-                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                    _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
                 ) {
-                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
+                    kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -769,10 +775,7 @@ export class ClassHelper {
         return result;
     }
 
-    private visitProperty(property: ts.PropertySignature, sourceFile) {
-        /**
-         * Copyright https://github.com/ng-bootstrap/ng-bootstrap
-         */
+    private visitProperty(property: ts.PropertyDeclaration, sourceFile) {
         let result: any = {
             name: property.name.text,
             defaultValue: property.initializer
@@ -787,12 +790,7 @@ export class ClassHelper {
 
         if (property.jsDoc) {
             jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-        }
-
-        if (property.symbol) {
-            result.description = marked(
-                ts.displayPartsToString(property.symbol.getDocumentationComment())
-            );
+            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
         }
 
         if (property.decorators) {
@@ -807,10 +805,10 @@ export class ClassHelper {
                     })
                     .reverse();
                 if (
-                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
-                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                    _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
                 ) {
-                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
+                    kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -833,6 +831,33 @@ export class ClassHelper {
             for (i; i < len; i++) {
                 if (this.isPublic(constr.parameters[i])) {
                     _parameters.push(this.visitProperty(constr.parameters[i], sourceFile));
+                }
+            }
+            /**
+             * Merge JSDoc tags description from constructor with parameters
+             */
+            if (constr.jsDoc) {
+                if (constr.jsDoc.length > 0) {
+                    let constrTags = constr.jsDoc[0].tags;
+                    if (constrTags && constrTags.length > 0) {
+                        constrTags.forEach(tag => {
+                            _parameters.forEach(param => {
+                                if (
+                                    tag.tagName &&
+                                    tag.tagName.escapedText &&
+                                    tag.tagName.escapedText === 'param'
+                                ) {
+                                    if (
+                                        tag.name &&
+                                        tag.name.escapedText &&
+                                        tag.name.escapedText === param.name
+                                    ) {
+                                        param.description = tag.comment;
+                                    }
+                                }
+                            });
+                        });
+                    }
                 }
             }
             return _parameters;
@@ -870,7 +895,7 @@ export class ClassHelper {
                 }
             }
         }
-        if (property.kind === ts.SyntaxKind.SetAccessor) {
+        if (property.kind === SyntaxKind.SetAccessor) {
             // For setter accessor, find type in first parameter
             if (property.parameters && property.parameters.length === 1) {
                 if (property.parameters[0].type) {
@@ -912,10 +937,8 @@ export class ClassHelper {
             }
         }
 
-        if (method.symbol) {
-            result.description = marked(
-                ts.displayPartsToString(method.symbol.getDocumentationComment())
-            );
+        if (method.jsDoc) {
+            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
         }
 
         if (method.decorators) {
@@ -930,10 +953,10 @@ export class ClassHelper {
                     })
                     .reverse();
                 if (
-                    _.indexOf(kinds, ts.SyntaxKind.PublicKeyword) !== -1 &&
-                    _.indexOf(kinds, ts.SyntaxKind.StaticKeyword) !== -1
+                    _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
+                    _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
                 ) {
-                    kinds = kinds.filter(kind => kind !== ts.SyntaxKind.PublicKeyword);
+                    kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
             }
@@ -963,9 +986,9 @@ export class ClassHelper {
                 ? this.stringifyDefaultValue(property.initializer)
                 : undefined
         };
-        if (property.symbol) {
+        if (property.jsDoc) {
             _return.description = marked(
-                ts.displayPartsToString(property.symbol.getDocumentationComment())
+                marked(this.jsdocParserUtil.getMainCommentOfNode(property))
             );
         }
         if (!_return.description) {
@@ -1031,10 +1054,8 @@ export class ClassHelper {
                       return prop.text;
                   })
                 : [];
-        if (property.symbol) {
-            _return.description = marked(
-                ts.displayPartsToString(property.symbol.getDocumentationComment())
-            );
+        if (property.jsDoc) {
+            _return.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
         }
         if (!_return.description) {
             if (property.jsDoc) {

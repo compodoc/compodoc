@@ -102,6 +102,10 @@ describe('CLI simple generation', () => {
             expect(fooServiceFile).to.contain('<p>The string</p>');
         });
 
+        it('it should have infos about FooService close function return JSDoc tag', () => {
+            expect(fooServiceFile).to.contain('<p>Another string</p>');
+        });
+
         it('it should have infos about FooService open function example', () => {
             expect(fooServiceFile).to.contain('<b>Example :</b>');
             expect(fooServiceFile).to.contain('FooService.open(');
@@ -584,6 +588,33 @@ describe('CLI simple generation', () => {
         it('should not contain sourceCode tab', () => {
             index = read(`${distFolder}/modules/AppModule.html`);
             expect(index).to.not.contain('id="source-tab"');
+        });
+    });
+
+    describe('when generation with --disableDomTree flag', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableDomTree',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain domTree tab', () => {
+            index = read(`${distFolder}/components/BarComponent.html`);
+            expect(index).to.not.contain('id="tree-tab"');
         });
     });
 

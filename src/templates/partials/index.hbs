@@ -50,6 +50,78 @@
                 </td>
             </tr>
             {{/compare}}
+            {{#compare inputs.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>Inputs</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each inputs}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+            {{#compare outputs.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>Outputs</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each outputs}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+            {{#compare hostBindings.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>HostBindings</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each hostBindings}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
+            {{#compare hostListeners.length ">" 0}}
+            <tr>
+                <td class="col-md-4">
+                    <h6><b>HostListeners</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                    {{#each hostListeners}}
+                        <li>
+                            <a href="#{{name}}">{{name}}</a>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+            {{/compare}}
             {{#if accessors}}
             <tr>
                 <td class="col-md-4">

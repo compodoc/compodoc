@@ -13,6 +13,7 @@ export const COMPODOC_DEFAULTS = {
     coverageTestThresholdFail: true,
     toggleMenuItems: ['all'],
     disableSourceCode: false,
+    disableDomTree: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,
@@ -33,3 +34,8 @@ export const COMPODOC_DEFAULTS = {
  * Prevent stack size exceeded
  */
 export const MAX_SIZE_FILE_SEARCH_INDEX = 15000;
+/**
+ * Max length for the string of a file during cheerio parsing.
+ * Prevent stack size exceeded
+ */
+export const MAX_SIZE_FILE_CHEERIO_PARSING = 400000000;

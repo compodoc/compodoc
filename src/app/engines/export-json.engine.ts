@@ -15,14 +15,13 @@ export class ExportJsonEngine {
     constructor(
         private configuration: ConfigurationInterface,
         private dependenciesEngine: DependenciesEngine,
-        private fileEngine: FileEngine = new FileEngine()) {
-    }
+        private fileEngine: FileEngine = new FileEngine()
+    ) {}
 
     export(outputFolder, data) {
-
         let exportData: ExportData = {};
 
-        traverse(data).forEach(function (node) {
+        traverse(data).forEach(function(node) {
             if (node) {
                 if (node.parent) delete node.parent;
                 if (node.initializer) delete node.initializer;
@@ -41,7 +40,10 @@ export class ExportJsonEngine {
         exportData.coverage = data.coverageData;
 
         return this.fileEngine
-            .write(outputFolder + path.sep + '/documentation.json', JSON.stringify(exportData, null, 4))
+            .write(
+                outputFolder + path.sep + '/documentation.json',
+                JSON.stringify(exportData, null, 4)
+            )
             .catch(err => {
                 logger.error('Error during export file generation ', err);
                 return Promise.reject(err);
@@ -54,11 +56,9 @@ export class ExportJsonEngine {
         let _resultedModules = [];
 
         for (let moduleNr = 0; moduleNr < modules.length; moduleNr++) {
-
             const moduleElement = {
                 name: modules[moduleNr].name,
-                children:
-                [
+                children: [
                     {
                         type: 'providers',
                         elements: []
@@ -122,5 +122,4 @@ export class ExportJsonEngine {
 
         return _resultedModules;
     }
-
 }
