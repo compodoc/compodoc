@@ -138,7 +138,7 @@ export class DependenciesEngine {
         for (let i = 0; i < data.length; i++) {
             if (typeof name !== 'undefined') {
                 if (typeof file !== 'undefined') {
-                    if (name.indexOf(data[i].name) !== -1 && file.indexOf(data[i].file) !== -1) {
+                    if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
                         _result.data = data[i];
                     }
                 } else {

@@ -102,14 +102,27 @@ describe('CLI duplicates support', () => {
 
     it('should support component inside module', () => {
         let file = read(distFolder + '/index.html');
-        file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule')
-        expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/ValidationDemo.html" >ValidationDemo</a>`);
+        file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule');
+        if (file.indexOf('\r') !== -1) {
+            // tslint:disable-next-line:max-line-length
+            expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\r\n                   >\r\n                                                           <li class="link">\r\n                                                               <a href="./components/ValidationDemo.html" >ValidationDemo</a>`);
+        } else {
+            // tslint:disable-next-line:max-line-length
+            expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/ValidationDemo.html" >ValidationDemo</a>`);
+        }
     });
 
     it('should support component inside module with duplicate', () => {
         let file = read(distFolder + '/index.html');
-        file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule')
-        expect(file).to.contain(`id="components-links-module-FooterModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/FooterComponent.html" >FooterComponent</a>`);
-        expect(file).to.contain(`<li class="link">\n                                            <a href="./components/FooterComponent-1.html" >FooterComponent</a>`);
+        file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule');
+        if (file.indexOf('\r') !== -1) {
+            // tslint:disable-next-line:max-line-length
+            expect(file).to.contain(`id="components-links-module-FooterModule"\r\n                   >\r\n                                                           <li class="link">\r\n                                                               <a href="./components/FooterComponent.html" >FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\r\n                                            <a href="./components/FooterComponent-1.html" >FooterComponent</a>`);
+        } else {
+            // tslint:disable-next-line:max-line-length
+            expect(file).to.contain(`id="components-links-module-FooterModule"\n                   >\n                                                           <li class="link">\n                                                               <a href="./components/FooterComponent.html" >FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\n                                            <a href="./components/FooterComponent-1.html" >FooterComponent</a>`);
+        }
     });
 });
