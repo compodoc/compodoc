@@ -82,7 +82,7 @@ describe('CLI Additional documentation', () => {
 
     it('should have links in correct order', () => {
         expect(fooIndexFile).to.contain(
-            `<li class="link for-chapter3">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html" >edit-level3</a>\n                                </li>\n                                <li class="link for-chapter4">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" >edit-level4</a>\n                                </li>`
+            `<li class="link for-chapter3">\n                        <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html" >edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" >edit-level4</a>\n                    </li>`
         );
     });
 });

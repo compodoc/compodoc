@@ -74,7 +74,10 @@ export class HtmlEngine {
                     .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
                     .then(data => {
                         this.cache.page = data;
-                        this.compiledPage = Handlebars.compile(this.cache.page);
+                        this.compiledPage = Handlebars.compile(this.cache.page, {
+                            preventIndent: true,
+                            strict: true
+                        });
                     });
             }).then(() => { });
     }
