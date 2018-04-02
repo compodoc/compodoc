@@ -341,7 +341,9 @@ export class Application {
                                 this.configuration.addPage({
                                     name: 'index',
                                     id: 'index',
-                                    context: 'overview'
+                                    context: 'overview',
+                                    depth: 0,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                                 });
                             }
                             i++;

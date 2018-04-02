@@ -15,6 +15,14 @@ describe('CLI simple generation - big app', () => {
 
     before(done => {
         tmp.create(distFolder);
+        tmp.copy('./README.md', './README-tmp.md');
+        tmp.copy('./CHANGELOG.md', './CHANGELOG-tmp.md');
+        tmp.copy('./CONTRIBUTING.md', './CONTRIBUTING-tmp.md');
+
+        tmp.remove('./README.md');
+        tmp.remove('./CHANGELOG.md');
+        tmp.remove('./CONTRIBUTING.md');
+
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
@@ -37,7 +45,15 @@ describe('CLI simple generation - big app', () => {
         listComponentFile = read(`${distFolder}/components/ListComponent.html`);
         done();
     });
-    after(() => tmp.clean(distFolder));
+    after(() => {
+        tmp.clean(distFolder);
+        tmp.copy('./README-tmp.md', './README.md');
+        tmp.copy('./CHANGELOG-tmp.md', './CHANGELOG.md');
+        tmp.copy('./CONTRIBUTING-tmp.md', './CONTRIBUTING.md');
+        tmp.remove('./README-tmp.md');
+        tmp.remove('./CHANGELOG-tmp.md');
+        tmp.remove('./CONTRIBUTING-tmp.md');
+    });
 
     it('should display generated message', () => {
         expect(stdoutString).to.contain('Documentation generated');
@@ -53,8 +69,6 @@ describe('CLI simple generation - big app', () => {
         expect(isIndexExists).to.be.true;
         const isModulesExists = exists(distFolder + '/modules.html');
         expect(isModulesExists).to.be.true;
-        const isOverviewExists = exists(distFolder + '/overview.html');
-        expect(isOverviewExists).to.be.true;
         const isRoutesExists = exists(distFolder + '/routes.html');
         expect(isRoutesExists).to.be.true;
     });
@@ -69,6 +83,12 @@ describe('CLI simple generation - big app', () => {
         const isFontsExists = exists(distFolder + '/fonts');
         expect(isFontsExists).to.be.true;
     });
+
+    it('should add correct path to css', () => {
+        let index = read(`${distFolder}/index.html`);
+        expect(index).to.contain('href="./styles/style.css"');
+    });
+
 
     /**
      * Dynamic imports for metadatas
