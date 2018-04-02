@@ -630,4 +630,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('(test/.../miscellaneous.ts)');
         expect(file).to.contain('title="test/src/todomvc-ng2/src/app/shared/miscellaneous/miscellaneous.ts"');
     });
+
+    it('should display component even with no hostlisteners', () => {
+        let file = read(distFolder + '/coverage.html');
+        expect(file).to.contain('test/src/todomvc-ng2/src/app/footer/footer.component.ts');
+    });
 });
