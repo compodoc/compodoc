@@ -15,13 +15,6 @@ describe('CLI simple generation - big app', () => {
 
     before(done => {
         tmp.create(distFolder);
-        tmp.copy('./README.md', './README-tmp.md');
-        tmp.copy('./CHANGELOG.md', './CHANGELOG-tmp.md');
-        tmp.copy('./CONTRIBUTING.md', './CONTRIBUTING-tmp.md');
-
-        tmp.remove('./README.md');
-        tmp.remove('./CHANGELOG.md');
-        tmp.remove('./CONTRIBUTING.md');
 
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -47,12 +40,6 @@ describe('CLI simple generation - big app', () => {
     });
     after(() => {
         tmp.clean(distFolder);
-        tmp.copy('./README-tmp.md', './README.md');
-        tmp.copy('./CHANGELOG-tmp.md', './CHANGELOG.md');
-        tmp.copy('./CONTRIBUTING-tmp.md', './CONTRIBUTING.md');
-        tmp.remove('./README-tmp.md');
-        tmp.remove('./CHANGELOG-tmp.md');
-        tmp.remove('./CONTRIBUTING-tmp.md');
     });
 
     it('should display generated message', () => {
