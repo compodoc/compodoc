@@ -9,13 +9,13 @@
                     </td>
                 </tr>
                 {{#if line}}
-                    {{#unless ../disableSourceCode}}
+                    {{#isTabEnabled ../navTabs "source"}}
                         <tr>
                             <td class="col-md-4">
                                 <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
                             </td>
                         </tr>
-                    {{/unless}}
+                    {{/isTabEnabled}}
                 {{/if}}
                 {{#if description}}
                 <tr>
