@@ -4,7 +4,7 @@ import { logger } from '../../logger';
 import { Configuration } from '../configuration';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
-import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/defaults';
+import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/constants';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');

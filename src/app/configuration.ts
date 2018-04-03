@@ -37,6 +37,7 @@ export class Configuration implements ConfigurationInterface {
         routes: [],
         tsconfig: '',
         toggleMenuItems: [],
+        navTabConfig: [],
         includes: '',
         includesName: COMPODOC_DEFAULTS.additionalEntryName,
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,

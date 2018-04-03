@@ -19,13 +19,13 @@
                     </td>
                 </tr>
                     {{#if this.getSignature.line}}
-                        {{#unless ../disableSourceCode}}
+                        {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
                                     <div class="io-line">Defined in <a href="" data-line="{{{this.getSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.getSignature.line}}}</a></div>
                                 </td>
                             </tr>
-                        {{/unless}}
+                        {{/isTabEnabled}}
                     {{/if}}
                     {{#or this.getSignature.description this.getSignature.jsdoctags}}
                     <tr>
@@ -105,13 +105,13 @@
                     </td>
                 </tr>
                     {{#if this.setSignature.line}}
-                        {{#unless ../disableSourceCode}}
+                        {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
                                     <div class="io-line">Defined in <a href="" data-line="{{{this.setSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.setSignature.line}}}</a></div>
                                 </td>
                             </tr>
-                        {{/unless}}
+                        {{/isTabEnabled}}
                     {{/if}}
                     {{#or this.setSignature.description this.setSignature.jsdoctags}}
                     <tr>
