@@ -115,15 +115,15 @@ export function handlePath(files: Array<string>, cwd: string): Array<string> {
 
 export function cleanLifecycleHooksFromMethods(methods: Array<any>): Array<any> {
     let result = [];
-    let i = 0;
-    let len = methods.length;
-
-    for (i; i < len; i++) {
-        if (!(methods[i].name in AngularLifecycleHooks)) {
-            result.push(methods[i]);
+    if (typeof methods !== 'undefined') {
+        let i = 0;
+        let len = methods.length;
+        for (i; i < len; i++) {
+            if (!(methods[i].name in AngularLifecycleHooks)) {
+                result.push(methods[i]);
+            }
         }
     }
-
     return result;
 }
 
