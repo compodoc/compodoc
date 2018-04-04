@@ -130,13 +130,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
+        },
+        
+        loadTree = function () {
+            setTimeout(function() {
+                container.style.height = document.getElementsByClassName('content')[0].offsetHeight - 140 + 'px';
+                var network = new vis.Network(container, data, options);
+                network.on('click', handleClickNode);
+            }, 200); // Fade is 0.150
         };
 
-    treeTab.addEventListener('click', function(event) {
-        setTimeout(function() {
-            container.style.height = document.getElementsByClassName('content')[0].offsetHeight - 140 + 'px';
-            var network = new vis.Network(container, data, options);
-            network.on('click', handleClickNode);
-        }, 200); // Fade is 0.150
+    loadTree();
+    treeTab.addEventListener('click', function() {
+        loadTree();
     });
 });
