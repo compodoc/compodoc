@@ -1141,34 +1141,37 @@ export class Application {
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = this.configuration.mainData.navTabConfig;
         navTabConfig = navTabConfig.length === 0 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions) : navTabConfig;
-        let matchComponentType = (customTabType: string) => {
-            return customTabType === 'all' || customTabType === dependency.type;
+        let matchDepType = (depType: string) => {
+            return depType === 'all' || depType === dependency.type;
         };
 
         let navTabs = [];
-        _.forEach(navTabConfig, (tab) => {
-            let customTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { "id": tab.id });
-            if (!customTab) {
-                throw new Error(`Invalid tab ID "${tab.id}" specified in tab configuration`);
+        _.forEach(navTabConfig, (customTab) => {
+            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { "id": customTab.id });
+            if (!navTab) {
+                throw new Error(`Invalid tab ID "${customTab.id}" specified in tab configuration`);
             }
 
-            customTab.label = tab.label;
+            navTab.label = customTab.label;
 
-            if (-1 === _.findIndex(customTab.depTypes, matchComponentType)) return;
+            // is tab applicable to target dependency?
+            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) return;
             
-            if (tab.id === "tree" && this.configuration.mainData.disableDomTree) return;
-            if (tab.id === "source" && this.configuration.mainData.disableSourceCode) return;
+            // global config
+            if (customTab.id === "tree" && this.configuration.mainData.disableDomTree) return;
+            if (customTab.id === "source" && this.configuration.mainData.disableSourceCode) return;
             
-            if (tab.id === "readme" && !dependency.readme) return;
-            if (tab.id === "example" && !dependency.exampleUrls) return;
-            if (tab.id === "templateData" && dependency.templateUrl && dependency.templateUrl.length === 0) return;
+            // per component config
+            if (customTab.id === "readme" && !dependency.readme) return;
+            if (customTab.id === "example" && !dependency.exampleUrls) return;
+            if (customTab.id === "templateData" && dependency.templateUrl && dependency.templateUrl.length === 0) return;
             
-            navTabs.push(customTab);
+            navTabs.push(navTab);
         });
 
         if (navTabs.length === 0) {
-            throw Error(`No valid navigation tabs have been defined for dependency type '${dependency.type}'. Provide \
-at least one tab configuration from the following tab types: 'info', 'readme', or 'source'.`);
+            throw new Error(`No valid navigation tabs have been defined for dependency type '${dependency.type}'. Specify \
+at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         }
 
         return navTabs;
