@@ -9,7 +9,7 @@ import { OrHelper } from './html-engine-helpers/or.helper';
 import { FunctionSignatureHelper } from './html-engine-helpers/function-signature.helper';
 import { IsNotToggleHelper } from './html-engine-helpers/is-not-toggle.helper';
 import { IsInitialTabHelper } from './html-engine-helpers/is-initial-tab.helper';
-import { IsTabEnabledHelper } from './html-engine-helpers/is-tab-present.helper';
+import { IsTabEnabledHelper } from './html-engine-helpers/is-tab-enabled.helper';
 import { IfStringHelper } from './html-engine-helpers/if-string.helper';
 import { OrLengthHelper } from './html-engine-helpers/or-length.helper';
 import { FilterAngular2ModulesHelper } from './html-engine-helpers/filter-angular2-modules.helper';

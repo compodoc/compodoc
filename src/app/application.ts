@@ -30,8 +30,6 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { AngularVersionUtil, RouterParserUtil } from '../utils';
-import { IDep, IPipeDep } from './compiler/dependencies.interfaces';
-import { IComponentDep } from './compiler/deps/component-dep.factory';
 
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
