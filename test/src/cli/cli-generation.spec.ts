@@ -639,6 +639,7 @@ describe('CLI simple generation', () => {
             }
             stdoutString = ls.stdout.toString();
             index = read(`${distFolder}/components/BarComponent.html`);
+            index = index.replace(/\r?\n|\r/g, "");
             done();
         });
         after(() => tmp.clean(distFolder));
@@ -650,7 +651,7 @@ describe('CLI simple generation', () => {
             expect(index).to.not.contain('id="templateData-tab"');
         });
         it('should set source as the active tab', () => {
-            expect(index).to.contain('<li class="active">\r\n            <a href="#source"');
+            expect(index).to.contain('<li class="active">            <a href="#source"');
         });
         it('should set the source tab label', () => {
             expect(index).to.contain('data-link="source">Test Label 1');
