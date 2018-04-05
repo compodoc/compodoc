@@ -1145,24 +1145,24 @@ export class Application {
 
         let navTabs = [];
         _.forEach(navTabConfig, (customTab) => {
-            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { "id": customTab.id });
+            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { 'id': customTab.id });
             if (!navTab) {
-                throw new Error(`Invalid tab ID "${customTab.id}" specified in tab configuration`);
+                throw new Error(`Invalid tab ID '${customTab.id}' specified in tab configuration`);
             }
 
             navTab.label = customTab.label;
 
             // is tab applicable to target dependency?
-            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) return;
+            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) { return; }
             
             // global config
-            if (customTab.id === "tree" && this.configuration.mainData.disableDomTree) return;
-            if (customTab.id === "source" && this.configuration.mainData.disableSourceCode) return;
+            if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
+            if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
             
             // per dependency config
-            if (customTab.id === "readme" && !dependency.readme) return;
-            if (customTab.id === "example" && !dependency.exampleUrls) return;
-            if (customTab.id === "templateData" && dependency.templateUrl && dependency.templateUrl.length === 0) return;
+            if (customTab.id === 'readme' && !dependency.readme) { return; }
+            if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
+            if (customTab.id === 'templateData' && dependency.templateUrl && dependency.templateUrl.length === 0) { return; }
             
             navTabs.push(navTab);
         });
