@@ -1,4 +1,5 @@
 export interface MainDataInterface {
+    concurrent: boolean;
     output: string;
     theme: string;
     extTheme: string;

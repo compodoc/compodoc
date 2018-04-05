@@ -30,6 +30,9 @@ import { promiseSequential } from '../utils/promise-sequential';
 import { DependenciesEngine } from './engines/dependencies.engine';
 import { AngularVersionUtil, RouterParserUtil } from '../utils';
 
+const workerFarm = require('worker-farm');
+const workers = workerFarm(path.resolve(__dirname, './worker'));
+
 let cwd = process.cwd();
 let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
@@ -86,6 +89,7 @@ export class Application {
             this.dependenciesEngine,
             this.fileEngine
         );
+        console.log(JSON.stringify(this.htmlEngine));
         this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
         this.exportEngine = new ExportEngine(
             this.configuration,
@@ -94,6 +98,7 @@ export class Application {
         );
 
         for (let option in options) {
+
             if (typeof this.configuration.mainData[option] !== 'undefined') {
                 this.configuration.mainData[option] = options[option];
             }
@@ -126,7 +131,8 @@ export class Application {
         if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
             this.processPackageJson();
         } else {
-            this.htmlEngine.init().then(() => this.processPackageJson());
+            this.htmlEngine.init()
+              .then(() => this.processPackageJson());
         }
         return generationPromise;
     }
@@ -2064,6 +2070,18 @@ export class Application {
         });
     }
 
+    private processMenu(mainData): Promise<void> {
+      logger.warn('Process Menu...');
+
+      return this.htmlEngine.renderMenu(mainData).then(htmlData => {
+        let finalPath = `${mainData.output}menu.html`;
+        return this.fileEngine.write(finalPath, htmlData).catch(err => {
+          logger.error('Error during ' + finalPath + ' page generation');
+          return Promise.reject('');
+        });
+      });
+  }
+
     private processPage(page): Promise<void> {
         logger.info('Process page', page.name);
 
@@ -2083,11 +2101,11 @@ export class Application {
             finalPath += page.name + '.html';
         }
 
-        this.searchEngine.indexPage({
-            infos: page,
-            rawData: htmlData,
-            url: finalPath
-        });
+        // this.searchEngine.indexPage({
+        //     infos: page,
+        //     rawData: htmlData,
+        //     url: finalPath
+        // });
 
         return this.fileEngine.write(finalPath, htmlData).catch(err => {
             logger.error('Error during ' + page.name + ' page generation');
@@ -2096,29 +2114,77 @@ export class Application {
     }
 
     public processPages() {
-        logger.info('Process pages');
-        let pages = _.sortBy(this.configuration.pages, ['name']);
-        Promise.all(pages.map(page => this.processPage(page)))
-            .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
-                    () => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
-                        } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
-                            }
-                            this.processResources();
-                        }
-                    },
-                    e => {
-                        logger.error(e);
-                    }
-                );
-            })
-            .catch(e => {
-                logger.error(e);
-            });
+
+        let promises = [];
+        let pages = _.sortBy(this.configuration.pages, ['name']) as any[];
+
+        if (this.configuration.mainData.concurrent) {
+          logger.error('Process pages (WARNING: concurrent mode enabled)', pages.length);
+          // const throat = require('throat');
+          // pages = pages.map(throat(4, page => this.processPage(page)));
+
+          // concurrentProcessing(pages, page => this.processPage(page), (result) => {
+          //   console.log('result received', result);
+          // });
+
+          let ret = 0;
+          const C = Math.min(pages.length, 100);
+          for (let i = 0; i < pages.length; i++) {
+            const chunck = pages.splice(0, C);
+
+            // console.log(JSON.stringify(this.htmlEngine));
+
+            if (chunck) {
+              workers({
+                configuration: this.configuration,
+                fileEngine: this.fileEngine,
+                searchEngine: this.searchEngine,
+                htmlEngine: this.htmlEngine,
+                chunck
+              }, (processOutput) => {
+                promises.push(processOutput);
+                if (++ret > C) {
+                  console.log('stopping.');
+                  workerFarm.end(workers);
+                }
+              });
+            } else {
+              logger.warn('no more chuncks...', pages.length);
+            }
+          }
+
+        } else {
+          logger.info('Process pages');
+          promises = pages.map(page => this.processPage(page));
+        }
+
+        const index = pages.filter(p => p.name==='index');
+        // console.log(JSON.stringify(this.configuration.mainData, null, 2));
+
+          Promise.all(promises)
+          .then(() => {
+              this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                  () => {
+                      if (this.configuration.mainData.additionalPages.length > 0) {
+                          this.processAdditionalPages();
+                      } else {
+                          if (this.configuration.mainData.assetsFolder !== '') {
+                              this.processAssetsFolder();
+                          }
+                          this.processResources();
+                      }
+                  },
+                  e => {
+                      logger.error(e);
+                  }
+              );
+          })
+          .then(() => {
+            return this.processMenu(this.configuration.mainData);
+          })
+          .catch(e => {
+              logger.error(e);
+          });
     }
 
     public processAdditionalPages() {

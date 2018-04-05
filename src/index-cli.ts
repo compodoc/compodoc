@@ -127,12 +127,17 @@ export class CliApplication extends Application {
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
+            .option('--concurrent', 'Concurrent page processing (experimental)', false)
             .parse(process.argv);
 
         let outputHelp = () => {
             program.outputHelp();
             process.exit(1);
         };
+
+        if (program.concurrent) {
+            this.configuration.mainData.concurrent = program.concurrent;
+        }
 
         if (program.output) {
             this.configuration.mainData.output = program.output;

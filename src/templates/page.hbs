@@ -8,6 +8,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
+        
+        <link rel="import" href="{{relativeURL data.depth }}/menu.html" >
+
 	    <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
@@ -24,13 +27,16 @@
 
         <div class="xs-menu menu" id="mobile-menu">
             {{> search-input data }}
-            {{> menu data }}
+            <compodoc-menu></compodoc-menu>
+            {{!-- {{> menu data }} --}}
         </div>
 
         <div class="container-fluid main">
            <div class="row main">
                <div class="hidden-xs menu">
-                   {{> menu data menu='normal' }}
+                  {{!-- {{> menu data menu='normal' }} --}}
+                  <compodoc-menu menu='normal'></compodoc-menu>
+                   
                </div>
                <!-- START CONTENT -->
                <div class="content {{data.context}}">
@@ -145,7 +151,6 @@
        <script src="{{relativeURL data.depth }}js/search/search-lunr.js"></script>
 
        <script src="{{relativeURL data.depth }}js/tabs.js"></script>
-       <script src="{{relativeURL data.depth }}js/menu.js"></script>
        <script src="{{relativeURL data.depth }}js/libs/prism.js"></script>
        <script src="{{relativeURL data.depth }}js/sourceCode.js"></script>
        <script src="{{relativeURL data.depth }}js/search/search_index.js"></script>

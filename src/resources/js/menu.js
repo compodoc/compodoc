@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // collapse menu
+    debugger;
     var classnameMenuToggler = document.getElementsByClassName('menu-toggler'),
         faAngleUpClass = 'fa-angle-up',
         faAngleDownClass = 'fa-angle-down',

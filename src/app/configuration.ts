@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 export class Configuration implements ConfigurationInterface {
     private _pages: PageInterface[] = [];
     private _mainData: MainDataInterface = {
+        concurrent: false,
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
         extTheme: '',

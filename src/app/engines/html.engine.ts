@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-
 import { logger } from '../../logger';
 import { HtmlEngineHelpers } from './html.engine.helpers';
 import { DependenciesEngine } from './dependencies.engine';
@@ -22,7 +21,7 @@ export class HtmlEngine {
 
     public init(): Promise<void> {
         let partials = [
-            'menu',
+            // 'menu',
             'overview',
             'markdown',
             'modules',
@@ -70,7 +69,8 @@ export class HtmlEngine {
                     .get(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
                     .then(data => Handlebars.registerPartial(partial, data));
             })).then(() => {
-                return this.fileEngine
+              const resolved = [];
+              const compileMainPage = this.fileEngine
                     .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
                     .then(data => {
                         this.cache.page = data;
@@ -79,7 +79,21 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
+
+              return Promise.all([compileMainPage]);
+
             }).then(() => { });
+    }
+
+    public renderMenu(data) {
+      return this.fileEngine
+        .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+        .then(menuTemplate => {
+            return Handlebars.compile(menuTemplate, {
+              preventIndent: true,
+              strict: true
+          })({...data});
+        });
     }
 
     public render(mainData: any, page: any): string {

@@ -10,3 +10,4 @@ export * from './get-module-with-providers';
 export * from './has-spread-element-in-array';
 export * from './uniqid';
 export * from './utils';
+export * from './concurrency';
