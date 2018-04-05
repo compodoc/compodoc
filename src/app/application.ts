@@ -2116,9 +2116,24 @@ export class Application {
                     }
                 );
             })
+            .then(() => {
+              return this.processMenu(this.configuration.mainData);
+            })
             .catch(e => {
                 logger.error(e);
             });
+    }
+
+    private processMenu(mainData): Promise<void> {
+      logger.info('Process Menu...');
+
+      return this.htmlEngine.renderMenu(mainData).then(htmlData => {
+        let finalPath = `${mainData.output}menu.html`;
+        return this.fileEngine.write(finalPath, htmlData).catch(err => {
+          logger.error('Error during ' + finalPath + ' page generation');
+          return Promise.reject('');
+        });
+      });
     }
 
     public processAdditionalPages() {

@@ -22,7 +22,6 @@ export class HtmlEngine {
 
     public init(): Promise<void> {
         let partials = [
-            'menu',
             'overview',
             'markdown',
             'modules',
@@ -80,6 +79,17 @@ export class HtmlEngine {
                         });
                     });
             }).then(() => { });
+    }
+
+    public renderMenu(data) {
+      return this.fileEngine
+        .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+        .then(menuTemplate => {
+            return Handlebars.compile(menuTemplate, {
+              preventIndent: true,
+              strict: true
+          })({...data});
+        });
     }
 
     public render(mainData: any, page: any): string {

@@ -1,498 +1,371 @@
-<nav>
+<script src="{{relativeURL data.depth }}js/menu.js"></script>
+<script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
+
+<script>
+
+  const templateContent = ` <nav>
 
     <ul class="list">
 
-        <li class="title">
-            <a href="{{relativeURL depth pageType 'root'}}index.html">{{documentationMainName}}</a>
-        </li>
+      <li class="title">
+        <a href="{{relativeURL depth pageType 'root'}}index.html">{{documentationMainName}}</a>
+      </li>
 
-        <li class="divider"></li>
+      <li class="divider"></li>
 
-        {{#compare menu "===" 'normal' }}
-            {{> search-input }}
-        {{/compare}}
+      {{#compare menu "===" 'normal' }} {{> search-input }} {{/compare}}
 
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}index.html"><span class="fa fa-home"></span>Getting started</a>
-            <ul class="links">
-                {{#if readme}}
-                    <li class="link">
-                        <a {{#compare context "===" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare name "===" 'overview' }} class="active" {{/compare}}>
-                            <span class="fa fa-fw fa-th"></span>Overview
-                        </a>
-                    </li>
-                    <li class="link">
-                      <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
-                    </li>
-                {{else}}
-                    <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}"
-                            {{#compare name "===" 'overview' }} class="active" {{/compare}}
-                            {{#compare name "===" 'index' }} class="active" {{/compare}}
-                            >
-                            <span class="fa fa-fw fa-th"></span>Overview
-                        </a>
-                    </li>
-                {{/if}}
-                {{#each markdowns}}
-                    <li class="link">
-                        {{#compare name "!==" 'readme'}}
-                            <a href="{{relativeURL ../depth pageType 'root' name}}{{name}}.html"
-                        {{else}}
-                            <a href="{{relativeURL depth pageType 'root'}}index.html"
-                        {{/compare}}
-                        {{#compare ../name "===" name }} class="active" {{/compare}}>
-                            <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
-                        </a>
-                    </li>
-                {{/each}}
-                {{#orLength packageDependencies packagePeerDependencies}}
-                    <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}dependencies.html"
-                            {{#compare name "===" 'dependencies' }} class="active" {{/compare}}
-                            >
-                            <span class="fa fa-fw fa-list"></span>Dependencies
-                        </a>
-                    </li>
-                {{/orLength}}
-            </ul>
-        </li>
-
-        {{#if additionalPages}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#additional-pages"
-                {{else}}
-                    data-target="#xs-additional-pages"
-                {{/compare}}>
-                <span class="fa fa-fw fa-book"></span>
-                <span>{{includesName}}</span>
-                <span class="fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-            </div>
-            <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="additional-pages"
-                {{else}}
-                    id="xs-additional-pages"
-                {{/compare}}>
-                {{#each additionalPages}}
-                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
-                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if modules}}
-        <li class="chapter modules">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
-                <div class="menu-toggler linked" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#modules-links"
-                    {{else}}
-                        data-target="#xs-modules-links"
-                    {{/compare}}
-                >
-                    <span class="fa fa-fw fa-archive"></span>
-                    <span class="link-name">Modules</span>
-                    <span class="fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                </div>
+      <li class="chapter">
+        <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}index.html">
+          <span class="fa fa-home"></span>Getting started</a>
+        <ul class="links">
+          {{#if readme}}
+          <li class="link">
+            <a {{#compare context "===" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}} {{#compare
+              context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}} {{#compare
+              context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}} {{#compare
+              context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}} {{#compare name
+              "===" 'overview' }} class="active" {{/compare}}>
+              <span class="fa fa-fw fa-th"></span>Overview
             </a>
-            <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="modules-links"
-                {{else}}
-                    id="xs-modules-links"
-                {{/compare}}>
-                {{#each modules}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                        {{#compare compodocLinks.components.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        data-target="#components-links-{{id}}"
-                                    {{else}}
-                                        data-target="#xs-components-links-{{id}}"
-                                    {{/compare}}>
-                                    <span class="fa fa-fw fa-cogs"></span>
-                                    <span>Components</span>
-                                    <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        id="components-links-{{id}}"
-                                    {{else}}
-                                        id="xs-components-links-{{id}}"
-                                    {{/compare}}>
-                                    {{#each compodocLinks.components}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.directives.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        data-target="#directives-links-{{id}}"
-                                    {{else}}
-                                        data-target="#xs-directives-links-{{id}}"
-                                    {{/compare}}>
-                                    <span class="fa fa-fw fa-code"></span>
-                                    <span>Directives</span>
-                                    <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        id="directives-links-{{id}}"
-                                    {{else}}
-                                        id="xs-directives-links-{{id}}"
-                                    {{/compare}}>
-                                    {{#each compodocLinks.directives}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.injectables.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        data-target="#injectables-links-{{id}}"
-                                    {{else}}
-                                        data-target="#xs-injectables-links-{{id}}"
-                                    {{/compare}}>
-                                    <span class="fa fa-fw fa-long-arrow-down"></span>
-                                    <span>Injectables</span>
-                                    <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        id="injectables-links-{{id}}"
-                                    {{else}}
-                                        id="xs-injectables-links-{{id}}"
-                                    {{/compare}}>
-                                    {{#each compodocLinks.injectables}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.pipes.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        data-target="#pipes-links-{{id}}"
-                                    {{else}}
-                                        data-target="#xs-pipes-links-{{id}}"
-                                    {{/compare}}>
-                                    <span class="fa fa-fw fa-plus"></span>
-                                    <span>Pipes</span>
-                                    <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    {{#compare ../menu "===" 'normal' }}
-                                        id="pipes-links-{{id}}"
-                                    {{else}}
-                                        id="xs-pipes-links-{{id}}"
-                                    {{/compare}}>
-                                    {{#each compodocLinks.pipes}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
+          </li>
+          <li class="link">
+            <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}>
+              <span class="fa fa-file-text-o"></span>README</a>
+          </li>
+          {{else}}
+          <li class="link">
+            <a href="{{relativeURL depth pageType 'root'}}" {{#compare name "===" 'overview' }} class="active" {{/compare}} {{#compare
+              name "===" 'index' }} class="active" {{/compare}}>
+              <span class="fa fa-fw fa-th"></span>Overview
+            </a>
+          </li>
+          {{/if}} {{#each markdowns}}
+          <li class="link">
+            {{#compare name "!==" 'readme'}}
+            <a href="{{relativeURL ../depth pageType 'root' name}}{{name}}.html" {{else}} <a href="{{relativeURL depth pageType 'root'}}index.html"
+              {{/compare}} {{#compare ../name "===" name }} class="active" {{/compare}}>
+              <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
+            </a>
+          </li>
+          {{/each}} {{#orLength packageDependencies packagePeerDependencies}}
+          <li class="link">
+            <a href="{{relativeURL depth pageType 'root'}}dependencies.html" {{#compare name "===" 'dependencies' }} class="active" {{/compare}}>
+              <span class="fa fa-fw fa-list"></span>Dependencies
+            </a>
+          </li>
+          {{/orLength}}
+        </ul>
+      </li>
 
-        {{#if components}}
-            {{#element-alone components 'component'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#components-links"
-                        {{else}}
-                            data-target="#xs-components-links"
-                        {{/compare}}>
-                        <span class="fa fa-fw fa-cogs"></span>
-                        <span>Components</span>
-                        <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                    </div>
-                    <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
-                        {{#compare menu "===" 'normal' }}
-                            id="components-links"
-                        {{else}}
-                            id="xs-components-links"
-                        {{/compare}}>
-                        {{#each components}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
+      {{#if additionalPages}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#additional-pages"
+          {{else}} data-target="#xs-additional-pages" {{/compare}}>
+          <span class="fa fa-fw fa-book"></span>
+          <span>{{includesName}}</span>
+          <span class="fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="additional-pages"
+          {{else}} id="xs-additional-pages" {{/compare}}>
+          {{#each additionalPages}}
+          <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
+            <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../id "===" id }} data-type="entity-link"
+              class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/if}} {{#if modules}}
+      <li class="chapter modules">
+        <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active"
+          {{/compare}}>
+          <div class="menu-toggler linked" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#modules-links" {{else}}
+            data-target="#xs-modules-links" {{/compare}}>
+            <span class="fa fa-fw fa-archive"></span>
+            <span class="link-name">Modules</span>
+            <span class="fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+          </div>
+        </a>
+        <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="modules-links"
+          {{else}} id="xs-modules-links" {{/compare}}>
+          {{#each modules}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active"
+              {{/compare}}>{{ name }}</a>
+            {{#compare compodocLinks.components.length ">" 0}}
+            <li class="chapter inner">
+              <div class="simple menu-toggler" data-toggle="collapse" {{#compare ../menu "===" 'normal' }} data-target="#components-links-{{id}}"
+                {{else}} data-target="#xs-components-links-{{id}}" {{/compare}}>
+                <span class="fa fa-fw fa-cogs"></span>
+                <span>Components</span>
+                <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+              </div>
+              <ul class="links collapse" {{#compare ../menu "===" 'normal' }} id="components-links-{{id}}" {{else}} id="xs-components-links-{{id}}"
+                {{/compare}}>
+                {{#each compodocLinks.components}}
+                <li class="link">
+                  <a href="{{relativeURL ../../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                    {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules"
+                    class="active" {{/compare}}>{{ name }}</a>
                 </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if directives}}
-            {{#element-alone directives 'directive'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#directives-links"
-                        {{else}}
-                            data-target="#xs-directives-links"
-                        {{/compare}}>
-                        <span class="fa fa-fw fa-code"></span>
-                        <span>Directives</span>
-                        <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                    </div>
-                    <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
-                        {{#compare menu "===" 'normal' }}
-                            id="directives-links"
-                        {{else}}
-                            id="xs-directives-links"
-                        {{/compare}}>
-                        {{#each directives}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if classes}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#classes-links"
-                {{else}}
-                    data-target="#xs-classes-links"
-                {{/compare}}>
-                <span class="fa fa-fw fa-file-code-o"></span>
-                <span>Classes</span>
-                <span class="fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-            </div>
-            <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="classes-links"
-                {{else}}
-                    id="xs-classes-links"
-                {{/compare}}>
-                {{#each classes}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'classes'}}classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                    </li>
                 {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if injectables}}
-            {{#element-alone injectables 'injectable'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#injectables-links"
-                        {{else}}
-                            data-target="#xs-injectables-links"
-                        {{/compare}}>
-                        <span class="fa fa-fw fa-long-arrow-down"></span>
-                        <span>Injectables</span>
-                        <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                    </div>
-                    <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}"
-                        {{#compare menu "===" 'normal' }}
-                            id="injectables-links"
-                        {{else}}
-                            id="xs-injectables-links"
-                        {{/compare}}>
-                        {{#each injectables}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if interceptors}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#interceptors-links"
-                {{else}}
-                    data-target="#xs-interceptors-links"
-                {{/compare}}>
-                <span class="fa fa-fw fa-exchange"></span>
-                <span>Interceptors</span>
-                <span class="fa {{#isNotToggle 'interceptors'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-            </div>
-            <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="interceptors-links"
-                {{else}}
-                    id="xs-interceptors-links"
-                {{/compare}}>
-                {{#each interceptors}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if interfaces}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#interfaces-links"
-                {{else}}
-                    data-target="#xs-interfaces-links"
-                {{/compare}}>
-                <span class="fa fa-fw fa-info"></span>
-                <span>Interfaces</span>
-                <span class="fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-            </div>
-            <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="interfaces-links"
-                {{else}}
-                    id="xs-interfaces-links"
-                {{/compare}}>
-                {{#each interfaces}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if pipes}}
-            {{#element-alone pipes 'pipe'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#pipes-links"
-                        {{else}}
-                            data-target="#xs-pipes-links"
-                        {{/compare}}>
-                        <span class="fa fa-fw fa-plus"></span>
-                        <span>Pipes</span>
-                        <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-                    </div>
-                    <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}"
-                        {{#compare menu "===" 'normal' }}
-                            id="pipes-links"
-                        {{else}}
-                            id="xs-pipes-links"
-                        {{/compare}}>
-                        {{#each pipes}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if miscellaneous}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#miscellaneous-links"
-                {{else}}
-                    data-target="#xs-miscellaneous-links"
-                {{/compare}}>
-                <span class="fa fa-fw fa-cubes"></span>
-                <span>Miscellaneous</span>
-                <span class="fa {{#isNotToggle 'miscellaneous'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
-            </div>
-            <ul class="links collapse {{#isNotToggle 'miscellaneous'}}in{{/isNotToggle}}"
-                {{#compare menu "===" 'normal' }}
-                    id="miscellaneous-links"
-                {{else}}
-                    id="xs-miscellaneous-links"
-                {{/compare}}>
-                {{#compare miscellaneous.enumerations.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link" {{#compare name "===" 'enumerations' }} class="active" {{/compare}}>Enums</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.functions.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link" {{#compare name "===" 'functions' }} class="active" {{/compare}}>Functions</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.typealiases.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link" {{#compare name "===" 'typealiases' }} class="active" {{/compare}}>Type aliases</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.variables.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link" {{#compare name "===" 'variables' }} class="active" {{/compare}}>Variables</a>
-                    </li>
-                {{/compare}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#unless disableRoutesGraph}}
-            {{#if routes}}
-            <li class="chapter">
-                <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+              </ul>
             </li>
-            {{/if}}
-        {{/unless}}
-
-        {{#unless disableCoverage}}
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
-        </li>
-        {{/unless}}
-
-        {{#unless hideGenerator}}
-        <li class="divider"></li>
-        <li class="copyright">
-                Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
-                    {{#if theme }}
-                        {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive">
-                        {{else}}
-                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
-                        {{/compare}}
-                    {{else}}
-                    <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
-                    {{/if}}
-                </a>
-        </li>
-        {{/unless}}
+            {{/compare}} {{#compare compodocLinks.directives.length ">" 0}}
+            <li class="chapter inner">
+              <div class="simple menu-toggler" data-toggle="collapse" {{#compare ../menu "===" 'normal' }} data-target="#directives-links-{{id}}"
+                {{else}} data-target="#xs-directives-links-{{id}}" {{/compare}}>
+                <span class="fa fa-fw fa-code"></span>
+                <span>Directives</span>
+                <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+              </div>
+              <ul class="links collapse" {{#compare ../menu "===" 'normal' }} id="directives-links-{{id}}" {{else}} id="xs-directives-links-{{id}}"
+                {{/compare}}>
+                {{#each compodocLinks.directives}}
+                <li class="link">
+                  <a href="{{relativeURL ../../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                    {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules"
+                    class="active" {{/compare}}>{{ name }}</a>
+                </li>
+                {{/each}}
+              </ul>
+            </li>
+            {{/compare}} {{#compare compodocLinks.injectables.length ">" 0}}
+            <li class="chapter inner">
+              <div class="simple menu-toggler" data-toggle="collapse" {{#compare ../menu "===" 'normal' }} data-target="#injectables-links-{{id}}"
+                {{else}} data-target="#xs-injectables-links-{{id}}" {{/compare}}>
+                <span class="fa fa-fw fa-long-arrow-down"></span>
+                <span>Injectables</span>
+                <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+              </div>
+              <ul class="links collapse" {{#compare ../menu "===" 'normal' }} id="injectables-links-{{id}}" {{else}} id="xs-injectables-links-{{id}}"
+                {{/compare}}>
+                {{#each compodocLinks.injectables}}
+                <li class="link">
+                  <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                    {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules"
+                    class="active" {{/compare}}>{{ name }}</a>
+                </li>
+                {{/each}}
+              </ul>
+            </li>
+            {{/compare}} {{#compare compodocLinks.pipes.length ">" 0}}
+            <li class="chapter inner">
+              <div class="simple menu-toggler" data-toggle="collapse" {{#compare ../menu "===" 'normal' }} data-target="#pipes-links-{{id}}"
+                {{else}} data-target="#xs-pipes-links-{{id}}" {{/compare}}>
+                <span class="fa fa-fw fa-plus"></span>
+                <span>Pipes</span>
+                <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+              </div>
+              <ul class="links collapse" {{#compare ../menu "===" 'normal' }} id="pipes-links-{{id}}" {{else}} id="xs-pipes-links-{{id}}"
+                {{/compare}}>
+                {{#each compodocLinks.pipes}}
+                <li class="link">
+                  <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare
+                    ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active"
+                    {{/compare}}>{{ name }}</a>
+                </li>
+                {{/each}}
+              </ul>
+            </li>
+            {{/compare}}
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/if}} {{#if components}} {{#element-alone components 'component'}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#components-links"
+          {{else}} data-target="#xs-components-links" {{/compare}}>
+          <span class="fa fa-fw fa-cogs"></span>
+          <span>Components</span>
+          <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="components-links"
+          {{else}} id="xs-components-links" {{/compare}}>
+          {{#each components}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+              {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/element-alone}} {{/if}} {{#if directives}} {{#element-alone directives 'directive'}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#directives-links"
+          {{else}} data-target="#xs-directives-links" {{/compare}}>
+          <span class="fa fa-fw fa-code"></span>
+          <span>Directives</span>
+          <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="directives-links"
+          {{else}} id="xs-directives-links" {{/compare}}>
+          {{#each directives}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+              {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/element-alone}} {{/if}} {{#if classes}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#classes-links" {{else}}
+          data-target="#xs-classes-links" {{/compare}}>
+          <span class="fa fa-fw fa-file-code-o"></span>
+          <span>Classes</span>
+          <span class="fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="classes-links"
+          {{else}} id="xs-classes-links" {{/compare}}>
+          {{#each classes}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'classes'}}classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare
+              ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/if}} {{#if injectables}} {{#element-alone injectables 'injectable'}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#injectables-links"
+          {{else}} data-target="#xs-injectables-links" {{/compare}}>
+          <span class="fa fa-fw fa-long-arrow-down"></span>
+          <span>Injectables</span>
+          <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="injectables-links"
+          {{else}} id="xs-injectables-links" {{/compare}}>
+          {{#each injectables}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+              {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/element-alone}} {{/if}} {{#if interceptors}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#interceptors-links"
+          {{else}} data-target="#xs-interceptors-links" {{/compare}}>
+          <span class="fa fa-fw fa-exchange"></span>
+          <span>Interceptors</span>
+          <span class="fa {{#isNotToggle 'interceptors'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="interceptors-links"
+          {{else}} id="xs-interceptors-links" {{/compare}}>
+          {{#each interceptors}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+              {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/if}} {{#if interfaces}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#interfaces-links"
+          {{else}} data-target="#xs-interfaces-links" {{/compare}}>
+          <span class="fa fa-fw fa-info"></span>
+          <span>Interfaces</span>
+          <span class="fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="interfaces-links"
+          {{else}} id="xs-interfaces-links" {{/compare}}>
+          {{#each interfaces}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+              {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/if}} {{#if pipes}} {{#element-alone pipes 'pipe'}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#pipes-links" {{else}}
+          data-target="#xs-pipes-links" {{/compare}}>
+          <span class="fa fa-fw fa-plus"></span>
+          <span>Pipes</span>
+          <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="pipes-links"
+          {{else}} id="xs-pipes-links" {{/compare}}>
+          {{#each pipes}}
+          <li class="link">
+            <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare
+              ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+      {{/element-alone}} {{/if}} {{#if miscellaneous}}
+      <li class="chapter">
+        <div class="simple menu-toggler" data-toggle="collapse" {{#compare menu "===" 'normal' }} data-target="#miscellaneous-links"
+          {{else}} data-target="#xs-miscellaneous-links" {{/compare}}>
+          <span class="fa fa-fw fa-cubes"></span>
+          <span>Miscellaneous</span>
+          <span class="fa {{#isNotToggle 'miscellaneous'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+        </div>
+        <ul class="links collapse {{#isNotToggle 'miscellaneous'}}in{{/isNotToggle}}" {{#compare menu "===" 'normal' }} id="miscellaneous-links"
+          {{else}} id="xs-miscellaneous-links" {{/compare}}>
+          {{#compare miscellaneous.enumerations.length ">" 0 }}
+          <li class="link">
+            <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link" {{#compare name
+              "===" 'enumerations' }} class="active" {{/compare}}>Enums</a>
+          </li>
+          {{/compare}} {{#compare miscellaneous.functions.length ">" 0 }}
+          <li class="link">
+            <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link" {{#compare name "==="
+              'functions' }} class="active" {{/compare}}>Functions</a>
+          </li>
+          {{/compare}} {{#compare miscellaneous.typealiases.length ">" 0 }}
+          <li class="link">
+            <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link" {{#compare name
+              "===" 'typealiases' }} class="active" {{/compare}}>Type aliases</a>
+          </li>
+          {{/compare}} {{#compare miscellaneous.variables.length ">" 0 }}
+          <li class="link">
+            <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link" {{#compare name "==="
+              'variables' }} class="active" {{/compare}}>Variables</a>
+          </li>
+          {{/compare}}
+        </ul>
+      </li>
+      {{/if}} {{#unless disableRoutesGraph}} {{#if routes}}
+      <li class="chapter">
+        <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active"
+          {{/compare}}>
+          <span class="fa fa-fw fa-code-fork"></span>Routes</a>
+      </li>
+      {{/if}} {{/unless}} {{#unless disableCoverage}}
+      <li class="chapter">
+        <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active"
+          {{/compare}}>
+          <span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
+      </li>
+      {{/unless}} {{#unless hideGenerator}}
+      <li class="divider"></li>
+      <li class="copyright">
+        Documentation generated using
+        <a href="https://compodoc.github.io/website/" target="_blank">
+          {{#if theme }} {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
+          <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive"> {{else}}
+          <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive"> {{/compare}} {{else}}
+          <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive"> {{/if}}
+        </a>
+      </li>
+      {{/unless}}
 
     </ul>
 
-</nav>
+  </nav>`
+
+  customElements.define('compodoc-menu', class extends HTMLElement {
+    constructor() {
+      super();
+      this.innerHTML = templateContent;
+    }
+  });
+</script>
