@@ -1159,7 +1159,7 @@ export class Application {
             if (customTab.id === "tree" && this.configuration.mainData.disableDomTree) return;
             if (customTab.id === "source" && this.configuration.mainData.disableSourceCode) return;
             
-            // per component config
+            // per dependency config
             if (customTab.id === "readme" && !dependency.readme) return;
             if (customTab.id === "example" && !dependency.exampleUrls) return;
             if (customTab.id === "templateData" && dependency.templateUrl && dependency.templateUrl.length === 0) return;
