@@ -518,6 +518,9 @@ export class Application {
         logger.info('-------------------');
         logger.info('Project statistics ');
         if (this.dependenciesEngine.modules.length > 0) {
+            logger.info(`- files      : ${this.files.length}`);
+        }
+        if (this.dependenciesEngine.modules.length > 0) {
             logger.info(`- module     : ${this.dependenciesEngine.modules.length}`);
         }
         if (this.dependenciesEngine.components.length > 0) {
