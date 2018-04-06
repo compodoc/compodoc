@@ -36,7 +36,7 @@ const TEST_FOLDER = 'angularexpo-tests',
     }, {
         name: 'angular2-hn', maintainer: 'housseindjirdeh', tsconfig_path: './src/'
     }, {
-        name: 'CoreUI-Free-Bootstrap-Admin-Template', maintainer: 'coreui', tsconfig_path: './Angular2_CLI_Full_Project/src/'
+        name: 'coreui-free-angular-admin-template', maintainer: 'mrholek', tsconfig_path: './Angular5_CLI_Full_Project/'
     }, {
         name: 'ng2-arithmetis', maintainer: 'feloy', tsconfig_path: './src/'
     }, {
