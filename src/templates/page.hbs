@@ -15,7 +15,7 @@
             {{/compare}}
         {{/if}}
 
-        <link rel="import" href="{{relativeURL data.depth }}/menu.html" >
+        <link rel="import" href="{{relativeURL data.depth }}menu.html" >
     </head>
     <body>
 
@@ -26,13 +26,13 @@
 
         <div class="xs-menu menu" id="mobile-menu">
             {{> search-input data }}
-            <compodoc-menu></compodoc-menu>
+            <!-- XS MENU CONTENT -->
         </div>
 
         <div class="container-fluid main">
            <div class="row main">
                <div class="hidden-xs menu">
-                   <compodoc-menu menu='normal'></compodoc-menu>
+                   <!-- NORMAL MENU CONTENT -->
                </div>
                <!-- START CONTENT -->
                <div class="content {{data.context}}">
@@ -140,7 +140,10 @@
 
        <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
 
-       <script>var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};</script>
+        <script>
+           var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
+           var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+        </script>
 
        <script src="{{relativeURL data.depth }}js/search/search.js"></script>
        <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
