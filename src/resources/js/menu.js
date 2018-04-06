@@ -6,29 +6,60 @@ document.addEventListener('DOMContentLoaded', function() {
         return el.className && new RegExp("(\\s|^)" + cls + "(\\s|$)").test(el.className);
     }
 
-    var processMenuLinks = function(links) {
+    var processLink = function(link, url) {
+        if (url.charAt(0) !== '.') {
+            let prefix = '';
+            switch(COMPODOC_CURRENT_PAGE_DEPTH) {
+                case 1:
+                    prefix = '../';
+                    break;
+                case 0:
+                    prefix = './';
+                    break;
+            }
+            link.setAttribute('href', prefix + url);
+        }
+    }
+
+    var processMenuLinks = function(links, dontAddClass) {
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var linkHref = link.getAttribute('href');
-            if (linkHref.indexOf(COMPODOC_CURRENT_PAGE_URL) !== -1) {
+            if (linkHref.indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 && link.innerHTML.indexOf('Getting started') == -1 && !dontAddClass) {
                 link.classList.add('active');
             }
-            if (linkHref.charAt(0) !== '.') {
-                switch(COMPODOC_CURRENT_PAGE_DEPTH) {
-                    case 1:
-                        link.setAttribute('href', '../' + linkHref);
-                        break;
-                    case 0:
-                        link.setAttribute('href', './' + linkHref);
-                        break;
-                }
-            }
+            processLink(link, linkHref);
+
         }
     }
     var chapterLinks = document.querySelectorAll('[data-type="chapter-link"]');
     processMenuLinks(chapterLinks);
     var entityLinks = document.querySelectorAll('[data-type="entity-link"]');
     processMenuLinks(entityLinks);
+    var indexLinks = document.querySelectorAll('[data-type="index-link"]', true);
+    processMenuLinks(indexLinks);
+    var entityLogos = document.querySelectorAll('[data-type="compodoc-logo"]');
+    var processLogos = function(entityLogo) {
+        for (var i = 0; i < entityLogos.length; i++) {
+            var entityLogo = entityLogos[i];
+            if (entityLogo) {
+                var url = entityLogo.getAttribute('data-src');
+                if (url.charAt(0) !== '.') {
+                    let prefix = '';
+                    switch(COMPODOC_CURRENT_PAGE_DEPTH) {
+                        case 1:
+                            prefix = '../';
+                            break;
+                        case 0:
+                            prefix = './';
+                            break;
+                    }
+                    entityLogo.src = prefix + url;
+                }
+            }
+        }
+    }
+    processLogos(entityLogos);
 
     setTimeout(function() {
         document.getElementById('btn-menu').addEventListener('click', function() {
@@ -100,8 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (activeLink) {
                 var linkType = activeLink.getAttribute('data-type');
                 var linkContext = activeLink.getAttribute('data-context');
-                // TODO : remove after finishing refactoring of menu
-                /*if (linkType === 'entity-link') {
+                if (linkType === 'entity-link') {
                     var parentLi = activeLink.parentNode,
                         parentUl,
                         parentChapterMenu;
@@ -131,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (toggler) {
                         toggler.click();
                     }
-                }*/
+                }
                 setTimeout(function() {
                     activeMenu.scrollTop = activeLink.offsetTop;
                     if (activeLink.innerHTML.toLowerCase().indexOf('readme') != -1 || activeLink.innerHTML.toLowerCase().indexOf('overview') != -1) {

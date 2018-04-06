@@ -39,7 +39,7 @@ describe('CLI simple generation - big app', () => {
         done();
     });
     after(() => {
-        tmp.clean(distFolder);
+        //tmp.clean(distFolder);
     });
 
     it('should display generated message', () => {
@@ -590,12 +590,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should support alone elements in their own entry menu', () => {
         let file = read(distFolder + '/index.html');
-        expect(file).to.contain('<a href="./components/JigsawTab.html" >JigsawTab</a>');
+        expect(file).to.contain('<a href="components/JigsawTab.html" data-type="entity-link">JigsawTab</a>');
         expect(file).to.contain(
-            '<a href="./directives/DoNothingDirective2.html" >DoNothingDirective2</a>'
+            '<a href="directives/DoNothingDirective2.html" data-type="entity-link">DoNothingDirective2</a>'
         );
-        expect(file).to.contain('<a href="./injectables/EmitterService.html" >EmitterService</a>');
-        expect(file).to.contain('<a href="./pipes/FirstUpperPipe2.html" >FirstUpperPipe2</a>');
+        expect(file).to.contain('<a href="injectables/EmitterService.html" data-type="entity-link">EmitterService</a>');
+        expect(file).to.contain('<a href="pipes/FirstUpperPipe2.html" data-type="entity-link">FirstUpperPipe2</a>');
     });
 
     it('should support component metadata preserveWhiteSpaces', () => {

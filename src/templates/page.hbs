@@ -14,8 +14,6 @@
         <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
             {{/compare}}
         {{/if}}
-
-        <link rel="import" href="{{relativeURL data.depth }}menu.html" >
     </head>
     <body>
 
@@ -141,8 +139,12 @@
        <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
 
         <script>
-           var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
-           var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+            var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
+            {{#if data.filename }}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.filename}}.html';
+            {{else}}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+            {{/if}}
         </script>
 
        <script src="{{relativeURL data.depth }}js/search/search.js"></script>

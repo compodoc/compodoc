@@ -3,7 +3,7 @@
     <ul class="list">
 
         <li class="title">
-            <a href="{{relativeURL depth pageType 'root'}}index.html">{{documentationMainName}}</a>
+            <a href="{{relativeURL depth pageType 'root'}}index.html" data-type="index-link">{{documentationMainName}}</a>
         </li>
 
         <li class="divider"></li>
@@ -21,19 +21,16 @@
                             {{#compare context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
                             {{#compare context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare name "===" 'overview' }} class="active" {{/compare}}
                             data-type="chapter-link">
                             <span class="fa fa-fw fa-th"></span>Overview
                         </a>
                     </li>
                     <li class="link">
-                      <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}} data-type="chapter-link"><span class="fa fa-file-text-o"></span>README</a>
+                      <a href="{{relativeURL depth pageType 'root'}}index.html" data-type="chapter-link"><span class="fa fa-file-text-o"></span>README</a>
                     </li>
                 {{else}}
                     <li class="link">
                         <a href="{{relativeURL depth pageType 'root'}}"
-                            {{#compare name "===" 'overview' }} class="active" {{/compare}}
-                            {{#compare name "===" 'index' }} class="active" {{/compare}}
                             data-type="chapter-link">
                             <span class="fa fa-fw fa-th" ></span>Overview
                         </a>
@@ -46,7 +43,7 @@
                         {{else}}
                             <a href="{{relativeURL depth pageType 'root'}}index.html"
                         {{/compare}}
-                        {{#compare ../name "===" name }} class="active" {{/compare}} data-type="chapter-link">
+                        data-type="chapter-link">
                             <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
                         </a>
                     </li>
@@ -54,7 +51,6 @@
                 {{#orLength packageDependencies packagePeerDependencies}}
                     <li class="link">
                         <a href="{{relativeURL depth pageType 'root'}}dependencies.html"
-                            {{#compare name "===" 'dependencies' }} class="active" {{/compare}}
                             data-type="chapter-link">
                             <span class="fa fa-fw fa-list"></span>Dependencies
                         </a>
@@ -73,9 +69,9 @@
                 {{/compare}}>
                 <span class="fa fa-fw fa-book"></span>
                 <span>{{includesName}}</span>
-                <span class="fa {{#isNotToggle 'additionalPages'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                <span class="fa fa-angle-down"></span>
             </div>
-            <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}"
+            <ul class="links collapse"
                 {{#compare menu "===" 'normal' }}
                     id="additional-pages"
                 {{else}}
@@ -83,7 +79,7 @@
                 {{/compare}}>
                 {{#each additionalPages}}
                     <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
-                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -92,7 +88,7 @@
 
         {{#if modules}}
         <li class="chapter modules">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html" {{#compare name "===" 'modules' }} class="active" {{/compare}}>
+            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html">
                 <div class="menu-toggler linked" data-toggle="collapse"
                     {{#compare menu "===" 'normal' }}
                         data-target="#modules-links"
@@ -102,10 +98,10 @@
                 >
                     <span class="fa fa-fw fa-archive"></span>
                     <span class="link-name">Modules</span>
-                    <span class="fa {{#isNotToggle 'modules'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                    <span class="fa fa-angle-down"></span>
                 </div>
             </a>
-            <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}"
+            <ul class="links collapse"
                 {{#compare menu "===" 'normal' }}
                     id="modules-links"
                 {{else}}
@@ -113,7 +109,7 @@
                 {{/compare}}>
                 {{#each modules}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" data-type="entity-link">{{ name }}</a>
                         {{#compare compodocLinks.components.length ">" 0}}
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
@@ -124,7 +120,7 @@
                                     {{/compare}}>
                                     <span class="fa fa-fw fa-cogs"></span>
                                     <span>Components</span>
-                                    <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                                    <span class="fa fa-angle-up"></span>
                                 </div>
                                 <ul class="links collapse"
                                     {{#compare ../menu "===" 'normal' }}
@@ -134,7 +130,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.components}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -150,7 +146,7 @@
                                     {{/compare}}>
                                     <span class="fa fa-fw fa-code"></span>
                                     <span>Directives</span>
-                                    <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                                    <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
                                     {{#compare ../menu "===" 'normal' }}
@@ -160,7 +156,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.directives}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -176,7 +172,7 @@
                                     {{/compare}}>
                                     <span class="fa fa-fw fa-long-arrow-down"></span>
                                     <span>Injectables</span>
-                                    <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                                    <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
                                     {{#compare ../menu "===" 'normal' }}
@@ -186,7 +182,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.injectables}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules"}>{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -202,7 +198,7 @@
                                     {{/compare}}>
                                     <span class="fa fa-fw fa-plus"></span>
                                     <span>Pipes</span>
-                                    <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                                    <span class="fa fa-angle-down"></span>
                                 </div>
                                 <ul class="links collapse"
                                     {{#compare ../menu "===" 'normal' }}
@@ -212,7 +208,7 @@
                                     {{/compare}}>
                                     {{#each compodocLinks.pipes}}
                                         <li class="link">
-                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../../id "===" id }} data-type="entity-link" data-context="sub-entity" data-context-id="modules" class="active" {{/compare}}>{{ name }}</a>
+                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -235,9 +231,9 @@
                         {{/compare}}>
                         <span class="fa fa-fw fa-cogs"></span>
                         <span>Components</span>
-                        <span class="fa {{#isNotToggle 'components'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                        <span class="fa fa-angle-down"></span>
                     </div>
-                    <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
+                    <ul class="links collapse"
                         {{#compare menu "===" 'normal' }}
                             id="components-links"
                         {{else}}
@@ -245,7 +241,7 @@
                         {{/compare}}>
                         {{#each components}}
                             <li class="link">
-                                <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -264,9 +260,9 @@
                         {{/compare}}>
                         <span class="fa fa-fw fa-code"></span>
                         <span>Directives</span>
-                        <span class="fa {{#isNotToggle 'directives'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                        <span class="fa fa-angle-down"></span>
                     </div>
-                    <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}"
+                    <ul class="links collapse"
                         {{#compare menu "===" 'normal' }}
                             id="directives-links"
                         {{else}}
@@ -274,7 +270,7 @@
                         {{/compare}}>
                         {{#each directives}}
                             <li class="link">
-                                <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -292,9 +288,9 @@
                 {{/compare}}>
                 <span class="fa fa-fw fa-file-code-o"></span>
                 <span>Classes</span>
-                <span class="fa {{#isNotToggle 'classes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                <span class="fa fa-angle-down"></span>
             </div>
-            <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}"
+            <ul class="links collapse"
                 {{#compare menu "===" 'normal' }}
                     id="classes-links"
                 {{else}}
@@ -320,9 +316,9 @@
                         {{/compare}}>
                         <span class="fa fa-fw fa-long-arrow-down"></span>
                         <span>Injectables</span>
-                        <span class="fa {{#isNotToggle 'injectables'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                        <span class="fa fa-angle-down"></span>
                     </div>
-                    <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}"
+                    <ul class="links collapse"
                         {{#compare menu "===" 'normal' }}
                             id="injectables-links"
                         {{else}}
@@ -330,7 +326,7 @@
                         {{/compare}}>
                         {{#each injectables}}
                             <li class="link">
-                                <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -348,9 +344,9 @@
                 {{/compare}}>
                 <span class="fa fa-fw fa-exchange"></span>
                 <span>Interceptors</span>
-                <span class="fa {{#isNotToggle 'interceptors'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                <span class="fa fa-angle-down"></span>
             </div>
-            <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}"
+            <ul class="links collapse"
                 {{#compare menu "===" 'normal' }}
                     id="interceptors-links"
                 {{else}}
@@ -358,7 +354,7 @@
                 {{/compare}}>
                 {{#each interceptors}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -375,9 +371,9 @@
                 {{/compare}}>
                 <span class="fa fa-fw fa-info"></span>
                 <span>Interfaces</span>
-                <span class="fa {{#isNotToggle 'interfaces'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                <span class="fa fa-angle-down"></span>
             </div>
-            <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}"
+            <ul class="links collapse"
                 {{#compare menu "===" 'normal' }}
                     id="interfaces-links"
                 {{else}}
@@ -385,7 +381,7 @@
                 {{/compare}}>
                 {{#each interfaces}}
                     <li class="link">
-                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -403,9 +399,9 @@
                         {{/compare}}>
                         <span class="fa fa-fw fa-plus"></span>
                         <span>Pipes</span>
-                        <span class="fa {{#isNotToggle 'pipes'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+                        <span class="fa fa-angle-down"></span>
                     </div>
-                    <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}"
+                    <ul class="links collapse"
                         {{#compare menu "===" 'normal' }}
                             id="pipes-links"
                         {{else}}
@@ -413,7 +409,7 @@
                         {{/compare}}>
                         {{#each pipes}}
                             <li class="link">
-                                <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" {{#compare ../id "===" id }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                                <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -441,22 +437,22 @@
                 {{/compare}}>
                 {{#compare miscellaneous.enumerations.length ">" 0 }}
                     <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link" {{#compare name "===" 'enumerations' }} class="active" {{/compare}}>Enums</a>
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link">Enums</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.functions.length ">" 0 }}
                     <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link" {{#compare name "===" 'functions' }} class="active" {{/compare}}>Functions</a>
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link">Functions</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.typealiases.length ">" 0 }}
                     <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link" {{#compare name "===" 'typealiases' }} class="active" {{/compare}}>Type aliases</a>
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link">Type aliases</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.variables.length ">" 0 }}
                     <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link" {{#compare name "===" 'variables' }} class="active" {{/compare}}>Variables</a>
+                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link">Variables</a>
                     </li>
                 {{/compare}}
             </ul>
@@ -466,14 +462,14 @@
         {{#unless disableRoutesGraph}}
             {{#if routes}}
             <li class="chapter">
-                <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html" {{#compare name "===" 'routes' }} class="active" {{/compare}}><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+                <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html"><span class="fa fa-fw fa-code-fork"></span>Routes</a>
             </li>
             {{/if}}
         {{/unless}}
 
         {{#unless disableCoverage}}
         <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html" {{#compare name "===" 'coverage' }} class="active" {{/compare}}><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
+            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html"><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
         </li>
         {{/unless}}
 
@@ -483,12 +479,12 @@
                 Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive">
+                            <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
                         {{else}}
-                            <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
+                            <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                         {{/compare}}
                     {{else}}
-                    <img src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive">
+                    <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                     {{/if}}
                 </a>
         </li>
