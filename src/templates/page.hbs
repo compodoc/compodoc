@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
-	    <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+	      <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
         <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
@@ -24,13 +24,13 @@
 
         <div class="xs-menu menu" id="mobile-menu">
             {{> search-input data }}
-            {{> menu data }}
+            <!-- XS MENU CONTENT -->
         </div>
 
         <div class="container-fluid main">
            <div class="row main">
                <div class="hidden-xs menu">
-                   {{> menu data menu='normal' }}
+                   <!-- NORMAL MENU CONTENT -->
                </div>
                <!-- START CONTENT -->
                <div class="content {{data.context}}">
@@ -138,7 +138,14 @@
 
        <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
 
-       <script>var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};</script>
+        <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
+            {{#if data.filename }}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.filename}}.html';
+            {{else}}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+            {{/if}}
+        </script>
 
        <script src="{{relativeURL data.depth }}js/search/search.js"></script>
        <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>

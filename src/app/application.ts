@@ -2099,28 +2099,34 @@ export class Application {
     }
 
     public processPages() {
-        logger.info('Process pages');
         let pages = _.sortBy(this.configuration.pages, ['name']);
-        Promise.all(pages.map(page => this.processPage(page)))
+
+        logger.info('Process menu');
+
+        this.htmlEngine.renderMenu(this.configuration.mainData)
             .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
-                    () => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
-                        } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
+                logger.info('Process pages');
+                Promise.all(pages.map(page => this.processPage(page)))
+                    .then(() => {
+                        this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                            () => {
+                                if (this.configuration.mainData.additionalPages.length > 0) {
+                                    this.processAdditionalPages();
+                                } else {
+                                    if (this.configuration.mainData.assetsFolder !== '') {
+                                        this.processAssetsFolder();
+                                    }
+                                    this.processResources();
+                                }
+                            },
+                            e => {
+                                logger.error(e);
                             }
-                            this.processResources();
-                        }
-                    },
-                    e => {
+                        );
+                    })
+                    .catch(e => {
                         logger.error(e);
-                    }
-                );
-            })
-            .catch(e => {
-                logger.error(e);
+                    });
             });
     }
 
