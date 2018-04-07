@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
     processMenuLinks(chapterLinks);
     var entityLinks = document.querySelectorAll('[data-type="entity-link"]');
     processMenuLinks(entityLinks);
-    var indexLinks = document.querySelectorAll('[data-type="index-link"]');
-    processMenuLinks(indexLinks, true);
+    var indexLinks = document.querySelectorAll('[data-type="index-link"]', true);
+    processMenuLinks(indexLinks);
     var entityLogos = document.querySelectorAll('[data-type="compodoc-logo"]');
     var processLogos = function(entityLogo) {
         for (var i = 0; i < entityLogos.length; i++) {
