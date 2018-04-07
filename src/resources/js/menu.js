@@ -10,6 +10,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (url.charAt(0) !== '.') {
             let prefix = '';
             switch(COMPODOC_CURRENT_PAGE_DEPTH) {
+                case 5:
+                    prefix = '../../../../../';
+                    break;
+                case 4:
+                    prefix = '../../../../';
+                    break;
+                case 3:
+                    prefix = '../../../';
+                    break;
+                case 2:
+                    prefix = '../../';
+                    break;
                 case 1:
                     prefix = '../';
                     break;
@@ -47,12 +59,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (url.charAt(0) !== '.') {
                     let prefix = '';
                     switch(COMPODOC_CURRENT_PAGE_DEPTH) {
+                        case 5:
+                            prefix = '../../../../../';
+                            break;
+                        case 4:
+                            prefix = '../../../../';
+                            break;
+                        case 3:
+                            prefix = '../../../';
+                            break;
+                        case 2:
+                            prefix = '../../';
+                            break;
                         case 1:
                             prefix = '../';
                             break;
                         case 0:
                             prefix = './';
-                            break;
+                            break
                     }
                     entityLogo.src = prefix + url;
                 }
