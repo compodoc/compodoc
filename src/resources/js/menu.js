@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var linkHref = link.getAttribute('href');
-            if (linkHref.indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 && link.innerHTML.indexOf('Getting started') == -1 && !dontAddClass) {
+            if (linkHref.toLowerCase().indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 && link.innerHTML.indexOf('Getting started') == -1 && !dontAddClass) {
                 link.classList.add('active');
             }
             processLink(link, linkHref);
