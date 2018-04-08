@@ -310,9 +310,9 @@ export class Dependencies {
             logger.info('Analysing routes definitions and clean them if necessary');
 
             // scannedFile = this.routerParser.cleanFileIdentifiers(astFile).compilerNode;
-            let firstClean = this.routerParser.cleanFileSpreads(astFile);
-            scannedFile = firstClean.compilerNode;
+            let firstClean = this.routerParser.cleanFileSpreads(astFile).compilerNode;
             scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
+            scannedFile = this.routerParser.cleanCallExpressions(astFile).compilerNode;
 
             scannedFile.kind = SyntaxKind.SourceFile;
         }

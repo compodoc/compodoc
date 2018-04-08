@@ -613,9 +613,38 @@ export class RouterParserUtil {
                     `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
                 );
             }
-            propertyAccessExpression.replaceWithText(
-                referencedDeclaration.getInitializerOrThrow().getText()
-            );
+            if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
+                propertyAccessExpression.replaceWithText(
+                    referencedDeclaration.getInitializerOrThrow().getText()
+                );
+            }
+        }
+
+        return file;
+    }
+
+    /**
+     * replace callexpressions with string : utils.doWork() -> 'utils.doWork()' doWork() -> 'doWork()'
+     * @param sourceFile ts.SourceFile
+     */
+    public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
+        let file = sourceFile;
+
+        const variableStatements = sourceFile.getVariableDeclaration((v) => {
+            let result = false;
+            if (typeof v.compilerNode.type !== 'undefined') {
+                result = v.compilerNode.type.typeName.text === 'Routes';
+            }
+            return result;
+        });
+
+        const initializer = variableStatements.getInitializer();
+
+        for (const callExpr of initializer.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+            if (callExpr.wasForgotten()) {
+                continue;
+            }
+            callExpr.replaceWithText(writer => writer.quote(callExpr.getText()));
         }
 
         return file;
