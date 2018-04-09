@@ -1,3 +1,22 @@
+<a name="1.1.2"></a>
+# [1.1.2](https://github.com/compodoc/compodoc/compare/1.1.1...1.1.2) (2018-04-09)
+
+Performance improvements of pages rendering | +20% in speed generation :tada:
+
+### Features
+
+* **html-engine:** Split menu rendering for speeding pages rendering ([ab57beed](https://github.com/compodoc/compodoc/commit/ab57beed)), closes [#533](https://github.com/compodoc/compodoc/issues/533)
+Thanks [Wassim Chegham](https://github.com/manekinekko)
+
+### Bug fixes
+
+* **app:** Handlebars JavaScript heap out of memory ([c8d29167](https://github.com/compodoc/compodoc/commit/c8d29167)), closes [#521](https://github.com/compodoc/compodoc/issues/521)
+* **theme:** correct path if no README in root folder ([78ceab38](https://github.com/compodoc/compodoc/commit/78ceab38)), closes [#524](https://github.com/compodoc/compodoc/issues/524)
+* **dependencies:** coverage for file even with no hostlisteners for example ([c7a32643](https://github.com/compodoc/compodoc/commit/c7a32643)), closes [#527](https://github.com/compodoc/compodoc/issues/527)
+* **dependencies:** --disableLifeCycleHooks with @ignore on component/directive ([eb9fddf2](https://github.com/compodoc/compodoc/commit/eb9fddf2)), closes [#526](https://github.com/compodoc/compodoc/issues/526)
+* **dependencies:** replace callExpressions in routes definitions with text ([2b22fa63](https://github.com/compodoc/compodoc/commit/2b22fa63)), closes [#525](https://github.com/compodoc/compodoc/issues/525) [#467](https://github.com/compodoc/compodoc/issues/467)
+* **dependencies:** module imports forRoot/forChild cleaning ([3e473791](https://github.com/compodoc/compodoc/commit/3e473791)), closes [#531](https://github.com/compodoc/compodoc/issues/531)
+
 <a name="1.1.1"></a>
 # [1.1.1](https://github.com/compodoc/compodoc/compare/1.1.0...1.1.1) (2018-03-30)
 
