@@ -1162,7 +1162,7 @@ export class Application {
             // per dependency config
             if (customTab.id === 'readme' && !dependency.readme) { return; }
             if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
-            if (customTab.id === 'templateData' && dependency.templateUrl && dependency.templateUrl.length === 0) { return; }
+            if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
             
             navTabs.push(navTab);
         });
