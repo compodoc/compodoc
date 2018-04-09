@@ -341,7 +341,9 @@ export class Application {
                                 this.configuration.addPage({
                                     name: 'index',
                                     id: 'index',
-                                    context: 'overview'
+                                    context: 'overview',
+                                    depth: 0,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                                 });
                             }
                             i++;
@@ -515,6 +517,9 @@ export class Application {
     private printStatistics() {
         logger.info('-------------------');
         logger.info('Project statistics ');
+        if (this.dependenciesEngine.modules.length > 0) {
+            logger.info(`- files      : ${this.files.length}`);
+        }
         if (this.dependenciesEngine.modules.length > 0) {
             logger.info(`- module     : ${this.dependenciesEngine.modules.length}`);
         }
@@ -1440,16 +1445,25 @@ export class Application {
                 return status;
             };
             let processComponentsAndDirectives = list => {
-                _.forEach(list, (element: any) => {
-                    if (
-                        !element.propertiesClass ||
-                        !element.methodsClass ||
-                        !element.hostBindings ||
-                        !element.hostListeners ||
-                        !element.inputsClass ||
-                        !element.outputsClass
-                    ) {
-                        return;
+                _.forEach(list, (el: any) => {
+                    let element = (Object as any).assign({}, el);
+                    if (!element.propertiesClass) {
+                        element.propertiesClass = [];
+                    }
+                    if (!element.methodsClass) {
+                        element.methodsClass = [];
+                    }
+                    if (!element.hostBindings) {
+                        element.hostBindings = [];
+                    }
+                    if (!element.hostListeners) {
+                        element.hostListeners = [];
+                    }
+                    if (!element.inputsClass) {
+                        element.inputsClass = [];
+                    }
+                    if (!element.outputsClass) {
+                        element.outputsClass = [];
                     }
                     let cl: any = {
                         filePath: element.file,
@@ -1643,11 +1657,15 @@ export class Application {
             processComponentsAndDirectives(this.configuration.mainData.components);
             processComponentsAndDirectives(this.configuration.mainData.directives);
 
-            _.forEach(this.configuration.mainData.classes, (classe: any) => {
-                if (!classe.properties || !classe.methods) {
-                    return;
+            _.forEach(this.configuration.mainData.classes, (cl: any) => {
+                let classe = (Object as any).assign({}, cl);
+                if (!classe.properties) {
+                    classe.properties = [];
                 }
-                let cl: any = {
+                if (!classe.methods) {
+                    classe.methods = [];
+                }
+                let cla: any = {
                     filePath: classe.file,
                     type: 'class',
                     linktype: 'classe',
@@ -1697,18 +1715,22 @@ export class Application {
                     }
                 });
 
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cla.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
                 if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
+                    cla.coveragePercent = 0;
                 }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
+                cla.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                cla.status = getStatus(cla.coveragePercent);
+                totalProjectStatementDocumented += cla.coveragePercent;
+                files.push(cla);
             });
-            _.forEach(this.configuration.mainData.injectables, (injectable: any) => {
-                if (!injectable.properties || !injectable.methods) {
-                    return;
+            _.forEach(this.configuration.mainData.injectables, (inj: any) => {
+                let injectable = (Object as any).assign({}, inj);
+                if (!injectable.properties) {
+                    injectable.properties = [];
+                }
+                if (!injectable.methods) {
+                    injectable.methods = [];
                 }
                 let cl: any = {
                     filePath: injectable.file,
@@ -1769,9 +1791,13 @@ export class Application {
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
-            _.forEach(this.configuration.mainData.interfaces, (inter: any) => {
-                if (!inter.properties || !inter.methods) {
-                    return;
+            _.forEach(this.configuration.mainData.interfaces, (inte: any) => {
+                let inter = (Object as any).assign({}, inte);
+                if (!inter.properties) {
+                    inter.properties = [];
+                }
+                if (!inter.methods) {
+                    inter.methods = [];
                 }
                 let cl: any = {
                     filePath: inter.file,
@@ -2073,28 +2099,34 @@ export class Application {
     }
 
     public processPages() {
-        logger.info('Process pages');
         let pages = _.sortBy(this.configuration.pages, ['name']);
-        Promise.all(pages.map(page => this.processPage(page)))
+
+        logger.info('Process menu');
+
+        this.htmlEngine.renderMenu(this.configuration.mainData)
             .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
-                    () => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
-                        } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
+                logger.info('Process pages');
+                Promise.all(pages.map(page => this.processPage(page)))
+                    .then(() => {
+                        this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                            () => {
+                                if (this.configuration.mainData.additionalPages.length > 0) {
+                                    this.processAdditionalPages();
+                                } else {
+                                    if (this.configuration.mainData.assetsFolder !== '') {
+                                        this.processAssetsFolder();
+                                    }
+                                    this.processResources();
+                                }
+                            },
+                            e => {
+                                logger.error(e);
                             }
-                            this.processResources();
-                        }
-                    },
-                    e => {
+                        );
+                    })
+                    .catch(e => {
                         logger.error(e);
-                    }
-                );
-            })
-            .catch(e => {
-                logger.error(e);
+                    });
             });
     }
 

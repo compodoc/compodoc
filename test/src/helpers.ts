@@ -44,6 +44,7 @@ export function temporaryDir() {
 
     return {
         name,
+        remove: remove,
         copy(source, destination) {
             fs.copySync(source, destination);
         },

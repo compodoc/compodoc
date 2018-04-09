@@ -11,6 +11,10 @@ export class HtmlEngine {
     private cache: { page: string } = {} as any;
     private compiledPage;
 
+    private precompiledMenu;
+    private compiledMobileMenu;
+    private compiledMenu;
+
     constructor(
         configuration: ConfigurationInterface,
         dependenciesEngine: DependenciesEngine,
@@ -22,7 +26,6 @@ export class HtmlEngine {
 
     public init(): Promise<void> {
         let partials = [
-            'menu',
             'overview',
             'markdown',
             'modules',
@@ -74,9 +77,34 @@ export class HtmlEngine {
                     .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
                     .then(data => {
                         this.cache.page = data;
-                        this.compiledPage = Handlebars.compile(this.cache.page);
+                        this.compiledPage = Handlebars.compile(this.cache.page, {
+                            preventIndent: true,
+                            strict: true
+                        });
+                    });
+            }).then(() => {
+                return this.fileEngine
+                    .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+                    .then(menuTemplate => {
+                        this.precompiledMenu = Handlebars.compile(menuTemplate, {
+                            preventIndent: true,
+                            strict: true
+                        });
                     });
             }).then(() => { });
+    }
+
+    public renderMenu(data) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.compiledMobileMenu = this.precompiledMenu({...data});
+                data.menu = 'normal';
+                this.compiledMenu = this.precompiledMenu({...data});
+                resolve();
+            } catch(err) {
+                reject(err);
+            }
+        });
     }
 
     public render(mainData: any, page: any): string {
@@ -88,7 +116,7 @@ export class HtmlEngine {
 
         return this.compiledPage({
             data: o
-        });
+        }).replace('<!-- XS MENU CONTENT -->', this.compiledMobileMenu).replace('<!-- NORMAL MENU CONTENT -->', this.compiledMenu);
     }
 
     public generateCoverageBadge(outputFolder, coverageData) {

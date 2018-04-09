@@ -38,7 +38,7 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile.indexOf('<a href="./additional-documentation/big-introduction') > -1).to
+        expect(fooIndexFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to
             .be.true;
         expect(fooIndexFile.indexOf('Big Introduction') > -1).to.be.true;
     });
@@ -68,21 +68,21 @@ describe('CLI Additional documentation', () => {
 
     it('should generate every link containing its parent reference', () => {
         [
-            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html',
-            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
-            '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html',
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
         ].map(linkRef => expect(fooIndexFile.indexOf(linkRef) > -1).to.be.true);
 
         expect(
             fooIndexFile.indexOf(
-                '<a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
+                '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
             ) > -1
         ).to.be.false;
     });
 
     it('should have links in correct order', () => {
         expect(fooIndexFile).to.contain(
-            `<li class="link for-chapter3">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3.html" >edit-level3</a>\n                                </li>\n                                <li class="link for-chapter4">\n                                    <a href="./additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" >edit-level4</a>\n                                </li>`
+            `<li class="link for-chapter3">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>\n                    </li>`
         );
     });
 });

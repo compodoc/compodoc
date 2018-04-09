@@ -32,4 +32,29 @@ describe('CLI Routes graph', () => {
         });
 
     });
+
+    describe('should support forRoot/forChild', () => {
+
+        let coverageFile;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should clean forRoot and forChild in modules imports', () => {
+            let file = read(distFolder + '/modules/AppModule.html');
+            expect(file).to.contain('<a href="../modules/HomeModule.html" >HomeModule</a>');
+        });
+
+    });
 });

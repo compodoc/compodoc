@@ -15,6 +15,7 @@ describe('CLI simple generation - big app', () => {
 
     before(done => {
         tmp.create(distFolder);
+
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
@@ -37,7 +38,9 @@ describe('CLI simple generation - big app', () => {
         listComponentFile = read(`${distFolder}/components/ListComponent.html`);
         done();
     });
-    after(() => tmp.clean(distFolder));
+    after(() => {
+        tmp.clean(distFolder);
+    });
 
     it('should display generated message', () => {
         expect(stdoutString).to.contain('Documentation generated');
@@ -53,8 +56,6 @@ describe('CLI simple generation - big app', () => {
         expect(isIndexExists).to.be.true;
         const isModulesExists = exists(distFolder + '/modules.html');
         expect(isModulesExists).to.be.true;
-        const isOverviewExists = exists(distFolder + '/overview.html');
-        expect(isOverviewExists).to.be.true;
         const isRoutesExists = exists(distFolder + '/routes.html');
         expect(isRoutesExists).to.be.true;
     });
@@ -69,6 +70,12 @@ describe('CLI simple generation - big app', () => {
         const isFontsExists = exists(distFolder + '/fonts');
         expect(isFontsExists).to.be.true;
     });
+
+    it('should add correct path to css', () => {
+        let index = read(`${distFolder}/index.html`);
+        expect(index).to.contain('href="./styles/style.css"');
+    });
+
 
     /**
      * Dynamic imports for metadatas
@@ -583,12 +590,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should support alone elements in their own entry menu', () => {
         let file = read(distFolder + '/index.html');
-        expect(file).to.contain('<a href="./components/JigsawTab.html" >JigsawTab</a>');
+        expect(file).to.contain('<a href="components/JigsawTab.html" data-type="entity-link">JigsawTab</a>');
         expect(file).to.contain(
-            '<a href="./directives/DoNothingDirective2.html" >DoNothingDirective2</a>'
+            '<a href="directives/DoNothingDirective2.html" data-type="entity-link">DoNothingDirective2</a>'
         );
-        expect(file).to.contain('<a href="./injectables/EmitterService.html" >EmitterService</a>');
-        expect(file).to.contain('<a href="./pipes/FirstUpperPipe2.html" >FirstUpperPipe2</a>');
+        expect(file).to.contain('<a href="injectables/EmitterService.html" data-type="entity-link">EmitterService</a>');
+        expect(file).to.contain('<a href="pipes/FirstUpperPipe2.html" data-type="entity-link">FirstUpperPipe2</a>');
     });
 
     it('should support component metadata preserveWhiteSpaces', () => {
@@ -622,5 +629,10 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/miscellaneous/variables.html');
         expect(file).to.contain('(test/.../miscellaneous.ts)');
         expect(file).to.contain('title="test/src/todomvc-ng2/src/app/shared/miscellaneous/miscellaneous.ts"');
+    });
+
+    it('should display component even with no hostlisteners', () => {
+        let file = read(distFolder + '/coverage.html');
+        expect(file).to.contain('test/src/todomvc-ng2/src/app/footer/footer.component.ts');
     });
 });

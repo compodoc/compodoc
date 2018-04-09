@@ -2,146 +2,166 @@
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-            {{#compare properties.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>Properties</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each properties}}
-                        <li>
-                            {{#each modifierKind}}
-                                <span class="modifier">{{modifKind this}}</span>
-                            {{/each}}
-                            {{#if optional}}
-                                <span class="modifier">Optional</span>
-                            {{/if}}
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
-            {{#compare methods.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>Methods</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each methods}}
-                        <li>
-                            {{#each modifierKind}}
-                                <span class="modifier">{{modifKind this}}</span>
-                            {{/each}}
-                            {{#if optional}}
-                                <span class="modifier">Optional</span>
-                            {{/if}}
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
-            {{#compare inputs.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>Inputs</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each inputs}}
-                        <li>
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
-            {{#compare outputs.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>Outputs</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each outputs}}
-                        <li>
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
-            {{#compare hostBindings.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>HostBindings</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each hostBindings}}
-                        <li>
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
-            {{#compare hostListeners.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>HostListeners</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each hostListeners}}
-                        <li>
-                            <a href="#{{name}}">{{name}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
+            {{#if properties}}
+                {{#compare properties.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each properties}}
+                            <li>
+                                {{#each modifierKind}}
+                                    <span class="modifier">{{modifKind this}}</span>
+                                {{/each}}
+                                {{#if optional}}
+                                    <span class="modifier">Optional</span>
+                                {{/if}}
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
+            {{#if methods}}
+                {{#compare methods.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each methods}}
+                            <li>
+                                {{#each modifierKind}}
+                                    <span class="modifier">{{modifKind this}}</span>
+                                {{/each}}
+                                {{#if optional}}
+                                    <span class="modifier">Optional</span>
+                                {{/if}}
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
+            {{#if inputs}}
+                {{#compare inputs.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each inputs}}
+                            <li>
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
+            {{#if outputs}}
+                {{#compare outputs.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each outputs}}
+                            <li>
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
+            {{#if hostBindings}}
+                {{#compare hostBindings.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>HostBindings</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each hostBindings}}
+                            <li>
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
+            {{#if hostListeners}}
+                {{#compare hostListeners.length ">" 0}}
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>HostListeners</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                        {{#each hostListeners}}
+                            <li>
+                                <a href="#{{name}}">{{name}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/compare}}
+            {{/if}}
+
             {{#if accessors}}
-            <tr>
-                <td class="col-md-4">
-                    <h6><b>Accessors</b></h6>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <ul class="index-list">
-                    {{#each accessors}}
-                        <li>
-                            {{#each modifierKind}}
-                                <span class="modifier">{{modifKind this}}</span>
+                {{#compare accessors.length ">" 0}}
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                            {{#each accessors}}
+                                <li>
+                                    {{#each modifierKind}}
+                                        <span class="modifier">{{modifKind this}}</span>
+                                    {{/each}}
+                                    <a href="#{{@key}}">{{@key}}</a>
+                                </li>
                             {{/each}}
-                            <a href="#{{@key}}">{{@key}}</a>
-                        </li>
-                    {{/each}}
-                    </ul>
-                </td>
-            </tr>
+                            </ul>
+                        </td>
+                    </tr>
+                {{/compare}}
             {{/if}}
         </tbody>
     </table>

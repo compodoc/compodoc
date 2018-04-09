@@ -651,7 +651,7 @@ describe('CLI simple generation', () => {
         });
 
         it('should not include the graph on the overview page', () => {
-            fileContents = read(`${distFolder}/overview.html`);
+            fileContents = read(`${distFolder}/index.html`);
             expect(fileContents).to.not.contain('graph/dependencies.svg');
             expect(fileContents).to.not.contain('svg-pan-zoom');
         });
