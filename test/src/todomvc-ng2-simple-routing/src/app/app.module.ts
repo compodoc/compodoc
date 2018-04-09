@@ -22,7 +22,7 @@ import { NoopInterceptor } from './shared/interceptors/noopinterceptor.intercept
         AppComponent
     ],
     imports: [
-        HomeModule,
+        HomeModule.forRoot(),
         AppRoutingModule
     ],
     providers: [
