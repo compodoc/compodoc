@@ -82,7 +82,7 @@
     "marked": "^0.3.19",
     "os-name": "^2.0.1",
     "traverse": "^0.6.6",
-    "ts-simple-ast": "10.1.0",
+    "ts-simple-ast": "10.2.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
