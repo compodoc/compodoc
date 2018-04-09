@@ -79,7 +79,8 @@ export class RouterParserUtil {
         for (let i = 0; i < imports.length; i++) {
             if (
                 imports[i].name.indexOf('RouterModule.forChild') !== -1 ||
-                imports[i].name.indexOf('RouterModule.forRoot') !== -1
+                imports[i].name.indexOf('RouterModule.forRoot') !== -1 ||
+                imports[i].name.indexOf('RouterModule') !== -1
             ) {
                 return true;
             }

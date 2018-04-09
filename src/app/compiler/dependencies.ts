@@ -198,8 +198,8 @@ export class Dependencies {
          */
         deps = this.extendsMerger.merge(deps, this.configuration);
 
-        // RouterParser.printModulesRoutes();
-        // RouterParser.printRoutes();
+        // this.routerParser.printModulesRoutes();
+        // this.routerParser.printRoutes();
 
         if (!this.configuration.mainData.disableRoutesGraph) {
             this.routerParser.linkModulesAndRoutes();
