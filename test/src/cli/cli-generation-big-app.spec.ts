@@ -635,4 +635,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/coverage.html');
         expect(file).to.contain('test/src/todomvc-ng2/src/app/footer/footer.component.ts');
     });
+
+    it('should display list of import/exports/declarations/providers in asc order', () => {
+        let file = read(distFolder + '/modules/AboutRoutingModule.html');
+        expect(file).to.contain(`<li class="list-group-item">\n                                <a href="../components/CompodocComponent.html">CompodocComponent</a>\n                            </li>\n                            <li class="list-group-item">\n                                <a href="../components/TodoMVCComponent.html">`);
+    });
 });
