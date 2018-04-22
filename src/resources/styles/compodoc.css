@@ -530,6 +530,20 @@ code {
   background-color: rgba(255, 220, 0, 0.4);
   font-style: normal;
 }
+.search-results-item {
+    margin-bottom: 1rem !important;
+    margin-top: 1rem;
+    padding-bottom: 0 !important;
+}
+.search-results-item a {
+    font-size: 18px;
+}
+.search-results-group, .search-results-group .search-results-list {
+    margin-bottom: 0 !important;
+}
+.search-results-group h3 {
+    margin-top: 10px;
+}
 
 .jsdoc-params {
     list-style: square;

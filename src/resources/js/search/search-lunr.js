@@ -23,7 +23,7 @@
             d = new promise.Promise();
 
         if (this.index) {
-            results = $.map(this.index.search(q), function(result) {
+            results = $.map(this.index.search('*' + q + '*'), function(result) {
                 var doc = that.store[result.ref];
 
                 return {
