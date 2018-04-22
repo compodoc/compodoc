@@ -23,6 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var tree = ROUTES_INDEX;
 
+    function cleanStringChildren(obj) {
+        for (var property in obj) {
+            if (obj.hasOwnProperty(property)) {
+                if (property === 'children' && typeof obj[property] === 'object') {
+                    for (var i = obj[property].length - 1; i >= 0 ; i--) {
+                        if (typeof obj[property][i] === 'string') {
+                            obj[property].splice(i, 1);
+                        }
+                    }
+                }
+                if (typeof obj[property] === 'object') {
+                    cleanStringChildren(obj[property]);
+                }
+            }
+        }
+    }
+    cleanStringChildren(tree);
+
     engine = d3.layout.tree().setNodeSizes(true);
 
     engine.spacing(function(a, b) {
