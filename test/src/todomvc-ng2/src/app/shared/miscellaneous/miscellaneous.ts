@@ -49,3 +49,9 @@ export type ChartChange = "creating" | "created" | "updating" | "updated";
 export type TableColumnTarget = number | string | (number | string)[];
 
 export type TableSyncRenderer = Type<TableCellRendererBase> | TemplateRef<any>;
+
+import { Todo } from '../models/todo.model';
+
+export type LinearDomain = [Number, Number];
+
+export type LinearTodo = [Todo, Todo];

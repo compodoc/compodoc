@@ -650,6 +650,28 @@ export class ClassHelper {
                     }
                 }
             }
+            if (node.type.elementTypes) {
+                let elementTypes = node.type.elementTypes;
+                let i = 0;
+                let len = elementTypes.length;
+                if (len > 0) {
+                    _return = '[';
+                    for (i; i < len; i++) {
+                        let type = elementTypes[i];
+                        _return += kindToType(type.kind);
+                        if (ts.isLiteralTypeNode(type) && type.literal) {
+                            _return += '"' + type.literal.text + '"';
+                        }
+                        if (type.typeName) {
+                            _return += this.visitTypeName(type.typeName);
+                        }
+                        if (i < len - 1) {
+                            _return += ', ';
+                        }
+                    }
+                    _return += ']';
+                }
+            }
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
         } else if (node.types && ts.isUnionTypeNode(node)) {
