@@ -31,14 +31,18 @@ export class IncludeParserUtil {
 
         for (i; i < len; i++) {
             if (glob.hasMagic(this._include[i]) && this._globFiles.length > 0) {
-                let resultGlobSearch = this._globFiles.findIndex((element) => {
-                    return element === fileNameInCwd;
+                let resultGlobSearch = this._globFiles.findIndex(element => {
+                    let elementPath = path.resolve(this._cwd + path.sep, element);
+                    let elementPathInCwd = elementPath.replace(this._cwd + path.sep, '');
+                    return elementPathInCwd === fileNameInCwd;
                 });
                 result = resultGlobSearch !== -1;
             } else {
                 result = fileNameInCwd === this._include[i];
             }
-            if (result) { break; }
+            if (result) {
+                break;
+            }
         }
         return result;
     }
