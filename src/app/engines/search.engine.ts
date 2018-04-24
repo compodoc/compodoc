@@ -20,7 +20,8 @@ export class SearchEngine {
 
     constructor(
         private configuration: ConfigurationInterface,
-        private fileEngine: FileEngine = new FileEngine()) {}
+        private fileEngine: FileEngine = new FileEngine()
+    ) {}
 
     public indexPage(page) {
         let text;
@@ -33,7 +34,7 @@ export class SearchEngine {
 
             text = $('.content').html();
             text = Html.decode(text);
-            text = text.replace(/(<([^>]+)>)/ig, '');
+            text = text.replace(/(<([^>]+)>)/gi, '');
 
             page.url = page.url.replace(this.configuration.mainData.output, '');
 
@@ -43,8 +44,10 @@ export class SearchEngine {
                 body: text
             };
 
-            if (!this.documentsStore.hasOwnProperty(doc.url)
-                && doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX) {
+            if (
+                !this.documentsStore.hasOwnProperty(doc.url) &&
+                doc.body.length < MAX_SIZE_FILE_SEARCH_INDEX
+            ) {
                 this.documentsStore[doc.url] = doc;
                 this.searchDocuments.push(doc);
             }
@@ -53,7 +56,7 @@ export class SearchEngine {
 
     public generateSearchIndexJson(outputFolder: string): Promise<void> {
         let that = this;
-        let searchIndex = lunr(function () {
+        let searchIndex = lunr(function() {
             /* tslint:disable:no-invalid-this */
             this.ref('url');
             this.field('title');
@@ -62,24 +65,28 @@ export class SearchEngine {
             let i = 0;
             let len = that.searchDocuments.length;
             for (i; i < len; i++) {
-               this.add(that.searchDocuments[i]);
+                this.add(that.searchDocuments[i]);
             }
         });
-        return this.fileEngine.get(__dirname + '/../src/templates/partials/search-index.hbs').then(data => {
-            let template: any = Handlebars.compile(data);
-            let result = template({
-                index: JSON.stringify(searchIndex),
-                store: JSON.stringify(this.documentsStore)
-            });
-            let testOutputDir = outputFolder.match(process.cwd());
-            if (!testOutputDir) {
-                outputFolder = outputFolder.replace(process.cwd(), '');
-            }
-            return this.fileEngine.write(outputFolder + path.sep + '/js/search/search_index.js', result)
-                .catch(err => {
-                    logger.error('Error during search index file generation ', err);
-                    return Promise.reject(err);
+        return this.fileEngine.get(__dirname + '/../src/templates/partials/search-index.hbs').then(
+            data => {
+                let template: any = Handlebars.compile(data);
+                let result = template({
+                    index: JSON.stringify(searchIndex),
+                    store: JSON.stringify(this.documentsStore)
                 });
-        }, err => Promise.reject('Error during search index generation'));
+                let testOutputDir = outputFolder.match(process.cwd());
+                if (!testOutputDir) {
+                    outputFolder = outputFolder.replace(process.cwd(), '');
+                }
+                return this.fileEngine
+                    .write(outputFolder + path.sep + '/js/search/search_index.js', result)
+                    .catch(err => {
+                        logger.error('Error during search index file generation ', err);
+                        return Promise.reject(err);
+                    });
+            },
+            err => Promise.reject('Error during search index generation')
+        );
     }
 }
