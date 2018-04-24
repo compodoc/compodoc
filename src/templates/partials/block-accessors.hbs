@@ -51,20 +51,22 @@
                                             <tbody>
                                                 {{#each tags}}
                                                     <tr>
-                                                      <td>{{name}}</td>
-                                                      <td>
-                                                      {{#if type}}
-                                                          {{> link-type type=type }}
-                                                      {{/if}}
-                                                      </td>
-                                                      <td>
-                                                        {{#if optional}}
-                                                            yes
-                                                        {{else}}
-                                                            no
+                                                        {{#if name}}
+                                                            <td>{{name}}</td>
                                                         {{/if}}
-                                                      </td>
-                                                      <td>{{{comment}}}</td>
+                                                        <td>
+                                                            {{#if type}}
+                                                                {{> link-type type=type }}
+                                                            {{/if}}
+                                                        </td>
+                                                        <td>
+                                                            {{#if optional}}
+                                                                yes
+                                                            {{else}}
+                                                                no
+                                                            {{/if}}
+                                                        </td>
+                                                        <td>{{{comment}}}</td>
                                                     </tr>
                                                 {{/each}}
                                             </tbody>
@@ -141,7 +143,9 @@
                                             <tbody>
                                                 {{#each tags}}
                                                     <tr>
-                                                        <td>{{name}}</td>
+                                                        {{#if name}}
+                                                            <td>{{name}}</td>
+                                                        {{/if}}
                                                     
                                                         {{#one-parameter-has ../tags 'type'}}
                                                             <td>
