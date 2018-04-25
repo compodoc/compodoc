@@ -228,6 +228,62 @@ export class ImportsUtil {
     }
 
     /**
+     * Find the file path of imported variable
+     * @param  {string} inputVariableName  like thestring
+     * @return {[type]}                    thestring destination path
+     */
+    public findFilePathOfImportedVariable(inputVariableName, sourceFilePath: string) {
+        let searchedImport,
+            finalPath = '',
+            aliasOriginalName = '',
+            foundWithAlias = false;
+        const file =
+            typeof ast.getSourceFile(sourceFilePath) !== 'undefined'
+                ? ast.getSourceFile(sourceFilePath)
+                : ast.addExistingSourceFile(sourceFilePath); // tslint:disable-line
+        const imports = file.getImportDeclarations();
+
+        /**
+         * Loop through all imports, and find one matching inputVariableName
+         */
+        imports.forEach(i => {
+            let namedImports = i.getNamedImports(),
+                namedImportsLength = namedImports.length,
+                j = 0;
+
+            if (namedImportsLength > 0) {
+                for (j; j < namedImportsLength; j++) {
+                    let importName = namedImports[j].getNameNode().getText() as string,
+                        importAlias;
+
+                    if (namedImports[j].getAliasIdentifier()) {
+                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    }
+                    if (importName === inputVariableName) {
+                        searchedImport = i;
+                        break;
+                    }
+                    if (importAlias === inputVariableName) {
+                        foundWithAlias = true;
+                        aliasOriginalName = importName;
+                        searchedImport = i;
+                        break;
+                    }
+                }
+            }
+        });
+        if (typeof searchedImport !== 'undefined') {
+            finalPath = path.resolve(
+                path.dirname(sourceFilePath) +
+                    '/' +
+                    searchedImport.getModuleSpecifierValue() +
+                    '.ts'
+            );
+        }
+        return finalPath;
+    }
+
+    /**
      * Find in imports something like VAR.AVAR.BVAR.thestring
      * @param  {string} inputVariableName                   like VAR.AVAR.BVAR.thestring
      * @return {[type]}                                thestring value

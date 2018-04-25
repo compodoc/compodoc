@@ -47,11 +47,12 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
                             tag.comment = `<pre class="line-numbers"><code class="language-${type}">` +
                                 this.getHtmlEntities(this.cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
                         }
+                        tags.push(tag);
                     }
-                    tags.push(tag);
                 }
             }
         }
+
         if (tags.length > 0) {
             context.tags = tags;
             return options.fn(context);

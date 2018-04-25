@@ -108,7 +108,9 @@
                                       <tbody>
                                             {{#each tags}}
                                                 <tr>
-                                                    <td>{{name}}</td>
+                                                    {{#if name}}
+                                                        <td>{{name}}</td>
+                                                    {{/if}}
                                                     {{#one-parameter-has ../tags 'type'}}
                                                         <td>
                                                             {{#if type}}

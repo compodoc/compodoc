@@ -866,6 +866,18 @@ export class Application {
                         provider.type = 'interceptor';
                     }
                 });
+                // Order things
+                ngModule.compodocLinks.components = _.sortBy(ngModule.compodocLinks.components, ['name']);
+                ngModule.compodocLinks.directives = _.sortBy(ngModule.compodocLinks.directives, ['name']);
+                ngModule.compodocLinks.injectables = _.sortBy(ngModule.compodocLinks.injectables, ['name']);
+                ngModule.compodocLinks.pipes = _.sortBy(ngModule.compodocLinks.pipes, ['name']);
+
+                ngModule.declarations = _.sortBy(ngModule.declarations, ['name']);
+                ngModule.entryComponents = _.sortBy(ngModule.entryComponents, ['name']);
+                ngModule.providers = _.sortBy(ngModule.providers, ['name']);
+                ngModule.imports = _.sortBy(ngModule.imports, ['name']);
+                ngModule.exports = _.sortBy(ngModule.exports, ['name']);
+
                 return ngModule;
             });
 

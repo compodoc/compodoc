@@ -2,11 +2,11 @@ os:
   - linux
 language: node_js
 node_js:
-  - "4"
   - "6"
   - "7"
   - "8"
   - "9"
+  - "10"
 addons:
   sauce_connect:
     username: "compodoc"
@@ -34,14 +34,12 @@ matrix:
   allow_failures:
     - os: osx
   exclude:
-    - node_js: "4"
     - node_js: "6"
     - node_js: "7"
     - node_js: "8"
     - node_js: "9"
+    - node_js: "10"
   include:
-    - node_js: "4"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "6"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "7"
@@ -50,3 +48,5 @@ matrix:
       env: TO_TEST=ALL SAUCE_USERNAME=compodoc
     - node_js: "9"
       env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc
+    - node_js: "10"
+      env: TO_TEST=ALL SAUCE_USERNAME=compodoc

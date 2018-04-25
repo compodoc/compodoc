@@ -118,6 +118,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 false
             )
             .option('--disableDomTree', 'Do not add dom tree tab', false)
+            .option('--disableTemplateTab', 'Do not add template tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivate', 'Do not show private in generated documentation', false)
@@ -234,6 +235,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         if (program.disableDomTree) {
             this.configuration.mainData.disableDomTree = program.disableDomTree;
+        }
+
+        if (program.disableTemplateTab) {
+            this.configuration.mainData.disableTemplateTab = program.disableTemplateTab;
         }
 
         if (program.disableGraph) {

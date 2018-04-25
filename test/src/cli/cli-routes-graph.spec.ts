@@ -1,22 +1,23 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI Routes graph', () => {
-
     const distFolder = tmp.name + '-routes-graph';
 
     describe('disable it', () => {
-
         let coverageFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
+                '-p',
+                './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
                 '--disableRoutesGraph',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -30,18 +31,19 @@ describe('CLI Routes graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.false;
         });
-
     });
 
     describe('should support forRoot/forChild', () => {
-
         let coverageFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
-                '-d', distFolder]);
+                '-p',
+                './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -55,6 +57,33 @@ describe('CLI Routes graph', () => {
             let file = read(distFolder + '/modules/AppModule.html');
             expect(file).to.contain('<a href="../modules/HomeModule.html" >HomeModule</a>');
         });
+    });
 
+    describe('should support routing without routing module', () => {
+        let coverageFile;
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/src/routing-without-module/src/tsconfig.app.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should have a clean graph', () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.true;
+            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('ExampleComponent');
+        });
     });
 });

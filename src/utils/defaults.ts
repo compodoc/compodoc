@@ -15,6 +15,7 @@ export const COMPODOC_DEFAULTS = {
     navTabConfig: [],
     disableSourceCode: false,
     disableDomTree: false,
+    disableTemplateTab: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,
