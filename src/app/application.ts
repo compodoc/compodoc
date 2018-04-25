@@ -1173,6 +1173,7 @@ export class Application {
             // global config
             if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
             if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
+            if (customTab.id === 'templateData' && this.configuration.mainData.disableTemplateTab) { return; }
             
             // per dependency config
             if (customTab.id === 'readme' && !dependency.readme) { return; }
