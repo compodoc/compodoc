@@ -2,7 +2,6 @@ os:
   - linux
 language: node_js
 node_js:
-  - "4"
   - "6"
   - "7"
   - "8"
@@ -35,7 +34,6 @@ matrix:
   allow_failures:
     - os: osx
   exclude:
-    - node_js: "4"
     - node_js: "6"
     - node_js: "7"
     - node_js: "8"
