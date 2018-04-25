@@ -40,8 +40,6 @@ matrix:
     - node_js: "9"
     - node_js: "10"
   include:
-    - node_js: "4"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "6"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "7"
