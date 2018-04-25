@@ -14,6 +14,7 @@ export const COMPODOC_DEFAULTS = {
     toggleMenuItems: ['all'],
     disableSourceCode: false,
     disableDomTree: false,
+    disableTemplateTab: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,

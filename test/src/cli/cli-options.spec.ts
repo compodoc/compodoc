@@ -122,6 +122,11 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
         });
 
+        it(`--disableTemplateTab`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableTemplateTab');
+            expect(runHelp.stdout.toString()).to.contain('Do not add template tab');
+        });
+
         it(`--disableGraph`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableGraph');
             expect(runHelp.stdout.toString()).to.contain('Do not add the dependency graph');

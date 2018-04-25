@@ -34,6 +34,7 @@ export interface MainDataInterface {
     includesFolder: string;
     disableSourceCode: boolean;
     disableDomTree: boolean;
+    disableTemplateTab: boolean;
     disableGraph: boolean;
     disableMainGraph: boolean;
     disableCoverage: boolean;

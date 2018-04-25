@@ -20,9 +20,11 @@
     {{/unless}}
 
     {{#if component.templateData}}
-    <li>
-        <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
-    </li>
+        {{#unless disableTemplateTab}}
+        <li>
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        {{/unless}}
     {{/if}}
     {{#unless disableDomTree}}
     <li>
