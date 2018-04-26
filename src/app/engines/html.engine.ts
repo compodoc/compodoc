@@ -97,6 +97,8 @@ export class HtmlEngine {
     public renderMenu(data) {
         return new Promise((resolve, reject) => {
             try {
+                data.menu = '';
+                delete data.depth;
                 this.compiledMobileMenu = this.precompiledMenu({...data});
                 data.menu = 'normal';
                 this.compiledMenu = this.precompiledMenu({...data});

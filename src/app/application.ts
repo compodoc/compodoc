@@ -2503,8 +2503,4 @@ export class Application {
     get application(): Application {
         return this;
     }
-
-    get isCLI(): boolean {
-        return false;
-    }
 }
