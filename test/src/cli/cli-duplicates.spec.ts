@@ -65,11 +65,6 @@ describe('CLI duplicates support', () => {
         expect(file).to.be.true;
     });
 
-    it('FirstUpperPipe-1 generated', () => {
-        const file = exists(distFolder + '/pipes/FirstUpperPipe-1.html');
-        expect(file).to.be.true;
-    });
-
     it('NoopInterceptor generated', () => {
         const file = exists(distFolder + '/interceptors/NoopInterceptor.html');
         expect(file).to.be.true;
