@@ -20,7 +20,7 @@ export class ExcludeParserUtil {
 
     public testFile(file: string): boolean {
         let i = 0;
-        let len = this._include.length;
+        let len = this._exclude.length;
         let fileBasename = path.basename(file);
         let fileNameInCwd = file.replace(this._cwd + path.sep, '');
         let result = false;
@@ -30,7 +30,7 @@ export class ExcludeParserUtil {
         }
 
         for (i; i < len; i++) {
-            if (glob.hasMagic(this._include[i]) && this._globFiles.length > 0) {
+            if (glob.hasMagic(this._exclude[i]) && this._globFiles.length > 0) {
                 let resultGlobSearch = this._globFiles.findIndex(element => {
                     let elementPath = path.resolve(this._cwd + path.sep, element);
                     let elementPathInCwd = elementPath.replace(this._cwd + path.sep, '');
@@ -39,7 +39,7 @@ export class ExcludeParserUtil {
                 });
                 result = resultGlobSearch !== -1;
             } else {
-                result = fileNameInCwd === this._include[i];
+                result = fileNameInCwd === this._exclude[i];
             }
             if (result) {
                 break;
