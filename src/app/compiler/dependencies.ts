@@ -28,8 +28,7 @@ import {
     isModuleWithProviders,
     getModuleWithProviders,
     hasSpreadElementInArray,
-    isIgnore,
-    uniqid
+    isIgnore
 } from '../../utils';
 import {
     IInjectableDep,
@@ -41,6 +40,7 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
+const crypto = require('crypto');
 const marked = require('marked');
 const ast = new Ast();
 
@@ -214,9 +214,11 @@ export class Dependencies {
     private processClass(node, file, srcFile, outputSymbols, fileBody) {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node, fileBody);
+        let sourceCode = srcFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let deps: any = {
             name,
-            id: 'class-' + name + '-' + uniqid(),
+            id: 'class-' + name + '-' + hash,
             file: file,
             type: 'class',
             sourceCode: srcFile.getText()
@@ -325,6 +327,9 @@ export class Dependencies {
                 return;
             }
             let parseNode = (file, srcFile, node, fileBody) => {
+                let sourceCode = srcFile.getText();
+                let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
                     let visitNode = (visitedNode, index) => {
@@ -372,7 +377,7 @@ export class Dependencies {
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
                                 name,
-                                id: 'injectable-' + name + '-' + uniqid(),
+                                id: 'injectable-' + name + '-' + hash,
                                 file: file,
                                 type: 'injectable',
                                 properties: IO.properties,
@@ -407,7 +412,7 @@ export class Dependencies {
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
                                 name,
-                                id: 'pipe-' + name + '-' + uniqid(),
+                                id: 'pipe-' + name + '-' + hash,
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
@@ -480,7 +485,7 @@ export class Dependencies {
                         let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
                         let interfaceDeps: IInterfaceDep = {
                             name,
-                            id: 'interface-' + name + '-' + uniqid(),
+                            id: 'interface-' + name + '-' + hash,
                             file: file,
                             type: 'interface',
                             sourceCode: srcFile.getText()

@@ -36,7 +36,7 @@ describe('CLI duplicates support', () => {
     });
 
     it('Todo-2 class generated', () => {
-        const file = exists(distFolder + '/classes/Todo-2.html');
+        const file = exists(distFolder + '/classes/Todo2.html');
         expect(file).to.be.true;
     });
 

@@ -11,8 +11,9 @@ import { ConfigurationInterface } from '../../../interfaces/configuration.interf
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
-import { isIgnore, uniqid } from '../../../../utils';
+import { isIgnore } from '../../../../utils';
 
+const crypto = require('crypto');
 const marked = require('marked');
 
 export class ClassHelper {
@@ -715,8 +716,10 @@ export class ClassHelper {
     }
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
+        let sourceCode = sourceFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result: any = {
-            id: 'call-declaration-' + uniqid(),
+            id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -737,8 +740,10 @@ export class ClassHelper {
         method: ts.IndexSignatureDeclaration,
         sourceFile?: ts.SourceFile
     ) {
+        let sourceCode = sourceFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result = {
-            id: 'index-declaration-' + uniqid(),
+            id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
