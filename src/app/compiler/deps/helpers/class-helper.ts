@@ -778,8 +778,7 @@ export class ClassHelper {
                 let kinds = method.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -829,8 +828,7 @@ export class ClassHelper {
                 let kinds = property.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -977,8 +975,7 @@ export class ClassHelper {
                 let kinds = method.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1

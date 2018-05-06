@@ -28,6 +28,9 @@ export class ModifKindHelper implements IHtmlEngineHelper {
             case SyntaxKind.StaticKeyword:
                 _kindText = 'Static';
                 break;
+            case SyntaxKind.AsyncKeyword:
+                _kindText = 'Async';
+                break;
         }
         return new Handlebars.SafeString(_kindText);
     }

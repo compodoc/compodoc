@@ -449,18 +449,21 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>privateStaticMethod()');
         expect(file).to.contain(
-            `<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`
+            `<span class="modifier">Private</span>\n                                    <span class="modifier">Static</span>`
         );
         expect(file).to.contain('<code>protectedStaticMethod()');
         expect(file).to.contain(
-            `<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`
+            `<span class="modifier">Protected</span>\n                                    <span class="modifier">Static</span>`
         );
         expect(file).to.contain('<code>publicMethod()');
         expect(file).to.contain('<code>publicStaticMethod()');
         expect(file).to.contain('<code>staticMethod()');
         expect(file).to.contain('staticReadonlyVariable');
         expect(file).to.contain(
-            `<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`
+            `<span class="modifier">Static</span>\n                                    <span class="modifier">Readonly</span>`
+        );
+        expect(file).to.contain(
+            `<span class="modifier">Public</span>\n                                    <span class="modifier">Async</span>`
         );
     });
 
