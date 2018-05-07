@@ -602,7 +602,7 @@ export class Dependencies {
                     if (ts.isClassDeclaration(node)) {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody);
                     }
-                    if (ts.isExpressionStatement(node)) {
+                    if (ts.isExpressionStatement(node) || ts.isIfStatement(node)) {
                         let bootstrapModuleReference = 'bootstrapModule';
                         // Find the root module with bootstrapModule call
                         // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
@@ -621,6 +621,15 @@ export class Dependencies {
                                     node.expression,
                                     'bootstrapModule'
                                 );
+                            }
+                            if (typeof node.thenStatement !== 'undefined') {
+                                if (node.thenStatement.statements && node.thenStatement.statements.length > 0) {
+                                    let firstStatement = node.thenStatement.statements[0];
+                                    resultNode = this.findExpressionByNameInExpressions(
+                                        firstStatement.expression,
+                                        'bootstrapModule'
+                                    );
+                                }
                             }
                             if (!resultNode) {
                                 if (
