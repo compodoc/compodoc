@@ -97,8 +97,6 @@ export class HtmlEngine {
     public renderMenu(data) {
         return new Promise((resolve, reject) => {
             try {
-                data.menu = '';
-                delete data.depth;
                 this.compiledMobileMenu = this.precompiledMenu({...data});
                 data.menu = 'normal';
                 this.compiledMenu = this.precompiledMenu({...data});
@@ -132,6 +130,12 @@ export class HtmlEngine {
                 if (!testOutputDir) {
                     outputFolder = outputFolder.replace(process.cwd(), '');
                 }
+
+                outputFolder = 
+                    path.join(
+                        process.cwd(),
+                        outputFolder
+                    );
 
                 return this.fileEngine
                     .write(outputFolder + path.sep + '/images/coverage-badge.svg', result)

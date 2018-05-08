@@ -2219,6 +2219,12 @@ export class Application {
             finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
         }
 
+        finalOutput = 
+            path.join(
+                process.cwd(),
+                finalOutput
+            );
+
         fs.copy(
             path.resolve(__dirname + '/../src/resources/'),
             path.resolve(finalOutput),
@@ -2502,5 +2508,9 @@ export class Application {
      */
     get application(): Application {
         return this;
+    }
+
+    get isCLI(): boolean {
+        return false;
     }
 }

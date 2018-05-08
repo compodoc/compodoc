@@ -79,6 +79,11 @@ export class SearchEngine {
                 if (!testOutputDir) {
                     outputFolder = outputFolder.replace(process.cwd(), '');
                 }
+                outputFolder = 
+                    path.join(
+                        process.cwd(),
+                        outputFolder
+                    );
                 return this.fileEngine
                     .write(outputFolder + path.sep + '/js/search/search_index.js', result)
                     .catch(err => {

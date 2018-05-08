@@ -385,6 +385,12 @@ export class RouterParserUtil {
                     outputFolder = outputFolder.replace(process.cwd(), '');
                 }
 
+                outputFolder = 
+                    path.join(
+                        process.cwd(),
+                        outputFolder
+                    );
+
                 return this.fileEngine.write(
                     outputFolder + path.sep + '/js/routes/routes_index.js',
                     result
