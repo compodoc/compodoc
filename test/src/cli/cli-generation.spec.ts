@@ -731,7 +731,7 @@ describe('CLI simple generation', () => {
                 './bin/index-cli.js',
                 '-p',
                 path.join(process.cwd() + path.sep + 'test/src/todomvc-ng2/src/tsconfig.json'),
-                '-d', distFolder], { timeout: 10000});
+                '-d', distFolder]);
 
             if (ls.stderr.toString() !== '') {
                 done(new Error(`shell error: ${ls.stderr.toString()}`));
