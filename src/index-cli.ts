@@ -320,7 +320,7 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided only
                  */
-                this.configuration.mainData.tsconfig = program.tsconfig;
+                this.configuration.mainData.tsconfig = program.tsconfig.replace(process.cwd(), '');
                 if (!this.fileEngine.existsSync(program.tsconfig)) {
                     logger.error(
                         `"${program.tsconfig}" file was not found in the current directory`
@@ -417,7 +417,7 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided with source folder in arg
                  */
-                this.configuration.mainData.tsconfig = program.tsconfig;
+                this.configuration.mainData.tsconfig = program.tsconfig.replace(process.cwd(), '');
                 let sourceFolder = program.args[0];
                 if (!this.fileEngine.existsSync(sourceFolder)) {
                     logger.error(
