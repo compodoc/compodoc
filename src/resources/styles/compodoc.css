@@ -787,6 +787,10 @@ path.link {
     height: 100%;
 }
 
+.content ul.type-parameters {
+    margin-bottom: 5px;
+}
+
 table.params {
   width: 100%;
   margin: 10px 0;

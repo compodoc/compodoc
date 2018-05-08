@@ -707,6 +707,9 @@ export class ClassHelper {
             ) {
                 _return = kindToType(node.initializer.kind);
             }
+            if (node.kind === SyntaxKind.TypeParameter) {
+                _return = node.name.text;
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
@@ -940,6 +943,7 @@ export class ClassHelper {
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             optional: typeof method.questionToken !== 'undefined',
             returnType: this.visitType(method.type),
+            typeParameters: [],
             line: this.getPosition(method, sourceFile).line + 1
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -963,6 +967,10 @@ export class ClassHelper {
                     }
                 }
             }
+        }
+
+        if (method.typeParameters && method.typeParameters.length > 0) {
+            result.typeParameters = method.typeParameters.map(typeParameter => this.visitType(typeParameter));
         }
 
         if (method.jsDoc) {

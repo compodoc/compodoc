@@ -652,6 +652,11 @@ describe('CLI simple generation - big app', () => {
 
     it('should support Generic array types', () => {
         let file = read(distFolder + '/components/AppComponent.html');
-        expect(file).to.contain('<a href="../classes/Todo.html" target="_self">Observable&lt;Todo[]&gt;</a>');
+        expect(file).to.contain('<a href="../classes/Todo.html" target="_self" >Observable&lt;Todo[]&gt;</a>');
+    });
+
+    it('should support Type parameters', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain(`<ul class="type-parameters">\n                                        <li>T</li>\n                                        <li>K</li>\n                                </ul>`);
     });
 });

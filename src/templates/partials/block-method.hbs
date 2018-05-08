@@ -75,6 +75,21 @@
                     {{/unless}}
                 {{/if}}
 
+                {{#if typeParameters}}
+                    {{#compare typeParameters.length ">" 0}}
+                        <tr>
+                            <td class="col-md-4">
+                                <b>Type parameters :</b>
+                                <ul class="type-parameters">
+                                    {{#each typeParameters}}
+                                        <li>{{this}}</li>
+                                    {{/each}}
+                                </ul>
+                            </td>
+                        </tr>
+                    {{/compare}}
+                {{/if}}
+
                 {{#or jsdoctags returnType description}}
                 <tr>
                     <td class="col-md-4">
