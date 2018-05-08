@@ -649,4 +649,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<code>LinearDomain:     <code>[Number, Number]</code>');
         expect(file).to.contain('<code>LinearTodo:     <code><a href="../classes/Todo.html" target="_self" >[Todo, Todo]</a></code>');
     });
+
+    it('should support Generic array types', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('<a href="../classes/Todo.html" target="_self">Observable&lt;Todo[]&gt;</a>');
+    });
 });

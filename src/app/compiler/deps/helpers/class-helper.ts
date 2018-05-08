@@ -675,6 +675,9 @@ export class ClassHelper {
             }
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
+            if (node.elementType.typeName) {
+                _return = this.visitTypeName(node.elementType.typeName) + kindToType(node.kind);
+            }
         } else if (node.types && ts.isUnionTypeNode(node)) {
             _return = '';
             let i = 0;
