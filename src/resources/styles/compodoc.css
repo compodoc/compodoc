@@ -109,6 +109,10 @@ a[href] {
     margin-top: 25px;
 }
 
+.container-fluid.modules {
+    overflow-y: scroll;
+}
+
 .container-fluid.module {
     padding: 0;
     margin-top: 0;
@@ -184,6 +188,24 @@ a[href] {
     margin-top: 20px;
 }
 
+.content-data {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content-data .tab-content {
+    flex: 1;
+}
+
+.content-data .tab-pane {
+    height: 100%;
+}
+
+.content-data iframe {
+    height: 100%;
+    width: 100%;
+}
 
 /**
  * Icons
