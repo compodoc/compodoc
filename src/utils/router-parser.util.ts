@@ -381,15 +381,9 @@ export class RouterParserUtil {
                 });
                 let testOutputDir = outputFolder.match(process.cwd());
 
-                if (!testOutputDir) {
-                    outputFolder = outputFolder.replace(process.cwd(), '');
+                if (testOutputDir && testOutputDir.length > 0) {
+                    outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
-
-                outputFolder = 
-                    path.join(
-                        process.cwd(),
-                        outputFolder
-                    );
 
                 return this.fileEngine.write(
                     outputFolder + path.sep + '/js/routes/routes_index.js',

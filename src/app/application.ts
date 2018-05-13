@@ -2170,8 +2170,16 @@ export class Application {
                 `Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`
             );
         } else {
+            let finalOutput = this.configuration.mainData.output;
+
+            let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+
+            if (testOutputDir && testOutputDir.length > 0) {
+                finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
+            }
+
             const destination = path.join(
-                this.configuration.mainData.output,
+                finalOutput,
                 path.basename(this.configuration.mainData.assetsFolder)
             );
             fs.copy(
@@ -2215,15 +2223,10 @@ export class Application {
         let finalOutput = this.configuration.mainData.output;
 
         let testOutputDir = this.configuration.mainData.output.match(process.cwd());
-        if (!testOutputDir) {
-            finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
-        }
 
-        finalOutput = 
-            path.join(
-                process.cwd(),
-                finalOutput
-            );
+        if (testOutputDir && testOutputDir.length > 0) {
+            finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
+        }
 
         fs.copy(
             path.resolve(__dirname + '/../src/resources/'),
