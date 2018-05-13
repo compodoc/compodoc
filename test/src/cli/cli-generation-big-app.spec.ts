@@ -659,4 +659,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AppComponent.html');
         expect(file).to.contain(`<ul class="type-parameters">\n                                        <li>T</li>\n                                        <li>K</li>\n                                </ul>`);
     });
+
+    it('should support spread elements with external variables', () => {
+        let file = read(distFolder + '/modules/FooterModule.html');
+        expect(file).to.contain('<h3>Declarations<a href=');
+    });
 });
