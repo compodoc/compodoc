@@ -40,6 +40,7 @@ export class CliApplication extends Application {
         program
             .version(pkg.version)
             .usage('<src> [options]')
+            .option('-c, --config [config]', 'A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json')
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
             .option(
                 '-d, --output [folder]',
@@ -143,16 +144,25 @@ export class CliApplication extends Application {
 
         const configExplorer = cosmiconfig(cosmiconfigModuleName);
 
-        const configExplorerResult = configExplorer.searchSync();
+        let configExplorerResult;
 
         let configFile = {};
 
+        if (program.config) {
+            let configFilePath = program.config;
+            let testConfigFilePath = configFilePath.match(process.cwd());
+            if (testConfigFilePath && testConfigFilePath.length > 0) {
+                configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
+            }
+            configExplorerResult = configExplorer.loadSync(path.resolve(configFilePath));
+        } else {
+            configExplorerResult = configExplorer.searchSync();
+        }
         if (configExplorerResult) {
             if (typeof configExplorerResult.config !== 'undefined') {
                 configFile = configExplorerResult.config;
             }
         }
-
 
         if (configFile.output) {
             this.configuration.mainData.output = configFile.output;
@@ -429,6 +439,12 @@ export class CliApplication extends Application {
             console.log('');
         }
 
+        if (configExplorerResult) {
+            if (typeof configExplorerResult.config !== 'undefined') {
+                logger.info(`Using configuration file : ${configExplorerResult.filepath}`);
+            }
+        }
+
         if (!configExplorerResult) {
             logger.warn(`No configuration file found, switching to CLI flags.`);
         }
@@ -514,7 +530,7 @@ export class CliApplication extends Application {
                         .split(path.sep)
                         .slice(0, -1)
                         .join(path.sep);
-                    logger.info('Using tsconfig', _file);
+                    logger.info('Using tsconfig file ', _file);
 
                     let tsConfigFile = readConfig(_file);
                     scannedFiles = tsConfigFile.files;
@@ -624,7 +640,7 @@ export class CliApplication extends Application {
                             .split(path.sep)
                             .slice(0, -1)
                             .join(path.sep);
-                        logger.info('Using tsconfig', _file);
+                        logger.info('Using tsconfig file ', _file);
 
                         let tsConfigFile = readConfig(_file);
                         scannedFiles = tsConfigFile.files;
