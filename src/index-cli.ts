@@ -507,8 +507,8 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided only
                  */
-                let testTsConfigPath = this.configuration.mainData.tsconfig.match(process.cwd());
-                if (testTsConfigPath && testTsConfigPath.length > 0) {
+                let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
+                if (testTsConfigPath !== -1) {
                     this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
                 }
 
@@ -608,8 +608,8 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided with source folder in arg
                  */
-                let testTsConfigPath = this.configuration.mainData.tsconfig.match(process.cwd());
-                if (testTsConfigPath && testTsConfigPath.length > 0) {
+                let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
+                if (testTsConfigPath !== -1) {
                     this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
                 }
 
