@@ -489,7 +489,11 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided only
                  */
-                this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd(), '');
+                let testTsConfigPath = this.configuration.mainData.tsconfig.match(process.cwd());
+                if (testTsConfigPath && testTsConfigPath.length > 0) {
+                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
+                }
+
                 if (!this.fileEngine.existsSync(this.configuration.mainData.tsconfig)) {
                     logger.error(
                         `"${this.configuration.mainData.tsconfig}" file was not found in the current directory`
@@ -586,7 +590,11 @@ export class CliApplication extends Application {
                 /**
                  * tsconfig file provided with source folder in arg
                  */
-                this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd(), '');
+                let testTsConfigPath = this.configuration.mainData.tsconfig.match(process.cwd());
+                if (testTsConfigPath && testTsConfigPath.length > 0) {
+                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
+                }
+
                 let sourceFolder = program.args[0];
                 if (!this.fileEngine.existsSync(sourceFolder)) {
                     logger.error(
