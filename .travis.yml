@@ -33,6 +33,7 @@ branches:
 matrix:
   allow_failures:
     - os: osx
+    - node_js: "10"
   exclude:
     - node_js: "6"
     - node_js: "7"
