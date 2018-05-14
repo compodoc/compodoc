@@ -151,8 +151,6 @@ export class CliApplication extends Application {
             if (typeof configExplorerResult.config !== 'undefined') {
                 configFile = configExplorerResult.config;
             }
-        } else {
-            logger.error(`No configuration file found, using to CLI flags.`);
         }
 
 
@@ -429,6 +427,10 @@ export class CliApplication extends Application {
             console.log('');
             console.log(`Operating system : ${osName(os.platform(), os.release())}`);
             console.log('');
+        }
+
+        if (!configExplorerResult) {
+            logger.warn(`No configuration file found, switching to CLI flags.`);
         }
 
         if (program.tsconfig && typeof program.tsconfig === 'boolean') {
