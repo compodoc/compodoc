@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
+      path = require('path'),
       tmp = temporaryDir();
 
 describe('CLI simple generation', () => {
@@ -791,6 +792,33 @@ describe('CLI simple generation', () => {
         it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');
             expect(stdoutString).to.contain(port);
+        });
+    });
+
+    describe('when generation with -p flag - absolute folder', () => {
+
+        let stdoutString = '';
+        before(function (done) {
+            tmp.create(distFolder);
+
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                path.join(process.cwd() + path.sep + 'test/src/todomvc-ng2/src/tsconfig.json'),
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                done(new Error(`shell error: ${ls.stderr.toString()}`));
+                return;
+            }
+
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
         });
     });
 

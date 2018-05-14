@@ -28,8 +28,7 @@ import {
     isModuleWithProviders,
     getModuleWithProviders,
     hasSpreadElementInArray,
-    isIgnore,
-    uniqid
+    isIgnore
 } from '../../utils';
 import {
     IInjectableDep,
@@ -41,6 +40,7 @@ import {
     ITypeAliasDecDep
 } from './dependencies.interfaces';
 
+const crypto = require('crypto');
 const marked = require('marked');
 const ast = new Ast();
 
@@ -149,36 +149,34 @@ export class Dependencies {
                 })(_variable, newVar);
 
                 let onLink = mod => {
-                    if (mod.file === _variable.file) {
-                        let process = (initialArray, _var) => {
-                            let indexToClean = 0;
-                            let found = false;
-                            let findVariableInArray = (el, index, theArray) => {
-                                if (el.name === _var.name) {
-                                    indexToClean = index;
-                                    found = true;
-                                }
-                            };
-                            initialArray.forEach(findVariableInArray);
-                            // Clean indexes to replace
-                            if (found) {
-                                initialArray.splice(indexToClean, 1);
-                                // Add variable
-                                newVar.forEach(newEle => {
-                                    if (
-                                        typeof _.find(initialArray, { name: newEle.name }) ===
-                                        'undefined'
-                                    ) {
-                                        initialArray.push(newEle);
-                                    }
-                                });
+                    let process = (initialArray, _var) => {
+                        let indexToClean = 0;
+                        let found = false;
+                        let findVariableInArray = (el, index, theArray) => {
+                            if (el.name === _var.name) {
+                                indexToClean = index;
+                                found = true;
                             }
                         };
-                        process(mod.imports, _variable);
-                        process(mod.exports, _variable);
-                        process(mod.declarations, _variable);
-                        process(mod.providers, _variable);
-                    }
+                        initialArray.forEach(findVariableInArray);
+                        // Clean indexes to replace
+                        if (found) {
+                            initialArray.splice(indexToClean, 1);
+                            // Add variable
+                            newVar.forEach(newEle => {
+                                if (
+                                    typeof _.find(initialArray, { name: newEle.name }) ===
+                                    'undefined'
+                                ) {
+                                    initialArray.push(newEle);
+                                }
+                            });
+                        }
+                    };
+                    process(mod.imports, _variable);
+                    process(mod.exports, _variable);
+                    process(mod.declarations, _variable);
+                    process(mod.providers, _variable);
                 };
 
                 deps.modules.forEach(onLink);
@@ -214,9 +212,11 @@ export class Dependencies {
     private processClass(node, file, srcFile, outputSymbols, fileBody) {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node, fileBody);
+        let sourceCode = srcFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let deps: any = {
             name,
-            id: 'class-' + name + '-' + uniqid(),
+            id: 'class-' + name + '-' + hash,
             file: file,
             type: 'class',
             sourceCode: srcFile.getText()
@@ -325,6 +325,9 @@ export class Dependencies {
                 return;
             }
             let parseNode = (file, srcFile, node, fileBody) => {
+                let sourceCode = srcFile.getText();
+                let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
                     let visitNode = (visitedNode, index) => {
@@ -372,7 +375,7 @@ export class Dependencies {
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
                                 name,
-                                id: 'injectable-' + name + '-' + uniqid(),
+                                id: 'injectable-' + name + '-' + hash,
                                 file: file,
                                 properties: IO.properties,
                                 methods: IO.methods,
@@ -404,7 +407,7 @@ export class Dependencies {
                         } else if (this.isPipe(metadata)) {
                             let pipeDeps: IPipeDep = {
                                 name,
-                                id: 'pipe-' + name + '-' + uniqid(),
+                                id: 'pipe-' + name + '-' + hash,
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
@@ -477,7 +480,7 @@ export class Dependencies {
                         let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
                         let interfaceDeps: IInterfaceDep = {
                             name,
-                            id: 'interface-' + name + '-' + uniqid(),
+                            id: 'interface-' + name + '-' + hash,
                             file: file,
                             type: 'interface',
                             sourceCode: srcFile.getText()
@@ -594,7 +597,7 @@ export class Dependencies {
                     if (ts.isClassDeclaration(node)) {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody);
                     }
-                    if (ts.isExpressionStatement(node)) {
+                    if (ts.isExpressionStatement(node) || ts.isIfStatement(node)) {
                         let bootstrapModuleReference = 'bootstrapModule';
                         // Find the root module with bootstrapModule call
                         // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
@@ -613,6 +616,15 @@ export class Dependencies {
                                     node.expression,
                                     'bootstrapModule'
                                 );
+                            }
+                            if (typeof node.thenStatement !== 'undefined') {
+                                if (node.thenStatement.statements && node.thenStatement.statements.length > 0) {
+                                    let firstStatement = node.thenStatement.statements[0];
+                                    resultNode = this.findExpressionByNameInExpressions(
+                                        firstStatement.expression,
+                                        'bootstrapModule'
+                                    );
+                                }
                             }
                             if (!resultNode) {
                                 if (

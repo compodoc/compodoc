@@ -2,7 +2,8 @@ import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
 import { ComponentCache } from './helpers/component-helper';
 import { ts } from 'ts-simple-ast';
-import { uniqid } from '../../../utils';
+
+const crypto = require('crypto');
 
 export class ModuleDepFactory {
     constructor(private moduleHelper: ModuleHelper) {}
@@ -14,9 +15,11 @@ export class ModuleDepFactory {
         properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
         IO: any
     ): IModuleDep {
+        let sourceCode = srcFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         return {
             name,
-            id: 'module-' + name + '-' + uniqid(),
+            id: 'module-' + name + '-' + hash,
             file: file,
             ngid: this.moduleHelper.getModuleId(properties, srcFile),
             providers: this.moduleHelper.getModuleProviders(properties, srcFile),

@@ -1,7 +1,7 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { FooterComponent } from './footer.component';
+import { footerModuleComponents } from './index';
 
 /**
  * The footer module
@@ -11,7 +11,7 @@ import { FooterComponent } from './footer.component';
         BrowserModule
     ],
     declarations: [
-        FooterComponent
+        ...footerModuleComponents
     ],
     exports: [FooterComponent],
     schemas: [NO_ERRORS_SCHEMA]

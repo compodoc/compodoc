@@ -449,18 +449,21 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>privateStaticMethod()');
         expect(file).to.contain(
-            `<span class="modifier">Static</span>\n                                    <span class="modifier">Private</span>`
+            `<span class="modifier">Private</span>\n                                    <span class="modifier">Static</span>`
         );
         expect(file).to.contain('<code>protectedStaticMethod()');
         expect(file).to.contain(
-            `<span class="modifier">Static</span>\n                                    <span class="modifier">Protected</span>`
+            `<span class="modifier">Protected</span>\n                                    <span class="modifier">Static</span>`
         );
         expect(file).to.contain('<code>publicMethod()');
         expect(file).to.contain('<code>publicStaticMethod()');
         expect(file).to.contain('<code>staticMethod()');
         expect(file).to.contain('staticReadonlyVariable');
         expect(file).to.contain(
-            `<span class="modifier">Readonly</span>\n                                    <span class="modifier">Static</span>`
+            `<span class="modifier">Static</span>\n                                    <span class="modifier">Readonly</span>`
+        );
+        expect(file).to.contain(
+            `<span class="modifier">Public</span>\n                                    <span class="modifier">Async</span>`
         );
     });
 
@@ -645,5 +648,20 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
         expect(file).to.contain('<code>LinearDomain:     <code>[Number, Number]</code>');
         expect(file).to.contain('<code>LinearTodo:     <code><a href="../classes/Todo.html" target="_self" >[Todo, Todo]</a></code>');
+    });
+
+    it('should support Generic array types', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('<a href="../classes/Todo.html" target="_self" >Observable&lt;Todo[]&gt;</a>');
+    });
+
+    it('should support Type parameters', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain(`<ul class="type-parameters">\n                                        <li>T</li>\n                                        <li>K</li>\n                                </ul>`);
+    });
+
+    it('should support spread elements with external variables', () => {
+        let file = read(distFolder + '/modules/FooterModule.html');
+        expect(file).to.contain('<h3>Declarations<a href=');
     });
 });

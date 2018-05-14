@@ -22,18 +22,28 @@ export class ExcludeParserUtil {
         let i = 0;
         let len = this._exclude.length;
         let fileBasename = path.basename(file);
+        let fileNameInCwd = file.replace(this._cwd + path.sep, '');
         let result = false;
+
+        if (path.sep === '\\') {
+            fileNameInCwd = fileNameInCwd.replace(new RegExp('\\' + path.sep, 'g'), '/');
+        }
 
         for (i; i < len; i++) {
             if (glob.hasMagic(this._exclude[i]) && this._globFiles.length > 0) {
-                let resultGlobSearch = this._globFiles.findIndex((element) => {
-                    return path.basename(element) === fileBasename;
+                let resultGlobSearch = this._globFiles.findIndex(element => {
+                    let elementPath = path.resolve(this._cwd + path.sep, element);
+                    let elementPathInCwd = elementPath.replace(this._cwd + path.sep, '');
+                    elementPathInCwd = elementPathInCwd.replace(new RegExp('\\' + path.sep, 'g'), '/');
+                    return elementPathInCwd === fileNameInCwd;
                 });
                 result = resultGlobSearch !== -1;
             } else {
-                result = fileBasename === path.basename(this._exclude[i]);
+                result = fileNameInCwd === this._exclude[i];
             }
-            if (result) { break; }
+            if (result) {
+                break;
+            }
         }
         return result;
     }

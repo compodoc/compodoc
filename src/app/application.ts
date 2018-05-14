@@ -2220,8 +2220,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 `Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`
             );
         } else {
+            let finalOutput = this.configuration.mainData.output;
+
+            let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+
+            if (testOutputDir && testOutputDir.length > 0) {
+                finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
+            }
+
             const destination = path.join(
-                this.configuration.mainData.output,
+                finalOutput,
                 path.basename(this.configuration.mainData.assetsFolder)
             );
             fs.copy(
@@ -2265,8 +2273,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         let finalOutput = this.configuration.mainData.output;
 
         let testOutputDir = this.configuration.mainData.output.match(process.cwd());
-        if (!testOutputDir) {
-            finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
+
+        if (testOutputDir && testOutputDir.length > 0) {
+            finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
         }
 
         fs.copy(

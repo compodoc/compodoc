@@ -79,4 +79,6 @@ export class AboutComponent {
      public publicMethod(): string {
          return '';
      }
+
+     public async foo(): Promise<any> {}
 }

@@ -2,6 +2,27 @@ document.addEventListener('DOMContentLoaded', function() {
     var menuCollapsed = false,
         mobileMenu = document.getElementById('mobile-menu');
 
+    var localContextInUrl = '';
+    
+    if (COMPODOC_CURRENT_PAGE_CONTEXT !== '') {
+        localContextInUrl = localContextInUrl;
+        switch (COMPODOC_CURRENT_PAGE_CONTEXT) {
+            case 'additional-page':
+                localContextInUrl = 'additional-documentation'
+                break;
+            case 'class':
+                localContextInUrl = 'classes'
+                break;
+            case 'miscellaneous-functions':
+            case 'miscellaneous-variables':
+            case 'miscellaneous-typealiases':
+            case 'miscellaneous-enumerations':
+                localContextInUrl = 'miscellaneous';
+            default:
+                break;
+        }
+    }
+
     function hasClass(el, cls) {
         return el.className && new RegExp("(\\s|^)" + cls + "(\\s|$)").test(el.className);
     }
@@ -37,7 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var linkHref = link.getAttribute('href');
-            if (linkHref.toLowerCase().indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 && link.innerHTML.indexOf('Getting started') == -1 && !dontAddClass) {
+            if (linkHref.toLowerCase().indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 
+                && link.innerHTML.indexOf('Getting started') == -1 
+                && !dontAddClass
+                && linkHref.toLowerCase().indexOf(localContextInUrl.toLowerCase()) !== -1 ) {
                 link.classList.add('active');
             }
             processLink(link, linkHref);
