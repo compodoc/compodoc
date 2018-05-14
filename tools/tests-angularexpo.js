@@ -327,8 +327,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'clarity',
             maintainer: 'vmware',
-            tsconfig_path: './src/',
-            tsconfig_file: 'tsconfig.app.json'
+            tsconfig_path: './src/dev/',
+            tsconfig_file: 'tsconfig.dev.json'
         }
     ],
     len = GIT_REPOSITORIES.length;
