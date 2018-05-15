@@ -14,7 +14,7 @@ export class DirectiveDepFactory {
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let directiveDeps: IDirectiveDep = {
             name,
             id: 'directive-' + name + '-' + hash,

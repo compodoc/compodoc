@@ -16,7 +16,7 @@ export class ModuleDepFactory {
         IO: any
     ): IModuleDep {
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         return {
             name,
             id: 'module-' + name + '-' + hash,

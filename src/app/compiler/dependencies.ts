@@ -213,7 +213,7 @@ export class Dependencies {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node, fileBody);
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let deps: any = {
             name,
             id: 'class-' + name + '-' + hash,
@@ -326,7 +326,7 @@ export class Dependencies {
             }
             let parseNode = (file, srcFile, node, fileBody) => {
                 let sourceCode = srcFile.getText();
-                let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+                let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
 
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
