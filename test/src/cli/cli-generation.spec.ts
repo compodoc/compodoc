@@ -409,13 +409,13 @@ describe('CLI simple generation', () => {
         });
     });
 
-    /*describe('when generation without d flag', () => {
+    describe('when generation without d flag', () => {
 
         let stdoutString = undefined;
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json'], { env});
+                '-p', './test/src/sample-files/tsconfig.simple.json']);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -440,8 +440,6 @@ describe('CLI simple generation', () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists('documentation/modules.html');
             expect(isModulesExists).to.be.true;
-            const isOverviewExists = exists('documentation/overview.html');
-            expect(isOverviewExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
@@ -454,7 +452,7 @@ describe('CLI simple generation', () => {
             const isFontsExists = exists('documentation/fonts');
             expect(isFontsExists).to.be.true;
         });
-    });*/
+    });
 
     describe('when generation with -t flag', () => {
 
