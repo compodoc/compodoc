@@ -58,7 +58,7 @@
                     </tr>
                 {{/if}}
                 {{#if line}}
-                    {{#unless ../disableSourceCode}}
+                    {{#isTabEnabled ../navTabs "source"}}
                         {{#if inheritance}}
                             <tr>
                                 <td class="col-md-4">
@@ -75,7 +75,7 @@
                                 {{/if}}
                             </td>
                         </tr>
-                    {{/unless}}
+                    {{/isTabEnabled}}
                 {{/if}}
 
                 {{#if description}}

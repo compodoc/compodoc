@@ -619,6 +619,80 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when generation of component dependecy doc with --navTabConfig option', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig', `[
+                    {\"id\": \"source\",\"label\": \"Test Label 1\"},
+                    {\"id\": \"info\",\"label\": \"Test Label 2\"}
+                ]`,
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            index = read(`${distFolder}/components/BarComponent.html`);
+            index = index.replace(/\r?\n|\r/g, "");
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain a domTree tab', () => {
+            expect(index).to.not.contain('id="tree-tab"');
+        });
+        it('should not contain a template tab', () => {
+            expect(index).to.not.contain('id="templateData-tab"');
+        });
+        it('should set source as the active tab', () => {
+            expect(index).to.contain('<li class="active">            <a href="#source"');
+        });
+        it('should set the source tab label', () => {
+            expect(index).to.contain('data-link="source">Test Label 1');
+        });
+        it('should set the info tab label', () => {
+            expect(index).to.contain('data-link="info">Test Label 2');
+        });
+    });
+
+    describe('when generation of module dependecy doc with --navTabConfig option', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig', `[
+                    {\"id\": \"tree\",\"label\": \"DOM Tree\"},
+                    {\"id\": \"source\",\"label\": \"Source\"},
+                    {\"id\": \"info\",\"label\": \"Info\"}
+                ]`,
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            index = read(`${distFolder}/modules/AppModule.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain a domTree tab', () => {
+            expect(index).to.not.contain('id="tree-tab"');
+        });
+    });
+
     describe('when generation with --disableTemplateTab flag', () => {
 
         let stdoutString = undefined,
@@ -645,7 +719,7 @@ describe('CLI simple generation', () => {
             expect(index).to.not.contain('id="templateData-tab"');
         });
     });
-
+    
     describe('when generation with --disableGraph flag', () => {
 
         let stdoutString = undefined,

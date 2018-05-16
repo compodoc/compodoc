@@ -90,6 +90,15 @@ export class CliApplication extends Application {
                 list,
                 COMPODOC_DEFAULTS.toggleMenuItems
             )
+            .option(
+                '--navTabConfig <tab configs>',
+                `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
+Double-quotes must be escaped with '\\'. \
+Available tab IDs are "info", "readme", "source", "templateData", "tree", and "example". \
+Note: Certain tabs will only be shown if applicable to a given dependency`,
+                list,
+                JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
+            )
             .option('--includes [path]', 'Path of external markdown files to include')
             .option(
                 '--includesName [name]',
@@ -217,6 +226,10 @@ export class CliApplication extends Application {
         }
         if (program.toggleMenuItems && program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems) {
             this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
+        }
+
+        if (program.navTabConfig) {
+            this.configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
         }
 
 

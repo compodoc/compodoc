@@ -377,7 +377,6 @@ export class Dependencies {
                                 name,
                                 id: 'injectable-' + name + '-' + hash,
                                 file: file,
-                                type: 'injectable',
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 description: IO.description,
@@ -397,13 +396,11 @@ export class Dependencies {
                             }
                             deps = injectableDeps;
                             if (typeof IO.ignore === 'undefined') {
-                                if (IO.implements && IO.implements.length > 0) {
-                                    if (_.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
-                                        outputSymbols.interceptors.push(injectableDeps);
-                                    } else {
-                                        outputSymbols.injectables.push(injectableDeps);
-                                    }
+                                if (IO.implements && _.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
+                                    injectableDeps.type = 'interceptor';
+                                    outputSymbols.interceptors.push(injectableDeps);
                                 } else {
+                                    injectableDeps.type = 'injectable';
                                     outputSymbols.injectables.push(injectableDeps);
                                 }
                             }

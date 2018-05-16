@@ -21,6 +21,7 @@ import { ExportEngine } from './engines/export.engine';
 import { Dependencies } from './compiler/dependencies';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
+import { COMPODOC_CONSTANTS } from '../utils/constants';
 
 import { cleanSourcesForWatch } from '../utils/utils';
 
@@ -910,6 +911,7 @@ export class Application {
                         path: 'modules',
                         name: this.configuration.mainData.modules[i].name,
                         id: this.configuration.mainData.modules[i].id,
+                        navTabs: this.getNavTabs(this.configuration.mainData.modules[i]),
                         context: 'module',
                         module: this.configuration.mainData.modules[i],
                         depth: 1,
@@ -956,6 +958,7 @@ export class Application {
                         path: 'pipes',
                         name: pipe.name,
                         id: pipe.id,
+                        navTabs: this.getNavTabs(pipe),
                         context: 'pipe',
                         pipe: pipe,
                         depth: 1,
@@ -1006,6 +1009,7 @@ export class Application {
                         path: 'classes',
                         name: classe.name,
                         id: classe.id,
+                        navTabs: this.getNavTabs(classe),
                         context: 'class',
                         class: classe,
                         depth: 1,
@@ -1056,6 +1060,7 @@ export class Application {
                         path: 'interfaces',
                         name: interf.name,
                         id: interf.id,
+                        navTabs: this.getNavTabs(interf),
                         context: 'interface',
                         interface: interf,
                         depth: 1,
@@ -1146,6 +1151,46 @@ export class Application {
         );
     }
 
+    private getNavTabs(dependency): Array<any> {
+        let navTabConfig = this.configuration.mainData.navTabConfig;
+        navTabConfig = navTabConfig.length === 0 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions) : navTabConfig;
+        let matchDepType = (depType: string) => {
+            return depType === 'all' || depType === dependency.type;
+        };
+
+        let navTabs = [];
+        _.forEach(navTabConfig, (customTab) => {
+            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { 'id': customTab.id });
+            if (!navTab) {
+                throw new Error(`Invalid tab ID '${customTab.id}' specified in tab configuration`);
+            }
+
+            navTab.label = customTab.label;
+
+            // is tab applicable to target dependency?
+            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) { return; }
+            
+            // global config
+            if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
+            if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
+            if (customTab.id === 'templateData' && this.configuration.mainData.disableTemplateTab) { return; }
+            
+            // per dependency config
+            if (customTab.id === 'readme' && !dependency.readme) { return; }
+            if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
+            if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
+            
+            navTabs.push(navTab);
+        });
+
+        if (navTabs.length === 0) {
+            throw new Error(`No valid navigation tabs have been defined for dependency type '${dependency.type}'. Specify \
+at least one config for the 'info' or 'source' tab in --navTabConfig.`);
+        }
+
+        return navTabs;
+    }
+
     public prepareComponents(someComponents?) {
         logger.info('Prepare components');
         this.configuration.mainData.components = someComponents
@@ -1176,6 +1221,7 @@ export class Application {
                             path: 'components',
                             name: component.name,
                             id: component.id,
+                            navTabs: this.getNavTabs(component),
                             context: 'component',
                             component: component,
                             depth: 1,
@@ -1209,6 +1255,7 @@ export class Application {
                             path: 'components',
                             name: component.name,
                             id: component.id,
+                            navTabs: this.getNavTabs(component),
                             context: 'component',
                             component: component,
                             depth: 1,
@@ -1278,6 +1325,7 @@ export class Application {
                         path: 'directives',
                         name: directive.name,
                         id: directive.id,
+                        navTabs: this.getNavTabs(directive),
                         context: 'directive',
                         directive: directive,
                         depth: 1,
@@ -1329,6 +1377,7 @@ export class Application {
                         path: 'injectables',
                         name: injec.name,
                         id: injec.id,
+                        navTabs: this.getNavTabs(injec),
                         context: 'injectable',
                         injectable: injec,
                         depth: 1,
@@ -1380,6 +1429,7 @@ export class Application {
                         path: 'interceptors',
                         name: interceptor.name,
                         id: interceptor.id,
+                        navTabs: this.getNavTabs(interceptor),
                         context: 'interceptor',
                         injectable: interceptor,
                         depth: 1,

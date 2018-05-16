@@ -29,6 +29,7 @@ export interface MainDataInterface {
     routes: any;
     tsconfig: string;
     toggleMenuItems: string[];
+    navTabConfig: any[];
     includes: string;
     includesName: string;
     includesFolder: string;

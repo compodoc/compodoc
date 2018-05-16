@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $tabTree = document.querySelector('#tree-tab'),
         $tabExample = document.querySelector('#example-tab'),
         $prismPre = document.querySelector('pre.compodoc-sourcecode');
-    if ($prismPre) {
+    if ($tabSource && $prismPre) {
         $prismCode = $prismPre.querySelector('code'),
         $content = document.querySelector('.content'),
         prismLinks = document.querySelectorAll('.link-to-prism')
