@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
 const expect = chai.expect,
+      path = require('path'),
       tmp = temporaryDir();
 
 describe('CLI simple generation', () => {
@@ -408,13 +409,13 @@ describe('CLI simple generation', () => {
         });
     });
 
-    /*describe('when generation without d flag', () => {
+    describe('when generation without d flag', () => {
 
         let stdoutString = undefined;
         before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json'], { env});
+                '-p', './test/src/sample-files/tsconfig.simple.json']);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -439,8 +440,6 @@ describe('CLI simple generation', () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists('documentation/modules.html');
             expect(isModulesExists).to.be.true;
-            const isOverviewExists = exists('documentation/overview.html');
-            expect(isOverviewExists).to.be.true;
         });
 
         it('should have generated resources folder', () => {
@@ -453,7 +452,7 @@ describe('CLI simple generation', () => {
             const isFontsExists = exists('documentation/fonts');
             expect(isFontsExists).to.be.true;
         });
-    });*/
+    });
 
     describe('when generation with -t flag', () => {
 
@@ -618,6 +617,107 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when generation of component dependecy doc with --navTabConfig option', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig', `[
+                    {\"id\": \"source\",\"label\": \"Test Label 1\"},
+                    {\"id\": \"info\",\"label\": \"Test Label 2\"}
+                ]`,
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            index = read(`${distFolder}/components/BarComponent.html`);
+            index = index.replace(/\r?\n|\r/g, "");
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain a domTree tab', () => {
+            expect(index).to.not.contain('id="tree-tab"');
+        });
+        it('should not contain a template tab', () => {
+            expect(index).to.not.contain('id="templateData-tab"');
+        });
+        it('should set source as the active tab', () => {
+            expect(index).to.contain('<li class="active">            <a href="#source"');
+        });
+        it('should set the source tab label', () => {
+            expect(index).to.contain('data-link="source">Test Label 1');
+        });
+        it('should set the info tab label', () => {
+            expect(index).to.contain('data-link="info">Test Label 2');
+        });
+    });
+
+    describe('when generation of module dependecy doc with --navTabConfig option', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig', `[
+                    {\"id\": \"tree\",\"label\": \"DOM Tree\"},
+                    {\"id\": \"source\",\"label\": \"Source\"},
+                    {\"id\": \"info\",\"label\": \"Info\"}
+                ]`,
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            index = read(`${distFolder}/modules/AppModule.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain a domTree tab', () => {
+            expect(index).to.not.contain('id="tree-tab"');
+        });
+    });
+
+    describe('when generation with --disableTemplateTab flag', () => {
+
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableTemplateTab',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain template tab', () => {
+            index = read(`${distFolder}/components/BarComponent.html`);
+            expect(index).to.not.contain('id="templateData-tab"');
+        });
+    });
+    
     describe('when generation with --disableGraph flag', () => {
 
         let stdoutString = undefined,
@@ -690,6 +790,33 @@ describe('CLI simple generation', () => {
         it('should contain port ' + port, () => {
             expect(stdoutString).to.contain('Serving documentation');
             expect(stdoutString).to.contain(port);
+        });
+    });
+
+    describe('when generation with -p flag - absolute folder', () => {
+
+        let stdoutString = '';
+        before(function (done) {
+            tmp.create(distFolder);
+
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                path.join(process.cwd() + path.sep + 'test/src/todomvc-ng2/src/tsconfig.json'),
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                done(new Error(`shell error: ${ls.stderr.toString()}`));
+                return;
+            }
+
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should display generated message', () => {
+            expect(stdoutString).to.contain('Documentation generated');
         });
     });
 

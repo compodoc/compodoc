@@ -36,7 +36,7 @@ describe('CLI duplicates support', () => {
     });
 
     it('Todo-2 class generated', () => {
-        const file = exists(distFolder + '/classes/Todo-2.html');
+        const file = exists(distFolder + '/classes/Todo2.html');
         expect(file).to.be.true;
     });
 
@@ -62,11 +62,6 @@ describe('CLI duplicates support', () => {
 
     it('FirstUpperPipe generated', () => {
         const file = exists(distFolder + '/pipes/FirstUpperPipe.html');
-        expect(file).to.be.true;
-    });
-
-    it('FirstUpperPipe-1 generated', () => {
-        const file = exists(distFolder + '/pipes/FirstUpperPipe-1.html');
         expect(file).to.be.true;
     });
 

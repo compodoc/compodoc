@@ -146,6 +146,11 @@ export class TodoStore {
     }
 
     /**
+     * @example
+     */
+    emptyExample() {}
+
+    /**
      * Stop monitoring the todo
      *
      * @param {LabelledTodo} theTodo A todo

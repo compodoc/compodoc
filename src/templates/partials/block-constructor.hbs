@@ -12,13 +12,13 @@
                     </td>
                 </tr>
                 {{#if constructor.line}}
-                    {{#unless disableSourceCode}}
+                    {{#isTabEnabled navTabs "source"}}
                         <tr>
                             <td class="col-md-4">
                                 <div class="io-line">Defined in <a href="" data-line="{{{constructor.line}}}" class="link-to-prism">{{file}}:{{{constructor.line}}}</a></div>
                             </td>
                         </tr>
-                    {{/unless}}
+                    {{/isTabEnabled}}
                 {{/if}}
 
                 {{#or constructor.jsdoctags constructor.description}}
@@ -48,7 +48,9 @@
                                         <tbody>
                                             {{#each tags}}
                                                 <tr>
-                                                    <td>{{name}}</td>
+                                                    {{#if name}}
+                                                        <td>{{name}}</td>
+                                                    {{/if}}
                                                   
                                                     {{#one-parameter-has ../tags 'type'}}
                                                         <td>

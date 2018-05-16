@@ -6,12 +6,16 @@ environment:
     - nodejs_version: '6'
     - nodejs_version: '7'
     - nodejs_version: '8'
+    - nodejs_version: '9'
+    - nodejs_version: '10'
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true
   - npm install
 matrix:
   fast_finish: true
+  allow_failures:
+    - nodejs_version: 10
 build: off
 shallow_clone: true
 test_script:

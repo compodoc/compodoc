@@ -157,13 +157,15 @@ export class DependenciesEngine {
             array.forEach(arrayElement => {
                 if (
                     arrayElement.name === element.name &&
-                    arrayElement.id !== element.id &&
-                    !arrayElement.isDuplicate
+                    arrayElement.id === element.id &&
+                    arrayElement.file !== element.file &&
+                    typeof arrayElement.isDuplicate === 'undefined'
                 ) {
                     counterDuplicate += 1;
                     element.isDuplicate = true;
                     element.duplicateId = counterDuplicate;
                     element.duplicateName = element.name + '-' + element.duplicateId;
+                    element.id = element.id + '-' + element.duplicateId;
                 }
             });
             return element;

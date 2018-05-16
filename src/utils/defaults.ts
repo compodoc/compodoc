@@ -12,8 +12,10 @@ export const COMPODOC_DEFAULTS = {
     defaultCoverageMinimumPerFile: 0,
     coverageTestThresholdFail: true,
     toggleMenuItems: ['all'],
+    navTabConfig: [],
     disableSourceCode: false,
     disableDomTree: false,
+    disableTemplateTab: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,
@@ -28,14 +30,3 @@ export const COMPODOC_DEFAULTS = {
     },
     gaSite: 'auto'
 };
-
-/**
- * Max length for the string of a file during Lunr search engine indexing.
- * Prevent stack size exceeded
- */
-export const MAX_SIZE_FILE_SEARCH_INDEX = 15000;
-/**
- * Max length for the string of a file during cheerio parsing.
- * Prevent stack size exceeded
- */
-export const MAX_SIZE_FILE_CHEERIO_PARSING = 400000000;

@@ -11,8 +11,9 @@ import { ConfigurationInterface } from '../../../interfaces/configuration.interf
 import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../utils/imports.util';
 import { logger } from '../../../../logger';
-import { isIgnore, uniqid } from '../../../../utils';
+import { isIgnore } from '../../../../utils';
 
+const crypto = require('crypto');
 const marked = require('marked');
 
 export class ClassHelper {
@@ -650,8 +651,33 @@ export class ClassHelper {
                     }
                 }
             }
+            if (node.type.elementTypes) {
+                let elementTypes = node.type.elementTypes;
+                let i = 0;
+                let len = elementTypes.length;
+                if (len > 0) {
+                    _return = '[';
+                    for (i; i < len; i++) {
+                        let type = elementTypes[i];
+                        _return += kindToType(type.kind);
+                        if (ts.isLiteralTypeNode(type) && type.literal) {
+                            _return += '"' + type.literal.text + '"';
+                        }
+                        if (type.typeName) {
+                            _return += this.visitTypeName(type.typeName);
+                        }
+                        if (i < len - 1) {
+                            _return += ', ';
+                        }
+                    }
+                    _return += ']';
+                }
+            }
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
+            if (node.elementType.typeName) {
+                _return = this.visitTypeName(node.elementType.typeName) + kindToType(node.kind);
+            }
         } else if (node.types && ts.isUnionTypeNode(node)) {
             _return = '';
             let i = 0;
@@ -681,6 +707,9 @@ export class ClassHelper {
             ) {
                 _return = kindToType(node.initializer.kind);
             }
+            if (node.kind === SyntaxKind.TypeParameter) {
+                _return = node.name.text;
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
@@ -693,8 +722,10 @@ export class ClassHelper {
     }
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
+        let sourceCode = sourceFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result: any = {
-            id: 'call-declaration-' + uniqid(),
+            id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -715,8 +746,10 @@ export class ClassHelper {
         method: ts.IndexSignatureDeclaration,
         sourceFile?: ts.SourceFile
     ) {
+        let sourceCode = sourceFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result = {
-            id: 'index-declaration-' + uniqid(),
+            id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1
@@ -751,8 +784,7 @@ export class ClassHelper {
                 let kinds = method.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -802,8 +834,7 @@ export class ClassHelper {
                 let kinds = property.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -912,6 +943,7 @@ export class ClassHelper {
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             optional: typeof method.questionToken !== 'undefined',
             returnType: this.visitType(method.type),
+            typeParameters: [],
             line: this.getPosition(method, sourceFile).line + 1
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -937,6 +969,10 @@ export class ClassHelper {
             }
         }
 
+        if (method.typeParameters && method.typeParameters.length > 0) {
+            result.typeParameters = method.typeParameters.map(typeParameter => this.visitType(typeParameter));
+        }
+
         if (method.jsDoc) {
             result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
         }
@@ -950,8 +986,7 @@ export class ClassHelper {
                 let kinds = method.modifiers
                     .map(modifier => {
                         return modifier.kind;
-                    })
-                    .reverse();
+                    });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1

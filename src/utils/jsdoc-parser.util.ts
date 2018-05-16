@@ -139,7 +139,13 @@ export class JsdocParserUtil {
             return _.filter(tags, tag => {
                 if (ts && ts.isJSDocParameterTag(tag)) {
                     let t: JSDocParameterTagExt = tag;
-                    return t.parameterName.text === name;
+                    if (typeof t.parameterName !== 'undefined') {
+                        return t.parameterName.text === name;
+                    } else if (typeof t.name !== 'undefined') {
+                        if (typeof t.name.escapedText !== 'undefined') {
+                            return t.name.escapedText === name;
+                        }
+                    }
                 }
             });
         } else {

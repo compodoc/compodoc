@@ -127,8 +127,8 @@ export class HtmlEngine {
                     data: coverageData
                 });
                 let testOutputDir = outputFolder.match(process.cwd());
-                if (!testOutputDir) {
-                    outputFolder = outputFolder.replace(process.cwd(), '');
+                if (testOutputDir && testOutputDir.length > 0) {
+                    outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
 
                 return this.fileEngine

@@ -20,7 +20,7 @@ export class MarkdownEngine {
             }
 
             highlighted = this.escape(code);
-            return `<pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre>`;
+            return `<div><pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre></div>`;
         };
 
         renderer.table = (header, body) => {

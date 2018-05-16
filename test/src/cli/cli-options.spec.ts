@@ -87,6 +87,15 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
         });
 
+        it(`--navTabConfig`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--navTabConfig');
+            expect(runHelp.stdout.toString()).to.contain(
+`List navigation tab objects in the desired order with two string properties ("id" and "label"). \
+Double-quotes must be escaped with '\\'. \
+Available tab IDs are "info", "readme", "source", "templateData", "tree", and "example". \
+Note: Certain tabs will only be shown if applicable to a given dependency`);
+        });
+
         it(`--includes`, () => {
             expect(runHelp.stdout.toString()).to.contain('--includes [path]');
             expect(runHelp.stdout.toString()).to.contain('Path of external markdown files to include');
@@ -120,6 +129,11 @@ describe('CLI Options', () => {
         it(`--disableDomTree`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableDomTree');
             expect(runHelp.stdout.toString()).to.contain('Do not add source code tab');
+        });
+
+        it(`--disableTemplateTab`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableTemplateTab');
+            expect(runHelp.stdout.toString()).to.contain('Do not add template tab');
         });
 
         it(`--disableGraph`, () => {

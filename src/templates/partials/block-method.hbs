@@ -55,7 +55,7 @@
                 {{/if}}
 
                 {{#if line}}
-                    {{#unless ../disableSourceCode}}
+                    {{#isTabEnabled ../navTabs "source"}}
                         {{#if inheritance}}
                             <tr>
                                 <td class="col-md-4">
@@ -72,7 +72,22 @@
                                 {{/if}}
                             </td>
                         </tr>
-                    {{/unless}}
+                    {{/isTabEnabled}}
+                {{/if}}
+
+                {{#if typeParameters}}
+                    {{#compare typeParameters.length ">" 0}}
+                        <tr>
+                            <td class="col-md-4">
+                                <b>Type parameters :</b>
+                                <ul class="type-parameters">
+                                    {{#each typeParameters}}
+                                        <li>{{this}}</li>
+                                    {{/each}}
+                                </ul>
+                            </td>
+                        </tr>
+                    {{/compare}}
                 {{/if}}
 
                 {{#or jsdoctags returnType description}}

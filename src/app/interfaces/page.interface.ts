@@ -1,6 +1,7 @@
 export interface PageInterface {
     name: string;
     id: string;
+    navTabs?: any[];
     filename?: string;
     context: string;
     path?: string;

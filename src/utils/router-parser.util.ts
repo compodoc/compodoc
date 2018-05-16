@@ -126,6 +126,30 @@ export class RouterParserUtil {
                                             route.filename === this.modulesWithRoutes[i].filename
                                         ) {
                                             route.module = this.modulesWithRoutes[i].name;
+                                        } else if (
+                                            argument.text &&
+                                            route.name === argument.text &&
+                                            route.filename !== this.modulesWithRoutes[i].filename
+                                        ) {
+                                            let argumentImportPath = this.importsUtil.findFilePathOfImportedVariable(
+                                                argument.text,
+                                                this.modulesWithRoutes[i].filename
+                                            );
+                                            let cleaner = (process.cwd() + path.sep).replace(
+                                                /\\/g,
+                                                '/'
+                                            );
+                                            argumentImportPath = argumentImportPath.replace(
+                                                cleaner,
+                                                ''
+                                            );
+                                            if (
+                                                argument.text &&
+                                                route.name === argument.text &&
+                                                route.filename === argumentImportPath
+                                            ) {
+                                                route.module = this.modulesWithRoutes[i].name;
+                                            }
                                         }
                                     });
                                 });
@@ -219,20 +243,26 @@ export class RouterParserUtil {
             } else {
                 // else routes are directly inside the module
                 let rawRoutes = this.foundRouteWithModuleName(node.name);
+
                 if (rawRoutes) {
                     let routes = JSON5.parse(rawRoutes.data);
                     if (routes) {
                         let i = 0;
                         let len = routes.length;
+                        let routeAddedOnce = false;
                         for (i; i < len; i++) {
                             let route = routes[i];
                             if (routes[i].component) {
+                                routeAddedOnce = true;
                                 routesTree.children.push({
                                     kind: 'component',
                                     component: routes[i].component,
                                     path: routes[i].path
                                 });
                             }
+                        }
+                        if (!routeAddedOnce) {
+                            routesTree.children = [...routesTree.children, ...routes];
                         }
                     }
                 }
@@ -260,7 +290,7 @@ export class RouterParserUtil {
 
         // Try updating routes with lazy loading
 
-        let loopInside = (mod, _rawModule) => {
+        let loopInsideModule = (mod, _rawModule) => {
             if (mod.children) {
                 for (let z in mod.children) {
                     let route = this.foundRouteWithModuleName(mod.children[z].name);
@@ -271,6 +301,16 @@ export class RouterParserUtil {
                             route.kind = 'module';
                             _rawModule.children.push(route);
                         }
+                    }
+                }
+            } else {
+                let route = this.foundRouteWithModuleName(mod.name);
+                if (typeof route !== 'undefined') {
+                    if (route.data) {
+                        route.children = JSON5.parse(route.data);
+                        delete route.data;
+                        route.kind = 'module';
+                        _rawModule.children.push(route);
                     }
                 }
             }
@@ -289,7 +329,7 @@ export class RouterParserUtil {
                             _rawModule.kind = 'module';
                             _rawModule.children = [];
                             _rawModule.module = module.name;
-                            loopInside(module, _rawModule);
+                            loopInsideModule(module, _rawModule);
 
                             route.children[i].children = [];
                             route.children[i].children.push(_rawModule);
@@ -341,8 +381,8 @@ export class RouterParserUtil {
                 });
                 let testOutputDir = outputFolder.match(process.cwd());
 
-                if (!testOutputDir) {
-                    outputFolder = outputFolder.replace(process.cwd(), '');
+                if (testOutputDir && testOutputDir.length > 0) {
+                    outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
 
                 return this.fileEngine.write(
@@ -631,7 +671,7 @@ export class RouterParserUtil {
     public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
         let file = sourceFile;
 
-        const variableStatements = sourceFile.getVariableDeclaration((v) => {
+        const variableStatements = sourceFile.getVariableDeclaration(v => {
             let result = false;
             if (typeof v.compilerNode.type !== 'undefined') {
                 result = v.compilerNode.type.typeName.text === 'Routes';

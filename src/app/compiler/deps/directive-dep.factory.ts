@@ -1,7 +1,9 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
-import { cleanLifecycleHooksFromMethods, uniqid } from '../../../utils';
+import { cleanLifecycleHooksFromMethods } from '../../../utils';
+
+const crypto = require('crypto');
 
 export class DirectiveDepFactory {
     constructor(
@@ -11,9 +13,11 @@ export class DirectiveDepFactory {
     }
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
+        let sourceCode = srcFile.getText();
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let directiveDeps: IDirectiveDep = {
             name,
-            id: 'directive-' + name + '-' + uniqid(),
+            id: 'directive-' + name + '-' + hash,
             file: file,
             type: 'directive',
             description: IO.description,

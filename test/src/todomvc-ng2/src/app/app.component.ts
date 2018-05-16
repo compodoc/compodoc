@@ -9,5 +9,11 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+    public getOrganizations(): Observable<Todo[]> {
+        console.log('yo');
+    }
 
+    public getProperty<T, K extends keyof T>(obj: T, key: K) {
+        return obj[key];
+    }
 }

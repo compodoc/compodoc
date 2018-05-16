@@ -19,13 +19,13 @@
                     </td>
                 </tr>
                     {{#if this.getSignature.line}}
-                        {{#unless ../disableSourceCode}}
+                        {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
                                     <div class="io-line">Defined in <a href="" data-line="{{{this.getSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.getSignature.line}}}</a></div>
                                 </td>
                             </tr>
-                        {{/unless}}
+                        {{/isTabEnabled}}
                     {{/if}}
                     {{#or this.getSignature.description this.getSignature.jsdoctags}}
                     <tr>
@@ -51,20 +51,22 @@
                                             <tbody>
                                                 {{#each tags}}
                                                     <tr>
-                                                      <td>{{name}}</td>
-                                                      <td>
-                                                      {{#if type}}
-                                                          {{> link-type type=type }}
-                                                      {{/if}}
-                                                      </td>
-                                                      <td>
-                                                        {{#if optional}}
-                                                            yes
-                                                        {{else}}
-                                                            no
+                                                        {{#if name}}
+                                                            <td>{{name}}</td>
                                                         {{/if}}
-                                                      </td>
-                                                      <td>{{{comment}}}</td>
+                                                        <td>
+                                                            {{#if type}}
+                                                                {{> link-type type=type }}
+                                                            {{/if}}
+                                                        </td>
+                                                        <td>
+                                                            {{#if optional}}
+                                                                yes
+                                                            {{else}}
+                                                                no
+                                                            {{/if}}
+                                                        </td>
+                                                        <td>{{{comment}}}</td>
                                                     </tr>
                                                 {{/each}}
                                             </tbody>
@@ -105,13 +107,13 @@
                     </td>
                 </tr>
                     {{#if this.setSignature.line}}
-                        {{#unless ../disableSourceCode}}
+                        {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
                                     <div class="io-line">Defined in <a href="" data-line="{{{this.setSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.setSignature.line}}}</a></div>
                                 </td>
                             </tr>
-                        {{/unless}}
+                        {{/isTabEnabled}}
                     {{/if}}
                     {{#or this.setSignature.description this.setSignature.jsdoctags}}
                     <tr>
@@ -141,7 +143,9 @@
                                             <tbody>
                                                 {{#each tags}}
                                                     <tr>
-                                                        <td>{{name}}</td>
+                                                        {{#if name}}
+                                                            <td>{{name}}</td>
+                                                        {{/if}}
                                                     
                                                         {{#one-parameter-has ../tags 'type'}}
                                                             <td>

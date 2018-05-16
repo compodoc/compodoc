@@ -19,52 +19,79 @@ export class ExtendsMerger {
                     if (typeof ext.methods !== 'undefined' && ext.methods.length > 0) {
                         let newMethods = cloneDeep(ext.methods);
                         newMethods = this.markInheritance(newMethods, ext);
-                        component.methodsClass = [...component.methodsClass, ...newMethods];
+                        if (typeof component.methodsClass !== 'undefined') {
+                            component.methodsClass = [...component.methodsClass, ...newMethods];
+                        }
                     }
                     if (typeof ext.properties !== 'undefined' && ext.properties.length > 0) {
                         let newProperties = cloneDeep(ext.properties);
                         newProperties = this.markInheritance(newProperties, ext);
-                        component.propertiesClass = [
-                            ...component.propertiesClass,
-                            ...newProperties
-                        ];
+                        if (typeof component.propertiesClass !== 'undefined') {
+                            component.propertiesClass = [
+                                ...component.propertiesClass,
+                                ...newProperties
+                            ];
+                        }
                     }
                     // From component to component
                     if (typeof ext.inputsClass !== 'undefined' && ext.inputsClass.length > 0) {
                         let newInputs = cloneDeep(ext.inputsClass);
                         newInputs = this.markInheritance(newInputs, ext);
-                        component.inputsClass = [...component.inputsClass, ...newInputs];
+                        if (typeof component.inputsClass !== 'undefined') {
+                            component.inputsClass = [...component.inputsClass, ...newInputs];
+                        }
                     }
                     if (typeof ext.outputsClass !== 'undefined' && ext.outputsClass.length > 0) {
                         let newOutputs = cloneDeep(ext.outputsClass);
                         newOutputs = this.markInheritance(newOutputs, ext);
-                        component.outputsClass = [...component.outputsClass, ...newOutputs];
+                        if (typeof component.outputsClass !== 'undefined') {
+                            component.outputsClass = [...component.outputsClass, ...newOutputs];
+                        }
                     }
                     if (typeof ext.methodsClass !== 'undefined' && ext.methodsClass.length > 0) {
                         let newMethods = cloneDeep(ext.methodsClass);
                         newMethods = this.markInheritance(newMethods, ext);
-                        component.methodsClass = [...component.methodsClass, ...newMethods];
+                        if (typeof component.methodsClass !== 'undefined') {
+                            component.methodsClass = [...component.methodsClass, ...newMethods];
+                        }
                     }
-                    if (typeof ext.propertiesClass !== 'undefined' && ext.propertiesClass.length > 0) {
+                    if (
+                        typeof ext.propertiesClass !== 'undefined' &&
+                        ext.propertiesClass.length > 0
+                    ) {
                         let newProperties = cloneDeep(ext.propertiesClass);
                         newProperties = this.markInheritance(newProperties, ext);
-                        component.propertiesClass = [
-                            ...component.propertiesClass,
-                            ...newProperties
-                        ];
+                        if (typeof component.propertiesClass !== 'undefined') {
+                            component.propertiesClass = [
+                                ...component.propertiesClass,
+                                ...newProperties
+                            ];
+                        }
                     }
                     if (typeof ext.hostBindings !== 'undefined' && ext.hostBindings.length > 0) {
                         let newHostBindings = cloneDeep(ext.hostBindings);
                         newHostBindings = this.markInheritance(newHostBindings, ext);
-                        component.hostBindings = [...component.hostBindings, ...newHostBindings];
+                        if (typeof component.hostBindings !== 'undefined') {
+                            component.hostBindings = [
+                                ...component.hostBindings,
+                                ...newHostBindings
+                            ];
+                        }
                     }
                     if (typeof ext.hostListeners !== 'undefined' && ext.hostListeners.length > 0) {
                         let newHostListeners = cloneDeep(ext.hostListeners);
                         newHostListeners = this.markInheritance(newHostListeners, ext);
-                        component.hostListeners = [...component.hostListeners, ...newHostListeners];
+                        if (typeof component.hostListeners !== 'undefined') {
+                            component.hostListeners = [
+                                ...component.hostListeners,
+                                ...newHostListeners
+                            ];
+                        }
                     }
                     if (configuration.mainData.disableLifeCycleHooks) {
-                        component.methodsClass = cleanLifecycleHooksFromMethods(component.methodsClass);
+                        component.methodsClass = cleanLifecycleHooksFromMethods(
+                            component.methodsClass
+                        );
                     }
                 }
             }
@@ -79,15 +106,16 @@ export class ExtendsMerger {
                     if (typeof ext.methods !== 'undefined' && ext.methods.length > 0) {
                         let newMethods = cloneDeep(ext.methods);
                         newMethods = this.markInheritance(newMethods, ext);
-                        cla.methods = [...cla.methods, ...newMethods];
+                        if (typeof cla.methods !== 'undefined') {
+                            cla.methods = [...cla.methods, ...newMethods];
+                        }
                     }
                     if (typeof ext.properties !== 'undefined' && ext.properties.length > 0) {
                         let newProperties = cloneDeep(ext.properties);
                         newProperties = this.markInheritance(newProperties, ext);
-                        cla.properties = [
-                            ...cla.properties,
-                            ...newProperties
-                        ];
+                        if (typeof cla.properties !== 'undefined') {
+                            cla.properties = [...cla.properties, ...newProperties];
+                        }
                     }
                 }
             }
