@@ -228,7 +228,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
         }
 
-        if (program.navTabConfig) {
+
+        if (configFile.navTabConfig) {
+            this.configuration.mainData.navTabConfig = configFile.navTabConfig;
+        }
+        if (program.navTabConfig && JSON.parse(program.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length) {
             this.configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
         }
 
