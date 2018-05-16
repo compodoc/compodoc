@@ -1,3 +1,36 @@
+<a name="1.1.3"></a>
+# [1.1.3](https://github.com/compodoc/compodoc/compare/1.1.2...1.1.3) (2018-05-16)
+
+### Features
+
+* **UI:** disableTemplateTab flag ([fed52f1](https://github.com/compodoc/compodoc/commit/fed52f1)), closes [#545](https://github.com/compodoc/compodoc/issues/545)
+* **config:** add config management support with custom file ([bd249fb](https://github.com/compodoc/compodoc/commit/bd249fb)), closes [#379](https://github.com/compodoc/compodoc/issues/379)
+* **UI** Add ability to specify tab ordering and custom tab labels ([e1bdc2e](https://github.com/compodoc/compodoc/commit/e1bdc2e)), closes [#522](https://github.com/compodoc/compodoc/issues/522) Thanks [Blake Simmon](https://github.com/Blakesalot)
+
+### Bug fixes
+
+* **CLI:** Uniqid for entities between two documentation generation ([1ce6543](https://github.com/compodoc/compodoc/commit/1ce6543)), closes [#550](https://github.com/compodoc/compodoc/issues/550)
+* **CLI:** absolute path with d flag ([f86f11b](https://github.com/compodoc/compodoc/commit/f86f11b)), closes [#559](https://github.com/compodoc/compodoc/issues/559)
+* **CLI:** exclude parser with duplicate file names ([568af47](https://github.com/compodoc/compodoc/commit/568af47)), closes [#551](https://github.com/compodoc/compodoc/issues/551)
+* **CLI:** Using absolute path for -p/--tsconfig ([7d8566c](https://github.com/compodoc/compodoc/commit/7d8566c)), closes [#558](https://github.com/compodoc/compodoc/issues/558)
+* **menu:** Navigation is broken with watch mode ([616e469](https://github.com/compodoc/compodoc/commit/616e469)), closes [#548](https://github.com/compodoc/compodoc/issues/548)
+* **UI:** sort modules import/exports/declarations/providers in ascending order ([9449574](https://github.com/compodoc/compodoc/commit/9449574)), closes [#538](https://github.com/compodoc/compodoc/issues/538)
+* **UI:** back button handling ([b5e16e8](https://github.com/compodoc/compodoc/commit/b5e16e8)), closes [#557](https://github.com/compodoc/compodoc/issues/557)
+* **UI:** additional url + regular entity ([3464b0c](https://github.com/compodoc/compodoc/commit/3464b0c)), closes [#554](https://github.com/compodoc/compodoc/issues/554)
+* **UI:** ensure examples tab has only one scrollbar ([d60b406](https://github.com/compodoc/compodoc/commit/d60b406)), closes [#562](https://github.com/compodoc/compodoc/issues/562) Thanks [Blake Simmon](https://github.com/Blakesalot)
+* **deps:** async functions documented with empty badge ([3049781](https://github.com/compodoc/compodoc/commit/3049781)), closes [#556](https://github.com/compodoc/compodoc/issues/556)
+* **deps:** modules spread elements with global variables ([9576cc6](https://github.com/compodoc/compodoc/commit/9576cc6)), closes [#494](https://github.com/compodoc/compodoc/issues/494)
+* **deps:** Generic array types support ([0ad79de](https://github.com/compodoc/compodoc/commit/0ad79de)), closes [#552](https://github.com/compodoc/compodoc/issues/552)
+* **deps:** generic type parameters for functions ([db9167b](https://github.com/compodoc/compodoc/commit/db9167b)), closes [#555](https://github.com/compodoc/compodoc/issues/555)
+* **deps:** routing with bootstrapModule in if statement ([19109ff](https://github.com/compodoc/compodoc/commit/19109ff)), closes [#560](https://github.com/compodoc/compodoc/issues/560)
+* **deps:** empty @example JSDoc tag ([db48253](https://github.com/compodoc/compodoc/commit/db48253)), closes [#543](https://github.com/compodoc/compodoc/issues/543)
+* **deps:** routes data with function call ([ccc13ce](https://github.com/compodoc/compodoc/commit/ccc13ce)), closes [#525](https://github.com/compodoc/compodoc/issues/525)
+* **deps:** tuples types support ([dc540c5](https://github.com/compodoc/compodoc/commit/dc540c5)), closes [#540](https://github.com/compodoc/compodoc/issues/540)
+* **deps:** extendMerger ([a7448c9](https://github.com/compodoc/compodoc/commit/a7448c9)), closes [#542](https://github.com/compodoc/compodoc/issues/542)
+* **deps:** JSDoc param inside constructor ([c01484c](https://github.com/compodoc/compodoc/commit/c01484c)), closes [#541](https://github.com/compodoc/compodoc/issues/541)
+* **search:** better results display + enable wildcards ([43c6d5d](https://github.com/compodoc/compodoc/commit/43c6d5d)), closes [#537](https://github.com/compodoc/compodoc/issues/537) [#447](https://github.com/compodoc/compodoc/issues/447)
+* **routing:** routes without routing module ([11a742c](https://github.com/compodoc/compodoc/commit/11a742c)), closes [#518](https://github.com/compodoc/compodoc/issues/518) [#488](https://github.com/compodoc/compodoc/issues/488)
+
 <a name="1.1.2"></a>
 # [1.1.2](https://github.com/compodoc/compodoc/compare/1.1.1...1.1.2) (2018-04-09)
 
