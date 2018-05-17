@@ -867,9 +867,15 @@ export class Application {
                     }
                 });
                 // Order things
-                ngModule.compodocLinks.components = _.sortBy(ngModule.compodocLinks.components, ['name']);
-                ngModule.compodocLinks.directives = _.sortBy(ngModule.compodocLinks.directives, ['name']);
-                ngModule.compodocLinks.injectables = _.sortBy(ngModule.compodocLinks.injectables, ['name']);
+                ngModule.compodocLinks.components = _.sortBy(ngModule.compodocLinks.components, [
+                    'name'
+                ]);
+                ngModule.compodocLinks.directives = _.sortBy(ngModule.compodocLinks.directives, [
+                    'name'
+                ]);
+                ngModule.compodocLinks.injectables = _.sortBy(ngModule.compodocLinks.injectables, [
+                    'name'
+                ]);
                 ngModule.compodocLinks.pipes = _.sortBy(ngModule.compodocLinks.pipes, ['name']);
 
                 ngModule.declarations = _.sortBy(ngModule.declarations, ['name']);
@@ -939,19 +945,9 @@ export class Application {
             let loop = () => {
                 if (i < len) {
                     let pipe = this.configuration.mainData.pipes[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            pipe.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                pipe.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            pipe.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(pipe.file)) {
+                        logger.info(` ${pipe.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(pipe.file);
                         pipe.readme = marked(readme);
                     }
                     let page = {
@@ -990,19 +986,9 @@ export class Application {
             let loop = () => {
                 if (i < len) {
                     let classe = this.configuration.mainData.classes[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            classe.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                classe.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            classe.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(classe.file)) {
+                        logger.info(` ${classe.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(classe.file);
                         classe.readme = marked(readme);
                     }
                     let page = {
@@ -1041,19 +1027,9 @@ export class Application {
             let loop = () => {
                 if (i < len) {
                     let interf = this.configuration.mainData.interfaces[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            interf.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                interf.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            interf.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(interf.file)) {
+                        logger.info(` ${interf.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(interf.file);
                         interf.readme = marked(readme);
                     }
                     let page = {
@@ -1203,19 +1179,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i <= len - 1) {
                     let component = this.configuration.mainData.components[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            component.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                component.name
-                            } has a README file, include it`
-                        );
-                        let readmeFile = $markdownengine.readNeighbourReadmeFile(
-                            component.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(component.file)) {
+                        logger.info(` ${component.name} has a README file, include it`);
+                        let readmeFile = $markdownengine.readNeighbourReadmeFile(component.file);
                         component.readme = marked(readmeFile);
                         let page = {
                             path: 'components',
@@ -1232,11 +1198,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                         this.configuration.addPage(page);
                         if (component.templateUrl.length > 0) {
-                            logger.info(
-                                ` ${
-                                    component.name
-                                } has a templateUrl, include it`
-                            );
+                            logger.info(` ${component.name} has a templateUrl, include it`);
                             this.handleTemplateurl(component).then(
                                 () => {
                                     i++;
@@ -1266,11 +1228,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                         this.configuration.addPage(page);
                         if (component.templateUrl.length > 0) {
-                            logger.info(
-                                ` ${
-                                    component.name
-                                } has a templateUrl, include it`
-                            );
+                            logger.info(` ${component.name} has a templateUrl, include it`);
                             this.handleTemplateurl(component).then(
                                 () => {
                                     i++;
@@ -1306,19 +1264,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i < len) {
                     let directive = this.configuration.mainData.directives[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            directive.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                directive.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            directive.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(directive.file)) {
+                        logger.info(` ${directive.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(directive.file);
                         directive.readme = marked(readme);
                     }
                     let page = {
@@ -1358,19 +1306,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i < len) {
                     let injec = this.configuration.mainData.injectables[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            injec.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                injec.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            injec.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(injec.file)) {
+                        logger.info(` ${injec.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(injec.file);
                         injec.readme = marked(readme);
                     }
                     let page = {
@@ -1410,19 +1348,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i < len) {
                     let interceptor = this.configuration.mainData.interceptors[i];
-                    if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            interceptor.file
-                        )
-                    ) {
-                        logger.info(
-                            ` ${
-                                interceptor.name
-                            } has a README file, include it`
-                        );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            interceptor.file
-                        );
+                    if ($markdownengine.hasNeighbourReadmeFile(interceptor.file)) {
+                        logger.info(` ${interceptor.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(interceptor.file);
                         interceptor.readme = marked(readme);
                     }
                     let page = {
@@ -2163,33 +2091,43 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public processPages() {
         let pages = _.sortBy(this.configuration.pages, ['name']);
 
-        logger.info('Process menu');
-
-        this.htmlEngine.renderMenu(this.configuration.mainData)
+        logger.info('Process pages');
+        Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
-                logger.info('Process pages');
-                Promise.all(pages.map(page => this.processPage(page)))
-                    .then(() => {
-                        this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
-                            () => {
-                                if (this.configuration.mainData.additionalPages.length > 0) {
-                                    this.processAdditionalPages();
-                                } else {
-                                    if (this.configuration.mainData.assetsFolder !== '') {
-                                        this.processAssetsFolder();
-                                    }
-                                    this.processResources();
-                                }
-                            },
-                            e => {
-                                logger.error(e);
+                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                    () => {
+                        if (this.configuration.mainData.additionalPages.length > 0) {
+                            this.processAdditionalPages();
+                        } else {
+                            if (this.configuration.mainData.assetsFolder !== '') {
+                                this.processAssetsFolder();
                             }
-                        );
-                    })
-                    .catch(e => {
+                            this.processResources();
+                        }
+                    },
+                    e => {
                         logger.error(e);
-                    });
+                    }
+                );
+            })
+            .then(() => {
+                return this.processMenu(this.configuration.mainData);
+            })
+            .catch(e => {
+                logger.error(e);
             });
+    }
+
+    private processMenu(mainData): Promise<void> {
+        logger.info('Process Menu...');
+
+        return this.htmlEngine.renderMenu(mainData).then(htmlData => {
+            let finalPath = `${mainData.output}menu.html`;
+            return this.fileEngine.write(finalPath, htmlData).catch(err => {
+                logger.error('Error during ' + finalPath + ' page generation');
+                return Promise.reject('');
+            });
+        });
     }
 
     public processAdditionalPages() {
@@ -2225,7 +2163,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let testOutputDir = this.configuration.mainData.output.match(process.cwd());
 
             if (testOutputDir && testOutputDir.length > 0) {
-                finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
+                finalOutput = this.configuration.mainData.output.replace(
+                    process.cwd() + path.sep,
+                    ''
+                );
             }
 
             const destination = path.join(

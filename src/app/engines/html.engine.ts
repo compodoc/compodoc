@@ -18,8 +18,8 @@ export class HtmlEngine {
     constructor(
         configuration: ConfigurationInterface,
         dependenciesEngine: DependenciesEngine,
-        private fileEngine: FileEngine = new FileEngine()) {
-
+        private fileEngine: FileEngine = new FileEngine()
+    ) {
         const helper = new HtmlEngineHelpers();
         helper.registerHelpers(Handlebars, configuration, dependenciesEngine);
     }
@@ -67,12 +67,14 @@ export class HtmlEngine {
             'package-dependencies'
         ];
 
-        return Promise
-            .all(partials.map(partial => {
+        return Promise.all(
+            partials.map(partial => {
                 return this.fileEngine
                     .get(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
                     .then(data => Handlebars.registerPartial(partial, data));
-            })).then(() => {
+            })
+        )
+            .then(() => {
                 return this.fileEngine
                     .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
                     .then(data => {
@@ -82,7 +84,8 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
-            }).then(() => {
+            })
+            .then(() => {
                 return this.fileEngine
                     .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
                     .then(menuTemplate => {
@@ -91,20 +94,19 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
-            }).then(() => { });
+            });
     }
 
     public renderMenu(data) {
-        return new Promise((resolve, reject) => {
-            try {
-                this.compiledMobileMenu = this.precompiledMenu({...data});
+        return this.fileEngine
+            .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+            .then(menuTemplate => {
                 data.menu = 'normal';
-                this.compiledMenu = this.precompiledMenu({...data});
-                resolve();
-            } catch(err) {
-                reject(err);
-            }
-        });
+                return Handlebars.compile(menuTemplate, {
+                    preventIndent: true,
+                    strict: true
+                })({ ...data });
+            });
     }
 
     public render(mainData: any, page: any): string {
@@ -116,27 +118,31 @@ export class HtmlEngine {
 
         return this.compiledPage({
             data: o
-        }).replace('<!-- XS MENU CONTENT -->', this.compiledMobileMenu).replace('<!-- NORMAL MENU CONTENT -->', this.compiledMenu);
+        });
     }
 
     public generateCoverageBadge(outputFolder, coverageData) {
-        return this.fileEngine.get(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
-            .then(data => {
-                let template: any = Handlebars.compile(data);
-                let result = template({
-                    data: coverageData
-                });
-                let testOutputDir = outputFolder.match(process.cwd());
-                if (testOutputDir && testOutputDir.length > 0) {
-                    outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
-                }
-
-                return this.fileEngine
-                    .write(outputFolder + path.sep + '/images/coverage-badge.svg', result)
-                    .catch(err => {
-                        logger.error('Error during coverage badge file generation ', err);
-                        return Promise.reject(err);
+        return this.fileEngine
+            .get(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
+            .then(
+                data => {
+                    let template: any = Handlebars.compile(data);
+                    let result = template({
+                        data: coverageData
                     });
-            }, err => Promise.reject('Error during coverage badge generation'));
+                    let testOutputDir = outputFolder.match(process.cwd());
+                    if (testOutputDir && testOutputDir.length > 0) {
+                        outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
+                    }
+
+                    return this.fileEngine
+                        .write(outputFolder + path.sep + '/images/coverage-badge.svg', result)
+                        .catch(err => {
+                            logger.error('Error during coverage badge file generation ', err);
+                            return Promise.reject(err);
+                        });
+                },
+                err => Promise.reject('Error during coverage badge generation')
+            );
     }
 }
