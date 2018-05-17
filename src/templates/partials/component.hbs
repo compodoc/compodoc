@@ -59,7 +59,7 @@
     {{#isTabEnabled navTabs "example"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "example"}}active in{{/isInitialTab}}" id="c-example">
         {{#each component.exampleUrls}}
-            <iframe src="{{this}}">
+            <iframe class="exampleContainer" src="{{this}}">
                 <p>Your browser does not support iframes.</p>
             </iframe>
         {{/each}}

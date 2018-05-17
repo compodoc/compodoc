@@ -237,7 +237,7 @@ describe('CLI simple generation - big app', () => {
     it('should have an example tab', () => {
         const file = read(distFolder + '/components/TodoComponent.html');
         expect(file).to.contain('data-link="example">Examples</a');
-        expect(file).to.contain('iframe src=');
+        expect(file).to.contain('iframe class="exampleContainer"');
     });
 
     it('should have managed array declaration in modules', () => {
