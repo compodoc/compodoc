@@ -1,4 +1,5 @@
-<nav>
+<script>
+  const templateContent = (isNormalMode) => `<nav>
 
     <ul class="list">
 
@@ -8,9 +9,7 @@
 
         <li class="divider"></li>
 
-        {{#compare menu "===" 'normal' }}
-            {{> search-input }}
-        {{/compare}}
+        ${ isNormalMode ? `{{> search-input }}` : '' }
 
         <li class="chapter">
             <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}index.html"><span class="fa fa-home"></span>Getting started</a>
@@ -62,21 +61,13 @@
         {{#if additionalPages}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#additional-pages"
-                {{else}}
-                    data-target="#xs-additional-pages"
-                {{/compare}}>
+              ${ isNormalMode ? 'data-target="#additional-pages"' : 'data-target="#xs-additional-pages"'}>
                 <span class="fa fa-fw fa-book"></span>
                 <span>{{includesName}}</span>
                 <span class="fa fa-angle-down"></span>
             </div>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="additional-pages"
-                {{else}}
-                    id="xs-additional-pages"
-                {{/compare}}>
+                ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }>
                 {{#each additionalPages}}
                     <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
                         <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a>
@@ -90,23 +81,14 @@
         <li class="chapter modules">
             <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html">
                 <div class="menu-toggler linked" data-toggle="collapse"
-                    {{#compare menu "===" 'normal' }}
-                        data-target="#modules-links"
-                    {{else}}
-                        data-target="#xs-modules-links"
-                    {{/compare}}
-                >
+                    ${ isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }>
                     <span class="fa fa-fw fa-archive"></span>
                     <span class="link-name">Modules</span>
                     <span class="fa fa-angle-down"></span>
                 </div>
             </a>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="modules-links"
-                {{else}}
-                    id="xs-modules-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }>
                 {{#each modules}}
                     <li class="link">
                         <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" data-type="entity-link">{{ name }}</a>
@@ -224,21 +206,13 @@
             {{#element-alone components 'component'}}
                 <li class="chapter">
                     <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#components-links"
-                        {{else}}
-                            data-target="#xs-components-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"' }>
                         <span class="fa fa-fw fa-cogs"></span>
                         <span>Components</span>
                         <span class="fa fa-angle-down"></span>
                     </div>
                     <ul class="links collapse"
-                        {{#compare menu "===" 'normal' }}
-                            id="components-links"
-                        {{else}}
-                            id="xs-components-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
                         {{#each components}}
                             <li class="link">
                                 <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -253,21 +227,13 @@
             {{#element-alone directives 'directive'}}
                 <li class="chapter">
                     <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#directives-links"
-                        {{else}}
-                            data-target="#xs-directives-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'data-target="#directives-links"' : 'data-target="#xs-directives-links"' }>
                         <span class="fa fa-fw fa-code"></span>
                         <span>Directives</span>
                         <span class="fa fa-angle-down"></span>
                     </div>
                     <ul class="links collapse"
-                        {{#compare menu "===" 'normal' }}
-                            id="directives-links"
-                        {{else}}
-                            id="xs-directives-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
                         {{#each directives}}
                             <li class="link">
                                 <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -281,21 +247,13 @@
         {{#if classes}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#classes-links"
-                {{else}}
-                    data-target="#xs-classes-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }>
                 <span class="fa fa-fw fa-file-code-o"></span>
                 <span>Classes</span>
                 <span class="fa fa-angle-down"></span>
             </div>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="classes-links"
-                {{else}}
-                    id="xs-classes-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
                 {{#each classes}}
                     <li class="link">
                         <a href="{{relativeURL ../depth 'classes'}}classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -309,21 +267,13 @@
             {{#element-alone injectables 'injectable'}}
                 <li class="chapter">
                     <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#injectables-links"
-                        {{else}}
-                            data-target="#xs-injectables-links"
-                        {{/compare}}>
+                        ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"' }>
                         <span class="fa fa-fw fa-long-arrow-down"></span>
                         <span>Injectables</span>
                         <span class="fa fa-angle-down"></span>
                     </div>
                     <ul class="links collapse"
-                        {{#compare menu "===" 'normal' }}
-                            id="injectables-links"
-                        {{else}}
-                            id="xs-injectables-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
                         {{#each injectables}}
                             <li class="link">
                                 <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -337,21 +287,13 @@
         {{#if interceptors}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#interceptors-links"
-                {{else}}
-                    data-target="#xs-interceptors-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"' }>
                 <span class="fa fa-fw fa-exchange"></span>
                 <span>Interceptors</span>
                 <span class="fa fa-angle-down"></span>
             </div>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="interceptors-links"
-                {{else}}
-                    id="xs-interceptors-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
                 {{#each interceptors}}
                     <li class="link">
                         <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -364,21 +306,13 @@
         {{#if interfaces}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#interfaces-links"
-                {{else}}
-                    data-target="#xs-interfaces-links"
-                {{/compare}}>
+                ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"' }>
                 <span class="fa fa-fw fa-info"></span>
                 <span>Interfaces</span>
                 <span class="fa fa-angle-down"></span>
             </div>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="interfaces-links"
-                {{else}}
-                    id="xs-interfaces-links"
-                {{/compare}}>
+            ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
                 {{#each interfaces}}
                     <li class="link">
                         <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -392,21 +326,13 @@
             {{#element-alone pipes 'pipe'}}
                 <li class="chapter">
                     <div class="simple menu-toggler" data-toggle="collapse"
-                        {{#compare menu "===" 'normal' }}
-                            data-target="#pipes-links"
-                        {{else}}
-                            data-target="#xs-pipes-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'data-target="#pipes-links"' : 'data-target="#xs-pipes-links"' }>
                         <span class="fa fa-fw fa-plus"></span>
                         <span>Pipes</span>
                         <span class="fa fa-angle-down"></span>
                     </div>
                     <ul class="links collapse"
-                        {{#compare menu "===" 'normal' }}
-                            id="pipes-links"
-                        {{else}}
-                            id="xs-pipes-links"
-                        {{/compare}}>
+                    ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
                         {{#each pipes}}
                             <li class="link">
                                 <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
@@ -420,21 +346,13 @@
         {{#if miscellaneous}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
-                {{#compare menu "===" 'normal' }}
-                    data-target="#miscellaneous-links"
-                {{else}}
-                    data-target="#xs-miscellaneous-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"' }>
                 <span class="fa fa-fw fa-cubes"></span>
                 <span>Miscellaneous</span>
                 <span class="fa fa-angle-down"></span>
             </div>
             <ul class="links collapse"
-                {{#compare menu "===" 'normal' }}
-                    id="miscellaneous-links"
-                {{else}}
-                    id="xs-miscellaneous-links"
-                {{/compare}}>
+            ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
                 {{#compare miscellaneous.enumerations.length ">" 0 }}
                     <li class="link">
                       <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link">Enums</a>
@@ -479,12 +397,12 @@
                 Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
+                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
                         {{else}}
-                            <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
+                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                         {{/compare}}
                     {{else}}
-                    <img data-src="{{relativeURL depth 'logo'}}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
+                    <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                     {{/if}}
                 </a>
         </li>
@@ -492,4 +410,13 @@
 
     </ul>
 
-</nav>
+</nav>`;
+
+  customElements.define('compodoc-menu', class extends HTMLElement {
+    constructor() {
+      super();
+      const isNormalMode = this.getAttribute('mode') === 'normal';
+      this.innerHTML = templateContent(isNormalMode);
+    }
+  });
+</script>
