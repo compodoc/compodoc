@@ -101,7 +101,7 @@ export class ImportsUtil {
         const file =
             typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
                 ? ast.getSourceFile(sourceFile.fileName)
-                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
+                : ast.addExistingSourceFileIfExists(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
@@ -135,33 +135,32 @@ export class ImportsUtil {
         });
 
         if (typeof searchedImport !== 'undefined') {
-            let importPath = path.resolve(
-                path.dirname(sourceFile.fileName) +
-                    '/' +
-                    searchedImport.getModuleSpecifierValue() +
-                    '.ts'
-            );
-            const sourceFileImport =
-                typeof ast.getSourceFile(importPath) !== 'undefined'
-                    ? ast.getSourceFile(importPath)
-                    : ast.addExistingSourceFile(importPath); // tslint:disable-line
+            let importPathReference = searchedImport.getModuleSpecifierSourceFile();
+            let importPath;
+            if (typeof importPathReference !== 'undefined') {
+                importPath = importPathReference.compilerNode.fileName;
+                const sourceFileImport =
+                    typeof ast.getSourceFile(importPath) !== 'undefined'
+                        ? ast.getSourceFile(importPath)
+                        : ast.addExistingSourceFileIfExists(importPath); // tslint:disable-line
 
-            if (sourceFileImport) {
-                let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;
-                let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
-                if (variableDeclaration) {
-                    let variableKind = variableDeclaration.getKind();
+                if (sourceFileImport) {
+                    let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;
+                    let variableDeclaration = sourceFileImport.getVariableDeclaration(variableName);
+                    if (variableDeclaration) {
+                        let variableKind = variableDeclaration.getKind();
 
-                    if (variableKind && variableKind === SyntaxKind.VariableDeclaration) {
-                        let initializer = variableDeclaration.getInitializer();
-                        if (initializer) {
-                            let initializerKind = initializer.getKind();
-                            if (
-                                initializerKind &&
-                                initializerKind === SyntaxKind.ObjectLiteralExpression
-                            ) {
-                                let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
-                                return compilerNode.properties;
+                        if (variableKind && variableKind === SyntaxKind.VariableDeclaration) {
+                            let initializer = variableDeclaration.getInitializer();
+                            if (initializer) {
+                                let initializerKind = initializer.getKind();
+                                if (
+                                    initializerKind &&
+                                    initializerKind === SyntaxKind.ObjectLiteralExpression
+                                ) {
+                                    let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
+                                    return compilerNode.properties;
+                                }
                             }
                         }
                     }
