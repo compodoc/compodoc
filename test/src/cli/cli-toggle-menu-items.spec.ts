@@ -23,7 +23,7 @@ describe('CLI toggle menu items', () => {
                 done('error');
             }
             stdoutString = ls.stdout.toString();
-            fooIndexFile = read(`${distFolder}/menu.html`);
+            fooIndexFile = read(`${distFolder}/js/menu-wc.js`);
             done();
         });
         after(() => tmp.clean(distFolder));

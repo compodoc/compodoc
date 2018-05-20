@@ -96,7 +96,7 @@ describe('CLI duplicates support', () => {
     });
 
     it('should support component inside module', () => {
-        let file = read(distFolder + '/menu.html');
+        let file = read(distFolder + '/js/menu-wc.js');
         file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length
@@ -108,7 +108,7 @@ describe('CLI duplicates support', () => {
     });
 
     it('should support component inside module with duplicate', () => {
-        let file = read(distFolder + '/menu.html');
+        let file = read(distFolder + '/js/menu-wc.js');
         file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length

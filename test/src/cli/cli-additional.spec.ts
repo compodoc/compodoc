@@ -31,13 +31,13 @@ describe('CLI Additional documentation', () => {
             done('error');
         }
         stdoutString = ls.stdout.toString();
-        fooMenuFile = read(`${distFolder}/menu.html`);
+        fooMenuFile = read(`${distFolder}/js/menu-wc.js`);
         done();
     });
     after(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
-        expect(fooMenuFile.indexOf('<a href="../additional-documentation/big-introduction') > -1).to
+        expect(fooMenuFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to
             .be.true;
         expect(fooMenuFile.indexOf('Big Introduction') > -1).to.be.true;
     });
@@ -67,9 +67,9 @@ describe('CLI Additional documentation', () => {
 
     it('should generate every link containing its parent reference', () => {
         [
-            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3.html',
-            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
-            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html',
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
+            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
         ].map(linkRef => expect(fooMenuFile.indexOf(linkRef) > -1).to.be.true);
 
         expect(
@@ -81,7 +81,7 @@ describe('CLI Additional documentation', () => {
 
     it('should have links in correct order', () => {
         expect(fooMenuFile).to.contain(
-            `<li class="link for-chapter3">\n                        <a href="../additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>\n                    </li>`
+            `<li class="link for-chapter3">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>\n                    </li>`
         );
     });
 });

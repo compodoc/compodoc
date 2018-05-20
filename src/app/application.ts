@@ -2122,7 +2122,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Process Menu...');
 
         return this.htmlEngine.renderMenu(mainData).then(htmlData => {
-            let finalPath = `${mainData.output}menu.html`;
+            let finalPath = `${mainData.output}/js/menu-wc.js`;
             return this.fileEngine.write(finalPath, htmlData).catch(err => {
                 logger.error('Error during ' + finalPath + ' page generation');
                 return Promise.reject('');

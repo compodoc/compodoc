@@ -19,13 +19,13 @@ describe('CLI Uniq id for file', () => {
             console.error(`shell error: ${ls.stderr.toString()}`);
             done('error');
         }
-        indexFile = read(`${distFolder}/menu.html`);
+        indexFile = read(`${distFolder}/js/menu-wc.js`);
 
         done();
     });
     after(() => tmp.clean(distFolder));
 
     it('it should contain a uniqid', () => {
-        expect(indexFile).to.contain('6392bbbd114021b59c52f837ecd63c53');
+        expect(indexFile).to.contain('d804531423069f8c2044cc306032361f');
     });
 });

@@ -1,390 +1,410 @@
-<script>
-  const templateContent = (isNormalMode) => `<nav>
+customElements.define('compodoc-menu', class extends HTMLElement {
+    constructor() {
+        super();
+        this.isNormalMode = this.getAttribute('mode') === 'normal';
+    }
 
-    <ul class="list">
+    connectedCallback() {
+        this.render(this.isNormalMode);
+    }
 
-        <li class="title">
-            <a href="{{relativeURL depth pageType 'root'}}index.html" data-type="index-link">{{documentationMainName}}</a>
-        </li>
+    render(isNormalMode) {
+        let tp = lithtml.html(`<nav>
 
-        <li class="divider"></li>
-
-        ${ isNormalMode ? `{{> search-input }}` : '' }
-
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}index.html"><span class="fa fa-home"></span>Getting started</a>
-            <ul class="links">
-                {{#if readme}}
-                    <li class="link">
-                        <a {{#compare context "===" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "===" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "!==" 'overview'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
-                            {{#compare context "!==" 'readme'}} href="{{relativeURL depth pageType 'root'}}overview.html" {{/compare}}
+        <ul class="list">
+    
+            <li class="title">
+                <a href="index.html" data-type="index-link">todomvc-angular documentation</a>
+            </li>
+    
+            <li class="divider"></li>
+    
+            ${ isNormalMode ? `<div id="book-search-input" role="search">
+        <input type="text" placeholder="Type to search">
+    </div>
+    ` : ''}
+    
+            <li class="chapter">
+                <a data-type="chapter-link" href="index.html"><span class="fa fa-home"></span>Getting started</a>
+                <ul class="links">
+                        <li class="link">
+                            <a 
+                                
+                                 href="overview.html" 
+                                 href="overview.html" 
+                                data-type="chapter-link">
+                                <span class="fa fa-fw fa-th"></span>Overview
+                            </a>
+                        </li>
+                        <li class="link">
+                          <a href="index.html" data-type="chapter-link"><span class="fa fa-file-text-o"></span>README</a>
+                        </li>
+                        <li class="link">
+                                <a href="license.html"
                             data-type="chapter-link">
-                            <span class="fa fa-fw fa-th"></span>Overview
-                        </a>
+                                <span class="fa fa-fw fa-file-text-o"></span>LICENSE
+                            </a>
+                        </li>
+                        <li class="link">
+                            <a href="dependencies.html"
+                                data-type="chapter-link">
+                                <span class="fa fa-fw fa-list"></span>Dependencies
+                            </a>
+                        </li>
+                </ul>
+            </li>
+    
+    
+            <li class="chapter modules">
+                <a data-type="chapter-link" href="modules.html">
+                    <div class="menu-toggler linked" data-toggle="collapse"
+                        ${ isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"'}>
+                        <span class="fa fa-fw fa-archive"></span>
+                        <span class="link-name">Modules</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <ul class="links collapse"
+                ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"'}>
+                        <li class="link">
+                            <a href="modules/AboutModule.html" data-type="entity-link">AboutModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-AboutModule-d804531423069f8c2044cc306032361f"' : 'data-target="#xs-components-links-module-AboutModule-d804531423069f8c2044cc306032361f"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-AboutModule-d804531423069f8c2044cc306032361f"' : 'id="xs-components-links-module-AboutModule-d804531423069f8c2044cc306032361f"'}>
+                                            <li class="link">
+                                                <a href="components/AboutComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AboutComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/AboutRoutingModule.html" data-type="entity-link">AboutRoutingModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-AboutRoutingModule-25941652c9fd7c3719f6c686f3a624d3"' : 'data-target="#xs-components-links-module-AboutRoutingModule-25941652c9fd7c3719f6c686f3a624d3"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-AboutRoutingModule-25941652c9fd7c3719f6c686f3a624d3"' : 'id="xs-components-links-module-AboutRoutingModule-25941652c9fd7c3719f6c686f3a624d3"'}>
+                                            <li class="link">
+                                                <a href="components/CompodocComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">CompodocComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/TodoMVCComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">TodoMVCComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"' : 'data-target="#xs-components-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"' : 'id="xs-components-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"'}>
+                                            <li class="link">
+                                                <a href="components/AppComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">AppComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#injectables-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"' : 'data-target="#xs-injectables-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"'}>
+                                        <span class="fa fa-fw fa-long-arrow-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="injectables-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"' : 'id="xs-injectables-links-module-AppModule-55ce4aec19bd367e7364682505d6f911"'}>
+                                            <li class="link">
+                                                <a href="injectables/TodoStore.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules"}>TodoStore</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/AppRoutingModule.html" data-type="entity-link">AppRoutingModule</a>
+                        </li>
+                        <li class="link">
+                            <a href="modules/FooterModule.html" data-type="entity-link">FooterModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-FooterModule-4e191cecda8c3d37ff4e026741ad4b67"' : 'data-target="#xs-components-links-module-FooterModule-4e191cecda8c3d37ff4e026741ad4b67"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-FooterModule-4e191cecda8c3d37ff4e026741ad4b67"' : 'id="xs-components-links-module-FooterModule-4e191cecda8c3d37ff4e026741ad4b67"'}>
+                                            <li class="link">
+                                                <a href="components/FooterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/HeaderModule.html" data-type="entity-link">HeaderModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-HeaderModule-dbb430531d4e5c57116a0fe2ca03a303"' : 'data-target="#xs-components-links-module-HeaderModule-dbb430531d4e5c57116a0fe2ca03a303"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-HeaderModule-dbb430531d4e5c57116a0fe2ca03a303"' : 'id="xs-components-links-module-HeaderModule-dbb430531d4e5c57116a0fe2ca03a303"'}>
+                                            <li class="link">
+                                                <a href="components/HeaderComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">HeaderComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/HomeModule.html" data-type="entity-link">HomeModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-HomeModule-46a64e4b5573f20021ef984444a5f202"' : 'data-target="#xs-components-links-module-HomeModule-46a64e4b5573f20021ef984444a5f202"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-HomeModule-46a64e4b5573f20021ef984444a5f202"' : 'id="xs-components-links-module-HomeModule-46a64e4b5573f20021ef984444a5f202"'}>
+                                            <li class="link">
+                                                <a href="components/HomeComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">HomeComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/HomeRoutingModule.html" data-type="entity-link">HomeRoutingModule</a>
+                        </li>
+                        <li class="link">
+                            <a href="modules/ListModule.html" data-type="entity-link">ListModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-ListModule-0ca13adefb71461ce6b80d2c5acae47e"' : 'data-target="#xs-components-links-module-ListModule-0ca13adefb71461ce6b80d2c5acae47e"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-ListModule-0ca13adefb71461ce6b80d2c5acae47e"' : 'id="xs-components-links-module-ListModule-0ca13adefb71461ce6b80d2c5acae47e"'}>
+                                            <li class="link">
+                                                <a href="components/ListComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ListComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                        <li class="link">
+                            <a href="modules/TodoModule.html" data-type="entity-link">TodoModule</a>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#components-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'data-target="#xs-components-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                        <span class="fa fa-fw fa-cogs"></span>
+                                        <span>Components</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="components-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'id="xs-components-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                            <li class="link">
+                                                <a href="components/TodoComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">TodoComponent</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#directives-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'data-target="#xs-directives-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                        <span class="fa fa-fw fa-code"></span>
+                                        <span>Directives</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="directives-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'id="xs-directives-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                            <li class="link">
+                                                <a href="directives/DoNothingDirective.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">DoNothingDirective</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse"
+                                        ${ isNormalMode ? 'data-target="#pipes-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'data-target="#xs-pipes-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                        <span class="fa fa-fw fa-plus"></span>
+                                        <span>Pipes</span>
+                                        <span class="fa fa-angle-down"></span>
+                                    </div>
+                                    <ul class="links collapse"
+                                        ${ isNormalMode ? 'id="pipes-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"' : 'id="xs-pipes-links-module-TodoModule-f511f1dcb48009f273b93f18e4b27268"'}>
+                                            <li class="link">
+                                                <a href="pipes/FirstUpperPipe.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FirstUpperPipe</a>
+                                            </li>
+                                    </ul>
+                                </li>
+                        </li>
+                </ul>
+            </li>
+    
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse"
+                        ${ isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"'}>
+                            <span class="fa fa-fw fa-cogs"></span>
+                            <span>Components</span>
+                            <span class="fa fa-angle-down"></span>
+                        </div>
+                        <ul class="links collapse"
+                        ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"'}>
+                                <li class="link">
+                                    <a href="components/EmptyComponent.html" data-type="entity-link">EmptyComponent</a>
+                                </li>
+                                <li class="link">
+                                    <a href="components/EmptyParentComponent.html" data-type="entity-link">EmptyParentComponent</a>
+                                </li>
+                        </ul>
                     </li>
-                    <li class="link">
-                      <a href="{{relativeURL depth pageType 'root'}}index.html" data-type="chapter-link"><span class="fa fa-file-text-o"></span>README</a>
-                    </li>
-                {{else}}
-                    <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}index.html"
-                            data-type="chapter-link">
-                            <span class="fa fa-fw fa-th" ></span>Overview
-                        </a>
-                    </li>
-                {{/if}}
-                {{#each markdowns}}
-                    <li class="link">
-                        {{#compare name "!==" 'readme'}}
-                            <a href="{{relativeURL ../depth pageType 'root' name}}{{name}}.html"
-                        {{else}}
-                            <a href="{{relativeURL depth pageType 'root'}}index.html"
-                        {{/compare}}
-                        data-type="chapter-link">
-                            <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
-                        </a>
-                    </li>
-                {{/each}}
-                {{#orLength packageDependencies packagePeerDependencies}}
-                    <li class="link">
-                        <a href="{{relativeURL depth pageType 'root'}}dependencies.html"
-                            data-type="chapter-link">
-                            <span class="fa fa-fw fa-list"></span>Dependencies
-                        </a>
-                    </li>
-                {{/orLength}}
-            </ul>
-        </li>
-
-        {{#if additionalPages}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-              ${ isNormalMode ? 'data-target="#additional-pages"' : 'data-target="#xs-additional-pages"'}>
-                <span class="fa fa-fw fa-book"></span>
-                <span>{{includesName}}</span>
-                <span class="fa fa-angle-down"></span>
-            </div>
-            <ul class="links collapse"
-                ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }>
-                {{#each additionalPages}}
-                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
-                        <a href="{{relativeURL ../depth 'additional-page'}}{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if modules}}
-        <li class="chapter modules">
-            <a data-type="chapter-link" href="{{relativeURL depth pageType 'root'}}modules.html">
-                <div class="menu-toggler linked" data-toggle="collapse"
-                    ${ isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }>
-                    <span class="fa fa-fw fa-archive"></span>
-                    <span class="link-name">Modules</span>
+    
+    
+            <li class="chapter">
+                <div class="simple menu-toggler" data-toggle="collapse"
+                ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"'}>
+                    <span class="fa fa-fw fa-file-code-o"></span>
+                    <span>Classes</span>
                     <span class="fa fa-angle-down"></span>
                 </div>
-            </a>
-            <ul class="links collapse"
-            ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }>
-                {{#each modules}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" data-type="entity-link">{{ name }}</a>
-                        {{#compare compodocLinks.components.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    ${ isNormalMode ? 'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"' }>
-                                    <span class="fa fa-fw fa-cogs"></span>
-                                    <span>Components</span>
-                                    <span class="fa fa-angle-down"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    ${ isNormalMode ? 'id="components-links-{{id}}"' : 'id="xs-components-links-{{id}}"' }>
-                                    {{#each compodocLinks.components}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.directives.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    ${ isNormalMode ? 'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"' }>
-                                    <span class="fa fa-fw fa-code"></span>
-                                    <span>Directives</span>
-                                    <span class="fa fa-angle-down"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    ${ isNormalMode ? 'id="directives-links-{{id}}"' : 'id="xs-directives-links-{{id}}"' }>
-                                    {{#each compodocLinks.directives}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.injectables.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    ${ isNormalMode ? 'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }>
-                                    <span class="fa fa-fw fa-long-arrow-down"></span>
-                                    <span>Injectables</span>
-                                    <span class="fa fa-angle-down"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    ${ isNormalMode ? 'id="injectables-links-{{id}}"' : 'id="xs-injectables-links-{{id}}"' }>
-                                    {{#each compodocLinks.injectables}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules"}>{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                        {{#compare compodocLinks.pipes.length ">" 0}}
-                            <li class="chapter inner">
-                                <div class="simple menu-toggler" data-toggle="collapse"
-                                    ${ isNormalMode ? 'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"' }>
-                                    <span class="fa fa-fw fa-plus"></span>
-                                    <span>Pipes</span>
-                                    <span class="fa fa-angle-down"></span>
-                                </div>
-                                <ul class="links collapse"
-                                    ${ isNormalMode ? 'id="pipes-links-{{id}}"' : 'id="xs-pipes-links-{{id}}"' }>
-                                    {{#each compodocLinks.pipes}}
-                                        <li class="link">
-                                            <a href="{{relativeURL ../../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/compare}}
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if components}}
-            {{#element-alone components 'component'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                    ${ isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"' }>
-                        <span class="fa fa-fw fa-cogs"></span>
-                        <span>Components</span>
-                        <span class="fa fa-angle-down"></span>
-                    </div>
-                    <ul class="links collapse"
-                    ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
-                        {{#each components}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'components'}}components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if directives}}
-            {{#element-alone directives 'directive'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                    ${ isNormalMode ? 'data-target="#directives-links"' : 'data-target="#xs-directives-links"' }>
-                        <span class="fa fa-fw fa-code"></span>
-                        <span>Directives</span>
-                        <span class="fa fa-angle-down"></span>
-                    </div>
-                    <ul class="links collapse"
-                    ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
-                        {{#each directives}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'directives'}}directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if classes}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-            ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }>
-                <span class="fa fa-fw fa-file-code-o"></span>
-                <span>Classes</span>
-                <span class="fa fa-angle-down"></span>
-            </div>
-            <ul class="links collapse"
-            ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
-                {{#each classes}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'classes'}}classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if injectables}}
-            {{#element-alone injectables 'injectable'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                        ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"' }>
-                        <span class="fa fa-fw fa-long-arrow-down"></span>
-                        <span>Injectables</span>
-                        <span class="fa fa-angle-down"></span>
-                    </div>
-                    <ul class="links collapse"
-                    ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
-                        {{#each injectables}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'injectables'}}injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if interceptors}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-            ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"' }>
-                <span class="fa fa-fw fa-exchange"></span>
-                <span>Interceptors</span>
-                <span class="fa fa-angle-down"></span>
-            </div>
-            <ul class="links collapse"
-            ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
-                {{#each interceptors}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'interceptors'}}interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if interfaces}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-                ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"' }>
-                <span class="fa fa-fw fa-info"></span>
-                <span>Interfaces</span>
-                <span class="fa fa-angle-down"></span>
-            </div>
-            <ul class="links collapse"
-            ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
-                {{#each interfaces}}
-                    <li class="link">
-                        <a href="{{relativeURL ../depth 'interfaces'}}interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                    </li>
-                {{/each}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#if pipes}}
-            {{#element-alone pipes 'pipe'}}
-                <li class="chapter">
-                    <div class="simple menu-toggler" data-toggle="collapse"
-                    ${ isNormalMode ? 'data-target="#pipes-links"' : 'data-target="#xs-pipes-links"' }>
-                        <span class="fa fa-fw fa-plus"></span>
-                        <span>Pipes</span>
-                        <span class="fa fa-angle-down"></span>
-                    </div>
-                    <ul class="links collapse"
-                    ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
-                        {{#each pipes}}
-                            <li class="link">
-                                <a href="{{relativeURL ../depth 'pipes'}}pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </li>
-            {{/element-alone}}
-        {{/if}}
-
-        {{#if miscellaneous}}
-        <li class="chapter">
-            <div class="simple menu-toggler" data-toggle="collapse"
-            ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"' }>
-                <span class="fa fa-fw fa-cubes"></span>
-                <span>Miscellaneous</span>
-                <span class="fa fa-angle-down"></span>
-            </div>
-            <ul class="links collapse"
-            ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
-                {{#compare miscellaneous.enumerations.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/enumerations.html" data-type="entity-link">Enums</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.functions.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/functions.html" data-type="entity-link">Functions</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.typealiases.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/typealiases.html" data-type="entity-link">Type aliases</a>
-                    </li>
-                {{/compare}}
-                {{#compare miscellaneous.variables.length ">" 0 }}
-                    <li class="link">
-                      <a href="{{relativeURL depth 'miscellaneous'}}miscellaneous/variables.html" data-type="entity-link">Variables</a>
-                    </li>
-                {{/compare}}
-            </ul>
-        </li>
-        {{/if}}
-
-        {{#unless disableRoutesGraph}}
-            {{#if routes}}
-            <li class="chapter">
-                <a data-type="chapter-link" href="{{relativeURL depth 'routes'}}routes.html"><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+                <ul class="links collapse"
+                ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"'}>
+                        <li class="link">
+                            <a href="classes/StringIndexedItems.html" data-type="entity-link">StringIndexedItems</a>
+                        </li>
+                        <li class="link">
+                            <a href="classes/Todo.html" data-type="entity-link">Todo</a>
+                        </li>
+                </ul>
             </li>
-            {{/if}}
-        {{/unless}}
-
-        {{#unless disableCoverage}}
-        <li class="chapter">
-            <a data-type="chapter-link" href="{{relativeURL depth 'coverage'}}coverage.html"><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
-        </li>
-        {{/unless}}
-
-        {{#unless hideGenerator}}
-        <li class="divider"></li>
-        <li class="copyright">
-                Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
-                    {{#if theme }}
-                        {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
-                        {{else}}
-                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
-                        {{/compare}}
-                    {{else}}
-                    <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
-                    {{/if}}
-                </a>
-        </li>
-        {{/unless}}
-
-    </ul>
-
-</nav>`;
-
-  customElements.define('compodoc-menu', class extends HTMLElement {
-    constructor() {
-      super();
-      const isNormalMode = this.getAttribute('mode') === 'normal';
-      this.innerHTML = templateContent(isNormalMode);
+    
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse"
+                            ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"'}>
+                            <span class="fa fa-fw fa-long-arrow-down"></span>
+                            <span>Injectables</span>
+                            <span class="fa fa-angle-down"></span>
+                        </div>
+                        <ul class="links collapse"
+                        ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"'}>
+                                <li class="link">
+                                    <a href="injectables/EmitterService.html" data-type="entity-link">EmitterService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="injectables/EmptyService.html" data-type="entity-link">EmptyService</a>
+                                </li>
+                                <li class="link">
+                                    <a href="injectables/TodoStore.html" data-type="entity-link">TodoStore</a>
+                                </li>
+                        </ul>
+                    </li>
+    
+            <li class="chapter">
+                <div class="simple menu-toggler" data-toggle="collapse"
+                ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"'}>
+                    <span class="fa fa-fw fa-exchange"></span>
+                    <span>Interceptors</span>
+                    <span class="fa fa-angle-down"></span>
+                </div>
+                <ul class="links collapse"
+                ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"'}>
+                        <li class="link">
+                            <a href="interceptors/NoopInterceptor.html" data-type="entity-link">NoopInterceptor</a>
+                        </li>
+                </ul>
+            </li>
+    
+            <li class="chapter">
+                <div class="simple menu-toggler" data-toggle="collapse"
+                    ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"'}>
+                    <span class="fa fa-fw fa-info"></span>
+                    <span>Interfaces</span>
+                    <span class="fa fa-angle-down"></span>
+                </div>
+                <ul class="links collapse"
+                ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"'}>
+                        <li class="link">
+                            <a href="interfaces/ClockInterface.html" data-type="entity-link">ClockInterface</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/InterfaceWithIndexable.html" data-type="entity-link">InterfaceWithIndexable</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/LabelledTodo.html" data-type="entity-link">LabelledTodo</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/SearchFunc.html" data-type="entity-link">SearchFunc</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/StringArray.html" data-type="entity-link">StringArray</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/TimeInterface.html" data-type="entity-link">TimeInterface</a>
+                        </li>
+                        <li class="link">
+                            <a href="interfaces/superString.html" data-type="entity-link">superString</a>
+                        </li>
+                </ul>
+            </li>
+    
+    
+            <li class="chapter">
+                <div class="simple menu-toggler" data-toggle="collapse"
+                ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"'}>
+                    <span class="fa fa-fw fa-cubes"></span>
+                    <span>Miscellaneous</span>
+                    <span class="fa fa-angle-down"></span>
+                </div>
+                <ul class="links collapse"
+                ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"'}>
+                        <li class="link">
+                          <a href="miscellaneous/enumerations.html" data-type="entity-link">Enums</a>
+                        </li>
+                        <li class="link">
+                          <a href="miscellaneous/functions.html" data-type="entity-link">Functions</a>
+                        </li>
+                        <li class="link">
+                          <a href="miscellaneous/typealiases.html" data-type="entity-link">Type aliases</a>
+                        </li>
+                        <li class="link">
+                          <a href="miscellaneous/variables.html" data-type="entity-link">Variables</a>
+                        </li>
+                </ul>
+            </li>
+    
+                <li class="chapter">
+                    <a data-type="chapter-link" href="routes.html"><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+                </li>
+    
+            <li class="chapter">
+                <a data-type="chapter-link" href="coverage.html"><span class="fa fa-fw fa-tasks"></span>Documentation coverage</a>
+            </li>
+    
+            <li class="divider"></li>
+            <li class="copyright">
+                    Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
+                                <img data-src="images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
+                    </a>
+            </li>
+    
+        </ul>
+    
+    </nav>`);
+        this.innerHTML = tp.strings;
     }
-  });
-</script>
+});

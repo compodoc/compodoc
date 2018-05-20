@@ -14,9 +14,6 @@
         <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
             {{/compare}}
         {{/if}}
-
-        <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
-        <link rel="import" href="{{relativeURL data.depth }}menu.html" >
     </head>
     <body>
 
@@ -132,6 +129,20 @@
            </div>
        </div>
 
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
+            var COMPODOC_CURRENT_PAGE_CONTEXT = '{{data.context}}';
+            {{#if data.filename }}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.filename}}.html';
+            {{else}}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+            {{/if}}
+       </script>
+
+       <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/lit-html.js"></script>
+       <script src="{{relativeURL data.depth }}js/menu-wc.js"></script>
+
        <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
 
        <script src="{{relativeURL data.depth }}js/libs/es6-shim.min.js"></script>
@@ -140,16 +151,6 @@
        <script src="{{relativeURL data.depth }}js/libs/zepto.min.js"></script>
 
        <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
-
-        <script>
-            var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
-            var COMPODOC_CURRENT_PAGE_CONTEXT = '{{data.context}}';
-            {{#if data.filename }}
-            var COMPODOC_CURRENT_PAGE_URL = '{{data.filename}}.html';
-            {{else}}
-            var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
-            {{/if}}
-        </script>
 
        <script src="{{relativeURL data.depth }}js/search/search.js"></script>
        <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
