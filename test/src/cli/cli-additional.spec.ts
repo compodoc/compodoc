@@ -6,8 +6,7 @@ const tmp = temporaryDir();
 
 describe('CLI Additional documentation', () => {
     let stdoutString = undefined;
-    let fooIndexFile: string;
-    let fooServiceFile;
+    let fooMenuFile;
 
     const distFolder = tmp.name + '-additional';
 
@@ -32,15 +31,15 @@ describe('CLI Additional documentation', () => {
             done('error');
         }
         stdoutString = ls.stdout.toString();
-        fooIndexFile = read(`${distFolder}/index.html`);
+        fooMenuFile = read(`${distFolder}/menu.html`);
         done();
     });
     after(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
-        expect(fooIndexFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to
+        expect(fooMenuFile.indexOf('<a href="../additional-documentation/big-introduction') > -1).to
             .be.true;
-        expect(fooIndexFile.indexOf('Big Introduction') > -1).to.be.true;
+        expect(fooMenuFile.indexOf('Big Introduction') > -1).to.be.true;
     });
 
     it('it should have generated files', () => {
@@ -58,31 +57,31 @@ describe('CLI Additional documentation', () => {
     });
 
     it('should contain up to 5 level of depth', () => {
-        expect(fooIndexFile.indexOf('for-chapter2') > -1).to.be.true;
-        expect(fooIndexFile.indexOf('for-chapter3') > -1).to.be.true;
-        expect(fooIndexFile.indexOf('for-chapter4') > -1).to.be.true;
-        expect(fooIndexFile.indexOf('for-chapter5') > -1).to.be.true;
+        expect(fooMenuFile.indexOf('for-chapter2') > -1).to.be.true;
+        expect(fooMenuFile.indexOf('for-chapter3') > -1).to.be.true;
+        expect(fooMenuFile.indexOf('for-chapter4') > -1).to.be.true;
+        expect(fooMenuFile.indexOf('for-chapter5') > -1).to.be.true;
 
-        expect(fooIndexFile.indexOf('for-chapter6') > -1).to.be.false;
+        expect(fooMenuFile.indexOf('for-chapter6') > -1).to.be.false;
     });
 
     it('should generate every link containing its parent reference', () => {
         [
-            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html',
-            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
-            '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
-        ].map(linkRef => expect(fooIndexFile.indexOf(linkRef) > -1).to.be.true);
+            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3.html',
+            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html',
+            '<a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5.html'
+        ].map(linkRef => expect(fooMenuFile.indexOf(linkRef) > -1).to.be.true);
 
         expect(
-            fooIndexFile.indexOf(
+            fooMenuFile.indexOf(
                 '<a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4/edit-level5/edit-level6.html'
             ) > -1
         ).to.be.false;
     });
 
     it('should have links in correct order', () => {
-        expect(fooIndexFile).to.contain(
-            `<li class="link for-chapter3">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>\n                    </li>`
+        expect(fooMenuFile).to.contain(
+            `<li class="link for-chapter3">\n                        <a href="../additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\n                    </li>\n                    <li class="link for-chapter4">\n                        <a href="../additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>\n                    </li>`
         );
     });
 });
