@@ -23,7 +23,7 @@
     "postpublish": "npm run restore-package-json",
     "lint": "tslint -p tsconfig.json src/**/*.ts",
     "test:watch": "npm-watch",
-    "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
+    "test:simple-doc": "node_modules/.bin/ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4002 & sleep 20",
     "pretest-e2e-mocha": "./node_modules/.bin/tsc -p test/tsconfig-e2e.json",
     "test-e2e-mocha": "./node_modules/.bin/mocha --opts test/mocha-e2e.opts",
     "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
