@@ -2119,7 +2119,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     }
 
     private processMenu(mainData): Promise<void> {
-        logger.info('Process Menu...');
+        logger.info('Process menu...');
 
         return this.htmlEngine.renderMenu(mainData).then(htmlData => {
             let finalPath = `${mainData.output}/js/menu-wc.js`;
