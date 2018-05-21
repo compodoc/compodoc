@@ -129,7 +129,7 @@ let testSearchBarWithNoResults = function (cb) {
 let driver;
 
 // Cannot connect to localhost...
-describe('WIN 10 | Edge | Compodoc page', function () {
+/*describe('WIN 10 | Edge | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 10';
         capabilities.browserName = 'MicrosoftEdge';
@@ -147,7 +147,7 @@ describe('WIN 10 | Edge | Compodoc page', function () {
     after(function (done) {
         endTests(this, done);
     });
-});
+});*/
 
 describe('WIN 10 | Firefox | Compodoc page', function () {
 
@@ -199,7 +199,7 @@ describe('WIN 10 | Chrome | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 10';
         capabilities.browserName = 'chrome';
-        capabilities.version = '61';
+        capabilities.version = '66.0';
 
         startDriver(done, 'http://127.0.0.1:4002/components/FooComponent.html');
     });
@@ -224,7 +224,7 @@ describe('WIN 8.1 | Chrome | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 8.1';
         capabilities.browserName = 'chrome';
-        capabilities.version = '61';
+        capabilities.version = '66.0';
 
         startDriver(done, 'http://127.0.0.1:4002/components/FooComponent.html');
     });
@@ -249,7 +249,7 @@ describe('WIN 8 | Chrome | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 8';
         capabilities.browserName = 'chrome';
-        capabilities.version = '61';
+        capabilities.version = '66.0';
 
         startDriver(done, 'http://127.0.0.1:4002/components/FooComponent.html');
     });
@@ -274,7 +274,7 @@ describe('WIN 7 | Chrome | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 7';
         capabilities.browserName = 'chrome';
-        capabilities.version = '61.0';
+        capabilities.version = '66.0';
 
         startDriver(done, 'http://127.0.0.1:4002/components/FooComponent.html');
     });
@@ -338,7 +338,7 @@ describe('Linux | Firefox | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Linux';
         capabilities.browserName = 'firefox';
-        capabilities.version = '45';
+        capabilities.version = '45.0';
 
         startDriver(done, 'http://127.0.0.1:4002/components/FooComponent.html');
     });
