@@ -4,39 +4,70 @@
     (factory((global['lithtml'] = {})));
 }(this, (function (exports) { 'use strict';
 
+    'use strict';
+
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+    var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+    var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+    function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
     /**
-     * @license
-     * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
-     * This code may only be used under the BSD style license found at
-     * http://polymer.github.io/LICENSE.txt
-     * The complete set of authors may be found at
-     * http://polymer.github.io/AUTHORS.txt
-     * The complete set of contributors may be found at
-     * http://polymer.github.io/CONTRIBUTORS.txt
-     * Code distributed by Google as part of the polymer project is also
-     * subject to an additional IP rights grant found at
-     * http://polymer.github.io/PATENTS.txt
-     */
+         * @license
+         * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+         * This code may only be used under the BSD style license found at
+         * http://polymer.github.io/LICENSE.txt
+         * The complete set of authors may be found at
+         * http://polymer.github.io/AUTHORS.txt
+         * The complete set of contributors may be found at
+         * http://polymer.github.io/CONTRIBUTORS.txt
+         * Code distributed by Google as part of the polymer project is also
+         * subject to an additional IP rights grant found at
+         * http://polymer.github.io/PATENTS.txt
+         */
     // The first argument to JS template tags retain identity across multiple
     // calls to a tag for the same literal, so we can cache work done per literal
     // in a Map.
-    const templateCaches = new Map();
+    var templateCaches = new Map();
     /**
      * Interprets a template literal as an HTML template that can efficiently
      * render to and update a container.
      */
-    const html = (strings, ...values) => new TemplateResult(strings, values, 'html');
+    var html = function html(strings) {
+        for (var _len = arguments.length, values = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            values[_key - 1] = arguments[_key];
+        }
+
+        return new TemplateResult(strings, values, 'html');
+    };
     /**
      * Interprets a template literal as an SVG template that can efficiently
      * render to and update a container.
      */
-    const svg = (strings, ...values) => new SVGTemplateResult(strings, values, 'svg');
+    var svg = function svg(strings) {
+        for (var _len2 = arguments.length, values = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            values[_key2 - 1] = arguments[_key2];
+        }
+
+        return new SVGTemplateResult(strings, values, 'svg');
+    };
     /**
      * The return type of `html`, which holds a Template and the values from
      * interpolated expressions.
      */
-    class TemplateResult {
-        constructor(strings, values, type, partCallback = defaultPartCallback) {
+
+    var TemplateResult = function () {
+        function TemplateResult(strings, values, type) {
+            var partCallback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : defaultPartCallback;
+
+            _classCallCheck(this, TemplateResult);
+
             this.strings = strings;
             this.values = values;
             this.type = type;
@@ -45,29 +76,38 @@
         /**
          * Returns a string of HTML used to create a <template> element.
          */
-        getHTML() {
-            const l = this.strings.length - 1;
-            let html = '';
-            let isTextBinding = true;
-            for (let i = 0; i < l; i++) {
-                const s = this.strings[i];
-                html += s;
-                // We're in a text position if the previous string closed its tags.
-                // If it doesn't have any tags, then we use the previous text position
-                // state.
-                const closing = findTagClose(s);
-                isTextBinding = closing > -1 ? closing < s.length : isTextBinding;
-                html += isTextBinding ? nodeMarker : marker;
+
+
+        _createClass(TemplateResult, [{
+            key: 'getHTML',
+            value: function getHTML() {
+                var l = this.strings.length - 1;
+                var html = '';
+                var isTextBinding = true;
+                for (var i = 0; i < l; i++) {
+                    var s = this.strings[i];
+                    html += s;
+                    // We're in a text position if the previous string closed its tags.
+                    // If it doesn't have any tags, then we use the previous text position
+                    // state.
+                    var closing = findTagClose(s);
+                    isTextBinding = closing > -1 ? closing < s.length : isTextBinding;
+                    html += isTextBinding ? nodeMarker : marker;
+                }
+                html += this.strings[l];
+                return html;
             }
-            html += this.strings[l];
-            return html;
-        }
-        getTemplateElement() {
-            const template = document.createElement('template');
-            template.innerHTML = this.getHTML();
-            return template;
-        }
-    }
+        }, {
+            key: 'getTemplateElement',
+            value: function getTemplateElement() {
+                var template = document.createElement('template');
+                template.innerHTML = this.getHTML();
+                return template;
+            }
+        }]);
+
+        return TemplateResult;
+    }();
     /**
      * A TemplateResult for SVG fragments.
      *
@@ -75,30 +115,49 @@
      * SVG namespace, then modifies the template to remove the <svg> tag so that
      * clones only container the original fragment.
      */
-    class SVGTemplateResult extends TemplateResult {
-        getHTML() {
-            return `<svg>${super.getHTML()}</svg>`;
+
+
+    var SVGTemplateResult = function (_TemplateResult) {
+        _inherits(SVGTemplateResult, _TemplateResult);
+
+        function SVGTemplateResult() {
+            _classCallCheck(this, SVGTemplateResult);
+
+            return _possibleConstructorReturn(this, (SVGTemplateResult.__proto__ || Object.getPrototypeOf(SVGTemplateResult)).apply(this, arguments));
         }
-        getTemplateElement() {
-            const template = super.getTemplateElement();
-            const content = template.content;
-            const svgElement = content.firstChild;
-            content.removeChild(svgElement);
-            reparentNodes(content, svgElement.firstChild);
-            return template;
-        }
-    }
+
+        _createClass(SVGTemplateResult, [{
+            key: 'getHTML',
+            value: function getHTML() {
+                return '<svg>' + _get(SVGTemplateResult.prototype.__proto__ || Object.getPrototypeOf(SVGTemplateResult.prototype), 'getHTML', this).call(this) + '</svg>';
+            }
+        }, {
+            key: 'getTemplateElement',
+            value: function getTemplateElement() {
+                var template = _get(SVGTemplateResult.prototype.__proto__ || Object.getPrototypeOf(SVGTemplateResult.prototype), 'getTemplateElement', this).call(this);
+                var content = template.content;
+                var svgElement = content.firstChild;
+                content.removeChild(svgElement);
+                reparentNodes(content, svgElement.firstChild);
+                return template;
+            }
+        }]);
+
+        return SVGTemplateResult;
+    }(TemplateResult);
     /**
      * The default TemplateFactory which caches Templates keyed on
      * result.type and result.strings.
      */
+
+
     function defaultTemplateFactory(result) {
-        let templateCache = templateCaches.get(result.type);
+        var templateCache = templateCaches.get(result.type);
         if (templateCache === undefined) {
             templateCache = new Map();
             templateCaches.set(result.type, templateCache);
         }
-        let template = templateCache.get(result.strings);
+        var template = templateCache.get(result.strings);
         if (template === undefined) {
             template = new Template(result, result.getTemplateElement());
             templateCache.set(result.strings, template);
@@ -119,20 +178,20 @@
      * @param templateFactory a function to create a Template or retreive one from
      *     cache.
      */
-    function render(result, container, templateFactory = defaultTemplateFactory) {
-        const template = templateFactory(result);
-        let instance = container.__templateInstance;
+    function render(result, container) {
+        var templateFactory = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultTemplateFactory;
+
+        var template = templateFactory(result);
+        var instance = container.__templateInstance;
         // Repeat render, just call update()
-        if (instance !== undefined && instance.template === template &&
-            instance._partCallback === result.partCallback) {
+        if (instance !== undefined && instance.template === template && instance._partCallback === result.partCallback) {
             instance.update(result.values);
             return;
         }
         // First render, create a new TemplateInstance and append it
-        instance =
-            new TemplateInstance(template, result.partCallback, templateFactory);
+        instance = new TemplateInstance(template, result.partCallback, templateFactory);
         container.__templateInstance = instance;
-        const fragment = instance._clone();
+        var fragment = instance._clone();
         instance.update(result.values);
         removeNodes(container, container.firstChild);
         container.appendChild(fragment);
@@ -141,13 +200,13 @@
      * An expression marker with embedded unique key to avoid collision with
      * possible text in templates.
      */
-    const marker = `{{lit-${String(Math.random()).slice(2)}}}`;
+    var marker = '{{lit-' + String(Math.random()).slice(2) + '}}';
     /**
      * An expression marker used text-posisitions, not attribute positions,
      * in template.
      */
-    const nodeMarker = `<!--${marker}-->`;
-    const markerRegex = new RegExp(`${marker}|${nodeMarker}`);
+    var nodeMarker = '<!--' + marker + '-->';
+    var markerRegex = new RegExp(marker + '|' + nodeMarker);
     /**
      * This regex extracts the attribute name preceding an attribute-position
      * expression. It does this by matching the syntax allowed for attributes
@@ -173,7 +232,7 @@
      *    * (") then any non-("), or
      *    * (') then any non-(')
      */
-    const lastAttributeNameRegex = /[ \x09\x0a\x0c\x0d]([^\0-\x1F\x7F-\x9F \x09\x0a\x0c\x0d"'>=/]+)[ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*)$/;
+    var lastAttributeNameRegex = /[ \x09\x0a\x0c\x0d]([^\0-\x1F\x7F-\x9F \x09\x0a\x0c\x0d"'>=/]+)[ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*)$/;
     /**
      * Finds the closing index of the last closed HTML tag.
      * This has 3 possible return values:
@@ -182,8 +241,8 @@
      *   - Some positive number < str.length, meaning the index of the closing '>'.
      */
     function findTagClose(str) {
-        const close = str.lastIndexOf('>');
-        const open = str.indexOf('<', close + 1);
+        var close = str.lastIndexOf('>');
+        var open = str.indexOf('<', close + 1);
         return open > -1 ? str.length : close;
     }
     /**
@@ -202,49 +261,53 @@
      * TemplateInstance could instead be more careful about which values it gives
      * to Part.update().
      */
-    class TemplatePart {
-        constructor(type, index, name, rawName, strings) {
-            this.type = type;
-            this.index = index;
-            this.name = name;
-            this.rawName = rawName;
-            this.strings = strings;
-        }
-    }
+
+    var TemplatePart = function TemplatePart(type, index, name, rawName, strings) {
+        _classCallCheck(this, TemplatePart);
+
+        this.type = type;
+        this.index = index;
+        this.name = name;
+        this.rawName = rawName;
+        this.strings = strings;
+    };
     /**
      * An updateable Template that tracks the location of dynamic parts.
      */
-    class Template {
-        constructor(result, element) {
-            this.parts = [];
-            this.element = element;
-            const content = this.element.content;
-            // Edge needs all 4 parameters present; IE11 needs 3rd parameter to be null
-            const walker = document.createTreeWalker(content, 133 /* NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT |
-                   NodeFilter.SHOW_TEXT */, null, false);
-            let index = -1;
-            let partIndex = 0;
-            const nodesToRemove = [];
-            // The actual previous node, accounting for removals: if a node is removed
-            // it will never be the previousNode.
-            let previousNode;
-            // Used to set previousNode at the top of the loop.
-            let currentNode;
-            while (walker.nextNode()) {
-                index++;
-                previousNode = currentNode;
-                const node = currentNode = walker.currentNode;
-                if (node.nodeType === 1 /* Node.ELEMENT_NODE */) {
+
+
+    var Template = function Template(result, element) {
+        _classCallCheck(this, Template);
+
+        this.parts = [];
+        this.element = element;
+        var content = this.element.content;
+        // Edge needs all 4 parameters present; IE11 needs 3rd parameter to be null
+        var walker = document.createTreeWalker(content, 133 /* NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT |
+                                                            NodeFilter.SHOW_TEXT */, null, false);
+        var index = -1;
+        var partIndex = 0;
+        var nodesToRemove = [];
+        // The actual previous node, accounting for removals: if a node is removed
+        // it will never be the previousNode.
+        var previousNode = void 0;
+        // Used to set previousNode at the top of the loop.
+        var currentNode = void 0;
+        while (walker.nextNode()) {
+            index++;
+            previousNode = currentNode;
+            var node = currentNode = walker.currentNode;
+            if (node.nodeType === 1 /* Node.ELEMENT_NODE */) {
                     if (!node.hasAttributes()) {
                         continue;
                     }
-                    const attributes = node.attributes;
+                    var attributes = node.attributes;
                     // Per https://developer.mozilla.org/en-US/docs/Web/API/NamedNodeMap,
                     // attributes are not guaranteed to be returned in document order. In
                     // particular, Edge/IE can return them out of order, so we cannot assume
                     // a correspondance between part index and attribute index.
-                    let count = 0;
-                    for (let i = 0; i < attributes.length; i++) {
+                    var count = 0;
+                    for (var i = 0; i < attributes.length; i++) {
                         if (attributes[i].value.indexOf(marker) >= 0) {
                             count++;
                         }
@@ -252,83 +315,93 @@
                     while (count-- > 0) {
                         // Get the template literal section leading up to the first
                         // expression in this attribute attribute
-                        const stringForPart = result.strings[partIndex];
+                        var stringForPart = result.strings[partIndex];
                         // Find the attribute name
-                        const attributeNameInPart = lastAttributeNameRegex.exec(stringForPart)[1];
+                        var attributeNameInPart = lastAttributeNameRegex.exec(stringForPart)[1];
                         // Find the corresponding attribute
                         // TODO(justinfagnani): remove non-null assertion
-                        const attribute = attributes.getNamedItem(attributeNameInPart);
-                        const stringsForAttributeValue = attribute.value.split(markerRegex);
+                        var attribute = attributes.getNamedItem(attributeNameInPart);
+                        var stringsForAttributeValue = attribute.value.split(markerRegex);
                         this.parts.push(new TemplatePart('attribute', index, attribute.name, attributeNameInPart, stringsForAttributeValue));
                         node.removeAttribute(attribute.name);
                         partIndex += stringsForAttributeValue.length - 1;
                     }
-                }
-                else if (node.nodeType === 3 /* Node.TEXT_NODE */) {
-                    const nodeValue = node.nodeValue;
+                } else if (node.nodeType === 3 /* Node.TEXT_NODE */) {
+                    var nodeValue = node.nodeValue;
                     if (nodeValue.indexOf(marker) < 0) {
                         continue;
                     }
-                    const parent = node.parentNode;
-                    const strings = nodeValue.split(markerRegex);
-                    const lastIndex = strings.length - 1;
+                    var parent = node.parentNode;
+                    var strings = nodeValue.split(markerRegex);
+                    var lastIndex = strings.length - 1;
                     // We have a part for each match found
                     partIndex += lastIndex;
                     // Generate a new text node for each literal section
                     // These nodes are also used as the markers for node parts
-                    for (let i = 0; i < lastIndex; i++) {
-                        parent.insertBefore((strings[i] === '')
-                            ? document.createComment('')
-                            : document.createTextNode(strings[i]), node);
+                    for (var _i = 0; _i < lastIndex; _i++) {
+                        parent.insertBefore(strings[_i] === '' ? document.createComment('') : document.createTextNode(strings[_i]), node);
                         this.parts.push(new TemplatePart('node', index++));
                     }
-                    parent.insertBefore(strings[lastIndex] === '' ?
-                        document.createComment('') :
-                        document.createTextNode(strings[lastIndex]), node);
+                    parent.insertBefore(strings[lastIndex] === '' ? document.createComment('') : document.createTextNode(strings[lastIndex]), node);
                     nodesToRemove.push(node);
+                } else if (node.nodeType === 8 /* Node.COMMENT_NODE */ && node.nodeValue === marker) {
+                var _parent = node.parentNode;
+                // Add a new marker node to be the startNode of the Part if any of the
+                // following are true:
+                //  * We don't have a previousSibling
+                //  * previousSibling is being removed (thus it's not the
+                //    `previousNode`)
+                //  * previousSibling is not a Text node
+                //
+                // TODO(justinfagnani): We should be able to use the previousNode here
+                // as the marker node and reduce the number of extra nodes we add to a
+                // template. See https://github.com/PolymerLabs/lit-html/issues/147
+                var previousSibling = node.previousSibling;
+                if (previousSibling === null || previousSibling !== previousNode || previousSibling.nodeType !== Node.TEXT_NODE) {
+                    _parent.insertBefore(document.createComment(''), node);
+                } else {
+                    index--;
                 }
-                else if (node.nodeType === 8 /* Node.COMMENT_NODE */ &&
-                    node.nodeValue === marker) {
-                    const parent = node.parentNode;
-                    // Add a new marker node to be the startNode of the Part if any of the
-                    // following are true:
-                    //  * We don't have a previousSibling
-                    //  * previousSibling is being removed (thus it's not the
-                    //    `previousNode`)
-                    //  * previousSibling is not a Text node
-                    //
-                    // TODO(justinfagnani): We should be able to use the previousNode here
-                    // as the marker node and reduce the number of extra nodes we add to a
-                    // template. See https://github.com/PolymerLabs/lit-html/issues/147
-                    const previousSibling = node.previousSibling;
-                    if (previousSibling === null || previousSibling !== previousNode ||
-                        previousSibling.nodeType !== Node.TEXT_NODE) {
-                        parent.insertBefore(document.createComment(''), node);
-                    }
-                    else {
-                        index--;
-                    }
-                    this.parts.push(new TemplatePart('node', index++));
-                    nodesToRemove.push(node);
-                    // If we don't have a nextSibling add a marker node.
-                    // We don't have to check if the next node is going to be removed,
-                    // because that node will induce a new marker if so.
-                    if (node.nextSibling === null) {
-                        parent.insertBefore(document.createComment(''), node);
-                    }
-                    else {
-                        index--;
-                    }
-                    currentNode = previousNode;
-                    partIndex++;
+                this.parts.push(new TemplatePart('node', index++));
+                nodesToRemove.push(node);
+                // If we don't have a nextSibling add a marker node.
+                // We don't have to check if the next node is going to be removed,
+                // because that node will induce a new marker if so.
+                if (node.nextSibling === null) {
+                    _parent.insertBefore(document.createComment(''), node);
+                } else {
+                    index--;
                 }
-            }
-            // Remove text binding nodes after the walk to not disturb the TreeWalker
-            for (const n of nodesToRemove) {
-                n.parentNode.removeChild(n);
+                currentNode = previousNode;
+                partIndex++;
             }
         }
-    }
+        // Remove text binding nodes after the walk to not disturb the TreeWalker
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = nodesToRemove[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var n = _step.value;
+
+                n.parentNode.removeChild(n);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    };
     /**
      * Returns a value ready to be inserted into a Part from a user-provided value.
      *
@@ -336,7 +409,9 @@
      * part. If the value is null, it's converted to undefined to work better
      * with certain DOM APIs, like textContent.
      */
-    const getValue = (part, value) => {
+
+
+    var getValue = function getValue(part, value) {
         // `null` as the value of a Text node will render the string 'null'
         // so we convert it to undefined
         if (isDirective(value)) {
@@ -345,20 +420,26 @@
         }
         return value === null ? undefined : value;
     };
-    const directive = (f) => {
+    var directive = function directive(f) {
         f.__litDirective = true;
         return f;
     };
-    const isDirective = (o) => typeof o === 'function' && o.__litDirective === true;
+    var isDirective = function isDirective(o) {
+        return typeof o === 'function' && o.__litDirective === true;
+    };
     /**
      * A sentinel value that signals that a value was handled by a directive and
      * should not be written to the DOM.
      */
-    const directiveValue = {};
-    const isPrimitiveValue = (value) => value === null ||
-        !(typeof value === 'object' || typeof value === 'function');
-    class AttributePart {
-        constructor(instance, element, name, strings) {
+    var directiveValue = {};
+    var isPrimitiveValue = function isPrimitiveValue(value) {
+        return value === null || !((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' || typeof value === 'function');
+    };
+
+    var AttributePart = function () {
+        function AttributePart(instance, element, name, strings) {
+            _classCallCheck(this, AttributePart);
+
             this.instance = instance;
             this.element = element;
             this.name = name;
@@ -366,262 +447,365 @@
             this.size = strings.length - 1;
             this._previousValues = [];
         }
-        _interpolate(values, startIndex) {
-            const strings = this.strings;
-            const l = strings.length - 1;
-            let text = '';
-            for (let i = 0; i < l; i++) {
-                text += strings[i];
-                const v = getValue(this, values[startIndex + i]);
-                if (v && v !== directiveValue &&
-                    (Array.isArray(v) || typeof v !== 'string' && v[Symbol.iterator])) {
-                    for (const t of v) {
-                        // TODO: we need to recursively call getValue into iterables...
-                        text += t;
+
+        _createClass(AttributePart, [{
+            key: '_interpolate',
+            value: function _interpolate(values, startIndex) {
+                var strings = this.strings;
+                var l = strings.length - 1;
+                var text = '';
+                for (var i = 0; i < l; i++) {
+                    text += strings[i];
+                    var v = getValue(this, values[startIndex + i]);
+                    if (v && v !== directiveValue && (Array.isArray(v) || typeof v !== 'string' && v[Symbol.iterator])) {
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = v[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var t = _step2.value;
+
+                                // TODO: we need to recursively call getValue into iterables...
+                                text += t;
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+                    } else {
+                        text += v;
                     }
                 }
-                else {
-                    text += v;
+                return text + strings[l];
+            }
+        }, {
+            key: '_equalToPreviousValues',
+            value: function _equalToPreviousValues(values, startIndex) {
+                for (var i = startIndex; i < startIndex + this.size; i++) {
+                    if (this._previousValues[i] !== values[i] || !isPrimitiveValue(values[i])) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return text + strings[l];
-        }
-        _equalToPreviousValues(values, startIndex) {
-            for (let i = startIndex; i < startIndex + this.size; i++) {
-                if (this._previousValues[i] !== values[i] ||
-                    !isPrimitiveValue(values[i])) {
-                    return false;
+        }, {
+            key: 'setValue',
+            value: function setValue(values, startIndex) {
+                if (this._equalToPreviousValues(values, startIndex)) {
+                    return;
                 }
-            }
-            return true;
-        }
-        setValue(values, startIndex) {
-            if (this._equalToPreviousValues(values, startIndex)) {
-                return;
-            }
-            const s = this.strings;
-            let value;
-            if (s.length === 2 && s[0] === '' && s[1] === '') {
-                // An expression that occupies the whole attribute value will leave
-                // leading and trailing empty strings.
-                value = getValue(this, values[startIndex]);
-                if (Array.isArray(value)) {
-                    value = value.join('');
+                var s = this.strings;
+                var value = void 0;
+                if (s.length === 2 && s[0] === '' && s[1] === '') {
+                    // An expression that occupies the whole attribute value will leave
+                    // leading and trailing empty strings.
+                    value = getValue(this, values[startIndex]);
+                    if (Array.isArray(value)) {
+                        value = value.join('');
+                    }
+                } else {
+                    value = this._interpolate(values, startIndex);
                 }
+                if (value !== directiveValue) {
+                    this.element.setAttribute(this.name, value);
+                }
+                this._previousValues = values;
             }
-            else {
-                value = this._interpolate(values, startIndex);
-            }
-            if (value !== directiveValue) {
-                this.element.setAttribute(this.name, value);
-            }
-            this._previousValues = values;
-        }
-    }
-    class NodePart {
-        constructor(instance, startNode, endNode) {
+        }]);
+
+        return AttributePart;
+    }();
+
+    var NodePart = function () {
+        function NodePart(instance, startNode, endNode) {
+            _classCallCheck(this, NodePart);
+
             this.instance = instance;
             this.startNode = startNode;
             this.endNode = endNode;
             this._previousValue = undefined;
         }
-        setValue(value) {
-            value = getValue(this, value);
-            if (value === directiveValue) {
-                return;
-            }
-            if (isPrimitiveValue(value)) {
-                // Handle primitive values
-                // If the value didn't change, do nothing
-                if (value === this._previousValue) {
+
+        _createClass(NodePart, [{
+            key: 'setValue',
+            value: function setValue(value) {
+                value = getValue(this, value);
+                if (value === directiveValue) {
                     return;
                 }
-                this._setText(value);
-            }
-            else if (value instanceof TemplateResult) {
-                this._setTemplateResult(value);
-            }
-            else if (Array.isArray(value) || value[Symbol.iterator]) {
-                this._setIterable(value);
-            }
-            else if (value instanceof Node) {
-                this._setNode(value);
-            }
-            else if (value.then !== undefined) {
-                this._setPromise(value);
-            }
-            else {
-                // Fallback, will render the string representation
-                this._setText(value);
-            }
-        }
-        _insert(node) {
-            this.endNode.parentNode.insertBefore(node, this.endNode);
-        }
-        _setNode(value) {
-            if (this._previousValue === value) {
-                return;
-            }
-            this.clear();
-            this._insert(value);
-            this._previousValue = value;
-        }
-        _setText(value) {
-            const node = this.startNode.nextSibling;
-            value = value === undefined ? '' : value;
-            if (node === this.endNode.previousSibling &&
-                node.nodeType === Node.TEXT_NODE) {
-                // If we only have a single text node between the markers, we can just
-                // set its value, rather than replacing it.
-                // TODO(justinfagnani): Can we just check if _previousValue is
-                // primitive?
-                node.textContent = value;
-            }
-            else {
-                this._setNode(document.createTextNode(value));
-            }
-            this._previousValue = value;
-        }
-        _setTemplateResult(value) {
-            const template = this.instance._getTemplate(value);
-            let instance;
-            if (this._previousValue && this._previousValue.template === template) {
-                instance = this._previousValue;
-            }
-            else {
-                instance = new TemplateInstance(template, this.instance._partCallback, this.instance._getTemplate);
-                this._setNode(instance._clone());
-                this._previousValue = instance;
-            }
-            instance.update(value.values);
-        }
-        _setIterable(value) {
-            // For an Iterable, we create a new InstancePart per item, then set its
-            // value to the item. This is a little bit of overhead for every item in
-            // an Iterable, but it lets us recurse easily and efficiently update Arrays
-            // of TemplateResults that will be commonly returned from expressions like:
-            // array.map((i) => html`${i}`), by reusing existing TemplateInstances.
-            // If _previousValue is an array, then the previous render was of an
-            // iterable and _previousValue will contain the NodeParts from the previous
-            // render. If _previousValue is not an array, clear this part and make a new
-            // array for NodeParts.
-            if (!Array.isArray(this._previousValue)) {
-                this.clear();
-                this._previousValue = [];
-            }
-            // Lets us keep track of how many items we stamped so we can clear leftover
-            // items from a previous render
-            const itemParts = this._previousValue;
-            let partIndex = 0;
-            for (const item of value) {
-                // Try to reuse an existing part
-                let itemPart = itemParts[partIndex];
-                // If no existing part, create a new one
-                if (itemPart === undefined) {
-                    // If we're creating the first item part, it's startNode should be the
-                    // container's startNode
-                    let itemStart = this.startNode;
-                    // If we're not creating the first part, create a new separator marker
-                    // node, and fix up the previous part's endNode to point to it
-                    if (partIndex > 0) {
-                        const previousPart = itemParts[partIndex - 1];
-                        itemStart = previousPart.endNode = document.createTextNode('');
-                        this._insert(itemStart);
+                if (isPrimitiveValue(value)) {
+                    // Handle primitive values
+                    // If the value didn't change, do nothing
+                    if (value === this._previousValue) {
+                        return;
                     }
-                    itemPart = new NodePart(this.instance, itemStart, this.endNode);
-                    itemParts.push(itemPart);
+                    this._setText(value);
+                } else if (value instanceof TemplateResult) {
+                    this._setTemplateResult(value);
+                } else if (Array.isArray(value) || value[Symbol.iterator]) {
+                    this._setIterable(value);
+                } else if (value instanceof Node) {
+                    this._setNode(value);
+                } else if (value.then !== undefined) {
+                    this._setPromise(value);
+                } else {
+                    // Fallback, will render the string representation
+                    this._setText(value);
                 }
-                itemPart.setValue(item);
-                partIndex++;
             }
-            if (partIndex === 0) {
-                this.clear();
-                this._previousValue = undefined;
+        }, {
+            key: '_insert',
+            value: function _insert(node) {
+                this.endNode.parentNode.insertBefore(node, this.endNode);
             }
-            else if (partIndex < itemParts.length) {
-                const lastPart = itemParts[partIndex - 1];
-                // Truncate the parts array so _previousValue reflects the current state
-                itemParts.length = partIndex;
-                this.clear(lastPart.endNode.previousSibling);
-                lastPart.endNode = this.endNode;
-            }
-        }
-        _setPromise(value) {
-            this._previousValue = value;
-            value.then((v) => {
+        }, {
+            key: '_setNode',
+            value: function _setNode(value) {
                 if (this._previousValue === value) {
-                    this.setValue(v);
+                    return;
                 }
-            });
-        }
-        clear(startNode = this.startNode) {
-            removeNodes(this.startNode.parentNode, startNode.nextSibling, this.endNode);
-        }
-    }
-    const defaultPartCallback = (instance, templatePart, node) => {
+                this.clear();
+                this._insert(value);
+                this._previousValue = value;
+            }
+        }, {
+            key: '_setText',
+            value: function _setText(value) {
+                var node = this.startNode.nextSibling;
+                value = value === undefined ? '' : value;
+                if (node === this.endNode.previousSibling && node.nodeType === Node.TEXT_NODE) {
+                    // If we only have a single text node between the markers, we can just
+                    // set its value, rather than replacing it.
+                    // TODO(justinfagnani): Can we just check if _previousValue is
+                    // primitive?
+                    node.textContent = value;
+                } else {
+                    this._setNode(document.createTextNode(value));
+                }
+                this._previousValue = value;
+            }
+        }, {
+            key: '_setTemplateResult',
+            value: function _setTemplateResult(value) {
+                var template = this.instance._getTemplate(value);
+                var instance = void 0;
+                if (this._previousValue && this._previousValue.template === template) {
+                    instance = this._previousValue;
+                } else {
+                    instance = new TemplateInstance(template, this.instance._partCallback, this.instance._getTemplate);
+                    this._setNode(instance._clone());
+                    this._previousValue = instance;
+                }
+                instance.update(value.values);
+            }
+        }, {
+            key: '_setIterable',
+            value: function _setIterable(value) {
+                // For an Iterable, we create a new InstancePart per item, then set its
+                // value to the item. This is a little bit of overhead for every item in
+                // an Iterable, but it lets us recurse easily and efficiently update Arrays
+                // of TemplateResults that will be commonly returned from expressions like:
+                // array.map((i) => html`${i}`), by reusing existing TemplateInstances.
+                // If _previousValue is an array, then the previous render was of an
+                // iterable and _previousValue will contain the NodeParts from the previous
+                // render. If _previousValue is not an array, clear this part and make a new
+                // array for NodeParts.
+                if (!Array.isArray(this._previousValue)) {
+                    this.clear();
+                    this._previousValue = [];
+                }
+                // Lets us keep track of how many items we stamped so we can clear leftover
+                // items from a previous render
+                var itemParts = this._previousValue;
+                var partIndex = 0;
+                var _iteratorNormalCompletion3 = true;
+                var _didIteratorError3 = false;
+                var _iteratorError3 = undefined;
+
+                try {
+                    for (var _iterator3 = value[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                        var item = _step3.value;
+
+                        // Try to reuse an existing part
+                        var itemPart = itemParts[partIndex];
+                        // If no existing part, create a new one
+                        if (itemPart === undefined) {
+                            // If we're creating the first item part, it's startNode should be the
+                            // container's startNode
+                            var itemStart = this.startNode;
+                            // If we're not creating the first part, create a new separator marker
+                            // node, and fix up the previous part's endNode to point to it
+                            if (partIndex > 0) {
+                                var previousPart = itemParts[partIndex - 1];
+                                itemStart = previousPart.endNode = document.createTextNode('');
+                                this._insert(itemStart);
+                            }
+                            itemPart = new NodePart(this.instance, itemStart, this.endNode);
+                            itemParts.push(itemPart);
+                        }
+                        itemPart.setValue(item);
+                        partIndex++;
+                    }
+                } catch (err) {
+                    _didIteratorError3 = true;
+                    _iteratorError3 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                            _iterator3.return();
+                        }
+                    } finally {
+                        if (_didIteratorError3) {
+                            throw _iteratorError3;
+                        }
+                    }
+                }
+
+                if (partIndex === 0) {
+                    this.clear();
+                    this._previousValue = undefined;
+                } else if (partIndex < itemParts.length) {
+                    var lastPart = itemParts[partIndex - 1];
+                    // Truncate the parts array so _previousValue reflects the current state
+                    itemParts.length = partIndex;
+                    this.clear(lastPart.endNode.previousSibling);
+                    lastPart.endNode = this.endNode;
+                }
+            }
+        }, {
+            key: '_setPromise',
+            value: function _setPromise(value) {
+                var _this2 = this;
+
+                this._previousValue = value;
+                value.then(function (v) {
+                    if (_this2._previousValue === value) {
+                        _this2.setValue(v);
+                    }
+                });
+            }
+        }, {
+            key: 'clear',
+            value: function clear() {
+                var startNode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.startNode;
+
+                removeNodes(this.startNode.parentNode, startNode.nextSibling, this.endNode);
+            }
+        }]);
+
+        return NodePart;
+    }();
+
+    var defaultPartCallback = function defaultPartCallback(instance, templatePart, node) {
         if (templatePart.type === 'attribute') {
             return new AttributePart(instance, node, templatePart.name, templatePart.strings);
-        }
-        else if (templatePart.type === 'node') {
+        } else if (templatePart.type === 'node') {
             return new NodePart(instance, node, node.nextSibling);
         }
-        throw new Error(`Unknown part type ${templatePart.type}`);
+        throw new Error('Unknown part type ' + templatePart.type);
     };
     /**
      * An instance of a `Template` that can be attached to the DOM and updated
      * with new values.
      */
-    class TemplateInstance {
-        constructor(template, partCallback, getTemplate) {
+
+    var TemplateInstance = function () {
+        function TemplateInstance(template, partCallback, getTemplate) {
+            _classCallCheck(this, TemplateInstance);
+
             this._parts = [];
             this.template = template;
             this._partCallback = partCallback;
             this._getTemplate = getTemplate;
         }
-        update(values) {
-            let valueIndex = 0;
-            for (const part of this._parts) {
-                if (part.size === undefined) {
-                    part.setValue(values[valueIndex]);
-                    valueIndex++;
-                }
-                else {
-                    part.setValue(values, valueIndex);
-                    valueIndex += part.size;
-                }
-            }
-        }
-        _clone() {
-            const fragment = document.importNode(this.template.element.content, true);
-            const parts = this.template.parts;
-            if (parts.length > 0) {
-                // Edge needs all 4 parameters present; IE11 needs 3rd parameter to be
-                // null
-                const walker = document.createTreeWalker(fragment, 133 /* NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT |
-                       NodeFilter.SHOW_TEXT */, null, false);
-                let index = -1;
-                for (let i = 0; i < parts.length; i++) {
-                    const part = parts[i];
-                    while (index < part.index) {
-                        index++;
-                        walker.nextNode();
+
+        _createClass(TemplateInstance, [{
+            key: 'update',
+            value: function update(values) {
+                var valueIndex = 0;
+                var _iteratorNormalCompletion4 = true;
+                var _didIteratorError4 = false;
+                var _iteratorError4 = undefined;
+
+                try {
+                    for (var _iterator4 = this._parts[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                        var part = _step4.value;
+
+                        if (part.size === undefined) {
+                            part.setValue(values[valueIndex]);
+                            valueIndex++;
+                        } else {
+                            part.setValue(values, valueIndex);
+                            valueIndex += part.size;
+                        }
                     }
-                    this._parts.push(this._partCallback(this, part, walker.currentNode));
+                } catch (err) {
+                    _didIteratorError4 = true;
+                    _iteratorError4 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                            _iterator4.return();
+                        }
+                    } finally {
+                        if (_didIteratorError4) {
+                            throw _iteratorError4;
+                        }
+                    }
                 }
             }
-            return fragment;
-        }
-    }
+        }, {
+            key: '_clone',
+            value: function _clone() {
+                var fragment = document.importNode(this.template.element.content, true);
+                var parts = this.template.parts;
+                if (parts.length > 0) {
+                    // Edge needs all 4 parameters present; IE11 needs 3rd parameter to be
+                    // null
+                    var _walker = document.createTreeWalker(fragment, 133 /* NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT |
+                                                                        NodeFilter.SHOW_TEXT */, null, false);
+                    var _index = -1;
+                    for (var i = 0; i < parts.length; i++) {
+                        var part = parts[i];
+                        while (_index < part.index) {
+                            _index++;
+                            _walker.nextNode();
+                        }
+                        this._parts.push(this._partCallback(this, part, _walker.currentNode));
+                    }
+                }
+                return fragment;
+            }
+        }]);
+
+        return TemplateInstance;
+    }();
     /**
      * Reparents nodes, starting from `startNode` (inclusive) to `endNode`
      * (exclusive), into another container (could be the same container), before
      * `beforeNode`. If `beforeNode` is null, it appends the nodes to the
      * container.
      */
-    const reparentNodes = (container, start, end = null, before = null) => {
-        let node = start;
+
+
+    var reparentNodes = function reparentNodes(container, start) {
+        var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+        var before = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+        var node = start;
         while (node !== end) {
-            const n = node.nextSibling;
+            var n = node.nextSibling;
             container.insertBefore(node, before);
             node = n;
         }
@@ -630,10 +814,12 @@
      * Removes nodes, starting from `startNode` (inclusive) to `endNode`
      * (exclusive), from `container`.
      */
-    const removeNodes = (container, startNode, endNode = null) => {
-        let node = startNode;
+    var removeNodes = function removeNodes(container, startNode) {
+        var endNode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+        var node = startNode;
         while (node !== endNode) {
-            const n = node.nextSibling;
+            var n = node.nextSibling;
             container.removeChild(node);
             node = n;
         }
