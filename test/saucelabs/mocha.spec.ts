@@ -133,8 +133,8 @@ describe('WIN 10 | Edge | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 10';
         capabilities.browserName = 'MicrosoftEdge';
-        capabilities.version = '16.16299';
-        startDriver(done, 'http://127.0.0.1:2000/components/FooComponent.html');
+        capabilities.version = '17.17134';
+        startDriver(done, 'http://127.0.0.1:5000/components/FooComponent.html');
     });
     // Test search bar
     it('should have a search bar, and handle results', function (done) {
@@ -154,7 +154,7 @@ describe('Mac El Capitan | Safari 10 | Compodoc page', function() {
         capabilities.platform = 'OS X 10.11';
         capabilities.browserName = 'safari';
         capabilities.version = '10.0';
-        startDriver(done, 'http://127.0.0.1:2000/components/FooComponent.html');
+        startDriver(done, 'http://127.0.0.1:5000/components/FooComponent.html');
     });
     // Test search bar
     it('should have a search bar, and handle results', function(done) {
