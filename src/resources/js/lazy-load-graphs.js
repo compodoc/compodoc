@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    let lazyGraphs = [].slice.call(document.querySelectorAll('[lazy]'));
-    let active = false;
+    var lazyGraphs = [].slice.call(document.querySelectorAll('[lazy]'));
+    var active = false;
 
-    const lazyLoad = () => {
+    var lazyLoad = () => {
         if (active === false) {
             active = true;
 
@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // initial load
     lazyLoad();
-    
-    const container = document.querySelector('.container-fluid.modules');
+
+    var container = document.querySelector('.container-fluid.modules');
     if (container) {
-      container.addEventListener('scroll', lazyLoad);
-      window.addEventListener('resize', lazyLoad);
-      window.addEventListener('orientationchange', lazyLoad);
+        container.addEventListener('scroll', lazyLoad);
+        window.addEventListener('resize', lazyLoad);
+        window.addEventListener('orientationchange', lazyLoad);
     }
 
 });

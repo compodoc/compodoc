@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var processLink = function(link, url) {
         if (url.charAt(0) !== '.') {
-            let prefix = '';
+            var prefix = '';
             switch(COMPODOC_CURRENT_PAGE_DEPTH) {
                 case 5:
                     prefix = '../../../../../';
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (entityLogo) {
                 var url = entityLogo.getAttribute('data-src');
                 if (url.charAt(0) !== '.') {
-                    let prefix = '';
+                    var prefix = '';
                     switch(COMPODOC_CURRENT_PAGE_DEPTH) {
                         case 5:
                             prefix = '../../../../../';
