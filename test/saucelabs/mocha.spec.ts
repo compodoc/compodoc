@@ -172,26 +172,6 @@ describe('WIN 10 | Edge | Compodoc page', function () {
     });
 });
 
-describe('WIN 10 | Edge | Compodoc page', function () {
-    before(function (done) {
-        capabilities.platform = 'Windows 10';
-        capabilities.browserName = 'MicrosoftEdge';
-        capabilities.version = '15.15063';
-        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
-    });
-    // Test search bar
-    it('should have a search bar, and handle results', function (done) {
-        testSearchBarWithResults(done);
-    });
-    it('should have a search bar, and handle results empty', function (done) {
-        testSearchBarWithNoResults(done);
-    });
-    // TODO : test routing
-    after(function (done) {
-        endTests(this, done);
-    });
-});
-
 describe('WIN 10 | Firefox | Compodoc page', function () {
 
     before(function (done) {
