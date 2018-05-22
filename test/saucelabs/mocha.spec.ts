@@ -128,7 +128,10 @@ let testSearchBarWithNoResults = function (cb) {
 };
 let driver;
 
-// Cannot connect to localhost...
+/**
+ * WIN 10
+ */
+
 describe('WIN 10 | Edge | Compodoc page', function () {
     before(function (done) {
         capabilities.platform = 'Windows 10';
@@ -148,6 +151,394 @@ describe('WIN 10 | Edge | Compodoc page', function () {
         endTests(this, done);
     });
 });
+
+describe('WIN 10 | Firefox | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '60.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 10 | IE | Compodoc page', function () {
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'internet explorer';
+        capabilities.version = '11.103';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 10 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 10';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '66.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+/**
+ * WIN 8
+ */
+
+describe('WIN 8 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 8';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '66.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('WIN 8 | Firefox | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 8';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '60.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+/**
+ * WIN 7
+ */
+
+describe('WIN 7 | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Windows 7';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '66.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+/*
+describe('WIN 7 | Firefox | Compodoc page', function() {
+    before(function(done) {
+        capabilities.browserName = 'firefox';
+        capabilities.version = '51';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+describe('WIN 7 | IE | Compodoc page', function() {
+    before(function(done) {
+        capabilities.browserName = 'internet explorer';
+        capabilities.version = '11';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+*/
+
+/**
+ * LINUX
+ */
+
+describe('Linux | Firefox | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Linux';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '45.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+describe('Linux | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'Linux';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '48.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+/**
+ * Mac High Sierra
+ */
+
+describe('Mac High Sierra | Safari | Compodoc page', function() {
+    before(function(done) {
+        capabilities.platform = 'macOS 10.13';
+        capabilities.browserName = 'safari';
+        capabilities.version = '11.0';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac High Sierra | Firefox | Compodoc page', function() {
+    before(function(done) {
+        capabilities.platform = 'macOS 10.13';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '60.0';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac High Sierra | Chrome | Compodoc page', function() {
+    before(function(done) {
+        capabilities.platform = 'macOS 10.13';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '66.0';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+/**
+ * Mac Sierra
+ */
+
+describe('Mac Sierra | Safari | Compodoc page', function() {
+    before(function(done) {
+        capabilities.platform = 'macOS 10.12';
+        capabilities.browserName = 'safari';
+        capabilities.version = '11.0';
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac Sierra | Firefox | Compodoc page', function() {
+
+    before(function(done) {
+        capabilities.platform = 'macOS 10.12';
+        capabilities.browserName = 'firefox';
+        capabilities.version = '60.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function(done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function(done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function(done) {
+        endTests(this, done);
+    });
+});
+
+describe('Mac Sierra | Chrome | Compodoc page', function () {
+
+    before(function (done) {
+        capabilities.platform = 'macOS 10.12';
+        capabilities.browserName = 'chrome';
+        capabilities.version = '66.0';
+
+        startDriver(done, 'http://localhost:4000/components/FooComponent.html');
+    });
+
+    // Test search bar
+    it('should have a search bar, and handle results', function (done) {
+        testSearchBarWithResults(done);
+    });
+
+    it('should have a search bar, and handle results empty', function (done) {
+        testSearchBarWithNoResults(done);
+    });
+
+    // TODO : test routing
+    after(function (done) {
+        endTests(this, done);
+    });
+});
+
+/**
+ * Mac El Capitan
+ */
 
 describe('Mac El Capitan | Safari 10 | Compodoc page', function() {
     before(function(done) {
