@@ -23,21 +23,18 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <ul class="links">
                 {{#if readme}}
                     <li class="link">
-                        <a {{#compare context "===" 'readme'}} href="overview.html" {{/compare}}
-                            {{#compare context "===" 'overview'}} href="overview.html" {{/compare}}
-                            {{#compare context "!==" 'overview'}} href="overview.html" {{/compare}}
-                            {{#compare context "!==" 'readme'}} href="overview.html" {{/compare}}
-                            data-type="chapter-link">
+                        <a href="overview.html" data-type="chapter-link">
                             <span class="fa fa-fw fa-th"></span>Overview
                         </a>
                     </li>
                     <li class="link">
-                      <a href="index.html" data-type="chapter-link"><span class="fa fa-file-text-o"></span>README</a>
+                        <a href="index.html" data-type="chapter-link">
+                            <span class="fa fa-file-text-o"></span>README
+                        </a>
                     </li>
                 {{else}}
                     <li class="link">
-                        <a href="index.html"
-                            data-type="chapter-link">
+                        <a href="index.html" data-type="chapter-link">
                             <span class="fa fa-fw fa-th" ></span>Overview
                         </a>
                     </li>
@@ -359,12 +356,12 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 Documentation generated using <a href="https://compodoc.github.io/website/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
-                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
+                            <img data-src="images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">
                         {{else}}
-                            <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
+                            <img data-src="images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                         {{/compare}}
                     {{else}}
-                    <img data-src="{{relativeURL data.depth }}images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
+                        <img data-src="images/compodoc-vectorise.svg" class="img-responsive" data-type="compodoc-logo">
                     {{/if}}
                 </a>
         </li>
