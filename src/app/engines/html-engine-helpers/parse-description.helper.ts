@@ -15,8 +15,8 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
 
         tagRegExp = description.indexOf(']{') !== -1 ? tagRegExpFull : tagRegExpLight;
 
-        const processTheLink = (string, tagInfo, leadingText) => {
-            let leading = extractLeadingText(string, tagInfo.completeTag);
+        const processTheLink = (string, matchedTag, leadingText) => {
+            let leading = extractLeadingText(string, matchedTag.completeTag);
             let split;
             let resultInCompodoc;
             let newLink;
@@ -26,15 +26,15 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
             let label;
             let pageName;
 
-            split = splitLinkText(tagInfo.text);
+            split = splitLinkText(matchedTag.text);
 
             if (typeof split.linkText !== 'undefined') {
                 resultInCompodoc = this.dependenciesEngine.findInCompodoc(split.target);
             } else {
-                let info = tagInfo.text;
-                if (tagInfo.text.indexOf('#') !== -1) {
-                    anchor = tagInfo.text.substr(tagInfo.text.indexOf('#'), tagInfo.text.length);
-                    info = tagInfo.text.substr(0, tagInfo.text.indexOf('#'));
+                let info = matchedTag.text;
+                if (matchedTag.text.indexOf('#') !== -1) {
+                    anchor = matchedTag.text.substr(matchedTag.text.indexOf('#'), matchedTag.text.length);
+                    info = matchedTag.text.substr(0, matchedTag.text.indexOf('#'));
                 }
                 resultInCompodoc = this.dependenciesEngine.findInCompodoc(info);
             }
@@ -44,13 +44,13 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                 pageName = resultInCompodoc.name;
 
                 if (leadingText) {
-                    stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leadingText + ']' + matchedTag.completeTag;
                 } else if (leading.leadingText !== undefined) {
-                    stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leading.leadingText + ']' + matchedTag.completeTag;
                 } else if (typeof split.linkText !== 'undefined') {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 } else {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 }
 
                 if (resultInCompodoc.type === 'class') {
@@ -103,25 +103,25 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
             } else if (!resultInCompodoc && typeof split.linkText !== 'undefined') {
                 newLink = `<a href="${split.target}">${split.linkText}</a>`;
                 if (leadingText) {
-                    stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leadingText + ']' + matchedTag.completeTag;
                 } else if (leading.leadingText !== undefined) {
-                    stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leading.leadingText + ']' + matchedTag.completeTag;
                 } else if (typeof split.linkText !== 'undefined') {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 } else {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 }
                 return string.replace(stringtoReplace, newLink);
             } else if (!resultInCompodoc && leading && typeof leading.leadingText !== 'undefined') {
                 newLink = `<a href="${split.target}">${leading.leadingText}</a>`;
                 if (leadingText) {
-                    stringtoReplace = '[' + leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leadingText + ']' + matchedTag.completeTag;
                 } else if (leading.leadingText !== undefined) {
-                    stringtoReplace = '[' + leading.leadingText + ']' + tagInfo.completeTag;
+                    stringtoReplace = '[' + leading.leadingText + ']' + matchedTag.completeTag;
                 } else if (typeof split.linkText !== 'undefined') {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 } else {
-                    stringtoReplace = tagInfo.completeTag;
+                    stringtoReplace = matchedTag.completeTag;
                 }
                 return string.replace(stringtoReplace, newLink);
             } else {
@@ -155,6 +155,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     let parsedATag = markedATagRegExp.exec(description);
                     if (parsedATag && parsedATag.length === 2) {
                         let insideMarkedATag = parsedATag[1];
+                        let outsideMarkedATag = parsedATag[0];
                         description = description.replace(
                             `{@link <a href="${insideMarkedATag}">${insideMarkedATag}</a>`,
                             `{@link ${insideMarkedATag}`
@@ -167,6 +168,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
         do {
             matches = tagRegExp.exec(description);
 
+            // Did we have {@link ?
             if (matches) {
                 previousString = description;
                 if (matches.length === 2) {
