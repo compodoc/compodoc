@@ -68,7 +68,7 @@ export class Application {
     /**
      * Store package.json data
      */
-    private packageJsonData;
+    private packageJsonData = {};
 
     private angularVersionUtil = new AngularVersionUtil();
     private dependenciesEngine: DependenciesEngine;
