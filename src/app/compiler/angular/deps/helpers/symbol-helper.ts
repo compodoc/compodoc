@@ -2,9 +2,9 @@ import * as _ from 'lodash';
 
 import { ts, SyntaxKind } from 'ts-simple-ast';
 
-import { TsPrinterUtil } from '../../../../utils/ts-printer.util';
+import { TsPrinterUtil } from '../../../../../utils/ts-printer.util';
 
-import { ImportsUtil } from '../../../../utils/imports.util';
+import { ImportsUtil } from '../../../../../utils/imports.util';
 
 export class SymbolHelper {
     private readonly unknown = '???';

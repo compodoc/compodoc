@@ -1,7 +1,7 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
-import { ConfigurationInterface } from '../../interfaces/configuration.interface';
-import { cleanLifecycleHooksFromMethods } from '../../../utils';
+import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
+import { cleanLifecycleHooksFromMethods } from '../../../../utils';
 
 const crypto = require('crypto');
 

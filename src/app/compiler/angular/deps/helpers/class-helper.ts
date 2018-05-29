@@ -1,17 +1,16 @@
-import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../utils/utils';
-import { kindToType } from '../../../../utils/kind-to-type';
-
 import * as _ from 'lodash';
 import * as util from 'util';
 import * as path from 'path';
 
 import { ts, SyntaxKind } from 'ts-simple-ast';
 
-import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
-import { JsdocParserUtil } from '../../../../utils/jsdoc-parser.util';
-import { ImportsUtil } from '../../../../utils/imports.util';
-import { logger } from '../../../../logger';
-import { isIgnore } from '../../../../utils';
+import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
+import { kindToType } from '../../../../../utils/kind-to-type';
+import { ConfigurationInterface } from '../../../../interfaces/configuration.interface';
+import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
+import { ImportsUtil } from '../../../../../utils/imports.util';
+import { logger } from '../../../../../logger';
+import { isIgnore } from '../../../../../utils';
 
 const crypto = require('crypto');
 const marked = require('marked');

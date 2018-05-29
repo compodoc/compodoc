@@ -18,7 +18,8 @@ import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { ExportEngine } from './engines/export.engine';
-import { Dependencies } from './compiler/dependencies';
+import { AngularDependencies } from './compiler/angular-dependencies';
+import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { COMPODOC_CONSTANTS } from '../utils/constants';
@@ -63,6 +64,11 @@ export class Application {
      * @type {boolean}
      */
     public isWatching: boolean = false;
+
+    /**
+     * Store package.json data
+     */
+    private packageJsonData;
 
     private angularVersionUtil = new AngularVersionUtil();
     private dependenciesEngine: DependenciesEngine;
@@ -221,6 +227,7 @@ export class Application {
         this.fileEngine.get(process.cwd() + path.sep + 'package.json').then(
             packageData => {
                 let parsedData = JSON.parse(packageData);
+                this.packageJsonData = parsedData;
                 if (
                     typeof parsedData.name !== 'undefined' &&
                     this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title
@@ -432,7 +439,32 @@ export class Application {
     private getDependenciesData(): void {
         logger.info('Get dependencies data');
 
-        let crawler = new Dependencies(
+        /**
+         * AngularJS detection strategy :
+         * - if in package.json
+         * - if 75% of scanned files are *.js files
+         */
+        let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
+        if (typeof this.packageJsonData.dependencies !== 'undefined') {
+            if (typeof this.packageJsonData.dependencies.angular !== 'undefined') {
+                logger.info('AngularJS project detected');
+                dependenciesClass = AngularJSDependencies;
+            } else {
+                let countJSFiles = 0;
+                this.files.forEach((file) => {
+                    if (path.extname(file) === '.js') {
+                        countJSFiles += 1;
+                    }
+                });
+                let percentOfJSFiles = (countJSFiles * 100) / this.files.length;
+                if (percentOfJSFiles >= 75) {
+                    logger.info('AngularJS project detected');
+                    dependenciesClass = AngularJSDependencies;
+                }
+            }
+        }
+
+        let crawler = new dependenciesClass(
             this.files,
             {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)

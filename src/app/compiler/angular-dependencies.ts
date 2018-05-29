@@ -4,23 +4,16 @@ import * as util from 'util';
 import * as _ from 'lodash';
 import Ast, { ts, TypeGuards, SyntaxKind } from 'ts-simple-ast';
 
+import { Configuration } from '../configuration';
 import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import { ExtendsMerger } from '../../utils/extends-merger.util';
-import { CodeGenerator } from './code-generator';
-import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
-import { DirectiveDepFactory } from './deps/directive-dep.factory';
-import { ComponentHelper, ComponentCache } from './deps/helpers/component-helper';
-import { ModuleDepFactory } from './deps/module-dep.factory';
-import { ComponentDepFactory } from './deps/component-dep.factory';
-import { ModuleHelper } from './deps/helpers/module-helper';
-import { JsDocHelper } from './deps/helpers/js-doc-helper';
-import { SymbolHelper } from './deps/helpers/symbol-helper';
-import { ClassHelper } from './deps/helpers/class-helper';
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
+
+import { FrameworkDependencies } from './framework-dependencies';
+
 import {
     JsdocParserUtil,
     RouterParserUtil,
@@ -30,6 +23,20 @@ import {
     hasSpreadElementInArray,
     isIgnore
 } from '../../utils';
+
+import { CodeGenerator } from './angular/code-generator';
+
+import { DirectiveDepFactory } from './angular/deps/directive-dep.factory';
+import { ComponentHelper, ComponentCache } from './angular/deps/helpers/component-helper';
+import { ModuleDepFactory } from './angular/deps/module-dep.factory';
+import { ComponentDepFactory } from './angular/deps/component-dep.factory';
+import { ModuleHelper } from './angular/deps/helpers/module-helper';
+import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
+import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
+import { ClassHelper } from './angular/deps/helpers/class-helper';
+
+import { ConfigurationInterface } from '../interfaces/configuration.interface';
+
 import {
     IInjectableDep,
     IPipeDep,
@@ -38,7 +45,7 @@ import {
     IFunctionDecDep,
     IEnumDecDep,
     ITypeAliasDecDep
-} from './dependencies.interfaces';
+} from './angular/dependencies.interfaces';
 
 const crypto = require('crypto');
 const marked = require('marked');
@@ -46,44 +53,23 @@ const ast = new Ast();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
-export class Dependencies {
-    private files: string[];
-    private program: ts.Program;
-    private typeChecker: ts.TypeChecker;
+export class AngularDependencies extends FrameworkDependencies {
     private engine: any;
     private cache: ComponentCache = new ComponentCache();
-    private componentHelper: ComponentHelper;
     private moduleHelper = new ModuleHelper(this.cache);
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
-    private classHelper: ClassHelper;
-    private extendsMerger: ExtendsMerger;
-
     private jsdocParserUtil = new JsdocParserUtil();
     private importsUtil = new ImportsUtil();
 
-    constructor(
-        files: string[],
+    constructor(files: string[],
         options: any,
-        private configuration: ConfigurationInterface,
-        private routerParser: RouterParserUtil
-    ) {
-        this.files = files;
-        const transpileOptions = {
-            target: ts.ScriptTarget.ES5,
-            module: ts.ModuleKind.CommonJS,
-            tsconfigDirectory: options.tsconfigDirectory,
-            allowJs: true
-        };
-        this.program = ts.createProgram(
-            this.files,
-            transpileOptions,
-            compilerHost(transpileOptions)
-        );
-        this.typeChecker = this.program.getTypeChecker();
-        this.classHelper = new ClassHelper(this.typeChecker, this.configuration);
-        this.componentHelper = new ComponentHelper(this.classHelper);
-        this.extendsMerger = new ExtendsMerger();
+        configuration: ConfigurationInterface,
+        routerParser: RouterParserUtil) {
+        super(files,
+            options,
+            configuration,
+            routerParser);
     }
 
     public getDependencies() {

@@ -1,6 +1,6 @@
 import { ts } from 'ts-simple-ast';
 import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
-import { detectIndent } from '../../../../utilities';
+import { detectIndent } from '../../../../../utilities';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
 
