@@ -72,7 +72,8 @@ export class Dependencies {
         const transpileOptions = {
             target: ts.ScriptTarget.ES5,
             module: ts.ModuleKind.CommonJS,
-            tsconfigDirectory: options.tsconfigDirectory
+            tsconfigDirectory: options.tsconfigDirectory,
+            allowJs: true
         };
         this.program = ts.createProgram(
             this.files,
@@ -111,7 +112,7 @@ export class Dependencies {
         sourceFiles.map((file: ts.SourceFile) => {
             let filePath = file.fileName;
 
-            if (path.extname(filePath) === '.ts') {
+            if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.js') {
                 if (
                     filePath.lastIndexOf('.d.ts') === -1 &&
                     filePath.lastIndexOf('spec.ts') === -1
