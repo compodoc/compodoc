@@ -98,13 +98,18 @@ export class AngularDependencies extends FrameworkDependencies {
         sourceFiles.map((file: ts.SourceFile) => {
             let filePath = file.fileName;
 
-            if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.js') {
-                if (
-                    filePath.lastIndexOf('.d.ts') === -1 &&
-                    filePath.lastIndexOf('spec.ts') === -1
-                ) {
+            if (path.extname(filePath) === '.ts') {
+                if (!this.configuration.mainData.angularJSProject && path.extname(filePath) === '.js') {
                     logger.info('parsing', filePath);
                     this.getSourceFileDecorators(file, deps);
+                } else {
+                    if (
+                        filePath.lastIndexOf('.d.ts') === -1 &&
+                        filePath.lastIndexOf('spec.ts') === -1
+                    ) {
+                        logger.info('parsing', filePath);
+                        this.getSourceFileDecorators(file, deps);
+                    }
                 }
             }
 

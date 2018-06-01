@@ -60,4 +60,6 @@ export interface MainDataInterface {
     packagePeerDependencies: Object[];
     gaID: string;
     gaSite: string;
+    angularProject: boolean;
+    angularJSProject: boolean;
 }

@@ -445,9 +445,13 @@ export class Application {
          * - if 75% of scanned files are *.js files
          */
         let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
+        this.configuration.mainData.angularProject = true;
+
         if (typeof this.packageJsonData.dependencies !== 'undefined') {
             if (typeof this.packageJsonData.dependencies.angular !== 'undefined') {
                 logger.info('AngularJS project detected');
+                this.configuration.mainData.angularProject = false;
+                this.configuration.mainData.angularJSProject = true;
                 dependenciesClass = AngularJSDependencies;
             } else {
                 let countJSFiles = 0;
@@ -459,6 +463,8 @@ export class Application {
                 let percentOfJSFiles = (countJSFiles * 100) / this.files.length;
                 if (percentOfJSFiles >= 75) {
                     logger.info('AngularJS project detected');
+                    this.configuration.mainData.angularProject = false;
+                    this.configuration.mainData.angularJSProject = true;
                     dependenciesClass = AngularJSDependencies;
                 }
             }

@@ -67,7 +67,9 @@ export class Configuration implements ConfigurationInterface {
         packageDependencies: [],
         packagePeerDependencies: [],
         gaID: '',
-        gaSite: ''
+        gaSite: '',
+        angularProject: false,
+        angularJSProject: false
     };
 
     public addPage(page: PageInterface) {

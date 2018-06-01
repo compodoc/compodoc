@@ -16,7 +16,7 @@ export class FrameworkDependencies {
     private classHelper: ClassHelper;
     private componentHelper: ComponentHelper;
     private extendsMerger: ExtendsMerger;
-    private configuration;
+    public configuration: ConfigurationInterface;
     private routerParser;
 
     constructor(
