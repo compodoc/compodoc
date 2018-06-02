@@ -428,7 +428,7 @@ describe('Mac High Sierra | Safari | Compodoc page', function() {
     before(function(done) {
         capabilities.platform = 'macOS 10.13';
         capabilities.browserName = 'safari';
-        capabilities.version = '11.0';
+        capabilities.version = '11.1';
         startDriver(done, 'http://localhost:4000/components/FooComponent.html');
     });
     // Test search bar
