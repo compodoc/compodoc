@@ -29,7 +29,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     </li>
                     <li class="link">
                         <a href="index.html" data-type="chapter-link">
-                            <span class="fa fa-file-text-o"></span>README
+                            <span class="fa fa-file-alt"></span>README
                         </a>
                     </li>
                 {{else}}
@@ -47,7 +47,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <a href="index.html"
                         {{/compare}}
                         data-type="chapter-link">
-                            <span class="fa fa-fw fa-file-text-o"></span>{{uppername}}
+                            <span class="fa fa-fw fa-file-alt"></span>{{uppername}}
                         </a>
                     </li>
                 {{/each}}
@@ -134,7 +134,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }>
-                                    <span class="fa fa-fw fa-long-arrow-down"></span>
+                                    <span class="fa fa-fw fa-long-arrow-alt-down"></span>
                                     <span>Injectables</span>
                                     <span class="fa fa-angle-down"></span>
                                 </div>
@@ -215,7 +215,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }>
-                <span class="fa fa-fw fa-file-code-o"></span>
+                <span class="fa fa-fw fa-file-code"></span>
                 <span>Classes</span>
                 <span class="fa fa-angle-down"></span>
             </div>
@@ -234,7 +234,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 <li class="chapter">
                     <div class="simple menu-toggler" data-toggle="collapse"
                         ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"' }>
-                        <span class="fa fa-fw fa-long-arrow-down"></span>
+                        <span class="fa fa-fw fa-long-arrow-alt-down"></span>
                         <span>Injectables</span>
                         <span class="fa fa-angle-down"></span>
                     </div>
@@ -253,7 +253,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"' }>
-                <span class="fa fa-fw fa-exchange"></span>
+                <span class="fa fa-fw fa-exchange-alt"></span>
                 <span>Interceptors</span>
                 <span class="fa fa-angle-down"></span>
             </div>
@@ -341,7 +341,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         {{#unless disableRoutesGraph}}
             {{#if routes}}
             <li class="chapter">
-                <a data-type="chapter-link" href="routes.html"><span class="fa fa-fw fa-code-fork"></span>Routes</a>
+                <a data-type="chapter-link" href="routes.html"><span class="fa fa-fw fa-code-branch"></span>Routes</a>
             </li>
             {{/if}}
         {{/unless}}
