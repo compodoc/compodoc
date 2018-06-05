@@ -82,6 +82,16 @@
                 </div>
             </div>
         {{/if}}
+        {{#if guards}}
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-block">
+                        <h4 class="card-title"><span class="fa fa-shield-alt"></span></h4>
+                        <p class="card-text">{{ guards.length }} guard{{#compare guards.length ">" 1}}s{{/compare}}</p>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
         {{#if interfaces}}
             <div class="col-sm-3">
                 <div class="card text-center">

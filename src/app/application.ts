@@ -512,6 +512,10 @@ export class Application {
             actions.push(() => this.prepareInterceptors());
         }
 
+        if (diffCrawledData.guards.length > 0) {
+            actions.push(() => this.prepareGuards());
+        }
+
         if (diffCrawledData.pipes.length > 0) {
             actions.push(() => this.preparePipes());
         }
@@ -568,6 +572,9 @@ export class Application {
         if (this.dependenciesEngine.interceptors.length > 0) {
             logger.info(`- injector   : ${this.dependenciesEngine.interceptors.length}`);
         }
+        if (this.dependenciesEngine.guards.length > 0) {
+            logger.info(`- guard   : ${this.dependenciesEngine.guards.length}`);
+        }
         if (this.dependenciesEngine.pipes.length > 0) {
             logger.info(`- pipe       : ${this.dependenciesEngine.pipes.length}`);
         }
@@ -608,6 +615,12 @@ export class Application {
         if (this.dependenciesEngine.interceptors.length > 0) {
             actions.push(() => {
                 return this.prepareInterceptors();
+            });
+        }
+
+        if (this.dependenciesEngine.guards.length > 0) {
+            actions.push(() => {
+                return this.prepareGuards();
             });
         }
 
@@ -1397,6 +1410,48 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     };
                     if (interceptor.isDuplicate) {
                         page.name += '-' + interceptor.duplicateId;
+                    }
+                    this.configuration.addPage(page);
+                    i++;
+                    loop();
+                } else {
+                    resolve();
+                }
+            };
+            loop();
+        });
+    }
+
+    public prepareGuards(someGuards?): Promise<void> {
+        logger.info('Prepare guards');
+
+        this.configuration.mainData.guards = someGuards
+            ? someGuards
+            : this.dependenciesEngine.getGuards();
+
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let len = this.configuration.mainData.guards.length;
+            let loop = () => {
+                if (i < len) {
+                    let guard = this.configuration.mainData.guards[i];
+                    if ($markdownengine.hasNeighbourReadmeFile(guard.file)) {
+                        logger.info(` ${guard.name} has a README file, include it`);
+                        let readme = $markdownengine.readNeighbourReadmeFile(guard.file);
+                        guard.readme = marked(readme);
+                    }
+                    let page = {
+                        path: 'guards',
+                        name: guard.name,
+                        id: guard.id,
+                        navTabs: this.getNavTabs(guard),
+                        context: 'guard',
+                        injectable: guard,
+                        depth: 1,
+                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    };
+                    if (guard.isDuplicate) {
+                        page.name += '-' + guard.duplicateId;
                     }
                     this.configuration.addPage(page);
                     i++;

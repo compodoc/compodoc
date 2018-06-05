@@ -38,6 +38,7 @@ export class HtmlEngine {
             'injectables',
             'injectable',
             'interceptor',
+            'guard',
             'pipes',
             'pipe',
             'classes',

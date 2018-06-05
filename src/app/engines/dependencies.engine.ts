@@ -17,8 +17,10 @@ import {
     ITypeAliasDecDep,
     IFunctionDecDep,
     IEnumDecDep,
-    IInterceptorDep
+    IInterceptorDep,
+    IGuardDep
 } from '../compiler/dependencies.interfaces';
+import { IGuardDep } from '../compiler/angular/dependencies.interfaces';
 
 const traverse = require('traverse');
 
@@ -31,6 +33,7 @@ export class DependenciesEngine {
     public directives: Object[];
     public injectables: Object[];
     public interceptors: Object[];
+    public guards: Object[];
     public interfaces: Object[];
     public routes: RouteInterface;
     public pipes: Object[];
@@ -120,6 +123,7 @@ export class DependenciesEngine {
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
+        this.guards = _.sortBy(this.rawData.guards, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
@@ -175,6 +179,7 @@ export class DependenciesEngine {
         this.injectables = this.injectables.map(processDuplicates);
         this.pipes = this.pipes.map(processDuplicates);
         this.interceptors = this.interceptors.map(processDuplicates);
+        this.guards = this.guards.map(processDuplicates);
         this.modules = this.modules.map(processDuplicates);
         this.components = this.components.map(processDuplicates);
         this.directives = this.directives.map(processDuplicates);
@@ -184,6 +189,7 @@ export class DependenciesEngine {
         let searchFunctions: Array<() => IApiSourceResult<any>> = [
             () => this.findInCompodocDependencies(name, this.injectables),
             () => this.findInCompodocDependencies(name, this.interceptors),
+            () => this.findInCompodocDependencies(name, this.guards),
             () => this.findInCompodocDependencies(name, this.interfaces),
             () => this.findInCompodocDependencies(name, this.classes),
             () => this.findInCompodocDependencies(name, this.components),
@@ -234,6 +240,12 @@ export class DependenciesEngine {
             _.forEach(updatedData.interceptors, (interceptor: IInterceptorDep) => {
                 let _index = _.findIndex(this.interceptors, { name: interceptor.name });
                 this.interceptors[_index] = interceptor;
+            });
+        }
+        if (updatedData.guards.length > 0) {
+            _.forEach(updatedData.guards, (guard: IGuardDep) => {
+                let _index = _.findIndex(this.guards, { name: guard.name });
+                this.guards[_index] = guard;
             });
         }
         if (updatedData.interfaces.length > 0) {
@@ -304,6 +316,7 @@ export class DependenciesEngine {
             this.directives,
             this.injectables,
             this.interceptors,
+            this.guards,
             this.interfaces,
             this.pipes,
             this.classes,
@@ -354,6 +367,10 @@ export class DependenciesEngine {
 
     public getInterceptors() {
         return this.interceptors;
+    }
+
+    public getGuards() {
+        return this.guards;
     }
 
     public getInterfaces() {

@@ -62,10 +62,12 @@ export class AngularDependencies extends FrameworkDependencies {
     private jsdocParserUtil = new JsdocParserUtil();
     private importsUtil = new ImportsUtil();
 
-    constructor(files: string[],
+    constructor(
+        files: string[],
         options: any,
         configuration: ConfigurationInterface,
-        routerParser: RouterParserUtil) {
+        routerParser: RouterParserUtil
+    ) {
         super(files,
             options,
             configuration,
@@ -79,6 +81,7 @@ export class AngularDependencies extends FrameworkDependencies {
             components: [],
             injectables: [],
             interceptors: [],
+            guards: [],
             pipes: [],
             directives: [],
             routes: [],
@@ -208,6 +211,8 @@ export class AngularDependencies extends FrameworkDependencies {
             type: 'class',
             sourceCode: srcFile.getText()
         };
+        let excludeFromClassArray = false;
+
         if (IO.constructor) {
             deps.constructorObj = IO.constructor;
         }
@@ -229,9 +234,6 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
             deps.jsdoctags = IO.jsdoctags[0].tags;
         }
-        if (IO.implements && IO.implements.length > 0) {
-            deps.implements = IO.implements;
-        }
         if (IO.accessors) {
             deps.accessors = IO.accessors;
         }
@@ -250,9 +252,23 @@ export class AngularDependencies extends FrameworkDependencies {
         if (this.configuration.mainData.disableLifeCycleHooks) {
             deps.methods = cleanLifecycleHooksFromMethods(deps.methods);
         }
+        if (IO.implements && IO.implements.length > 0) {
+            deps.implements = IO.implements;
+
+            if (this.isGuard(IO.implements)) {
+                // We don't want the Guard to show up in the Classes menu
+                excludeFromClassArray = true;
+                deps.type = 'guard';
+
+                outputSymbols.guards.push(deps);
+            }
+        }
         if (typeof IO.ignore === 'undefined') {
             this.debug(deps);
-            outputSymbols.classes.push(deps);
+
+            if (!excludeFromClassArray) {
+                outputSymbols.classes.push(deps);
+            }
         } else {
             this.ignore(deps);
         }
@@ -383,9 +399,12 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                             deps = injectableDeps;
                             if (typeof IO.ignore === 'undefined') {
-                                if (IO.implements && _.indexOf(IO.implements, 'HttpInterceptor') >= 0) {
+                                if (_.includes(IO.implements, 'HttpInterceptor')) {
                                     injectableDeps.type = 'interceptor';
                                     outputSymbols.interceptors.push(injectableDeps);
+                                } else if (this.isGuard(IO.implements)) {
+                                    injectableDeps.type = 'guard';
+                                    outputSymbols.guards.push(injectableDeps);
                                 } else {
                                     injectableDeps.type = 'injectable';
                                     outputSymbols.injectables.push(injectableDeps);
@@ -829,6 +848,14 @@ export class AngularDependencies extends FrameworkDependencies {
         return this.parseDecorators(metadatas, 'Injectable');
     }
 
+    private isGuard (ioImplements: string[]): boolean {
+        return _.includes(ioImplements, 'CanActivate') ||
+            _.includes(ioImplements, 'CanActivateChild') ||
+            _.includes(ioImplements, 'CanDeactivate') ||
+            _.includes(ioImplements, 'Resolve') ||
+            _.includes(ioImplements, 'CanLoad');
+    }
+
     private isModule(metadatas) {
         return this.parseDecorators(metadatas, 'NgModule');
     }
@@ -996,8 +1023,8 @@ export class AngularDependencies extends FrameworkDependencies {
                     name: node.declarationList.declarations[i].name.text,
                     defaultValue: node.declarationList.declarations[i].initializer
                         ? this.classHelper.stringifyDefaultValue(
-                              node.declarationList.declarations[i].initializer
-                          )
+                            node.declarationList.declarations[i].initializer
+                        )
                         : undefined
                 };
                 if (node.declarationList.declarations[i].initializer) {
@@ -1138,4 +1165,5 @@ export class AngularDependencies extends FrameworkDependencies {
 
         return res[0] || {};
     }
+
 }

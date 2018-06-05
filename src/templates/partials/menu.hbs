@@ -29,7 +29,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     </li>
                     <li class="link">
                         <a href="index.html" data-type="chapter-link">
-                            <span class="fa fa-file-alt"></span>README
+                            <span class="far fa-file-alt"></span>README
                         </a>
                     </li>
                 {{else}}
@@ -47,7 +47,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <a href="index.html"
                         {{/compare}}
                         data-type="chapter-link">
-                            <span class="fa fa-fw fa-file-alt"></span>{{uppername}}
+                            <span class="far fa-fw fa-file-alt"></span>{{uppername}}
                         </a>
                     </li>
                 {{/each}}
@@ -215,7 +215,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }>
-                <span class="fa fa-fw fa-file-code"></span>
+                <span class="far fa-fw fa-file-code"></span>
                 <span>Classes</span>
                 <span class="fa fa-angle-down"></span>
             </div>
@@ -266,6 +266,24 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 {{/each}}
             </ul>
         </li>
+        {{/if}}
+        {{#if guards}}
+        <li class="chapter">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                 ${ isNormalMode ? 'data-target="#guards-links"' : 'data-target="#xs-guards-links"' }>
+            <span class="fa fa-fw fa-shield-alt"></span>
+            <span>Guards</span>
+            <span class="fa fa-angle-down"></span>
+            </div>
+            <ul class="links collapse"
+                ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }>
+            {{#each guards}}
+                <li class="link">
+                    <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
+                </li>
+            {{/each}}
+            </ul>
+            </li>
         {{/if}}
         {{#if interfaces}}
         <li class="chapter">

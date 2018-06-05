@@ -76,6 +76,10 @@
                         {{~> interceptor data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'guard'}}
+                       {{~> guard data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'pipes'}}
                         {{~> pipes data ~}}
                    {{/compare}}
