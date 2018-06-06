@@ -170,6 +170,30 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.be.true;
     });
 
+    it('should have generated the not-injectable guards', () => {
+        const file = exists(`${distFolder}/guards/AuthGuard.html`);
+
+        expect(file).to.be.true;
+    });
+
+    it('should have generated the injectable guards', () => {
+        const file = exists(`${distFolder}/guards/NotAuthGuard.html`);
+
+        expect(file).to.be.true;
+    });
+
+    it(`shouldn't have generated classes for the corresponding guards`, () => {
+        const file = exists(`${distFolder}/classes/AuthGuard.html`);
+
+        expect(file).to.be.false;
+    });
+
+    it(`shouldn't have generated injectables for the corresponding guards`, () => {
+        const file = exists(`${distFolder}/injectables/NotAuthGuard.html`);
+
+        expect(file).to.be.false;
+    });
+
     it('should have generated modules', () => {
         const file = exists(distFolder + '/modules/AboutModule.html');
         expect(file).to.be.true;
