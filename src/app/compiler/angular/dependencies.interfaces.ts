@@ -27,7 +27,19 @@ export interface IInterceptorDep extends IDep {
     methods: Array<any>;
     description: string;
     sourceCode: string;
-    
+
+    accessors?: Object;
+    constructorObj?: Object;
+    jsdoctags?: Array<string>;
+}
+
+export interface IGuardDep extends IDep {
+    file: any;
+    properties: Array<any>;
+    methods: Array<any>;
+    description: string;
+    sourceCode: string;
+
     accessors?: Object;
     constructorObj?: Object;
     jsdoctags?: Array<string>;

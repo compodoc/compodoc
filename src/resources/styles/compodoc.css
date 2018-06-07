@@ -211,22 +211,22 @@ a[href] {
  * Icons
  */
 
-.glyphicon, .fa {
+.glyphicon, .fa, .far {
     margin-right: 10px;
 }
 
-.fa-code-fork {
+.fa-code-branch {
     margin-right: 14px;
 }
 
-.fa-long-arrow-down {
+.fa-long-arrow-alt-down {
     margin-right: 16px;
 }
 
-.fa-file-text-o {
+.fa-file-alt {
     margin-left: 2px;
 }
-.fa-file-text-o.fa-fw {
+.fa-file-alt.fa-fw {
     margin-left: -1px;
 }
 

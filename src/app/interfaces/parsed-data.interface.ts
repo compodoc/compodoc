@@ -5,6 +5,7 @@ export interface ParsedData {
     directives;
     injectables;
     interceptors;
+    guards;
     interfaces;
     pipes;
     classes;
