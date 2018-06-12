@@ -579,7 +579,7 @@ export class Application {
             logger.info(`- injector   : ${this.dependenciesEngine.interceptors.length}`);
         }
         if (this.dependenciesEngine.guards.length > 0) {
-            logger.info(`- guard   : ${this.dependenciesEngine.guards.length}`);
+            logger.info(`- guard      : ${this.dependenciesEngine.guards.length}`);
         }
         if (this.dependenciesEngine.pipes.length > 0) {
             logger.info(`- pipe       : ${this.dependenciesEngine.pipes.length}`);
