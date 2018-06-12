@@ -819,6 +819,10 @@ export class ClassHelper {
         };
         let jsdoctags;
 
+        if (typeof result.name === 'undefined' && typeof property.name.expression !== 'undefined') {
+            result.name = property.name.expression.text;
+        }
+
         if (property.jsDoc) {
             jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));

@@ -61,7 +61,9 @@
                                         {{/if}}
                                         <a href="#{{name}}">{{name}}</a>
                                     {{else}}
-                                        <a href="#{{id}}">Unamed property</a>
+                                        {{#if id}}
+                                            <a href="#{{id}}">Unamed property</a>
+                                        {{/if}}
                                     {{/if}}
                                 </li>
                             {{/each}}

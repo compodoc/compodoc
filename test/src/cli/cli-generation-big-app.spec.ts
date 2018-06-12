@@ -688,4 +688,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/modules/FooterModule.html');
         expect(file).to.contain('<h3>Declarations<a href=');
     });
+
+    it('should support interfaces with custom variables names', () => {
+        let file = read(distFolder + '/interfaces/ValueInRes.html');
+        expect(file).to.contain('<a href="#__allAnd">');
+    });
 });

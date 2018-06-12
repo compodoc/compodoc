@@ -10,6 +10,12 @@ interface LabelledTodo {
     readonly x: number;
 }
 
+export interface ValueInRes {
+    ['__allAnd']: boolean;
+    ['__allOr']: boolean;
+    [property: string]: any;
+}
+
 /**
  * A function type interface just for documentation purpose
  * ```typescript
