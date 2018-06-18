@@ -25,7 +25,7 @@ See this folder for more details : [DOCS](./docs/README.md)
 ### Development process
 
 - open one terminal and run inside compodoc folder : `npm run start`
-- open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `../compodoc/bin/index-cli.js -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s`
+- open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node ../compodoc/bin/index-cli.js -p src/tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s`
 
 ### Debugging process
 
