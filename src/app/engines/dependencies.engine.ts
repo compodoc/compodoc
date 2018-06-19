@@ -165,21 +165,21 @@ export class DependenciesEngine {
 
     private manageDuplicatesName() {
         let processDuplicates = (element, index, array) => {
-            let counterDuplicate = 0;
-            array.forEach(arrayElement => {
-                if (
-                    arrayElement.name === element.name &&
-                    arrayElement.id === element.id &&
-                    arrayElement.file !== element.file &&
-                    typeof arrayElement.isDuplicate === 'undefined'
-                ) {
-                    counterDuplicate += 1;
-                    element.isDuplicate = true;
-                    element.duplicateId = counterDuplicate;
-                    element.duplicateName = element.name + '-' + element.duplicateId;
-                    element.id = element.id + '-' + element.duplicateId;
+            let elementsWithSameName = _.filter(array, {name: element.name});
+            if (elementsWithSameName.length > 1) {
+                // First element is the reference for duplicates
+                for (let i = 1; i < elementsWithSameName.length; i++) {
+                    let elementToEdit = elementsWithSameName[i];
+                    if (
+                        typeof elementToEdit.isDuplicate === 'undefined'
+                    ) {
+                        elementToEdit.isDuplicate = true;
+                        elementToEdit.duplicateId = i;
+                        elementToEdit.duplicateName = elementToEdit.name + '-' + elementToEdit.duplicateId;
+                        elementToEdit.id = elementToEdit.id + '-' + elementToEdit.duplicateId;
+                    }
                 }
-            });
+            }
             return element;
         };
         this.classes = this.classes.map(processDuplicates);
