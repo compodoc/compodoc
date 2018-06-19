@@ -132,6 +132,14 @@ export class DependenciesEngine {
         this.updateModulesDeclarationsExportsTypes();
         this.routes = this.rawData.routesTree;
         this.manageDuplicatesName();
+        this.cleanRawModulesNames();
+    }
+
+    private cleanRawModulesNames() {
+        this.rawModulesForOverview = this.rawModulesForOverview.map(module => {
+            module.name = module.name.replace('$', '');
+            return module;
+        });
     }
 
     private findInCompodocDependencies(name, data, file?): IApiSourceResult<any> {
