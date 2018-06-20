@@ -20,6 +20,14 @@
 
 <!-- provide all information we need -->
 
+##### **If possible sourcecode of the file where it breaks**
+
+<!-- provide all information we need -->
+
+##### **If possible your terminal logs before the error**
+
+<!-- provide all information we need -->
+
 ##### **Motivation for or Use Case**
 
 <!-- explain why this is a bug for you -->
