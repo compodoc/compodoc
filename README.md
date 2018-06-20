@@ -93,11 +93,11 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 # Contributors
 
 |[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=4&s=117" width="117">](https://github.com/vogloblinsky)|[<img alt="manekinekko" src="https://avatars3.githubusercontent.com/u/1699357?v=4&s=117" width="117">](https://github.com/manekinekko)|[<img alt="mattlewis92" src="https://avatars1.githubusercontent.com/u/6425649?v=4&s=117" width="117">](https://github.com/mattlewis92)|[<img alt="JonasMH" src="https://avatars0.githubusercontent.com/u/1939229?v=4&s=117" width="117">](https://github.com/JonasMH)|[<img alt="rprotsyk" src="https://avatars0.githubusercontent.com/u/104502?v=4&s=117" width="117">](https://github.com/rprotsyk)|[<img alt="daniele-zurico" src="https://avatars0.githubusercontent.com/u/3193095?v=4&s=117" width="117">](https://github.com/daniele-zurico)|[<img alt="profimedica" src="https://avatars0.githubusercontent.com/u/2903499?v=4&s=117" width="117">](https://github.com/profimedica)|[<img alt="guilhermevrs" src="https://avatars0.githubusercontent.com/u/1570567?v=4&s=117" width="117">](https://github.com/guilhermevrs)|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |[vogloblinsky](https://github.com/vogloblinsky)|[manekinekko](https://github.com/manekinekko)|[mattlewis92](https://github.com/mattlewis92)|[JonasMH](https://github.com/JonasMH)|[rprotsyk](https://github.com/rprotsyk)|[daniele-zurico](https://github.com/daniele-zurico)|[profimedica](https://github.com/profimedica)|[guilhermevrs](https://github.com/guilhermevrs)|
 
 |[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/32763448?v=4&s=117" width="117">](https://github.com/dp-1a)|[<img alt="guilhermevrs" src="https://avatars0.githubusercontent.com/u/14924373?v=4&s=117" width="117">](https://github.com/ValentinGot)|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|:-:|:-:|
 |[dp-1a](https://github.com/dp-1a)|[ValentinGot](https://github.com/ValentinGot)|
 
 # License
