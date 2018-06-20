@@ -120,4 +120,11 @@ describe('CLI duplicates support', () => {
             expect(file).to.contain(`<li class="link">\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
         }
     });
+
+    it('Injectable with multiple decorators should not appear twice', () => {
+        let file = exists(distFolder + '/injectables/MyService.html');
+        expect(file).to.be.true;
+        file = exists(distFolder + '/injectables/MyService-1.html');
+        expect(file).to.be.false;
+    });
 });
