@@ -122,8 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // collapse menu
         var classnameMenuToggler = document.getElementsByClassName('menu-toggler'),
-            faAngleUpClass = 'fa-angle-up',
-            faAngleDownClass = 'fa-angle-down',
+            faAngleUpClass = 'ion-ios-arrow-up',
+            faAngleDownClass = 'ion-ios-arrow-down',
             toggleItemMenu = function(e) {
                 var element = $(e.target),
                     parent = element[0].parentNode,

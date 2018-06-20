@@ -30,14 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('module-graph-svg').style.height = originalOverviewHeight;
                 overviewFullscreen = false;
                 if (ev.target) {
-                    ev.target.classList.remove('fa-compress');
+                    ev.target.classList.remove('ion-md-close');
+                    ev.target.classList.add('ion-ios-resize');
                 }
             } else {
                 originalOverviewHeight = document.getElementById('module-graph-svg').style.height;
                 document.getElementById('module-graph-svg').style.height = '85vh';
                 overviewFullscreen = true;
                 if (ev.target) {
-                    ev.target.classList.add('fa-compress');
+                    ev.target.classList.remove('ion-ios-resize');
+                    ev.target.classList.add('ion-md-close');
                 }
             }
             document.getElementById('module-graph-svg').querySelector('svg').style.height = document.getElementById('module-graph-svg').clientHeight;

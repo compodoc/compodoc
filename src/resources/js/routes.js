@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //Node icon
         infos_group.append("text")
-            .attr('font-family', 'FontAwesome')
+            .attr('font-family', 'Ionicons')
             .attr("y", 5)
             .attr("x", 0)
             .attr('class', function(d) {
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('font-size', function(d) {
                 return '15px'
             }).text(function(d) {
-                return '\uf126'
+                return '\uf183'
             });
 
         //node infos
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("x", function(d) {
                 return -18;
             })
-            .attr('font-family', 'FontAwesome')
+            .attr('font-family', 'Ionicons')
             .attr('class', function(d) {
                 return "icon";
             })
@@ -187,10 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }).text(function(d) {
                 var _text = '';
                 if (d.loadChildren) {
-                    _text = '\uf017';
+                    _text = '\uf4c1';
                 }
                 if (d.guarded) {
-                    _text = '\uf023';
+                    _text = '\uf1b0';
                 }
                 return _text;
             });

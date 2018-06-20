@@ -211,25 +211,9 @@ a[href] {
  * Icons
  */
 
-.glyphicon, .fa, .far {
+.glyphicon, .icon {
     margin-right: 10px;
 }
-
-.fa-code-branch {
-    margin-right: 14px;
-}
-
-.fa-long-arrow-alt-down {
-    margin-right: 16px;
-}
-
-.fa-file-alt {
-    margin-left: 2px;
-}
-.fa-file-alt.fa-fw {
-    margin-left: -1px;
-}
-
 
 /**
  * Menu
@@ -404,7 +388,7 @@ a[href] {
 .menu-toggler {
     cursor: pointer;
 }
-.menu-toggler .fa-angle-down, .menu-toggler .fa-angle-up {
+.menu-toggler .ion-ios-arrow-down, .menu-toggler .ion-ios-arrow-up {
     cursor: pointer;
     padding: 5px 10px;
     font-size: 16px;
@@ -413,8 +397,13 @@ a[href] {
     top: 7px;
 }
 
-.overview .card-title .fa {
+.overview .card-title .icon {
     font-size: 50px;
+}
+
+.overview .card-text a {
+    text-decoration: underline;
+    color: black;
 }
 
 .breadcrumb {
@@ -703,13 +692,10 @@ th[role=columnheader].statements:not(.no-sort):after {
 .modifier-icon.method.export {
     display: none;
 }
-.modifier-icon.method .fa-circle, .modifier-icon.method .fa-square {
+.modifier-icon.method .ion-ios-radio-button-off, .modifier-icon.method .ion-ios-square-outline {
     display: none;
 }
-.modifier-icon.method .fa-lock {
-    margin-right: 0;
-}
-.modifier-icon.fa-reset {
+.modifier-icon.method .ion-ios-lock {
     margin-right: 0;
 }
 
@@ -717,7 +703,7 @@ th[role=columnheader].statements:not(.no-sort):after {
  * Modules
  */
 .card-module {
-    min-hight: 323px
+    min-height: 323px
 }
 
 /**

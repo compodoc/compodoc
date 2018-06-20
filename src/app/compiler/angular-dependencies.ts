@@ -412,7 +412,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     outputSymbols.guards.push(injectableDeps);
                                 } else {
                                     injectableDeps.type = 'injectable';
-                                    outputSymbols.injectables.push(injectableDeps);
+                                    this.addNewEntityInStore(injectableDeps, outputSymbols.injectables);
                                 }
                             }
                         } else if (this.isPipe(metadata)) {
@@ -751,6 +751,23 @@ export class AngularDependencies extends FrameworkDependencies {
 
             parseNode(fileName, scannedFile, initialNode);
         });
+    }
+
+    /**
+     * Function to in a specific store an entity, and check before is there is not the same one
+     * in that store : same name, id and file
+     * @param entity Entity to store
+     * @param store Store
+     */
+    private addNewEntityInStore(entity, store) {
+        let findSameEntityInStore = _.filter(store, {
+            name: entity.name,
+            id: entity.id,
+            file: entity.file
+        });
+        if (findSameEntityInStore.length === 0) {
+            store.push(entity);
+        }
     }
 
     private debug(deps: IDep) {

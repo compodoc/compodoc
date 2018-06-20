@@ -29,7 +29,7 @@ describe('CLI toggle menu items', () => {
         after(() => tmp.clean(distFolder));
 
         it('it should have a toggled item menu', () => {
-            expect(fooIndexFile).to.contain('fa-angle-down');
+            expect(fooIndexFile).to.contain('ion-ios-arrow-down');
         });
     });
 });
