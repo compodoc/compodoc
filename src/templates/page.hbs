@@ -23,7 +23,9 @@
         </div>
 
         <div class="xs-menu menu" id="mobile-menu">
-            {{> search-input data }}
+            {{#unless data.disableSearch}}
+                {{> search-input data }}
+            {{/unless}}
             <compodoc-menu></compodoc-menu>
         </div>
 
@@ -156,15 +158,16 @@
 
        <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
 
-       <script src="{{relativeURL data.depth }}js/search/search.js"></script>
-       <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
-       <script src="{{relativeURL data.depth }}js/search/search-lunr.js"></script>
-
        <script src="{{relativeURL data.depth }}js/tabs.js"></script>
        <script src="{{relativeURL data.depth }}js/menu.js"></script>
        <script src="{{relativeURL data.depth }}js/libs/prism.js"></script>
        <script src="{{relativeURL data.depth }}js/sourceCode.js"></script>
-       <script src="{{relativeURL data.depth }}js/search/search_index.js"></script>
+       {{#unless data.disableSearch}}
+          <script src="{{relativeURL data.depth }}js/search/search.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/search-lunr.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/search_index.js"></script>
+       {{/unless}}
        <script src="{{relativeURL data.depth }}js/lazy-load-graphs.js"></script>
 
         {{#if data.gaID}}

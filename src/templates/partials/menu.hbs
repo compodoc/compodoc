@@ -17,7 +17,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <a href="index.html" data-type="index-link">{{documentationMainName}}</a>
         </li>
         <li class="divider"></li>
-        ${ isNormalMode ? `{{> search-input }}` : '' }
+        ${ isNormalMode ? `{{#unless disableSearch}}{{> search-input }}{{/unless}}` : '' }
         <li class="chapter">
             <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>Getting started</a>
             <ul class="links">

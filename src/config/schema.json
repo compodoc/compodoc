@@ -306,6 +306,15 @@
           false
         ]
       },
+      "disableSearch": {
+        "$id": "/properties/disableSearch",
+        "type": "boolean",
+        "title": "Do not add the search input",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
       "customFavicon": {
         "$id": "/properties/customFavicon",
         "type": "string",

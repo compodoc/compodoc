@@ -140,6 +140,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 'Do not add the routes graph',
                 COMPODOC_DEFAULTS.disableRoutesGraph
             )
+            .option('--disableSearch', 'Do not add the search input', false)
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
@@ -420,6 +421,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableRoutesGraph = program.disableRoutesGraph;
         }
 
+        if (configFile.disableSearch) {
+            this.configuration.mainData.disableSearch = configFile.disableSearch;
+        }
+        if (program.disableSearch) {
+            this.configuration.mainData.disableSearch = program.disableSearch;
+        }
 
         if (configFile.customFavicon) {
             this.configuration.mainData.customFavicon = configFile.customFavicon;

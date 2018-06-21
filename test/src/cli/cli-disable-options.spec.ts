@@ -221,4 +221,35 @@ describe('CLI disable flags', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
         });
     });
+
+    describe('disabling search with --disableSearch', () => {
+
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableSearch',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate search JS files', () => {
+            let file = read(`${distFolder}/index.html`);
+            expect(file).not.to.contain('lunr.min.js');
+            const index = exists(distFolder + '/js/search/search_index.js');
+            expect(index).to.be.false;
+        });
+
+        it('should not generate search input', () => {
+            let file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('book-search-input');
+        });
+    });
 });
