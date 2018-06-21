@@ -315,6 +315,15 @@
           false
         ]
       },
+      "minimal": {
+        "$id": "/properties/minimal",
+        "type": "boolean",
+        "title": "Minimal mode with only documentation. No search, no graph, no coverage.",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
       "customFavicon": {
         "$id": "/properties/customFavicon",
         "type": "string",
