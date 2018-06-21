@@ -125,6 +125,10 @@
                         {{~> coverage-report data ~}}
                    {{/compare}}
 
+									 {{#compare data.context "===" 'unit-test'}}
+                        {{~> unit-test-report data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'additional-page'}}
                         {{~> additional-page data ~}}
                    {{/compare}}

@@ -368,6 +368,11 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>Documentation coverage</a>
         </li>
         {{/unless}}
+				{{#if unitTestData}}
+					<li class="chapter">
+						<a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>Unit test coverage</a>
+					</li>
+				{{/if}}
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">

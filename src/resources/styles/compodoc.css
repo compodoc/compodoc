@@ -581,17 +581,25 @@ i {
     text-decoration: underline;
 }
 
-.coverage tr.low {
+.coverage tr.low,
+.coverage td.low {
     background: rgba(216, 96, 75, 0.75);
 }
-.coverage tr.medium {
+.coverage tr.medium,
+.coverage td.medium {
     background: rgba(218, 178, 38, 0.75);
 }
-.coverage tr.good {
+.coverage tr.good,
+.coverage td.good {
     background: rgba(143, 189, 8, 0.75);
 }
-.coverage tr.very-good {
+.coverage tr.very-good,
+.coverage td.very-good {
     background: rgba(77, 199, 31, 0.75);
+}
+
+.coverage td.uncovered {
+	background: rgba(221, 221, 221, 0.75);
 }
 
 .coverage-header {
