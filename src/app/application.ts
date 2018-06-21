@@ -2169,11 +2169,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             finalPath += page.name + '.html';
         }
 
-        this.searchEngine.indexPage({
-            infos: page,
-            rawData: htmlData,
-            url: finalPath
-        });
+        if (!this.configuration.mainData.disableSearch) {
+            this.searchEngine.indexPage({
+                infos: page,
+                rawData: htmlData,
+                url: finalPath
+            });
+        }
 
         return this.fileEngine.write(finalPath, htmlData).catch(err => {
             logger.error('Error during ' + page.name + ' page generation');
@@ -2187,21 +2189,28 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Process pages');
         Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
-                this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
-                    () => {
-                        if (this.configuration.mainData.additionalPages.length > 0) {
-                            this.processAdditionalPages();
-                        } else {
-                            if (this.configuration.mainData.assetsFolder !== '') {
-                                this.processAssetsFolder();
-                            }
-                            this.processResources();
+                let callbacksAfterGenerateSearchIndexJson = () => {
+                    if (this.configuration.mainData.additionalPages.length > 0) {
+                        this.processAdditionalPages();
+                    } else {
+                        if (this.configuration.mainData.assetsFolder !== '') {
+                            this.processAssetsFolder();
                         }
-                    },
-                    e => {
-                        logger.error(e);
+                        this.processResources();
                     }
-                );
+                };
+                if (!this.configuration.mainData.disableSearch) {
+                    this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                        () => {
+                            callbacksAfterGenerateSearchIndexJson();
+                        },
+                        e => {
+                            logger.error(e);
+                        }
+                    );
+                } else {
+                    callbacksAfterGenerateSearchIndexJson();
+                }
             })
             .then(() => {
                 return this.processMenu(this.configuration.mainData);

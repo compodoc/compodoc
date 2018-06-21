@@ -221,4 +221,90 @@ describe('CLI disable flags', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
         });
     });
+
+    describe('disabling search with --disableSearch', () => {
+
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--disableSearch',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate search JS files', () => {
+            let file = read(`${distFolder}/index.html`);
+            expect(file).not.to.contain('lunr.min.js');
+            const index = exists(distFolder + '/js/search/search_index.js');
+            expect(index).to.be.false;
+        });
+
+        it('should not generate search input', () => {
+            let file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('book-search-input');
+        });
+    });
+
+    describe('minimal with --minimal', () => {
+
+        let fileContents;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '--minimal',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate search JS files', () => {
+            let file = read(`${distFolder}/index.html`);
+            expect(file).not.to.contain('lunr.min.js');
+            const index = exists(distFolder + '/js/search/search_index.js');
+            expect(index).to.be.false;
+        });
+
+        it('should not generate search input', () => {
+            let file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('book-search-input');
+        });
+
+        it('should not include the graph on the modules page', () => {
+            fileContents = read(`${distFolder}/modules.html`);
+            expect(fileContents).to.not.contain('dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('should not include the graph on the individual modules pages', () => {
+            fileContents = read(`${distFolder}/modules/AppModule.html`);
+            expect(fileContents).to.not.contain('modules/AppModule/dependencies.svg');
+            expect(fileContents).to.not.contain('svg-pan-zoom');
+        });
+
+        it('it should not exist routes_index.js file', () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.false;
+        });
+
+        it('it should not have coverage page', () => {
+            const isFileExists = exists(`${distFolder}/coverage.html`);
+            expect(isFileExists).to.be.false;
+        });
+    });
 });
