@@ -57,4 +57,26 @@ describe('CLI include with tsconfig', () => {
         });
     });
 
+    describe('when specific file is included in tsconfig with one level / cwd', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p', './test/src/todomvc-ng2/src/tsconfig.extended.json',
+                '-d', distFolder]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should create file included', () => {
+            let isFileExists = exists(`${distFolder}/classes/GenTodo.html`);
+            expect(isFileExists).to.be.true;
+        });
+    });
+
 });
