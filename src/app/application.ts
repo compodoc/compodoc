@@ -2159,15 +2159,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 		public prepareUnitTestCoverage() {
 			logger.info('Process unit test coverage report');
 			return new Promise((resolve, reject)=>{
-				let covDat;
+				let covDat, covFileNames;
 
 				if (!this.configuration.mainData.coverageData['files']){
 					logger.warn('Missing documentation coverage data');
 				} else {
 						covDat = {};
-						_.forEach(this.configuration.mainData.coverageData['files'], (el) => {
+						covFileNames = _.map(this.configuration.mainData.coverageData['files'], (el) => {
 							let fileName = el.filePath;
 							covDat[fileName] = {type: el.type, linktype: el.linktype, linksubtype: el.linksubtype, name: el.name};
+              return fileName;
 						});
 				}
 				// read coverage summary file and data
@@ -2198,11 +2199,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 					if (fileName !== 'total'){
 						if(covDat === undefined){
 							// need a name to include in output but this isn't visible
-							out['name'] = fileName;
-						} else if (covDat[fileName]){
-							out = _.clone(covDat[fileName]);
+							out = {name: fileName, filePath: fileName};
+						} else { //if (covDat[fileName]){
+              let findMatch = _.filter(covFileNames, (el)=>{
+                return (el.includes(fileName) || fileName.includes(el))
+              });
+              if(findMatch.length > 0){
+							   out = _.clone(covDat[findMatch[0]]);
+                out['filePath'] = fileName;
+              } //else {
+                //out = {name: fileName, filePath: fileName};
+              //}
 						}
-						out['filePath'] = fileName;
 					}
 					let keysToGet = ['statements', 'branches', 'functions', 'lines'];
 					_.forEach(keysToGet, (key)=>{
