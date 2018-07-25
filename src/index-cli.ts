@@ -115,6 +115,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)',
                 COMPODOC_DEFAULTS.coverageTestThresholdFail
             )
+			      .option('--unitTestCoverage [json-summary]',
+									 'To include unit test coverage, specify istanbul JSON coverage summary file')
             .option(
                 '--disableSourceCode',
                 'Do not add source code tab and links to source code',
@@ -338,6 +340,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.coverageTestThresholdFail =
                 program.coverageTestThresholdFail === 'false' ? false : true;
         }
+
+			  if (configFile.unitTestCoverage) {
+						this.configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
+				}
+			  if (program.unitTestCoverage) {
+						this.configuration.mainData.unitTestCoverage = program.unitTestCoverage;
+				}
 
 
         if (configFile.disableSourceCode) {

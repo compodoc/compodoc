@@ -60,6 +60,7 @@ export class HtmlEngine {
             'block-input',
             'block-output',
             'coverage-report',
+						'unit-test-report',
             'miscellaneous-functions',
             'miscellaneous-variables',
             'miscellaneous-typealiases',
@@ -122,12 +123,13 @@ export class HtmlEngine {
         });
     }
 
-    public generateCoverageBadge(outputFolder, coverageData) {
+    public generateCoverageBadge(outputFolder, label, coverageData) {
         return this.fileEngine
             .get(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
             .then(
                 data => {
                     let template: any = Handlebars.compile(data);
+										coverageData.label = label;
                     let result = template({
                         data: coverageData
                     });
@@ -137,9 +139,9 @@ export class HtmlEngine {
                     }
 
                     return this.fileEngine
-                        .write(outputFolder + path.sep + '/images/coverage-badge.svg', result)
+                        .write(outputFolder + path.sep + '/images/coverage-badge-' + label + '.svg', result)
                         .catch(err => {
-                            logger.error('Error during coverage badge file generation ', err);
+                            logger.error('Error during coverage badge ' + label + ' file generation ', err);
                             return Promise.reject(err);
                         });
                 },
