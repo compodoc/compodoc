@@ -84,7 +84,7 @@
     "os-name": "^2.0.1",
     "traverse": "^0.6.6",
     "ts-simple-ast": "12.4.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.3.0"
   },
   "devDependencies": {
     "@types/chai": "4.1.4",
