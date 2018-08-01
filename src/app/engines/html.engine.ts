@@ -24,7 +24,7 @@ export class HtmlEngine {
         helper.registerHelpers(Handlebars, configuration, dependenciesEngine);
     }
 
-    public init(): Promise<void> {
+    public init(templatePath: string): Promise<void> {
         let partials = [
             'overview',
             'markdown',
@@ -71,14 +71,16 @@ export class HtmlEngine {
 
         return Promise.all(
             partials.map(partial => {
+            let partialPath = this.determineTemplatePath(templatePath, 'partials/'+partial+'.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
+                    .get(partialPath)
                     .then(data => Handlebars.registerPartial(partial, data));
             })
         )
             .then(() => {
+              let pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
+                    .get(pagePath)
                     .then(data => {
                         this.cache.page = data;
                         this.compiledPage = Handlebars.compile(this.cache.page, {
@@ -88,8 +90,9 @@ export class HtmlEngine {
                     });
             })
             .then(() => {
+               let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+                    .get(menuPath)
                     .then(menuTemplate => {
                         this.precompiledMenu = Handlebars.compile(menuTemplate, {
                             preventIndent: true,
@@ -99,9 +102,10 @@ export class HtmlEngine {
             });
     }
 
-    public renderMenu(data) {
+    public renderMenu(templatePath, data) {
+        let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
         return this.fileEngine
-            .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+            .get(menuPath)
             .then(menuTemplate => {
                 data.menu = 'normal';
                 return Handlebars.compile(menuTemplate, {
@@ -121,6 +125,15 @@ export class HtmlEngine {
         return this.compiledPage({
             data: o
         });
+    }
+    private determineTemplatePath(templatePath: string, filePath: string): string {
+      let outPath = path.resolve(__dirname + '/../src/templates/'+filePath);
+      if(templatePath){
+         let testPath = path.resolve(process.cwd() + path.sep + templatePath + path.sep + filePath);
+        outPath = (this.fileEngine.existsSync(testPath) ? testPath : outPath); 
+      }
+                                               console.log(outPath);
+     return outPath;
     }
 
     public generateCoverageBadge(outputFolder, label, coverageData) {

@@ -96,6 +96,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 list,
                 JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
             )
+            .option(
+              '--templates [folder]',
+              "Path to directory of Handlebars templates to override built-in templates"
+            )
             .option('--includes [path]', 'Path of external markdown files to include')
             .option(
                 '--includesName [name]',
@@ -227,6 +231,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.toggleMenuItems && program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems) {
             this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
+        }
+      
+        if (configFile.templates) {
+            this.configuration.mainData.templates = configFile.templates;
+        }
+        if (program.templates) {
+            this.configuration.mainData.templates = program.templates;
         }
 
 
