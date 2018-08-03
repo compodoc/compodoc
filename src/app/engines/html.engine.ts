@@ -68,6 +68,12 @@ export class HtmlEngine {
             'additional-page',
             'package-dependencies'
         ];
+        if(templatePath){
+          if(this.fileEngine.existsSync(path.resolve(process.cwd()+path.sep+templatePath))===false){
+              logger.warn('Template path specificed but does not exist...using default templates');
+              //new Error('Template path specified but does not exist');
+           }
+        }
 
         return Promise.all(
             partials.map(partial => {
@@ -77,7 +83,7 @@ export class HtmlEngine {
                     .then(data => Handlebars.registerPartial(partial, data));
             })
         )
-            .then(() => {
+        .then(() => {
               let pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
                 return this.fileEngine
                     .get(pagePath)
@@ -88,8 +94,8 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
-            })
-            .then(() => {
+        })
+        .then(() => {
                let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
                 return this.fileEngine
                     .get(menuPath)
@@ -99,7 +105,7 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
-            });
+          });
     }
 
     public renderMenu(templatePath, data) {
@@ -132,7 +138,6 @@ export class HtmlEngine {
          let testPath = path.resolve(process.cwd() + path.sep + templatePath + path.sep + filePath);
         outPath = (this.fileEngine.existsSync(testPath) ? testPath : outPath); 
       }
-                                               console.log(outPath);
      return outPath;
     }
 
