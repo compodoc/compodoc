@@ -133,7 +133,7 @@ export class Application {
         if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
             this.processPackageJson();
         } else {
-            this.htmlEngine.init().then(() => this.processPackageJson());
+            this.htmlEngine.init(this.configuration.mainData.templates).then(() => this.processPackageJson());
         }
         return generationPromise;
     }
@@ -2337,7 +2337,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     private processMenu(mainData): Promise<void> {
         logger.info('Process menu...');
 
-        return this.htmlEngine.renderMenu(mainData).then(htmlData => {
+        return this.htmlEngine.renderMenu(this.configuration.mainData.templates, mainData).then(htmlData => {
             let finalPath = `${mainData.output}/js/menu-wc.js`;
             return this.fileEngine.write(finalPath, htmlData).catch(err => {
                 logger.error('Error during ' + finalPath + ' page generation');

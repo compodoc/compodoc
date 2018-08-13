@@ -24,7 +24,7 @@ export class HtmlEngine {
         helper.registerHelpers(Handlebars, configuration, dependenciesEngine);
     }
 
-    public init(): Promise<void> {
+    public init(templatePath: string): Promise<void> {
         let partials = [
             'overview',
             'markdown',
@@ -68,17 +68,25 @@ export class HtmlEngine {
             'additional-page',
             'package-dependencies'
         ];
+        if(templatePath){
+          if(this.fileEngine.existsSync(path.resolve(process.cwd()+path.sep+templatePath))===false){
+              logger.warn('Template path specificed but does not exist...using default templates');
+              //new Error('Template path specified but does not exist');
+           }
+        }
 
         return Promise.all(
             partials.map(partial => {
+            let partialPath = this.determineTemplatePath(templatePath, 'partials/'+partial+'.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/partials/' + partial + '.hbs'))
+                    .get(partialPath)
                     .then(data => Handlebars.registerPartial(partial, data));
             })
         )
-            .then(() => {
+        .then(() => {
+              let pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/page.hbs'))
+                    .get(pagePath)
                     .then(data => {
                         this.cache.page = data;
                         this.compiledPage = Handlebars.compile(this.cache.page, {
@@ -86,22 +94,24 @@ export class HtmlEngine {
                             strict: true
                         });
                     });
-            })
-            .then(() => {
+        })
+        .then(() => {
+               let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
                 return this.fileEngine
-                    .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+                    .get(menuPath)
                     .then(menuTemplate => {
                         this.precompiledMenu = Handlebars.compile(menuTemplate, {
                             preventIndent: true,
                             strict: true
                         });
                     });
-            });
+          });
     }
 
-    public renderMenu(data) {
+    public renderMenu(templatePath, data) {
+        let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
         return this.fileEngine
-            .get(path.resolve(__dirname + '/../src/templates/partials/menu.hbs'))
+            .get(menuPath)
             .then(menuTemplate => {
                 data.menu = 'normal';
                 return Handlebars.compile(menuTemplate, {
@@ -121,6 +131,14 @@ export class HtmlEngine {
         return this.compiledPage({
             data: o
         });
+    }
+    private determineTemplatePath(templatePath: string, filePath: string): string {
+      let outPath = path.resolve(__dirname + '/../src/templates/'+filePath);
+      if(templatePath){
+         let testPath = path.resolve(process.cwd() + path.sep + templatePath + path.sep + filePath);
+        outPath = (this.fileEngine.existsSync(testPath) ? testPath : outPath); 
+      }
+     return outPath;
     }
 
     public generateCoverageBadge(outputFolder, label, coverageData) {
