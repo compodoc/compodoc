@@ -61,7 +61,7 @@ export class Configuration implements ConfigurationInterface {
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
 				unitTestCoverage: '',
-				unitTestData: {},
+				unitTestData: undefined,
         routesLength: 0,
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,

@@ -33,7 +33,7 @@ describe('CLI Unit Test Report', () => {
             expect(unitTestFile).to.contain('Unit test coverage');
             expect(unitTestFile).to.contain('<span class="coverage-count">(22/26)</span>');
         });
-      
+
       it('should have badges', ()=>{
          expect(unitTestFile).to.contain('img src="./images/coverage-badge-statements.svg"');
          expect(unitTestFile).to.contain('img src="./images/coverage-badge-branches.svg"');
