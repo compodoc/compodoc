@@ -58,14 +58,16 @@ document.addEventListener('DOMContentLoaded', function() {
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var linkHref = link.getAttribute('href');
-            if (linkHref.toLowerCase().indexOf(COMPODOC_CURRENT_PAGE_URL.toLowerCase()) !== -1 
-                && link.innerHTML.indexOf('Getting started') == -1 
-                && !dontAddClass
-                && linkHref.toLowerCase().indexOf(localContextInUrl.toLowerCase()) !== -1 ) {
-                link.classList.add('active');
+            if (linkHref) {
+                var linkHrefFile = linkHref.substr(linkHref.lastIndexOf('/') + 1, linkHref.length);
+                if (linkHrefFile.toLowerCase() === COMPODOC_CURRENT_PAGE_URL.toLowerCase()
+                    && link.innerHTML.indexOf('Getting started') == -1 
+                    && !dontAddClass
+                    && linkHref.toLowerCase().indexOf(localContextInUrl.toLowerCase()) !== -1 ) {
+                    link.classList.add('active');
+                }
+                processLink(link, linkHref);
             }
-            processLink(link, linkHref);
-
         }
     }
     var chapterLinks = document.querySelectorAll('[data-type="chapter-link"]');
