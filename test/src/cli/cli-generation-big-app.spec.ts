@@ -382,6 +382,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support accessors for class', () => {
         let file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('<a href="#title">title</a>');
         expect(file).to.contain('Accessors');
         expect(file).to.contain('Setter of _title');
         expect(file).to.contain('<p>Returns the runtime path</p>');

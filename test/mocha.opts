@@ -3,4 +3,4 @@
 --colors
 --harmony
 --timeout 120000
-test/dist/cli/cli-coverage.spec.js
+test/dist/cli/**.js

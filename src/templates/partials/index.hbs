@@ -141,7 +141,7 @@
             {{/if}}
 
             {{#if accessors}}
-                {{#compare accessors.length ">" 0}}
+                {{#objectLength accessors ">" 0}}
                     <tr>
                         <td class="col-md-4">
                             <h6><b>Accessors</b></h6>
@@ -161,7 +161,7 @@
                             </ul>
                         </td>
                     </tr>
-                {{/compare}}
+                {{/objectLength}}
             {{/if}}
         </tbody>
     </table>
