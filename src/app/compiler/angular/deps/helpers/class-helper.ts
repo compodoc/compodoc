@@ -712,8 +712,14 @@ export class ClassHelper {
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
-            for (const argument of node.typeArguments) {
+            let i = 0,
+                len = node.typeArguments.length;
+            for (i; i < len; i++) {
+                let argument = node.typeArguments[i];
                 _return += this.visitType(argument);
+                if (i >= 0 && i < len - 1) {
+                    _return += ', ';
+                }
             }
             _return += '>';
         }
@@ -722,7 +728,10 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto
+            .createHash('md5')
+            .update(sourceCode)
+            .digest('hex');
         let result: any = {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -746,7 +755,10 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto
+            .createHash('md5')
+            .update(sourceCode)
+            .digest('hex');
         let result = {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -780,10 +792,9 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                let kinds = method.modifiers
-                    .map(modifier => {
-                        return modifier.kind;
-                    });
+                let kinds = method.modifiers.map(modifier => {
+                    return modifier.kind;
+                });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -834,10 +845,9 @@ export class ClassHelper {
 
         if (property.modifiers) {
             if (property.modifiers.length > 0) {
-                let kinds = property.modifiers
-                    .map(modifier => {
-                        return modifier.kind;
-                    });
+                let kinds = property.modifiers.map(modifier => {
+                    return modifier.kind;
+                });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
@@ -973,7 +983,9 @@ export class ClassHelper {
         }
 
         if (method.typeParameters && method.typeParameters.length > 0) {
-            result.typeParameters = method.typeParameters.map(typeParameter => this.visitType(typeParameter));
+            result.typeParameters = method.typeParameters.map(typeParameter =>
+                this.visitType(typeParameter)
+            );
         }
 
         if (method.jsDoc) {
@@ -986,10 +998,9 @@ export class ClassHelper {
 
         if (method.modifiers) {
             if (method.modifiers.length > 0) {
-                let kinds = method.modifiers
-                    .map(modifier => {
-                        return modifier.kind;
-                    });
+                let kinds = method.modifiers.map(modifier => {
+                    return modifier.kind;
+                });
                 if (
                     _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
                     _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
