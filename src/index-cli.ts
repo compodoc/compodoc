@@ -37,7 +37,10 @@ export class CliApplication extends Application {
         program
             .version(pkg.version)
             .usage('<src> [options]')
-            .option('-c, --config [config]', 'A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json')
+            .option(
+                '-c, --config [config]',
+                'A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json'
+            )
             .option('-p, --tsconfig [config]', 'A tsconfig.json file')
             .option(
                 '-d, --output [folder]',
@@ -97,8 +100,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
             )
             .option(
-              '--templates [folder]',
-              "Path to directory of Handlebars templates to override built-in templates"
+                '--templates [folder]',
+                'Path to directory of Handlebars templates to override built-in templates'
             )
             .option('--includes [path]', 'Path of external markdown files to include')
             .option(
@@ -119,8 +122,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)',
                 COMPODOC_DEFAULTS.coverageTestThresholdFail
             )
-			      .option('--unitTestCoverage [json-summary]',
-									 'To include unit test coverage, specify istanbul JSON coverage summary file')
+            .option('--coverageTestShowOnlyFailed', 'Display only failed files for a coverage test')
+            .option(
+                '--unitTestCoverage [json-summary]',
+                'To include unit test coverage, specify istanbul JSON coverage summary file'
+            )
             .option(
                 '--disableSourceCode',
                 'Do not add source code tab and links to source code',
@@ -144,7 +150,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 COMPODOC_DEFAULTS.disableRoutesGraph
             )
             .option('--disableSearch', 'Do not add the search input', false)
-            .option('--minimal', 'Minimal mode with only documentation. No search, no graph, no coverage.', false)
+            .option(
+                '--minimal',
+                'Minimal mode with only documentation. No search, no graph, no coverage.',
+                false
+            )
             .option('--customFavicon [path]', 'Use a custom favicon')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
@@ -154,7 +164,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             program.outputHelp();
             process.exit(1);
         };
-
 
         const configExplorer = cosmiconfig(cosmiconfigModuleName);
 
@@ -185,14 +194,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.output = program.output;
         }
 
-
         if (configFile.extTheme) {
             this.configuration.mainData.extTheme = configFile.extTheme;
         }
         if (program.extTheme) {
             this.configuration.mainData.extTheme = program.extTheme;
         }
-
 
         if (configFile.theme) {
             this.configuration.mainData.theme = configFile.theme;
@@ -201,14 +208,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.theme = program.theme;
         }
 
-
         if (configFile.name) {
             this.configuration.mainData.documentationMainName = configFile.name;
         }
         if (program.name && program.name !== COMPODOC_DEFAULTS.title) {
             this.configuration.mainData.documentationMainName = program.name;
         }
-
 
         if (configFile.assetsFolder) {
             this.configuration.mainData.assetsFolder = configFile.assetsFolder;
@@ -217,7 +222,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.assetsFolder = program.assetsFolder;
         }
 
-
         if (configFile.open) {
             this.configuration.mainData.open = configFile.open;
         }
@@ -225,14 +229,16 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.open = program.open;
         }
 
-
         if (configFile.toggleMenuItems) {
             this.configuration.mainData.toggleMenuItems = configFile.toggleMenuItems;
         }
-        if (program.toggleMenuItems && program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems) {
+        if (
+            program.toggleMenuItems &&
+            program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems
+        ) {
             this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
         }
-      
+
         if (configFile.templates) {
             this.configuration.mainData.templates = configFile.templates;
         }
@@ -240,14 +246,15 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.templates = program.templates;
         }
 
-
         if (configFile.navTabConfig) {
             this.configuration.mainData.navTabConfig = configFile.navTabConfig;
         }
-        if (program.navTabConfig && JSON.parse(program.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length) {
+        if (
+            program.navTabConfig &&
+            JSON.parse(program.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length
+        ) {
             this.configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
         }
-
 
         if (configFile.includes) {
             this.configuration.mainData.includes = configFile.includes;
@@ -259,7 +266,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.includesName) {
             this.configuration.mainData.includesName = configFile.includesName;
         }
-        if (program.includesName && program.includesName !== COMPODOC_DEFAULTS.additionalEntryName) {
+        if (
+            program.includesName &&
+            program.includesName !== COMPODOC_DEFAULTS.additionalEntryName
+        ) {
             this.configuration.mainData.includesName = program.includesName;
         }
 
@@ -270,14 +280,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             logger.silent = false;
         }
 
-
         if (configFile.serve) {
             this.configuration.mainData.serve = configFile.serve;
         }
         if (program.serve) {
             this.configuration.mainData.serve = program.serve;
         }
-
 
         if (configFile.port) {
             this.configuration.mainData.port = configFile.port;
@@ -286,14 +294,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.port = program.port;
         }
 
-
         if (configFile.watch) {
             this.configuration.mainData.watch = configFile.watch;
         }
         if (program.watch) {
             this.configuration.mainData.watch = program.watch;
         }
-
 
         if (configFile.exportFormat) {
             this.configuration.mainData.exportFormat = configFile.exportFormat;
@@ -302,14 +308,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.exportFormat = program.exportFormat;
         }
 
-
         if (configFile.hideGenerator) {
             this.configuration.mainData.hideGenerator = configFile.hideGenerator;
         }
         if (program.hideGenerator) {
             this.configuration.mainData.hideGenerator = program.hideGenerator;
         }
-
 
         if (configFile.coverageTest) {
             this.configuration.mainData.coverageTest = true;
@@ -326,7 +330,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
 
-
         if (configFile.coverageMinimumPerFile) {
             this.configuration.mainData.coverageTestPerFile = true;
             this.configuration.mainData.coverageMinimumPerFile =
@@ -342,7 +345,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
 
-
         if (configFile.coverageTestThresholdFail) {
             this.configuration.mainData.coverageTestThresholdFail =
                 configFile.coverageTestThresholdFail === 'false' ? false : true;
@@ -352,13 +354,21 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 program.coverageTestThresholdFail === 'false' ? false : true;
         }
 
-			  if (configFile.unitTestCoverage) {
-						this.configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
-				}
-			  if (program.unitTestCoverage) {
-						this.configuration.mainData.unitTestCoverage = program.unitTestCoverage;
-				}
+        if (configFile.coverageTestShowOnlyFailed) {
+            this.configuration.mainData.coverageTestShowOnlyFailed =
+                configFile.coverageTestShowOnlyFailed;
+        }
+        if (program.coverageTestShowOnlyFailed) {
+            this.configuration.mainData.coverageTestShowOnlyFailed =
+                program.coverageTestShowOnlyFailed;
+        }
 
+        if (configFile.unitTestCoverage) {
+            this.configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
+        }
+        if (program.unitTestCoverage) {
+            this.configuration.mainData.unitTestCoverage = program.unitTestCoverage;
+        }
 
         if (configFile.disableSourceCode) {
             this.configuration.mainData.disableSourceCode = configFile.disableSourceCode;
@@ -367,14 +377,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableSourceCode = program.disableSourceCode;
         }
 
-
         if (configFile.disableDomTree) {
             this.configuration.mainData.disableDomTree = configFile.disableDomTree;
         }
         if (program.disableDomTree) {
             this.configuration.mainData.disableDomTree = program.disableDomTree;
         }
-
 
         if (configFile.disableTemplateTab) {
             this.configuration.mainData.disableTemplateTab = configFile.disableTemplateTab;
@@ -383,14 +391,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableTemplateTab = program.disableTemplateTab;
         }
 
-
         if (configFile.disableGraph) {
             this.configuration.mainData.disableGraph = configFile.disableGraph;
         }
         if (program.disableGraph) {
             this.configuration.mainData.disableGraph = program.disableGraph;
         }
-
 
         if (configFile.disableCoverage) {
             this.configuration.mainData.disableCoverage = configFile.disableCoverage;
@@ -399,14 +405,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableCoverage = program.disableCoverage;
         }
 
-
         if (configFile.disablePrivate) {
             this.configuration.mainData.disablePrivate = configFile.disablePrivate;
         }
         if (program.disablePrivate) {
             this.configuration.mainData.disablePrivate = program.disablePrivate;
         }
-
 
         if (configFile.disableProtected) {
             this.configuration.mainData.disableProtected = configFile.disableProtected;
@@ -415,7 +419,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableProtected = program.disableProtected;
         }
 
-
         if (configFile.disableInternal) {
             this.configuration.mainData.disableInternal = configFile.disableInternal;
         }
@@ -423,14 +426,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableInternal = program.disableInternal;
         }
 
-
         if (configFile.disableLifeCycleHooks) {
             this.configuration.mainData.disableLifeCycleHooks = configFile.disableLifeCycleHooks;
         }
         if (program.disableLifeCycleHooks) {
             this.configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
         }
-
 
         if (configFile.disableRoutesGraph) {
             this.configuration.mainData.disableRoutesGraph = configFile.disableRoutesGraph;
@@ -466,14 +467,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.customFavicon = program.customFavicon;
         }
 
-
         if (configFile.gaID) {
             this.configuration.mainData.gaID = configFile.gaID;
         }
         if (program.gaID) {
             this.configuration.mainData.gaID = program.gaID;
         }
-
 
         if (configFile.gaSite) {
             this.configuration.mainData.gaSite = configFile.gaSite;
@@ -508,7 +507,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             logger.error(`Please provide a tsconfig file.`);
             process.exit(1);
         }
-
 
         if (configFile.tsconfig) {
             this.configuration.mainData.tsconfig = configFile.tsconfig;
@@ -564,12 +562,17 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                  */
                 let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
                 if (testTsConfigPath !== -1) {
-                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
+                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(
+                        process.cwd() + path.sep,
+                        ''
+                    );
                 }
 
                 if (!this.fileEngine.existsSync(this.configuration.mainData.tsconfig)) {
                     logger.error(
-                        `"${this.configuration.mainData.tsconfig}" file was not found in the current directory`
+                        `"${
+                            this.configuration.mainData.tsconfig
+                        }" file was not found in the current directory`
                     );
                     process.exit(1);
                 } else {
@@ -608,11 +611,17 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                         let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
                         if (!excludeParserTestFilesWithCwdDepth.status) {
-                            startCwd = excludeParser.updateCwd(cwd, excludeParserTestFilesWithCwdDepth.level);
+                            startCwd = excludeParser.updateCwd(
+                                cwd,
+                                excludeParserTestFilesWithCwdDepth.level
+                            );
                         }
                         let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
                         if (!includeParser.testFilesWithCwdDepth().status) {
-                            startCwd = includeParser.updateCwd(cwd, includeParserTestFilesWithCwdDepth.level);
+                            startCwd = includeParser.updateCwd(
+                                cwd,
+                                includeParserTestFilesWithCwdDepth.level
+                            );
                         }
 
                         let finder = require('findit2')(startCwd || '.');
@@ -676,7 +685,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                  */
                 let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
                 if (testTsConfigPath !== -1) {
-                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(process.cwd() + path.sep, '');
+                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(
+                        process.cwd() + path.sep,
+                        ''
+                    );
                 }
 
                 let sourceFolder = program.args[0];
@@ -690,7 +702,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     if (!this.fileEngine.existsSync(this.configuration.mainData.tsconfig)) {
                         logger.error(
-                            `"${this.configuration.mainData.tsconfig}" file was not found in the current directory`
+                            `"${
+                                this.configuration.mainData.tsconfig
+                            }" file was not found in the current directory`
                         );
                         process.exit(1);
                     } else {
@@ -729,11 +743,17 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                             let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
                             if (!excludeParserTestFilesWithCwdDepth.status) {
-                                startCwd = excludeParser.updateCwd(cwd, excludeParserTestFilesWithCwdDepth.level);
+                                startCwd = excludeParser.updateCwd(
+                                    cwd,
+                                    excludeParserTestFilesWithCwdDepth.level
+                                );
                             }
                             let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
                             if (!includeParser.testFilesWithCwdDepth().status) {
-                                startCwd = includeParser.updateCwd(cwd, includeParserTestFilesWithCwdDepth.level);
+                                startCwd = includeParser.updateCwd(
+                                    cwd,
+                                    includeParserTestFilesWithCwdDepth.level
+                                );
                             }
 
                             let finder = require('findit2')(path.resolve(startCwd));

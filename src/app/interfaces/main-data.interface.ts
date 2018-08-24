@@ -54,8 +54,9 @@ export interface MainDataInterface {
     coverageTestThresholdFail: boolean;
     coverageTestPerFile: boolean;
     coverageMinimumPerFile: number;
-		unitTestCoverage: string;
-		unitTestData: Object;
+    coverageTestShowOnlyFailed: boolean;
+    unitTestCoverage: string;
+    unitTestData: Object;
     routesLength: number;
     angularVersion: string;
     exportFormat: string;

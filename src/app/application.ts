@@ -1682,7 +1682,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 let overFiles = files.filter(f => {
                     let overTest =
                         f.coveragePercent >= this.configuration.mainData.coverageMinimumPerFile;
-                    if (overTest) {
+                    if (overTest && !this.configuration.mainData.coverageTestShowOnlyFailed) {
                         logger.info(
                             `${f.coveragePercent} % for file ${f.filePath} - over minimum per file`
                         );

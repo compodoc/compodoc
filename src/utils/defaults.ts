@@ -28,5 +28,6 @@ export const COMPODOC_DEFAULTS = {
         ROOT: 'root',
         INTERNAL: 'internal'
     },
-    gaSite: 'auto'
+    gaSite: 'auto',
+    coverageTestShowOnlyFailed: false
 };
