@@ -3,4 +3,4 @@
 --colors
 --harmony
 --timeout 120000
-test/dist/cli/**.js
+test/dist/cli/**.spec.js
