@@ -2123,7 +2123,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         process.exit(1);
                     } else {
                         logger.warn(messageGlobal);
-                        logger.error(messagePerFile);
+                        logger.warn(messagePerFile);
                         process.exit(0);
                     }
                 } else {
@@ -2131,23 +2131,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         coverageData.count
                     }%) is not over threshold (${
                         this.configuration.mainData.coverageTestThreshold
+                    }%)`,
+                    messagePerFile = `Documentation coverage per file is over threshold (${
+                        this.configuration.mainData.coverageMinimumPerFile
                     }%)`;
                     generationPromiseReject();
                     if (this.configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
-                        logger.info(
-                            `Documentation coverage per file is over threshold (${
-                                this.configuration.mainData.coverageMinimumPerFile
-                            }%)`
-                        );
+                        logger.info(messagePerFile);
                         process.exit(1);
                     } else {
                         logger.warn(message);
-                        logger.info(
-                            `Documentation coverage per file is over threshold (${
-                                this.configuration.mainData.coverageMinimumPerFile
-                            }%)`
-                        );
+                        logger.info(messagePerFile);
                         process.exit(0);
                     }
                 }
