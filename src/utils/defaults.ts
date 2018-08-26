@@ -29,5 +29,6 @@ export const COMPODOC_DEFAULTS = {
         INTERNAL: 'internal'
     },
     gaSite: 'auto',
-    coverageTestShowOnlyFailed: false
+    coverageTestShowOnlyFailed: false,
+    language: 'en-US'
 };

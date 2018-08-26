@@ -19,23 +19,23 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <li class="divider"></li>
         ${ isNormalMode ? `{{#unless disableSearch}}{{> search-input }}{{/unless}}` : '' }
         <li class="chapter">
-            <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>Getting started</a>
+            <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>{{t "getting-started" }}</a>
             <ul class="links">
                 {{#if readme}}
                     <li class="link">
                         <a href="overview.html" data-type="chapter-link">
-                            <span class="icon ion-ios-keypad"></span>Overview
+                            <span class="icon ion-ios-keypad"></span>{{t "overview" }}
                         </a>
                     </li>
                     <li class="link">
                         <a href="index.html" data-type="chapter-link">
-                            <span class="icon ion-ios-paper"></span>README
+                            <span class="icon ion-ios-paper"></span>{{t "readme" }}
                         </a>
                     </li>
                 {{else}}
                     <li class="link">
                         <a href="index.html" data-type="chapter-link">
-                            <span class="icon ion-ios-keypad" ></span>Overview
+                            <span class="icon ion-ios-keypad" ></span>{{t "overview" }}
                         </a>
                     </li>
                 {{/if}}
@@ -55,7 +55,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     <li class="link">
                         <a href="dependencies.html"
                             data-type="chapter-link">
-                            <span class="icon ion-ios-list"></span>Dependencies
+                            <span class="icon ion-ios-list"></span>{{t "dependencies" }}
                         </a>
                     </li>
                 {{/orLength}}
@@ -85,7 +85,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 <div class="menu-toggler linked" data-toggle="collapse"
                     ${ isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }>
                     <span class="icon ion-ios-archive"></span>
-                    <span class="link-name">Modules</span>
+                    <span class="link-name">{{t "modules" }}</span>
                     <span class="icon ion-ios-arrow-down"></span>
                 </div>
             </a>
@@ -99,7 +99,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"' }>
                                     <span class="icon ion-md-cog"></span>
-                                    <span>Components</span>
+                                    <span>{{t "components" }}</span>
                                     <span class="icon ion-ios-arrow-down"></span>
                                 </div>
                                 <ul class="links collapse"
@@ -117,7 +117,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"' }>
                                     <span class="icon ion-md-code-working"></span>
-                                    <span>Directives</span>
+                                    <span>{{t "directives" }}</span>
                                     <span class="icon ion-ios-arrow-down"></span>
                                 </div>
                                 <ul class="links collapse"
@@ -135,7 +135,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }>
                                     <span class="icon ion-md-arrow-round-down"></span>
-                                    <span>Injectables</span>
+                                    <span>{{t "injectables" }}</span>
                                     <span class="icon ion-ios-arrow-down"></span>
                                 </div>
                                 <ul class="links collapse"
@@ -153,7 +153,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"' }>
                                     <span class="icon ion-md-add"></span>
-                                    <span>Pipes</span>
+                                    <span>{{t "pipes" }}</span>
                                     <span class="icon ion-ios-arrow-down"></span>
                                 </div>
                                 <ul class="links collapse"
@@ -177,7 +177,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     <div class="simple menu-toggler" data-toggle="collapse"
                     ${ isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"' }>
                         <span class="icon ion-md-cog"></span>
-                        <span>Components</span>
+                        <span>{{t "components" }}</span>
                         <span class="icon ion-ios-arrow-down"></span>
                     </div>
                     <ul class="links collapse"
@@ -197,7 +197,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     <div class="simple menu-toggler" data-toggle="collapse"
                     ${ isNormalMode ? 'data-target="#directives-links"' : 'data-target="#xs-directives-links"' }>
                         <span class="icon ion-md-code-working"></span>
-                        <span>Directives</span>
+                        <span>{{t "directives" }}</span>
                         <span class="icon ion-ios-arrow-down"></span>
                     </div>
                     <ul class="links collapse"
@@ -216,7 +216,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }>
                 <span class="icon ion-ios-paper"></span>
-                <span>Classes</span>
+                <span>{{t "classes" }}</span>
                 <span class="icon ion-ios-arrow-down"></span>
             </div>
             <ul class="links collapse"
@@ -235,7 +235,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     <div class="simple menu-toggler" data-toggle="collapse"
                         ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"' }>
                         <span class="icon ion-md-arrow-round-down"></span>
-                        <span>Injectables</span>
+                        <span>{{t "injectables" }}</span>
                         <span class="icon ion-ios-arrow-down"></span>
                     </div>
                     <ul class="links collapse"
@@ -254,7 +254,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"' }>
                 <span class="icon ion-ios-swap"></span>
-                <span>Interceptors</span>
+                <span>{{t "interceptors" }}</span>
                 <span class="icon ion-ios-arrow-down"></span>
             </div>
             <ul class="links collapse"
@@ -272,7 +272,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <div class="simple menu-toggler" data-toggle="collapse"
                  ${ isNormalMode ? 'data-target="#guards-links"' : 'data-target="#xs-guards-links"' }>
             <span class="icon ion-ios-lock"></span>
-            <span>Guards</span>
+            <span>{{t "guards" }}</span>
             <span class="icon ion-ios-arrow-down"></span>
             </div>
             <ul class="links collapse"
@@ -290,7 +290,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <div class="simple menu-toggler" data-toggle="collapse"
                 ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"' }>
                 <span class="icon ion-md-information-circle-outline"></span>
-                <span>Interfaces</span>
+                <span>{{t "interfaces" }}</span>
                 <span class="icon ion-ios-arrow-down"></span>
             </div>
             <ul class="links collapse"
@@ -309,7 +309,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                     <div class="simple menu-toggler" data-toggle="collapse"
                     ${ isNormalMode ? 'data-target="#pipes-links"' : 'data-target="#xs-pipes-links"' }>
                         <span class="icon ion-md-add"></span>
-                        <span>Pipes</span>
+                        <span>{{t "pipes" }}</span>
                         <span class="icon ion-ios-arrow-down"></span>
                     </div>
                     <ul class="links collapse"
@@ -328,7 +328,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <div class="simple menu-toggler" data-toggle="collapse"
             ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"' }>
                 <span class="icon ion-ios-cube"></span>
-                <span>Miscellaneous</span>
+                <span>{{t "miscellaneous" }}</span>
                 <span class="icon ion-ios-arrow-down"></span>
             </div>
             <ul class="links collapse"
@@ -359,13 +359,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         {{#unless disableRoutesGraph}}
             {{#if routes}}
             <li class="chapter">
-                <a data-type="chapter-link" href="routes.html"><span class="icon ion-ios-git-branch"></span>Routes</a>
+                <a data-type="chapter-link" href="routes.html"><span class="icon ion-ios-git-branch"></span>{{t "routes" }}</a>
             </li>
             {{/if}}
         {{/unless}}
         {{#unless disableCoverage}}
         <li class="chapter">
-            <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>Documentation coverage</a>
+            <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>{{t "coverage-page-title" }}</a>
         </li>
         {{/unless}}
 				{{#if unitTestData}}
@@ -376,7 +376,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">
-                Documentation generated using <a href="https://compodoc.app/" target="_blank">
+                {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank">
                     {{#if theme }}
                         {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
                             <img data-src="images/compodoc-vectorise-inverted.svg" class="img-responsive" data-type="compodoc-logo">

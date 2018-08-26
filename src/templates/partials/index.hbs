@@ -6,7 +6,7 @@
                 {{#compare properties.length ">" 0}}
                 <tr>
                     <td class="col-md-4">
-                        <h6><b>Properties</b></h6>
+                        <h6><b>{{t "properties" }}</b></h6>
                     </td>
                 </tr>
                 <tr>
@@ -18,7 +18,7 @@
                                     <span class="modifier">{{modifKind this}}</span>
                                 {{/each}}
                                 {{#if optional}}
-                                    <span class="modifier">Optional</span>
+                                    <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
                                 <a href="#{{name}}">{{name}}</a>
                             </li>
@@ -33,7 +33,7 @@
                 {{#compare methods.length ">" 0}}
                 <tr>
                     <td class="col-md-4">
-                        <h6><b>Methods</b></h6>
+                        <h6><b>{{t "methods" }}</b></h6>
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +45,7 @@
                                     <span class="modifier">{{modifKind this}}</span>
                                 {{/each}}
                                 {{#if optional}}
-                                    <span class="modifier">Optional</span>
+                                    <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
                                 <a href="#{{name}}">{{name}}</a>
                             </li>
@@ -60,7 +60,7 @@
                 {{#compare inputs.length ">" 0}}
                 <tr>
                     <td class="col-md-4">
-                        <h6><b>Inputs</b></h6>
+                        <h6><b>{{t "inputs" }}</b></h6>
                     </td>
                 </tr>
                 <tr>
@@ -81,7 +81,7 @@
                 {{#compare outputs.length ">" 0}}
                 <tr>
                     <td class="col-md-4">
-                        <h6><b>Outputs</b></h6>
+                        <h6><b>{{t "outputs" }}</b></h6>
                     </td>
                 </tr>
                 <tr>

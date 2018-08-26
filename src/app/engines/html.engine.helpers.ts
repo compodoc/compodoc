@@ -37,16 +37,21 @@ import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { ElementAloneHelper } from './html-engine-helpers/element-alone.helper';
 import { HasOwnHelper } from './html-engine-helpers/has-own.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
+import { I18nHelper } from './html-engine-helpers/i18n.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(
         bars,
         configuration: ConfigurationInterface,
-        dependenciesEngine: DependenciesEngine): void {
-
+        dependenciesEngine: DependenciesEngine
+    ): void {
         this.registerHelper(bars, 'compare', new CompareHelper());
         this.registerHelper(bars, 'or', new OrHelper());
-        this.registerHelper(bars, 'functionSignature', new FunctionSignatureHelper(configuration, dependenciesEngine));
+        this.registerHelper(
+            bars,
+            'functionSignature',
+            new FunctionSignatureHelper(configuration, dependenciesEngine)
+        );
         this.registerHelper(bars, 'isNotToggle', new IsNotToggleHelper(configuration));
         this.registerHelper(bars, 'isInitialTab', new IsInitialTabHelper());
         this.registerHelper(bars, 'isTabEnabled', new IsTabEnabledHelper());
@@ -67,15 +72,24 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'jsdoc-params', new JsdocParamsHelper());
         this.registerHelper(bars, 'jsdoc-params-valid', new JsdocParamsValidHelper());
         this.registerHelper(bars, 'jsdoc-default', new JsdocDefaultHelper());
-        this.registerHelper(bars, 'linkType', new LinkTypeHelper(configuration, dependenciesEngine));
+        this.registerHelper(
+            bars,
+            'linkType',
+            new LinkTypeHelper(configuration, dependenciesEngine)
+        );
         this.registerHelper(bars, 'indexableSignature', new IndexableSignatureHelper());
         this.registerHelper(bars, 'object', new ObjectHelper());
         this.registerHelper(bars, 'objectLength', new ObjectLengthHelper());
-        this.registerHelper(bars, 'parseDescription', new ParseDescriptionHelper(dependenciesEngine));
+        this.registerHelper(
+            bars,
+            'parseDescription',
+            new ParseDescriptionHelper(dependenciesEngine)
+        );
         this.registerHelper(bars, 'one-parameter-has', new OneParameterHasHelper());
         this.registerHelper(bars, 'element-alone', new ElementAloneHelper(dependenciesEngine));
         this.registerHelper(bars, 'hasOwn', new HasOwnHelper());
         this.registerHelper(bars, 'short-url', new ShortURLHelper());
+        this.registerHelper(bars, 't', new I18nHelper());
     }
 
     private registerHelper(bars, key: string, helper: IHtmlEngineHelper) {

@@ -15,7 +15,7 @@
     {{#isTabEnabled navTabs "info"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
         <p class="comment">
-            <h3>File</h3>
+            <h3>{{t "file" }}</h3>
         </p>
         <p class="comment">
             <code>{{directive.file}}</code>
@@ -23,7 +23,7 @@
 
         {{#if directive.description}}
             <p class="comment">
-                <h3>Description</h3>
+                <h3>{{t "description" }}</h3>
             </p>
             <p class="comment">
                 {{{parseDescription directive.description depth}}}
@@ -32,7 +32,7 @@
 
         {{#if directive.implements}}
             <p class="comment">
-                <h3>Implements</h3>
+                <h3>{{t "implements" }}</h3>
             </p>
             <p class="comment">
                 {{#each directive.implements}}
@@ -43,7 +43,7 @@
 
         {{#if directive.jsdoctags}}
             <p class="comment">
-                <h3>Example</h3>
+                <h3>{{t "example" }}</h3>
             </p>
             <div class="io-description">
                 {{#jsdoc-code-example directive.jsdoctags}}
@@ -57,7 +57,7 @@
         {{/if}}
 
         <section>
-            <h3>Metadata</h3>
+            <h3>{{t "metadata" }}</h3>
             <table class="table table-sm table-hover">
                 <tbody>
                     {{#if directive.providers}}

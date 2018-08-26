@@ -73,7 +73,8 @@ export class Configuration implements ConfigurationInterface {
         gaID: '',
         gaSite: '',
         angularProject: false,
-        angularJSProject: false
+        angularJSProject: false,
+        language: COMPODOC_DEFAULTS.language
     };
 
     public addPage(page: PageInterface) {

@@ -16,7 +16,7 @@
     <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
 
         <p class="comment">
-            <h3>File</h3>
+            <h3>{{t "file" }}</h3>
         </p>
         <p class="comment">
             <code>{{pipe.file}}</code>
@@ -24,7 +24,7 @@
 
         {{#if pipe.description}}
             <p class="comment">
-                <h3>Description</h3>
+                <h3>{{t "description" }}</h3>
             </p>
             <p class="comment">
                 {{{parseDescription pipe.description depth}}}
@@ -33,7 +33,7 @@
 
         {{#if pipe.jsdoctags}}
             <p class="comment">
-                <h3>Example</h3>
+                <h3>{{t "example" }}</h3>
             </p>
             <div class="io-description">
                 {{#jsdoc-code-example pipe.jsdoctags type='javascript'}}
@@ -47,7 +47,7 @@
         {{/if}}
 
         <section>
-            <h3>Metadata</h3>
+            <h3>{{t "metadata" }}</h3>
             <table class="table table-sm table-hover">
                 <tbody>
                     {{#if pipe.ngname}}

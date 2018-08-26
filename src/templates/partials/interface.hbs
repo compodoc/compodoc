@@ -15,7 +15,7 @@
     {{#isTabEnabled navTabs "info"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
         <p class="comment">
-            <h3>File</h3>
+            <h3>{{t "file" }}</h3>
         </p>
         <p class="comment">
             <code>{{interface.file}}</code>
@@ -23,7 +23,7 @@
 
         {{#if interface.description}}
             <p class="comment">
-                <h3>Description</h3>
+                <h3>{{t "description" }}</h3>
             </p>
             <p class="comment">
                 {{{parseDescription interface.description depth}}}
@@ -32,7 +32,7 @@
 
         {{#if interface.extends}}
             <p class="comment">
-                <h3>Extends</h3>
+                <h3>{{t "extends" }}</h3>
             </p>
             <p class="comment">
                 {{> link-type type=interface.extends }}
@@ -47,7 +47,7 @@
                     {{#compare interface.properties.length ">" 0}}
                     <tr>
                         <td class="col-md-4">
-                            <h6><b>Properties</b></h6>
+                            <h6><b>{{t "properties" }}</b></h6>
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +57,7 @@
                                 <li>
                                     {{#if name}}
                                         {{#if optional}}
-                                            <span class="modifier">Optional</span>
+                                            <span class="modifier">{{t "optional" }}</span>
                                         {{/if}}
                                         <a href="#{{name}}">{{name}}</a>
                                     {{else}}
@@ -74,7 +74,7 @@
                     {{#compare interface.methods.length ">" 0}}
                     <tr>
                         <td class="col-md-4">
-                            <h6><b>Methods</b></h6>
+                            <h6><b>{{t "methods" }}</b></h6>
                         </td>
                     </tr>
                     <tr>
@@ -86,7 +86,7 @@
                                         <span class="modifier">{{modifKind this}}</span>
                                     {{/each}}
                                     {{#if optional}}
-                                        <span class="modifier">Optional</span>
+                                        <span class="modifier">{{t "optional" }}</span>
                                     {{/if}}
                                     <a href="#{{name}}">{{name}}</a>
                                 </li>
@@ -110,7 +110,7 @@
 
         {{#if interface.properties}}
             <section>
-                <h3 id="inputs">Properties</h3>
+                <h3 id="inputs">{{t "properties" }}</h3>
                 {{#each interface.properties}}
                     <table class="table table-sm table-bordered">
                         <tbody>
@@ -130,7 +130,7 @@
                                 {{#jsdoc-default jsdoctags}}
                                 <tr>
                                     <td class="col-md-4">
-                                        <i>Default value : </i><code>{{{clean-paragraph tag.comment}}}</code>
+                                        <i>{{t "default-value" }} : </i><code>{{{clean-paragraph tag.comment}}}</code>
                                     </td>
                                 </tr>
                                 {{/jsdoc-default}}
@@ -146,7 +146,7 @@
                                 {{#if optional}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Optional</i>
+                                            <i>{{t "optional" }}</i>
                                         </td>
                                     </tr>
                                 {{/if}}
@@ -154,7 +154,7 @@
                                 {{#if defaultValue}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Default value: </i><code>{{defaultValue}}</code>
+                                            <i>{{t "default-value" }}: </i><code>{{defaultValue}}</code>
                                         </td>
                                     </tr>
                                 {{/if}}
@@ -182,7 +182,7 @@
                                 {{#if returnType}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Returns : </i>{{> link-type type=returnType }}
+                                            <i>{{t "returns" }} : </i>{{> link-type type=returnType }}
                                         </td>
                                     </tr>
                                 {{/if}}
@@ -193,16 +193,16 @@
                                         <td class="col-md-4">
                                             <div class="io-description">
                                                 {{#jsdoc-params jsdoctags}}
-                                                    <b>Parameters :</b>
+                                                    <b>{{t "parameters" }} :</b>
                                                     <table class="params">
                                                         <thead>
                                                                 <tr>
-                                                                    <td>Name</td>
+                                                                    <td>{{t "name" }}</td>
                                                                     {{#one-parameter-has tags 'type'}}
-                                                                        <td>Type</td>
+                                                                        <td>{{t "type" }}</td>
                                                                     {{/one-parameter-has}}
                                                                     {{#one-parameter-has tags 'comment'}}
-                                                                        <td>Description</td>
+                                                                        <td>{{t "description" }}</td>
                                                                     {{/one-parameter-has}}
                                                                 </tr>
                                                         </thead>
@@ -232,7 +232,7 @@
                                                     </table>
                                                 {{/jsdoc-params}}
                                                 {{#jsdoc-example jsdoctags}}
-                                                    <b>Example :</b>
+                                                    <b>{{t "example" }} :</b>
                                                     {{#each tags}}
                                                         <div class="jsdoc-example-ul">
                                                             {{{comment}}}
@@ -251,7 +251,7 @@
                                 {{#isTabEnabled navTabs "source"}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../interface.file}}:{{{line}}}</a></div>
+                                            <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}" class="link-to-prism">{{../interface.file}}:{{{line}}}</a></div>
                                         </td>
                                     </tr>
                                 {{/isTabEnabled}}

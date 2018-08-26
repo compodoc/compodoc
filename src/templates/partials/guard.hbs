@@ -15,7 +15,7 @@
     {{#isTabEnabled navTabs "info"}}
         <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
             <p class="comment">
-            <h3>File</h3>
+            <h3>{{t "file" }}</h3>
             </p>
             <p class="comment">
                 <code>{{injectable.file}}</code>
@@ -23,7 +23,7 @@
 
             {{#if injectable.description}}
                 <p class="comment">
-                <h3>Description</h3>
+                <h3>{{t "description" }}</h3>
                 </p>
                 <p class="comment">
                     {{{parseDescription injectable.description depth}}}
@@ -32,7 +32,7 @@
 
             {{#if injectable.extends}}
                 <p class="comment">
-                <h3>Extends</h3>
+                <h3>{{t "extends" }}</h3>
                 </p>
                 <p class="comment">
                     {{> link-type type=injectable.extends }}
@@ -41,7 +41,7 @@
 
             {{#if injectable.implements}}
                 <p class="comment">
-                <h3>Implements</h3>
+                <h3>{{t "implements" }}</h3>
                 </p>
                 <p class="comment">
                     {{#each injectable.implements}}
@@ -52,7 +52,7 @@
 
             {{#if injectable.jsdoctags}}
                 <p class="comment">
-                <h3>Example</h3>
+                <h3>{{t "example" }}</h3>
                 </p>
                 <div class="io-description">
                     {{#jsdoc-code-example injectable.jsdoctags}}

@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Documentation coverage</li>
+    <li>{{t "coverage-page-title" }}</li>
 </ol>
 
 <div>
@@ -9,10 +9,10 @@
 <table class="table table-bordered coverage" id="coverage-table">
     <thead class="coverage-header">
         <tr>
-            <th>File</th>
-            <th>Type</th>
-            <th>Identifier</th>
-            <th style="text-align:right" class="statements" data-sort-default>Statements</th>
+            <th>{{t "file" }}</th>
+            <th>{{t "type" }}</th>
+            <th>{{t "identifier" }}</th>
+            <th style="text-align:right" class="statements" data-sort-default>{{t "statements" }}</th>
         </tr>
     </thead>
     <tbody>
@@ -21,9 +21,9 @@
             <td>
                 <!-- miscellaneous -->
                 {{#if linksubtype}}
-                    <a href="./{{linktype}}/{{linksubtype}}s.html#{{name}}">{{filePath}}</a>
+                <a href="./{{linktype}}/{{linksubtype}}s.html#{{name}}">{{filePath}}</a>
                 {{else}}
-                    <a href="./{{linktype}}s/{{name}}.html">{{filePath}}</a>
+                <a href="./{{linktype}}s/{{name}}.html">{{filePath}}</a>
                 {{/if}}
             </td>
             <td>

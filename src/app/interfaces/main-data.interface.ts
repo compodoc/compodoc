@@ -68,4 +68,5 @@ export interface MainDataInterface {
     gaSite: string;
     angularProject: boolean;
     angularJSProject: boolean;
+    language: string;
 }

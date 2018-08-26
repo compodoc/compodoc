@@ -18,6 +18,8 @@ import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { NgdEngine } from './engines/ngd.engine';
 import { SearchEngine } from './engines/search.engine';
 import { ExportEngine } from './engines/export.engine';
+import I18nEngineInstance from './engines/i18n.engine';
+
 import { AngularDependencies } from './compiler/angular-dependencies';
 import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 
@@ -99,6 +101,8 @@ export class Application {
             this.dependenciesEngine,
             this.fileEngine
         );
+
+        I18nEngineInstance.init(this.configuration.mainData.language);
 
         for (let option in options) {
             if (typeof this.configuration.mainData[option] !== 'undefined') {

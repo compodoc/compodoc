@@ -1,5 +1,5 @@
 <p class="comment">
-    <h3>File</h3>
+    <h3>{{t "file" }}</h3>
 </p>
 <p class="comment">
     <code>{{component.file}}</code>
@@ -7,7 +7,7 @@
 
 {{#if component.description}}
     <p class="comment">
-        <h3>Description</h3>
+        <h3>{{t "description" }}</h3>
     </p>
     <p class="comment">
         {{{parseDescription component.description depth}}}
@@ -16,7 +16,7 @@
 
 {{#if component.extends}}
     <p class="comment">
-        <h3>Extends</h3>
+        <h3>{{t "extends" }}</h3>
     </p>
     <p class="comment">
         {{> link-type type=component.extends }}
@@ -25,7 +25,7 @@
 
 {{#if component.implements}}
     <p class="comment">
-        <h3>Implements</h3>
+        <h3>{{t "implements" }}</h3>
     </p>
     <p class="comment">
         {{#each component.implements}}
@@ -36,7 +36,7 @@
 
 {{#if component.jsdoctags}}
     <p class="comment">
-        <h3>Example</h3>
+        <h3>{{t "example" }}</h3>
     </p>
     <div class="io-description">
         {{#jsdoc-code-example component.jsdoctags}}
@@ -50,7 +50,7 @@
 {{/if}}
 
 <section>
-    <h3>Metadata</h3>
+    <h3>{{t "metadata" }}</h3>
     <table class="table table-sm table-hover">
         <tbody>
             {{#if component.animations}}

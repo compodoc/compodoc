@@ -1,6 +1,6 @@
 <section>
     <h3 id="accessors">
-        Accessors
+        {{t "accessors" }}
     </h3>
     {{#each accessors}}
         <table class="table table-sm table-bordered">
@@ -22,7 +22,7 @@
                         {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="{{{this.getSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.getSignature.line}}}</a></div>
+                                    <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{this.getSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.getSignature.line}}}</a></div>
                                 </td>
                             </tr>
                         {{/isTabEnabled}}
@@ -38,14 +38,14 @@
                                 {{#jsdoc-params-valid this.getSignature.jsdoctags}}
                                 <div class="io-description">
                                     {{#jsdoc-params this.getSignature.jsdoctags}}
-                                        <b>Parameters :</b>
+                                        <b>{{t "parameters" }} :</b>
                                         <table class="params">
                                             <thead>
                                                 <tr>
-                                                    <td>Name</td>
-                                                    <td>Type</td>
-                                                    <td>Optional</td>
-                                                    <td>Description</td>
+                                                    <td>{{t "name" }}</td>
+                                                    <td>{{t "type" }}</td>
+                                                    <td>{{t "optional" }}</td>
+                                                    <td>{{t "description" }}</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -61,9 +61,9 @@
                                                         </td>
                                                         <td>
                                                             {{#if optional}}
-                                                                yes
+                                                                {{t "yes" }}
                                                             {{else}}
-                                                                no
+                                                                {{t "no" }}
                                                             {{/if}}
                                                         </td>
                                                         <td>{{{comment}}}</td>
@@ -76,7 +76,7 @@
                                 {{/jsdoc-params-valid}}
                                 <div>
                                     {{#jsdoc-code-example this.getSignature.jsdoctags}}
-                                        <b>Example :</b>
+                                        <b>{{t "example" }} :</b>
                                         {{#each tags}}
                                             <div>
                                                 {{{comment}}}
@@ -87,7 +87,7 @@
                             {{/if}}
                             {{#if this.getSignature.returnType}}
                                 <div class="io-description">
-                                    <b>Returns : </b>{{> link-type type=this.getSignature.returnType }}
+                                    <b>{{t "returns" }} : </b>{{> link-type type=this.getSignature.returnType }}
                                 </div>
                                 {{#if jsdoctags}}
                                     <div class="io-description">
@@ -110,7 +110,7 @@
                         {{#isTabEnabled ../navTabs "source"}}
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="{{{this.setSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.setSignature.line}}}</a></div>
+                                    <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{this.setSignature.line}}}" class="link-to-prism">{{../file}}:{{{this.setSignature.line}}}</a></div>
                                 </td>
                             </tr>
                         {{/isTabEnabled}}
@@ -126,17 +126,17 @@
                                 {{#jsdoc-params-valid this.setSignature.jsdoctags}}
                                 <div class="io-description">
                                     {{#jsdoc-params this.setSignature.jsdoctags}}
-                                        <b>Parameters :</b>
+                                        <b>{{t "parameters" }} :</b>
                                         <table class="params">
                                             <thead>
                                                 <tr>
-                                                    <td>Name</td>
+                                                    <td>{{t "name" }}</td>
                                                     {{#one-parameter-has tags 'type'}}
-                                                        <td>Type</td>
+                                                        <td>{{t "type" }}</td>
                                                     {{/one-parameter-has}}
-                                                    <td>Optional</td>
+                                                    <td>{{t "optional" }}</td>
                                                     {{#one-parameter-has tags 'comment'}}
-                                                        <td>Description</td>
+                                                        <td>{{t "description" }}</td>
                                                     {{/one-parameter-has}}
                                                 </tr>
                                             </thead>
@@ -157,9 +157,9 @@
                                                     
                                                         <td>
                                                             {{#if optional}}
-                                                                yes
+                                                                {{t "yes" }}
                                                             {{else}}
-                                                                no
+                                                                {{t "no" }}
                                                             {{/if}}
                                                         </td>
                                                         
@@ -179,7 +179,7 @@
                                 {{/jsdoc-params-valid}}
                                 <div>
                                     {{#jsdoc-code-example this.setSignature.jsdoctags}}
-                                        <b>Example :</b>
+                                        <b>{{t "example" }} :</b>
                                         {{#each tags}}
                                             <div>
                                                 {{{comment}}}
@@ -190,7 +190,7 @@
                             {{/if}}
                             {{#if this.setSignature.returnType}}
                                 <div class="io-description">
-                                    <b>Returns : </b>{{> link-type type=this.setSignature.returnType }}
+                                    <b>{{t "returns" }} : </b>{{> link-type type=this.setSignature.returnType }}
                                 </div>
                                 {{#if jsdoctags}}
                                     <div class="io-description">
