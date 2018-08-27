@@ -7,8 +7,8 @@ class I18nEngine {
 
     public init(language: string) {
         i18next.init({
-            lng: 'en-US',
-            fallbackLng: 'fr-FR'
+            lng: language,
+            fallbackLng: 'en-US'
         });
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);

@@ -75,6 +75,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
+            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR)', COMPODOC_DEFAULTS.language)
             .option(
                 '--theme [theme]',
                 "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
@@ -199,6 +200,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.extTheme) {
             this.configuration.mainData.extTheme = program.extTheme;
+        }
+
+        if (configFile.language) {
+            this.configuration.mainData.language = configFile.language;
+        }
+        if (program.language) {
+            this.configuration.mainData.language = program.language;
         }
 
         if (configFile.theme) {

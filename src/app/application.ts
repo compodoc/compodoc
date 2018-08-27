@@ -102,8 +102,6 @@ export class Application {
             this.fileEngine
         );
 
-        I18nEngineInstance.init(this.configuration.mainData.language);
-
         for (let option in options) {
             if (typeof this.configuration.mainData[option] !== 'undefined') {
                 this.configuration.mainData[option] = options[option];
@@ -125,6 +123,8 @@ export class Application {
     protected generate(): Promise<{}> {
         process.on('unhandledRejection', this.unhandledRejectionListener);
         process.on('uncaughtException', this.uncaughtExceptionListener);
+
+        I18nEngineInstance.init(this.configuration.mainData.language);
 
         if (
             this.configuration.mainData.output.charAt(

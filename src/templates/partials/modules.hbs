@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-    <li>Modules</li>
+    <li>{{t "modules" }}</li>
 </ol>
 <div class="container-fluid modules">
     <div class="row">
@@ -14,12 +14,12 @@
                             {{#if graph}}
                                 <p>
                                     <object id="demo-svg" type="image/svg+xml" lazy="./modules/{{name}}/dependencies.svg" style="width: 100%; height: 175px;">
-                                            Your browser does not support SVG
+                                        {{t "no-svg" }}
                                     </object>
                                 </p>
                             {{else}}
                                 <p class="no-graph">
-                                    No graph available.
+                                    {{t "no-graph" }}
                                 </p>
                             {{/if}}
                         {{/unless}}

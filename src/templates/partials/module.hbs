@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Modules</li>
+  <li>{{t "modules" }}</li>
   <li>{{name}}</li>
 </ol>
 
@@ -11,9 +11,9 @@
           </div>
           <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
           <div class="btn-group">
-              <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
-              <button id="reset" class="btn btn-default btn-sm">Reset</button>
-              <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+              <button id="zoom-in" class="btn btn-default btn-sm">{{t "zoomin" }}</button>
+              <button id="reset" class="btn btn-default btn-sm">{{t "reset" }}</button>
+              <button id="zoom-out" class="btn btn-default btn-sm">{{t "zoomout" }}</button>
           </div>
       </div>
       <script src="{{relativeURL depth 'modules'}}js/libs/svg-pan-zoom.min.js"></script>
@@ -42,7 +42,7 @@
 
         {{#if module.ngid}}
             <p class="comment">
-                <h3>Id</h3>
+                <h3>{{t "identifier" }}</h3>
             </p>
             <p class="comment">
                 {{module.ngid}}
@@ -63,7 +63,7 @@
             <div class="row">
                 {{#if module.declarations}}
                 <div class="col-sm-3">
-                    <h3>Declarations<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <h3>{{t "declarations" }}<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.declarations}}
                             <li class="list-group-item">
@@ -75,7 +75,7 @@
                 {{/if}}
                 {{#if module.entryComponents}}
                 <div class="col-sm-3">
-                    <h3>EntryComponents<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" title="Official documentation about module entryComponents"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <h3>{{t "entrycomponents" }}<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" title="Official documentation about module entryComponents"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.entryComponents}}
                             <li class="list-group-item">
@@ -87,7 +87,7 @@
                 {{/if}}
                 {{#if module.providers}}
                 <div class="col-sm-3">
-                    <h3>Providers<a href="https://angular.io/api/core/NgModule#providers" target="_blank" title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "providers" }}<a href="https://angular.io/api/core/NgModule#providers" target="_blank" title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.providers}}
                             <li class="list-group-item">
@@ -104,7 +104,7 @@
                 {{/if}}
                 {{#if module.imports}}
                 <div class="col-sm-3">
-                    <h3>Imports<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.imports}}
                             <li class="list-group-item">
@@ -120,7 +120,7 @@
                 {{/if}}
                 {{#if module.exports}}
                 <div class="col-sm-3">
-                    <h3>Exports<a href="https://angular.io/api/core/NgModule#exports" target="_blank" title="Official documentation about module exports"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "exports" }}<a href="https://angular.io/api/core/NgModule#exports" target="_blank" title="Official documentation about module exports"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.exports}}
                             <li class="list-group-item">
@@ -136,7 +136,7 @@
                 {{/if}}
                 {{#if module.bootstrap}}
                 <div class="col-sm-3">
-                    <h3>Bootstrap<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "bootstrap" }}<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.bootstrap}}
                             <li class="list-group-item">
@@ -148,7 +148,7 @@
                 {{/if}}
                 {{#if module.schemas}}
                 <div class="col-sm-3">
-                    <h3>Schemas<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "schemas" }}<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.schemas}}
                             <li class="list-group-item">

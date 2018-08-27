@@ -335,22 +335,22 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
                 {{#compare miscellaneous.enumerations.length ">" 0 }}
                     <li class="link">
-                      <a href="miscellaneous/enumerations.html" data-type="entity-link">Enums</a>
+                      <a href="miscellaneous/enumerations.html" data-type="entity-link">{{t "enums" }}</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.functions.length ">" 0 }}
                     <li class="link">
-                      <a href="miscellaneous/functions.html" data-type="entity-link">Functions</a>
+                      <a href="miscellaneous/functions.html" data-type="entity-link">{{t "functions" }}</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.typealiases.length ">" 0 }}
                     <li class="link">
-                      <a href="miscellaneous/typealiases.html" data-type="entity-link">Type aliases</a>
+                      <a href="miscellaneous/typealiases.html" data-type="entity-link">{{t "type-aliases" }}</a>
                     </li>
                 {{/compare}}
                 {{#compare miscellaneous.variables.length ">" 0 }}
                     <li class="link">
-                      <a href="miscellaneous/variables.html" data-type="entity-link">Variables</a>
+                      <a href="miscellaneous/variables.html" data-type="entity-link">{{t "variables" }}</a>
                     </li>
                 {{/compare}}
             </ul>
@@ -368,11 +368,11 @@ customElements.define('compodoc-menu', class extends HTMLElement {
             <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>{{t "coverage-page-title" }}</a>
         </li>
         {{/unless}}
-				{{#if unitTestData}}
-					<li class="chapter">
-						<a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>Unit test coverage</a>
-					</li>
-				{{/if}}
+        {{#if unitTestData}}
+            <li class="chapter">
+                <a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>{{t "unit-test-coverage" }}</a>
+            </li>
+        {{/if}}
         {{#unless hideGenerator}}
         <li class="divider"></li>
         <li class="copyright">
