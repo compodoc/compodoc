@@ -3,9 +3,9 @@ import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpe
 const expect = chai.expect,
       tmp = temporaryDir();
 
-describe('CLI Uniq id for file', () => {
+describe('CLI i18n', () => {
 
-    const distFolder = tmp.name + '-uniqid';
+    const distFolder = tmp.name + '-i18n';
 
     let indexFile;
     before(function (done) {
@@ -26,7 +26,7 @@ describe('CLI Uniq id for file', () => {
     });
     after(() => tmp.clean(distFolder));
 
-    it('it should contain a sentecn in the correct language', () => {
+    it('it should contain a sentence in the correct language', () => {
         let file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain('Documentation générée avec');
     });
