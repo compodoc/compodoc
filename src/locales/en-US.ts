@@ -48,5 +48,13 @@ export const TRANSLATION_EN_US = {
     extends: 'Extends',
     implements: 'Implements',
     browse: 'Browse',
-    metadata: 'Metadata'
+    metadata: 'Metadata',
+    legend: 'Legend',
+    component: 'Component',
+    'html-element': 'Html element',
+    'html-element-with-directive': 'Html element with directive',
+    'no-iframe': 'Your browser does not support iframes.',
+    index: 'Index',
+    'unamed-property': 'Unamed property',
+    signature: 'Signature'
 };

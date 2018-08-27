@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Directives</li>
+  <li>{{t "directives" }}</li>
   <li>{{directive.name}}</li>
 </ol>
 
@@ -139,7 +139,7 @@
     <div class="tab-pane fade {{#isInitialTab navTabs "example"}}active in{{/isInitialTab}}" id="c-example">
         {{#each directive.exampleUrls}}
             <iframe class="exampleContainer" src="{{this}}">
-                <p>Your browser does not support iframes.</p>
+                <p>{{t "no-iframes" }}</p>
             </iframe>
         {{/each}}
     </div>

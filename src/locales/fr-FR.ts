@@ -48,5 +48,13 @@ export const TRANSLATION_FR_FR = {
     extends: 'Etend',
     implements: 'Implémente',
     browse: 'Parcourir',
-    metadata: 'Métadonnées'
+    metadata: 'Métadonnées',
+    legend: 'Légende',
+    component: 'Composant',
+    'html-element': 'Elément Html',
+    'html-element-with-directive': 'Elément Html avec une directive',
+    'no-iframe': 'Votre navigateur ne supporte pas les iframes.',
+    index: 'Index',
+    'unamed-property': 'Propriété non nommée',
+    signature: 'Signature'
 };

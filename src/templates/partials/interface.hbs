@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Interfaces</li>
+  <li>{{t "interfaces" }}</li>
   <li>{{interface.name}}</li>
 </ol>
 
@@ -41,7 +41,7 @@
 
         {{#orLength interface.properties interface.methods}}
         <section>
-            <h3 id="index">Index</h3>
+            <h3 id="index">{{t "index" }}</h3>
             <table class="table table-sm table-bordered index-table">
                 <tbody>
                     {{#compare interface.properties.length ">" 0}}
@@ -62,7 +62,7 @@
                                         <a href="#{{name}}">{{name}}</a>
                                     {{else}}
                                         {{#if id}}
-                                            <a href="#{{id}}">Unamed property</a>
+                                            <a href="#{{id}}">{{t "unamed-property" }}</a>
                                         {{/if}}
                                     {{/if}}
                                 </li>
@@ -138,7 +138,7 @@
                                 {{#if type}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Type : </i>{{> link-type type=type }}
+                                            <i>{{t "type" }} : </i>{{> link-type type=type }}
                                         </td>
                                     </tr>
                                 {{/if}}
@@ -164,7 +164,7 @@
                                 {{#if args}}
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>Signature :</i>
+                                            <i>{{t "signature" }} :</i>
                                             <a name="{{id}}"></a>
                                             <code>
                                                 <!--ts.SyntaxKind.CallSignature-->
