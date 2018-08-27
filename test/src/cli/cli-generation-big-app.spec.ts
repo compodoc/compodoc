@@ -714,4 +714,10 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/injectables/TodoStore.html');
         expect(file).to.contain('Map&lt;string, number&gt;');
     });
+
+    it('correct support of abstract and async modifiers', () => {
+        let file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('<span class="modifier">Abstract</span>');
+        expect(file).to.contain('<span class="modifier">Async</span>');
+    });
 });
