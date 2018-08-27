@@ -360,7 +360,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support optional', () => {
         let file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('yes');
+        expect(file).to.contain('Yes');
     });
 
     it('should support optional', () => {
