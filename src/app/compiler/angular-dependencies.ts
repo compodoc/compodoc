@@ -1,15 +1,11 @@
 import * as path from 'path';
-import * as util from 'util';
 
 import * as _ from 'lodash';
-import Ast, { ts, TypeGuards, SyntaxKind } from 'ts-simple-ast';
+import Ast, { ts, SyntaxKind } from 'ts-simple-ast';
 
-import { Configuration } from '../configuration';
-import { compilerHost, detectIndent } from '../../utilities';
 import { logger } from '../../logger';
 import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
-import { ExtendsMerger } from '../../utils/extends-merger.util';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
 
 import { FrameworkDependencies } from './framework-dependencies';
@@ -20,20 +16,18 @@ import {
     ImportsUtil,
     isModuleWithProviders,
     getModuleWithProviders,
-    hasSpreadElementInArray,
     isIgnore
 } from '../../utils';
 
 import { CodeGenerator } from './angular/code-generator';
 
 import { DirectiveDepFactory } from './angular/deps/directive-dep.factory';
-import { ComponentHelper, ComponentCache } from './angular/deps/helpers/component-helper';
+import { ComponentCache } from './angular/deps/helpers/component-helper';
 import { ModuleDepFactory } from './angular/deps/module-dep.factory';
 import { ComponentDepFactory } from './angular/deps/component-dep.factory';
 import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
-import { ClassHelper } from './angular/deps/helpers/class-helper';
 
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 

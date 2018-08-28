@@ -1,23 +1,20 @@
 import { IDep } from '../dependencies.interfaces';
-import { Configuration } from '../../../configuration';
 import { ComponentHelper } from './helpers/component-helper';
 import { cleanLifecycleHooksFromMethods } from '../../../../utils';
-import { ClassHelper } from './helpers/class-helper';
 import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 
 const crypto = require('crypto');
 
 export class ComponentDepFactory {
-    constructor(
-        private helper: ComponentHelper,
-        private configuration: ConfigurationInterface) {
-
-    }
+    constructor(private helper: ComponentHelper, private configuration: ConfigurationInterface) {}
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto
+            .createHash('md5')
+            .update(sourceCode)
+            .digest('hex');
         let componentDep: IComponentDep = {
             name,
             id: 'component-' + name + '-' + hash,
@@ -54,7 +51,10 @@ export class ComponentDepFactory {
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
         if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
-            componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(props, srcFile);
+            componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(
+                props,
+                srcFile
+            );
         }
         if (this.configuration.mainData.disableLifeCycleHooks) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);

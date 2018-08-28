@@ -1,6 +1,5 @@
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
-import { ComponentCache } from './helpers/component-helper';
 import { ts } from 'ts-simple-ast';
 
 const crypto = require('crypto');
@@ -16,7 +15,10 @@ export class ModuleDepFactory {
         IO: any
     ): IModuleDep {
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto
+            .createHash('md5')
+            .update(sourceCode)
+            .digest('hex');
         return {
             name,
             id: 'module-' + name + '-' + hash,

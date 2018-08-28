@@ -1,7 +1,6 @@
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 
-import { kindToType } from '../../utils/kind-to-type';
 import { DependenciesEngine } from './dependencies.engine';
 import { IHtmlEngineHelper } from './html-engine-helpers/html-engine-helper.interface';
 import { CompareHelper } from './html-engine-helpers/compare.helper';

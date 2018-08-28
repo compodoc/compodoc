@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as _ from 'lodash';
 
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { SyntaxKind } from 'ts-simple-ast';
 
 const chokidar = require('chokidar');
 const marked = require('marked');

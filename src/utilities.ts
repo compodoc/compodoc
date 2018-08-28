@@ -7,9 +7,6 @@ import { logger } from './logger';
 
 import { stripBom, hasBom } from './utils/utils';
 
-const carriageReturnLineFeed = '\r\n';
-const lineFeed = '\n';
-
 export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
     return name.toLowerCase().replace(/ /g, '-');
 }

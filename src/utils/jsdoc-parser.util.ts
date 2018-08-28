@@ -1,5 +1,4 @@
 import { ts, SyntaxKind } from 'ts-simple-ast';
-import { JSDocParameterTag } from 'typescript';
 import * as _ from 'lodash';
 
 import { JSDocParameterTagExt } from '../app/nodes/jsdoc-parameter-tag.node';
@@ -80,7 +79,9 @@ export class JsdocParserUtil {
             this.isVariableLike(node) && ts.isVariableStatement(parent.parent);
         const variableStatementNode = isInitializerOfVariableDeclarationInStatement
             ? parent.parent.parent
-            : isVariableOfVariableDeclarationStatement ? parent.parent : undefined;
+            : isVariableOfVariableDeclarationStatement
+                ? parent.parent
+                : undefined;
         if (variableStatementNode) {
             cache = this.getJSDocsWorker(variableStatementNode, cache);
         }

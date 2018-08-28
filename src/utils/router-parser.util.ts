@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import * as JSON5 from 'json5';
-import Ast, { PropertyDeclaration, TypeGuards, SourceFile, ts, SyntaxKind } from 'ts-simple-ast';
+import Ast, { TypeGuards, SourceFile, ts, SyntaxKind } from 'ts-simple-ast';
 
 import { FileEngine } from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
