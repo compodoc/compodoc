@@ -58,6 +58,15 @@
           ""
         ]
       },
+      "language": {
+        "$id": "/properties/language",
+        "type": "string",
+        "title": "Language used for the generated documentation (en-US, fr-FR, zh-CN)",
+        "default": "en-US",
+        "examples": [
+          ""
+        ]
+      },
       "assetsFolder": {
         "$id": "/properties/assetsFolder",
         "type": "string",
