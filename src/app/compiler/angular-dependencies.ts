@@ -25,6 +25,7 @@ import { DirectiveDepFactory } from './angular/deps/directive-dep.factory';
 import { ComponentCache } from './angular/deps/helpers/component-helper';
 import { ModuleDepFactory } from './angular/deps/module-dep.factory';
 import { ComponentDepFactory } from './angular/deps/component-dep.factory';
+import { ControllerDepFactory } from './angular/deps/controller-dep.factory';
 import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
@@ -70,6 +71,7 @@ export class AngularDependencies extends FrameworkDependencies {
             modules: [],
             modulesForGraph: [],
             components: [],
+            controllers: [],
             injectables: [],
             interceptors: [],
             guards: [],
@@ -379,6 +381,21 @@ export class AngularDependencies extends FrameworkDependencies {
                             if (typeof IO.ignore === 'undefined') {
                                 $componentsTreeEngine.addComponent(componentDep);
                                 outputSymbols.components.push(componentDep);
+                            }
+                        } else if (this.isController(metadata)) {
+                            if (props.length === 0) {
+                                return;
+                            }
+                            const controllerDep = new ControllerDepFactory().create(
+                                file,
+                                srcFile,
+                                name,
+                                props,
+                                IO
+                            );
+                            deps = controllerDep;
+                            if (typeof IO.ignore === 'undefined') {
+                                outputSymbols.controllers.push(controllerDep);
                             }
                         } else if (this.isInjectable(metadata)) {
                             let injectableDeps: IInjectableDep = {
