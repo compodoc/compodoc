@@ -10,6 +10,8 @@ import { readConfig, handlePath } from './utils/utils';
 import { ts } from 'ts-simple-ast';
 import { ParserUtil } from './utils/parser.util.class';
 
+import I18nEngineInstance from './app/engines/i18n.engine';
+
 const pkg = require('../package.json');
 const program = require('commander');
 const os = require('os');
@@ -75,7 +77,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
-            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR)', COMPODOC_DEFAULTS.language)
+            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN)', COMPODOC_DEFAULTS.language)
             .option(
                 '--theme [theme]',
                 "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
@@ -509,6 +511,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         if (!configExplorerResult) {
             logger.warn(`No configuration file found, switching to CLI flags.`);
+        }
+
+        if (program.language && !I18nEngineInstance.supportLanguage(program.language)) {
+            logger.warn(`The language ${program.language} is not available, falling back to ${I18nEngineInstance.fallbackLanguage}`);
         }
 
         if (program.tsconfig && typeof program.tsconfig === 'boolean') {
