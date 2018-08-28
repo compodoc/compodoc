@@ -68,10 +68,7 @@ export class AngularDependencies extends FrameworkDependencies {
         configuration: ConfigurationInterface,
         routerParser: RouterParserUtil
     ) {
-        super(files,
-            options,
-            configuration,
-            routerParser);
+        super(files, options, configuration, routerParser);
     }
 
     public getDependencies() {
@@ -102,7 +99,10 @@ export class AngularDependencies extends FrameworkDependencies {
             let filePath = file.fileName;
 
             if (path.extname(filePath) === '.ts') {
-                if (!this.configuration.mainData.angularJSProject && path.extname(filePath) === '.js') {
+                if (
+                    !this.configuration.mainData.angularJSProject &&
+                    path.extname(filePath) === '.js'
+                ) {
                     logger.info('parsing', filePath);
                     this.getSourceFileDecorators(file, deps);
                 } else {
@@ -208,7 +208,10 @@ export class AngularDependencies extends FrameworkDependencies {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node, fileBody);
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto
+            .createHash('md5')
+            .update(sourceCode)
+            .digest('hex');
         let deps: any = {
             name,
             id: 'class-' + name + '-' + hash,
@@ -334,7 +337,10 @@ export class AngularDependencies extends FrameworkDependencies {
             }
             let parseNode = (file, srcFile, node, fileBody) => {
                 let sourceCode = srcFile.getText();
-                let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+                let hash = crypto
+                    .createHash('md5')
+                    .update(sourceCode)
+                    .digest('hex');
 
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
@@ -412,7 +418,10 @@ export class AngularDependencies extends FrameworkDependencies {
                                     outputSymbols.guards.push(injectableDeps);
                                 } else {
                                     injectableDeps.type = 'injectable';
-                                    this.addNewEntityInStore(injectableDeps, outputSymbols.injectables);
+                                    this.addNewEntityInStore(
+                                        injectableDeps,
+                                        outputSymbols.injectables
+                                    );
                                 }
                             }
                         } else if (this.isPipe(metadata)) {
@@ -629,7 +638,10 @@ export class AngularDependencies extends FrameworkDependencies {
                                 );
                             }
                             if (typeof node.thenStatement !== 'undefined') {
-                                if (node.thenStatement.statements && node.thenStatement.statements.length > 0) {
+                                if (
+                                    node.thenStatement.statements &&
+                                    node.thenStatement.statements.length > 0
+                                ) {
                                     let firstStatement = node.thenStatement.statements[0];
                                     resultNode = this.findExpressionByNameInExpressions(
                                         firstStatement.expression,
@@ -854,6 +866,10 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
+    private isController(metadatas) {
+        return this.parseDecorators(metadatas, 'Controller');
+    }
+
     private isComponent(metadatas) {
         return this.parseDecorators(metadatas, 'Component');
     }
@@ -870,16 +886,20 @@ export class AngularDependencies extends FrameworkDependencies {
         return this.parseDecorators(metadatas, 'Injectable');
     }
 
-    private isGuard (ioImplements: string[]): boolean {
-        return _.includes(ioImplements, 'CanActivate') ||
+    private isGuard(ioImplements: string[]): boolean {
+        return (
+            _.includes(ioImplements, 'CanActivate') ||
             _.includes(ioImplements, 'CanActivateChild') ||
             _.includes(ioImplements, 'CanDeactivate') ||
             _.includes(ioImplements, 'Resolve') ||
-            _.includes(ioImplements, 'CanLoad');
+            _.includes(ioImplements, 'CanLoad')
+        );
     }
 
     private isModule(metadatas) {
-        return this.parseDecorators(metadatas, 'NgModule');
+        return (
+            this.parseDecorators(metadatas, 'NgModule') || this.parseDecorators(metadatas, 'Module')
+        );
     }
 
     private getSymboleName(node): string {
@@ -1045,8 +1065,8 @@ export class AngularDependencies extends FrameworkDependencies {
                     name: node.declarationList.declarations[i].name.text,
                     defaultValue: node.declarationList.declarations[i].initializer
                         ? this.classHelper.stringifyDefaultValue(
-                            node.declarationList.declarations[i].initializer
-                        )
+                              node.declarationList.declarations[i].initializer
+                          )
                         : undefined
                 };
                 if (node.declarationList.declarations[i].initializer) {
@@ -1187,5 +1207,4 @@ export class AngularDependencies extends FrameworkDependencies {
 
         return res[0] || {};
     }
-
 }
