@@ -1,5 +1,12 @@
+<a name="1.1.5"></a>
+# [1.1.5](https://github.com/compodoc/compodoc/compare/1.1.4...1.1.5) (2018-08-29)
+
+### Bug fixes
+
+* **overview:** typo in page ([a21f7b98](https://github.com/compodoc/compodoc/commit/a21f7b98))
+
 <a name="1.1.4"></a>
-# [1.1.4](https://github.com/compodoc/compodoc/compare/1.1.3...1.1.4) (2018-008-29)
+# [1.1.4](https://github.com/compodoc/compodoc/compare/1.1.3...1.1.4) (2018-08-29)
 
 ### Features
 
