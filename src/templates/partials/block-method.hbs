@@ -49,7 +49,7 @@
                 {{#if decorators}}
                     <tr>
                         <td class="col-md-4">
-                            <i>{{t "decorators" }} : </i><code>{{#each decorators}}{{name}}{{/each}}</code>
+                            <b>{{t "decorators" }} : </b><code>{{#each decorators}}@{{name}}() {{/each}}</code>
                         </td>
                     </tr>
                 {{/if}}
