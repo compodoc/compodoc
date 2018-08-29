@@ -4,9 +4,9 @@ import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 
 import { getNamesCompareFn } from '../../utils/utils';
-import { IModuleDep } from '../compiler/deps/module-dep.factory';
-import { IComponentDep } from '../compiler/deps/component-dep.factory';
-import { IDirectiveDep } from '../compiler/deps/directive-dep.factory';
+import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
+import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
+import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IApiSourceResult } from '../../utils/api-source-result.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
 import { AngularApiUtil } from '../../utils/angular-api.util';
@@ -17,8 +17,10 @@ import {
     ITypeAliasDecDep,
     IFunctionDecDep,
     IEnumDecDep,
-    IInterceptorDep
-} from '../compiler/dependencies.interfaces';
+    IInterceptorDep,
+    IGuardDep
+} from '../compiler/angular/dependencies.interfaces';
+import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory';
 
 const traverse = require('traverse');
 
@@ -28,9 +30,11 @@ export class DependenciesEngine {
     public rawModules: Object[];
     public rawModulesForOverview: Object[];
     public components: Object[];
+    public controllers: Object[];
     public directives: Object[];
     public injectables: Object[];
     public interceptors: Object[];
+    public guards: Object[];
     public interfaces: Object[];
     public routes: RouteInterface;
     public pipes: Object[];
@@ -117,9 +121,11 @@ export class DependenciesEngine {
         this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
         this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
+        this.controllers = _.sortBy(this.rawData.controllers, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
+        this.guards = _.sortBy(this.rawData.guards, ['name']);
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
@@ -128,6 +134,14 @@ export class DependenciesEngine {
         this.updateModulesDeclarationsExportsTypes();
         this.routes = this.rawData.routesTree;
         this.manageDuplicatesName();
+        this.cleanRawModulesNames();
+    }
+
+    private cleanRawModulesNames() {
+        this.rawModulesForOverview = this.rawModulesForOverview.map(module => {
+            module.name = module.name.replace('$', '');
+            return module;
+        });
     }
 
     private findInCompodocDependencies(name, data, file?): IApiSourceResult<any> {
@@ -153,21 +167,21 @@ export class DependenciesEngine {
 
     private manageDuplicatesName() {
         let processDuplicates = (element, index, array) => {
-            let counterDuplicate = 0;
-            array.forEach(arrayElement => {
-                if (
-                    arrayElement.name === element.name &&
-                    arrayElement.id === element.id &&
-                    arrayElement.file !== element.file &&
-                    typeof arrayElement.isDuplicate === 'undefined'
-                ) {
-                    counterDuplicate += 1;
-                    element.isDuplicate = true;
-                    element.duplicateId = counterDuplicate;
-                    element.duplicateName = element.name + '-' + element.duplicateId;
-                    element.id = element.id + '-' + element.duplicateId;
+            let elementsWithSameName = _.filter(array, {name: element.name});
+            if (elementsWithSameName.length > 1) {
+                // First element is the reference for duplicates
+                for (let i = 1; i < elementsWithSameName.length; i++) {
+                    let elementToEdit = elementsWithSameName[i];
+                    if (
+                        typeof elementToEdit.isDuplicate === 'undefined'
+                    ) {
+                        elementToEdit.isDuplicate = true;
+                        elementToEdit.duplicateId = i;
+                        elementToEdit.duplicateName = elementToEdit.name + '-' + elementToEdit.duplicateId;
+                        elementToEdit.id = elementToEdit.id + '-' + elementToEdit.duplicateId;
+                    }
                 }
-            });
+            }
             return element;
         };
         this.classes = this.classes.map(processDuplicates);
@@ -175,8 +189,10 @@ export class DependenciesEngine {
         this.injectables = this.injectables.map(processDuplicates);
         this.pipes = this.pipes.map(processDuplicates);
         this.interceptors = this.interceptors.map(processDuplicates);
+        this.guards = this.guards.map(processDuplicates);
         this.modules = this.modules.map(processDuplicates);
         this.components = this.components.map(processDuplicates);
+        this.controllers = this.controllers.map(processDuplicates);
         this.directives = this.directives.map(processDuplicates);
     }
 
@@ -184,9 +200,11 @@ export class DependenciesEngine {
         let searchFunctions: Array<() => IApiSourceResult<any>> = [
             () => this.findInCompodocDependencies(name, this.injectables),
             () => this.findInCompodocDependencies(name, this.interceptors),
+            () => this.findInCompodocDependencies(name, this.guards),
             () => this.findInCompodocDependencies(name, this.interfaces),
             () => this.findInCompodocDependencies(name, this.classes),
             () => this.findInCompodocDependencies(name, this.components),
+            () => this.findInCompodocDependencies(name, this.controllers),
             () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
@@ -218,6 +236,12 @@ export class DependenciesEngine {
                 this.components[_index] = component;
             });
         }
+        if (updatedData.controllers.length > 0) {
+            _.forEach(updatedData.controllers, (controller: IControllerDep) => {
+                let _index = _.findIndex(this.controllers, { name: controller.name });
+                this.controllers[_index] = controller;
+            });
+        }
         if (updatedData.directives.length > 0) {
             _.forEach(updatedData.directives, (directive: IDirectiveDep) => {
                 let _index = _.findIndex(this.directives, { name: directive.name });
@@ -234,6 +258,12 @@ export class DependenciesEngine {
             _.forEach(updatedData.interceptors, (interceptor: IInterceptorDep) => {
                 let _index = _.findIndex(this.interceptors, { name: interceptor.name });
                 this.interceptors[_index] = interceptor;
+            });
+        }
+        if (updatedData.guards.length > 0) {
+            _.forEach(updatedData.guards, (guard: IGuardDep) => {
+                let _index = _.findIndex(this.guards, { name: guard.name });
+                this.guards[_index] = guard;
             });
         }
         if (updatedData.interfaces.length > 0) {
@@ -301,9 +331,11 @@ export class DependenciesEngine {
             [],
             this.modules,
             this.components,
+            this.controllers,
             this.directives,
             this.injectables,
             this.interceptors,
+            this.guards,
             this.interfaces,
             this.pipes,
             this.classes,
@@ -344,6 +376,10 @@ export class DependenciesEngine {
         return this.components;
     }
 
+    public getControllers() {
+        return this.controllers;
+    }
+
     public getDirectives() {
         return this.directives;
     }
@@ -354,6 +390,10 @@ export class DependenciesEngine {
 
     public getInterceptors() {
         return this.interceptors;
+    }
+
+    public getGuards() {
+        return this.guards;
     }
 
     public getInterfaces() {

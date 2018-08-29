@@ -1,7 +1,7 @@
 <section>
     {{#ifString title}}<h3>{{title}}</h3>{{else}}
         <h3 id="methods">
-            Methods
+            {{t "methods" }}
         </h3>
     {{/ifString}}
     {{#each methods}}
@@ -16,11 +16,11 @@
                                 <span class="modifier">{{modifKind this}}</span>
                             {{/each}}
                             {{#if optional}}
-                                <span class="modifier">Optional</span>
+                                <span class="modifier">{{t "optional" }}</span>
                             {{/if}}
                             {{name}}
                             </b>
-                            <a href="#{{name}}"><span class="fa fa-link"></span></a>
+                            <a href="#{{name}}"><span class="icon ion-ios-link"></span></a>
                         </span>
                     </td>
                 </tr>
@@ -34,14 +34,14 @@
                 {{#if argsDecorator}}
                     <tr>
                         <td class="col-md-4">
-                            <i>Arguments : </i><code>{{#each argsDecorator}}'{{this}}' {{/each}}</code>
+                            <i>{{t "arguments" }} : </i><code>{{#each argsDecorator}}'{{this}}' {{/each}}</code>
                         </td>
                     </tr>
                 {{/if}}
                 <tr>
                     <td class="col-md-4">
                         {{#if modifierKind}}
-                            <span class="modifier-icon fa fa-{{modifIcon modifierKind}}"></span>
+                            <span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>
                         {{/if}}<code>{{{functionSignature this}}}</code>
                     </td>
                 </tr>
@@ -49,7 +49,7 @@
                 {{#if decorators}}
                     <tr>
                         <td class="col-md-4">
-                            <i>Decorators : </i><code>{{#each decorators}}{{name}}{{/each}}</code>
+                            <b>{{t "decorators" }} : </b><code>{{#each decorators}}@{{name}}() {{/each}}</code>
                         </td>
                     </tr>
                 {{/if}}
@@ -59,16 +59,16 @@
                         {{#if inheritance}}
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
+                                    <div class="io-line">{{t "inherited-from" }} {{> link-type type=inheritance.file }}</div>
                                 </td>
                             </tr>
                         {{/if}}
                         <tr>
                             <td class="col-md-4">
                                 {{#if inheritance}}
-                                    <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
+                                    <div class="io-line">{{t "defined-in" }} {{inheritance.file}}:{{{line}}}</div>
                                 {{else}}
-                                    <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                                    <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}" class="link-to-prism">{{../file}}:{{{line}}}</a></div>
                                 {{/if}}
                             </td>
                         </tr>
@@ -79,7 +79,7 @@
                     {{#compare typeParameters.length ">" 0}}
                         <tr>
                             <td class="col-md-4">
-                                <b>Type parameters :</b>
+                                <b>{{t "type-parameters" }} :</b>
                                 <ul class="type-parameters">
                                     {{#each typeParameters}}
                                         <li>{{this}}</li>
@@ -101,20 +101,20 @@
                             {{#jsdoc-params-valid jsdoctags}}
                             <div class="io-description">
                                 {{#jsdoc-params jsdoctags}}
-                                    <b>Parameters :</b>
+                                    <b>{{t "parameters" }} :</b>
                                     <table class="params">
                                         <thead>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>{{t "name" }}</td>
                                                 {{#one-parameter-has tags 'type'}}
-                                                    <td>Type</td>
+                                                    <td>{{t "type" }}</td>
                                                 {{/one-parameter-has}}
-                                                <td>Optional</td>
+                                                <td>{{t "optional" }}</td>
                                                 {{#one-parameter-has tags 'defaultValue'}}
-                                                    <td>Default value</td>
+                                                    <td>{{t "default-value" }}</td>
                                                 {{/one-parameter-has}}
                                                 {{#one-parameter-has tags 'comment'}}
-                                                    <td>Description</td>
+                                                    <td>{{t "description" }}</td>
                                                 {{/one-parameter-has}}
                                             </tr>
                                         </thead>
@@ -134,9 +134,9 @@
                                                     
                                                     <td>
                                                         {{#if optional}}
-                                                            yes
+                                                            {{t "yes" }}
                                                         {{else}}
-                                                            no
+                                                            {{t "no" }}
                                                         {{/if}}
                                                     </td>
                                                     
@@ -164,7 +164,7 @@
                             {{/jsdoc-params-valid}}
                             <div>
                                 {{#jsdoc-code-example jsdoctags}}
-                                    <b>Example :</b>
+                                    <b>{{t "example" }} :</b>
                                     {{#each tags}}
                                         <div>
                                             {{{comment}}}
@@ -175,7 +175,7 @@
                         {{/if}}
                         {{#if returnType}}
                             <div class="io-description">
-                                <b>Returns : </b>{{> link-type type=returnType }}
+                                <b>{{t "returns" }} : </b>{{> link-type type=returnType }}
                             </div>
                             {{#if jsdoctags}}
                                 <div class="io-description">

@@ -1,0 +1,364 @@
+{
+    "$id": "http://compodoc.app/schema",
+    "type": "object",
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+      "config": {
+        "$id": "/properties/config",
+        "type": "string",
+        "title": "A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json",
+        "default": "",
+        "examples": [
+          ".compodocrc"
+        ]
+      },
+      "tsconfig": {
+        "$id": "/properties/tsconfig",
+        "type": "string",
+        "title": "A tsconfig.json file",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "output": {
+        "$id": "/properties/output",
+        "type": "string",
+        "title": "Where to store the generated documentation",
+        "default": "documentation",
+        "examples": [
+          ""
+        ]
+      },
+      "extTheme": {
+        "$id": "/properties/extTheme",
+        "type": "string",
+        "title": "External styling theme file",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "name": {
+        "$id": "/properties/name",
+        "type": "string",
+        "title": "Title documentation",
+        "default": "Application documentation",
+        "examples": [
+          ""
+        ]
+      },
+      "theme": {
+        "$id": "/properties/theme",
+        "type": "string",
+        "title": "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)",
+        "default": "gitbook",
+        "examples": [
+          ""
+        ]
+      },
+      "language": {
+        "$id": "/properties/language",
+        "type": "string",
+        "title": "Language used for the generated documentation (en-US, fr-FR, zh-CN)",
+        "default": "en-US",
+        "examples": [
+          ""
+        ]
+      },
+      "assetsFolder": {
+        "$id": "/properties/assetsFolder",
+        "type": "string",
+        "title": "External assets folder to copy in generated documentation folder",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "open": {
+        "$id": "/properties/open",
+        "type": "boolean",
+        "title": "Open the generated documentation",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "silent": {
+        "$id": "/properties/silent",
+        "type": "boolean",
+        "title": "In silent mode, log messages aren't logged in the console",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "serve": {
+        "$id": "/properties/serve",
+        "type": "boolean",
+        "title": "Serve generated documentation (default http://localhost:8080/)",
+        "default": false,
+        "examples": [
+          true
+        ]
+      },
+      "port": {
+        "$id": "/properties/port",
+        "type": "integer",
+        "title": "Change default serving port",
+        "default": 0,
+        "examples": [
+          8080
+        ]
+      },
+      "watch": {
+        "$id": "/properties/watch",
+        "type": "boolean",
+        "title": "Watch source files after serve and force documentation rebuild",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "exportFormat": {
+        "$id": "/properties/exportFormat",
+        "type": "string",
+        "title": "Export in specified format (json, html)",
+        "default": "",
+        "examples": [
+          "html"
+        ]
+      },
+      "hideGenerator": {
+        "$id": "/properties/hideGenerator",
+        "type": "boolean",
+        "title": "Do not print the Compodoc link at the bottom of the page",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "toggleMenuItems": {
+        "$id": "/properties/toggleMenuItems",
+        "type": "array",
+        "items": {
+          "$id": "/properties/toggleMenuItems/items",
+          "type": "string",
+          "title": "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','classes','injectables','interfaces','pipes','additionalPages']",
+          "default": "",
+          "examples": [
+            "all"
+          ]
+        }
+      },
+      "navTabConfig": {
+        "$id": "/properties/navTabConfig",
+        "type": "array",
+        "items": {
+          "$id": "/properties/navTabConfig/items",
+          "type": "object",
+          "properties": {
+            "id": {
+              "$id": "/properties/navTabConfig/items/properties/id",
+              "type": "string",
+              "title": "The Id Schema ",
+              "default": "",
+              "examples": [
+                ""
+              ]
+            },
+            "label": {
+              "$id": "/properties/navTabConfig/items/properties/label",
+              "type": "string",
+              "title": "The Label Schema ",
+              "default": "",
+              "examples": [
+                ""
+              ]
+            }
+          }
+        }
+      },
+      "includes": {
+        "$id": "/properties/includes",
+        "type": "string",
+        "title": "Path of external markdown files to include",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "includesName": {
+        "$id": "/properties/includesName",
+        "type": "string",
+        "title": "Name of item menu of externals markdown files",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "coverageTest": {
+        "$id": "/properties/coverageTest",
+        "type": "integer",
+        "title": "Test command of documentation coverage with a threshold (default 70)",
+        "default": 70,
+        "examples": [
+          70
+        ]
+      },
+      "coverageMinimumPerFile": {
+        "$id": "/properties/coverageMinimumPerFile",
+        "type": "integer",
+        "title": "Test command of documentation coverage per file with a minimum (default 0)",
+        "default": 0,
+        "examples": [
+          0
+        ]
+      },
+      "coverageTestThresholdFail": {
+        "$id": "/properties/coverageTestThresholdFail",
+        "type": "boolean",
+        "title": "Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)",
+        "default": false,
+        "examples": [
+          true
+        ]
+      },
+      "disableSourceCode": {
+        "$id": "/properties/disableSourceCode",
+        "type": "boolean",
+        "title": "Do not add source code tab and links to source code",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableDomTree": {
+        "$id": "/properties/disableDomTree",
+        "type": "boolean",
+        "title": "Do not add dom tree tab",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableTemplateTab": {
+        "$id": "/properties/disableTemplateTab",
+        "type": "boolean",
+        "title": "Do not add template tab",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableGraph": {
+        "$id": "/properties/disableGraph",
+        "type": "boolean",
+        "title": "Do not add the dependency graph",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableCoverage": {
+        "$id": "/properties/disableCoverage",
+        "type": "boolean",
+        "title": "Do not add the documentation coverage report",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disablePrivate": {
+        "$id": "/properties/disablePrivate",
+        "type": "boolean",
+        "title": "Do not show private in generated documentation",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableProtected": {
+        "$id": "/properties/disableProtected",
+        "type": "boolean",
+        "title": "Do not show protected in generated documentation",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableInternal": {
+        "$id": "/properties/disableInternal",
+        "type": "boolean",
+        "title": "Do not show @internal in generated documentation",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableLifeCycleHooks": {
+        "$id": "/properties/disableLifeCycleHooks",
+        "type": "boolean",
+        "title": "Do not show Angular lifecycle hooks in generated documentation",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableRoutesGraph": {
+        "$id": "/properties/disableRoutesGraph",
+        "type": "boolean",
+        "title": "Do not add the routes graph",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "disableSearch": {
+        "$id": "/properties/disableSearch",
+        "type": "boolean",
+        "title": "Do not add the search input",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "minimal": {
+        "$id": "/properties/minimal",
+        "type": "boolean",
+        "title": "Minimal mode with only documentation. No search, no graph, no coverage.",
+        "default": false,
+        "examples": [
+          false
+        ]
+      },
+      "customFavicon": {
+        "$id": "/properties/customFavicon",
+        "type": "string",
+        "title": "Use a custom favicon",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "gaID": {
+        "$id": "/properties/gaID",
+        "type": "string",
+        "title": "Google Analytics tracking ID",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
+      "gaSite": {
+        "$id": "/properties/gaSite",
+        "type": "string",
+        "title": "Google Analytics site name",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      }
+    }
+  }

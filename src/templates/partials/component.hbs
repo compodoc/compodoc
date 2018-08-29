@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Components</li>
+  <li>{{t "components" }}</li>
   <li>{{component.name}}</li>
 </ol>
 
@@ -41,16 +41,16 @@
         <div id="tree-container"></div>
         <div class="tree-legend">
             <div class="title">
-                <b>Legend</b>
+                <b>{{t "legend" }}</b>
             </div>
             <div>
-                <div class="color htmlelement"></div><span>Html element</span>
+                <div class="color htmlelement"></div><span>{{t "html-element" }}</span>
             </div>
             <div>
-                <div class="color component"></div><span>Component</span>
+                <div class="color component"></div><span>{{t "component" }}</span>
             </div>
             <div>
-                <div class="color directive"></div><span>Html element with directive</span>
+                <div class="color directive"></div><span>{{t "html-element-with-directive" }}</span>
             </div>
         </div>
     </div>
@@ -59,8 +59,8 @@
     {{#isTabEnabled navTabs "example"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "example"}}active in{{/isInitialTab}}" id="c-example">
         {{#each component.exampleUrls}}
-            <iframe src="{{this}}">
-                <p>Your browser does not support iframes.</p>
+            <iframe class="exampleContainer" src="{{this}}">
+                <p>{{t "no-iframes" }}</p>
             </iframe>
         {{/each}}
     </div>

@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li>Interceptors</li>
+  <li>{{t "interceptors" }}</li>
   <li>{{injectable.name}}</li>
 </ol>
 
@@ -15,7 +15,7 @@
     {{#isTabEnabled navTabs "info"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
         <p class="comment">
-            <h3>File</h3>
+            <h3>{{t "file" }}</h3>
         </p>
         <p class="comment">
             <code>{{injectable.file}}</code>
@@ -23,7 +23,7 @@
 
         {{#if injectable.description}}
             <p class="comment">
-                <h3>Description</h3>
+                <h3>{{t "description" }}</h3>
             </p>
             <p class="comment">
                 {{{parseDescription injectable.description depth}}}
@@ -32,7 +32,7 @@
 
         {{#if injectable.jsdoctags}}
             <p class="comment">
-                <h3>Example</h3>
+                <h3>{{t "example" }}</h3>
             </p>
             <div class="io-description">
                 {{#jsdoc-code-example injectable.jsdoctags}}

@@ -1,5 +1,5 @@
 <section>
-    <h3 id="outputs">Outputs</h3>
+    <h3 id="outputs">{{t "outputs" }}</h3>
     {{#each element.outputsClass}}
         <table class="table table-sm table-bordered">
             <tbody>
@@ -13,7 +13,7 @@
                         <div>{{{parseDescription description ../depth}}}</div>
                         {{/if}}
                         {{#if type}}
-                        <em><code>$event</code> type:</em>{{> link-type type=type }}
+                        <em><code>$event</code> {{t "type" }}:</em>{{> link-type type=type }}
                         {{/if}}
                     </td>
                 </tr>
@@ -22,16 +22,16 @@
                         {{#if inheritance}}
                             <tr>
                                 <td class="col-md-4" colspan="2">
-                                    <div class="io-line">Inherited from {{> link-type type=inheritance.file }}</div>
+                                    <div class="io-line">{{t "inherited-from" }} {{> link-type type=inheritance.file }}</div>
                                 </td>
                             </tr>
                         {{/if}}
                         <tr>
                             <td class="col-md-2" colspan="2">
                                 {{#if inheritance}}
-                                    <div class="io-line">Defined in {{inheritance.file}}:{{{line}}}</div>
+                                    <div class="io-line">{{t "defined-in" }} {{inheritance.file}}:{{{line}}}</div>
                                 {{else}}
-                                    <div class="io-line">Defined in <a href="" data-line="{{{line}}}" class="link-to-prism">{{../element.file}}:{{{line}}}</a></div>
+                                    <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}" class="link-to-prism">{{../element.file}}:{{{line}}}</a></div>
                                 {{/if}}
                             </td>
                         </tr>

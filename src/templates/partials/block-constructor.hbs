@@ -1,5 +1,5 @@
 <section>
-    <h3 id="constructor">Constructor</h3>
+    <h3 id="constructor">{{t "constructor" }}</h3>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
@@ -15,7 +15,7 @@
                     {{#isTabEnabled navTabs "source"}}
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="{{{constructor.line}}}" class="link-to-prism">{{file}}:{{{constructor.line}}}</a></div>
+                                <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{constructor.line}}}" class="link-to-prism">{{file}}:{{{constructor.line}}}</a></div>
                             </td>
                         </tr>
                     {{/isTabEnabled}}
@@ -31,17 +31,17 @@
                             {{#jsdoc-params-valid constructor.jsdoctags}}
                             <div>
                                 {{#jsdoc-params constructor.jsdoctags}}
-                                    <b>Parameters :</b>
+                                    <b>{{t "parameters" }} :</b>
                                     <table class="params">
                                         <thead>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>{{t "name" }}</td>
                                                 {{#one-parameter-has tags 'type'}}
-                                                    <td>Type</td>
+                                                    <td>{{t "type" }}</td>
                                                 {{/one-parameter-has}}
-                                                <td>Optional</td>
+                                                <td>{{t "optional" }}</td>
                                                 {{#one-parameter-has tags 'comment'}}
-                                                    <td>Description</td>
+                                                    <td>{{t "description" }}</td>
                                                 {{/one-parameter-has}}
                                             </tr>
                                         </thead>
@@ -62,9 +62,9 @@
                                                   
                                                     <td>
                                                         {{#if optional}}
-                                                            yes
+                                                            {{t "yes" }}
                                                         {{else}}
-                                                            no
+                                                            {{t "no" }}
                                                         {{/if}}
                                                     </td>
                                                     
@@ -81,7 +81,7 @@
                                     </table>
                                 {{/jsdoc-params}}
                                 {{#jsdoc-example constructor.jsdoctags}}
-                                    <b>Example :</b>
+                                    <b>{{t "example" }} :</b>
                                     {{#each tags}}
                                         <div>
                                             {{{comment}}}

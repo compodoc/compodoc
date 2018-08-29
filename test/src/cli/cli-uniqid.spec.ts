@@ -19,7 +19,7 @@ describe('CLI Uniq id for file', () => {
             console.error(`shell error: ${ls.stderr.toString()}`);
             done('error');
         }
-        indexFile = read(`${distFolder}/index.html`);
+        indexFile = read(`${distFolder}/js/menu-wc.js`);
 
         done();
     });

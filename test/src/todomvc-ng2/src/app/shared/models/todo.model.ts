@@ -83,6 +83,10 @@ export class Todo extends Tada {
     azert() {
         return 5;
     }
+
+    abstract abstractMethod(input : string) : string;
+
+    async asyncMethod() {}
 }
 
 export type PopupPosition = ElementRef | HTMLElement;

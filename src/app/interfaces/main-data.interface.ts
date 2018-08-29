@@ -22,14 +22,17 @@ export interface MainDataInterface {
     classes: any;
     interfaces: any;
     components: any;
+    controllers: any;
     directives: any;
     injectables: any;
     interceptors: any;
+    guards: any;
     miscellaneous: any;
     routes: any;
     tsconfig: string;
     toggleMenuItems: string[];
     navTabConfig: any[];
+    templates: string;
     includes: string;
     includesName: string;
     includesFolder: string;
@@ -44,6 +47,7 @@ export interface MainDataInterface {
     disableInternal: boolean;
     disableLifeCycleHooks: boolean;
     disableRoutesGraph: boolean;
+    disableSearch: boolean;
     watch: boolean;
     mainGraph: string;
     coverageTest: boolean;
@@ -51,6 +55,9 @@ export interface MainDataInterface {
     coverageTestThresholdFail: boolean;
     coverageTestPerFile: boolean;
     coverageMinimumPerFile: number;
+    coverageTestShowOnlyFailed: boolean;
+    unitTestCoverage: string;
+    unitTestData: Object;
     routesLength: number;
     angularVersion: string;
     exportFormat: string;
@@ -60,4 +67,7 @@ export interface MainDataInterface {
     packagePeerDependencies: Object[];
     gaID: string;
     gaSite: string;
+    angularProject: boolean;
+    angularJSProject: boolean;
+    language: string;
 }

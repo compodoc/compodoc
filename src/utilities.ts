@@ -7,9 +7,6 @@ import { logger } from './logger';
 
 import { stripBom, hasBom } from './utils/utils';
 
-const carriageReturnLineFeed = '\r\n';
-const lineFeed = '\n';
-
 export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
     return name.toLowerCase().replace(/ /g, '-');
 }
@@ -88,7 +85,7 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
 
     const toReturn: ts.CompilerHost = {
         getSourceFile: (fileName: string) => {
-            if (fileName.lastIndexOf('.ts') !== -1) {
+            if (fileName.lastIndexOf('.ts') !== -1 || fileName.lastIndexOf('.js') !== -1) {
                 if (fileName === 'lib.d.ts') {
                     return undefined;
                 }

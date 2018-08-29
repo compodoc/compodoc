@@ -1,3 +1,37 @@
+<a name="1.1.4"></a>
+# [1.1.4](https://github.com/compodoc/compodoc/compare/1.1.3...1.1.4) (2018-008-29)
+
+### Features
+
+* **i18n:** language flag ([9d47e2b4](https://github.com/compodoc/compodoc/commit/9d47e2b4)), closes [#611](https://github.com/compodoc/compodoc/issues/611) Thanks [lichangfeng](https://github.com/lichangfeng)
+* **nest:** Nest projects support ([1a5f5fe3](https://github.com/compodoc/compodoc/commit/1a5f5fe3)), closes [#611](https://github.com/compodoc/compodoc/issues/625)
+* **guard:** support ([0c85e715](https://github.com/compodoc/compodoc/commit/0c85e715)), closes [#578](https://github.com/compodoc/compodoc/issues/578) Thanks [Valentin GOT](https://github.com/ValentinGot)
+* **CLI:** minimal mode ([9c85bcba](https://github.com/compodoc/compodoc/commit/9c85bcba)), closes [#572](https://github.com/compodoc/compodoc/issues/572)
+* **CLI:** disableSearch flag ([0a8efe98](https://github.com/compodoc/compodoc/commit/0a8efe98)), closes [#571](https://github.com/compodoc/compodoc/issues/571)
+* **unit-test:** unit test coverage summary page ([0a1e248b](https://github.com/compodoc/compodoc/commit/0a1e248b)) Thanks [Brigitte Hofmeister](https://github.com/bhofmei)
+* **templates:** override handlebars templates with flag ([e83b126b](https://github.com/compodoc/compodoc/commit/e83b126b)) Thanks [Brigitte Hofmeister](https://github.com/bhofmei)
+* **coverage:** --coverageTestShowOnlyFailed ([3b4e8a5d](https://github.com/compodoc/compodoc/commit/3b4e8a5d)), closes [#606](https://github.com/compodoc/compodoc/issues/606)
+
+### Improvements
+
+* **menu:** compile the menu as a custom-element to improve performance ([d59761e5](https://github.com/compodoc/compodoc/commit/d59761e5)) Thanks [Wassim CHEGHAM](https://github.com/manekinekko)
+
+### Bug fixes
+
+* **CLI:** JSON Configuration File JSON Schema ([d8e48d57](https://github.com/compodoc/compodoc/commit/d8e48d57)), closes [#577](https://github.com/compodoc/compodoc/issues/577)
+* **CLI:** handle ../ in includes in tsconfig includes/excludes ([4a445050](https://github.com/compodoc/compodoc/commit/4a445050)), closes [#596](https://github.com/compodoc/compodoc/issues/596)
+* **UI:** Address double scrollbar on example tabs for directive, pipe, and injectable ([81e33988](https://github.com/compodoc/compodoc/commit/81e33988)) Thanks [Blake Simmon](https://github.com/Blakesalot)
+* **UI:** move to ionicons ([f81b42ec](https://github.com/compodoc/compodoc/commit/f81b42ec)), closes [#592](https://github.com/compodoc/compodoc/issues/592)
+* **UI:** Accessors section in top index pages ([aa4a4929](https://github.com/compodoc/compodoc/commit/aa4a4929)), closes [#615](https://github.com/compodoc/compodoc/issues/615)
+* **menu:** overview href is generated twice ([5479515a](https://github.com/compodoc/compodoc/commit/5479515a)), closes [#575](https://github.com/compodoc/compodoc/issues/575)
+* **deps:** barrel file support for import finding strategy ([780c0653](https://github.com/compodoc/compodoc/commit/780c0653)), closes [#566](https://github.com/compodoc/compodoc/issues/556)
+* **deps:** interfaces with custom names ([78c59ea1](https://github.com/compodoc/compodoc/commit/78c59ea1)), closes [#580](https://github.com/compodoc/compodoc/issues/580)
+* **deps:** duplicates for more than 2 files ([bf6e9238](https://github.com/compodoc/compodoc/commit/bf6e9238)), closes [#590](https://github.com/compodoc/compodoc/issues/590)
+* **deps:** Duplicate pages for injectables with custom decorators ([80417826](https://github.com/compodoc/compodoc/commit/80417826)), closes [#591](https://github.com/compodoc/compodoc/issues/591)
+* **deps:** generic support for Map<K, V> ([8f3ef941](https://github.com/compodoc/compodoc/commit/8f3ef941)), closes [#622](https://github.com/compodoc/compodoc/issues/622)
+* **deps:** abstract modifier ([1e6eecba](https://github.com/compodoc/compodoc/commit/1e6eecba)), closes [#626](https://github.com/compodoc/compodoc/issues/626)
+* **graph:** special character in module name ([00075366](https://github.com/compodoc/compodoc/commit/00075366)), closes [#591](https://github.com/compodoc/compodoc/issues/591)
+
 <a name="1.1.3"></a>
 # [1.1.3](https://github.com/compodoc/compodoc/compare/1.1.2...1.1.3) (2018-05-16)
 

@@ -18,7 +18,7 @@ export class TodoStore {
     constructor() {
         let persistedTodos = JSON.parse(localStorage.getItem('angular2-todos') || '[]');
         // Normalize back into classes
-        this.todos = persistedTodos.map((todo: { _title: string, completed: Boolean }) => {
+        this.todos = persistedTodos.map((todo: { _title: string; completed: Boolean }) => {
             let ret = new Todo(todo._title);
             ret.completed = todo.completed;
             return ret;
@@ -55,7 +55,7 @@ export class TodoStore {
      * @param {boolean} completed Status of all todos
      */
     setAllTo(completed: boolean) {
-        this.todos.forEach((t: Todo) => t.completed = completed);
+        this.todos.forEach((t: Todo) => (t.completed = completed));
         this.updateStore();
     }
 
@@ -138,7 +138,7 @@ export class TodoStore {
     }
 
     getSmallPet(): string | number {
-        return 'E'
+        return 'E';
     }
 
     firstFx3(): LabelledTodo {
@@ -178,5 +178,14 @@ export class TodoStore {
      */
     set fullName(newName: string) {
         this._fullName = newName;
+    }
+
+    /**
+     * Gets some data
+     * @returns Map<string, number>
+     */
+    get someData(): Map<string, number> {
+        // do something here
+        return '';
     }
 }

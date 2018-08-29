@@ -1,0 +1,72 @@
+<ol class="breadcrumb">
+  <li>{{t "unit-test-coverage" }}</li>
+</ol>
+
+<div>
+    <img src="./images/coverage-badge-statements.svg">
+    <img src="./images/coverage-badge-branches.svg">
+    <img src="./images/coverage-badge-functions.svg">
+    <img src="./images/coverage-badge-lines.svg">
+</div>
+
+<table class="table table-bordered coverage" id="coverage-table">
+    <thead class="coverage-header">
+        <tr>
+            <th>{{t "file" }}</th>
+			{{#if idColumn}}
+            <th>{{t "identifier" }}</th>
+			{{/if}}
+            <th style="text-align:right" class="statements" data-sort-default>{{t "statements" }}</th>
+            <th style="text-align:right" class="statements" data-sort-default>{{t "branches" }}</th>
+            <th style="text-align:right" class="statements" data-sort-default>{{t "functions" }}</th>
+            <th style="text-align:right" class="statements" data-sort-default>{{t "lines" }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each files}}
+          {{#if name}}
+        <tr>
+            <td>
+                <!-- miscellaneous -->
+                {{#if linktype}}
+                    {{#if linksubtype}}
+                        <a href="./{{linktype}}/{{linksubtype}}s.html#{{name}}">{{filePath}}</a>
+                    {{else}}
+                        <a href="./{{linktype}}s/{{name}}.html">{{filePath}}</a>
+                    {{/if}}
+                {{else}}
+                    {{filePath}}
+                {{/if}}
+            </td>
+				{{#if idColumn}}
+                <td>
+                    {{name}}
+                </td>
+				{{/if}}
+            <td align="right" data-sort="{{statements.coveragePercent}}"  class="{{statements.status}}">
+                <span class="coverage-percent">{{statements.coveragePercent}} %</span>
+                <span class="coverage-count">({{statements.coverageCount}})</span>
+            </td>
+            <td align="right" data-sort="{{branches.coveragePercent}}"  class="{{branches.status}}">
+                <span class="coverage-percent">{{branches.coveragePercent}} %</span>
+                <span class="coverage-count">({{branches.coverageCount}})</span>
+            </td>
+            <td align="right" data-sort="{{functions.coveragePercent}}"  class="{{functions.status}}">
+                <span class="coverage-percent">{{functions.coveragePercent}} %</span>
+                <span class="coverage-count">({{functions.coverageCount}})</span>
+            </td>
+            <td align="right" data-sort="{{lines.coveragePercent}}"  class="{{lines.status}}">
+                <span class="coverage-percent">{{lines.coveragePercent}} %</span>
+                <span class="coverage-count">({{lines.coverageCount}})</span>
+            </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+    </tbody>
+</table>
+
+<script src="{{relativeURL data.depth }}js/libs/tablesort.min.js"></script>
+<script src="{{relativeURL data.depth }}js/libs/tablesort.number.min.js"></script>
+<script>
+    new Tablesort(document.getElementById('coverage-table'));
+</script>

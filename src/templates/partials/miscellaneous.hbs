@@ -1,9 +1,9 @@
 <ol class="breadcrumb">
-  <li>Miscellaneous</li>
+  <li>{{t "miscellaneous" }}</li>
 </ol>
 
 {{#if miscellaneous.variables}}
-    <h2 id="inputs"><b>Variables</b></h2>
+    <h2 id="inputs"><b>{{t "variables" }}</b></h2>
     {{#each miscellaneous.groupedVariables}}
         <h4><code>{{@key}}</code></h4>
         {{> block-property properties=this title='false'}}
@@ -11,7 +11,7 @@
 {{/if}}
 
 {{#if miscellaneous.functions}}
-    <h2 id="inputs"><b>Functions</b></h2>
+    <h2 id="inputs"><b>{{t "functions" }}</b></h2>
     {{#each miscellaneous.groupedFunctions}}
         <h4><code>{{@key}}</code></h4>
         {{> block-method methods=this title='false'}}
@@ -19,7 +19,7 @@
 {{/if}}
 
 {{#if miscellaneous.enumerations}}
-    <h2 id="inputs"><b>Enumerations</b></h2>
+    <h2 id="inputs"><b>{{t "enumerations" }}</b></h2>
     {{#each miscellaneous.groupedEnumerations}}
         <h4><code>{{@key}}</code></h4>
         {{> block-enum enums=this title='false'}}
@@ -27,7 +27,7 @@
 {{/if}}
 
 {{#if miscellaneous.types}}
-    <h2 id="inputs"><b>Types</b></h2>
+    <h2 id="inputs"><b>{{t "types" }}</b></h2>
     {{#each miscellaneous.types}}
         {{#if this.file}}
             <i><code>{{this.file}}</code></i>

@@ -5,7 +5,6 @@ export function getModuleWithProviders(node: ts.VariableStatement) {
     if (node.declarationList) {
         if (node.declarationList.declarations && node.declarationList.declarations.length > 0) {
             let i = 0,
-                declarations = node.declarationList.declarations,
                 len = node.declarationList.declarations.length;
 
             for (i; i < len; i++) {

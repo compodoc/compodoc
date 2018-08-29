@@ -531,7 +531,7 @@ describe('CLI simple generation', () => {
         after(() => tmp.clean(distFolder));
 
         it('should edit name', () => {
-            index = read(`${distFolder}/index.html`);
+            index = read(`${distFolder}/js/menu-wc.js`);
             expect(index).to.contain(name);
         });
     });

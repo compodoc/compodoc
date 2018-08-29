@@ -36,7 +36,7 @@ describe('CLI duplicates support', () => {
     });
 
     it('Todo-2 class generated', () => {
-        const file = exists(distFolder + '/classes/Todo2.html');
+        const file = exists(distFolder + '/classes/Todo-2.html');
         expect(file).to.be.true;
     });
 
@@ -96,28 +96,35 @@ describe('CLI duplicates support', () => {
     });
 
     it('should support component inside module', () => {
-        let file = read(distFolder + '/index.html');
+        let file = read(distFolder + '/js/menu-wc.js');
         file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\r\n>\r\n                                        <li class="link">\r\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"\' }>\r\n                                        <li class="link">\r\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
         } else {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="components-links-module-ValidationDemoModule"\n>\n                                        <li class="link">\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"\' }>\n                                        <li class="link">\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
         }
     });
 
     it('should support component inside module with duplicate', () => {
-        let file = read(distFolder + '/index.html');
+        let file = read(distFolder + '/js/menu-wc.js');
         file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="components-links-module-FooterModule"\r\n>\r\n                                        <li class="link">\r\n                                            <a href="components/FooterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
-            expect(file).to.contain(`<li class="link">\r\n                                <a href="components/FooterComponent-1.html" data-type="entity-link">FooterComponent</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-FooterModule"' }>\r\n                                        <li class="link">\r\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\r\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
         } else {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="components-links-module-FooterModule"\n>\n                                        <li class="link">\n                                            <a href="components/FooterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
-            expect(file).to.contain(`<li class="link">\n                                <a href="components/FooterComponent-1.html" data-type="entity-link">FooterComponent</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-FooterModule"' }>\n                                        <li class="link">\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
         }
+    });
+
+    it('Injectable with multiple decorators should not appear twice', () => {
+        let file = exists(distFolder + '/injectables/MyService.html');
+        expect(file).to.be.true;
+        file = exists(distFolder + '/injectables/MyService-1.html');
+        expect(file).to.be.false;
     });
 });

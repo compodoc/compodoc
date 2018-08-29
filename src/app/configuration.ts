@@ -33,6 +33,7 @@ export class Configuration implements ConfigurationInterface {
         directives: [],
         injectables: [],
         interceptors: [],
+        guards: [],
         miscellaneous: [],
         routes: [],
         tsconfig: '',
@@ -59,6 +60,9 @@ export class Configuration implements ConfigurationInterface {
         coverageTestThresholdFail: COMPODOC_DEFAULTS.coverageTestThresholdFail,
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
+        unitTestCoverage: '',
+        unitTestData: undefined,
+        coverageTestShowOnlyFailed: COMPODOC_DEFAULTS.coverageTestShowOnlyFailed,
         routesLength: 0,
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
@@ -67,7 +71,10 @@ export class Configuration implements ConfigurationInterface {
         packageDependencies: [],
         packagePeerDependencies: [],
         gaID: '',
-        gaSite: ''
+        gaSite: '',
+        angularProject: false,
+        angularJSProject: false,
+        language: COMPODOC_DEFAULTS.language
     };
 
     public addPage(page: PageInterface) {

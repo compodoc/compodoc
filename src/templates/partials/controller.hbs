@@ -1,0 +1,98 @@
+<ol class="breadcrumb">
+  <li>{{t "controllers" }}</li>
+  <li>{{controller.name}}</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+    {{#each navTabs}}
+        <li {{#compare @index "===" 0}}class="active"{{/compare}}>
+            <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{this.label}}</a>
+        </li>
+    {{/each}}
+</ul>
+
+<div class="tab-content">
+    {{#isTabEnabled navTabs "info"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
+        <p class="comment">
+            <h3>{{t "file" }}</h3>
+        </p>
+        <p class="comment">
+            <code>{{controller.file}}</code>
+        </p>
+
+        {{#if controller.prefix}}
+            <p class="comment">
+                <h3>{{t "prefix" }}</h3>
+            </p>
+            <p class="comment">
+                <code>{{controller.prefix}}</code>
+            </p>
+        {{/if}}
+
+        {{#if controller.description}}
+            <p class="comment">
+                <h3>{{t "description" }}</h3>
+            </p>
+            <p class="comment">
+                {{{parseDescription controller.description depth}}}
+            </p>
+        {{/if}}
+
+        {{#if controller.extends}}
+            <p class="comment">
+                <h3>{{t "extends" }}</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=controller.extends }}
+            </p>
+        {{/if}}
+
+        {{#if controller.implements}}
+            <p class="comment">
+                <h3>{{t "implements" }}</h3>
+            </p>
+            <p class="comment">
+                {{#each controller.implements}}
+                    {{> link-type type=this}}
+                {{/each}}
+            </p>
+        {{/if}}
+
+        {{#if controller.jsdoctags}}
+            <p class="comment">
+                <h3>{{t "example" }}</h3>
+            </p>
+            <div class="io-description">
+                {{#jsdoc-code-example controller.jsdoctags}}
+                    {{#each tags}}
+                        <div>
+                            {{{comment}}}
+                        </div>
+                    {{/each}}
+                {{/jsdoc-code-example}}
+            </div>
+        {{/if}}
+
+        {{#orLength controller.methods}}
+            {{> index methods=controller.methods}}
+        {{/orLength}}
+
+        {{#if controller.methods}}
+            {{> block-method methods=controller.methods file=controller.file }}
+        {{/if}}
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "readme"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="c-readme">
+        <p>{{{controller.readme}}}</p>
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "source"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "source"}}active in{{/isInitialTab}} tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">{{ controller.sourceCode}}</code></pre>
+    </div>
+    {{/isTabEnabled}}
+</div>

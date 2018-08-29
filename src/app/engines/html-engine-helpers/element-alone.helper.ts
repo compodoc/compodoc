@@ -6,7 +6,6 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
     constructor(private dependenciesEngine: DependenciesEngine) {}
 
     public helperFunc(context: any, elements, elementType: string, options: IHandlebarsOptions) {
-        let result = false;
         let alones = [];
         let modules = this.dependenciesEngine.modules;
 
@@ -17,9 +16,23 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
                     if (declaration.id === element.id) {
                         foundInOneModule = true;
                     }
+                    if (declaration.file === element.file) {
+                        foundInOneModule = true;
+                    }
+                });
+                module.controllers.forEach(controller => {
+                    if (controller.id === element.id) {
+                        foundInOneModule = true;
+                    }
+                    if (controller.file === element.file) {
+                        foundInOneModule = true;
+                    }
                 });
                 module.providers.forEach(provider => {
                     if (provider.id === element.id) {
+                        foundInOneModule = true;
+                    }
+                    if (provider.file === element.file) {
                         foundInOneModule = true;
                     }
                 });
@@ -36,6 +49,9 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
                     break;
                 case 'directive':
                     context.directives = alones;
+                    break;
+                case 'controller':
+                    context.controllers = alones;
                     break;
                 case 'injectable':
                     context.injectables = alones;

@@ -22,6 +22,7 @@ export default {
         'highlight.js',
         'semver',
         'json5',
-        'ts-simple-ast'
+        'ts-simple-ast',
+        'i18next'
     ]
-}
+};

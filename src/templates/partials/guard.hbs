@@ -1,0 +1,97 @@
+<ol class="breadcrumb">
+    <li>{{t "guards" }}</li>
+    <li>{{injectable.name}}</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+    {{#each navTabs}}
+        <li {{#compare @index "===" 0}}class="active"{{/compare}}>
+            <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{this.label}}</a>
+        </li>
+    {{/each}}
+</ul>
+
+<div class="tab-content">
+    {{#isTabEnabled navTabs "info"}}
+        <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
+            <p class="comment">
+            <h3>{{t "file" }}</h3>
+            </p>
+            <p class="comment">
+                <code>{{injectable.file}}</code>
+            </p>
+
+            {{#if injectable.description}}
+                <p class="comment">
+                <h3>{{t "description" }}</h3>
+                </p>
+                <p class="comment">
+                    {{{parseDescription injectable.description depth}}}
+                </p>
+            {{/if}}
+
+            {{#if injectable.extends}}
+                <p class="comment">
+                <h3>{{t "extends" }}</h3>
+                </p>
+                <p class="comment">
+                    {{> link-type type=injectable.extends }}
+                </p>
+            {{/if}}
+
+            {{#if injectable.implements}}
+                <p class="comment">
+                <h3>{{t "implements" }}</h3>
+                </p>
+                <p class="comment">
+                    {{#each injectable.implements}}
+                        {{> link-type type=this}}
+                    {{/each}}
+                </p>
+            {{/if}}
+
+            {{#if injectable.jsdoctags}}
+                <p class="comment">
+                <h3>{{t "example" }}</h3>
+                </p>
+                <div class="io-description">
+                    {{#jsdoc-code-example injectable.jsdoctags}}
+                        {{#each tags}}
+                            <div>
+                                {{{comment}}}
+                            </div>
+                        {{/each}}
+                    {{/jsdoc-code-example}}
+                </div>
+            {{/if}}
+
+            {{#orLength injectable.properties injectable.methods injectable.accessors}}
+                {{> index methods=injectable.methods properties=injectable.properties}}
+            {{/orLength}}
+
+            {{#if injectable.constructorObj}}
+                {{> block-constructor constructor=injectable.constructorObj file=injectable.file }}
+            {{/if}}
+
+            {{#if injectable.methods}}
+                {{> block-method methods=injectable.methods file=injectable.file }}
+            {{/if}}
+
+            {{#if injectable.indexSignatures}}
+                {{> block-index indexables=injectable.indexSignatures file=injectable.file }}
+            {{/if}}
+        </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "readme"}}
+        <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="c-readme">
+            <p>{{{injectable.readme}}}</p>
+        </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "source"}}
+        <div class="tab-pane fade {{#isInitialTab navTabs "source"}}active in{{/isInitialTab}} tab-source-code" id="c-source">
+            <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">{{ injectable.sourceCode}}</code></pre>
+        </div>
+    {{/isTabEnabled}}
+</div>

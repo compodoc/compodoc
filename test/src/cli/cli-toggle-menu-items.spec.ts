@@ -23,13 +23,13 @@ describe('CLI toggle menu items', () => {
                 done('error');
             }
             stdoutString = ls.stdout.toString();
-            fooIndexFile = read(`${distFolder}/index.html`);
+            fooIndexFile = read(`${distFolder}/js/menu-wc.js`);
             done();
         });
         after(() => tmp.clean(distFolder));
 
         it('it should have a toggled item menu', () => {
-            expect(fooIndexFile).to.contain('fa-angle-down');
+            expect(fooIndexFile).to.contain('ion-ios-arrow-down');
         });
     });
 });
