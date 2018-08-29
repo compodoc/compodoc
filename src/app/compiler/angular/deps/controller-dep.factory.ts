@@ -19,7 +19,6 @@ export class ControllerDepFactory {
             .createHash('md5')
             .update(sourceCode)
             .digest('hex');
-        console.log(properties);
         let infos: IControllerDep = {
             name,
             id: 'controller-' + name + '-' + hash,

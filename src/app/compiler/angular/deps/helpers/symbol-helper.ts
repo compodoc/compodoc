@@ -15,7 +15,7 @@ export class SymbolHelper {
             name: '',
             type: ''
         };
-        
+
         if (typeof name === 'undefined') {
             return result;
         }
@@ -258,5 +258,6 @@ export class SymbolHelper {
 export interface IParseDeepIdentifierResult {
     ns?: any;
     name: string;
+    file?: string;
     type: string | undefined;
 }

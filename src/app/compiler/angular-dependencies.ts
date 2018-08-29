@@ -166,6 +166,7 @@ export class AngularDependencies extends FrameworkDependencies {
                     };
                     process(mod.imports, _variable);
                     process(mod.exports, _variable);
+                    process(mod.controllers, _variable);
                     process(mod.declarations, _variable);
                     process(mod.providers, _variable);
                 };

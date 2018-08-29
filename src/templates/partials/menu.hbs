@@ -116,7 +116,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <li class="chapter inner">
                                 <div class="simple menu-toggler" data-toggle="collapse"
                                     ${ isNormalMode ? 'data-target="#controllers-links-{{id}}"' : 'data-target="#xs-controllers-links-{{id}}"' }>
-                                    <span class="icon ion-md-cog"></span>
+                                    <span class="icon ion-md-swap"></span>
                                     <span>{{t "controllers" }}</span>
                                     <span class="icon ion-ios-arrow-down"></span>
                                 </div>
@@ -203,6 +203,26 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         {{#each components}}
                             <li class="link">
                                 <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </li>
+            {{/element-alone}}
+        {{/if}}
+        {{#if controllers}}
+            {{#element-alone controllers 'controller'}}
+                <li class="chapter">
+                    <div class="simple menu-toggler" data-toggle="collapse"
+                    ${ isNormalMode ? 'data-target="#controllers-links"' : 'data-target="#xs-controllers-links"' }>
+                        <span class="icon ion-md-swap"></span>
+                        <span>{{t "controllers" }}</span>
+                        <span class="icon ion-ios-arrow-down"></span>
+                    </div>
+                    <ul class="links collapse"
+                    ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }>
+                        {{#each controllers}}
+                            <li class="link">
+                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>
                             </li>
                         {{/each}}
                     </ul>

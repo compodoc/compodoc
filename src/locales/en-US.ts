@@ -10,6 +10,7 @@ export const TRANSLATION_EN_US = {
     components: 'Components',
     constructor: 'Constructor',
     controllers: 'Controllers',
+    controller: 'Controller',
     'coverage-page-title': 'Documentation coverage',
     declarations: 'Declarations',
     decorators: 'Decorators',

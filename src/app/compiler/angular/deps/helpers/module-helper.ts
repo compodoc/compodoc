@@ -15,7 +15,7 @@ export class ModuleHelper {
     ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'providers', srcFile)
-            .map(providerName => this.symbolHelper.parseDeepIndentifier(providerName));
+            .map(providerName => this.symbolHelper.parseDeepIndentifier(providerName, srcFile));
     }
 
     public getModuleControllers(
@@ -24,10 +24,10 @@ export class ModuleHelper {
     ): Array<IParseDeepIdentifierResult> {
         return this.symbolHelper
             .getSymbolDeps(props, 'controllers', srcFile)
-            .map(providerName => this.symbolHelper.parseDeepIndentifier(providerName));
+            .map(providerName => this.symbolHelper.parseDeepIndentifier(providerName, srcFile));
     }
 
-    public getModuleDeclations(
+    public getModuleDeclarations(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
     ): Deps[] {

@@ -28,7 +28,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if components}}
+        {{/if}}
+        {{#if components}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -38,7 +39,19 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if directives}}
+        {{/if}}
+        {{#if controllers}}
+        <div class="col-sm-3">
+            <div class="card text-center">
+                <div class="card-block">
+                    <h4 class="card-title"><span class="icon ion-md-swap"></span></h4>
+                    <p class="card-text">{{ controllers.length }} {{#compare controllers.length "===" 1}}{{t "controller" }}{{/compare}}{{#compare
+                        controllers.length ">" 1}}{{t "controllers" }}{{/compare}}</p>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+        {{#if directives}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -48,7 +61,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if injectables}}
+        {{/if}}
+        {{#if injectables}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -58,7 +72,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if pipes}}
+        {{/if}}
+        {{#if pipes}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -68,7 +83,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if classes}}
+        {{/if}}
+        {{#if classes}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -78,7 +94,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if guards}}
+        {{/if}}
+        {{#if guards}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -88,7 +105,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if interfaces}}
+        {{/if}}
+        {{#if interfaces}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
@@ -98,7 +116,8 @@
                 </div>
             </div>
         </div>
-        {{/if}} {{#if routes}}
+        {{/if}}
+        {{#if routes}}
         <div class="col-sm-3">
             <div class="card text-center">
                 <div class="card-block">
