@@ -41,6 +41,8 @@ export class SymbolHelper {
             type = 'component';
         } else if (name.toLowerCase().indexOf('pipe') !== -1) {
             type = 'pipe';
+        } else if (name.toLowerCase().indexOf('controller') !== -1) {
+            type = 'controller';
         } else if (name.toLowerCase().indexOf('module') !== -1) {
             type = 'module';
         } else if (name.toLowerCase().indexOf('directive') !== -1) {

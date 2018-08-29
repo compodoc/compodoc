@@ -383,9 +383,6 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.components.push(componentDep);
                             }
                         } else if (this.isController(metadata)) {
-                            if (props.length === 0) {
-                                return;
-                            }
                             const controllerDep = new ControllerDepFactory().create(
                                 file,
                                 srcFile,
@@ -930,6 +927,8 @@ export class AngularDependencies extends FrameworkDependencies {
 
             if (pop && pop.properties && pop.properties.length >= 0) {
                 return pop.properties;
+            } else if (pop && pop.kind && pop.kind === SyntaxKind.StringLiteral) {
+                return [pop];
             } else {
                 logger.warn('Empty metadatas, trying to found it with imports.');
                 return this.importsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);

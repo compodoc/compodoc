@@ -23,12 +23,15 @@ export class ControllerDepFactory {
             name,
             id: 'controller-' + name + '-' + hash,
             file: file,
-            methods: IO.methods
+            methods: IO.methods,
+            type: 'controller',
+            sourceCode: srcFile.text
         };
     }
 }
 
 export interface IControllerDep extends IDep {
     file: any;
+    sourceCode: string;
     methods: Array<any>;
 }

@@ -9,7 +9,6 @@ describe('CLI i18n', () => {
 
     describe('with supported language', () => {
 
-        let indexFile;
         before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
@@ -22,8 +21,6 @@ describe('CLI i18n', () => {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            indexFile = read(`${distFolder}/js/menu-wc.js`);
-
             done();
         });
         after(() => tmp.clean(distFolder));
