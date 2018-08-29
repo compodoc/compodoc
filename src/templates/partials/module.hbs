@@ -102,6 +102,18 @@
                     </ul>
                 </div>
                 {{/if}}
+                {{#if module.controllers}}
+                <div class="col-sm-3">
+                    <h3>{{t "controllers" }}<a href="https://docs.nestjs.com/controllers" target="_blank" title="Official documentation about module controllers"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        {{#each module.controllers}}
+                            <li class="list-group-item">
+                                <a href="{{relativeURL ../depth 'modules'}}controllers/{{name}}.html" >{{name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
                 {{#if module.imports}}
                 <div class="col-sm-3">
                     <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span class="icon ion-ios-information-circle-outline"></a></h3>

@@ -4,9 +4,9 @@ import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 
 import { getNamesCompareFn } from '../../utils/utils';
-import { IModuleDep } from '../compiler/deps/module-dep.factory';
-import { IComponentDep } from '../compiler/deps/component-dep.factory';
-import { IDirectiveDep } from '../compiler/deps/directive-dep.factory';
+import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
+import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
+import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IApiSourceResult } from '../../utils/api-source-result.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
 import { AngularApiUtil } from '../../utils/angular-api.util';
@@ -19,8 +19,8 @@ import {
     IEnumDecDep,
     IInterceptorDep,
     IGuardDep
-} from '../compiler/dependencies.interfaces';
-import { IGuardDep } from '../compiler/angular/dependencies.interfaces';
+} from '../compiler/angular/dependencies.interfaces';
+import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory';
 
 const traverse = require('traverse');
 
@@ -30,6 +30,7 @@ export class DependenciesEngine {
     public rawModules: Object[];
     public rawModulesForOverview: Object[];
     public components: Object[];
+    public controllers: Object[];
     public directives: Object[];
     public injectables: Object[];
     public interceptors: Object[];
@@ -120,6 +121,7 @@ export class DependenciesEngine {
         this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
         this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
         this.components = _.sortBy(this.rawData.components, ['name']);
+        this.controllers = _.sortBy(this.rawData.controllers, ['name']);
         this.directives = _.sortBy(this.rawData.directives, ['name']);
         this.injectables = _.sortBy(this.rawData.injectables, ['name']);
         this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
@@ -190,6 +192,7 @@ export class DependenciesEngine {
         this.guards = this.guards.map(processDuplicates);
         this.modules = this.modules.map(processDuplicates);
         this.components = this.components.map(processDuplicates);
+        this.controllers = this.controllers.map(processDuplicates);
         this.directives = this.directives.map(processDuplicates);
     }
 
@@ -201,6 +204,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(name, this.interfaces),
             () => this.findInCompodocDependencies(name, this.classes),
             () => this.findInCompodocDependencies(name, this.components),
+            () => this.findInCompodocDependencies(name, this.controllers),
             () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
@@ -230,6 +234,12 @@ export class DependenciesEngine {
             _.forEach(updatedData.components, (component: IComponentDep) => {
                 let _index = _.findIndex(this.components, { name: component.name });
                 this.components[_index] = component;
+            });
+        }
+        if (updatedData.controllers.length > 0) {
+            _.forEach(updatedData.controllers, (controller: IControllerDep) => {
+                let _index = _.findIndex(this.controllers, { name: controller.name });
+                this.controllers[_index] = controller;
             });
         }
         if (updatedData.directives.length > 0) {
@@ -321,6 +331,7 @@ export class DependenciesEngine {
             [],
             this.modules,
             this.components,
+            this.controllers,
             this.directives,
             this.injectables,
             this.interceptors,
@@ -363,6 +374,10 @@ export class DependenciesEngine {
 
     public getComponents() {
         return this.components;
+    }
+
+    public getControllers() {
+        return this.controllers;
     }
 
     public getDirectives() {

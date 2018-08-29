@@ -506,6 +506,9 @@ export class Application {
         if (diffCrawledData.components.length > 0) {
             actions.push(() => this.prepareComponents());
         }
+        if (diffCrawledData.controllers.length > 0) {
+            actions.push(() => this.prepareControllers());
+        }
         if (diffCrawledData.modules.length > 0) {
             actions.push(() => this.prepareModules());
         }
@@ -573,6 +576,9 @@ export class Application {
         if (this.dependenciesEngine.components.length > 0) {
             logger.info(`- component  : ${this.dependenciesEngine.components.length}`);
         }
+        if (this.dependenciesEngine.controllers.length > 0) {
+            logger.info(`- controller  : ${this.dependenciesEngine.controllers.length}`);
+        }
         if (this.dependenciesEngine.directives.length > 0) {
             logger.info(`- directive  : ${this.dependenciesEngine.directives.length}`);
         }
@@ -613,6 +619,12 @@ export class Application {
         if (this.dependenciesEngine.directives.length > 0) {
             actions.push(() => {
                 return this.prepareDirectives();
+            });
+        }
+
+        if (this.dependenciesEngine.controllers.length > 0) {
+            actions.push(() => {
+                return this.prepareControllers();
             });
         }
 
@@ -821,11 +833,12 @@ export class Application {
             this.configuration.mainData.modules = _modules.map(ngModule => {
                 ngModule.compodocLinks = {
                     components: [],
+                    controllers: [],
                     directives: [],
                     injectables: [],
                     pipes: []
                 };
-                ['declarations', 'bootstrap', 'imports', 'exports'].forEach(metadataType => {
+                ['declarations', 'bootstrap', 'imports', 'exports', 'controllers'].forEach(metadataType => {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
@@ -864,6 +877,25 @@ export class Application {
                                         ngModule.compodocLinks.components.push(component);
                                     }
                                     return selectedComponent;
+                                });
+
+                            case 'controller':
+                                return this.dependenciesEngine.getControllers().some(controller => {
+                                    let selectedController;
+                                    if (typeof metaDataItem.id !== 'undefined') {
+                                        selectedController =
+                                            (controller as any).id === metaDataItem.id;
+                                    } else {
+                                        selectedController =
+                                            (controller as any).name === metaDataItem.name;
+                                    }
+                                    if (
+                                        selectedController &&
+                                        !ngModule.compodocLinks.controllers.includes(controller)
+                                    ) {
+                                        ngModule.compodocLinks.controllers.push(controller);
+                                    }
+                                    return selectedController;
                                 });
 
                             case 'module':
@@ -929,6 +961,9 @@ export class Application {
                 });
                 // Order things
                 ngModule.compodocLinks.components = _.sortBy(ngModule.compodocLinks.components, [
+                    'name'
+                ]);
+                ngModule.compodocLinks.controllers = _.sortBy(ngModule.compodocLinks.controllers, [
                     'name'
                 ]);
                 ngModule.compodocLinks.directives = _.sortBy(ngModule.compodocLinks.directives, [
@@ -1206,17 +1241,17 @@ export class Application {
 
             // is tab applicable to target dependency?
             if (-1 === _.findIndex(navTab.depTypes, matchDepType)) { return; }
-            
+
             // global config
             if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
             if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
             if (customTab.id === 'templateData' && this.configuration.mainData.disableTemplateTab) { return; }
-            
+
             // per dependency config
             if (customTab.id === 'readme' && !dependency.readme) { return; }
             if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
             if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
-            
+
             navTabs.push(navTab);
         });
 
@@ -1226,6 +1261,42 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         }
 
         return navTabs;
+    }
+
+    public prepareControllers(someControllers?) {
+        logger.info('Prepare controllers');
+        this.configuration.mainData.controllers = someControllers
+            ? someControllers
+            : this.dependenciesEngine.getControllers();
+
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let len = this.configuration.mainData.controllers.length;
+            let loop = () => {
+                if (i < len) {
+                    let controller = this.configuration.mainData.controllers[i];
+                    let page = {
+                        path: 'controllers',
+                        name: controller.name,
+                        id: controller.id,
+                        navTabs: this.getNavTabs(controller),
+                        context: 'controller',
+                        controller: controller,
+                        depth: 1,
+                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    };
+                    if (controller.isDuplicate) {
+                        page.name += '-' + controller.duplicateId;
+                    }
+                    this.configuration.addPage(page);
+                    i++;
+                    loop();
+                } else {
+                    resolve();
+                }
+            };
+            loop();
+        });
     }
 
     public prepareComponents(someComponents?) {

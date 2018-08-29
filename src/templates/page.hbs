@@ -60,6 +60,10 @@
                         {{~> component data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'controller'}}
+                        {{~> controller data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'directives'}}
                         {{~> directives data ~}}
                    {{/compare}}

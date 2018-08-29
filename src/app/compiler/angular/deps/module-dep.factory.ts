@@ -26,6 +26,7 @@ export class ModuleDepFactory {
             ngid: this.moduleHelper.getModuleId(properties, srcFile),
             providers: this.moduleHelper.getModuleProviders(properties, srcFile),
             declarations: this.moduleHelper.getModuleDeclations(properties, srcFile),
+            controllers: this.moduleHelper.getModuleControllers(properties, srcFile),
             entryComponents: this.moduleHelper.getModuleEntryComponents(properties, srcFile),
             imports: this.moduleHelper.getModuleImports(properties, srcFile),
             exports: this.moduleHelper.getModuleExports(properties, srcFile),
@@ -42,6 +43,7 @@ export interface IModuleDep extends IDep {
     file: any;
     providers: Array<any>;
     declarations: Array<any>;
+    controllers: Array<any>;
     entryComponents: Array<any>;
     imports: Array<any>;
     exports: Array<any>;

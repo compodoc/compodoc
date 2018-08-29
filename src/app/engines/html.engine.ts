@@ -32,6 +32,7 @@ export class HtmlEngine {
             'module',
             'components',
             'component',
+            'controller',
             'component-detail',
             'directives',
             'directive',
