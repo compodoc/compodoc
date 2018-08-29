@@ -19,7 +19,8 @@ export class ControllerDepFactory {
             .createHash('md5')
             .update(sourceCode)
             .digest('hex');
-        return {
+        console.log(properties);
+        let infos: IControllerDep = {
             name,
             id: 'controller-' + name + '-' + hash,
             file: file,
@@ -27,11 +28,18 @@ export class ControllerDepFactory {
             type: 'controller',
             sourceCode: srcFile.text
         };
+        if (properties && properties.length === 1) {
+            if (properties[0].text) {
+                infos.prefix = properties[0].text;
+            }
+        }
+        return infos;
     }
 }
 
 export interface IControllerDep extends IDep {
     file: any;
     sourceCode: string;
+    prefix?: string;
     methods: Array<any>;
 }

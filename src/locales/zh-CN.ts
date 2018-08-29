@@ -68,6 +68,7 @@ export const TRANSLATION_ZH_CN = {
     'peer-dependencies': '同级依赖',
     pipe: '管道',
     pipes: '管道列表',
+    prefix: '字首',
     properties: '属性列表',
     providers: '提供商列表',
     pure: 'Pure',

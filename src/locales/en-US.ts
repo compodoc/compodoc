@@ -68,6 +68,7 @@ export const TRANSLATION_EN_US = {
     'peer-dependencies': 'Peer dependencies',
     pipe: 'Pipe',
     pipes: 'Pipes',
+    prefix: 'Prefix',
     properties: 'Properties',
     providers: 'Providers',
     pure: 'Pure',
