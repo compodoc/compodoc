@@ -577,7 +577,7 @@ export class Application {
             logger.info(`- component  : ${this.dependenciesEngine.components.length}`);
         }
         if (this.dependenciesEngine.controllers.length > 0) {
-            logger.info(`- controller  : ${this.dependenciesEngine.controllers.length}`);
+            logger.info(`- controller : ${this.dependenciesEngine.controllers.length}`);
         }
         if (this.dependenciesEngine.directives.length > 0) {
             logger.info(`- directive  : ${this.dependenciesEngine.directives.length}`);
