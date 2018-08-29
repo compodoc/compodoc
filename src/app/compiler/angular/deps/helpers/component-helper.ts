@@ -171,8 +171,16 @@ export class ComponentHelper {
         type: string,
         multiLine?: boolean
     ): Map<string, string> {
-        let deps = props.filter(node => node.name.text === type);
-        return deps.map(x => this.parseProperties(x)).pop();
+        let i = 0,
+            len = props.length,
+            filteredProps = [];
+
+        for (i; i<len; i++) {
+            if (props[i].name && props[i].name.text === type) {
+                filteredProps.push(props[i]);
+            }
+        }
+        return filteredProps.map(x => this.parseProperties(x)).pop();
     }
 
     public getComponentIO(

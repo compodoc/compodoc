@@ -15,6 +15,7 @@ export class SymbolHelper {
             name: '',
             type: ''
         };
+        
         if (typeof name === 'undefined') {
             return result;
         }
@@ -232,10 +233,17 @@ export class SymbolHelper {
             return [];
         }
 
-        let deps = props.filter(node => {
-            return node.name.text === type;
-        });
-        return deps.map(x => this.parseSymbols(x, srcFile)).pop() || [];
+        let i = 0,
+            len = props.length,
+            filteredProps = [];
+
+        for (i; i<len; i++) {
+            if (props[i].name && props[i].name.text === type) {
+                filteredProps.push(props[i]);
+            }
+        }
+
+        return filteredProps.map(x => this.parseSymbols(x, srcFile)).pop() || [];
     }
 
     public getSymbolDepsRaw(
