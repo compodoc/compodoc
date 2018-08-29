@@ -96,9 +96,9 @@ Read up on our guidelines for [contributing](https://github.com/compodoc/compodo
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |[vogloblinsky](https://github.com/vogloblinsky)|[manekinekko](https://github.com/manekinekko)|[mattlewis92](https://github.com/mattlewis92)|[JonasMH](https://github.com/JonasMH)|[rprotsyk](https://github.com/rprotsyk)|[daniele-zurico](https://github.com/daniele-zurico)|[profimedica](https://github.com/profimedica)|[guilhermevrs](https://github.com/guilhermevrs)|
 
-|[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/32763448?v=4&s=117" width="117">](https://github.com/dp-1a)|[<img alt="guilhermevrs" src="https://avatars0.githubusercontent.com/u/14924373?v=4&s=117" width="117">](https://github.com/ValentinGot)|
-|:-:|:-:|
-|[dp-1a](https://github.com/dp-1a)|[ValentinGot](https://github.com/ValentinGot)|
+|[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/32763448?v=4&s=117" width="117">](https://github.com/dp-1a)|[<img alt="guilhermevrs" src="https://avatars0.githubusercontent.com/u/14924373?v=4&s=117" width="117">](https://github.com/ValentinGot)|[<img alt="Blakesalot" src="https://avatars1.githubusercontent.com/u/10159693?s=460&v=4" width="117">](https://github.com/Blakesalot)|[<img alt="Brigitte Hofmeister" src="https://avatars1.githubusercontent.com/u/16089658?s=460&v=4" width="117">](https://github.com/bhofmei)|[<img alt="lichangfeng" src="https://avatars2.githubusercontent.com/u/8101989?s=460&v=4" width="117">](https://github.com/lichangfeng)|
+|:-:|:-:|:-:|:-:|:-:|
+|[dp-1a](https://github.com/dp-1a)|[ValentinGot](https://github.com/ValentinGot)|[Blake Simmon](https://github.com/Blakesalot)|[Brigitte Hofmeister](https://github.com/bhofmei)|[lichangfeng](https://github.com/lichangfeng)|
 
 # License
 
