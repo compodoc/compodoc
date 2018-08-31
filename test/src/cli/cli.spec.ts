@@ -139,12 +139,12 @@ describe('CLI simple flags', () => {
         });
         after(() => tmp.clean(distFolder));
 
-        it('should only create links to files included via tsconfig', () => {
+        it('should create links to files included via tsconfig', () => {
             expect(moduleFile).to.contain('components/FooComponent.html');
             expect(moduleFile).to.contain('modules/FooModule.html');
-            expect(moduleFile).not.to.contain('components/BarComponent.html');
-            expect(moduleFile).not.to.contain('injectables/FooService.html');
-            expect(moduleFile).not.to.contain('modules/BarModule.html');
+            expect(moduleFile).to.contain('components/BarComponent.html');
+            expect(moduleFile).to.contain('injectables/FooService.html');
+            expect(moduleFile).to.contain('modules/BarModule.html');
         });
     });
 });
