@@ -1,6 +1,6 @@
 /**
  * Some cool function
  */
-export function coreFunction() {
+export function coreFunction(a?: string) {
     return;
 }

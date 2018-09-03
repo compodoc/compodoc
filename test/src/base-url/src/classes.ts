@@ -1,3 +1,7 @@
+import { requestApi } from '@project/api';
+import { coreFunction } from '@project/core';
+import { module2 } from '@project/module2';
+
 /**
  * This is a simple interface.
  */
@@ -87,6 +91,8 @@ export class BaseClass implements INameInterface
             }
         }
 
+        requestApi();
+
         this.checkName();
     }
 
@@ -138,6 +144,7 @@ export class BaseClass implements INameInterface
      * @see https://github.com/sebastian-lenz/typedoc/issues/37
      */
     public arrowFunction = (param2: string, param1: number): void => {
+        module2();
     };
 
 
@@ -145,6 +152,7 @@ export class BaseClass implements INameInterface
      * This is a private function.
      */
     private checkName() {
+        coreFunction(this.name);
         return true;
     }
 
