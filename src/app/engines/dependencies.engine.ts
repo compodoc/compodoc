@@ -43,36 +43,6 @@ export class DependenciesEngine {
 
     private angularApiUtil: AngularApiUtil = new AngularApiUtil();
 
-    private cleanModules(modules) {
-        let _m = modules;
-        let i = 0;
-        let len = modules.length;
-
-        for (i; i < len; i++) {
-            let j = 0;
-            let leng = _m[i].declarations.length;
-            for (j; j < leng; j++) {
-                let k = 0;
-                let lengt;
-                if (_m[i].declarations[j].jsdoctags) {
-                    lengt = _m[i].declarations[j].jsdoctags.length;
-                    for (k; k < lengt; k++) {
-                        delete _m[i].declarations[j].jsdoctags[k].parent;
-                    }
-                }
-                if (_m[i].declarations[j].constructorObj) {
-                    if (_m[i].declarations[j].constructorObj.jsdoctags) {
-                        lengt = _m[i].declarations[j].constructorObj.jsdoctags.length;
-                        for (k; k < lengt; k++) {
-                            delete _m[i].declarations[j].constructorObj.jsdoctags[k].parent;
-                        }
-                    }
-                }
-            }
-        }
-        return _m;
-    }
-
     private updateModulesDeclarationsExportsTypes() {
         let _m = this.modules,
             i = 0,
@@ -117,18 +87,18 @@ export class DependenciesEngine {
             }
         });
         this.rawData = data;
-        this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
-        this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
-        this.components = _.sortBy(this.rawData.components, ['name']);
-        this.controllers = _.sortBy(this.rawData.controllers, ['name']);
-        this.directives = _.sortBy(this.rawData.directives, ['name']);
-        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
-        this.guards = _.sortBy(this.rawData.guards, ['name']);
-        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
-        this.classes = _.sortBy(this.rawData.classes, ['name']);
+        this.modules = _.sortBy(this.rawData.modules, [el => el.name.toLowerCase()]);
+        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, [el => el.name.toLowerCase()]);
+        this.rawModules = _.sortBy(data.modulesForGraph, [el => el.name.toLowerCase()]);
+        this.components = _.sortBy(this.rawData.components, [el => el.name.toLowerCase()]);
+        this.controllers = _.sortBy(this.rawData.controllers, [el => el.name.toLowerCase()]);
+        this.directives = _.sortBy(this.rawData.directives, [el => el.name.toLowerCase()]);
+        this.injectables = _.sortBy(this.rawData.injectables, [el => el.name.toLowerCase()]);
+        this.interceptors = _.sortBy(this.rawData.interceptors, [el => el.name.toLowerCase()]);
+        this.guards = _.sortBy(this.rawData.guards, [el => el.name.toLowerCase()]);
+        this.interfaces = _.sortBy(this.rawData.interfaces, [el => el.name.toLowerCase()]);
+        this.pipes = _.sortBy(this.rawData.pipes, [el => el.name.toLowerCase()]);
+        this.classes = _.sortBy(this.rawData.classes, [el => el.name.toLowerCase()]);
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.updateModulesDeclarationsExportsTypes();
