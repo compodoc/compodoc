@@ -94,7 +94,7 @@ export class AngularDependencies extends FrameworkDependencies {
         sourceFiles.map((file: ts.SourceFile) => {
             let filePath = file.fileName;
 
-            if (path.extname(filePath) === '.ts') {
+            if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.tsx') {
                 if (
                     !this.configuration.mainData.angularJSProject &&
                     path.extname(filePath) === '.js'

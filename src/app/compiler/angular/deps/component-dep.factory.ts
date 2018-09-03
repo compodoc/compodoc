@@ -48,7 +48,14 @@ export class ComponentDepFactory {
             description: IO.description,
             type: 'component',
             sourceCode: srcFile.getText(),
-            exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
+            exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText()),
+
+            tag: this.helper.getComponentTag(props, srcFile),
+            styleUrl: this.helper.getComponentStyleUrl(props, srcFile),
+            shadow: this.helper.getComponentShadow(props, srcFile),
+            scoped: this.helper.getComponentScoped(props, srcFile),
+            assetsDir: this.helper.getComponentAssetsDir(props, srcFile),
+            assetsDirs: this.helper.getComponentAssetsDirs(props, srcFile)
         };
         if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
             componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(
@@ -114,6 +121,13 @@ export interface IComponentDep extends IDep {
     extends?: any;
     implements?: any;
     accessors?: Object;
+
+    tag?: string;
+    styleUrl?: string;
+    shadow?: string;
+    scoped?: string;
+    assetsDir?: string;
+    assetsDirs?: Array<string>;
 
     preserveWhitespaces?: any;
 }
