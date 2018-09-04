@@ -28,7 +28,8 @@
     "test-e2e-mocha": "./node_modules/.bin/mocha --opts test/mocha-e2e.opts",
     "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
     "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
-    "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha"
+    "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
+    "postinstall": "opencollective postinstall"
   },
   "watch": {
     "build": {
@@ -83,6 +84,7 @@
     "lodash": "^4.17.10",
     "lunr": "2.3.2",
     "marked": "^0.4.0",
+    "opencollective": "^1.0.3",
     "os-name": "^2.0.1",
     "traverse": "^0.6.6",
     "ts-simple-ast": "12.4.0",
