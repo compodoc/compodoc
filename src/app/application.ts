@@ -398,7 +398,18 @@ export class Application {
      */
     private getMicroDependenciesData(): void {
         logger.info('Get diff dependencies data');
-        let crawler = new Dependencies(
+
+        let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
+        this.configuration.mainData.angularProject = true;
+
+        if (this.detectAngularJSProjects()) {
+            logger.info('AngularJS project detected');
+            this.configuration.mainData.angularProject = false;
+            this.configuration.mainData.angularJSProject = true;
+            dependenciesClass = AngularJSDependencies;
+        }
+
+        let crawler = new dependenciesClass(
             this.updatedFiles,
             {
                 tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
@@ -440,6 +451,27 @@ export class Application {
             });
     }
 
+    private detectAngularJSProjects() {
+        let result = false;
+        if (typeof this.packageJsonData.dependencies !== 'undefined') {
+            if (typeof this.packageJsonData.dependencies.angular !== 'undefined') {
+                result = true;
+            } else {
+                let countJSFiles = 0;
+                this.files.forEach((file) => {
+                    if (path.extname(file) === '.js') {
+                        countJSFiles += 1;
+                    }
+                });
+                let percentOfJSFiles = (countJSFiles * 100) / this.files.length;
+                if (percentOfJSFiles >= 75) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
     private getDependenciesData(): void {
         logger.info('Get dependencies data');
 
@@ -451,27 +483,11 @@ export class Application {
         let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
         this.configuration.mainData.angularProject = true;
 
-        if (typeof this.packageJsonData.dependencies !== 'undefined') {
-            if (typeof this.packageJsonData.dependencies.angular !== 'undefined') {
-                logger.info('AngularJS project detected');
-                this.configuration.mainData.angularProject = false;
-                this.configuration.mainData.angularJSProject = true;
-                dependenciesClass = AngularJSDependencies;
-            } else {
-                let countJSFiles = 0;
-                this.files.forEach((file) => {
-                    if (path.extname(file) === '.js') {
-                        countJSFiles += 1;
-                    }
-                });
-                let percentOfJSFiles = (countJSFiles * 100) / this.files.length;
-                if (percentOfJSFiles >= 75) {
-                    logger.info('AngularJS project detected');
-                    this.configuration.mainData.angularProject = false;
-                    this.configuration.mainData.angularJSProject = true;
-                    dependenciesClass = AngularJSDependencies;
-                }
-            }
+        if (this.detectAngularJSProjects()) {
+            logger.info('AngularJS project detected');
+            this.configuration.mainData.angularProject = false;
+            this.configuration.mainData.angularJSProject = true;
+            dependenciesClass = AngularJSDependencies;
         }
 
         let crawler = new dependenciesClass(
