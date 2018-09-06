@@ -2544,8 +2544,32 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     // tslint:disable-line
                                     if (errorCopyFavicon) {
                                         logger.error(
-                                            'Error during resources copy ',
+                                            'Error during resources copy of favicon',
                                             errorCopyFavicon
+                                        );
+                                    } else {
+                                        onComplete();
+                                    }
+                                }
+                            );
+                        } else {
+                            onComplete();
+                        }
+                        if (this.configuration.mainData.customLogo !== '') {
+                            logger.info(`Custom logo supplied`);
+                            fs.copy(
+                                path.resolve(
+                                    process.cwd() +
+                                        path.sep +
+                                        this.configuration.mainData.customLogo
+                                ),
+                                path.resolve(finalOutput + '/images/logo.png'),
+                                errorCopyLogo => {
+                                    // tslint:disable-line
+                                    if (errorCopyLogo) {
+                                        logger.error(
+                                            'Error during resources copy of logo',
+                                            errorCopyLogo
                                         );
                                     } else {
                                         onComplete();

@@ -171,6 +171,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`);
             expect(runHelp.stdout.toString()).to.contain('Use a custom favicon');
         });
 
+        it(`--customLogo`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--customLogo [path]');
+            expect(runHelp.stdout.toString()).to.contain('Use a custom logo');
+        });
+
     });
 
 });

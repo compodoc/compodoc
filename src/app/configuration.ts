@@ -68,6 +68,7 @@ export class Configuration implements ConfigurationInterface {
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
         coverageData: {},
         customFavicon: '',
+        customLogo: '',
         packageDependencies: [],
         packagePeerDependencies: [],
         gaID: '',
