@@ -49,7 +49,11 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                 if (argu.name && argu.type) {
                     return `${argu.name}${this.getOptionalString(arg)}: ${argu.type}`;
                 } else {
-                    return `${argu.name.text}`;
+                    if (argu.name) {
+                        return `${argu.name.text}`;
+                    } else {
+                        return '';
+                    }
                 }
             }
         });
@@ -95,7 +99,11 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                             arg
                         )}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     } else {
-                        return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
+                        if (arg.type) {
+                            return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
+                        } else {
+                            return `${arg.name}${this.getOptionalString(arg)}`;
+                        }
                     }
                 })
                 .join(', ');

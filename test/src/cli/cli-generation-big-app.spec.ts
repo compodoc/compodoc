@@ -720,4 +720,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<span class="modifier">Abstract</span>');
         expect(file).to.contain('<span class="modifier">Async</span>');
     });
+
+    it('correct support function with empty typed arguments', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('<code>openSomeDialog(model,');
+    });
 });
