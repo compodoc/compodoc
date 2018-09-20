@@ -29,7 +29,9 @@
     "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
     "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
     "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
-    "postinstall": "opencollective postinstall"
+    "postinstall": "opencollective postinstall",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "watch": {
     "build": {
@@ -88,7 +90,8 @@
     "os-name": "^2.0.1",
     "traverse": "^0.6.6",
     "ts-simple-ast": "12.4.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "snyk": "^1.96.0"
   },
   "devDependencies": {
     "@types/chai": "4.1.4",
@@ -139,5 +142,6 @@
     "type": "opencollective",
     "url": "https://opencollective.com/compodoc",
     "logo": "https://opencollective.com/compodoc/logo.txt"
-  }
+  },
+  "snyk": true
 }
