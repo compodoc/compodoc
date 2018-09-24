@@ -29,3 +29,8 @@ coverage.*
 
 # Build-output
 dist/
+
+# Miscellaneous
+tmp/
+.tmp/
+.tmp*
