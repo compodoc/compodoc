@@ -80,7 +80,7 @@
     "i18next": "^11.9.1",
     "inside": "^1.0.0",
     "json5": "^2.1.0",
-    "live-server": "1.1.0",
+    "live-server": "1.2.0",
     "lodash": "^4.17.11",
     "lunr": "2.3.3",
     "marked": "^0.4.0",
