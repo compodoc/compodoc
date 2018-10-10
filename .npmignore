@@ -14,3 +14,8 @@ doc
 documentation
 docs
 package.json.old
+.github
+CONTRIBUTING.md
+DONTUPDATE.md
+.prettierrc
+CNAME
