@@ -159,6 +159,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 false
             )
             .option('--customFavicon [path]', 'Use a custom favicon')
+            .option('--customLogo [path]', 'Use a custom logo')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
@@ -475,6 +476,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.customFavicon) {
             this.configuration.mainData.customFavicon = program.customFavicon;
+        }
+
+        if (configFile.customLogo) {
+            this.configuration.mainData.customLogo = configFile.customLogo;
+        }
+        if (program.customLogo) {
+            this.configuration.mainData.customLogo = program.customLogo;
         }
 
         if (configFile.gaID) {

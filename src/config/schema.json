@@ -342,6 +342,15 @@
           ""
         ]
       },
+      "customLogo": {
+        "$id": "/properties/customLogo",
+        "type": "string",
+        "title": "Use a custom logo",
+        "default": "",
+        "examples": [
+          ""
+        ]
+      },
       "gaID": {
         "$id": "/properties/gaID",
         "type": "string",
