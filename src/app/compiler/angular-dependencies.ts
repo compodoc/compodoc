@@ -1046,8 +1046,9 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
+        let methodName = method.name ? method.name.text : 'Unnamed function';
         let result: any = {
-            name: method.name.text,
+            name: methodName,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);

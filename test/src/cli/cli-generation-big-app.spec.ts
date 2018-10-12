@@ -725,4 +725,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AppComponent.html');
         expect(file).to.contain('<code>openSomeDialog(model,');
     });
+
+    it('correct support unnamed function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('Unnamed');
+    });
 });

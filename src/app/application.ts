@@ -2528,56 +2528,84 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 if (errorCopy) {
                     logger.error('Error during resources copy ', errorCopy);
                 } else {
-                    if (this.configuration.mainData.extTheme) {
-                        fs.copy(
-                            path.resolve(
-                                process.cwd() + path.sep + this.configuration.mainData.extTheme
-                            ),
-                            path.resolve(finalOutput + '/styles/'),
-                            function(errorCopyTheme) {
-                                if (errorCopyTheme) {
-                                    logger.error(
-                                        'Error during external styling theme copy ',
-                                        errorCopyTheme
-                                    );
-                                } else {
-                                    logger.info('External styling theme copy succeeded');
-                                    onComplete();
-                                }
-                            }
-                        );
-                    } else {
-                        if (this.configuration.mainData.customFavicon !== '') {
-                            logger.info(`Custom favicon supplied`);
-                            fs.copy(
-                                path.resolve(
-                                    process.cwd() +
-                                        path.sep +
-                                        this.configuration.mainData.customFavicon
-                                ),
-                                path.resolve(finalOutput + '/images/favicon.ico'),
-                                errorCopyFavicon => {
-                                    // tslint:disable-line
-                                    if (errorCopyFavicon) {
-                                        logger.error(
-                                            'Error during resources copy of favicon',
-                                            errorCopyFavicon
-                                        );
-                                    } else {
-                                        onComplete();
+
+                    const extThemePromise = new Promise(
+                        (extThemeResolve, extThemeReject) => {
+                            if (this.configuration.mainData.extTheme) {
+                                fs.copy(
+                                    path.resolve(
+                                        process.cwd() +
+                                            path.sep +
+                                            this.configuration.mainData.extTheme
+                                    ),
+                                    path.resolve(finalOutput + '/styles/'),
+                                    function(errorCopyTheme) {
+                                        if (errorCopyTheme) {
+                                            logger.error(
+                                                'Error during external styling theme copy ',
+                                                errorCopyTheme
+                                            );
+                                            extThemeReject();
+                                        } else {
+                                            logger.info(
+                                                'External styling theme copy succeeded'
+                                            );
+                                            extThemeResolve();
+                                        }
                                     }
-                                }
-                            );
-                        } else {
-                            onComplete();
+                                );
+                            } else {
+                                extThemeResolve();
+                            }
                         }
+                    );
+
+                    const customFaviconPromise = new Promise(
+                        (customFaviconResolve, customFaviconReject) => {
+                            if (
+                                this.configuration.mainData.customFavicon !== ''
+                            ) {
+                                logger.info(`Custom favicon supplied`);
+                                fs.copy(
+                                    path.resolve(
+                                        process.cwd() +
+                                            path.sep +
+                                            this.configuration.mainData
+                                                .customFavicon
+                                    ),
+                                    path.resolve(
+                                        finalOutput + '/images/favicon.ico'
+                                    ),
+                                    errorCopyFavicon => {
+                                        // tslint:disable-line
+                                        if (errorCopyFavicon) {
+                                            logger.error(
+                                                'Error during resources copy of favicon',
+                                                errorCopyFavicon
+                                            );
+                                            customFaviconReject();
+                                        } else {
+                                            logger.info(
+                                                'External custom favicon copy succeeded'
+                                            );
+                                            customFaviconResolve();
+                                        }
+                                    }
+                                );
+                            } else {
+                                customFaviconResolve();
+                            }
+                        }
+                    );
+
+                    const customLogoPromise = new Promise((customLogoResolve, customLogoReject) => {
                         if (this.configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
                                 path.resolve(
                                     process.cwd() +
-                                        path.sep +
-                                        this.configuration.mainData.customLogo
+                                    path.sep +
+                                    this.configuration.mainData.customLogo
                                 ),
                                 path.resolve(finalOutput + '/images/logo.png'),
                                 errorCopyLogo => {
@@ -2587,15 +2615,25 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                             'Error during resources copy of logo',
                                             errorCopyLogo
                                         );
+                                        customLogoReject();
                                     } else {
-                                        onComplete();
+                                        logger.info('External custom logo copy succeeded');
+                                        customLogoResolve();
                                     }
                                 }
                             );
                         } else {
-                            onComplete();
+                            customLogoResolve();
                         }
-                    }
+                    });
+
+                    Promise.all([
+                        extThemePromise,
+                        customFaviconPromise,
+                        customLogoPromise
+                    ]).then(() => {
+                        onComplete();
+                    });
                 }
             }
         );
