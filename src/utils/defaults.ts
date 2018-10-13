@@ -16,6 +16,7 @@ export const COMPODOC_DEFAULTS = {
     disableSourceCode: false,
     disableDomTree: false,
     disableTemplateTab: false,
+    disableStyleTab: false,
     disableGraph: false,
     disableMainGraph: false,
     disableCoverage: false,

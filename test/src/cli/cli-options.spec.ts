@@ -92,7 +92,7 @@ describe('CLI Options', () => {
             expect(runHelp.stdout.toString()).to.contain(
 `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
 Double-quotes must be escaped with '\\'. \
-Available tab IDs are "info", "readme", "source", "templateData", "tree", and "example". \
+Available tab IDs are "info", "readme", "source", "templateData", "styleData", "tree", and "example". \
 Note: Certain tabs will only be shown if applicable to a given dependency`);
         });
 

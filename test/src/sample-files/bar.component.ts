@@ -4,6 +4,7 @@ import { BarService } from './bar.service';
 @Component({
 	selector: 'app-bar',
 	templateUrl: `bar.template.html`,
+	styleUrls: ['bar.style.scss', 'bar2.style.scss'],
 	providers: [BarService]
 
 })

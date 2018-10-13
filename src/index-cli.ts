@@ -97,7 +97,7 @@ export class CliApplication extends Application {
                 '--navTabConfig <tab configs>',
                 `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
 Double-quotes must be escaped with '\\'. \
-Available tab IDs are "info", "readme", "source", "templateData", "tree", and "example". \
+Available tab IDs are "info", "readme", "source", "templateData", "styleData", "tree", and "example". \
 Note: Certain tabs will only be shown if applicable to a given dependency`,
                 list,
                 JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
@@ -137,6 +137,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             )
             .option('--disableDomTree', 'Do not add dom tree tab', false)
             .option('--disableTemplateTab', 'Do not add template tab', false)
+            .option('--disableStyleTab', 'Do not add style tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivate', 'Do not show private in generated documentation', false)
