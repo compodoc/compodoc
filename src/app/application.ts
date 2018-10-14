@@ -1239,6 +1239,37 @@ export class Application {
         );
     }
 
+    private handleStyleurl(component): Promise<any> {
+        let dirname = path.dirname(component.file);
+
+        let styleDataPromise = component.styleUrls.map((styleUrl) => {
+            let stylePath = path.resolve(dirname + path.sep + styleUrl);
+
+            if (!this.fileEngine.existsSync(stylePath)) {
+                let err = `Cannot read style for ${component.name}`;
+                logger.error(err);
+                return new Promise((resolve, reject) => {});
+            }
+
+            return new Promise((resolve, reject) => {
+                this.fileEngine.get(stylePath).then(data => {
+                    resolve({
+                        data,
+                        styleUrl
+                    });
+                });
+            });
+        });
+
+        return Promise.all(styleDataPromise).then(
+            data => (component.styleData = data),
+            err => {
+                logger.error(err);
+                return Promise.reject('');
+            }
+        );
+    }
+
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = this.configuration.mainData.navTabConfig;
         navTabConfig = navTabConfig.length === 0 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions) : navTabConfig;
@@ -1267,6 +1298,7 @@ export class Application {
             if (customTab.id === 'readme' && !dependency.readme) { return; }
             if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
             if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
+            if (customTab.id === 'styleData' && (!dependency.styleUrls || dependency.styleUrls.length === 0)) { return; }
 
             navTabs.push(navTab);
         });
@@ -1360,6 +1392,22 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             i++;
                             loop();
                         }
+
+                        if (component.styleUrls.length > 0) {
+                            logger.info(` ${component.name} has a styleUrl, include it`);
+                            this.handleStyleurl(component).then(
+                                () => {
+                                    i++;
+                                    loop();
+                                },
+                                e => {
+                                    logger.error(e);
+                                }
+                            );
+                        } else {
+                            i++;
+                            loop();
+                        }
                     } else {
                         let page = {
                             path: 'components',
@@ -1378,6 +1426,22 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         if (component.templateUrl.length > 0) {
                             logger.info(` ${component.name} has a templateUrl, include it`);
                             this.handleTemplateurl(component).then(
+                                () => {
+                                    i++;
+                                    loop();
+                                },
+                                e => {
+                                    logger.error(e);
+                                }
+                            );
+                        } else {
+                            i++;
+                            loop();
+                        }
+
+                        if (component.styleUrls.length > 0) {
+                            logger.info(` ${component.name} has a styleUrl, include it`);
+                            this.handleStyleurl(component).then(
                                 () => {
                                     i++;
                                     loop();

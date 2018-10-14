@@ -45,6 +45,7 @@ export class Configuration implements ConfigurationInterface {
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
         disableDomTree: COMPODOC_DEFAULTS.disableDomTree,
         disableTemplateTab: COMPODOC_DEFAULTS.disableTemplateTab,
+        disableStyleTab: COMPODOC_DEFAULTS.disableStyleTab,
         disableGraph: COMPODOC_DEFAULTS.disableGraph,
         disableMainGraph: COMPODOC_DEFAULTS.disableMainGraph,
         disableCoverage: COMPODOC_DEFAULTS.disableCoverage,

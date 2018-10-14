@@ -39,6 +39,7 @@ export interface MainDataInterface {
     disableSourceCode: boolean;
     disableDomTree: boolean;
     disableTemplateTab: boolean;
+    disableStyleTab: boolean;
     disableGraph: boolean;
     disableMainGraph: boolean;
     disableCoverage: boolean;
