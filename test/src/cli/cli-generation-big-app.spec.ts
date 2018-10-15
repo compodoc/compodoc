@@ -738,5 +738,8 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/components/AppComponent.html');
         expect(file).to.contain('styleData-tab');
         expect(file).to.contain('font-size');
+        file = read(distFolder + '/components/TodoMVCComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('pointer-events');
     });
 });

@@ -82,7 +82,7 @@ export class ComponentHelper {
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
     ): string[] {
-        return this.sanitizeUrls(this.symbolHelper.getSymbolDeps(props, 'styleUrls', srcFile));
+        return this.symbolHelper.getSymbolDeps(props, 'styleUrls', srcFile);
     }
 
     public getComponentStyleUrl(
