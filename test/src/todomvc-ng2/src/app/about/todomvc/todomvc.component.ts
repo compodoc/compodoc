@@ -5,8 +5,7 @@ import { Component } from '@angular/core';
  */
 @Component({
     selector: 'todomvc',
-    templateUrl: './todomvc.component.html'
+    templateUrl: './todomvc.component.html',
+    styleUrls: ['../todomvc.component.scss']
 })
-export class TodoMVCComponent {
-
-}
+export class TodoMVCComponent {}
