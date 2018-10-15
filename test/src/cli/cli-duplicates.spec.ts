@@ -100,10 +100,10 @@ describe('CLI duplicates support', () => {
         file = file.replace(/components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g, 'components-links-module-ValidationDemoModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"\' }>\r\n                                        <li class="link">\r\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"') + '>\\r\\n                                    \\r\\n                                        <li class="link">\\r\\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
         } else {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"\' }>\n                                        <li class="link">\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-ValidationDemoModule"') + '>\\n                                    \\n                                        <li class="link">\\n                                            <a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`);
         }
     });
 
@@ -112,12 +112,12 @@ describe('CLI duplicates support', () => {
         file = file.replace(/components-links-module-FooterModule-([a-zA-Z0-9-])+/g, 'components-links-module-FooterModule');
         if (file.indexOf('\r') !== -1) {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="xs-components-links-module-FooterModule"' }>\r\n                                        <li class="link">\r\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
-            expect(file).to.contain(`<li class="link">\r\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-FooterModule"') + '>\\r\\n                                    \\r\\n                                        <li class="link">\\r\\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\\r\\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
         } else {
             // tslint:disable-next-line:max-line-length
-            expect(file).to.contain(`id="xs-components-links-module-FooterModule"' }>\n                                        <li class="link">\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
-            expect(file).to.contain(`<li class="link">\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
+            expect(file).to.contain(`id="xs-components-links-module-FooterModule"') + '>\\n                                    \\n                                        <li class="link">\\n                                            <a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`);
+            expect(file).to.contain(`<li class="link">\\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`);
         }
     });
 
