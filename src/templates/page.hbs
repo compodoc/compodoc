@@ -155,7 +155,9 @@
 
        <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
        <script src="{{relativeURL data.depth }}js/libs/lit-html.js"></script>
-       <script src="{{relativeURL data.depth }}js/menu-wc.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="{{relativeURL data.depth }}js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="{{relativeURL data.depth }}js/menu-wc.js" defer></script>
 
        <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
 
