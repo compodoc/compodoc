@@ -1,13 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     var lazyGraphs = [].slice.call(document.querySelectorAll('[lazy]'));
     var active = false;
 
-    var lazyLoad = () => {
+    var lazyLoad = function() {
         if (active === false) {
             active = true;
 
-            setTimeout(() => {
-                lazyGraphs.forEach(lazyGraph => {
+            setTimeout(function() {
+                lazyGraphs.forEach(function(lazyGraph) {
                     if (
                         lazyGraph.getBoundingClientRect().top <= window.innerHeight &&
                         lazyGraph.getBoundingClientRect().bottom >= 0 &&
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         lazyGraph.data = lazyGraph.getAttribute('lazy');
                         lazyGraph.removeAttribute('lazy');
 
-                        lazyGraphs = lazyGraphs.filter(image => image !== lazyGraph);
+                        lazyGraphs = lazyGraphs.filter(function(image) { return image !== lazyGraph});
 
                         if (lazyGraphs.length === 0) {
                             document.removeEventListener('scroll', lazyLoad);
