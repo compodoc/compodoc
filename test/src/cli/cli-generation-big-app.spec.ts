@@ -730,4 +730,13 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/miscellaneous/functions.html');
         expect(file).to.contain('Unnamed');
     });
+
+    it('correct display styles tab', () => {
+        let file = read(distFolder + '/components/HeaderComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('language-scss');
+        file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('font-size');
+    });
 });

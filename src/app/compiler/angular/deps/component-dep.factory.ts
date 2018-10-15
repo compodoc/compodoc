@@ -55,7 +55,9 @@ export class ComponentDepFactory {
             shadow: this.helper.getComponentShadow(props, srcFile),
             scoped: this.helper.getComponentScoped(props, srcFile),
             assetsDir: this.helper.getComponentAssetsDir(props, srcFile),
-            assetsDirs: this.helper.getComponentAssetsDirs(props, srcFile)
+            assetsDirs: this.helper.getComponentAssetsDirs(props, srcFile),
+            styleUrlsData: '',
+            stylesData: ''
         };
         if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
             componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(
@@ -98,7 +100,9 @@ export interface IComponentDep extends IDep {
     moduleId: string;
     selector: string;
     styleUrls: Array<string>;
+    styleUrlsData: string;
     styles: Array<string>;
+    stylesData: string;
     template: string;
     templateUrl: Array<string>;
     viewProviders: Array<any>;

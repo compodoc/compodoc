@@ -403,6 +403,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             this.configuration.mainData.disableTemplateTab = program.disableTemplateTab;
         }
 
+        if (configFile.disableStyleTab) {
+            this.configuration.mainData.disableStyleTab = configFile.disableStyleTab;
+        }
+        if (program.disableStyleTab) {
+            this.configuration.mainData.disableStyleTab = program.disableStyleTab;
+        }
+
         if (configFile.disableGraph) {
             this.configuration.mainData.disableGraph = configFile.disableGraph;
         }

@@ -1239,14 +1239,25 @@ export class Application {
         );
     }
 
-    private handleStyleurl(component): Promise<any> {
+    private handleStyles(component): Promise<any> {
+        let styles = component.styles;
+        component.stylesData = '';
+        return new Promise((resolveStyles, rejectStyles) => {
+            styles.forEach(style => {
+                component.stylesData = component.stylesData + style + '\n';
+            });
+            resolveStyles();
+        });
+    }
+
+    private handleStyleurls(component): Promise<any> {
         let dirname = path.dirname(component.file);
 
         let styleDataPromise = component.styleUrls.map((styleUrl) => {
             let stylePath = path.resolve(dirname + path.sep + styleUrl);
 
             if (!this.fileEngine.existsSync(stylePath)) {
-                let err = `Cannot read style for ${component.name}`;
+                let err = `Cannot read style url ${stylePath} for ${component.name}`;
                 logger.error(err);
                 return new Promise((resolve, reject) => {});
             }
@@ -1262,7 +1273,7 @@ export class Application {
         });
 
         return Promise.all(styleDataPromise).then(
-            data => (component.styleData = data),
+            data => (component.styleUrlsData = data),
             err => {
                 logger.error(err);
                 return Promise.reject('');
@@ -1293,12 +1304,15 @@ export class Application {
             if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
             if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
             if (customTab.id === 'templateData' && this.configuration.mainData.disableTemplateTab) { return; }
+            if (customTab.id === 'styleData' && this.configuration.mainData.disableStyleTab) { return; }
 
             // per dependency config
             if (customTab.id === 'readme' && !dependency.readme) { return; }
             if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
             if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
-            if (customTab.id === 'styleData' && (!dependency.styleUrls || dependency.styleUrls.length === 0)) { return; }
+            if (customTab.id === 'styleData' && ((!dependency.styleUrls || dependency.styleUrls.length === 0) && (!dependency.styles || dependency.styles.length === 0) )) {
+                return;
+            }
 
             navTabs.push(navTab);
         });
@@ -1353,7 +1367,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             ? someComponents
             : this.dependenciesEngine.getComponents();
 
-        return new Promise((mainResolve, reject) => {
+        return new Promise((mainPrepareComponentResolve, mainPrepareComponentReject) => {
             let i = 0;
             let len = this.configuration.mainData.components.length;
             let loop = () => {
@@ -1363,100 +1377,92 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         logger.info(` ${component.name} has a README file, include it`);
                         let readmeFile = $markdownengine.readNeighbourReadmeFile(component.file);
                         component.readme = marked(readmeFile);
-                        let page = {
-                            path: 'components',
-                            name: component.name,
-                            id: component.id,
-                            navTabs: this.getNavTabs(component),
-                            context: 'component',
-                            component: component,
-                            depth: 1,
-                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                        };
-                        if (component.isDuplicate) {
-                            page.name += '-' + component.duplicateId;
-                        }
-                        this.configuration.addPage(page);
-                        if (component.templateUrl.length > 0) {
-                            logger.info(` ${component.name} has a templateUrl, include it`);
-                            this.handleTemplateurl(component).then(
-                                () => {
-                                    i++;
-                                    loop();
-                                },
-                                e => {
-                                    logger.error(e);
-                                }
-                            );
-                        } else {
-                            i++;
-                            loop();
-                        }
-
-                        if (component.styleUrls.length > 0) {
-                            logger.info(` ${component.name} has a styleUrl, include it`);
-                            this.handleStyleurl(component).then(
-                                () => {
-                                    i++;
-                                    loop();
-                                },
-                                e => {
-                                    logger.error(e);
-                                }
-                            );
-                        } else {
-                            i++;
-                            loop();
-                        }
-                    } else {
-                        let page = {
-                            path: 'components',
-                            name: component.name,
-                            id: component.id,
-                            navTabs: this.getNavTabs(component),
-                            context: 'component',
-                            component: component,
-                            depth: 1,
-                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                        };
-                        if (component.isDuplicate) {
-                            page.name += '-' + component.duplicateId;
-                        }
-                        this.configuration.addPage(page);
-                        if (component.templateUrl.length > 0) {
-                            logger.info(` ${component.name} has a templateUrl, include it`);
-                            this.handleTemplateurl(component).then(
-                                () => {
-                                    i++;
-                                    loop();
-                                },
-                                e => {
-                                    logger.error(e);
-                                }
-                            );
-                        } else {
-                            i++;
-                            loop();
-                        }
-
-                        if (component.styleUrls.length > 0) {
-                            logger.info(` ${component.name} has a styleUrl, include it`);
-                            this.handleStyleurl(component).then(
-                                () => {
-                                    i++;
-                                    loop();
-                                },
-                                e => {
-                                    logger.error(e);
-                                }
-                            );
-                        } else {
-                            i++;
-                            loop();
-                        }
                     }
+                    let page = {
+                        path: 'components',
+                        name: component.name,
+                        id: component.id,
+                        navTabs: this.getNavTabs(component),
+                        context: 'component',
+                        component: component,
+                        depth: 1,
+                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    };
+
+                    if (component.isDuplicate) {
+                        page.name += '-' + component.duplicateId;
+                    }
+                    this.configuration.addPage(page);
+
+                    const componentTemplateUrlPromise = new Promise(
+                        (componentTemplateUrlResolve, componentTemplateUrlReject) => {
+                            if (component.templateUrl.length > 0) {
+                                logger.info(
+                                    ` ${component.name} has a templateUrl, include it`
+                                );
+                                this.handleTemplateurl(component).then(
+                                    () => {
+                                        componentTemplateUrlResolve();
+                                    },
+                                    e => {
+                                        logger.error(e);
+                                        componentTemplateUrlReject();
+                                    }
+                                );
+                            } else {
+                                componentTemplateUrlResolve();
+                            }
+                        }
+                    );
+                    const componentStyleUrlsPromise = new Promise(
+                        (componentStyleUrlsResolve, componentStyleUrlsReject) => {
+                            if (component.styleUrls.length > 0) {
+                                logger.info(
+                                    ` ${component.name} has styleUrls, include them`
+                                );
+                                this.handleStyleurls(component).then(
+                                    () => {
+                                        componentStyleUrlsResolve();
+                                    },
+                                    e => {
+                                        logger.error(e);
+                                        componentStyleUrlsReject();
+                                    }
+                                );
+                            } else {
+                                componentStyleUrlsResolve();
+                            }
+                        }
+                    );
+                    const componentStylesPromise = new Promise(
+                        (componentStylesResolve, componentStylesReject) => {
+                            if (component.styles.length > 0) {
+                                logger.info(` ${component.name} has styles, include them`);
+                                this.handleStyles(component).then(
+                                    () => {
+                                        componentStylesResolve();
+                                    },
+                                    e => {
+                                        logger.error(e);
+                                        componentStylesReject();
+                                    }
+                                );
+                            } else {
+                                componentStylesResolve();
+                            }
+                        }
+                    );
+
+                    Promise.all([
+                        componentTemplateUrlPromise,
+                        componentStyleUrlsPromise,
+                        componentStylesPromise
+                    ]).then(() => {
+                        i++;
+                        loop();
+                    });
                 } else {
-                    mainResolve();
+                    mainPrepareComponentResolve();
                 }
             };
             loop();

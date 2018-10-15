@@ -32,7 +32,7 @@ export const COMPODOC_CONSTANTS = {
             'id': 'styleData',
             'href': '#styleData',
             'data-link': 'style',
-            'label': 'Style',
+            'label': 'Styles',
             'depTypes': ['component']
         },
         {
