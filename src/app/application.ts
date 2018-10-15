@@ -2312,113 +2312,116 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             }
         });
     }
-		public prepareUnitTestCoverage() {
-			logger.info('Process unit test coverage report');
-			return new Promise((resolve, reject)=>{
-				let covDat, covFileNames;
 
-				if (!this.configuration.mainData.coverageData['files']){
-					logger.warn('Missing documentation coverage data');
-				} else {
-						covDat = {};
-						covFileNames = _.map(this.configuration.mainData.coverageData['files'], (el) => {
-							let fileName = el.filePath;
-							covDat[fileName] = {type: el.type, linktype: el.linktype, linksubtype: el.linksubtype, name: el.name};
-              return fileName;
-						});
-				}
-				// read coverage summary file and data
-				let unitTestSummary = {};
-				let fileDat = this.fileEngine.getSync(this.configuration.mainData.unitTestCoverage);
-				if(fileDat){
-					unitTestSummary = JSON.parse(fileDat);
-				} else {
-					return Promise.reject('Error reading unit test coverage file');
-				}
-				let getCovStatus = function(percent, totalLines){
-					let status;
-					if(totalLines === 0){
-						status = 'uncovered'
-					} else if (percent <= 25){
-						status = 'low';
-					} else if (percent > 25 && percent <= 50){
-						status = 'medium';
-					} else if (percent > 50 && percent <= 75){
-						status = 'good'
-					} else {
-						status = 'very-good';
-					}
-					return status;
-				}
-				let getCoverageData = function(data, fileName) {
-					let out = {};
-					if (fileName !== 'total'){
-						if(covDat === undefined){
-							// need a name to include in output but this isn't visible
-							out = {name: fileName, filePath: fileName};
-						} else { //if (covDat[fileName]){
-              let findMatch = _.filter(covFileNames, (el)=>{
-                return (el.includes(fileName) || fileName.includes(el))
-              });
-              if(findMatch.length > 0){
-							   out = _.clone(covDat[findMatch[0]]);
-                out['filePath'] = fileName;
-              } //else {
-                //out = {name: fileName, filePath: fileName};
-              //}
-						}
-					}
-					let keysToGet = ['statements', 'branches', 'functions', 'lines'];
-					_.forEach(keysToGet, (key)=>{
-						if(data[key]){
-							let t = data[key];
-							out[key] = {coveragePercent: Math.round(t.pct),
-								coverageCount: '' + t.covered + '/' + t.total,
-								status: getCovStatus(t.pct, t.total)};
-						}
-					});
-					return out;
-				}
+    public prepareUnitTestCoverage() {
+        logger.info('Process unit test coverage report');
+        return new Promise((resolve, reject) => {
+            let covDat, covFileNames;
 
-				let unitTestData = {};
-				let files = [];
-				for(let file in unitTestSummary){
-					let dat = getCoverageData(unitTestSummary[file], file);
-					if (file === 'total'){
-						unitTestData['total'] = dat;
-					} else {
-						files.push(dat);
-					}
-				}
-				unitTestData['files'] = files;
-				unitTestData['idColumn'] = (covDat !== undefined); // should we include the id column
-				this.configuration.mainData.unitTestData = unitTestData;
-				this.configuration.addPage({
-					name: 'unit-test',
-          id: 'unit-test',
-          context: 'unit-test',
-          files: files,
-          data: unitTestData,
-          depth: 0,
-          pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-				});
+            if (!this.configuration.mainData.coverageData['files']) {
+                logger.warn('Missing documentation coverage data');
+            } else {
+                covDat = {};
+                covFileNames = _.map(this.configuration.mainData.coverageData['files'], (el) => {
+                    let fileName = el.filePath;
+                    covDat[fileName] = { type: el.type, linktype: el.linktype, linksubtype: el.linksubtype, name: el.name };
+                    return fileName;
+                });
+            }
+            // read coverage summary file and data
+            let unitTestSummary = {};
+            let fileDat = this.fileEngine.getSync(this.configuration.mainData.unitTestCoverage);
+            if (fileDat) {
+                unitTestSummary = JSON.parse(fileDat);
+            } else {
+                return Promise.reject('Error reading unit test coverage file');
+            }
+            let getCovStatus = function (percent, totalLines) {
+                let status;
+                if (totalLines === 0) {
+                    status = 'uncovered'
+                } else if (percent <= 25) {
+                    status = 'low';
+                } else if (percent > 25 && percent <= 50) {
+                    status = 'medium';
+                } else if (percent > 50 && percent <= 75) {
+                    status = 'good'
+                } else {
+                    status = 'very-good';
+                }
+                return status;
+            };
+            let getCoverageData = function (data, fileName) {
+                let out = {};
+                if (fileName !== 'total') {
+                    if (covDat === undefined) {
+                        // need a name to include in output but this isn't visible
+                        out = { name: fileName, filePath: fileName };
+                    } else {
+                        let findMatch = _.filter(covFileNames, (el) => {
+                            return (el.includes(fileName) || fileName.includes(el))
+                        });
+                        if (findMatch.length > 0) {
+                            out = _.clone(covDat[findMatch[0]]);
+                            out['filePath'] = fileName;
+                        }
+                    }
+                }
+                let keysToGet = ['statements', 'branches', 'functions', 'lines'];
+                _.forEach(keysToGet, (key) => {
+                    if (data[key]) {
+                        let t = data[key];
+                        out[key] = {
+                            coveragePercent: Math.round(t.pct),
+                            coverageCount: '' + t.covered + '/' + t.total,
+                            status: getCovStatus(t.pct, t.total)
+                        };
+                    }
+                });
+                return out;
+            };
 
-				if(this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat){
-					let keysToGet = ['statements', 'branches', 'functions', 'lines'];
-					_.forEach(keysToGet, (key)=>{
-						if(unitTestData['total'][key]){
-							this.htmlEngine.generateCoverageBadge(
-								this.configuration.mainData.output,
-								key,
-								{count: unitTestData['total'][key]['coveragePercent'],
-									status: unitTestData['total'][key]['status']}
-							)
-						}
-					});
-				}
-				resolve();
-			});
-		}
+            let unitTestData = {};
+            let files = [];
+            for (let file in unitTestSummary) {
+                let dat = getCoverageData(unitTestSummary[file], file);
+                if (file === 'total') {
+                    unitTestData['total'] = dat;
+                } else {
+                    files.push(dat);
+                }
+            }
+            unitTestData['files'] = files;
+            unitTestData['idColumn'] = (covDat !== undefined); // should we include the id column
+            this.configuration.mainData.unitTestData = unitTestData;
+            this.configuration.addPage({
+                name: 'unit-test',
+                id: 'unit-test',
+                context: 'unit-test',
+                files: files,
+                data: unitTestData,
+                depth: 0,
+                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+            });
+
+            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+                let keysToGet = ['statements', 'branches', 'functions', 'lines'];
+                _.forEach(keysToGet, (key) => {
+                    if (unitTestData['total'][key]) {
+                        this.htmlEngine.generateCoverageBadge(
+                            this.configuration.mainData.output,
+                            key,
+                            {
+                                count: unitTestData['total'][key]['coveragePercent'],
+                                status: unitTestData['total'][key]['status']
+                            }
+                        )
+                    }
+                });
+            }
+            resolve();
+        });
+    }
 
     private processPage(page): Promise<void> {
         logger.info('Process page', page.name);
