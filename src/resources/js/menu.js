@@ -122,6 +122,17 @@ document.addEventListener('DOMContentLoaded', function() {
             menuCollapsed = !menuCollapsed;
         });
 
+        /**
+         * Native bootstrap doesn't wait DOMContentLoaded event to start his job, re do it here
+         */
+        var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
+        for (var o = 0, cll = Collapses.length; o < cll; o++) {
+            var collapse = Collapses[o],
+                options = {};
+            options.duration = collapse.getAttribute('data-duration');
+            new Collapse(collapse, options);
+        }
+
         // collapse menu
         var classnameMenuToggler = document.getElementsByClassName('menu-toggler'),
             faAngleUpClass = 'ion-ios-arrow-up',
