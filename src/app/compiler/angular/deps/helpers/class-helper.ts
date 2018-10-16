@@ -69,9 +69,9 @@ export class ClassHelper {
                     let info: any = {
                         name: decorator.expression.expression.text
                     };
-                    if (decorator.expression.expression.arguments) {
-                        if (decorator.expression.expression.arguments.length > 0) {
-                            info.args = decorator.expression.expression.arguments;
+                    if (decorator.expression.arguments) {
+                        if (decorator.expression.arguments.length > 0) {
+                            info.args = decorator.expression.arguments;
                         }
                     }
                     _decorators.push(info);

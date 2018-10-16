@@ -33,6 +33,8 @@ describe('CLI nest projects support', () => {
         it('it should contain a controller page with prefix', () => {
             let file = read(`${distFolder}/controllers/AuthController.html`);
             expect(file).to.contain('code>auth</code');
+            expect(file).to.contain('code>@Auth(Roles.User) @Post() </code');
+            expect(file).to.contain(`code>@Post('multiple') </code`);
         });
 
         it('it should contain a module page with controller referenced', () => {

@@ -37,6 +37,7 @@ import { ElementAloneHelper } from './html-engine-helpers/element-alone.helper';
 import { HasOwnHelper } from './html-engine-helpers/has-own.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
 import { I18nHelper } from './html-engine-helpers/i18n.helper';
+import { FunctionDecoratorHelper } from './html-engine-helpers/function-decorator.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(
@@ -51,6 +52,7 @@ export class HtmlEngineHelpers {
             'functionSignature',
             new FunctionSignatureHelper(configuration, dependenciesEngine)
         );
+        this.registerHelper(bars, 'functionDecorator', new FunctionDecoratorHelper(configuration, dependenciesEngine));
         this.registerHelper(bars, 'isNotToggle', new IsNotToggleHelper(configuration));
         this.registerHelper(bars, 'isInitialTab', new IsInitialTabHelper());
         this.registerHelper(bars, 'isTabEnabled', new IsTabEnabledHelper());
