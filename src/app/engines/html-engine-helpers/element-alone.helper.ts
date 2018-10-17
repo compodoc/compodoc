@@ -1,5 +1,4 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
-import { extractLeadingText, splitLinkText } from '../../../utils/link-parser';
 import DependenciesEngine from '../dependencies.engine';
 
 export class ElementAloneHelper implements IHtmlEngineHelper {

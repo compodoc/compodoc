@@ -6,27 +6,23 @@ import { ts, SyntaxKind } from 'ts-simple-ast';
 
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
 import { kindToType } from '../../../../../utils/kind-to-type';
-import { ConfigurationInterface } from '../../../../interfaces/configuration.interface';
 import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
-import { ImportsUtil } from '../../../../../utils/imports.util';
-import { logger } from '../../../../../logger';
-import { isIgnore, AngularVersionUtil, BasicTypeUtil } from '../../../../../utils';
+import { isIgnore } from '../../../../../utils';
+import AngularVersionUtil from '../../../../..//utils/angular-version.util';
+import BasicTypeUtil from '../../../../../utils/basic-type.util';
 import { StringifyObjectLiteralExpression } from '../../../../../utils/object-literal-expression.util';
 
 import DependenciesEngine from '../../../../engines/dependencies.engine';
+import Configuration from '../../../../configuration';
 
 const crypto = require('crypto');
 const marked = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
-    private importsUtil = new ImportsUtil();
-    private angularVersionUtil = new AngularVersionUtil();
-    private basicTypeUtil = new BasicTypeUtil();
 
     constructor(
-        private typeChecker: ts.TypeChecker,
-        private configuration: ConfigurationInterface
+        private typeChecker: ts.TypeChecker
     ) {}
 
     /**
@@ -98,16 +94,16 @@ export class ClassHelper {
                         _result.data.name
                     }.html">${argu.type}</a>`;
                 } else {
-                    let path = this.angularVersionUtil.getApiLink(
+                    let path = AngularVersionUtil.getApiLink(
                         _result.data,
-                        this.configuration.mainData.angularVersion
+                        Configuration.mainData.angularVersion
                     );
                     return `${argu.name}${this.getOptionalString(
                         arg
                     )}: <a href="${path}" target="_blank">${argu.type}</a>`;
                 }
-            } else if (this.basicTypeUtil.isKnownType(argu.type)) {
-                let path = this.basicTypeUtil.getTypeUrl(argu.type);
+            } else if (BasicTypeUtil.isKnownType(argu.type)) {
+                let path = BasicTypeUtil.getTypeUrl(argu.type);
                 return `${argu.name}${this.getOptionalString(
                     arg
                 )}: <a href="${path}" target="_blank">${argu.type}</a>`;
@@ -146,9 +142,9 @@ export class ClassHelper {
                             _result.data.name
                         }.html">${arg.type}</a>`;
                     } else {
-                        let path = this.angularVersionUtil.getApiLink(
+                        let path = AngularVersionUtil.getApiLink(
                             _result.data,
-                            this.configuration.mainData.angularVersion
+                            Configuration.mainData.angularVersion
                         );
                         return `${arg.name}${this.getOptionalString(
                             arg
@@ -166,8 +162,8 @@ export class ClassHelper {
                     return `'` + arg.text + `'`;
                 } else if (arg.kind && arg.kind === SyntaxKind.ObjectLiteralExpression) {
                     return StringifyObjectLiteralExpression(arg);
-                } else if (this.basicTypeUtil.isKnownType(arg.type)) {
-                    let path = this.basicTypeUtil.getTypeUrl(arg.type);
+                } else if (BasicTypeUtil.isKnownType(arg.type)) {
+                    let path = BasicTypeUtil.getTypeUrl(arg.type);
                     return `${arg.name}${this.getOptionalString(
                         arg
                     )}: <a href="${path}" target="_blank">${arg.type}</a>`;
@@ -592,12 +588,12 @@ export class ClassHelper {
             } else if (hostListener) {
                 hostListeners.push(this.visitHostListener(member, hostListener, sourceFile));
             } else if (!this.isHiddenMember(member)) {
-                if (!(this.isPrivate(member) && this.configuration.mainData.disablePrivate)) {
-                    if (!(this.isInternal(member) && this.configuration.mainData.disableInternal)) {
+                if (!(this.isPrivate(member) && Configuration.mainData.disablePrivate)) {
+                    if (!(this.isInternal(member) && Configuration.mainData.disableInternal)) {
                         if (
                             !(
                                 this.isProtected(member) &&
-                                this.configuration.mainData.disableProtected
+                                Configuration.mainData.disableProtected
                             )
                         ) {
                             if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {

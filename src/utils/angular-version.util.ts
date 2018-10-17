@@ -5,6 +5,15 @@ import { IAngularApi } from './angular-api.util';
 export class AngularVersionUtil {
     private static readonly CorePackage = '@angular/core';
 
+    private static instance: AngularVersionUtil;
+    private constructor() { }
+    public static getInstance() {
+        if (!AngularVersionUtil.instance) {
+            AngularVersionUtil.instance = new AngularVersionUtil();
+        }
+        return AngularVersionUtil.instance;
+    }
+
     public cleanVersion(version: string): string {
         return version.replace('~', '')
             .replace('^', '')
@@ -45,3 +54,5 @@ export class AngularVersionUtil {
         return `https://${angularDocPrefix}angular.io/${api.path}`;
     }
 }
+
+export default AngularVersionUtil.getInstance();

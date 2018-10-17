@@ -1,5 +1,3 @@
-const util = require('util');
-
 import { SyntaxKind } from 'ts-simple-ast';
 
 export function StringifyObjectLiteralExpression(ole) {

@@ -2,22 +2,25 @@ import * as path from 'path';
 
 import { logger } from '../../logger';
 import DependenciesEngine from './dependencies.engine';
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { FileEngine } from './file.engine';
 
 import { ExportData } from '../interfaces/export-data.interface';
 
 import { AngularNgModuleNode } from '../nodes/angular-ngmodule-node';
+import FileEngine from './file.engine';
 
 const traverse = require('traverse');
 
 export class ExportJsonEngine {
-    constructor(
-        private configuration: ConfigurationInterface,
-        private fileEngine: FileEngine = new FileEngine()
-    ) {}
+    private static instance: ExportJsonEngine;
+    private constructor() { }
+    public static getInstance() {
+        if (!ExportJsonEngine.instance) {
+            ExportJsonEngine.instance = new ExportJsonEngine();
+        }
+        return ExportJsonEngine.instance;
+    }
 
-    export(outputFolder, data) {
+    public export(outputFolder, data) {
         let exportData: ExportData = {};
 
         traverse(data).forEach(function(node) {
@@ -38,7 +41,7 @@ export class ExportJsonEngine {
         exportData.routes = data.routes;
         exportData.coverage = data.coverageData;
 
-        return this.fileEngine
+        return FileEngine
             .write(
                 outputFolder + path.sep + '/documentation.json',
                 JSON.stringify(exportData, null, 4)
@@ -49,7 +52,7 @@ export class ExportJsonEngine {
             });
     }
 
-    processModules() {
+    public processModules() {
         const modules: AngularNgModuleNode[] = DependenciesEngine.getModules();
 
         let _resultedModules = [];
@@ -122,3 +125,5 @@ export class ExportJsonEngine {
         return _resultedModules;
     }
 }
+
+export default ExportJsonEngine.getInstance();

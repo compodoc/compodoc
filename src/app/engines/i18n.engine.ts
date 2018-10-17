@@ -3,7 +3,14 @@ import i18next from 'i18next';
 import { TRANSLATION_EN_US, TRANSLATION_FR_FR, TRANSLATION_ZH_CN } from '../../locales';
 
 class I18nEngine {
-    constructor() {}
+    private static instance: I18nEngine;
+    private constructor() {}
+    public static getInstance() {
+        if (!I18nEngine.instance) {
+            I18nEngine.instance = new I18nEngine();
+        }
+        return I18nEngine.instance;
+    }
 
     private availablesLanguages = {
         'en-US': 'en-US',
@@ -32,4 +39,4 @@ class I18nEngine {
     }
 }
 
-export default new I18nEngine();
+export default I18nEngine.getInstance();

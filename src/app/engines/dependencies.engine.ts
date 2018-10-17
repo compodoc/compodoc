@@ -9,7 +9,7 @@ import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
 import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IApiSourceResult } from '../../utils/api-source-result.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
-import { AngularApiUtil } from '../../utils/angular-api.util';
+import AngularApiUtil from '../../utils/angular-api.util';
 import {
     IInjectableDep,
     IInterfaceDep,
@@ -49,8 +49,6 @@ export class DependenciesEngine {
         groupedEnumerations: [],
         groupedTypeAliases: [],
     };
-
-    private angularApiUtil: AngularApiUtil = new AngularApiUtil();
 
     private static instance: DependenciesEngine;
     private constructor() { }
@@ -199,7 +197,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
             () => this.findInCompodocDependencies(name, this.miscellaneous.enumerations),
-            () => this.angularApiUtil.findApi(name)
+            () => AngularApiUtil.findApi(name)
         ];
 
         for (let searchFunction of searchFunctions) {

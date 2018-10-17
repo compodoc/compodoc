@@ -1,16 +1,13 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
-import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
+import Configuration from '../../../configuration';
 import { cleanLifecycleHooksFromMethods } from '../../../../utils';
 
 const crypto = require('crypto');
 
 export class DirectiveDepFactory {
     constructor(
-        private helper: ComponentHelper,
-        private configuration: ConfigurationInterface) {
-
-    }
+        private helper: ComponentHelper) {}
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
         let sourceCode = srcFile.getText();
@@ -35,7 +32,7 @@ export class DirectiveDepFactory {
             methodsClass: IO.methods,
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
-        if (this.configuration.mainData.disableLifeCycleHooks) {
+        if (Configuration.mainData.disableLifeCycleHooks) {
             directiveDeps.methodsClass = cleanLifecycleHooksFromMethods(directiveDeps.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {

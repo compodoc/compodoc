@@ -1,13 +1,12 @@
-import * as util from 'util';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 import * as JSON5 from 'json5';
 import Ast, { TypeGuards, SourceFile, ts, SyntaxKind } from 'ts-simple-ast';
 
-import { FileEngine } from '../app/engines/file.engine';
+import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
-import { ImportsUtil } from './imports.util';
+import ImportsUtil from './imports.util';
 import { logger } from '../logger';
 
 const traverse = require('traverse');
@@ -23,8 +22,14 @@ export class RouterParserUtil {
     private cleanModulesTree;
     private modulesWithRoutes = [];
 
-    private fileEngine = new FileEngine();
-    private importsUtil = new ImportsUtil();
+    private static instance: RouterParserUtil;
+    private constructor() { }
+    public static getInstance() {
+        if (!RouterParserUtil.instance) {
+            RouterParserUtil.instance = new RouterParserUtil();
+        }
+        return RouterParserUtil.instance;
+    }
 
     public addRoute(route): void {
         this.routes.push(route);
@@ -131,7 +136,7 @@ export class RouterParserUtil {
                                             route.name === argument.text &&
                                             route.filename !== this.modulesWithRoutes[i].filename
                                         ) {
-                                            let argumentImportPath = this.importsUtil.findFilePathOfImportedVariable(
+                                            let argumentImportPath = ImportsUtil.findFilePathOfImportedVariable(
                                                 argument.text,
                                                 this.modulesWithRoutes[i].filename
                                             );
@@ -373,7 +378,7 @@ export class RouterParserUtil {
     }
 
     public generateRoutesIndex(outputFolder: string, routes: Array<any>): Promise<void> {
-        return this.fileEngine.get(__dirname + '/../src/templates/partials/routes-index.hbs').then(
+        return FileEngine.get(__dirname + '/../src/templates/partials/routes-index.hbs').then(
             data => {
                 let template: any = Handlebars.compile(data);
                 let result = template({
@@ -385,7 +390,7 @@ export class RouterParserUtil {
                     outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
 
-                return this.fileEngine.write(
+                return FileEngine.write(
                     outputFolder + path.sep + '/js/routes/routes_index.js',
                     result
                 );
@@ -743,7 +748,7 @@ export class RouterParserUtil {
                                         firstObjectLiteralAttributeName;
                                     if (propertyInitializer.expression) {
                                         firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
-                                        let result = this.importsUtil.findPropertyValueInImportOrLocalVariables(
+                                        let result = ImportsUtil.findPropertyValueInImportOrLocalVariables(
                                             firstObjectLiteralAttributeName +
                                                 '.' +
                                                 lastObjectLiteralAttributeName,
@@ -764,3 +769,5 @@ export class RouterParserUtil {
         return initializer;
     }
 }
+
+export default RouterParserUtil.getInstance();

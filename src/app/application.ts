@@ -10,15 +10,14 @@ const marked = require('marked');
 const traverse = require('traverse');
 
 import { logger } from '../logger';
-import { HtmlEngine } from './engines/html.engine';
-import { MarkdownEngine } from './engines/markdown.engine';
-import { FileEngine } from './engines/file.engine';
-import { Configuration } from './configuration';
-import { ConfigurationInterface } from './interfaces/configuration.interface';
-import { NgdEngine } from './engines/ngd.engine';
-import { SearchEngine } from './engines/search.engine';
-import { ExportEngine } from './engines/export.engine';
-import I18nEngineInstance from './engines/i18n.engine';
+import HtmlEngine from './engines/html.engine';
+import MarkdownEngine from './engines/markdown.engine';
+import FileEngine from './engines/file.engine';
+import Configuration from './configuration';
+import NgdEngine from './engines/ngd.engine';
+import SearchEngine from './engines/search.engine';
+import ExportEngine from './engines/export.engine';
+import I18nEngine from './engines/i18n.engine';
 
 import { AngularDependencies } from './compiler/angular-dependencies';
 import { AngularJSDependencies } from './compiler/angularjs-dependencies';
@@ -32,10 +31,12 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 
 import { promiseSequential } from '../utils/promise-sequential';
 import DependenciesEngine from './engines/dependencies.engine';
-import { AngularVersionUtil, RouterParserUtil } from '../utils';
+import RouterParserUtil from '../utils/router-parser.util';
+
+import AngularVersionUtil from '../utils/angular-version.util';
+
 
 let cwd = process.cwd();
-let $markdownengine = new MarkdownEngine();
 let startTime = new Date();
 let generationPromiseResolve;
 let generationPromiseReject;
@@ -58,10 +59,6 @@ export class Application {
      */
     public watchChangedFiles: Array<string> = [];
     /**
-     * Compodoc configuration local reference
-     */
-    public configuration: ConfigurationInterface;
-    /**
      * Boolean for watching status
      * @type {boolean}
      */
@@ -72,39 +69,19 @@ export class Application {
      */
     private packageJsonData = {};
 
-    private angularVersionUtil = new AngularVersionUtil();
-    private ngdEngine: NgdEngine;
-    private htmlEngine: HtmlEngine;
-    private searchEngine: SearchEngine;
-    private exportEngine: ExportEngine;
-    protected fileEngine: FileEngine = new FileEngine();
-    private routerParser = new RouterParserUtil();
-
     /**
      * Create a new compodoc application instance.
      *
      * @param options An object containing the options that should be used.
      */
     constructor(options?: Object) {
-        this.configuration = new Configuration();
-        this.ngdEngine = new NgdEngine();
-        this.htmlEngine = new HtmlEngine(
-            this.configuration,
-            this.fileEngine
-        );
-        this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
-        this.exportEngine = new ExportEngine(
-            this.configuration,
-            this.fileEngine
-        );
-
         for (let option in options) {
-            if (typeof this.configuration.mainData[option] !== 'undefined') {
-                this.configuration.mainData[option] = options[option];
+            if (typeof Configuration.mainData[option] !== 'undefined') {
+                Configuration.mainData[option] = options[option];
             }
             // For documentationMainName, process it outside the loop, for handling conflict with pages name
             if (option === 'name') {
-                this.configuration.mainData.documentationMainName = options[option];
+                Configuration.mainData.documentationMainName = options[option];
             }
             // For documentationMainName, process it outside the loop, for handling conflict with pages name
             if (option === 'silent') {
@@ -120,20 +97,20 @@ export class Application {
         process.on('unhandledRejection', this.unhandledRejectionListener);
         process.on('uncaughtException', this.uncaughtExceptionListener);
 
-        I18nEngineInstance.init(this.configuration.mainData.language);
+        I18nEngine.init(Configuration.mainData.language);
 
         if (
-            this.configuration.mainData.output.charAt(
-                this.configuration.mainData.output.length - 1
+            Configuration.mainData.output.charAt(
+                Configuration.mainData.output.length - 1
             ) !== '/'
         ) {
-            this.configuration.mainData.output += '/';
+            Configuration.mainData.output += '/';
         }
 
-        if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
+        if (Configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
             this.processPackageJson();
         } else {
-            this.htmlEngine.init(this.configuration.mainData.templates).then(() => this.processPackageJson());
+            HtmlEngine.init(Configuration.mainData.templates).then(() => this.processPackageJson());
         }
         return generationPromise;
     }
@@ -206,7 +183,7 @@ export class Application {
         let result = false;
 
         _.forEach(this.updatedFiles, file => {
-            if (path.extname(file) === '.md' && path.dirname(file) === process.cwd()) {
+            if (path.extname(file) === '.md' && path.dirname(file) === cwd) {
                 result = true;
             }
         });
@@ -224,22 +201,22 @@ export class Application {
 
     private processPackageJson(): void {
         logger.info('Searching package.json file');
-        this.fileEngine.get(process.cwd() + path.sep + 'package.json').then(
+        FileEngine.get(cwd + path.sep + 'package.json').then(
             packageData => {
                 let parsedData = JSON.parse(packageData);
                 this.packageJsonData = parsedData;
                 if (
                     typeof parsedData.name !== 'undefined' &&
-                    this.configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title
+                    Configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title
                 ) {
-                    this.configuration.mainData.documentationMainName =
+                    Configuration.mainData.documentationMainName =
                         parsedData.name + ' documentation';
                 }
                 if (typeof parsedData.description !== 'undefined') {
-                    this.configuration.mainData.documentationMainDescription =
+                    Configuration.mainData.documentationMainDescription =
                         parsedData.description;
                 }
-                this.configuration.mainData.angularVersion = this.angularVersionUtil.getAngularVersionOfProject(
+                Configuration.mainData.angularVersion = AngularVersionUtil.getAngularVersionOfProject(
                     parsedData
                 );
                 logger.info('package.json file found');
@@ -277,9 +254,9 @@ export class Application {
 
     private processPackagePeerDependencies(dependencies): void {
         logger.info('Processing package.json peerDependencies');
-        this.configuration.mainData.packagePeerDependencies = dependencies;
-        if (!this.configuration.hasPage('dependencies')) {
-            this.configuration.addPage({
+        Configuration.mainData.packagePeerDependencies = dependencies;
+        if (!Configuration.hasPage('dependencies')) {
+            Configuration.addPage({
                 name: 'dependencies',
                 id: 'packageDependencies',
                 context: 'package-dependencies',
@@ -291,8 +268,8 @@ export class Application {
 
     private processPackageDependencies(dependencies): void {
         logger.info('Processing package.json dependencies');
-        this.configuration.mainData.packageDependencies = dependencies;
-        this.configuration.addPage({
+        Configuration.mainData.packageDependencies = dependencies;
+        Configuration.addPage({
             name: 'dependencies',
             id: 'packageDependencies',
             context: 'package-dependencies',
@@ -312,9 +289,9 @@ export class Application {
             let numberOfMarkdowns = 5;
             let loop = () => {
                 if (i < numberOfMarkdowns) {
-                    $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
+                    MarkdownEngine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
                         (readmeData: string) => {
-                            this.configuration.addPage({
+                            Configuration.addPage({
                                 name: markdowns[i] === 'readme' ? 'index' : markdowns[i],
                                 context: 'getting-started',
                                 id: 'getting-started',
@@ -323,15 +300,15 @@ export class Application {
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });
                             if (markdowns[i] === 'readme') {
-                                this.configuration.mainData.readme = true;
-                                this.configuration.addPage({
+                                Configuration.mainData.readme = true;
+                                Configuration.addPage({
                                     name: 'overview',
                                     id: 'overview',
                                     context: 'overview',
                                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                                 });
                             } else {
-                                this.configuration.mainData.markdowns.push({
+                                Configuration.mainData.markdowns.push({
                                     name: markdowns[i],
                                     uppername: markdowns[i].toUpperCase(),
                                     depth: 0,
@@ -346,7 +323,7 @@ export class Application {
                             logger.warn(errorMessage);
                             logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
                             if (markdowns[i] === 'readme') {
-                                this.configuration.addPage({
+                                Configuration.addPage({
                                     name: 'index',
                                     id: 'index',
                                     context: 'overview',
@@ -373,7 +350,7 @@ export class Application {
 
         let actions = [];
 
-        this.configuration.resetRootMarkdownPages();
+        Configuration.resetRootMarkdownPages();
 
         actions.push(() => {
             return this.processMarkdowns();
@@ -396,22 +373,22 @@ export class Application {
         logger.info('Get diff dependencies data');
 
         let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
-        this.configuration.mainData.angularProject = true;
+        Configuration.mainData.angularProject = true;
 
         if (this.detectAngularJSProjects()) {
             logger.info('AngularJS project detected');
-            this.configuration.mainData.angularProject = false;
-            this.configuration.mainData.angularJSProject = true;
+            Configuration.mainData.angularProject = false;
+            Configuration.mainData.angularJSProject = true;
             dependenciesClass = AngularJSDependencies;
         }
 
         let crawler = new dependenciesClass(
             this.updatedFiles,
             {
-                tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+                tsconfigDirectory: path.dirname(Configuration.mainData.tsconfig)
             },
-            this.configuration,
-            this.routerParser
+            Configuration,
+            RouterParserUtil
         );
 
         let dependenciesData = crawler.getDependencies();
@@ -429,9 +406,9 @@ export class Application {
 
         let actions = [];
 
-        this.configuration.resetAdditionalPages();
+        Configuration.resetAdditionalPages();
 
-        if (this.configuration.mainData.includes !== '') {
+        if (Configuration.mainData.includes !== '') {
             actions.push(() => {
                 return this.prepareExternalIncludes();
             });
@@ -477,29 +454,29 @@ export class Application {
          * - if 75% of scanned files are *.js files
          */
         let dependenciesClass: AngularDependencies | AngularJSDependencies = AngularDependencies;
-        this.configuration.mainData.angularProject = true;
+        Configuration.mainData.angularProject = true;
 
         if (this.detectAngularJSProjects()) {
             logger.info('AngularJS project detected');
-            this.configuration.mainData.angularProject = false;
-            this.configuration.mainData.angularJSProject = true;
+            Configuration.mainData.angularProject = false;
+            Configuration.mainData.angularJSProject = true;
             dependenciesClass = AngularJSDependencies;
         }
 
         let crawler = new dependenciesClass(
             this.files,
             {
-                tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+                tsconfigDirectory: path.dirname(Configuration.mainData.tsconfig)
             },
-            this.configuration,
-            this.routerParser
+            Configuration,
+            RouterParserUtil
         );
 
         let dependenciesData = crawler.getDependencies();
 
         DependenciesEngine.init(dependenciesData);
 
-        this.configuration.mainData.routesLength = this.routerParser.routesLength();
+        Configuration.mainData.routesLength = RouterParserUtil.routesLength();
 
         this.printStatistics();
 
@@ -509,9 +486,9 @@ export class Application {
     private prepareJustAFewThings(diffCrawledData): void {
         let actions = [];
 
-        this.configuration.resetPages();
+        Configuration.resetPages();
 
-        if (!this.configuration.mainData.disableRoutesGraph) {
+        if (!Configuration.mainData.disableRoutesGraph) {
             actions.push(() => this.prepareRoutes());
         }
 
@@ -562,7 +539,7 @@ export class Application {
             actions.push(() => this.prepareMiscellaneous());
         }
 
-        if (!this.configuration.mainData.disableCoverage) {
+        if (!Configuration.mainData.disableCoverage) {
             actions.push(() => this.prepareCoverage());
         }
 
@@ -612,8 +589,8 @@ export class Application {
         if (DependenciesEngine.interfaces.length > 0) {
             logger.info(`- interface  : ${DependenciesEngine.interfaces.length}`);
         }
-        if (this.configuration.mainData.routesLength > 0) {
-            logger.info(`- route      : ${this.configuration.mainData.routesLength}`);
+        if (Configuration.mainData.routesLength > 0) {
+            logger.info(`- route      : ${Configuration.mainData.routesLength}`);
         }
         logger.info('-------------------');
     }
@@ -661,7 +638,7 @@ export class Application {
         if (
             DependenciesEngine.routes &&
             DependenciesEngine.routes.children.length > 0 &&
-            !this.configuration.mainData.disableRoutesGraph
+            !Configuration.mainData.disableRoutesGraph
         ) {
             actions.push(() => {
                 return this.prepareRoutes();
@@ -697,19 +674,19 @@ export class Application {
             });
         }
 
-        if (!this.configuration.mainData.disableCoverage) {
+        if (!Configuration.mainData.disableCoverage) {
             actions.push(() => {
                 return this.prepareCoverage();
             });
         }
 
-				if (this.configuration.mainData.unitTestCoverage !== ''){
+				if (Configuration.mainData.unitTestCoverage !== ''){
 					actions.push(()=>{
 						return this.prepareUnitTestCoverage();
 					});
 				}
 
-        if (this.configuration.mainData.includes !== '') {
+        if (Configuration.mainData.includes !== '') {
             actions.push(() => {
                 return this.prepareExternalIncludes();
             });
@@ -717,30 +694,30 @@ export class Application {
 
         promiseSequential(actions)
             .then(res => {
-                if (this.configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
+                if (Configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
                     if (
                         COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(
-                            this.configuration.mainData.exportFormat
+                            Configuration.mainData.exportFormat
                         ) > -1
                     ) {
                         logger.info(
                             `Generating documentation in export format ${
-                                this.configuration.mainData.exportFormat
+                                Configuration.mainData.exportFormat
                             }`
                         );
-                        this.exportEngine
-                            .export(this.configuration.mainData.output, this.configuration.mainData)
-                            .then(() => {
+                        ExportEngine.export(Configuration.mainData.output, Configuration.mainData).then(
+                            () => {
                                 generationPromiseResolve();
                                 this.endCallback();
                                 logger.info(
                                     'Documentation generated in ' +
-                                        this.configuration.mainData.output +
+                                        Configuration.mainData.output +
                                         ' in ' +
                                         this.getElapsedTime() +
                                         ' seconds'
                                 );
-                            });
+                            }
+                        );
                     } else {
                         logger.warn(`Exported format not supported`);
                     }
@@ -754,16 +731,16 @@ export class Application {
     }
 
     private getIncludedPathForFile(file) {
-        return path.join(this.configuration.mainData.includes, file);
+        return path.join(Configuration.mainData.includes, file);
     }
 
     private prepareExternalIncludes() {
         logger.info('Adding external markdown files');
         // Scan include folder for files detailed in summary.json
-        // For each file, add to this.configuration.mainData.additionalPages
+        // For each file, add to Configuration.mainData.additionalPages
         // Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-            this.fileEngine.get(this.getIncludedPathForFile('summary.json')).then(
+            FileEngine.get(this.getIncludedPathForFile('summary.json')).then(
                 summaryData => {
                     logger.info('Additional documentation: summary.json file found');
 
@@ -777,7 +754,7 @@ export class Application {
                             let rawPath = this.path;
                             let file = this.node['file'];
                             let title = this.node['title'];
-                            let finalPath = that.configuration.mainData.includesFolder;
+                            let finalPath = Configuration.mainData.includesFolder;
 
                             let finalDepth = rawPath.filter(el => {
                                 return !isNaN(parseInt(el));
@@ -804,14 +781,14 @@ export class Application {
                                 });
 
                                 finalPath = finalPath.replace('/' + url, '');
-                                let markdownFile = $markdownengine.getTraditionalMarkdownSync(
+                                let markdownFile = MarkdownEngine.getTraditionalMarkdownSync(
                                     that.getIncludedPathForFile(file)
                                 );
 
                                 if (finalDepth.length > 5) {
                                     logger.error('Only 5 levels of depth are supported');
                                 } else {
-                                    that.configuration.addAdditionalPage({
+                                    Configuration.addAdditionalPage({
                                         name: title,
                                         id: title,
                                         filename: url,
@@ -842,7 +819,7 @@ export class Application {
         let _modules = someModules ? someModules : DependenciesEngine.getModules();
 
         return new Promise((resolve, reject) => {
-            this.configuration.mainData.modules = _modules.map(ngModule => {
+            Configuration.mainData.modules = _modules.map(ngModule => {
                 ngModule.compodocLinks = {
                     components: [],
                     controllers: [],
@@ -995,7 +972,7 @@ export class Application {
                 return ngModule;
             });
 
-            this.configuration.addPage({
+            Configuration.addPage({
                 name: 'modules',
                 id: 'modules',
                 context: 'modules',
@@ -1003,31 +980,31 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            let len = this.configuration.mainData.modules.length;
+            let len = Configuration.mainData.modules.length;
             let loop = () => {
                 if (i < len) {
                     if (
-                        $markdownengine.hasNeighbourReadmeFile(
-                            this.configuration.mainData.modules[i].file
+                        MarkdownEngine.hasNeighbourReadmeFile(
+                            Configuration.mainData.modules[i].file
                         )
                     ) {
                         logger.info(
                             ` ${
-                                this.configuration.mainData.modules[i].name
+                                Configuration.mainData.modules[i].name
                             } has a README file, include it`
                         );
-                        let readme = $markdownengine.readNeighbourReadmeFile(
-                            this.configuration.mainData.modules[i].file
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(
+                            Configuration.mainData.modules[i].file
                         );
-                        this.configuration.mainData.modules[i].readme = marked(readme);
+                        Configuration.mainData.modules[i].readme = marked(readme);
                     }
-                    this.configuration.addPage({
+                    Configuration.addPage({
                         path: 'modules',
-                        name: this.configuration.mainData.modules[i].name,
-                        id: this.configuration.mainData.modules[i].id,
-                        navTabs: this.getNavTabs(this.configuration.mainData.modules[i]),
+                        name: Configuration.mainData.modules[i].name,
+                        id: Configuration.mainData.modules[i].id,
+                        navTabs: this.getNavTabs(Configuration.mainData.modules[i]),
                         context: 'module',
-                        module: this.configuration.mainData.modules[i],
+                        module: Configuration.mainData.modules[i],
                         depth: 1,
                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                     });
@@ -1043,19 +1020,19 @@ export class Application {
 
     public preparePipes = (somePipes?) => {
         logger.info('Prepare pipes');
-        this.configuration.mainData.pipes = somePipes
+        Configuration.mainData.pipes = somePipes
             ? somePipes
             : DependenciesEngine.getPipes();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.pipes.length;
+            let len = Configuration.mainData.pipes.length;
             let loop = () => {
                 if (i < len) {
-                    let pipe = this.configuration.mainData.pipes[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(pipe.file)) {
+                    let pipe = Configuration.mainData.pipes[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(pipe.file)) {
                         logger.info(` ${pipe.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(pipe.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(pipe.file);
                         pipe.readme = marked(readme);
                     }
                     let page = {
@@ -1071,7 +1048,7 @@ export class Application {
                     if (pipe.isDuplicate) {
                         page.name += '-' + pipe.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1084,19 +1061,19 @@ export class Application {
 
     public prepareClasses = (someClasses?) => {
         logger.info('Prepare classes');
-        this.configuration.mainData.classes = someClasses
+        Configuration.mainData.classes = someClasses
             ? someClasses
             : DependenciesEngine.getClasses();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.classes.length;
+            let len = Configuration.mainData.classes.length;
             let loop = () => {
                 if (i < len) {
-                    let classe = this.configuration.mainData.classes[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(classe.file)) {
+                    let classe = Configuration.mainData.classes[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(classe.file)) {
                         logger.info(` ${classe.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(classe.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(classe.file);
                         classe.readme = marked(readme);
                     }
                     let page = {
@@ -1112,7 +1089,7 @@ export class Application {
                     if (classe.isDuplicate) {
                         page.name += '-' + classe.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1125,19 +1102,19 @@ export class Application {
 
     public prepareInterfaces(someInterfaces?) {
         logger.info('Prepare interfaces');
-        this.configuration.mainData.interfaces = someInterfaces
+        Configuration.mainData.interfaces = someInterfaces
             ? someInterfaces
             : DependenciesEngine.getInterfaces();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.interfaces.length;
+            let len = Configuration.mainData.interfaces.length;
             let loop = () => {
                 if (i < len) {
-                    let interf = this.configuration.mainData.interfaces[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(interf.file)) {
+                    let interf = Configuration.mainData.interfaces[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(interf.file)) {
                         logger.info(` ${interf.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(interf.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(interf.file);
                         interf.readme = marked(readme);
                     }
                     let page = {
@@ -1153,7 +1130,7 @@ export class Application {
                     if (interf.isDuplicate) {
                         page.name += '-' + interf.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1166,13 +1143,13 @@ export class Application {
 
     public prepareMiscellaneous(someMisc?) {
         logger.info('Prepare miscellaneous');
-        this.configuration.mainData.miscellaneous = someMisc
+        Configuration.mainData.miscellaneous = someMisc
             ? someMisc
             : DependenciesEngine.getMiscellaneous();
 
         return new Promise((resolve, reject) => {
-            if (this.configuration.mainData.miscellaneous.functions.length > 0) {
-                this.configuration.addPage({
+            if (Configuration.mainData.miscellaneous.functions.length > 0) {
+                Configuration.addPage({
                     path: 'miscellaneous',
                     name: 'functions',
                     id: 'miscellaneous-functions',
@@ -1181,8 +1158,8 @@ export class Application {
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
-            if (this.configuration.mainData.miscellaneous.variables.length > 0) {
-                this.configuration.addPage({
+            if (Configuration.mainData.miscellaneous.variables.length > 0) {
+                Configuration.addPage({
                     path: 'miscellaneous',
                     name: 'variables',
                     id: 'miscellaneous-variables',
@@ -1191,8 +1168,8 @@ export class Application {
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
-            if (this.configuration.mainData.miscellaneous.typealiases.length > 0) {
-                this.configuration.addPage({
+            if (Configuration.mainData.miscellaneous.typealiases.length > 0) {
+                Configuration.addPage({
                     path: 'miscellaneous',
                     name: 'typealiases',
                     id: 'miscellaneous-typealiases',
@@ -1201,8 +1178,8 @@ export class Application {
                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
                 });
             }
-            if (this.configuration.mainData.miscellaneous.enumerations.length > 0) {
-                this.configuration.addPage({
+            if (Configuration.mainData.miscellaneous.enumerations.length > 0) {
+                Configuration.addPage({
                     path: 'miscellaneous',
                     name: 'enumerations',
                     id: 'miscellaneous-enumerations',
@@ -1220,13 +1197,13 @@ export class Application {
         let dirname = path.dirname(component.file);
         let templatePath = path.resolve(dirname + path.sep + component.templateUrl);
 
-        if (!this.fileEngine.existsSync(templatePath)) {
+        if (!FileEngine.existsSync(templatePath)) {
             let err = `Cannot read template for ${component.name}`;
             logger.error(err);
             return new Promise((resolve, reject) => {});
         }
 
-        return this.fileEngine.get(templatePath).then(
+        return FileEngine.get(templatePath).then(
             data => (component.templateData = data),
             err => {
                 logger.error(err);
@@ -1252,14 +1229,14 @@ export class Application {
         let styleDataPromise = component.styleUrls.map((styleUrl) => {
             let stylePath = path.resolve(dirname + path.sep + styleUrl);
 
-            if (!this.fileEngine.existsSync(stylePath)) {
+            if (!FileEngine.existsSync(stylePath)) {
                 let err = `Cannot read style url ${stylePath} for ${component.name}`;
                 logger.error(err);
                 return new Promise((resolve, reject) => {});
             }
 
             return new Promise((resolve, reject) => {
-                this.fileEngine.get(stylePath).then(data => {
+                FileEngine.get(stylePath).then(data => {
                     resolve({
                         data,
                         styleUrl
@@ -1278,7 +1255,7 @@ export class Application {
     }
 
     private getNavTabs(dependency): Array<any> {
-        let navTabConfig = this.configuration.mainData.navTabConfig;
+        let navTabConfig = Configuration.mainData.navTabConfig;
         navTabConfig = navTabConfig.length === 0 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions) : navTabConfig;
         let matchDepType = (depType: string) => {
             return depType === 'all' || depType === dependency.type;
@@ -1297,10 +1274,10 @@ export class Application {
             if (-1 === _.findIndex(navTab.depTypes, matchDepType)) { return; }
 
             // global config
-            if (customTab.id === 'tree' && this.configuration.mainData.disableDomTree) { return; }
-            if (customTab.id === 'source' && this.configuration.mainData.disableSourceCode) { return; }
-            if (customTab.id === 'templateData' && this.configuration.mainData.disableTemplateTab) { return; }
-            if (customTab.id === 'styleData' && this.configuration.mainData.disableStyleTab) { return; }
+            if (customTab.id === 'tree' && Configuration.mainData.disableDomTree) { return; }
+            if (customTab.id === 'source' && Configuration.mainData.disableSourceCode) { return; }
+            if (customTab.id === 'templateData' && Configuration.mainData.disableTemplateTab) { return; }
+            if (customTab.id === 'styleData' && Configuration.mainData.disableStyleTab) { return; }
 
             // per dependency config
             if (customTab.id === 'readme' && !dependency.readme) { return; }
@@ -1323,16 +1300,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public prepareControllers(someControllers?) {
         logger.info('Prepare controllers');
-        this.configuration.mainData.controllers = someControllers
+        Configuration.mainData.controllers = someControllers
             ? someControllers
             : DependenciesEngine.getControllers();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.controllers.length;
+            let len = Configuration.mainData.controllers.length;
             let loop = () => {
                 if (i < len) {
-                    let controller = this.configuration.mainData.controllers[i];
+                    let controller = Configuration.mainData.controllers[i];
                     let page = {
                         path: 'controllers',
                         name: controller.name,
@@ -1346,7 +1323,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (controller.isDuplicate) {
                         page.name += '-' + controller.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1359,19 +1336,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public prepareComponents(someComponents?) {
         logger.info('Prepare components');
-        this.configuration.mainData.components = someComponents
+        Configuration.mainData.components = someComponents
             ? someComponents
             : DependenciesEngine.getComponents();
 
         return new Promise((mainPrepareComponentResolve, mainPrepareComponentReject) => {
             let i = 0;
-            let len = this.configuration.mainData.components.length;
+            let len = Configuration.mainData.components.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    let component = this.configuration.mainData.components[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(component.file)) {
+                    let component = Configuration.mainData.components[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(component.file)) {
                         logger.info(` ${component.name} has a README file, include it`);
-                        let readmeFile = $markdownengine.readNeighbourReadmeFile(component.file);
+                        let readmeFile = MarkdownEngine.readNeighbourReadmeFile(component.file);
                         component.readme = marked(readmeFile);
                     }
                     let page = {
@@ -1388,7 +1365,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (component.isDuplicate) {
                         page.name += '-' + component.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
 
                     const componentTemplateUrlPromise = new Promise(
                         (componentTemplateUrlResolve, componentTemplateUrlReject) => {
@@ -1468,19 +1445,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public prepareDirectives(someDirectives?) {
         logger.info('Prepare directives');
 
-        this.configuration.mainData.directives = someDirectives
+        Configuration.mainData.directives = someDirectives
             ? someDirectives
             : DependenciesEngine.getDirectives();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.directives.length;
+            let len = Configuration.mainData.directives.length;
             let loop = () => {
                 if (i < len) {
-                    let directive = this.configuration.mainData.directives[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(directive.file)) {
+                    let directive = Configuration.mainData.directives[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(directive.file)) {
                         logger.info(` ${directive.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(directive.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(directive.file);
                         directive.readme = marked(readme);
                     }
                     let page = {
@@ -1496,7 +1473,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (directive.isDuplicate) {
                         page.name += '-' + directive.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1510,19 +1487,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public prepareInjectables(someInjectables?): Promise<void> {
         logger.info('Prepare injectables');
 
-        this.configuration.mainData.injectables = someInjectables
+        Configuration.mainData.injectables = someInjectables
             ? someInjectables
             : DependenciesEngine.getInjectables();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.injectables.length;
+            let len = Configuration.mainData.injectables.length;
             let loop = () => {
                 if (i < len) {
-                    let injec = this.configuration.mainData.injectables[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(injec.file)) {
+                    let injec = Configuration.mainData.injectables[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(injec.file)) {
                         logger.info(` ${injec.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(injec.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(injec.file);
                         injec.readme = marked(readme);
                     }
                     let page = {
@@ -1538,7 +1515,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (injec.isDuplicate) {
                         page.name += '-' + injec.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1552,19 +1529,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public prepareInterceptors(someInterceptors?): Promise<void> {
         logger.info('Prepare interceptors');
 
-        this.configuration.mainData.interceptors = someInterceptors
+        Configuration.mainData.interceptors = someInterceptors
             ? someInterceptors
             : DependenciesEngine.getInterceptors();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.interceptors.length;
+            let len = Configuration.mainData.interceptors.length;
             let loop = () => {
                 if (i < len) {
-                    let interceptor = this.configuration.mainData.interceptors[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(interceptor.file)) {
+                    let interceptor = Configuration.mainData.interceptors[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(interceptor.file)) {
                         logger.info(` ${interceptor.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(interceptor.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(interceptor.file);
                         interceptor.readme = marked(readme);
                     }
                     let page = {
@@ -1580,7 +1557,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (interceptor.isDuplicate) {
                         page.name += '-' + interceptor.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1594,19 +1571,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public prepareGuards(someGuards?): Promise<void> {
         logger.info('Prepare guards');
 
-        this.configuration.mainData.guards = someGuards
+        Configuration.mainData.guards = someGuards
             ? someGuards
             : DependenciesEngine.getGuards();
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = this.configuration.mainData.guards.length;
+            let len = Configuration.mainData.guards.length;
             let loop = () => {
                 if (i < len) {
-                    let guard = this.configuration.mainData.guards[i];
-                    if ($markdownengine.hasNeighbourReadmeFile(guard.file)) {
+                    let guard = Configuration.mainData.guards[i];
+                    if (MarkdownEngine.hasNeighbourReadmeFile(guard.file)) {
                         logger.info(` ${guard.name} has a README file, include it`);
-                        let readme = $markdownengine.readNeighbourReadmeFile(guard.file);
+                        let readme = MarkdownEngine.readNeighbourReadmeFile(guard.file);
                         guard.readme = marked(readme);
                     }
                     let page = {
@@ -1622,7 +1599,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (guard.isDuplicate) {
                         page.name += '-' + guard.duplicateId;
                     }
-                    this.configuration.addPage(page);
+                    Configuration.addPage(page);
                     i++;
                     loop();
                 } else {
@@ -1635,10 +1612,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public prepareRoutes(): Promise<void> {
         logger.info('Process routes');
-        this.configuration.mainData.routes = DependenciesEngine.getRoutes();
+        Configuration.mainData.routes = DependenciesEngine.getRoutes();
 
         return new Promise((resolve, reject) => {
-            this.configuration.addPage({
+            Configuration.addPage({
                 name: 'routes',
                 id: 'routes',
                 context: 'routes',
@@ -1646,11 +1623,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                this.routerParser
+            if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+                RouterParserUtil
                     .generateRoutesIndex(
-                        this.configuration.mainData.output,
-                        this.configuration.mainData.routes
+                        Configuration.mainData.output,
+                        Configuration.mainData.routes
                     )
                     .then(
                         () => {
@@ -1838,8 +1815,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
                 let overFiles = files.filter(f => {
                     let overTest =
-                        f.coveragePercent >= this.configuration.mainData.coverageMinimumPerFile;
-                    if (overTest && !this.configuration.mainData.coverageTestShowOnlyFailed) {
+                        f.coveragePercent >= Configuration.mainData.coverageMinimumPerFile;
+                    if (overTest && !Configuration.mainData.coverageTestShowOnlyFailed) {
                         logger.info(
                             `${f.coveragePercent} % for file ${f.filePath} - over minimum per file`
                         );
@@ -1848,7 +1825,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 });
                 let underFiles = files.filter(f => {
                     let underTest =
-                        f.coveragePercent < this.configuration.mainData.coverageMinimumPerFile;
+                        f.coveragePercent < Configuration.mainData.coverageMinimumPerFile;
                     if (underTest) {
                         logger.error(
                             `${f.coveragePercent} % for file ${f.filePath} - under minimum per file`
@@ -1900,10 +1877,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 });
             };
 
-            processComponentsAndDirectives(this.configuration.mainData.components);
-            processComponentsAndDirectives(this.configuration.mainData.directives);
+            processComponentsAndDirectives(Configuration.mainData.components);
+            processComponentsAndDirectives(Configuration.mainData.directives);
 
-            _.forEach(this.configuration.mainData.classes, (cl: any) => {
+            _.forEach(Configuration.mainData.classes, (cl: any) => {
                 let classe = (Object as any).assign({}, cl);
                 if (!classe.properties) {
                     classe.properties = [];
@@ -1970,7 +1947,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cla.coveragePercent;
                 files.push(cla);
             });
-            _.forEach(this.configuration.mainData.injectables, (inj: any) => {
+            _.forEach(Configuration.mainData.injectables, (inj: any) => {
                 let injectable = (Object as any).assign({}, inj);
                 if (!injectable.properties) {
                     injectable.properties = [];
@@ -2037,7 +2014,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
-            _.forEach(this.configuration.mainData.interfaces, (inte: any) => {
+            _.forEach(Configuration.mainData.interfaces, (inte: any) => {
                 let inter = (Object as any).assign({}, inte);
                 if (!inter.properties) {
                     inter.properties = [];
@@ -2104,7 +2081,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
-            _.forEach(this.configuration.mainData.pipes, (pipe: any) => {
+            _.forEach(Configuration.mainData.pipes, (pipe: any) => {
                 let cl: any = {
                     filePath: pipe.file,
                     type: pipe.type,
@@ -2125,11 +2102,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             });
 
             processFunctionsAndVariables(
-                this.configuration.mainData.miscellaneous.functions,
+                Configuration.mainData.miscellaneous.functions,
                 'function'
             );
             processFunctionsAndVariables(
-                this.configuration.mainData.miscellaneous.variables,
+                Configuration.mainData.miscellaneous.variables,
                 'variable'
             );
 
@@ -2143,7 +2120,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 files
             };
             coverageData.status = getStatus(coverageData.count);
-            this.configuration.addPage({
+            Configuration.addPage({
                 name: 'coverage',
                 id: 'coverage',
                 context: 'coverage',
@@ -2153,10 +2130,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
             coverageData.files = files;
-            this.configuration.mainData.coverageData = coverageData;
-            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                this.htmlEngine.generateCoverageBadge(
-                    this.configuration.mainData.output,
+            Configuration.mainData.coverageData = coverageData;
+            if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+                HtmlEngine.generateCoverageBadge(
+                    Configuration.mainData.output,
 										'documentation',
                     coverageData
                 );
@@ -2165,14 +2142,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
             let coverageTestPerFileResults;
             if (
-                this.configuration.mainData.coverageTest &&
-                !this.configuration.mainData.coverageTestPerFile
+                Configuration.mainData.coverageTest &&
+                !Configuration.mainData.coverageTestPerFile
             ) {
                 // Global coverage test and not per file
-                if (coverageData.count >= this.configuration.mainData.coverageTestThreshold) {
+                if (coverageData.count >= Configuration.mainData.coverageTestThreshold) {
                     logger.info(
                         `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            this.configuration.mainData.coverageTestThreshold
+                            Configuration.mainData.coverageTestThreshold
                         }%)`
                     );
                     generationPromiseResolve();
@@ -2181,10 +2158,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     let message = `Documentation coverage (${
                         coverageData.count
                     }%) is not over threshold (${
-                        this.configuration.mainData.coverageTestThreshold
+                        Configuration.mainData.coverageTestThreshold
                     }%)`;
                     generationPromiseReject();
-                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                    if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
                         process.exit(1);
                     } else {
@@ -2193,17 +2170,17 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 }
             } else if (
-                !this.configuration.mainData.coverageTest &&
-                this.configuration.mainData.coverageTestPerFile
+                !Configuration.mainData.coverageTest &&
+                Configuration.mainData.coverageTestPerFile
             ) {
                 coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
                     let message = `Documentation coverage per file is not over threshold (${
-                        this.configuration.mainData.coverageMinimumPerFile
+                        Configuration.mainData.coverageMinimumPerFile
                     }%)`;
                     generationPromiseReject();
-                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                    if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
                         process.exit(1);
                     } else {
@@ -2213,48 +2190,48 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 } else {
                     logger.info(
                         `Documentation coverage per file is over threshold (${
-                            this.configuration.mainData.coverageMinimumPerFile
+                            Configuration.mainData.coverageMinimumPerFile
                         }%)`
                     );
                     generationPromiseResolve();
                     process.exit(0);
                 }
             } else if (
-                this.configuration.mainData.coverageTest &&
-                this.configuration.mainData.coverageTestPerFile
+                Configuration.mainData.coverageTest &&
+                Configuration.mainData.coverageTestPerFile
             ) {
                 // Per file coverage test and global
                 coverageTestPerFileResults = processCoveragePerFile();
                 if (
-                    coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
+                    coverageData.count >= Configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length === 0
                 ) {
                     logger.info(
                         `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            this.configuration.mainData.coverageTestThreshold
+                            Configuration.mainData.coverageTestThreshold
                         }%)`
                     );
                     logger.info(
                         `Documentation coverage per file is over threshold (${
-                            this.configuration.mainData.coverageMinimumPerFile
+                            Configuration.mainData.coverageMinimumPerFile
                         }%)`
                     );
                     generationPromiseResolve();
                     process.exit(0);
                 } else if (
-                    coverageData.count >= this.configuration.mainData.coverageTestThreshold &&
+                    coverageData.count >= Configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0
                 ) {
                     logger.info(
                         `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            this.configuration.mainData.coverageTestThreshold
+                            Configuration.mainData.coverageTestThreshold
                         }%)`
                     );
                     let message = `Documentation coverage per file is not over threshold (${
-                        this.configuration.mainData.coverageMinimumPerFile
+                        Configuration.mainData.coverageMinimumPerFile
                     }%)`;
                     generationPromiseReject();
-                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                    if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
                         process.exit(1);
                     } else {
@@ -2262,19 +2239,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         process.exit(0);
                     }
                 } else if (
-                    coverageData.count < this.configuration.mainData.coverageTestThreshold &&
+                    coverageData.count < Configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0
                 ) {
                     let messageGlobal = `Documentation coverage (${
                             coverageData.count
                         }%) is not over threshold (${
-                            this.configuration.mainData.coverageTestThreshold
+                            Configuration.mainData.coverageTestThreshold
                         }%)`,
                         messagePerFile = `Documentation coverage per file is not over threshold (${
-                            this.configuration.mainData.coverageMinimumPerFile
+                            Configuration.mainData.coverageMinimumPerFile
                         }%)`;
                     generationPromiseReject();
-                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                    if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(messageGlobal);
                         logger.error(messagePerFile);
                         process.exit(1);
@@ -2287,13 +2264,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     let message = `Documentation coverage (${
                         coverageData.count
                     }%) is not over threshold (${
-                        this.configuration.mainData.coverageTestThreshold
+                        Configuration.mainData.coverageTestThreshold
                     }%)`,
                     messagePerFile = `Documentation coverage per file is over threshold (${
-                        this.configuration.mainData.coverageMinimumPerFile
+                        Configuration.mainData.coverageMinimumPerFile
                     }%)`;
                     generationPromiseReject();
-                    if (this.configuration.mainData.coverageTestThresholdFail) {
+                    if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
                         logger.info(messagePerFile);
                         process.exit(1);
@@ -2314,11 +2291,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         return new Promise((resolve, reject) => {
             let covDat, covFileNames;
 
-            if (!this.configuration.mainData.coverageData['files']) {
+            if (!Configuration.mainData.coverageData['files']) {
                 logger.warn('Missing documentation coverage data');
             } else {
                 covDat = {};
-                covFileNames = _.map(this.configuration.mainData.coverageData['files'], (el) => {
+                covFileNames = _.map(Configuration.mainData.coverageData['files'], (el) => {
                     let fileName = el.filePath;
                     covDat[fileName] = { type: el.type, linktype: el.linktype, linksubtype: el.linksubtype, name: el.name };
                     return fileName;
@@ -2326,7 +2303,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             }
             // read coverage summary file and data
             let unitTestSummary = {};
-            let fileDat = this.fileEngine.getSync(this.configuration.mainData.unitTestCoverage);
+            let fileDat = FileEngine.getSync(Configuration.mainData.unitTestCoverage);
             if (fileDat) {
                 unitTestSummary = JSON.parse(fileDat);
             } else {
@@ -2389,8 +2366,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             }
             unitTestData['files'] = files;
             unitTestData['idColumn'] = (covDat !== undefined); // should we include the id column
-            this.configuration.mainData.unitTestData = unitTestData;
-            this.configuration.addPage({
+            Configuration.mainData.unitTestData = unitTestData;
+            Configuration.addPage({
                 name: 'unit-test',
                 id: 'unit-test',
                 context: 'unit-test',
@@ -2400,12 +2377,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            if (this.configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
+            if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
                 let keysToGet = ['statements', 'branches', 'functions', 'lines'];
                 _.forEach(keysToGet, (key) => {
                     if (unitTestData['total'][key]) {
-                        this.htmlEngine.generateCoverageBadge(
-                            this.configuration.mainData.output,
+                        HtmlEngine.generateCoverageBadge(
+                            Configuration.mainData.output,
                             key,
                             {
                                 count: unitTestData['total'][key]['coveragePercent'],
@@ -2422,10 +2399,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     private processPage(page): Promise<void> {
         logger.info('Process page', page.name);
 
-        let htmlData = this.htmlEngine.render(this.configuration.mainData, page);
-        let finalPath = this.configuration.mainData.output;
+        let htmlData = HtmlEngine.render(Configuration.mainData, page);
+        let finalPath = Configuration.mainData.output;
 
-        if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
+        if (Configuration.mainData.output.lastIndexOf('/') === -1) {
             finalPath += '/';
         }
         if (page.path) {
@@ -2438,38 +2415,38 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             finalPath += page.name + '.html';
         }
 
-        if (!this.configuration.mainData.disableSearch) {
-            this.searchEngine.indexPage({
+        if (!Configuration.mainData.disableSearch) {
+            SearchEngine.indexPage({
                 infos: page,
                 rawData: htmlData,
                 url: finalPath
             });
         }
 
-        return this.fileEngine.write(finalPath, htmlData).catch(err => {
+        return FileEngine.write(finalPath, htmlData).catch(err => {
             logger.error('Error during ' + page.name + ' page generation');
             return Promise.reject('');
         });
     }
 
     public processPages() {
-        let pages = _.sortBy(this.configuration.pages, ['name']);
+        let pages = _.sortBy(Configuration.pages, ['name']);
 
         logger.info('Process pages');
         Promise.all(pages.map(page => this.processPage(page)))
             .then(() => {
                 let callbacksAfterGenerateSearchIndexJson = () => {
-                    if (this.configuration.mainData.additionalPages.length > 0) {
+                    if (Configuration.mainData.additionalPages.length > 0) {
                         this.processAdditionalPages();
                     } else {
-                        if (this.configuration.mainData.assetsFolder !== '') {
+                        if (Configuration.mainData.assetsFolder !== '') {
                             this.processAssetsFolder();
                         }
                         this.processResources();
                     }
                 };
-                if (!this.configuration.mainData.disableSearch) {
-                    this.searchEngine.generateSearchIndexJson(this.configuration.mainData.output).then(
+                if (!Configuration.mainData.disableSearch) {
+                    SearchEngine.generateSearchIndexJson(Configuration.mainData.output).then(
                         () => {
                             callbacksAfterGenerateSearchIndexJson();
                         },
@@ -2482,7 +2459,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 }
             })
             .then(() => {
-                return this.processMenu(this.configuration.mainData);
+                return this.processMenu(Configuration.mainData);
             })
             .catch(e => {
                 logger.error(e);
@@ -2492,9 +2469,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     private processMenu(mainData): Promise<void> {
         logger.info('Process menu...');
 
-        return this.htmlEngine.renderMenu(this.configuration.mainData.templates, mainData).then(htmlData => {
+        return HtmlEngine.renderMenu(Configuration.mainData.templates, mainData).then(htmlData => {
             let finalPath = `${mainData.output}/js/menu-wc.js`;
-            return this.fileEngine.write(finalPath, htmlData).catch(err => {
+            return FileEngine.write(finalPath, htmlData).catch(err => {
                 logger.error('Error during ' + finalPath + ' page generation');
                 return Promise.reject('');
             });
@@ -2503,13 +2480,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public processAdditionalPages() {
         logger.info('Process additional pages');
-        let pages = this.configuration.mainData.additionalPages;
+        let pages = Configuration.mainData.additionalPages;
         Promise.all(pages.map((page, i) => this.processPage(page)))
             .then(() => {
-                this.searchEngine
-                    .generateSearchIndexJson(this.configuration.mainData.output)
+                SearchEngine
+                    .generateSearchIndexJson(Configuration.mainData.output)
                     .then(() => {
-                        if (this.configuration.mainData.assetsFolder !== '') {
+                        if (Configuration.mainData.assetsFolder !== '') {
                             this.processAssetsFolder();
                         }
                         this.processResources();
@@ -2524,28 +2501,28 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public processAssetsFolder(): void {
         logger.info('Copy assets folder');
 
-        if (!this.fileEngine.existsSync(this.configuration.mainData.assetsFolder)) {
+        if (!FileEngine.existsSync(Configuration.mainData.assetsFolder)) {
             logger.error(
-                `Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`
+                `Provided assets folder ${Configuration.mainData.assetsFolder} did not exist`
             );
         } else {
-            let finalOutput = this.configuration.mainData.output;
+            let finalOutput = Configuration.mainData.output;
 
-            let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+            let testOutputDir = Configuration.mainData.output.match(cwd);
 
             if (testOutputDir && testOutputDir.length > 0) {
-                finalOutput = this.configuration.mainData.output.replace(
-                    process.cwd() + path.sep,
+                finalOutput = Configuration.mainData.output.replace(
+                    cwd + path.sep,
                     ''
                 );
             }
 
             const destination = path.join(
                 finalOutput,
-                path.basename(this.configuration.mainData.assetsFolder)
+                path.basename(Configuration.mainData.assetsFolder)
             );
             fs.copy(
-                path.resolve(this.configuration.mainData.assetsFolder),
+                path.resolve(Configuration.mainData.assetsFolder),
                 path.resolve(destination),
                 err => {
                     if (err) {
@@ -2562,32 +2539,32 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         const onComplete = () => {
             logger.info(
                 'Documentation generated in ' +
-                    this.configuration.mainData.output +
+                    Configuration.mainData.output +
                     ' in ' +
                     this.getElapsedTime() +
                     ' seconds using ' +
-                    this.configuration.mainData.theme +
+                    Configuration.mainData.theme +
                     ' theme'
             );
-            if (this.configuration.mainData.serve) {
+            if (Configuration.mainData.serve) {
                 logger.info(
                     `Serving documentation from ${
-                        this.configuration.mainData.output
-                    } at http://127.0.0.1:${this.configuration.mainData.port}`
+                        Configuration.mainData.output
+                    } at http://127.0.0.1:${Configuration.mainData.port}`
                 );
-                this.runWebServer(this.configuration.mainData.output);
+                this.runWebServer(Configuration.mainData.output);
             } else {
                 generationPromiseResolve();
                 this.endCallback();
             }
         };
 
-        let finalOutput = this.configuration.mainData.output;
+        let finalOutput = Configuration.mainData.output;
 
-        let testOutputDir = this.configuration.mainData.output.match(process.cwd());
+        let testOutputDir = Configuration.mainData.output.match(cwd);
 
         if (testOutputDir && testOutputDir.length > 0) {
-            finalOutput = this.configuration.mainData.output.replace(process.cwd() + path.sep, '');
+            finalOutput = Configuration.mainData.output.replace(cwd + path.sep, '');
         }
 
         fs.copy(
@@ -2600,12 +2577,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
                     const extThemePromise = new Promise(
                         (extThemeResolve, extThemeReject) => {
-                            if (this.configuration.mainData.extTheme) {
+                            if (Configuration.mainData.extTheme) {
                                 fs.copy(
                                     path.resolve(
-                                        process.cwd() +
+                                        cwd +
                                             path.sep +
-                                            this.configuration.mainData.extTheme
+                                            Configuration.mainData.extTheme
                                     ),
                                     path.resolve(finalOutput + '/styles/'),
                                     function(errorCopyTheme) {
@@ -2632,14 +2609,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     const customFaviconPromise = new Promise(
                         (customFaviconResolve, customFaviconReject) => {
                             if (
-                                this.configuration.mainData.customFavicon !== ''
+                                Configuration.mainData.customFavicon !== ''
                             ) {
                                 logger.info(`Custom favicon supplied`);
                                 fs.copy(
                                     path.resolve(
-                                        process.cwd() +
+                                        cwd +
                                             path.sep +
-                                            this.configuration.mainData
+                                            Configuration.mainData
                                                 .customFavicon
                                     ),
                                     path.resolve(
@@ -2668,13 +2645,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     );
 
                     const customLogoPromise = new Promise((customLogoResolve, customLogoReject) => {
-                        if (this.configuration.mainData.customLogo !== '') {
+                        if (Configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
                                 path.resolve(
-                                    process.cwd() +
+                                    cwd +
                                     path.sep +
-                                    this.configuration.mainData.customLogo
+                                    Configuration.mainData.customLogo
                                 ),
                                 path.resolve(finalOutput + '/images/logo.png'),
                                 errorCopyLogo => {
@@ -2718,19 +2695,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     }
 
     public processGraphs() {
-        if (this.configuration.mainData.disableGraph) {
+        if (Configuration.mainData.disableGraph) {
             logger.info('Graph generation disabled');
             this.processPages();
         } else {
             logger.info('Process main graph');
-            let modules = this.configuration.mainData.modules;
+            let modules = Configuration.mainData.modules;
             let i = 0;
             let len = modules.length;
             let loop = () => {
                 if (i <= len - 1) {
                     logger.info('Process module graph', modules[i].name);
-                    let finalPath = this.configuration.mainData.output;
-                    if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                    let finalPath = Configuration.mainData.output;
+                    if (Configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     finalPath += 'modules/' + modules[i].name;
@@ -2742,11 +2719,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         _rawModule.exports.length > 0 ||
                         _rawModule.providers.length > 0
                     ) {
-                        this.ngdEngine
+                        NgdEngine
                             .renderGraph(modules[i].file, finalPath, 'f', modules[i].name)
                             .then(
                                 () => {
-                                    this.ngdEngine
+                                    NgdEngine
                                         .readGraph(
                                             path.resolve(finalPath + path.sep + 'dependencies.svg'),
                                             modules[i].name
@@ -2774,34 +2751,34 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     this.processPages();
                 }
             };
-            let finalMainGraphPath = this.configuration.mainData.output;
+            let finalMainGraphPath = Configuration.mainData.output;
             if (finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
-            this.ngdEngine.init(path.resolve(finalMainGraphPath));
+            NgdEngine.init(path.resolve(finalMainGraphPath));
 
-            this.ngdEngine
+            NgdEngine
                 .renderGraph(
-                    this.configuration.mainData.tsconfig,
+                    Configuration.mainData.tsconfig,
                     path.resolve(finalMainGraphPath),
                     'p'
                 )
                 .then(
                     () => {
-                        this.ngdEngine
+                        NgdEngine
                             .readGraph(
                                 path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'),
                                 'Main graph'
                             )
                             .then(
                                 data => {
-                                    this.configuration.mainData.mainGraph = data as string;
+                                    Configuration.mainData.mainGraph = data as string;
                                     loop();
                                 },
                                 err => {
                                     logger.error('Error during main graph reading : ', err);
-                                    this.configuration.mainData.disableMainGraph = true;
+                                    Configuration.mainData.disableMainGraph = true;
                                     loop();
                                 }
                             );
@@ -2811,7 +2788,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             'Ooops error during main graph generation, moving on next part with main graph disabled : ',
                             err
                         );
-                        this.configuration.mainData.disableMainGraph = true;
+                        Configuration.mainData.disableMainGraph = true;
                         loop();
                     }
                 );
@@ -2822,14 +2799,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         if (!this.isWatching) {
             LiveServer.start({
                 root: folder,
-                open: this.configuration.mainData.open,
+                open: Configuration.mainData.open,
                 quiet: true,
                 logLevel: 0,
                 wait: 1000,
-                port: this.configuration.mainData.port
+                port: Configuration.mainData.port
             });
         }
-        if (this.configuration.mainData.watch && !this.isWatching) {
+        if (Configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {
                 logger.error('No sources files available, please use -p flag');
                 generationPromiseReject();
@@ -2837,7 +2814,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             } else {
                 this.runWatch();
             }
-        } else if (this.configuration.mainData.watch && this.isWatching) {
+        } else if (Configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
             logger.info(`Already watching sources in ${srcFolder} folder`);
         }
@@ -2851,12 +2828,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         logger.info(`Watching sources in ${findMainSourceFolder(this.files)} folder`);
 
-        if ($markdownengine.hasRootMarkdowns()) {
-            sources = sources.concat($markdownengine.listRootMarkdowns());
+        if (MarkdownEngine.hasRootMarkdowns()) {
+            sources = sources.concat(MarkdownEngine.listRootMarkdowns());
         }
 
-        if (this.configuration.mainData.includes !== '') {
-            sources = sources.concat(this.configuration.mainData.includes);
+        if (Configuration.mainData.includes !== '') {
+            sources = sources.concat(Configuration.mainData.includes);
         }
 
         // Check all elements of sources list exist
@@ -2914,7 +2891,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             path.extname(file) === '.md' ||
                             path.extname(file) === '.json'
                         ) {
-                            this.watchChangedFiles.push(path.join(process.cwd() + path.sep + file));
+                            this.watchChangedFiles.push(path.join(cwd + path.sep + file));
                             waiterChange();
                         }
                     })

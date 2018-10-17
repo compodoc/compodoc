@@ -1,17 +1,16 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 import DependenciesEngine from '../dependencies.engine';
-import { ConfigurationInterface } from '../../interfaces/configuration.interface';
-import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
+import AngularVersionUtil from '../../../utils/angular-version.util';
+import BasicTypeUtil from '../../../utils/basic-type.util';
+import Configuration from '../../configuration';
 
 export class LinkTypeHelper implements IHtmlEngineHelper {
-    private angularVersionUtil = new AngularVersionUtil();
-    private basicTypeUtil = new BasicTypeUtil();
 
-    constructor(private configuration: ConfigurationInterface) {}
+    constructor() {}
 
     public helperFunc(context: any, name: string, options: IHandlebarsOptions) {
         let _result = DependenciesEngine.find(name);
-        let angularDocPrefix = this.angularVersionUtil.prefixOfficialDoc(this.configuration.mainData.angularVersion);
+        let angularDocPrefix = AngularVersionUtil.prefixOfficialDoc(Configuration.mainData.angularVersion);
         if (_result) {
             context.type = {
                 raw: name
@@ -45,12 +44,12 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
             }
 
             return options.fn(context);
-        } else if (this.basicTypeUtil.isKnownType(name)) {
+        } else if (BasicTypeUtil.isKnownType(name)) {
             context.type = {
                 raw: name
             };
             context.type.target = '_blank';
-            context.type.href = this.basicTypeUtil.getTypeUrl(name);
+            context.type.href = BasicTypeUtil.getTypeUrl(name);
             return options.fn(context);
         } else {
             return options.inverse(context);

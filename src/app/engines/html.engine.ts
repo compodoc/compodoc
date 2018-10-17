@@ -3,9 +3,8 @@ import * as Handlebars from 'handlebars';
 
 import { logger } from '../../logger';
 import { HtmlEngineHelpers } from './html.engine.helpers';
-import DependenciesEngine from './dependencies.engine';
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { FileEngine } from './file.engine';
+import Configuration from '../configuration';
+import FileEngine from './file.engine';
 
 export class HtmlEngine {
     private cache: { page: string } = {} as any;
@@ -15,12 +14,16 @@ export class HtmlEngine {
     private compiledMobileMenu;
     private compiledMenu;
 
-    constructor(
-        configuration: ConfigurationInterface,
-        private fileEngine: FileEngine = new FileEngine()
-    ) {
+    private static instance: HtmlEngine;
+    private constructor() {
         const helper = new HtmlEngineHelpers();
-        helper.registerHelpers(Handlebars, configuration);
+        helper.registerHelpers(Handlebars, Configuration);
+    }
+    public static getInstance() {
+        if (!HtmlEngine.instance) {
+            HtmlEngine.instance = new HtmlEngine();
+        }
+        return HtmlEngine.instance;
     }
 
     public init(templatePath: string): Promise<void> {
@@ -69,7 +72,7 @@ export class HtmlEngine {
             'package-dependencies'
         ];
         if(templatePath){
-          if(this.fileEngine.existsSync(path.resolve(process.cwd()+path.sep+templatePath))===false){
+          if(FileEngine.existsSync(path.resolve(process.cwd()+path.sep+templatePath))===false){
               logger.warn('Template path specificed but does not exist...using default templates');
               //new Error('Template path specified but does not exist');
            }
@@ -78,14 +81,14 @@ export class HtmlEngine {
         return Promise.all(
             partials.map(partial => {
             let partialPath = this.determineTemplatePath(templatePath, 'partials/'+partial+'.hbs');
-                return this.fileEngine
+                return FileEngine
                     .get(partialPath)
                     .then(data => Handlebars.registerPartial(partial, data));
             })
         )
         .then(() => {
               let pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
-                return this.fileEngine
+                return FileEngine
                     .get(pagePath)
                     .then(data => {
                         this.cache.page = data;
@@ -97,7 +100,7 @@ export class HtmlEngine {
         })
         .then(() => {
                let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
-                return this.fileEngine
+                return FileEngine
                     .get(menuPath)
                     .then(menuTemplate => {
                         this.precompiledMenu = Handlebars.compile(menuTemplate, {
@@ -110,7 +113,7 @@ export class HtmlEngine {
 
     public renderMenu(templatePath, data) {
         let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
-        return this.fileEngine
+        return FileEngine
             .get(menuPath)
             .then(menuTemplate => {
                 data.menu = 'normal';
@@ -136,13 +139,13 @@ export class HtmlEngine {
       let outPath = path.resolve(__dirname + '/../src/templates/'+filePath);
       if(templatePath){
          let testPath = path.resolve(process.cwd() + path.sep + templatePath + path.sep + filePath);
-        outPath = (this.fileEngine.existsSync(testPath) ? testPath : outPath); 
+        outPath = (FileEngine.existsSync(testPath) ? testPath : outPath); 
       }
      return outPath;
     }
 
     public generateCoverageBadge(outputFolder, label, coverageData) {
-        return this.fileEngine
+        return FileEngine
             .get(path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs'))
             .then(
                 data => {
@@ -156,7 +159,7 @@ export class HtmlEngine {
                         outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                     }
 
-                    return this.fileEngine
+                    return FileEngine
                         .write(outputFolder + path.sep + '/images/coverage-badge-' + label + '.svg', result)
                         .catch(err => {
                             logger.error('Error during coverage badge ' + label + ' file generation ', err);
@@ -167,3 +170,5 @@ export class HtmlEngine {
             );
     }
 }
+
+export default HtmlEngine.getInstance();

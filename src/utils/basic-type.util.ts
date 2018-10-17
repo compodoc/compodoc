@@ -14,6 +14,15 @@ enum BasicTypeScriptTypes {
 
 export class BasicTypeUtil {
 
+    private static instance: BasicTypeUtil;
+    private constructor() { }
+    public static getInstance() {
+        if (!BasicTypeUtil.instance) {
+            BasicTypeUtil.instance = new BasicTypeUtil();
+        }
+        return BasicTypeUtil.instance;
+    }
+
     /**
      * Checks if a given types is a basic javascript type
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
@@ -65,3 +74,5 @@ export class BasicTypeUtil {
         return undefined;
     }
 }
+
+export default BasicTypeUtil.getInstance();

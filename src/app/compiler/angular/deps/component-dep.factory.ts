@@ -1,12 +1,12 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
 import { cleanLifecycleHooksFromMethods } from '../../../../utils';
-import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
+import Configuration from '../../../configuration';
 
 const crypto = require('crypto');
 
 export class ComponentDepFactory {
-    constructor(private helper: ComponentHelper, private configuration: ConfigurationInterface) {}
+    constructor(private helper: ComponentHelper) {}
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
@@ -65,7 +65,7 @@ export class ComponentDepFactory {
                 srcFile
             );
         }
-        if (this.configuration.mainData.disableLifeCycleHooks) {
+        if (Configuration.mainData.disableLifeCycleHooks) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {

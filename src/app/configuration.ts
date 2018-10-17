@@ -30,6 +30,7 @@ export class Configuration implements ConfigurationInterface {
         classes: [],
         interfaces: [],
         components: [],
+        controllers: [],
         directives: [],
         injectables: [],
         interceptors: [],
@@ -39,6 +40,7 @@ export class Configuration implements ConfigurationInterface {
         tsconfig: '',
         toggleMenuItems: [],
         navTabConfig: [],
+        templates: '',
         includes: '',
         includesName: COMPODOC_DEFAULTS.additionalEntryName,
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
@@ -54,6 +56,7 @@ export class Configuration implements ConfigurationInterface {
         disableProtected: COMPODOC_DEFAULTS.disableProtected,
         disableLifeCycleHooks: COMPODOC_DEFAULTS.disableLifeCycleHooks,
         disableRoutesGraph: COMPODOC_DEFAULTS.disableRoutesGraph,
+        disableSearch: false,
         watch: false,
         mainGraph: '',
         coverageTest: false,
@@ -78,6 +81,15 @@ export class Configuration implements ConfigurationInterface {
         angularJSProject: false,
         language: COMPODOC_DEFAULTS.language
     };
+
+    private static instance: Configuration;
+    private constructor() { }
+    public static getInstance() {
+        if (!Configuration.instance) {
+            Configuration.instance = new Configuration();
+        }
+        return Configuration.instance;
+    }
 
     public addPage(page: PageInterface) {
         let indexPage = _.findIndex(this._pages, { name: page.name });
@@ -131,3 +143,5 @@ export class Configuration implements ConfigurationInterface {
         (Object as any).assign(this._mainData, data);
     }
 }
+
+export default Configuration.getInstance();

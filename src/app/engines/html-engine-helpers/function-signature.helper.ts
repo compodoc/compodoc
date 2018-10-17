@@ -1,16 +1,13 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 
 import DependenciesEngine from '../dependencies.engine';
-import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
-import { ConfigurationInterface } from '../../interfaces/configuration.interface';
-
-import { ts } from 'ts-simple-ast';
+import AngularVersionUtil from '../../../utils/angular-version.util';
+import BasicTypeUtil from '../../../utils/basic-type.util';
+import Configuration from '../../configuration';
 
 export class FunctionSignatureHelper implements IHtmlEngineHelper {
-    private angularVersionUtil = new AngularVersionUtil();
-    private basicTypeUtil = new BasicTypeUtil();
 
-    constructor(private configuration: ConfigurationInterface) {}
+    constructor() {}
 
     private handleFunction(arg): string {
         if (arg.function.length === 0) {
@@ -29,16 +26,16 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                         _result.data.name
                     }.html">${argu.type}</a>`;
                 } else {
-                    let path = this.angularVersionUtil.getApiLink(
+                    let path = AngularVersionUtil.getApiLink(
                         _result.data,
-                        this.configuration.mainData.angularVersion
+                        Configuration.mainData.angularVersion
                     );
                     return `${argu.name}${this.getOptionalString(
                         arg
                     )}: <a href="${path}" target="_blank">${argu.type}</a>`;
                 }
-            } else if (this.basicTypeUtil.isKnownType(argu.type)) {
-                let path = this.basicTypeUtil.getTypeUrl(argu.type);
+            } else if (BasicTypeUtil.isKnownType(argu.type)) {
+                let path = BasicTypeUtil.getTypeUrl(argu.type);
                 return `${argu.name}${this.getOptionalString(
                     arg
                 )}: <a href="${path}" target="_blank">${argu.type}</a>`;
@@ -78,9 +75,9 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                                 arg
                             )}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
                         } else {
-                            let path = this.angularVersionUtil.getApiLink(
+                            let path = AngularVersionUtil.getApiLink(
                                 _result.data,
-                                this.configuration.mainData.angularVersion
+                                Configuration.mainData.angularVersion
                             );
                             return `${arg.name}${this.getOptionalString(
                                 arg
@@ -90,8 +87,8 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                         return `...${arg.name}: ${arg.type}`;
                     } else if (arg.function) {
                         return this.handleFunction(arg);
-                    } else if (this.basicTypeUtil.isKnownType(arg.type)) {
-                        let path = this.basicTypeUtil.getTypeUrl(arg.type);
+                    } else if (BasicTypeUtil.isKnownType(arg.type)) {
+                        let path = BasicTypeUtil.getTypeUrl(arg.type);
                         return `${arg.name}${this.getOptionalString(
                             arg
                         )}: <a href="${path}" target="_blank">${arg.type}</a>`;
