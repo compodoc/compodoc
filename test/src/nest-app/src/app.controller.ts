@@ -14,8 +14,8 @@ export class AppController {
     @Post()
     async create(@Body() body: CreateTodoDto, @AuthUser() authUser: User) {}
 
+    @UsePipes(new ValidationPipe())
+    @ApiResponse({ description: 'Return all articles.' })
     @Post('multiple')
-    async createMultipleTodo(@Body() body: CreateMultipleTodoDto, @AuthUser() authUser: User) {
-      
-    }
+    async createMultipleTodo(@Body() body: CreateMultipleTodoDto, @AuthUser() authUser: User) {}
 }

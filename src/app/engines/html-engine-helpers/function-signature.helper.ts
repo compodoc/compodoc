@@ -1,6 +1,6 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 
-import { DependenciesEngine } from '../dependencies.engine';
+import DependenciesEngine from '../dependencies.engine';
 import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 
@@ -10,10 +10,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
     private angularVersionUtil = new AngularVersionUtil();
     private basicTypeUtil = new BasicTypeUtil();
 
-    constructor(
-        private configuration: ConfigurationInterface,
-        private dependenciesEngine: DependenciesEngine
-    ) {}
+    constructor(private configuration: ConfigurationInterface) {}
 
     private handleFunction(arg): string {
         if (arg.function.length === 0) {
@@ -21,7 +18,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
         }
 
         let argums = arg.function.map(argu => {
-            let _result = this.dependenciesEngine.find(argu.type);
+            let _result = DependenciesEngine.find(argu.type);
             if (_result) {
                 if (_result.source === 'internal') {
                     let path = _result.data.type;
@@ -70,7 +67,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
         if (method.args) {
             args = method.args
                 .map(arg => {
-                    let _result = this.dependenciesEngine.find(arg.type);
+                    let _result = DependenciesEngine.find(arg.type);
                     if (_result) {
                         if (_result.source === 'internal') {
                             let path = _result.data.type;

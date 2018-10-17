@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import { logger } from '../../logger';
-import { DependenciesEngine } from './dependencies.engine';
+import DependenciesEngine from './dependencies.engine';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
 
@@ -14,7 +14,6 @@ const traverse = require('traverse');
 export class ExportJsonEngine {
     constructor(
         private configuration: ConfigurationInterface,
-        private dependenciesEngine: DependenciesEngine,
         private fileEngine: FileEngine = new FileEngine()
     ) {}
 
@@ -51,7 +50,7 @@ export class ExportJsonEngine {
     }
 
     processModules() {
-        const modules: AngularNgModuleNode[] = this.dependenciesEngine.getModules();
+        const modules: AngularNgModuleNode[] = DependenciesEngine.getModules();
 
         let _resultedModules = [];
 

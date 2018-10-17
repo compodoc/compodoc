@@ -39,9 +39,27 @@ export class DependenciesEngine {
     public routes: RouteInterface;
     public pipes: Object[];
     public classes: Object[];
-    public miscellaneous: MiscellaneousData;
+    public miscellaneous: MiscellaneousData = {
+        variables: [],
+        functions:[],
+        typealiases:[],
+        enumerations:[],
+        groupedVariables: [],
+        groupedFunctions: [],
+        groupedEnumerations: [],
+        groupedTypeAliases: [],
+    };
 
     private angularApiUtil: AngularApiUtil = new AngularApiUtil();
+
+    private static instance: DependenciesEngine;
+    private constructor() { }
+    public static getInstance() {
+        if (!DependenciesEngine.instance) {
+            DependenciesEngine.instance = new DependenciesEngine();
+        }
+        return DependenciesEngine.instance;
+    }
 
     private updateModulesDeclarationsExportsTypes() {
         let _m = this.modules,
@@ -119,15 +137,17 @@ export class DependenciesEngine {
             source: 'internal',
             data: undefined
         };
-        for (let i = 0; i < data.length; i++) {
-            if (typeof name !== 'undefined') {
-                if (typeof file !== 'undefined') {
-                    if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
-                        _result.data = data[i];
-                    }
-                } else {
-                    if (name.indexOf(data[i].name) !== -1) {
-                        _result.data = data[i];
+        if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                if (typeof name !== 'undefined') {
+                    if (typeof file !== 'undefined') {
+                        if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
+                            _result.data = data[i];
+                        }
+                    } else {
+                        if (name.indexOf(data[i].name) !== -1) {
+                            _result.data = data[i];
+                        }
                     }
                 }
             }
@@ -386,3 +406,5 @@ export class DependenciesEngine {
         return this.miscellaneous;
     }
 }
+
+export default DependenciesEngine.getInstance();

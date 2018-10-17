@@ -3,7 +3,7 @@ import * as Handlebars from 'handlebars';
 
 import { logger } from '../../logger';
 import { HtmlEngineHelpers } from './html.engine.helpers';
-import { DependenciesEngine } from './dependencies.engine';
+import DependenciesEngine from './dependencies.engine';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
 
@@ -17,11 +17,10 @@ export class HtmlEngine {
 
     constructor(
         configuration: ConfigurationInterface,
-        dependenciesEngine: DependenciesEngine,
         private fileEngine: FileEngine = new FileEngine()
     ) {
         const helper = new HtmlEngineHelpers();
-        helper.registerHelpers(Handlebars, configuration, dependenciesEngine);
+        helper.registerHelpers(Handlebars, configuration);
     }
 
     public init(templatePath: string): Promise<void> {

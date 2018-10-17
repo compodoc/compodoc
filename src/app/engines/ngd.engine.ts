@@ -1,4 +1,4 @@
-import { DependenciesEngine } from './dependencies.engine';
+import DependenciesEngine from './dependencies.engine';
 import { FileEngine } from './file.engine';
 
 const ngdT = require('@compodoc/ngd-transformer');
@@ -7,7 +7,6 @@ export class NgdEngine {
     public engine;
 
     constructor(
-        private dependenciesEngine: DependenciesEngine,
         private fileEngine: FileEngine = new FileEngine()
     ) {}
 
@@ -24,9 +23,9 @@ export class NgdEngine {
         this.engine.updateOutput(outputpath);
 
         if (type === 'f') {
-            return this.engine.generateGraph([this.dependenciesEngine.getRawModule(name)]);
+            return this.engine.generateGraph([DependenciesEngine.getRawModule(name)]);
         } else {
-            return this.engine.generateGraph(this.dependenciesEngine.rawModulesForOverview);
+            return this.engine.generateGraph(DependenciesEngine.rawModulesForOverview);
         }
     }
 

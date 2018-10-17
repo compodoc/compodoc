@@ -1,4 +1,4 @@
-import { DependenciesEngine } from './dependencies.engine';
+import DependenciesEngine from './dependencies.engine';
 import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { FileEngine } from './file.engine';
 
@@ -9,7 +9,6 @@ export class ExportEngine {
 
     constructor(
         private configuration: ConfigurationInterface,
-        private dependenciesEngine: DependenciesEngine,
         private fileEngine: FileEngine = new FileEngine()
     ) {}
 
@@ -18,7 +17,6 @@ export class ExportEngine {
             case 'json':
                 this._engine = new ExportJsonEngine(
                     this.configuration,
-                    this.dependenciesEngine,
                     this.fileEngine
                 );
                 return this._engine.export(outputFolder, data);

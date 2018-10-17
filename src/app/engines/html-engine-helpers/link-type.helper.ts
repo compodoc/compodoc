@@ -1,5 +1,5 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
-import { DependenciesEngine } from '../dependencies.engine';
+import DependenciesEngine from '../dependencies.engine';
 import { ConfigurationInterface } from '../../interfaces/configuration.interface';
 import { AngularVersionUtil, BasicTypeUtil } from '../../../utils';
 
@@ -7,14 +7,10 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
     private angularVersionUtil = new AngularVersionUtil();
     private basicTypeUtil = new BasicTypeUtil();
 
-    constructor(
-        private configuration: ConfigurationInterface,
-        private dependenciesEngine: DependenciesEngine) {
-
-    }
+    constructor(private configuration: ConfigurationInterface) {}
 
     public helperFunc(context: any, name: string, options: IHandlebarsOptions) {
-        let _result = this.dependenciesEngine.find(name);
+        let _result = DependenciesEngine.find(name);
         let angularDocPrefix = this.angularVersionUtil.prefixOfficialDoc(this.configuration.mainData.angularVersion);
         if (_result) {
             context.type = {

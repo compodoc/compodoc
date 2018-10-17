@@ -117,7 +117,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have a decorator listed', () => {
-        expect(footerComponentFile).to.contain('<i>Decorators : </i><code>@LogProperty()');
+        expect(footerComponentFile).to.contain('@LogProperty()<br');
     });
 
     /**

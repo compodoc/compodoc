@@ -31,7 +31,7 @@ import { cleanSourcesForWatch } from '../utils/utils';
 import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
 
 import { promiseSequential } from '../utils/promise-sequential';
-import { DependenciesEngine } from './engines/dependencies.engine';
+import DependenciesEngine from './engines/dependencies.engine';
 import { AngularVersionUtil, RouterParserUtil } from '../utils';
 
 let cwd = process.cwd();
@@ -73,7 +73,6 @@ export class Application {
     private packageJsonData = {};
 
     private angularVersionUtil = new AngularVersionUtil();
-    private dependenciesEngine: DependenciesEngine;
     private ngdEngine: NgdEngine;
     private htmlEngine: HtmlEngine;
     private searchEngine: SearchEngine;
@@ -88,17 +87,14 @@ export class Application {
      */
     constructor(options?: Object) {
         this.configuration = new Configuration();
-        this.dependenciesEngine = new DependenciesEngine();
-        this.ngdEngine = new NgdEngine(this.dependenciesEngine);
+        this.ngdEngine = new NgdEngine();
         this.htmlEngine = new HtmlEngine(
             this.configuration,
-            this.dependenciesEngine,
             this.fileEngine
         );
         this.searchEngine = new SearchEngine(this.configuration, this.fileEngine);
         this.exportEngine = new ExportEngine(
             this.configuration,
-            this.dependenciesEngine,
             this.fileEngine
         );
 
@@ -420,7 +416,7 @@ export class Application {
 
         let dependenciesData = crawler.getDependencies();
 
-        this.dependenciesEngine.update(dependenciesData);
+        DependenciesEngine.update(dependenciesData);
 
         this.prepareJustAFewThings(dependenciesData);
     }
@@ -501,7 +497,7 @@ export class Application {
 
         let dependenciesData = crawler.getDependencies();
 
-        this.dependenciesEngine.init(dependenciesData);
+        DependenciesEngine.init(dependenciesData);
 
         this.configuration.mainData.routesLength = this.routerParser.routesLength();
 
@@ -583,38 +579,38 @@ export class Application {
     private printStatistics() {
         logger.info('-------------------');
         logger.info('Project statistics ');
-        if (this.dependenciesEngine.modules.length > 0) {
+        if (DependenciesEngine.modules.length > 0) {
             logger.info(`- files      : ${this.files.length}`);
         }
-        if (this.dependenciesEngine.modules.length > 0) {
-            logger.info(`- module     : ${this.dependenciesEngine.modules.length}`);
+        if (DependenciesEngine.modules.length > 0) {
+            logger.info(`- module     : ${DependenciesEngine.modules.length}`);
         }
-        if (this.dependenciesEngine.components.length > 0) {
-            logger.info(`- component  : ${this.dependenciesEngine.components.length}`);
+        if (DependenciesEngine.components.length > 0) {
+            logger.info(`- component  : ${DependenciesEngine.components.length}`);
         }
-        if (this.dependenciesEngine.controllers.length > 0) {
-            logger.info(`- controller : ${this.dependenciesEngine.controllers.length}`);
+        if (DependenciesEngine.controllers.length > 0) {
+            logger.info(`- controller : ${DependenciesEngine.controllers.length}`);
         }
-        if (this.dependenciesEngine.directives.length > 0) {
-            logger.info(`- directive  : ${this.dependenciesEngine.directives.length}`);
+        if (DependenciesEngine.directives.length > 0) {
+            logger.info(`- directive  : ${DependenciesEngine.directives.length}`);
         }
-        if (this.dependenciesEngine.injectables.length > 0) {
-            logger.info(`- injectable : ${this.dependenciesEngine.injectables.length}`);
+        if (DependenciesEngine.injectables.length > 0) {
+            logger.info(`- injectable : ${DependenciesEngine.injectables.length}`);
         }
-        if (this.dependenciesEngine.interceptors.length > 0) {
-            logger.info(`- injector   : ${this.dependenciesEngine.interceptors.length}`);
+        if (DependenciesEngine.interceptors.length > 0) {
+            logger.info(`- injector   : ${DependenciesEngine.interceptors.length}`);
         }
-        if (this.dependenciesEngine.guards.length > 0) {
-            logger.info(`- guard      : ${this.dependenciesEngine.guards.length}`);
+        if (DependenciesEngine.guards.length > 0) {
+            logger.info(`- guard      : ${DependenciesEngine.guards.length}`);
         }
-        if (this.dependenciesEngine.pipes.length > 0) {
-            logger.info(`- pipe       : ${this.dependenciesEngine.pipes.length}`);
+        if (DependenciesEngine.pipes.length > 0) {
+            logger.info(`- pipe       : ${DependenciesEngine.pipes.length}`);
         }
-        if (this.dependenciesEngine.classes.length > 0) {
-            logger.info(`- class      : ${this.dependenciesEngine.classes.length}`);
+        if (DependenciesEngine.classes.length > 0) {
+            logger.info(`- class      : ${DependenciesEngine.classes.length}`);
         }
-        if (this.dependenciesEngine.interfaces.length > 0) {
-            logger.info(`- interface  : ${this.dependenciesEngine.interfaces.length}`);
+        if (DependenciesEngine.interfaces.length > 0) {
+            logger.info(`- interface  : ${DependenciesEngine.interfaces.length}`);
         }
         if (this.configuration.mainData.routesLength > 0) {
             logger.info(`- route      : ${this.configuration.mainData.routesLength}`);
@@ -632,39 +628,39 @@ export class Application {
             return this.prepareModules();
         });
 
-        if (this.dependenciesEngine.directives.length > 0) {
+        if (DependenciesEngine.directives.length > 0) {
             actions.push(() => {
                 return this.prepareDirectives();
             });
         }
 
-        if (this.dependenciesEngine.controllers.length > 0) {
+        if (DependenciesEngine.controllers.length > 0) {
             actions.push(() => {
                 return this.prepareControllers();
             });
         }
 
-        if (this.dependenciesEngine.injectables.length > 0) {
+        if (DependenciesEngine.injectables.length > 0) {
             actions.push(() => {
                 return this.prepareInjectables();
             });
         }
 
-        if (this.dependenciesEngine.interceptors.length > 0) {
+        if (DependenciesEngine.interceptors.length > 0) {
             actions.push(() => {
                 return this.prepareInterceptors();
             });
         }
 
-        if (this.dependenciesEngine.guards.length > 0) {
+        if (DependenciesEngine.guards.length > 0) {
             actions.push(() => {
                 return this.prepareGuards();
             });
         }
 
         if (
-            this.dependenciesEngine.routes &&
-            this.dependenciesEngine.routes.children.length > 0 &&
+            DependenciesEngine.routes &&
+            DependenciesEngine.routes.children.length > 0 &&
             !this.configuration.mainData.disableRoutesGraph
         ) {
             actions.push(() => {
@@ -672,29 +668,29 @@ export class Application {
             });
         }
 
-        if (this.dependenciesEngine.pipes.length > 0) {
+        if (DependenciesEngine.pipes.length > 0) {
             actions.push(() => {
                 return this.preparePipes();
             });
         }
 
-        if (this.dependenciesEngine.classes.length > 0) {
+        if (DependenciesEngine.classes.length > 0) {
             actions.push(() => {
                 return this.prepareClasses();
             });
         }
 
-        if (this.dependenciesEngine.interfaces.length > 0) {
+        if (DependenciesEngine.interfaces.length > 0) {
             actions.push(() => {
                 return this.prepareInterfaces();
             });
         }
 
         if (
-            this.dependenciesEngine.miscellaneous.variables.length > 0 ||
-            this.dependenciesEngine.miscellaneous.functions.length > 0 ||
-            this.dependenciesEngine.miscellaneous.typealiases.length > 0 ||
-            this.dependenciesEngine.miscellaneous.enumerations.length > 0
+            DependenciesEngine.miscellaneous.variables.length > 0 ||
+            DependenciesEngine.miscellaneous.functions.length > 0 ||
+            DependenciesEngine.miscellaneous.typealiases.length > 0 ||
+            DependenciesEngine.miscellaneous.enumerations.length > 0
         ) {
             actions.push(() => {
                 return this.prepareMiscellaneous();
@@ -843,7 +839,7 @@ export class Application {
     public prepareModules(someModules?): Promise<any> {
         logger.info('Prepare modules');
         let i = 0;
-        let _modules = someModules ? someModules : this.dependenciesEngine.getModules();
+        let _modules = someModules ? someModules : DependenciesEngine.getModules();
 
         return new Promise((resolve, reject) => {
             this.configuration.mainData.modules = _modules.map(ngModule => {
@@ -858,7 +854,7 @@ export class Application {
                     ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
                         switch (metaDataItem.type) {
                             case 'directive':
-                                return this.dependenciesEngine.getDirectives().some(directive => {
+                                return DependenciesEngine.getDirectives().some(directive => {
                                     let selectedDirective;
                                     if (typeof metaDataItem.id !== 'undefined') {
                                         selectedDirective =
@@ -877,7 +873,7 @@ export class Application {
                                 });
 
                             case 'component':
-                                return this.dependenciesEngine.getComponents().some(component => {
+                                return DependenciesEngine.getComponents().some(component => {
                                     let selectedComponent;
                                     if (typeof metaDataItem.id !== 'undefined') {
                                         selectedComponent =
@@ -896,7 +892,7 @@ export class Application {
                                 });
 
                             case 'controller':
-                                return this.dependenciesEngine.getControllers().some(controller => {
+                                return DependenciesEngine.getControllers().some(controller => {
                                     let selectedController;
                                     if (typeof metaDataItem.id !== 'undefined') {
                                         selectedController =
@@ -915,12 +911,12 @@ export class Application {
                                 });
 
                             case 'module':
-                                return this.dependenciesEngine
+                                return DependenciesEngine
                                     .getModules()
                                     .some(module => (module as any).name === metaDataItem.name);
 
                             case 'pipe':
-                                return this.dependenciesEngine.getPipes().some(pipe => {
+                                return DependenciesEngine.getPipes().some(pipe => {
                                     let selectedPipe;
                                     if (typeof metaDataItem.id !== 'undefined') {
                                         selectedPipe = (pipe as any).id === metaDataItem.id;
@@ -943,7 +939,7 @@ export class Application {
                 });
                 ngModule.providers = ngModule.providers.filter(provider => {
                     return (
-                        this.dependenciesEngine.getInjectables().some(injectable => {
+                        DependenciesEngine.getInjectables().some(injectable => {
                             let selectedInjectable = (injectable as any).name === provider.name;
                             if (
                                 selectedInjectable &&
@@ -953,7 +949,7 @@ export class Application {
                             }
                             return selectedInjectable;
                         }) ||
-                        this.dependenciesEngine
+                        DependenciesEngine
                             .getInterceptors()
                             .some(interceptor => (interceptor as any).name === provider.name)
                     );
@@ -961,14 +957,14 @@ export class Application {
                 // Try fixing type undefined for each providers
                 _.forEach(ngModule.providers, provider => {
                     if (
-                        this.dependenciesEngine
+                        DependenciesEngine
                             .getInjectables()
                             .find(injectable => (injectable as any).name === provider.name)
                     ) {
                         provider.type = 'injectable';
                     }
                     if (
-                        this.dependenciesEngine
+                        DependenciesEngine
                             .getInterceptors()
                             .find(interceptor => (interceptor as any).name === provider.name)
                     ) {
@@ -1049,7 +1045,7 @@ export class Application {
         logger.info('Prepare pipes');
         this.configuration.mainData.pipes = somePipes
             ? somePipes
-            : this.dependenciesEngine.getPipes();
+            : DependenciesEngine.getPipes();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1090,7 +1086,7 @@ export class Application {
         logger.info('Prepare classes');
         this.configuration.mainData.classes = someClasses
             ? someClasses
-            : this.dependenciesEngine.getClasses();
+            : DependenciesEngine.getClasses();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1131,7 +1127,7 @@ export class Application {
         logger.info('Prepare interfaces');
         this.configuration.mainData.interfaces = someInterfaces
             ? someInterfaces
-            : this.dependenciesEngine.getInterfaces();
+            : DependenciesEngine.getInterfaces();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1172,7 +1168,7 @@ export class Application {
         logger.info('Prepare miscellaneous');
         this.configuration.mainData.miscellaneous = someMisc
             ? someMisc
-            : this.dependenciesEngine.getMiscellaneous();
+            : DependenciesEngine.getMiscellaneous();
 
         return new Promise((resolve, reject) => {
             if (this.configuration.mainData.miscellaneous.functions.length > 0) {
@@ -1329,7 +1325,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Prepare controllers');
         this.configuration.mainData.controllers = someControllers
             ? someControllers
-            : this.dependenciesEngine.getControllers();
+            : DependenciesEngine.getControllers();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1365,7 +1361,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Prepare components');
         this.configuration.mainData.components = someComponents
             ? someComponents
-            : this.dependenciesEngine.getComponents();
+            : DependenciesEngine.getComponents();
 
         return new Promise((mainPrepareComponentResolve, mainPrepareComponentReject) => {
             let i = 0;
@@ -1474,7 +1470,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         this.configuration.mainData.directives = someDirectives
             ? someDirectives
-            : this.dependenciesEngine.getDirectives();
+            : DependenciesEngine.getDirectives();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1516,7 +1512,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         this.configuration.mainData.injectables = someInjectables
             ? someInjectables
-            : this.dependenciesEngine.getInjectables();
+            : DependenciesEngine.getInjectables();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1558,7 +1554,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         this.configuration.mainData.interceptors = someInterceptors
             ? someInterceptors
-            : this.dependenciesEngine.getInterceptors();
+            : DependenciesEngine.getInterceptors();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1600,7 +1596,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         this.configuration.mainData.guards = someGuards
             ? someGuards
-            : this.dependenciesEngine.getGuards();
+            : DependenciesEngine.getGuards();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1639,7 +1635,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public prepareRoutes(): Promise<void> {
         logger.info('Process routes');
-        this.configuration.mainData.routes = this.dependenciesEngine.getRoutes();
+        this.configuration.mainData.routes = DependenciesEngine.getRoutes();
 
         return new Promise((resolve, reject) => {
             this.configuration.addPage({
@@ -2738,7 +2734,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         finalPath += '/';
                     }
                     finalPath += 'modules/' + modules[i].name;
-                    let _rawModule = this.dependenciesEngine.getRawModule(modules[i].name);
+                    let _rawModule = DependenciesEngine.getRawModule(modules[i].name);
                     if (
                         _rawModule.declarations.length > 0 ||
                         _rawModule.bootstrap.length > 0 ||

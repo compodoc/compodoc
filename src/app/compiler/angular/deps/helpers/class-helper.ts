@@ -10,7 +10,10 @@ import { ConfigurationInterface } from '../../../../interfaces/configuration.int
 import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
 import { ImportsUtil } from '../../../../../utils/imports.util';
 import { logger } from '../../../../../logger';
-import { isIgnore } from '../../../../../utils';
+import { isIgnore, AngularVersionUtil, BasicTypeUtil } from '../../../../../utils';
+import { StringifyObjectLiteralExpression } from '../../../../../utils/object-literal-expression.util';
+
+import DependenciesEngine from '../../../../engines/dependencies.engine';
 
 const crypto = require('crypto');
 const marked = require('marked');
@@ -18,6 +21,8 @@ const marked = require('marked');
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
     private importsUtil = new ImportsUtil();
+    private angularVersionUtil = new AngularVersionUtil();
+    private basicTypeUtil = new BasicTypeUtil();
 
     constructor(
         private typeChecker: ts.TypeChecker,
@@ -61,18 +66,12 @@ export class ClassHelper {
         _.forEach(decorators, (decorator: any) => {
             if (decorator.expression) {
                 if (decorator.expression.text) {
-                    _decorators.push({
-                        name: decorator.expression.text
-                    });
+                    _decorators.push({ name: decorator.expression.text });
                 }
                 if (decorator.expression.expression) {
-                    let info: any = {
-                        name: decorator.expression.expression.text
-                    };
+                    let info: any = { name: decorator.expression.expression.text };
                     if (decorator.expression.arguments) {
-                        if (decorator.expression.arguments.length > 0) {
-                            info.args = decorator.expression.arguments;
-                        }
+                        info.stringifiedArguments = this.stringifyArguments(decorator.expression.arguments);
                     }
                     _decorators.push(info);
                 }
@@ -80,6 +79,111 @@ export class ClassHelper {
         });
 
         return _decorators;
+    }
+
+    private handleFunction(arg): string {
+        if (arg.function.length === 0) {
+            return `${arg.name}${this.getOptionalString(arg)}: () => void`;
+        }
+
+        let argums = arg.function.map(argu => {
+            let _result = DependenciesEngine.find(argu.type);
+            if (_result) {
+                if (_result.source === 'internal') {
+                    let path = _result.data.type;
+                    if (_result.data.type === 'class') {
+                        path = 'classe';
+                    }
+                    return `${argu.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
+                        _result.data.name
+                    }.html">${argu.type}</a>`;
+                } else {
+                    let path = this.angularVersionUtil.getApiLink(
+                        _result.data,
+                        this.configuration.mainData.angularVersion
+                    );
+                    return `${argu.name}${this.getOptionalString(
+                        arg
+                    )}: <a href="${path}" target="_blank">${argu.type}</a>`;
+                }
+            } else if (this.basicTypeUtil.isKnownType(argu.type)) {
+                let path = this.basicTypeUtil.getTypeUrl(argu.type);
+                return `${argu.name}${this.getOptionalString(
+                    arg
+                )}: <a href="${path}" target="_blank">${argu.type}</a>`;
+            } else {
+                if (argu.name && argu.type) {
+                    return `${argu.name}${this.getOptionalString(arg)}: ${argu.type}`;
+                } else {
+                    if (argu.name) {
+                        return `${argu.name.text}`;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+        });
+        return `${arg.name}${this.getOptionalString(arg)}: (${argums}) => void`;
+    }
+
+    private getOptionalString(arg): string {
+        return arg.optional ? '?' : '';
+    }
+
+    private stringifyArguments(args) {
+        let stringifyArgs = [];
+
+        stringifyArgs = args
+            .map(arg => {
+                let _result = DependenciesEngine.find(arg.type);
+                if (_result) {
+                    if (_result.source === 'internal') {
+                        let path = _result.data.type;
+                        if (_result.data.type === 'class') {
+                            path = 'classe';
+                        }
+                        return `${arg.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
+                            _result.data.name
+                        }.html">${arg.type}</a>`;
+                    } else {
+                        let path = this.angularVersionUtil.getApiLink(
+                            _result.data,
+                            this.configuration.mainData.angularVersion
+                        );
+                        return `${arg.name}${this.getOptionalString(
+                            arg
+                        )}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                    }
+                } else if (arg.dotDotDotToken) {
+                    return `...${arg.name}: ${arg.type}`;
+                } else if (arg.function) {
+                    return this.handleFunction(arg);
+                } else if (arg.expression && arg.name) {
+                    return arg.expression.text + '.' + arg.name.text;
+                } else if (arg.expression && arg.kind === SyntaxKind.NewExpression) {
+                    return 'new ' + arg.expression.text + '()';
+                } else if (arg.kind && arg.kind === SyntaxKind.StringLiteral) {
+                    return `'` + arg.text + `'`;
+                } else if (arg.kind && arg.kind === SyntaxKind.ObjectLiteralExpression) {
+                    return StringifyObjectLiteralExpression(arg);
+                } else if (this.basicTypeUtil.isKnownType(arg.type)) {
+                    let path = this.basicTypeUtil.getTypeUrl(arg.type);
+                    return `${arg.name}${this.getOptionalString(
+                        arg
+                    )}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                } else {
+                    if (arg.type) {
+                        return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
+                    } else if (arg.text) {
+                        return `${arg.text}`;
+                    } else {
+                        return `${arg.name}${this.getOptionalString(arg)}`;
+                    }
+                }
+            })
+            .join(', ');
+
+        return stringifyArgs;
     }
 
     private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
@@ -289,19 +393,11 @@ export class ClassHelper {
         if (symbol) {
             description = marked(this.jsdocParserUtil.getMainCommentOfNode(classDeclaration));
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
-                return [
-                    {
-                        ignore: true
-                    }
-                ];
+                return [{ ignore: true }];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
                 if (isIgnore(symbol.declarations[0])) {
-                    return [
-                        {
-                            ignore: true
-                        }
-                    ];
+                    return [{ ignore: true }];
                 }
             }
         }
@@ -389,14 +485,7 @@ export class ClassHelper {
                         }
                     ];
                 } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            description,
-                            jsdoctags: jsdoctags
-                        }
-                    ];
+                    return [{ fileName, className, description, jsdoctags: jsdoctags }];
                 } else {
                     return [
                         {
@@ -1065,10 +1154,7 @@ export class ClassHelper {
     }
 
     private visitArgument(arg: ts.ParameterDeclaration) {
-        let _result: any = {
-            name: arg.name.text,
-            type: this.visitType(arg)
-        };
+        let _result: any = { name: arg.name.text, type: this.visitType(arg) };
         if (arg.dotDotDotToken) {
             _result.dotDotDotToken = true;
         }
