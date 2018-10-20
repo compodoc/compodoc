@@ -825,14 +825,16 @@ export class AngularDependencies extends FrameworkDependencies {
     private findExpressionByNameInExpressions(entryNode, name) {
         let result;
         let loop = function(node, z) {
-            if (node.expression && !node.expression.name) {
-                loop(node.expression, z);
-            }
-            if (node.expression && node.expression.name) {
-                if (node.expression.name.text === z) {
-                    result = node;
-                } else {
+            if (node) {
+                if (node.expression && !node.expression.name) {
                     loop(node.expression, z);
+                }
+                if (node.expression && node.expression.name) {
+                    if (node.expression.name.text === z) {
+                        result = node;
+                    } else {
+                        loop(node.expression, z);
+                    }
                 }
             }
         };
