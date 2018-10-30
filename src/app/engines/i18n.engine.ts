@@ -1,6 +1,11 @@
 import i18next from 'i18next';
 
-import { TRANSLATION_EN_US, TRANSLATION_FR_FR, TRANSLATION_ZH_CN } from '../../locales';
+import {
+    TRANSLATION_EN_US,
+    TRANSLATION_FR_FR,
+    TRANSLATION_ZH_CN,
+    TRANSLATION_PT_BR
+} from '../../locales';
 
 class I18nEngine {
     private static instance: I18nEngine;
@@ -15,7 +20,8 @@ class I18nEngine {
     private availablesLanguages = {
         'en-US': 'en-US',
         'fr-FR': 'fr-FR',
-        'zh-CN': 'zh-CN'
+        'zh-CN': 'zh-CN',
+        'pt-BR': 'pt-BR'
     };
 
     public fallbackLanguage = 'en-US';
@@ -28,6 +34,7 @@ class I18nEngine {
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
+        i18next.addResources('pt-BR', 'translation', TRANSLATION_PT_BR);
     }
 
     public translate(key: string): string {

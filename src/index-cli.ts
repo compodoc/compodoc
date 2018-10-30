@@ -80,7 +80,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
-            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN)', COMPODOC_DEFAULTS.language)
+            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)', COMPODOC_DEFAULTS.language)
             .option(
                 '--theme [theme]',
                 "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
