@@ -4,6 +4,16 @@ import { IApiSourceResult } from './api-source-result.interface';
 const AngularAPIs: Array<IAngularMainApi> = require('../src/data/api-list.json');
 
 export class AngularApiUtil {
+
+    private static instance: AngularApiUtil;
+    private constructor() { }
+    public static getInstance() {
+        if (!AngularApiUtil.instance) {
+            AngularApiUtil.instance = new AngularApiUtil();
+        }
+        return AngularApiUtil.instance;
+    }
+
     public findApi(type: string): IApiSourceResult<IAngularMainApi> {
         let foundedApi;
         _.forEach(AngularAPIs, mainApi => {
@@ -19,6 +29,8 @@ export class AngularApiUtil {
         };
     }
 }
+
+export default AngularApiUtil.getInstance();
 
 export interface IAngularMainApi {
     title: string;

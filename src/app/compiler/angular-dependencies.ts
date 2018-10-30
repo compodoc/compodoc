@@ -6,18 +6,22 @@ import Ast, { ts, SyntaxKind } from 'ts-simple-ast';
 import { logger } from '../../logger';
 import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
-import { $componentsTreeEngine } from '../engines/components-tree.engine';
+import ComponentsTreeEngine from '../engines/components-tree.engine';
 
 import { FrameworkDependencies } from './framework-dependencies';
 
+import ImportsUtil from '../../utils/imports.util';
+
 import {
     JsdocParserUtil,
-    RouterParserUtil,
-    ImportsUtil,
     isModuleWithProviders,
     getModuleWithProviders,
     isIgnore
 } from '../../utils';
+
+import ExtendsMerger from '../../utils/extends-merger.util';
+
+import RouterParserUtil from '../../utils/router-parser.util';
 
 import { CodeGenerator } from './angular/code-generator';
 
@@ -30,7 +34,7 @@ import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
 
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
+import Configuration from '../configuration';
 
 import {
     IInjectableDep,
@@ -55,15 +59,12 @@ export class AngularDependencies extends FrameworkDependencies {
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private jsdocParserUtil = new JsdocParserUtil();
-    private importsUtil = new ImportsUtil();
 
     constructor(
         files: string[],
-        options: any,
-        configuration: ConfigurationInterface,
-        routerParser: RouterParserUtil
+        options: any
     ) {
-        super(files, options, configuration, routerParser);
+        super(files, options);
     }
 
     public getDependencies() {
@@ -94,9 +95,9 @@ export class AngularDependencies extends FrameworkDependencies {
         sourceFiles.map((file: ts.SourceFile) => {
             let filePath = file.fileName;
 
-            if (path.extname(filePath) === '.ts') {
+            if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.tsx') {
                 if (
-                    !this.configuration.mainData.angularJSProject &&
+                    !Configuration.mainData.angularJSProject &&
                     path.extname(filePath) === '.js'
                 ) {
                     logger.info('parsing', filePath);
@@ -186,16 +187,16 @@ export class AngularDependencies extends FrameworkDependencies {
          * - properties
          * - methods
          */
-        deps = this.extendsMerger.merge(deps, this.configuration);
+        deps = ExtendsMerger.merge(deps, Configuration);
 
-        // this.routerParser.printModulesRoutes();
-        // this.routerParser.printRoutes();
+        // RouterParserUtil.printModulesRoutes();
+        // RouterParserUtil.printRoutes();
 
-        if (!this.configuration.mainData.disableRoutesGraph) {
-            this.routerParser.linkModulesAndRoutes();
-            this.routerParser.constructModulesTree();
+        if (!Configuration.mainData.disableRoutesGraph) {
+            RouterParserUtil.linkModulesAndRoutes();
+            RouterParserUtil.constructModulesTree();
 
-            deps.routesTree = this.routerParser.constructRoutesTree();
+            deps.routesTree = RouterParserUtil.constructRoutesTree();
         }
 
         return deps;
@@ -254,7 +255,7 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.hostListeners) {
             deps.hostListeners = IO.hostListeners;
         }
-        if (this.configuration.mainData.disableLifeCycleHooks) {
+        if (Configuration.mainData.disableLifeCycleHooks) {
             deps.methods = cleanLifecycleHooksFromMethods(deps.methods);
         }
         if (IO.implements && IO.implements.length > 0) {
@@ -313,14 +314,14 @@ export class AngularDependencies extends FrameworkDependencies {
             });
         }
 
-        if (hasRoutesStatements && !this.configuration.mainData.disableRoutesGraph) {
+        if (hasRoutesStatements && !Configuration.mainData.disableRoutesGraph) {
             // Clean file for spread and dynamics inside routes definitions
             logger.info('Analysing routes definitions and clean them if necessary');
 
-            // scannedFile = this.routerParser.cleanFileIdentifiers(astFile).compilerNode;
-            let firstClean = this.routerParser.cleanFileSpreads(astFile).compilerNode;
-            scannedFile = this.routerParser.cleanCallExpressions(astFile).compilerNode;
-            scannedFile = this.routerParser.cleanFileDynamics(astFile).compilerNode;
+            // scannedFile = RouterParserUtil.cleanFileIdentifiers(astFile).compilerNode;
+            let firstClean = RouterParserUtil.cleanFileSpreads(astFile).compilerNode;
+            scannedFile = RouterParserUtil.cleanCallExpressions(astFile).compilerNode;
+            scannedFile = RouterParserUtil.cleanFileDynamics(astFile).compilerNode;
 
             scannedFile.kind = SyntaxKind.SourceFile;
         }
@@ -328,7 +329,7 @@ export class AngularDependencies extends FrameworkDependencies {
         ts.forEachChild(scannedFile, (initialNode: ts.Node) => {
             if (
                 this.jsDocHelper.hasJSDocInternalTag(fileName, scannedFile, initialNode) &&
-                this.configuration.mainData.disableInternal
+                Configuration.mainData.disableInternal
             ) {
                 return;
             }
@@ -357,8 +358,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                 props,
                                 IO
                             );
-                            if (this.routerParser.hasRouterModuleInImports(moduleDep.imports)) {
-                                this.routerParser.addModuleWithRoutes(
+                            if (RouterParserUtil.hasRouterModuleInImports(moduleDep.imports)) {
+                                RouterParserUtil.addModuleWithRoutes(
                                     name,
                                     this.moduleHelper.getModuleImportsRaw(props, srcFile),
                                     file
@@ -366,7 +367,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                             deps = moduleDep;
                             if (typeof IO.ignore === 'undefined') {
-                                this.routerParser.addModule(name, moduleDep.imports);
+                                RouterParserUtil.addModule(name, moduleDep.imports);
                                 outputSymbols.modules.push(moduleDep);
                                 outputSymbols.modulesForGraph.push(moduleDep);
                             }
@@ -376,11 +377,11 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                             const componentDep = new ComponentDepFactory(
                                 this.componentHelper,
-                                this.configuration
+                                Configuration
                             ).create(file, srcFile, name, props, IO);
                             deps = componentDep;
                             if (typeof IO.ignore === 'undefined') {
-                                $componentsTreeEngine.addComponent(componentDep);
+                                ComponentsTreeEngine.addComponent(componentDep);
                                 outputSymbols.components.push(componentDep);
                             }
                         } else if (this.isController(visitedDecorator)) {
@@ -462,7 +463,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                             let directiveDeps = new DirectiveDepFactory(
                                 this.componentHelper,
-                                this.configuration
+                                Configuration
                             ).create(file, srcFile, name, props, IO);
                             deps = directiveDeps;
                             if (typeof IO.ignore === 'undefined') {
@@ -614,14 +615,14 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (IO.routes) {
                         let newRoutes;
                         try {
-                            newRoutes = this.routerParser.cleanRawRouteParsed(IO.routes);
+                            newRoutes = RouterParserUtil.cleanRawRouteParsed(IO.routes);
                         } catch (e) {
                             // tslint:disable-next-line:max-line-length
                             logger.error(
                                 'Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.'
                             );
                             newRoutes = IO.routes.replace(/ /gm, '');
-                            this.routerParser.addIncompleteRoute({
+                            RouterParserUtil.addIncompleteRoute({
                                 data: newRoutes,
                                 file: file
                             });
@@ -685,12 +686,12 @@ export class AngularDependencies extends FrameworkDependencies {
                                     });
                                 }
                                 if (rootModule) {
-                                    this.routerParser.setRootModule(rootModule);
+                                    RouterParserUtil.setRootModule(rootModule);
                                 }
                             }
                         }
                     }
-                    if (ts.isVariableStatement(node) && !this.routerParser.isVariableRoutes(node)) {
+                    if (ts.isVariableStatement(node) && !RouterParserUtil.isVariableRoutes(node)) {
                         let infos: any = this.visitVariableDeclaration(node);
                         let name = infos.name;
                         let deps: any = {
@@ -711,8 +712,8 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                         if (isModuleWithProviders(node)) {
                             let routingInitializer = getModuleWithProviders(node);
-                            this.routerParser.addModuleWithRoutes(name, [routingInitializer], file);
-                            this.routerParser.addModule(name, [routingInitializer]);
+                            RouterParserUtil.addModuleWithRoutes(name, [routingInitializer], file);
+                            RouterParserUtil.addModule(name, [routingInitializer]);
                         }
                         if (!isIgnore(node)) {
                             outputSymbols.miscellaneous.variables.push(deps);
@@ -824,14 +825,16 @@ export class AngularDependencies extends FrameworkDependencies {
     private findExpressionByNameInExpressions(entryNode, name) {
         let result;
         let loop = function(node, z) {
-            if (node.expression && !node.expression.name) {
-                loop(node.expression, z);
-            }
-            if (node.expression && node.expression.name) {
-                if (node.expression.name.text === z) {
-                    result = node;
-                } else {
+            if (node) {
+                if (node.expression && !node.expression.name) {
                     loop(node.expression, z);
+                }
+                if (node.expression && node.expression.name) {
+                    if (node.expression.name.text === z) {
+                        result = node;
+                    } else {
+                        loop(node.expression, z);
+                    }
                 }
             }
         };
@@ -958,7 +961,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 return [pop];
             } else {
                 logger.warn('Empty metadatas, trying to found it with imports.');
-                return this.importsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
+                return ImportsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
             }
         }
 
@@ -1046,8 +1049,9 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
+        let methodName = method.name ? method.name.text : 'Unnamed function';
         let result: any = {
-            name: method.name.text,
+            name: methodName,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -1170,9 +1174,9 @@ export class AngularDependencies extends FrameworkDependencies {
             for (i; i < len; i++) {
                 let routesInitializer = node.declarationList.declarations[i].initializer;
                 let data = new CodeGenerator().generate(routesInitializer);
-                this.routerParser.addRoute({
+                RouterParserUtil.addRoute({
                     name: node.declarationList.declarations[i].name.text,
-                    data: this.routerParser.cleanRawRoute(data),
+                    data: RouterParserUtil.cleanRawRoute(data),
                     filename: fileName
                 });
                 return [
@@ -1189,7 +1193,7 @@ export class AngularDependencies extends FrameworkDependencies {
         let res;
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
-                if (this.routerParser.isVariableRoutes(statement)) {
+                if (RouterParserUtil.isVariableRoutes(statement)) {
                     if (statement.pos === node.pos && statement.end === node.end) {
                         return directive.concat(
                             this.visitEnumDeclarationForRoutes(filename, statement)

@@ -9,7 +9,7 @@ import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
 import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IApiSourceResult } from '../../utils/api-source-result.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
-import { AngularApiUtil } from '../../utils/angular-api.util';
+import AngularApiUtil from '../../utils/angular-api.util';
 import {
     IInjectableDep,
     IInterfaceDep,
@@ -39,38 +39,24 @@ export class DependenciesEngine {
     public routes: RouteInterface;
     public pipes: Object[];
     public classes: Object[];
-    public miscellaneous: MiscellaneousData;
+    public miscellaneous: MiscellaneousData = {
+        variables: [],
+        functions:[],
+        typealiases:[],
+        enumerations:[],
+        groupedVariables: [],
+        groupedFunctions: [],
+        groupedEnumerations: [],
+        groupedTypeAliases: [],
+    };
 
-    private angularApiUtil: AngularApiUtil = new AngularApiUtil();
-
-    private cleanModules(modules) {
-        let _m = modules;
-        let i = 0;
-        let len = modules.length;
-
-        for (i; i < len; i++) {
-            let j = 0;
-            let leng = _m[i].declarations.length;
-            for (j; j < leng; j++) {
-                let k = 0;
-                let lengt;
-                if (_m[i].declarations[j].jsdoctags) {
-                    lengt = _m[i].declarations[j].jsdoctags.length;
-                    for (k; k < lengt; k++) {
-                        delete _m[i].declarations[j].jsdoctags[k].parent;
-                    }
-                }
-                if (_m[i].declarations[j].constructorObj) {
-                    if (_m[i].declarations[j].constructorObj.jsdoctags) {
-                        lengt = _m[i].declarations[j].constructorObj.jsdoctags.length;
-                        for (k; k < lengt; k++) {
-                            delete _m[i].declarations[j].constructorObj.jsdoctags[k].parent;
-                        }
-                    }
-                }
-            }
+    private static instance: DependenciesEngine;
+    private constructor() { }
+    public static getInstance() {
+        if (!DependenciesEngine.instance) {
+            DependenciesEngine.instance = new DependenciesEngine();
         }
-        return _m;
+        return DependenciesEngine.instance;
     }
 
     private updateModulesDeclarationsExportsTypes() {
@@ -117,18 +103,18 @@ export class DependenciesEngine {
             }
         });
         this.rawData = data;
-        this.modules = _.sortBy(this.rawData.modules, ['name']);
-        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, ['name']);
-        this.rawModules = _.sortBy(data.modulesForGraph, ['name']);
-        this.components = _.sortBy(this.rawData.components, ['name']);
-        this.controllers = _.sortBy(this.rawData.controllers, ['name']);
-        this.directives = _.sortBy(this.rawData.directives, ['name']);
-        this.injectables = _.sortBy(this.rawData.injectables, ['name']);
-        this.interceptors = _.sortBy(this.rawData.interceptors, ['name']);
-        this.guards = _.sortBy(this.rawData.guards, ['name']);
-        this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
-        this.pipes = _.sortBy(this.rawData.pipes, ['name']);
-        this.classes = _.sortBy(this.rawData.classes, ['name']);
+        this.modules = _.sortBy(this.rawData.modules, [el => el.name.toLowerCase()]);
+        this.rawModulesForOverview = _.sortBy(data.modulesForGraph, [el => el.name.toLowerCase()]);
+        this.rawModules = _.sortBy(data.modulesForGraph, [el => el.name.toLowerCase()]);
+        this.components = _.sortBy(this.rawData.components, [el => el.name.toLowerCase()]);
+        this.controllers = _.sortBy(this.rawData.controllers, [el => el.name.toLowerCase()]);
+        this.directives = _.sortBy(this.rawData.directives, [el => el.name.toLowerCase()]);
+        this.injectables = _.sortBy(this.rawData.injectables, [el => el.name.toLowerCase()]);
+        this.interceptors = _.sortBy(this.rawData.interceptors, [el => el.name.toLowerCase()]);
+        this.guards = _.sortBy(this.rawData.guards, [el => el.name.toLowerCase()]);
+        this.interfaces = _.sortBy(this.rawData.interfaces, [el => el.name.toLowerCase()]);
+        this.pipes = _.sortBy(this.rawData.pipes, [el => el.name.toLowerCase()]);
+        this.classes = _.sortBy(this.rawData.classes, [el => el.name.toLowerCase()]);
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.updateModulesDeclarationsExportsTypes();
@@ -149,15 +135,17 @@ export class DependenciesEngine {
             source: 'internal',
             data: undefined
         };
-        for (let i = 0; i < data.length; i++) {
-            if (typeof name !== 'undefined') {
-                if (typeof file !== 'undefined') {
-                    if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
-                        _result.data = data[i];
-                    }
-                } else {
-                    if (name.indexOf(data[i].name) !== -1) {
-                        _result.data = data[i];
+        if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                if (typeof name !== 'undefined') {
+                    if (typeof file !== 'undefined') {
+                        if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
+                            _result.data = data[i];
+                        }
+                    } else {
+                        if (name.indexOf(data[i].name) !== -1) {
+                            _result.data = data[i];
+                        }
                     }
                 }
             }
@@ -209,7 +197,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
             () => this.findInCompodocDependencies(name, this.miscellaneous.enumerations),
-            () => this.angularApiUtil.findApi(name)
+            () => AngularApiUtil.findApi(name)
         ];
 
         for (let searchFunction of searchFunctions) {
@@ -416,3 +404,5 @@ export class DependenciesEngine {
         return this.miscellaneous;
     }
 }
+
+export default DependenciesEngine.getInstance();

@@ -1,6 +1,5 @@
 import { IDep } from '../dependencies.interfaces';
 import { ts } from 'ts-simple-ast';
-import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
 
 const crypto = require('crypto');
 

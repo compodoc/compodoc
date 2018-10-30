@@ -1,7 +1,6 @@
 import * as Handlebars from 'handlebars';
 import * as _ from 'lodash';
 
-import { DependenciesEngine } from './dependencies.engine';
 import { IHtmlEngineHelper } from './html-engine-helpers/html-engine-helper.interface';
 import { CompareHelper } from './html-engine-helpers/compare.helper';
 import { OrHelper } from './html-engine-helpers/or.helper';
@@ -32,7 +31,6 @@ import { ObjectHelper } from './html-engine-helpers/object.helper';
 import { ObjectLengthHelper } from './html-engine-helpers/object-length.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
 import { OneParameterHasHelper } from './html-engine-helpers/one-parameter-has.helper';
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
 import { ElementAloneHelper } from './html-engine-helpers/element-alone.helper';
 import { HasOwnHelper } from './html-engine-helpers/has-own.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
@@ -40,18 +38,16 @@ import { I18nHelper } from './html-engine-helpers/i18n.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(
-        bars,
-        configuration: ConfigurationInterface,
-        dependenciesEngine: DependenciesEngine
+        bars
     ): void {
         this.registerHelper(bars, 'compare', new CompareHelper());
         this.registerHelper(bars, 'or', new OrHelper());
         this.registerHelper(
             bars,
             'functionSignature',
-            new FunctionSignatureHelper(configuration, dependenciesEngine)
+            new FunctionSignatureHelper()
         );
-        this.registerHelper(bars, 'isNotToggle', new IsNotToggleHelper(configuration));
+        this.registerHelper(bars, 'isNotToggle', new IsNotToggleHelper());
         this.registerHelper(bars, 'isInitialTab', new IsInitialTabHelper());
         this.registerHelper(bars, 'isTabEnabled', new IsTabEnabledHelper());
         this.registerHelper(bars, 'ifString', new IfStringHelper());
@@ -74,7 +70,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(
             bars,
             'linkType',
-            new LinkTypeHelper(configuration, dependenciesEngine)
+            new LinkTypeHelper()
         );
         this.registerHelper(bars, 'indexableSignature', new IndexableSignatureHelper());
         this.registerHelper(bars, 'object', new ObjectHelper());
@@ -82,10 +78,10 @@ export class HtmlEngineHelpers {
         this.registerHelper(
             bars,
             'parseDescription',
-            new ParseDescriptionHelper(dependenciesEngine)
+            new ParseDescriptionHelper()
         );
         this.registerHelper(bars, 'one-parameter-has', new OneParameterHasHelper());
-        this.registerHelper(bars, 'element-alone', new ElementAloneHelper(dependenciesEngine));
+        this.registerHelper(bars, 'element-alone', new ElementAloneHelper());
         this.registerHelper(bars, 'hasOwn', new HasOwnHelper());
         this.registerHelper(bars, 'short-url', new ShortURLHelper());
         this.registerHelper(bars, 't', new I18nHelper());

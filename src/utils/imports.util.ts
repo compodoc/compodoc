@@ -5,6 +5,14 @@ import Ast, { PropertyDeclaration, ts, SyntaxKind } from 'ts-simple-ast';
 const ast = new Ast();
 
 export class ImportsUtil {
+    private static instance: ImportsUtil;
+    private constructor() { }
+    public static getInstance() {
+        if (!ImportsUtil.instance) {
+            ImportsUtil.instance = new ImportsUtil();
+        }
+        return ImportsUtil.instance;
+    }
     /**
      * Find for a sourceFile a variable value in a local enum
      * @param srcFile
@@ -427,3 +435,5 @@ export class ImportsUtil {
         }
     }
 }
+
+export default ImportsUtil.getInstance();

@@ -10,7 +10,10 @@ import { readConfig, handlePath } from './utils/utils';
 import { ts } from 'ts-simple-ast';
 import { ParserUtil } from './utils/parser.util.class';
 
-import I18nEngineInstance from './app/engines/i18n.engine';
+import I18nEngine from './app/engines/i18n.engine';
+
+import Configuration from './app/configuration';
+import FileEngine from './app/engines/file.engine';
 
 const pkg = require('../package.json');
 const program = require('commander');
@@ -77,7 +80,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
-            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN)', COMPODOC_DEFAULTS.language)
+            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)', COMPODOC_DEFAULTS.language)
             .option(
                 '--theme [theme]',
                 "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
@@ -97,7 +100,7 @@ export class CliApplication extends Application {
                 '--navTabConfig <tab configs>',
                 `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
 Double-quotes must be escaped with '\\'. \
-Available tab IDs are "info", "readme", "source", "templateData", "tree", and "example". \
+Available tab IDs are "info", "readme", "source", "templateData", "styleData", "tree", and "example". \
 Note: Certain tabs will only be shown if applicable to a given dependency`,
                 list,
                 JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
@@ -137,6 +140,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             )
             .option('--disableDomTree', 'Do not add dom tree tab', false)
             .option('--disableTemplateTab', 'Do not add template tab', false)
+            .option('--disableStyleTab', 'Do not add style tab', false)
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivate', 'Do not show private in generated documentation', false)
@@ -159,6 +163,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 false
             )
             .option('--customFavicon [path]', 'Use a custom favicon')
+            .option('--customLogo [path]', 'Use a custom logo')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
@@ -191,96 +196,96 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.output) {
-            this.configuration.mainData.output = configFile.output;
+            Configuration.mainData.output = configFile.output;
         }
         if (program.output && program.output !== COMPODOC_DEFAULTS.folder) {
-            this.configuration.mainData.output = program.output;
+            Configuration.mainData.output = program.output;
         }
 
         if (configFile.extTheme) {
-            this.configuration.mainData.extTheme = configFile.extTheme;
+            Configuration.mainData.extTheme = configFile.extTheme;
         }
         if (program.extTheme) {
-            this.configuration.mainData.extTheme = program.extTheme;
+            Configuration.mainData.extTheme = program.extTheme;
         }
 
         if (configFile.language) {
-            this.configuration.mainData.language = configFile.language;
+            Configuration.mainData.language = configFile.language;
         }
         if (program.language) {
-            this.configuration.mainData.language = program.language;
+            Configuration.mainData.language = program.language;
         }
 
         if (configFile.theme) {
-            this.configuration.mainData.theme = configFile.theme;
+            Configuration.mainData.theme = configFile.theme;
         }
         if (program.theme) {
-            this.configuration.mainData.theme = program.theme;
+            Configuration.mainData.theme = program.theme;
         }
 
         if (configFile.name) {
-            this.configuration.mainData.documentationMainName = configFile.name;
+            Configuration.mainData.documentationMainName = configFile.name;
         }
         if (program.name && program.name !== COMPODOC_DEFAULTS.title) {
-            this.configuration.mainData.documentationMainName = program.name;
+            Configuration.mainData.documentationMainName = program.name;
         }
 
         if (configFile.assetsFolder) {
-            this.configuration.mainData.assetsFolder = configFile.assetsFolder;
+            Configuration.mainData.assetsFolder = configFile.assetsFolder;
         }
         if (program.assetsFolder) {
-            this.configuration.mainData.assetsFolder = program.assetsFolder;
+            Configuration.mainData.assetsFolder = program.assetsFolder;
         }
 
         if (configFile.open) {
-            this.configuration.mainData.open = configFile.open;
+            Configuration.mainData.open = configFile.open;
         }
         if (program.open) {
-            this.configuration.mainData.open = program.open;
+            Configuration.mainData.open = program.open;
         }
 
         if (configFile.toggleMenuItems) {
-            this.configuration.mainData.toggleMenuItems = configFile.toggleMenuItems;
+            Configuration.mainData.toggleMenuItems = configFile.toggleMenuItems;
         }
         if (
             program.toggleMenuItems &&
             program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems
         ) {
-            this.configuration.mainData.toggleMenuItems = program.toggleMenuItems;
+            Configuration.mainData.toggleMenuItems = program.toggleMenuItems;
         }
 
         if (configFile.templates) {
-            this.configuration.mainData.templates = configFile.templates;
+            Configuration.mainData.templates = configFile.templates;
         }
         if (program.templates) {
-            this.configuration.mainData.templates = program.templates;
+            Configuration.mainData.templates = program.templates;
         }
 
         if (configFile.navTabConfig) {
-            this.configuration.mainData.navTabConfig = configFile.navTabConfig;
+            Configuration.mainData.navTabConfig = configFile.navTabConfig;
         }
         if (
             program.navTabConfig &&
             JSON.parse(program.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length
         ) {
-            this.configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
+            Configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
         }
 
         if (configFile.includes) {
-            this.configuration.mainData.includes = configFile.includes;
+            Configuration.mainData.includes = configFile.includes;
         }
         if (program.includes) {
-            this.configuration.mainData.includes = program.includes;
+            Configuration.mainData.includes = program.includes;
         }
 
         if (configFile.includesName) {
-            this.configuration.mainData.includesName = configFile.includesName;
+            Configuration.mainData.includesName = configFile.includesName;
         }
         if (
             program.includesName &&
             program.includesName !== COMPODOC_DEFAULTS.additionalEntryName
         ) {
-            this.configuration.mainData.includesName = program.includesName;
+            Configuration.mainData.includesName = program.includesName;
         }
 
         if (configFile.silent) {
@@ -291,204 +296,218 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.serve) {
-            this.configuration.mainData.serve = configFile.serve;
+            Configuration.mainData.serve = configFile.serve;
         }
         if (program.serve) {
-            this.configuration.mainData.serve = program.serve;
+            Configuration.mainData.serve = program.serve;
         }
 
         if (configFile.port) {
-            this.configuration.mainData.port = configFile.port;
+            Configuration.mainData.port = configFile.port;
         }
         if (program.port && program.port !== COMPODOC_DEFAULTS.port) {
-            this.configuration.mainData.port = program.port;
+            Configuration.mainData.port = program.port;
         }
 
         if (configFile.watch) {
-            this.configuration.mainData.watch = configFile.watch;
+            Configuration.mainData.watch = configFile.watch;
         }
         if (program.watch) {
-            this.configuration.mainData.watch = program.watch;
+            Configuration.mainData.watch = program.watch;
         }
 
         if (configFile.exportFormat) {
-            this.configuration.mainData.exportFormat = configFile.exportFormat;
+            Configuration.mainData.exportFormat = configFile.exportFormat;
         }
         if (program.exportFormat && program.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
-            this.configuration.mainData.exportFormat = program.exportFormat;
+            Configuration.mainData.exportFormat = program.exportFormat;
         }
 
         if (configFile.hideGenerator) {
-            this.configuration.mainData.hideGenerator = configFile.hideGenerator;
+            Configuration.mainData.hideGenerator = configFile.hideGenerator;
         }
         if (program.hideGenerator) {
-            this.configuration.mainData.hideGenerator = program.hideGenerator;
+            Configuration.mainData.hideGenerator = program.hideGenerator;
         }
 
         if (configFile.coverageTest) {
-            this.configuration.mainData.coverageTest = true;
-            this.configuration.mainData.coverageTestThreshold =
+            Configuration.mainData.coverageTest = true;
+            Configuration.mainData.coverageTestThreshold =
                 typeof configFile.coverageTest === 'string'
                     ? parseInt(configFile.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
         if (program.coverageTest) {
-            this.configuration.mainData.coverageTest = true;
-            this.configuration.mainData.coverageTestThreshold =
+            Configuration.mainData.coverageTest = true;
+            Configuration.mainData.coverageTestThreshold =
                 typeof program.coverageTest === 'string'
                     ? parseInt(program.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
 
         if (configFile.coverageMinimumPerFile) {
-            this.configuration.mainData.coverageTestPerFile = true;
-            this.configuration.mainData.coverageMinimumPerFile =
+            Configuration.mainData.coverageTestPerFile = true;
+            Configuration.mainData.coverageMinimumPerFile =
                 typeof configFile.coverageMinimumPerFile === 'string'
                     ? parseInt(configFile.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
         if (program.coverageMinimumPerFile) {
-            this.configuration.mainData.coverageTestPerFile = true;
-            this.configuration.mainData.coverageMinimumPerFile =
+            Configuration.mainData.coverageTestPerFile = true;
+            Configuration.mainData.coverageMinimumPerFile =
                 typeof program.coverageMinimumPerFile === 'string'
                     ? parseInt(program.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
 
         if (configFile.coverageTestThresholdFail) {
-            this.configuration.mainData.coverageTestThresholdFail =
+            Configuration.mainData.coverageTestThresholdFail =
                 configFile.coverageTestThresholdFail === 'false' ? false : true;
         }
         if (program.coverageTestThresholdFail) {
-            this.configuration.mainData.coverageTestThresholdFail =
+            Configuration.mainData.coverageTestThresholdFail =
                 program.coverageTestThresholdFail === 'false' ? false : true;
         }
 
         if (configFile.coverageTestShowOnlyFailed) {
-            this.configuration.mainData.coverageTestShowOnlyFailed =
+            Configuration.mainData.coverageTestShowOnlyFailed =
                 configFile.coverageTestShowOnlyFailed;
         }
         if (program.coverageTestShowOnlyFailed) {
-            this.configuration.mainData.coverageTestShowOnlyFailed =
+            Configuration.mainData.coverageTestShowOnlyFailed =
                 program.coverageTestShowOnlyFailed;
         }
 
         if (configFile.unitTestCoverage) {
-            this.configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
+            Configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
         }
         if (program.unitTestCoverage) {
-            this.configuration.mainData.unitTestCoverage = program.unitTestCoverage;
+            Configuration.mainData.unitTestCoverage = program.unitTestCoverage;
         }
 
         if (configFile.disableSourceCode) {
-            this.configuration.mainData.disableSourceCode = configFile.disableSourceCode;
+            Configuration.mainData.disableSourceCode = configFile.disableSourceCode;
         }
         if (program.disableSourceCode) {
-            this.configuration.mainData.disableSourceCode = program.disableSourceCode;
+            Configuration.mainData.disableSourceCode = program.disableSourceCode;
         }
 
         if (configFile.disableDomTree) {
-            this.configuration.mainData.disableDomTree = configFile.disableDomTree;
+            Configuration.mainData.disableDomTree = configFile.disableDomTree;
         }
         if (program.disableDomTree) {
-            this.configuration.mainData.disableDomTree = program.disableDomTree;
+            Configuration.mainData.disableDomTree = program.disableDomTree;
         }
 
         if (configFile.disableTemplateTab) {
-            this.configuration.mainData.disableTemplateTab = configFile.disableTemplateTab;
+            Configuration.mainData.disableTemplateTab = configFile.disableTemplateTab;
         }
         if (program.disableTemplateTab) {
-            this.configuration.mainData.disableTemplateTab = program.disableTemplateTab;
+            Configuration.mainData.disableTemplateTab = program.disableTemplateTab;
+        }
+
+        if (configFile.disableStyleTab) {
+            Configuration.mainData.disableStyleTab = configFile.disableStyleTab;
+        }
+        if (program.disableStyleTab) {
+            Configuration.mainData.disableStyleTab = program.disableStyleTab;
         }
 
         if (configFile.disableGraph) {
-            this.configuration.mainData.disableGraph = configFile.disableGraph;
+            Configuration.mainData.disableGraph = configFile.disableGraph;
         }
         if (program.disableGraph) {
-            this.configuration.mainData.disableGraph = program.disableGraph;
+            Configuration.mainData.disableGraph = program.disableGraph;
         }
 
         if (configFile.disableCoverage) {
-            this.configuration.mainData.disableCoverage = configFile.disableCoverage;
+            Configuration.mainData.disableCoverage = configFile.disableCoverage;
         }
         if (program.disableCoverage) {
-            this.configuration.mainData.disableCoverage = program.disableCoverage;
+            Configuration.mainData.disableCoverage = program.disableCoverage;
         }
 
         if (configFile.disablePrivate) {
-            this.configuration.mainData.disablePrivate = configFile.disablePrivate;
+            Configuration.mainData.disablePrivate = configFile.disablePrivate;
         }
         if (program.disablePrivate) {
-            this.configuration.mainData.disablePrivate = program.disablePrivate;
+            Configuration.mainData.disablePrivate = program.disablePrivate;
         }
 
         if (configFile.disableProtected) {
-            this.configuration.mainData.disableProtected = configFile.disableProtected;
+            Configuration.mainData.disableProtected = configFile.disableProtected;
         }
         if (program.disableProtected) {
-            this.configuration.mainData.disableProtected = program.disableProtected;
+            Configuration.mainData.disableProtected = program.disableProtected;
         }
 
         if (configFile.disableInternal) {
-            this.configuration.mainData.disableInternal = configFile.disableInternal;
+            Configuration.mainData.disableInternal = configFile.disableInternal;
         }
         if (program.disableInternal) {
-            this.configuration.mainData.disableInternal = program.disableInternal;
+            Configuration.mainData.disableInternal = program.disableInternal;
         }
 
         if (configFile.disableLifeCycleHooks) {
-            this.configuration.mainData.disableLifeCycleHooks = configFile.disableLifeCycleHooks;
+            Configuration.mainData.disableLifeCycleHooks = configFile.disableLifeCycleHooks;
         }
         if (program.disableLifeCycleHooks) {
-            this.configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
+            Configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
         }
 
         if (configFile.disableRoutesGraph) {
-            this.configuration.mainData.disableRoutesGraph = configFile.disableRoutesGraph;
+            Configuration.mainData.disableRoutesGraph = configFile.disableRoutesGraph;
         }
         if (program.disableRoutesGraph) {
-            this.configuration.mainData.disableRoutesGraph = program.disableRoutesGraph;
+            Configuration.mainData.disableRoutesGraph = program.disableRoutesGraph;
         }
 
         if (configFile.disableSearch) {
-            this.configuration.mainData.disableSearch = configFile.disableSearch;
+            Configuration.mainData.disableSearch = configFile.disableSearch;
         }
         if (program.disableSearch) {
-            this.configuration.mainData.disableSearch = program.disableSearch;
+            Configuration.mainData.disableSearch = program.disableSearch;
         }
 
         if (configFile.minimal) {
-            this.configuration.mainData.disableSearch = true;
-            this.configuration.mainData.disableRoutesGraph = true;
-            this.configuration.mainData.disableGraph = true;
-            this.configuration.mainData.disableCoverage = true;
+            Configuration.mainData.disableSearch = true;
+            Configuration.mainData.disableRoutesGraph = true;
+            Configuration.mainData.disableGraph = true;
+            Configuration.mainData.disableCoverage = true;
         }
         if (program.minimal) {
-            this.configuration.mainData.disableSearch = true;
-            this.configuration.mainData.disableRoutesGraph = true;
-            this.configuration.mainData.disableGraph = true;
-            this.configuration.mainData.disableCoverage = true;
+            Configuration.mainData.disableSearch = true;
+            Configuration.mainData.disableRoutesGraph = true;
+            Configuration.mainData.disableGraph = true;
+            Configuration.mainData.disableCoverage = true;
         }
 
         if (configFile.customFavicon) {
-            this.configuration.mainData.customFavicon = configFile.customFavicon;
+            Configuration.mainData.customFavicon = configFile.customFavicon;
         }
         if (program.customFavicon) {
-            this.configuration.mainData.customFavicon = program.customFavicon;
+            Configuration.mainData.customFavicon = program.customFavicon;
+        }
+
+        if (configFile.customLogo) {
+            Configuration.mainData.customLogo = configFile.customLogo;
+        }
+        if (program.customLogo) {
+            Configuration.mainData.customLogo = program.customLogo;
         }
 
         if (configFile.gaID) {
-            this.configuration.mainData.gaID = configFile.gaID;
+            Configuration.mainData.gaID = configFile.gaID;
         }
         if (program.gaID) {
-            this.configuration.mainData.gaID = program.gaID;
+            Configuration.mainData.gaID = program.gaID;
         }
 
         if (configFile.gaSite) {
-            this.configuration.mainData.gaSite = configFile.gaSite;
+            Configuration.mainData.gaSite = configFile.gaSite;
         }
         if (program.gaSite && program.gaSite !== COMPODOC_DEFAULTS.gaSite) {
-            this.configuration.mainData.gaSite = program.gaSite;
+            Configuration.mainData.gaSite = program.gaSite;
         }
 
         if (!this.isWatching) {
@@ -513,8 +532,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             logger.warn(`No configuration file found, switching to CLI flags.`);
         }
 
-        if (program.language && !I18nEngineInstance.supportLanguage(program.language)) {
-            logger.warn(`The language ${program.language} is not available, falling back to ${I18nEngineInstance.fallbackLanguage}`);
+        if (program.language && !I18nEngine.supportLanguage(program.language)) {
+            logger.warn(`The language ${program.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`);
         }
 
         if (program.tsconfig && typeof program.tsconfig === 'boolean') {
@@ -523,10 +542,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.tsconfig) {
-            this.configuration.mainData.tsconfig = configFile.tsconfig;
+            Configuration.mainData.tsconfig = configFile.tsconfig;
         }
         if (program.tsconfig) {
-            this.configuration.mainData.tsconfig = program.tsconfig;
+            Configuration.mainData.tsconfig = program.tsconfig;
         }
 
         if (configFile.files) {
@@ -539,9 +558,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             includeFiles = configFile.include;
         }
 
-        if (program.serve && !this.configuration.mainData.tsconfig && program.output) {
+        if (program.serve && !Configuration.mainData.tsconfig && program.output) {
             // if -s & -d, serve it
-            if (!this.fileEngine.existsSync(program.output)) {
+            if (!FileEngine.existsSync(program.output)) {
                 logger.error(`${program.output} folder doesn't exist`);
                 process.exit(1);
             } else {
@@ -552,9 +571,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 );
                 super.runWebServer(program.output);
             }
-        } else if (program.serve && !this.configuration.mainData.tsconfig && !program.output) {
+        } else if (program.serve && !Configuration.mainData.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!this.fileEngine.existsSync(program.output)) {
+            if (!FileEngine.existsSync(program.output)) {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
@@ -567,25 +586,25 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             }
         } else {
             if (program.hideGenerator) {
-                this.configuration.mainData.hideGenerator = true;
+                Configuration.mainData.hideGenerator = true;
             }
 
-            if (this.configuration.mainData.tsconfig && program.args.length === 0) {
+            if (Configuration.mainData.tsconfig && program.args.length === 0) {
                 /**
                  * tsconfig file provided only
                  */
-                let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
+                let testTsConfigPath = Configuration.mainData.tsconfig.indexOf(process.cwd());
                 if (testTsConfigPath !== -1) {
-                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(
+                    Configuration.mainData.tsconfig = Configuration.mainData.tsconfig.replace(
                         process.cwd() + path.sep,
                         ''
                     );
                 }
 
-                if (!this.fileEngine.existsSync(this.configuration.mainData.tsconfig)) {
+                if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                     logger.error(
                         `"${
-                            this.configuration.mainData.tsconfig
+                            Configuration.mainData.tsconfig
                         }" file was not found in the current directory`
                     );
                     process.exit(1);
@@ -593,9 +612,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     let _file = path.join(
                         path.join(
                             process.cwd(),
-                            path.dirname(this.configuration.mainData.tsconfig)
+                            path.dirname(Configuration.mainData.tsconfig)
                         ),
-                        path.basename(this.configuration.mainData.tsconfig)
+                        path.basename(Configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file
@@ -693,20 +712,20 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         }
                     }
                 }
-            } else if (this.configuration.mainData.tsconfig && program.args.length > 0) {
+            } else if (Configuration.mainData.tsconfig && program.args.length > 0) {
                 /**
                  * tsconfig file provided with source folder in arg
                  */
-                let testTsConfigPath = this.configuration.mainData.tsconfig.indexOf(process.cwd());
+                let testTsConfigPath = Configuration.mainData.tsconfig.indexOf(process.cwd());
                 if (testTsConfigPath !== -1) {
-                    this.configuration.mainData.tsconfig = this.configuration.mainData.tsconfig.replace(
+                    Configuration.mainData.tsconfig = Configuration.mainData.tsconfig.replace(
                         process.cwd() + path.sep,
                         ''
                     );
                 }
 
                 let sourceFolder = program.args[0];
-                if (!this.fileEngine.existsSync(sourceFolder)) {
+                if (!FileEngine.existsSync(sourceFolder)) {
                     logger.error(
                         `Provided source folder ${sourceFolder} was not found in the current directory`
                     );
@@ -714,10 +733,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 } else {
                     logger.info('Using provided source folder');
 
-                    if (!this.fileEngine.existsSync(this.configuration.mainData.tsconfig)) {
+                    if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                         logger.error(
                             `"${
-                                this.configuration.mainData.tsconfig
+                                Configuration.mainData.tsconfig
                             }" file was not found in the current directory`
                         );
                         process.exit(1);
@@ -725,9 +744,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         let _file = path.join(
                             path.join(
                                 process.cwd(),
-                                path.dirname(this.configuration.mainData.tsconfig)
+                                path.dirname(Configuration.mainData.tsconfig)
                             ),
-                            path.basename(this.configuration.mainData.tsconfig)
+                            path.basename(Configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory
                         cwd = _file

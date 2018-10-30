@@ -39,6 +39,7 @@ export interface MainDataInterface {
     disableSourceCode: boolean;
     disableDomTree: boolean;
     disableTemplateTab: boolean;
+    disableStyleTab: boolean;
     disableGraph: boolean;
     disableMainGraph: boolean;
     disableCoverage: boolean;
@@ -63,6 +64,7 @@ export interface MainDataInterface {
     exportFormat: string;
     coverageData: Object;
     customFavicon: string;
+    customLogo: string;
     packageDependencies: Object[];
     packagePeerDependencies: Object[];
     gaID: string;

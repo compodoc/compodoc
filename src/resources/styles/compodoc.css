@@ -776,6 +776,10 @@ th[role=columnheader].statements:not(.no-sort):after {
     margin-right: 0;
 }
 
+.modifier-icon.ion-ios-reset {
+    margin-right: 0;
+}
+
 /**
  * Modules
  */

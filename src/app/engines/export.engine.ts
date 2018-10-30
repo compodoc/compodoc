@@ -1,27 +1,24 @@
-import { DependenciesEngine } from './dependencies.engine';
-import { ConfigurationInterface } from '../interfaces/configuration.interface';
-import { FileEngine } from './file.engine';
+import Configuration from '../configuration';
 
-import { ExportJsonEngine } from './export-json.engine';
+import ExportJsonEngine from './export-json.engine';
 
 export class ExportEngine {
-    private _engine;
 
-    constructor(
-        private configuration: ConfigurationInterface,
-        private dependenciesEngine: DependenciesEngine,
-        private fileEngine: FileEngine = new FileEngine()
-    ) {}
+    private static instance: ExportEngine;
+    private constructor() { }
+    public static getInstance() {
+        if (!ExportEngine.instance) {
+            ExportEngine.instance = new ExportEngine();
+        }
+        return ExportEngine.instance;
+    }
 
-    export(outputFolder, data) {
-        switch (this.configuration.mainData.exportFormat) {
+    public export(outputFolder, data) {
+        switch (Configuration.mainData.exportFormat) {
             case 'json':
-                this._engine = new ExportJsonEngine(
-                    this.configuration,
-                    this.dependenciesEngine,
-                    this.fileEngine
-                );
-                return this._engine.export(outputFolder, data);
+                return ExportJsonEngine.export(outputFolder, data);
         }
     }
 }
+
+export default ExportEngine.getInstance();

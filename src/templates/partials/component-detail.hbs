@@ -186,6 +186,48 @@
             </tr>
             {{/if}}
 
+            {{#if component.tag}}
+            <tr>
+                <td class="col-md-3">tag</td>
+                <td class="col-md-9"><code>{{component.tag}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.styleUrl}}
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>{{component.styleUrl}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.shadow}}
+            <tr>
+                <td class="col-md-3">shadow</td>
+                <td class="col-md-9"><code>{{component.shadow}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.scoped}}
+            <tr>
+                <td class="col-md-3">scoped</td>
+                <td class="col-md-9"><code>{{component.scoped}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.assetsDir}}
+            <tr>
+                <td class="col-md-3">assetsDir</td>
+                <td class="col-md-9"><code>{{component.assetsDir}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.assetsDirs}}
+            <tr>
+                <td class="col-md-3">assetsDirs</td>
+                <td class="col-md-9"><code>{{component.assetsDirs}}</code></td>
+            </tr>
+            {{/if}}
+
         </tbody>
     </table>
 </section>

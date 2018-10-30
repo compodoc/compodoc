@@ -1,15 +1,19 @@
-import { DependenciesEngine } from './dependencies.engine';
-import { FileEngine } from './file.engine';
+import DependenciesEngine from './dependencies.engine';
+import FileEngine from './file.engine';
 
 const ngdT = require('@compodoc/ngd-transformer');
 
 export class NgdEngine {
     public engine;
 
-    constructor(
-        private dependenciesEngine: DependenciesEngine,
-        private fileEngine: FileEngine = new FileEngine()
-    ) {}
+    private static instance: NgdEngine;
+    private constructor() { }
+    public static getInstance() {
+        if (!NgdEngine.instance) {
+            NgdEngine.instance = new NgdEngine();
+        }
+        return NgdEngine.instance;
+    }
 
     public init(outputpath: string) {
         this.engine = new ngdT.DotEngine({
@@ -24,15 +28,17 @@ export class NgdEngine {
         this.engine.updateOutput(outputpath);
 
         if (type === 'f') {
-            return this.engine.generateGraph([this.dependenciesEngine.getRawModule(name)]);
+            return this.engine.generateGraph([DependenciesEngine.getRawModule(name)]);
         } else {
-            return this.engine.generateGraph(this.dependenciesEngine.rawModulesForOverview);
+            return this.engine.generateGraph(DependenciesEngine.rawModulesForOverview);
         }
     }
 
     public readGraph(filepath: string, name: string): Promise<string> {
-        return this.fileEngine
+        return FileEngine
             .get(filepath)
             .catch(err => Promise.reject('Error during graph read ' + name));
     }
 }
+
+export default NgdEngine.getInstance();

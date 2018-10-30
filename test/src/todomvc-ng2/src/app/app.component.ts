@@ -16,4 +16,6 @@ export class AppComponent {
     public getProperty<T, K extends keyof T>(obj: T, key: K) {
         return obj[key];
     }
+
+    public openSomeDialog(model, grid, callback: ({ index }) => {}): void {}
 }

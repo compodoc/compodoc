@@ -31,8 +31,12 @@ describe('CLI nest projects support', () => {
         });
 
         it('it should contain a controller page with prefix', () => {
-            let file = read(`${distFolder}/controllers/AuthController.html`);
-            expect(file).to.contain('code>auth</code');
+            let file = read(`${distFolder}/controllers/AppController.html`);
+            expect(file).to.contain('@Auth(Roles.User)<br');
+            expect(file).to.contain('@Post()<br');
+            expect(file).to.contain('@UsePipes(new ValidationPipe())<br');
+            expect(file).to.contain('@ApiResponse({description: &#x27;Return all articles.&#x27;})<br');
+            expect(file).to.contain(`@Post(&#x27;multiple&#x27;)<br`);
         });
 
         it('it should contain a module page with controller referenced', () => {
@@ -40,6 +44,13 @@ describe('CLI nest projects support', () => {
             expect(isFileExists).to.be.true;
             let file = read(`${distFolder}/modules/AppModule.html`);
             expect(file).to.contain('AppController</a>');
+        });
+
+        it('it should contain an entity', () => {
+            let isFileExists = exists(`${distFolder}/classes/UserEntity.html`);
+            expect(isFileExists).to.be.true;
+            let file = read(`${distFolder}/classes/UserEntity.html`);
+            expect(file).to.contain('@Column({default: &#x27;&#x27;})<br');
         });
 
     });

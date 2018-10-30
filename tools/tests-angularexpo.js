@@ -329,6 +329,16 @@ const TEST_FOLDER = 'angularexpo-tests',
             maintainer: 'vmware',
             tsconfig_path: './src/dev/',
             tsconfig_file: 'tsconfig.dev.json'
+        },
+        {
+            name: 'simple-todos',
+            maintainer: 'chanlito',
+            tsconfig_path: './server/',
+            tsconfig_file: 'tsconfig.json'
+        }, {
+            name: 'nestjs-realworld-example-app',
+            maintainer: 'lujakob',
+            tsconfig_path: './'
         }
     ],
     len = GIT_REPOSITORIES.length;

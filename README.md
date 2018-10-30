@@ -72,13 +72,13 @@ Official documentation has moved to [https://compodoc.github.io/website/](https:
 
 Ready to get started? [Read installation instructions](https://compodoc.github.io/website/guides/installation.html).
 
-# Backers
+# 🏅 Backers
 
-Support us with a monthly donation and help us continue our activities. [Become a backer][support-url]
+Thank you to all our backers ! Support us with a monthly donation and help us continue our activities. [Become a backer][support-url]
 
 [![Backers][backers-image]][support-url]
 
-# Sponsors
+# 🎖 Sponsors
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor][support-url]
 
@@ -91,6 +91,8 @@ Want to file a bug, contribute some code, or improve documentation? Excellent!
 Read up on our guidelines for [contributing](https://github.com/compodoc/compodoc/blob/master/CONTRIBUTING.md).
 
 # Contributors
+
+This project exists thanks to all these people.
 
 |[<img alt="vogloblinsky" src="https://avatars3.githubusercontent.com/u/2841805?v=4&s=117" width="117">](https://github.com/vogloblinsky)|[<img alt="manekinekko" src="https://avatars3.githubusercontent.com/u/1699357?v=4&s=117" width="117">](https://github.com/manekinekko)|[<img alt="mattlewis92" src="https://avatars1.githubusercontent.com/u/6425649?v=4&s=117" width="117">](https://github.com/mattlewis92)|[<img alt="JonasMH" src="https://avatars0.githubusercontent.com/u/1939229?v=4&s=117" width="117">](https://github.com/JonasMH)|[<img alt="rprotsyk" src="https://avatars0.githubusercontent.com/u/104502?v=4&s=117" width="117">](https://github.com/rprotsyk)|[<img alt="daniele-zurico" src="https://avatars0.githubusercontent.com/u/3193095?v=4&s=117" width="117">](https://github.com/daniele-zurico)|[<img alt="profimedica" src="https://avatars0.githubusercontent.com/u/2903499?v=4&s=117" width="117">](https://github.com/profimedica)|[<img alt="guilhermevrs" src="https://avatars0.githubusercontent.com/u/1570567?v=4&s=117" width="117">](https://github.com/guilhermevrs)|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|

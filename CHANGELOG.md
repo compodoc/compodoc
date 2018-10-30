@@ -1,3 +1,21 @@
+<a name="1.1.6"></a>
+# [1.1.6](https://github.com/compodoc/compodoc/compare/1.1.5...1.1.6) (2018-10-30)
+
+### Bug fixes
+
+* **engine:** watch mode ([cc9c887a](https://github.com/compodoc/compodoc/commit/cc9c887a)), closes [#644](https://github.com/compodoc/compodoc/issues/644)
+* **deps:** anonymous function for function argument ([c80504a5](https://github.com/compodoc/compodoc/commit/c80504a5)), closes [#643](https://github.com/compodoc/compodoc/issues/643)
+* **deps:** unnamed function ([a8881b41](https://github.com/compodoc/compodoc/commit/a8881b41)), closes [#668](https://github.com/compodoc/compodoc/issues/668)
+* **engine:** IE11 support ([6d482398](https://github.com/compodoc/compodoc/commit/6d482398)), closes [#673](https://github.com/compodoc/compodoc/issues/673)
+* **deps:** custom syntax in main.ts ([241024b7](https://github.com/compodoc/compodoc/commit/241024b7)), closes [#677](https://github.com/compodoc/compodoc/issues/677)
+
+### Features
+
+* **UI:** add custom logo to where the title name is located ([f68475b1](https://github.com/compodoc/compodoc/commit/f68475b1)), closes [#134](https://github.com/compodoc/compodoc/issues/134) Thanks [Zach Feldman](https://github.com/feldmanz66)
+* **UI:** Add style url data to component documentation ([bcc0dcf5](https://github.com/compodoc/compodoc/commit/bcc0dcf5)), closes [#648](https://github.com/compodoc/compodoc/issues/648) Thanks [Daniel Leroux](https://github.com/danielleroux)
+* **UI:** decorators arguments listing ([bd23ec89](https://github.com/compodoc/compodoc/commit/bd23ec89)), closes [#630](https://github.com/compodoc/compodoc/issues/630) [#640](https://github.com/compodoc/compodoc/issues/640)
+* **i18n:** pt-BR ([0b366da4](https://github.com/compodoc/compodoc/commit/0b366da4)), Thanks [Laís Figueiredo](https://github.com/lsfgrd)
+
 <a name="1.1.5"></a>
 # [1.1.5](https://github.com/compodoc/compodoc/compare/1.1.4...1.1.5) (2018-08-29)
 

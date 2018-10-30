@@ -4,11 +4,10 @@ import { ts, SyntaxKind } from 'ts-simple-ast';
 
 import { TsPrinterUtil } from '../../../../../utils/ts-printer.util';
 
-import { ImportsUtil } from '../../../../../utils/imports.util';
+import ImportsUtil from '../../../../../utils/imports.util';
 
 export class SymbolHelper {
     private readonly unknown = '???';
-    private importsUtil = new ImportsUtil();
 
     public parseDeepIndentifier(name: string, srcFile?: ts.SourceFile): IParseDeepIdentifierResult {
         let result = {
@@ -29,7 +28,7 @@ export class SymbolHelper {
             return result;
         }
         if (typeof srcFile !== 'undefined') {
-            result.file = this.importsUtil.getFileNameOfImport(name, srcFile);
+            result.file = ImportsUtil.getFileNameOfImport(name, srcFile);
         }
         result.name = name;
         result.type = type;
@@ -191,7 +190,7 @@ export class SymbolHelper {
         let localNode = node;
 
         if (ts.isShorthandPropertyAssignment(localNode)) {
-            localNode = this.importsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
+            localNode = ImportsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
         }
 
         if (ts.isArrayLiteralExpression(localNode.initializer)) {

@@ -117,7 +117,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have a decorator listed', () => {
-        expect(footerComponentFile).to.contain('<i>Decorators : </i><code>LogProperty</code>');
+        expect(footerComponentFile).to.contain('@LogProperty()<br');
     });
 
     /**
@@ -719,5 +719,27 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/classes/Todo.html');
         expect(file).to.contain('<span class="modifier">Abstract</span>');
         expect(file).to.contain('<span class="modifier">Async</span>');
+    });
+
+    it('correct support function with empty typed arguments', () => {
+        let file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('<code>openSomeDialog(model,');
+    });
+
+    it('correct support unnamed function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('Unnamed');
+    });
+
+    it('correct display styles tab', () => {
+        let file = read(distFolder + '/components/HeaderComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('language-scss');
+        file = read(distFolder + '/components/AppComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('font-size');
+        file = read(distFolder + '/components/TodoMVCComponent.html');
+        expect(file).to.contain('styleData-tab');
+        expect(file).to.contain('pointer-events');
     });
 });

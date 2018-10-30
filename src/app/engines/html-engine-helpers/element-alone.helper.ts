@@ -1,13 +1,12 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
-import { extractLeadingText, splitLinkText } from '../../../utils/link-parser';
-import { DependenciesEngine } from '../dependencies.engine';
+import DependenciesEngine from '../dependencies.engine';
 
 export class ElementAloneHelper implements IHtmlEngineHelper {
-    constructor(private dependenciesEngine: DependenciesEngine) {}
+    constructor() {}
 
     public helperFunc(context: any, elements, elementType: string, options: IHandlebarsOptions) {
         let alones = [];
-        let modules = this.dependenciesEngine.modules;
+        let modules = DependenciesEngine.modules;
 
         elements.forEach(element => {
             let foundInOneModule = false;

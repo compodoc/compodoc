@@ -1,12 +1,21 @@
 import { find, concat, cloneDeep } from 'lodash';
-import { ConfigurationInterface } from '../app/interfaces/configuration.interface';
 import { cleanLifecycleHooksFromMethods } from '.';
+import Configuration from '../app/configuration';
 
 export class ExtendsMerger {
     private components;
     private classes;
 
-    public merge(deps, configuration: ConfigurationInterface) {
+    private static instance: ExtendsMerger;
+    private constructor() { }
+    public static getInstance() {
+        if (!ExtendsMerger.instance) {
+            ExtendsMerger.instance = new ExtendsMerger();
+        }
+        return ExtendsMerger.instance;
+    }
+
+    public merge(deps) {
         this.components = deps.components;
         this.classes = deps.classes;
 
@@ -88,7 +97,7 @@ export class ExtendsMerger {
                             ];
                         }
                     }
-                    if (configuration.mainData.disableLifeCycleHooks) {
+                    if (Configuration.mainData.disableLifeCycleHooks) {
                         component.methodsClass = cleanLifecycleHooksFromMethods(
                             component.methodsClass
                         );
@@ -140,3 +149,5 @@ export class ExtendsMerger {
         return result || false;
     }
 }
+
+export default ExtendsMerger.getInstance();

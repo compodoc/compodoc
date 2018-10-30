@@ -1,15 +1,13 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
-import { ConfigurationInterface } from '../../interfaces/configuration.interface';
+import Configuration from '../../configuration';
 
 export class IsNotToggleHelper implements IHtmlEngineHelper {
-    constructor(private configuration: ConfigurationInterface) {
-
-    }
+    constructor() {}
 
     public helperFunc(context: any, type, options) {
-        let result = this.configuration.mainData.toggleMenuItems.indexOf(type);
+        let result = Configuration.mainData.toggleMenuItems.indexOf(type);
 
-        if (this.configuration.mainData.toggleMenuItems.indexOf('all') !== -1) {
+        if (Configuration.mainData.toggleMenuItems.indexOf('all') !== -1) {
             return options.inverse(context);
         } else if (result === -1) {
             return options.fn(context);

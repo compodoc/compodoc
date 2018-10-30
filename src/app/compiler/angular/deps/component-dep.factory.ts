@@ -1,12 +1,12 @@
 import { IDep } from '../dependencies.interfaces';
 import { ComponentHelper } from './helpers/component-helper';
 import { cleanLifecycleHooksFromMethods } from '../../../../utils';
-import { ConfigurationInterface } from '../../../interfaces/configuration.interface';
+import Configuration from '../../../configuration';
 
 const crypto = require('crypto');
 
 export class ComponentDepFactory {
-    constructor(private helper: ComponentHelper, private configuration: ConfigurationInterface) {}
+    constructor(private helper: ComponentHelper) {}
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
@@ -48,7 +48,16 @@ export class ComponentDepFactory {
             description: IO.description,
             type: 'component',
             sourceCode: srcFile.getText(),
-            exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
+            exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText()),
+
+            tag: this.helper.getComponentTag(props, srcFile),
+            styleUrl: this.helper.getComponentStyleUrl(props, srcFile),
+            shadow: this.helper.getComponentShadow(props, srcFile),
+            scoped: this.helper.getComponentScoped(props, srcFile),
+            assetsDir: this.helper.getComponentAssetsDir(props, srcFile),
+            assetsDirs: this.helper.getComponentAssetsDirs(props, srcFile),
+            styleUrlsData: '',
+            stylesData: ''
         };
         if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
             componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(
@@ -56,7 +65,7 @@ export class ComponentDepFactory {
                 srcFile
             );
         }
-        if (this.configuration.mainData.disableLifeCycleHooks) {
+        if (Configuration.mainData.disableLifeCycleHooks) {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
@@ -91,7 +100,9 @@ export interface IComponentDep extends IDep {
     moduleId: string;
     selector: string;
     styleUrls: Array<string>;
+    styleUrlsData: string;
     styles: Array<string>;
+    stylesData: string;
     template: string;
     templateUrl: Array<string>;
     viewProviders: Array<any>;
@@ -114,6 +125,13 @@ export interface IComponentDep extends IDep {
     extends?: any;
     implements?: any;
     accessors?: Object;
+
+    tag?: string;
+    styleUrl?: string;
+    shadow?: string;
+    scoped?: string;
+    assetsDir?: string;
+    assetsDirs?: Array<string>;
 
     preserveWhitespaces?: any;
 }

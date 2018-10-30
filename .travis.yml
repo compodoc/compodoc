@@ -46,7 +46,7 @@ matrix:
     - node_js: "7"
       env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "8"
-      env: TO_TEST=ALL SAUCE_USERNAME=compodoc
+      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
     - node_js: "9"
       env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc
     - node_js: "10"
