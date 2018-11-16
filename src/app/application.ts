@@ -2574,7 +2574,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     path.sep +
                                     Configuration.mainData.customLogo
                                 ),
-                                path.resolve(finalOutput +  + '/images/' + Configuration.mainData.customLogo.split("/").pop()),
+                                path.resolve(finalOutput + '/images/' + Configuration.mainData.customLogo.split("/").pop()),
                                 errorCopyLogo => {
                                     // tslint:disable-line
                                     if (errorCopyLogo) {
