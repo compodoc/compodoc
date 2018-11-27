@@ -186,7 +186,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'angular2-grid',
             maintainer: 'BTMorton',
-            tsconfig_path: './projects/angular2-grid/tsconfig.lib.json'
+            tsconfig_path: './projects/angular2-grid/',
+            tsconfig_file: 'tsconfig.lib.json'
         },
         {
             name: 'ng2-file-upload',
