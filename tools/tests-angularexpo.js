@@ -6,8 +6,7 @@ const process = require('process'),
     tmp = helpers.temporaryDir();
 
 const TEST_FOLDER = 'angularexpo-tests',
-    GIT_REPOSITORIES = [
-        {
+    GIT_REPOSITORIES = [{
             name: 'parrot',
             maintainer: 'anthonynsimon',
             tsconfig_path: './web-app/src/'
@@ -187,7 +186,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'angular2-grid',
             maintainer: 'BTMorton',
-            tsconfig_path: './'
+            tsconfig_path: './projects/angular2-grid/',
+            tsconfig_file: 'tsconfig.lib.json'
         },
         {
             name: 'ng2-file-upload',
@@ -373,8 +373,7 @@ let i = 0,
             process.chdir(repo.name);
 
             exec(
-                'node ../../bin/index-cli.js -p ' + repo.tsconfig_path + tsconfig,
-                {
+                'node ../../bin/index-cli.js -p ' + repo.tsconfig_path + tsconfig, {
                     maxBuffer: 1000 * 1024
                 },
                 (error, stdout, stderr) => {

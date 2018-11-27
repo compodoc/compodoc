@@ -53,7 +53,7 @@ describe('CLI Routes graph', () => {
 
         it('should clean forRoot and forChild in modules imports', () => {
             let file = read(distFolder + '/modules/AppModule.html');
-            expect(file).to.contain('<a href="../modules/HomeModule.html" >HomeModule</a>');
+            expect(file).to.contain('<a href="../modules/HomeModule.html">HomeModule</a>');
         });
     });
 

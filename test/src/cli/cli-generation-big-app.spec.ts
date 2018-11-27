@@ -674,7 +674,7 @@ describe('CLI simple generation - big app', () => {
     it('should display list of import/exports/declarations/providers in asc order', () => {
         let file = read(distFolder + '/modules/AboutRoutingModule.html');
         expect(file).to.contain(
-            `<li class="list-group-item">\n                                <a href="../components/CompodocComponent.html">CompodocComponent</a>\n                            </li>\n                            <li class="list-group-item">\n                                <a href="../components/TodoMVCComponent.html">`
+            `<li class="list-group-item">\n                            <a href="../components/CompodocComponent.html">CompodocComponent</a>\n                        </li>\n                        <li class="list-group-item">\n                            <a href="../components/TodoMVCComponent.html">`
         );
     });
 
@@ -741,5 +741,16 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/components/TodoMVCComponent.html');
         expect(file).to.contain('styleData-tab');
         expect(file).to.contain('pointer-events');
+    });
+
+    it('correct support symbol type', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('string | symbol | Array&lt;string | symbol&gt;');
+    });
+
+    it('correct support gorRoot & forChild methods for modules', () => {
+        let file = read(distFolder + '/modules/AppModule.html');
+        expect(file).to.contain('code>forChild(confi');
+        expect(file).to.contain('code>forRoot(confi');
     });
 });

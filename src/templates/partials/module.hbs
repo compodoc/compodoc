@@ -1,31 +1,31 @@
 <ol class="breadcrumb">
-  <li>{{t "modules" }}</li>
-  <li>{{name}}</li>
+    <li>{{t "modules" }}</li>
+    <li>{{name}}</li>
 </ol>
 
 {{#unless disableGraph}}
-  {{#if module.graph }}
-      <div class="text-center module-graph-container">
-          <div id="module-graph-svg">
-              {{{ module.graph }}}
-          </div>
-          <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
-          <div class="btn-group">
-              <button id="zoom-in" class="btn btn-default btn-sm">{{t "zoomin" }}</button>
-              <button id="reset" class="btn btn-default btn-sm">{{t "reset" }}</button>
-              <button id="zoom-out" class="btn btn-default btn-sm">{{t "zoomout" }}</button>
-          </div>
-      </div>
-      <script src="{{relativeURL depth 'modules'}}js/libs/svg-pan-zoom.min.js"></script>
-      <script src="{{relativeURL depth 'modules'}}js/svg-pan-zoom.controls.js"></script>
-    {{/if}}
+{{#if module.graph }}
+<div class="text-center module-graph-container">
+    <div id="module-graph-svg">
+        {{{ module.graph }}}
+    </div>
+    <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
+    <div class="btn-group">
+        <button id="zoom-in" class="btn btn-default btn-sm">{{t "zoomin" }}</button>
+        <button id="reset" class="btn btn-default btn-sm">{{t "reset" }}</button>
+        <button id="zoom-out" class="btn btn-default btn-sm">{{t "zoomout" }}</button>
+    </div>
+</div>
+<script src="{{relativeURL depth 'modules'}}js/libs/svg-pan-zoom.min.js"></script>
+<script src="{{relativeURL depth 'modules'}}js/svg-pan-zoom.controls.js"></script>
+{{/if}}
 {{/unless}}
 
 <ul class="nav nav-tabs" role="tablist">
     {{#each navTabs}}
-        <li {{#compare @index "===" 0}}class="active"{{/compare}}>
-            <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{this.label}}</a>
-        </li>
+    <li {{#compare @index "===" 0}} class="active" {{/compare}}>
+        <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{this.label}}</a>
+    </li>
     {{/each}}
 </ul>
 
@@ -41,137 +41,150 @@
         </p>
 
         {{#if module.ngid}}
-            <p class="comment">
-                <h3>{{t "identifier" }}</h3>
-            </p>
-            <p class="comment">
-                {{module.ngid}}
-            </p>
+        <p class="comment">
+            <h3>{{t "identifier" }}</h3>
+        </p>
+        <p class="comment">
+            {{module.ngid}}
+        </p>
         {{/if}}
 
         {{#if module.description}}
-            <p class="comment">
-                <h3>{{t "description" }}</h3>
-            </p>
-            <p class="comment">
-                {{{parseDescription module.description depth}}}
-            </p>
+        <p class="comment">
+            <h3>{{t "description" }}</h3>
+        </p>
+        <p class="comment">
+            {{{parseDescription module.description depth}}}
+        </p>
         {{/if}}
-        
+
 
         <div class="container-fluid module">
             <div class="row">
                 {{#if module.declarations}}
                 <div class="col-sm-3">
-                    <h3>{{t "declarations" }}<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <h3>{{t "declarations" }}<a href="https://angular.io/api/core/NgModule#declarations" target="_blank"
+                            title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.declarations}}
-                            <li class="list-group-item">
-                                <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
-                            </li>
+                        <li class="list-group-item">
+                            <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.entryComponents}}
                 <div class="col-sm-3">
-                    <h3>{{t "entrycomponents" }}<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" title="Official documentation about module entryComponents"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <h3>{{t "entrycomponents" }}<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank"
+                            title="Official documentation about module entryComponents"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.entryComponents}}
-                            <li class="list-group-item">
-                                <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
-                            </li>
+                        <li class="list-group-item">
+                            <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.providers}}
                 <div class="col-sm-3">
-                    <h3>{{t "providers" }}<a href="https://angular.io/api/core/NgModule#providers" target="_blank" title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "providers" }}<a href="https://angular.io/api/core/NgModule#providers" target="_blank"
+                            title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.providers}}
-                            <li class="list-group-item">
-                                {{#compare type "===" 'injectable'}}
-                                     <a href="{{relativeURL ../depth 'modules'}}injectables/{{name}}.html" >{{name}}</a>
-                                {{/compare}}
-                                {{#compare type "===" 'interceptor'}}
-                                     <a href="{{relativeURL ../depth 'modules'}}interceptors/{{name}}.html" >{{name}}</a>
-                                {{/compare}}
-                            </li>
+                        <li class="list-group-item">
+                            {{#compare type "===" 'injectable'}}
+                            <a href="{{relativeURL ../depth 'modules'}}injectables/{{name}}.html">{{name}}</a>
+                            {{/compare}}
+                            {{#compare type "===" 'interceptor'}}
+                            <a href="{{relativeURL ../depth 'modules'}}interceptors/{{name}}.html">{{name}}</a>
+                            {{/compare}}
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.controllers}}
                 <div class="col-sm-3">
-                    <h3>{{t "controllers" }}<a href="https://docs.nestjs.com/controllers" target="_blank" title="Official documentation about module controllers"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "controllers" }}<a href="https://docs.nestjs.com/controllers" target="_blank" title="Official documentation about module controllers"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.controllers}}
-                            <li class="list-group-item">
-                                <a href="{{relativeURL ../depth 'modules'}}controllers/{{name}}.html" >{{name}}</a>
-                            </li>
+                        <li class="list-group-item">
+                            <a href="{{relativeURL ../depth 'modules'}}controllers/{{name}}.html">{{name}}</a>
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.imports}}
                 <div class="col-sm-3">
-                    <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.imports}}
-                            <li class="list-group-item">
-                                {{#filterAngular2Modules name}}
-                                    {{name}}
-                                {{else}}
-                                    <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html" >{{name}}</a>
-                                {{/filterAngular2Modules}}
-                            </li>
+                        <li class="list-group-item">
+                            {{#filterAngular2Modules name}}
+                            {{name}}
+                            {{else}}
+                            <a href="{{relativeURL ../depth 'modules'}}modules/{{name}}.html">{{name}}</a>
+                            {{/filterAngular2Modules}}
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.exports}}
                 <div class="col-sm-3">
-                    <h3>{{t "exports" }}<a href="https://angular.io/api/core/NgModule#exports" target="_blank" title="Official documentation about module exports"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "exports" }}<a href="https://angular.io/api/core/NgModule#exports" target="_blank" title="Official documentation about module exports"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.exports}}
-                            <li class="list-group-item">
-                                {{#filterAngular2Modules name}}
-                                    {{name}}
-                                {{else}}
-                                    <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html" >{{name}}</a>
-                                {{/filterAngular2Modules}}
-                            </li>
+                        <li class="list-group-item">
+                            {{#filterAngular2Modules name}}
+                            {{name}}
+                            {{else}}
+                            <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                            {{/filterAngular2Modules}}
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.bootstrap}}
                 <div class="col-sm-3">
-                    <h3>{{t "bootstrap" }}<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "bootstrap" }}<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank"
+                            title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.bootstrap}}
-                            <li class="list-group-item">
-                                <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html" >{{name}}</a>
-                            </li>
+                        <li class="list-group-item">
+                            <a href="{{relativeURL ../depth 'modules'}}{{type}}s/{{name}}.html">{{name}}</a>
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
                 {{#if module.schemas}}
                 <div class="col-sm-3">
-                    <h3>{{t "schemas" }}<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <h3>{{t "schemas" }}<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.schemas}}
-                            <li class="list-group-item">
-                                <a href="https://angular.io/api/core/{{this}}" target="_blank">{{this}}</a>
-                            </li>
+                        <li class="list-group-item">
+                            <a href="https://angular.io/api/core/{{this}}" target="_blank">{{this}}</a>
+                        </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{/if}}
             </div>
         </div>
+
+        {{#if module.methods}}
+        {{> block-method methods=module.methods file=module.file }}
+        {{/if}}
+
     </div>
     {{/isTabEnabled}}
 

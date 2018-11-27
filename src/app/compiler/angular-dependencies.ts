@@ -60,10 +60,7 @@ export class AngularDependencies extends FrameworkDependencies {
     private symbolHelper = new SymbolHelper();
     private jsdocParserUtil = new JsdocParserUtil();
 
-    constructor(
-        files: string[],
-        options: any
-    ) {
+    constructor(files: string[], options: any) {
         super(files, options);
     }
 
@@ -96,10 +93,7 @@ export class AngularDependencies extends FrameworkDependencies {
             let filePath = file.fileName;
 
             if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.tsx') {
-                if (
-                    !Configuration.mainData.angularJSProject &&
-                    path.extname(filePath) === '.js'
-                ) {
+                if (!Configuration.mainData.angularJSProject && path.extname(filePath) === '.js') {
                     logger.info('parsing', filePath);
                     this.getSourceFileDecorators(file, deps);
                 } else {
@@ -376,8 +370,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 return;
                             }
                             const componentDep = new ComponentDepFactory(
-                                this.componentHelper,
-                                Configuration
+                                this.componentHelper
                             ).create(file, srcFile, name, props, IO);
                             deps = componentDep;
                             if (typeof IO.ignore === 'undefined') {
@@ -462,8 +455,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 return;
                             }
                             let directiveDeps = new DirectiveDepFactory(
-                                this.componentHelper,
-                                Configuration
+                                this.componentHelper
                             ).create(file, srcFile, name, props, IO);
                             deps = directiveDeps;
                             if (typeof IO.ignore === 'undefined') {
@@ -807,9 +799,11 @@ export class AngularDependencies extends FrameworkDependencies {
         ['imports', 'exports', 'declarations', 'providers', 'bootstrap'].forEach(symbols => {
             if (deps[symbols] && deps[symbols].length > 0) {
                 logger.debug('', `- ${symbols}:`);
-                deps[symbols].map(i => i.name).forEach(d => {
-                    logger.debug('', `\t- ${d}`);
-                });
+                deps[symbols]
+                    .map(i => i.name)
+                    .forEach(d => {
+                        logger.debug('', `\t- ${d}`);
+                    });
             }
         });
     }

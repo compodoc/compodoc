@@ -33,6 +33,7 @@ export class ModuleDepFactory {
             schemas: this.moduleHelper.getModuleSchemas(properties, srcFile),
             bootstrap: this.moduleHelper.getModuleBootstrap(properties, srcFile),
             type: 'module',
+            methods: IO.methods,
             description: IO.description,
             sourceCode: srcFile.text
         } as IModuleDep;
@@ -50,4 +51,5 @@ export interface IModuleDep extends IDep {
     bootstrap: any;
     description: string;
     sourceCode: string;
+    methods: any;
 }

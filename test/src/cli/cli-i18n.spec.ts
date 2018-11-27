@@ -1,21 +1,24 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
+const vm = require('vm');
 
 describe('CLI i18n', () => {
-
     const distFolder = tmp.name + '-i18n';
 
-    describe('with supported language', () => {
-
-        before(function (done) {
+    const checkWcMenuFile = (lang, message) => {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '--language', 'fr-FR',
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--language',
+                lang,
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -27,21 +30,44 @@ describe('CLI i18n', () => {
 
         it('it should contain a sentence in the correct language', () => {
             let file = read(distFolder + '/js/menu-wc.js');
-            expect(file).to.contain('Documentation générée avec');
+            try {
+                const script = new vm.Script(file);
+            } catch (e) {
+                throw new Error('Error parsing menu-wc.js file');
+            }
+            expect(file).to.contain(message);
         });
+    };
 
+    describe('with supported language - en-US', () => {
+        return checkWcMenuFile('en-US', 'Documentation generated using');
+    });
+
+    describe('with supported language - fr-FR', () => {
+        return checkWcMenuFile('fr-FR', 'Documentation générée avec');
+    });
+
+    describe('with supported language - zh-CN', () => {
+        return checkWcMenuFile('zh-CN', '文档生成使用');
+    });
+
+    describe('with supported language - pt-BR', () => {
+        return checkWcMenuFile('pt-BR', 'Documentação gerada usando');
     });
 
     describe('with un-supported language', () => {
-
         let indexFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '--language', 'es-ES',
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--language',
+                'es-ES',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -57,6 +83,5 @@ describe('CLI i18n', () => {
             let file = read(distFolder + '/js/menu-wc.js');
             expect(file).to.contain('Documentation generated using');
         });
-
     });
 });
