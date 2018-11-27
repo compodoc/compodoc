@@ -21,9 +21,7 @@ const marked = require('marked');
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
 
-    constructor(
-        private typeChecker: ts.TypeChecker
-    ) {}
+    constructor(private typeChecker: ts.TypeChecker) {}
 
     /**
      * HELPERS
@@ -67,7 +65,9 @@ export class ClassHelper {
                 if (decorator.expression.expression) {
                     let info: any = { name: decorator.expression.expression.text };
                     if (decorator.expression.arguments) {
-                        info.stringifiedArguments = this.stringifyArguments(decorator.expression.arguments);
+                        info.stringifiedArguments = this.stringifyArguments(
+                            decorator.expression.arguments
+                        );
                     }
                     _decorators.push(info);
                 }
@@ -481,7 +481,15 @@ export class ClassHelper {
                         }
                     ];
                 } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
-                    return [{ fileName, className, description, jsdoctags: jsdoctags }];
+                    return [
+                        {
+                            fileName,
+                            className,
+                            description,
+                            jsdoctags: jsdoctags,
+                            methods: members.methods
+                        }
+                    ];
                 } else {
                     return [
                         {
@@ -591,10 +599,7 @@ export class ClassHelper {
                 if (!(this.isPrivate(member) && Configuration.mainData.disablePrivate)) {
                     if (!(this.isInternal(member) && Configuration.mainData.disableInternal)) {
                         if (
-                            !(
-                                this.isProtected(member) &&
-                                Configuration.mainData.disableProtected
-                            )
+                            !(this.isProtected(member) && Configuration.mainData.disableProtected)
                         ) {
                             if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
                                 methods.push(this.visitMethodDeclaration(member, sourceFile));
