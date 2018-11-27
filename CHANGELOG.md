@@ -1,3 +1,16 @@
+<a name="1.1.7"></a>
+# [1.1.7](https://github.com/compodoc/compodoc/compare/1.1.6...1.1.7) (2018-11-27)
+
+### Bug fixes
+
+* **live-server:** update to fix vulnerability ([f76f80a7](https://github.com/compodoc/compodoc/commit/f76f80a7)), closes [#665](https://github.com/compodoc/compodoc/issues/665)  Thanks [Sibiraj](https://github.com/sibiraj-s)
+* **menu:** fr-FR issue during rendering ([a6e4a44b](https://github.com/compodoc/compodoc/commit/a6e4a44b)), closes [#691](https://github.com/compodoc/compodoc/issues/691)
+
+### Features
+
+* **deps:** symbol support ([079ef44b](https://github.com/compodoc/compodoc/commit/079ef44b)), closes [#694](https://github.com/compodoc/compodoc/issues/694)
+* **modules:** display methods ([23a401ac](https://github.com/compodoc/compodoc/commit/23a401ac)), closes [#340](https://github.com/compodoc/compodoc/issues/340)
+
 <a name="1.1.6"></a>
 # [1.1.6](https://github.com/compodoc/compodoc/compare/1.1.5...1.1.6) (2018-10-30)
 
