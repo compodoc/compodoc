@@ -33,6 +33,9 @@ export function kindToType(kind: number): string {
         case SyntaxKind.NullKeyword:
             _type = 'null';
             break;
+        case SyntaxKind.SymbolKeyword:
+            _type = 'symbol';
+            break;
         case SyntaxKind.NeverKeyword:
             _type = 'never';
             break;

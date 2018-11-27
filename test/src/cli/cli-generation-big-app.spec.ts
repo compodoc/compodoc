@@ -742,4 +742,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('styleData-tab');
         expect(file).to.contain('pointer-events');
     });
+
+    it('correct support symbol type', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('string | symbol | Array&lt;string | symbol&gt;');
+    });
 });
