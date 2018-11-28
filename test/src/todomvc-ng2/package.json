@@ -10,6 +10,7 @@
         "@angular/forms": ">=4.0.0"
     },
     "devDependencies": {
-        "@compodoc/compodoc": "https://github.com/compodoc/compodoc/tarball/develop"
+        "@compodoc/compodoc": "https://github.com/compodoc/compodoc/tarball/develop",
+        "typescript": "~3.1.1"
     }
 }

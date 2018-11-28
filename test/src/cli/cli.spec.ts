@@ -100,11 +100,6 @@ describe('CLI simple flags', () => {
                 output.indexOf('Continuing without package.json file') > -1,
                 'No error displayed for package.json'
             ).to.be.true;
-
-            expect(
-                output.indexOf('TypeScript version of current project') > -1,
-                'No TypeScript version of current project displayed'
-            ).to.be.true;
         });
     });
 
