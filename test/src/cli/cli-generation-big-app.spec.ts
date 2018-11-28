@@ -561,6 +561,10 @@ describe('CLI simple generation - big app', () => {
         expect(dependencies).to.contain('commander');
     });
 
+    it('should display project local TypeScript version', () => {
+        expect(stdoutString).to.contain('TypeScript version of current project');
+    });
+
     /*it('should display project peerDependencies', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
