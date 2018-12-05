@@ -8,7 +8,7 @@
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"></a>
   <a href="https://npmcharts.com/compare/@compodoc/compodoc?minimal=true"><img src="https://img.shields.io/npm/dm/@compodoc/compodoc.svg?style=flat" alt="NPM Downloads"></a>
-  <a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"></a>
   <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/compodoc/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" />
 </p>
 <p align="center">
@@ -58,9 +58,9 @@ The demo features documentation generated for a simple [TodoMVC application].
 [Read the Docs]: https://readthedocs.org/
 [Vagrant]: https://www.vagrantup.com/docs/
 [Laravel]: https://laravel.com/docs/5.3
-[Postmark]: http://developer.postmarkapp.com/
+[Postmark]: https://developer.postmarkapp.com/
 [Stripe]: https://stripe.com/docs/api
-[lunr.js]: http://lunrjs.com/
+[lunr.js]: https://lunrjs.com/
 [Angular CLI]: https://cli.angular.io/
 [npm]: https://www.npmjs.com/
 
@@ -109,7 +109,7 @@ Everything in this repository is [licensed under the MIT License][license] unles
 Copyright (c) 2016 – 2018 [Vincent Ogloblinsky]
 
 [license]: https://github.com/compodoc/compodoc/blob/master/LICENSE
-[Vincent Ogloblinsky]: http://www.vincentogloblinsky.com
+[Vincent Ogloblinsky]: https://www.vincentogloblinsky.com
 
 
 [support-url]: https://opencollective.com/compodoc#support
