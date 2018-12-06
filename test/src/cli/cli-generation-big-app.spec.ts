@@ -11,18 +11,17 @@ describe('CLI simple generation - big app', () => {
 
     let todoComponentFile, listComponentFile, footerComponentFile, routesIndex;
 
-    const distFolder = tmp.name + '-big-app';
+    const tmpFolder = tmp.name + '-big-app';
+    const distFolder = tmpFolder + '/documentation';
 
     before(done => {
-        tmp.create(distFolder);
-
-        let ls = shell('node', [
-            './bin/index-cli.js',
-            '-p',
-            './test/src/todomvc-ng2/src/tsconfig.json',
-            '-d',
-            distFolder
-        ]);
+        tmp.create(tmpFolder);
+        tmp.copy('./test/src/todomvc-ng2/', tmpFolder);
+        let ls = shell(
+            'node',
+            ['../bin/index-cli.js', '-p', './src/tsconfig.json', '-d', 'documentation'],
+            { cwd: tmpFolder }
+        );
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -558,7 +557,7 @@ describe('CLI simple generation - big app', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
         let dependencies = read(distFolder + '/dependencies.html');
-        expect(dependencies).to.contain('commander');
+        expect(dependencies).to.contain('angular/forms');
     });
 
     it('should display project local TypeScript version', () => {
@@ -664,15 +663,13 @@ describe('CLI simple generation - big app', () => {
 
     it('should display short filename + long filename in title for index of miscellaneous', () => {
         let file = read(distFolder + '/miscellaneous/variables.html');
-        expect(file).to.contain('(test/.../miscellaneous.ts)');
-        expect(file).to.contain(
-            'title="test/src/todomvc-ng2/src/app/shared/miscellaneous/miscellaneous.ts"'
-        );
+        expect(file).to.contain('(src/.../about.module.ts)');
+        expect(file).to.contain('title="src/app/about/about.module.ts"');
     });
 
     it('should display component even with no hostlisteners', () => {
         let file = read(distFolder + '/coverage.html');
-        expect(file).to.contain('test/src/todomvc-ng2/src/app/footer/footer.component.ts');
+        expect(file).to.contain('src/app/footer/footer.component.ts');
     });
 
     it('should display list of import/exports/declarations/providers in asc order', () => {
