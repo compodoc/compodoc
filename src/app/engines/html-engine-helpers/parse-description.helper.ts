@@ -59,7 +59,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     resultInCompodoc.type === 'miscellaneous' ||
                     (resultInCompodoc.ctype && resultInCompodoc.ctype === 'miscellaneous')
                 ) {
-                    resultInCompodoc.type = 'miscellaneou';
+                    resultInCompodoc.type = 'miscellaneous';
                     label = resultInCompodoc.name;
                     anchor = '#' + resultInCompodoc.name;
                     if (resultInCompodoc.subtype === 'enum') {
