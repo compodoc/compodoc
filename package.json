@@ -65,6 +65,7 @@
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
         "@compodoc/ngd-transformer": "^2.0.0",
+        "@microsoft/tsdoc": "^0.12.4",
         "chalk": "^2.4.1",
         "cheerio": "^1.0.0-rc.2",
         "chokidar": "^2.0.4",

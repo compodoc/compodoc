@@ -4,6 +4,8 @@ import * as path from 'path';
 
 import { ts, SyntaxKind } from 'ts-simple-ast';
 
+import { TSDocParser, ParserContext, DocComment } from '@microsoft/tsdoc';
+
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
 import { kindToType } from '../../../../../utils/kind-to-type';
 import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
@@ -20,6 +22,8 @@ const marked = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
+
+    private tsdocParser: TSDocParser = new TSDocParser();
 
     constructor(private typeChecker: ts.TypeChecker) {}
 
@@ -382,7 +386,7 @@ export class ClassHelper {
     public visitClassDeclaration(
         fileName: string,
         classDeclaration: ts.ClassDeclaration | ts.InterfaceDeclaration,
-        sourceFile?: ts.SourceFile
+        sourceFile: ts.SourceFile
     ): any {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         let description = '';
@@ -397,6 +401,15 @@ export class ClassHelper {
                 }
             }
         }
+
+        console.log(sourceFile.text);
+
+        const parserContext: ParserContext = this.tsdocParser.parseString(sourceFile.text);
+
+        console.log(parserContext);
+
+        let descriptionTsdoc = 'TSDOC';
+
         let className = classDeclaration.name.text;
         let members;
         let implementsElements = [];
@@ -438,6 +451,7 @@ export class ClassHelper {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
                     return {
                         description,
+                        descriptionTsdoc: descriptionTsdoc,
                         inputs: members.inputs,
                         outputs: members.outputs,
                         hostBindings: members.hostBindings,

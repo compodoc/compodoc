@@ -1340,6 +1340,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             ? someComponents
             : DependenciesEngine.getComponents();
 
+        console.log(Configuration.mainData.components[0]);
+
         return new Promise((mainPrepareComponentResolve, mainPrepareComponentReject) => {
             let i = 0;
             let len = Configuration.mainData.components.length;
