@@ -1,12 +1,9 @@
-
 export interface IDep {
     id?: string;
     type?: string;
     ctype?: string;
     name: string;
 }
-
-
 
 export interface IInjectableDep extends IDep {
     file: any;
@@ -59,7 +56,6 @@ export interface IPipeDep extends IDep {
     jsdoctags?: Array<string>;
 }
 
-
 export interface IInterfaceDep extends IDep {
     file: any;
     sourceCode: string;
@@ -77,6 +73,7 @@ export interface IFunctionDecDep extends IDep {
     subtype: string;
     description: string;
 
+    returnType?: string;
     args?: Array<any>;
     jsdoctags?: string;
 }

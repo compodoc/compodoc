@@ -551,6 +551,9 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
+                        if (infos.returnType) {
+                            functionDep.returnType = infos.returnType;
+                        }
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
@@ -741,6 +744,9 @@ export class AngularDependencies extends FrameworkDependencies {
                         };
                         if (infos.args) {
                             functionDep.args = infos.args;
+                        }
+                        if (infos.returnType) {
+                            functionDep.returnType = infos.returnType;
                         }
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
                             functionDep.jsdoctags = infos.jsdoctags;

@@ -754,4 +754,11 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('code>forChild(confi');
         expect(file).to.contain('code>forRoot(confi');
     });
+
+    it('correct support returned type for miscellaneous function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain(
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string'
+        );
+    });
 });

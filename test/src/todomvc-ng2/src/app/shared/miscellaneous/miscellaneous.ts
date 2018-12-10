@@ -11,8 +11,9 @@ export let PIT = 4;
  *
  * @param {string} status A status
  */
-export function foo(status: string) {
+export function foo(status: string): string {
     console.log('bar');
+    return 'yo';
 }
 
 export class StringIndexedItems<T> {
