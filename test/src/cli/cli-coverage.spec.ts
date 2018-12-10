@@ -320,7 +320,7 @@ describe('CLI coverage report', () => {
                 '--coverageMinimumPerFile',
                 '0',
                 '--coverageTest',
-                '25',
+                '30',
                 '-d',
                 distFolder
             ]);
