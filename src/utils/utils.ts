@@ -52,10 +52,13 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
             });
         }
     });
-    // Add example & returns
+    // Add example & returns & private
     if (jsdoctags) {
         _.forEach(jsdoctags, jsdoctag => {
-            if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
+            if (
+                jsdoctag.tagName &&
+                (jsdoctag.tagName.text === 'example' || jsdoctag.tagName.text === 'private')
+            ) {
                 margs.push({
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment

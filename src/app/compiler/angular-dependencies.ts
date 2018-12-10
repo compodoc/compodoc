@@ -558,7 +558,14 @@ export class AngularDependencies extends FrameworkDependencies {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
                         if (typeof infos.ignore === 'undefined') {
-                            outputSymbols.miscellaneous.functions.push(functionDep);
+                            if (
+                                !(
+                                    this.hasPrivateJSDocTag(functionDep.jsdoctags) &&
+                                    Configuration.mainData.disablePrivate
+                                )
+                            ) {
+                                outputSymbols.miscellaneous.functions.push(functionDep);
+                            }
                         }
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
@@ -752,7 +759,14 @@ export class AngularDependencies extends FrameworkDependencies {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
                         if (typeof infos.ignore === 'undefined') {
-                            outputSymbols.miscellaneous.functions.push(functionDep);
+                            if (
+                                !(
+                                    this.hasPrivateJSDocTag(functionDep.jsdoctags) &&
+                                    Configuration.mainData.disablePrivate
+                                )
+                            ) {
+                                outputSymbols.miscellaneous.functions.push(functionDep);
+                            }
                         }
                     }
                     if (ts.isEnumDeclaration(node)) {
@@ -1046,6 +1060,18 @@ export class AngularDependencies extends FrameworkDependencies {
             case 159:
                 return 'typeReference';
         }
+    }
+
+    private hasPrivateJSDocTag(tags): boolean {
+        let result = false;
+        if (tags) {
+            tags.forEach(tag => {
+                if (tag.tagName && tag.tagName && tag.tagName.text === 'private') {
+                    result = true;
+                }
+            });
+        }
+        return result;
     }
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
