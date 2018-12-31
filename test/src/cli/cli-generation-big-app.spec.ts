@@ -681,10 +681,8 @@ describe('CLI simple generation - big app', () => {
 
     it('should support Tuple types', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>LinearDomain:     <code>[Number, Number]</code>');
-        expect(file).to.contain(
-            '<code>LinearTodo:     <code><a href="../classes/Todo.html" target="_self" >[Todo, Todo]</a></code>'
-        );
+        expect(file).to.contain('<code>[Number, Number]</code>');
+        expect(file).to.contain('[Todo, Todo]</a>');
     });
 
     it('should support Generic array types', () => {

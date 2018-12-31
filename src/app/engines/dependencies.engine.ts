@@ -141,19 +141,41 @@ export class DependenciesEngine {
             source: 'internal',
             data: undefined
         };
+        let nameFoundCounter = 0;
         if (data && data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 if (typeof name !== 'undefined') {
                     if (typeof file !== 'undefined') {
                         if (
-                            name === data[i].name &&
+                            name.indexOf(data[i].name) !== -1 &&
                             file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
                         ) {
+                            nameFoundCounter += 1;
                             _result.data = data[i];
                         }
                     } else {
-                        if (name === data[i].name) {
+                        if (name.indexOf(data[i].name) !== -1) {
+                            nameFoundCounter += 1;
                             _result.data = data[i];
+                        }
+                    }
+                }
+            }
+            // Prevent wrong matching like MultiSelectOptionDirective with SelectOptionDirective
+            if (nameFoundCounter > 1) {
+                for (let i = 0; i < data.length; i++) {
+                    if (typeof name !== 'undefined') {
+                        if (typeof file !== 'undefined') {
+                            if (
+                                name === data[i].name &&
+                                file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
+                            ) {
+                                _result.data = data[i];
+                            }
+                        } else {
+                            if (name === data[i].name) {
+                                _result.data = data[i];
+                            }
                         }
                     }
                 }
