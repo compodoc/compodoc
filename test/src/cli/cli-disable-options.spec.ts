@@ -37,7 +37,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should display lifecyle hooks', () => {
@@ -120,7 +120,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should display lifecyle hooks', () => {
@@ -161,7 +161,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should include methods marked as internal', () => {

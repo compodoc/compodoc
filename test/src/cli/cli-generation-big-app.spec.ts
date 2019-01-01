@@ -321,12 +321,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should support simple class with custom decorator', () => {
         let file = read(distFolder + '/classes/Tidi.html');
-        expect(file).to.contain('<code>completed');
+        expect(file).to.contain('completed</b>');
     });
 
     it('should support simple class with custom decorator()', () => {
         let file = read(distFolder + '/classes/DoNothing.html');
-        expect(file).to.contain('<code>aname');
+        expect(file).to.contain('aname</b>');
     });
 
     it('should support TypeLiteral', () => {
@@ -343,7 +343,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support @HostBindings', () => {
         let file = read(distFolder + '/directives/DoNothingDirective.html');
-        expect(file).to.contain('<code>style.color');
+        expect(file).to.contain('style.color</b>');
     });
 
     it('should support @HostListener', () => {
