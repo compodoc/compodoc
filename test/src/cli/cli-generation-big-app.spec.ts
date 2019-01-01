@@ -759,4 +759,9 @@ describe('CLI simple generation - big app', () => {
             'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string'
         );
     });
+
+    it('shorten long arrow function declaration for properties', () => {
+        let file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('() &#x3D;&gt; {...}</code>');
+    });
 });

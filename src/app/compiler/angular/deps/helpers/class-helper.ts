@@ -920,6 +920,10 @@ export class ClassHelper {
         };
         let jsdoctags;
 
+        if (property.initializer && property.initializer.kind === SyntaxKind.ArrowFunction) {
+            result.defaultValue = '() => {...}';
+        }
+
         if (typeof result.name === 'undefined' && typeof property.name.expression !== 'undefined') {
             result.name = property.name.expression.text;
         }
