@@ -655,9 +655,9 @@ describe('CLI simple generation - big app', () => {
 
     it('should support component inheritance with base class without @component decorator', () => {
         let file = read(distFolder + '/components/DumbComponent.html');
-        expect(file).to.contain('<code>parentInput</code>');
-        expect(file).to.contain('<code>parentoutput</code>');
-        expect(file).to.contain('<code>style.color');
+        expect(file).to.contain('parentInput</b>');
+        expect(file).to.contain('parentoutput</b>');
+        expect(file).to.contain('style.color</b>');
         expect(file).to.contain('<code>mouseup');
     });
 
