@@ -1,26 +1,24 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { Application } from './app/application';
-
-import { COMPODOC_DEFAULTS } from './utils/defaults';
-import { logger } from './utils/logger';
-import { readConfig, handlePath } from './utils/utils';
-
 import { ts } from 'ts-simple-ast';
-import { ParserUtil } from './utils/parser.util.class';
 
-import I18nEngine from './app/engines/i18n.engine';
-
+import { Application } from './app/application';
 import Configuration from './app/configuration';
 import FileEngine from './app/engines/file.engine';
-import AngularVersionUtil from './utils/angular-version.util';
+import I18nEngine from './app/engines/i18n.engine';
 
-const pkg = require('../package.json');
-const program = require('commander');
+import AngularVersionUtil from './utils/angular-version.util';
+import { COMPODOC_DEFAULTS } from './utils/defaults';
+import { logger } from './utils/logger';
+import { ParserUtil } from './utils/parser.util.class';
+import { handlePath, readConfig } from './utils/utils';
+
+const cosmiconfig = require('cosmiconfig');
 const os = require('os');
 const osName = require('os-name');
-const cosmiconfig = require('cosmiconfig');
+const pkg = require('../package.json');
+const program = require('commander');
 
 const cosmiconfigModuleName = 'compodoc';
 
