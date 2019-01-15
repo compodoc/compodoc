@@ -1,54 +1,54 @@
 export const COMPODOC_CONSTANTS = {
     navTabDefinitions: [
         {
-            'id': 'info',
-            'href': '#info',
+            id: 'info',
+            href: '#info',
             'data-link': 'info',
-            'label': 'Info',
-            'depTypes': ['all']
+            label: 'Info',
+            depTypes: ['all']
         },
         {
-            'id': 'readme',
-            'href': '#readme',
+            id: 'readme',
+            href: '#readme',
             'data-link': 'readme',
-            'label': 'README',
-            'depTypes': ['all']
+            label: 'README',
+            depTypes: ['all']
         },
         {
-            'id': 'source',
-            'href': '#source',
+            id: 'source',
+            href: '#source',
             'data-link': 'source',
-            'label': 'Source',
-            'depTypes': ['all']
+            label: 'Source',
+            depTypes: ['all']
         },
         {
-            'id': 'templateData',
-            'href': '#templateData',
+            id: 'templateData',
+            href: '#templateData',
             'data-link': 'template',
-            'label': 'Template',
-            'depTypes': ['component']
+            label: 'Template',
+            depTypes: ['component']
         },
         {
-            'id': 'styleData',
-            'href': '#styleData',
+            id: 'styleData',
+            href: '#styleData',
             'data-link': 'style',
-            'label': 'Styles',
-            'depTypes': ['component']
+            label: 'Styles',
+            depTypes: ['component']
         },
         {
-            'id': 'tree',
-            'href': '#tree',
+            id: 'tree',
+            href: '#tree',
             'data-link': 'dom-tree',
-            'label': 'DOM Tree',
-            'depTypes': ['component']
+            label: 'DOM Tree',
+            depTypes: ['component']
         },
         {
-            'id': 'example',
-            'href': '#example',
+            id: 'example',
+            href: '#example',
             'data-link': 'example',
-            'label': 'Examples',
-            'depTypes': ['component', 'directive', 'injectable', 'pipe']
-        },
+            label: 'Examples',
+            depTypes: ['component', 'directive', 'injectable', 'pipe']
+        }
     ]
 };
 

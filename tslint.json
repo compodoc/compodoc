@@ -1,30 +1,13 @@
 {
     "rules": {
         "align": false,
-        "ban": [
-            true,
-            ["_", "each"],
-            ["$", "each"],
-            ["angular", "forEach"]
-        ],
+        "ban": [true, ["_", "each"], ["$", "each"], ["angular", "forEach"]],
         "class-name": true,
-        "comment-format": [
-            true,
-            "check-space"
-        ],
+        "comment-format": [true, "check-space"],
         "curly": true,
-        "eofline": false,
         "forin": false,
-        "indent": [
-            true,
-            4
-        ],
         "jsdoc-format": true,
         "label-position": true,
-        "max-line-length": [
-            true,
-            180
-        ],
         "member-access": true,
         "member-ordering": false,
         "new-parens": true,
@@ -42,45 +25,30 @@
         "no-eval": true,
         "no-inferrable-types": false,
         "no-internal-module": true,
-        "no-invalid-this": [
-            true,
-            "check-function-in-method"
-        ],
+        "no-invalid-this": [true, "check-function-in-method"],
         "no-null-keyword": true,
         "no-reference": true,
         "no-require-imports": false,
         "no-shadowed-variable": true,
         "no-string-literal": true,
         "no-switch-case-fall-through": true,
-        "no-trailing-whitespace": true,
         "no-unused-expression": true,
         "no-use-before-declare": true,
         "no-var-keyword": true,
         "no-var-requires": false,
         "object-literal-sort-keys": false,
-        "one-line": [
-            true,
-            "check-open-brace",
-            "check-catch",
-            "check-else",
-            "check-finally",
-            "check-whitespace"
-        ],
         "one-variable-per-declaration": false,
-        "quotemark": [
+        "ordered-imports": [
             true,
-            "single",
-            "avoid-escape"
+            {
+                "import-sources-order": "lowercase-last",
+                "named-imports-order": "lowercase-first"
+            }
         ],
         "radix": true,
-        "semicolon": [true, "always"],
         "switch-default": false,
         "trailing-comma": [false],
-        "triple-equals": [
-            true,
-            "allow-null-check",
-            "allow-undefined-check"
-        ],
+        "triple-equals": [true, "allow-null-check", "allow-undefined-check"],
         "typedef": [
             false,
             "call-signature",
@@ -90,31 +58,7 @@
             "variable-declaration",
             "member-variable-declaration"
         ],
-        "typedef-whitespace": [
-            true,
-            {
-                "call-signature": "nospace",
-                "index-signature": "nospace",
-                "parameter": "nospace",
-                "property-declaration": "nospace",
-                "variable-declaration": "nospace"
-            },
-            {
-                "call-signature": "space",
-                "index-signature": "space",
-                "parameter": "space",
-                "property-declaration": "space",
-                "variable-declaration": "space"
-            }
-        ],
         "use-isnan": true,
-        "variable-name": [false],
-        "whitespace": [
-            false,
-            "check-branch",
-            "check-decl",
-            "check-operator",
-            "check-separator"
-        ]
+        "variable-name": [false]
     }
 }

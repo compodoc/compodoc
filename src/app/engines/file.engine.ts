@@ -2,9 +2,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 export class FileEngine {
-
     private static instance: FileEngine;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!FileEngine.instance) {
             FileEngine.instance = new FileEngine();

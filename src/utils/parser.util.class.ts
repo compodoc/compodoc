@@ -64,7 +64,10 @@ export class ParserUtil {
                 let resultGlobSearch = this._globFiles.findIndex(element => {
                     let elementPath = path.resolve(this._cwd + path.sep, element);
                     let elementPathInCwd = elementPath.replace(this._cwd + path.sep, '');
-                    elementPathInCwd = elementPathInCwd.replace(new RegExp('\\' + path.sep, 'g'), '/');
+                    elementPathInCwd = elementPathInCwd.replace(
+                        new RegExp('\\' + path.sep, 'g'),
+                        '/'
+                    );
                     return elementPathInCwd === fileNameInCwd;
                 });
                 result = resultGlobSearch !== -1;

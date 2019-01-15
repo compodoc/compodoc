@@ -6,7 +6,6 @@ import BasicTypeUtil from '../../../utils/basic-type.util';
 import Configuration from '../../configuration';
 
 export class FunctionSignatureHelper implements IHtmlEngineHelper {
-
     constructor() {}
 
     private handleFunction(arg): string {

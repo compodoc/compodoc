@@ -25,14 +25,17 @@ import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { COMPODOC_CONSTANTS } from '../utils/constants';
 
-import { findMainSourceFolder, cleanNameWithoutSpaceAndToLowerCase, cleanSourcesForWatch } from '../utils/utils';
+import {
+    findMainSourceFolder,
+    cleanNameWithoutSpaceAndToLowerCase,
+    cleanSourcesForWatch
+} from '../utils/utils';
 
 import { promiseSequential } from '../utils/promise-sequential';
 import DependenciesEngine from './engines/dependencies.engine';
 import RouterParserUtil from '../utils/router-parser.util';
 
 import AngularVersionUtil from '../utils/angular-version.util';
-
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -98,9 +101,7 @@ export class Application {
         I18nEngine.init(Configuration.mainData.language);
 
         if (
-            Configuration.mainData.output.charAt(
-                Configuration.mainData.output.length - 1
-            ) !== '/'
+            Configuration.mainData.output.charAt(Configuration.mainData.output.length - 1) !== '/'
         ) {
             Configuration.mainData.output += '/';
         }
@@ -211,8 +212,7 @@ export class Application {
                         parsedData.name + ' documentation';
                 }
                 if (typeof parsedData.description !== 'undefined') {
-                    Configuration.mainData.documentationMainDescription =
-                        parsedData.description;
+                    Configuration.mainData.documentationMainDescription = parsedData.description;
                 }
                 Configuration.mainData.angularVersion = AngularVersionUtil.getAngularVersionOfProject(
                     parsedData
@@ -429,7 +429,7 @@ export class Application {
                 result = true;
             } else {
                 let countJSFiles = 0;
-                this.files.forEach((file) => {
+                this.files.forEach(file => {
                     if (path.extname(file) === '.js') {
                         countJSFiles += 1;
                     }
@@ -678,11 +678,11 @@ export class Application {
             });
         }
 
-				if (Configuration.mainData.unitTestCoverage !== ''){
-					actions.push(()=>{
-						return this.prepareUnitTestCoverage();
-					});
-				}
+        if (Configuration.mainData.unitTestCoverage !== '') {
+            actions.push(() => {
+                return this.prepareUnitTestCoverage();
+            });
+        }
 
         if (Configuration.mainData.includes !== '') {
             actions.push(() => {
@@ -703,19 +703,20 @@ export class Application {
                                 Configuration.mainData.exportFormat
                             }`
                         );
-                        ExportEngine.export(Configuration.mainData.output, Configuration.mainData).then(
-                            () => {
-                                generationPromiseResolve();
-                                this.endCallback();
-                                logger.info(
-                                    'Documentation generated in ' +
-                                        Configuration.mainData.output +
-                                        ' in ' +
-                                        this.getElapsedTime() +
-                                        ' seconds'
-                                );
-                            }
-                        );
+                        ExportEngine.export(
+                            Configuration.mainData.output,
+                            Configuration.mainData
+                        ).then(() => {
+                            generationPromiseResolve();
+                            this.endCallback();
+                            logger.info(
+                                'Documentation generated in ' +
+                                    Configuration.mainData.output +
+                                    ' in ' +
+                                    this.getElapsedTime() +
+                                    ' seconds'
+                            );
+                        });
                     } else {
                         logger.warn(`Exported format not supported`);
                     }
@@ -825,93 +826,95 @@ export class Application {
                     injectables: [],
                     pipes: []
                 };
-                ['declarations', 'bootstrap', 'imports', 'exports', 'controllers'].forEach(metadataType => {
-                    ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
-                        switch (metaDataItem.type) {
-                            case 'directive':
-                                return DependenciesEngine.getDirectives().some(directive => {
-                                    let selectedDirective;
-                                    if (typeof metaDataItem.id !== 'undefined') {
-                                        selectedDirective =
-                                            (directive as any).id === metaDataItem.id;
-                                    } else {
-                                        selectedDirective =
-                                            (directive as any).name === metaDataItem.name;
-                                    }
-                                    if (
-                                        selectedDirective &&
-                                        !ngModule.compodocLinks.directives.includes(directive)
-                                    ) {
-                                        ngModule.compodocLinks.directives.push(directive);
-                                    }
-                                    return selectedDirective;
-                                });
+                ['declarations', 'bootstrap', 'imports', 'exports', 'controllers'].forEach(
+                    metadataType => {
+                        ngModule[metadataType] = ngModule[metadataType].filter(metaDataItem => {
+                            switch (metaDataItem.type) {
+                                case 'directive':
+                                    return DependenciesEngine.getDirectives().some(directive => {
+                                        let selectedDirective;
+                                        if (typeof metaDataItem.id !== 'undefined') {
+                                            selectedDirective =
+                                                (directive as any).id === metaDataItem.id;
+                                        } else {
+                                            selectedDirective =
+                                                (directive as any).name === metaDataItem.name;
+                                        }
+                                        if (
+                                            selectedDirective &&
+                                            !ngModule.compodocLinks.directives.includes(directive)
+                                        ) {
+                                            ngModule.compodocLinks.directives.push(directive);
+                                        }
+                                        return selectedDirective;
+                                    });
 
-                            case 'component':
-                                return DependenciesEngine.getComponents().some(component => {
-                                    let selectedComponent;
-                                    if (typeof metaDataItem.id !== 'undefined') {
-                                        selectedComponent =
-                                            (component as any).id === metaDataItem.id;
-                                    } else {
-                                        selectedComponent =
-                                            (component as any).name === metaDataItem.name;
-                                    }
-                                    if (
-                                        selectedComponent &&
-                                        !ngModule.compodocLinks.components.includes(component)
-                                    ) {
-                                        ngModule.compodocLinks.components.push(component);
-                                    }
-                                    return selectedComponent;
-                                });
+                                case 'component':
+                                    return DependenciesEngine.getComponents().some(component => {
+                                        let selectedComponent;
+                                        if (typeof metaDataItem.id !== 'undefined') {
+                                            selectedComponent =
+                                                (component as any).id === metaDataItem.id;
+                                        } else {
+                                            selectedComponent =
+                                                (component as any).name === metaDataItem.name;
+                                        }
+                                        if (
+                                            selectedComponent &&
+                                            !ngModule.compodocLinks.components.includes(component)
+                                        ) {
+                                            ngModule.compodocLinks.components.push(component);
+                                        }
+                                        return selectedComponent;
+                                    });
 
-                            case 'controller':
-                                return DependenciesEngine.getControllers().some(controller => {
-                                    let selectedController;
-                                    if (typeof metaDataItem.id !== 'undefined') {
-                                        selectedController =
-                                            (controller as any).id === metaDataItem.id;
-                                    } else {
-                                        selectedController =
-                                            (controller as any).name === metaDataItem.name;
-                                    }
-                                    if (
-                                        selectedController &&
-                                        !ngModule.compodocLinks.controllers.includes(controller)
-                                    ) {
-                                        ngModule.compodocLinks.controllers.push(controller);
-                                    }
-                                    return selectedController;
-                                });
+                                case 'controller':
+                                    return DependenciesEngine.getControllers().some(controller => {
+                                        let selectedController;
+                                        if (typeof metaDataItem.id !== 'undefined') {
+                                            selectedController =
+                                                (controller as any).id === metaDataItem.id;
+                                        } else {
+                                            selectedController =
+                                                (controller as any).name === metaDataItem.name;
+                                        }
+                                        if (
+                                            selectedController &&
+                                            !ngModule.compodocLinks.controllers.includes(controller)
+                                        ) {
+                                            ngModule.compodocLinks.controllers.push(controller);
+                                        }
+                                        return selectedController;
+                                    });
 
-                            case 'module':
-                                return DependenciesEngine
-                                    .getModules()
-                                    .some(module => (module as any).name === metaDataItem.name);
+                                case 'module':
+                                    return DependenciesEngine.getModules().some(
+                                        module => (module as any).name === metaDataItem.name
+                                    );
 
-                            case 'pipe':
-                                return DependenciesEngine.getPipes().some(pipe => {
-                                    let selectedPipe;
-                                    if (typeof metaDataItem.id !== 'undefined') {
-                                        selectedPipe = (pipe as any).id === metaDataItem.id;
-                                    } else {
-                                        selectedPipe = (pipe as any).name === metaDataItem.name;
-                                    }
-                                    if (
-                                        selectedPipe &&
-                                        !ngModule.compodocLinks.pipes.includes(pipe)
-                                    ) {
-                                        ngModule.compodocLinks.pipes.push(pipe);
-                                    }
-                                    return selectedPipe;
-                                });
+                                case 'pipe':
+                                    return DependenciesEngine.getPipes().some(pipe => {
+                                        let selectedPipe;
+                                        if (typeof metaDataItem.id !== 'undefined') {
+                                            selectedPipe = (pipe as any).id === metaDataItem.id;
+                                        } else {
+                                            selectedPipe = (pipe as any).name === metaDataItem.name;
+                                        }
+                                        if (
+                                            selectedPipe &&
+                                            !ngModule.compodocLinks.pipes.includes(pipe)
+                                        ) {
+                                            ngModule.compodocLinks.pipes.push(pipe);
+                                        }
+                                        return selectedPipe;
+                                    });
 
-                            default:
-                                return true;
-                        }
-                    });
-                });
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+                );
                 ngModule.providers = ngModule.providers.filter(provider => {
                     return (
                         DependenciesEngine.getInjectables().some(injectable => {
@@ -924,24 +927,24 @@ export class Application {
                             }
                             return selectedInjectable;
                         }) ||
-                        DependenciesEngine
-                            .getInterceptors()
-                            .some(interceptor => (interceptor as any).name === provider.name)
+                        DependenciesEngine.getInterceptors().some(
+                            interceptor => (interceptor as any).name === provider.name
+                        )
                     );
                 });
                 // Try fixing type undefined for each providers
                 _.forEach(ngModule.providers, provider => {
                     if (
-                        DependenciesEngine
-                            .getInjectables()
-                            .find(injectable => (injectable as any).name === provider.name)
+                        DependenciesEngine.getInjectables().find(
+                            injectable => (injectable as any).name === provider.name
+                        )
                     ) {
                         provider.type = 'injectable';
                     }
                     if (
-                        DependenciesEngine
-                            .getInterceptors()
-                            .find(interceptor => (interceptor as any).name === provider.name)
+                        DependenciesEngine.getInterceptors().find(
+                            interceptor => (interceptor as any).name === provider.name
+                        )
                     ) {
                         provider.type = 'interceptor';
                     }
@@ -1018,9 +1021,7 @@ export class Application {
 
     public preparePipes = (somePipes?) => {
         logger.info('Prepare pipes');
-        Configuration.mainData.pipes = somePipes
-            ? somePipes
-            : DependenciesEngine.getPipes();
+        Configuration.mainData.pipes = somePipes ? somePipes : DependenciesEngine.getPipes();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1224,7 +1225,7 @@ export class Application {
     private handleStyleurls(component): Promise<any> {
         let dirname = path.dirname(component.file);
 
-        let styleDataPromise = component.styleUrls.map((styleUrl) => {
+        let styleDataPromise = component.styleUrls.map(styleUrl => {
             let stylePath = path.resolve(dirname + path.sep + styleUrl);
 
             if (!FileEngine.existsSync(stylePath)) {
@@ -1254,14 +1255,17 @@ export class Application {
 
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = Configuration.mainData.navTabConfig;
-        navTabConfig = navTabConfig.length === 0 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions) : navTabConfig;
+        navTabConfig =
+            navTabConfig.length === 0
+                ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions)
+                : navTabConfig;
         let matchDepType = (depType: string) => {
             return depType === 'all' || depType === dependency.type;
         };
 
         let navTabs = [];
-        _.forEach(navTabConfig, (customTab) => {
-            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { 'id': customTab.id });
+        _.forEach(navTabConfig, customTab => {
+            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { id: customTab.id });
             if (!navTab) {
                 throw new Error(`Invalid tab ID '${customTab.id}' specified in tab configuration`);
             }
@@ -1269,19 +1273,42 @@ export class Application {
             navTab.label = customTab.label;
 
             // is tab applicable to target dependency?
-            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) { return; }
+            if (-1 === _.findIndex(navTab.depTypes, matchDepType)) {
+                return;
+            }
 
             // global config
-            if (customTab.id === 'tree' && Configuration.mainData.disableDomTree) { return; }
-            if (customTab.id === 'source' && Configuration.mainData.disableSourceCode) { return; }
-            if (customTab.id === 'templateData' && Configuration.mainData.disableTemplateTab) { return; }
-            if (customTab.id === 'styleData' && Configuration.mainData.disableStyleTab) { return; }
+            if (customTab.id === 'tree' && Configuration.mainData.disableDomTree) {
+                return;
+            }
+            if (customTab.id === 'source' && Configuration.mainData.disableSourceCode) {
+                return;
+            }
+            if (customTab.id === 'templateData' && Configuration.mainData.disableTemplateTab) {
+                return;
+            }
+            if (customTab.id === 'styleData' && Configuration.mainData.disableStyleTab) {
+                return;
+            }
 
             // per dependency config
-            if (customTab.id === 'readme' && !dependency.readme) { return; }
-            if (customTab.id === 'example' && !dependency.exampleUrls) { return; }
-            if (customTab.id === 'templateData' && (!dependency.templateUrl || dependency.templateUrl.length === 0)) { return; }
-            if (customTab.id === 'styleData' && ((!dependency.styleUrls || dependency.styleUrls.length === 0) && (!dependency.styles || dependency.styles.length === 0) )) {
+            if (customTab.id === 'readme' && !dependency.readme) {
+                return;
+            }
+            if (customTab.id === 'example' && !dependency.exampleUrls) {
+                return;
+            }
+            if (
+                customTab.id === 'templateData' &&
+                (!dependency.templateUrl || dependency.templateUrl.length === 0)
+            ) {
+                return;
+            }
+            if (
+                customTab.id === 'styleData' &&
+                ((!dependency.styleUrls || dependency.styleUrls.length === 0) &&
+                    (!dependency.styles || dependency.styles.length === 0))
+            ) {
                 return;
             }
 
@@ -1289,7 +1316,9 @@ export class Application {
         });
 
         if (navTabs.length === 0) {
-            throw new Error(`No valid navigation tabs have been defined for dependency type '${dependency.type}'. Specify \
+            throw new Error(`No valid navigation tabs have been defined for dependency type '${
+                dependency.type
+            }'. Specify \
 at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         }
 
@@ -1368,9 +1397,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     const componentTemplateUrlPromise = new Promise(
                         (componentTemplateUrlResolve, componentTemplateUrlReject) => {
                             if (component.templateUrl.length > 0) {
-                                logger.info(
-                                    ` ${component.name} has a templateUrl, include it`
-                                );
+                                logger.info(` ${component.name} has a templateUrl, include it`);
                                 this.handleTemplateurl(component).then(
                                     () => {
                                         componentTemplateUrlResolve();
@@ -1388,9 +1415,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     const componentStyleUrlsPromise = new Promise(
                         (componentStyleUrlsResolve, componentStyleUrlsReject) => {
                             if (component.styleUrls.length > 0) {
-                                logger.info(
-                                    ` ${component.name} has styleUrls, include them`
-                                );
+                                logger.info(` ${component.name} has styleUrls, include them`);
                                 this.handleStyleurls(component).then(
                                     () => {
                                         componentStyleUrlsResolve();
@@ -1569,9 +1594,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public prepareGuards(someGuards?): Promise<void> {
         logger.info('Prepare guards');
 
-        Configuration.mainData.guards = someGuards
-            ? someGuards
-            : DependenciesEngine.getGuards();
+        Configuration.mainData.guards = someGuards ? someGuards : DependenciesEngine.getGuards();
 
         return new Promise((resolve, reject) => {
             let i = 0;
@@ -1622,21 +1645,19 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             });
 
             if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
-                RouterParserUtil
-                    .generateRoutesIndex(
-                        Configuration.mainData.output,
-                        Configuration.mainData.routes
-                    )
-                    .then(
-                        () => {
-                            logger.info(' Routes index generated');
-                            resolve();
-                        },
-                        e => {
-                            logger.error(e);
-                            reject();
-                        }
-                    );
+                RouterParserUtil.generateRoutesIndex(
+                    Configuration.mainData.output,
+                    Configuration.mainData.routes
+                ).then(
+                    () => {
+                        logger.info(' Routes index generated');
+                        resolve();
+                    },
+                    e => {
+                        logger.error(e);
+                        reject();
+                    }
+                );
             } else {
                 resolve();
             }
@@ -1796,7 +1817,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     });
 
                     cl.coveragePercent = Math.floor(
-                        totalStatementDocumented / totalStatements * 100
+                        (totalStatementDocumented / totalStatements) * 100
                     );
                     if (totalStatements === 0) {
                         cl.coveragePercent = 0;
@@ -1866,7 +1887,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
 
                     cl.coveragePercent = Math.floor(
-                        totalStatementDocumented / totalStatements * 100
+                        (totalStatementDocumented / totalStatements) * 100
                     );
                     cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
                     cl.status = getStatus(cl.coveragePercent);
@@ -1936,7 +1957,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 });
 
-                cla.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cla.coveragePercent = Math.floor(
+                    (totalStatementDocumented / totalStatements) * 100
+                );
                 if (totalStatements === 0) {
                     cla.coveragePercent = 0;
                 }
@@ -2003,7 +2026,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 });
 
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
                 if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
@@ -2070,7 +2093,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 });
 
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
                 if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
@@ -2092,7 +2115,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     totalStatementDocumented += 1;
                 }
 
-                cl.coveragePercent = Math.floor(totalStatementDocumented / totalStatements * 100);
+                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
                 cl.status = getStatus(cl.coveragePercent);
                 totalProjectStatementDocumented += cl.coveragePercent;
@@ -2132,7 +2155,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
                 HtmlEngine.generateCoverageBadge(
                     Configuration.mainData.output,
-										'documentation',
+                    'documentation',
                     coverageData
                 );
             }
@@ -2155,9 +2178,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 } else {
                     let message = `Documentation coverage (${
                         coverageData.count
-                    }%) is not over threshold (${
-                        Configuration.mainData.coverageTestThreshold
-                    }%)`;
+                    }%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2260,13 +2281,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 } else {
                     let message = `Documentation coverage (${
-                        coverageData.count
-                    }%) is not over threshold (${
-                        Configuration.mainData.coverageTestThreshold
-                    }%)`,
-                    messagePerFile = `Documentation coverage per file is over threshold (${
-                        Configuration.mainData.coverageMinimumPerFile
-                    }%)`;
+                            coverageData.count
+                        }%) is not over threshold (${
+                            Configuration.mainData.coverageTestThreshold
+                        }%)`,
+                        messagePerFile = `Documentation coverage per file is over threshold (${
+                            Configuration.mainData.coverageMinimumPerFile
+                        }%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2293,9 +2314,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 logger.warn('Missing documentation coverage data');
             } else {
                 covDat = {};
-                covFileNames = _.map(Configuration.mainData.coverageData['files'], (el) => {
+                covFileNames = _.map(Configuration.mainData.coverageData['files'], el => {
                     let fileName = el.filePath;
-                    covDat[fileName] = { type: el.type, linktype: el.linktype, linksubtype: el.linksubtype, name: el.name };
+                    covDat[fileName] = {
+                        type: el.type,
+                        linktype: el.linktype,
+                        linksubtype: el.linksubtype,
+                        name: el.name
+                    };
                     return fileName;
                 });
             }
@@ -2307,30 +2333,30 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             } else {
                 return Promise.reject('Error reading unit test coverage file');
             }
-            let getCovStatus = function (percent, totalLines) {
+            let getCovStatus = function(percent, totalLines) {
                 let status;
                 if (totalLines === 0) {
-                    status = 'uncovered'
+                    status = 'uncovered';
                 } else if (percent <= 25) {
                     status = 'low';
                 } else if (percent > 25 && percent <= 50) {
                     status = 'medium';
                 } else if (percent > 50 && percent <= 75) {
-                    status = 'good'
+                    status = 'good';
                 } else {
                     status = 'very-good';
                 }
                 return status;
             };
-            let getCoverageData = function (data, fileName) {
+            let getCoverageData = function(data, fileName) {
                 let out = {};
                 if (fileName !== 'total') {
                     if (covDat === undefined) {
                         // need a name to include in output but this isn't visible
                         out = { name: fileName, filePath: fileName };
                     } else {
-                        let findMatch = _.filter(covFileNames, (el) => {
-                            return (el.includes(fileName) || fileName.includes(el))
+                        let findMatch = _.filter(covFileNames, el => {
+                            return el.includes(fileName) || fileName.includes(el);
                         });
                         if (findMatch.length > 0) {
                             out = _.clone(covDat[findMatch[0]]);
@@ -2339,7 +2365,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 }
                 let keysToGet = ['statements', 'branches', 'functions', 'lines'];
-                _.forEach(keysToGet, (key) => {
+                _.forEach(keysToGet, key => {
                     if (data[key]) {
                         let t = data[key];
                         out[key] = {
@@ -2363,7 +2389,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 }
             }
             unitTestData['files'] = files;
-            unitTestData['idColumn'] = (covDat !== undefined); // should we include the id column
+            unitTestData['idColumn'] = covDat !== undefined; // should we include the id column
             Configuration.mainData.unitTestData = unitTestData;
             Configuration.addPage({
                 name: 'unit-test',
@@ -2377,16 +2403,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
             if (Configuration.mainData.exportFormat === COMPODOC_DEFAULTS.exportFormat) {
                 let keysToGet = ['statements', 'branches', 'functions', 'lines'];
-                _.forEach(keysToGet, (key) => {
+                _.forEach(keysToGet, key => {
                     if (unitTestData['total'][key]) {
-                        HtmlEngine.generateCoverageBadge(
-                            Configuration.mainData.output,
-                            key,
-                            {
-                                count: unitTestData['total'][key]['coveragePercent'],
-                                status: unitTestData['total'][key]['status']
-                            }
-                        )
+                        HtmlEngine.generateCoverageBadge(Configuration.mainData.output, key, {
+                            count: unitTestData['total'][key]['coveragePercent'],
+                            status: unitTestData['total'][key]['status']
+                        });
                     }
                 });
             }
@@ -2481,14 +2503,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         let pages = Configuration.mainData.additionalPages;
         Promise.all(pages.map((page, i) => this.processPage(page)))
             .then(() => {
-                SearchEngine
-                    .generateSearchIndexJson(Configuration.mainData.output)
-                    .then(() => {
-                        if (Configuration.mainData.assetsFolder !== '') {
-                            this.processAssetsFolder();
-                        }
-                        this.processResources();
-                    });
+                SearchEngine.generateSearchIndexJson(Configuration.mainData.output).then(() => {
+                    if (Configuration.mainData.assetsFolder !== '') {
+                        this.processAssetsFolder();
+                    }
+                    this.processResources();
+                });
             })
             .catch(e => {
                 logger.error(e);
@@ -2509,10 +2529,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let testOutputDir = Configuration.mainData.output.match(cwd);
 
             if (testOutputDir && testOutputDir.length > 0) {
-                finalOutput = Configuration.mainData.output.replace(
-                    cwd + path.sep,
-                    ''
-                );
+                finalOutput = Configuration.mainData.output.replace(cwd + path.sep, '');
             }
 
             const destination = path.join(
@@ -2572,54 +2589,38 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 if (errorCopy) {
                     logger.error('Error during resources copy ', errorCopy);
                 } else {
-
-                    const extThemePromise = new Promise(
-                        (extThemeResolve, extThemeReject) => {
-                            if (Configuration.mainData.extTheme) {
-                                fs.copy(
-                                    path.resolve(
-                                        cwd +
-                                            path.sep +
-                                            Configuration.mainData.extTheme
-                                    ),
-                                    path.resolve(finalOutput + '/styles/'),
-                                    function(errorCopyTheme) {
-                                        if (errorCopyTheme) {
-                                            logger.error(
-                                                'Error during external styling theme copy ',
-                                                errorCopyTheme
-                                            );
-                                            extThemeReject();
-                                        } else {
-                                            logger.info(
-                                                'External styling theme copy succeeded'
-                                            );
-                                            extThemeResolve();
-                                        }
+                    const extThemePromise = new Promise((extThemeResolve, extThemeReject) => {
+                        if (Configuration.mainData.extTheme) {
+                            fs.copy(
+                                path.resolve(cwd + path.sep + Configuration.mainData.extTheme),
+                                path.resolve(finalOutput + '/styles/'),
+                                function(errorCopyTheme) {
+                                    if (errorCopyTheme) {
+                                        logger.error(
+                                            'Error during external styling theme copy ',
+                                            errorCopyTheme
+                                        );
+                                        extThemeReject();
+                                    } else {
+                                        logger.info('External styling theme copy succeeded');
+                                        extThemeResolve();
                                     }
-                                );
-                            } else {
-                                extThemeResolve();
-                            }
+                                }
+                            );
+                        } else {
+                            extThemeResolve();
                         }
-                    );
+                    });
 
                     const customFaviconPromise = new Promise(
                         (customFaviconResolve, customFaviconReject) => {
-                            if (
-                                Configuration.mainData.customFavicon !== ''
-                            ) {
+                            if (Configuration.mainData.customFavicon !== '') {
                                 logger.info(`Custom favicon supplied`);
                                 fs.copy(
                                     path.resolve(
-                                        cwd +
-                                            path.sep +
-                                            Configuration.mainData
-                                                .customFavicon
+                                        cwd + path.sep + Configuration.mainData.customFavicon
                                     ),
-                                    path.resolve(
-                                        finalOutput + '/images/favicon.ico'
-                                    ),
+                                    path.resolve(finalOutput + '/images/favicon.ico'),
                                     errorCopyFavicon => {
                                         // tslint:disable-line
                                         if (errorCopyFavicon) {
@@ -2629,9 +2630,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                             );
                                             customFaviconReject();
                                         } else {
-                                            logger.info(
-                                                'External custom favicon copy succeeded'
-                                            );
+                                            logger.info('External custom favicon copy succeeded');
                                             customFaviconResolve();
                                         }
                                     }
@@ -2646,11 +2645,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         if (Configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
-                                path.resolve(
-                                    cwd +
-                                    path.sep +
-                                    Configuration.mainData.customLogo
-                                ),
+                                path.resolve(cwd + path.sep + Configuration.mainData.customLogo),
                                 path.resolve(finalOutput + '/images/logo.png'),
                                 errorCopyLogo => {
                                     // tslint:disable-line
@@ -2671,13 +2666,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
 
-                    Promise.all([
-                        extThemePromise,
-                        customFaviconPromise,
-                        customLogoPromise
-                    ]).then(() => {
-                        onComplete();
-                    });
+                    Promise.all([extThemePromise, customFaviconPromise, customLogoPromise]).then(
+                        () => {
+                            onComplete();
+                        }
+                    );
                 }
             }
         );
@@ -2717,30 +2710,31 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         _rawModule.exports.length > 0 ||
                         _rawModule.providers.length > 0
                     ) {
-                        NgdEngine
-                            .renderGraph(modules[i].file, finalPath, 'f', modules[i].name)
-                            .then(
-                                () => {
-                                    NgdEngine
-                                        .readGraph(
-                                            path.resolve(finalPath + path.sep + 'dependencies.svg'),
-                                            modules[i].name
-                                        )
-                                        .then(
-                                            data => {
-                                                modules[i].graph = data as string;
-                                                i++;
-                                                loop();
-                                            },
-                                            err => {
-                                                logger.error('Error during graph read: ', err);
-                                            }
-                                        );
-                                },
-                                errorMessage => {
-                                    logger.error(errorMessage);
-                                }
-                            );
+                        NgdEngine.renderGraph(
+                            modules[i].file,
+                            finalPath,
+                            'f',
+                            modules[i].name
+                        ).then(
+                            () => {
+                                NgdEngine.readGraph(
+                                    path.resolve(finalPath + path.sep + 'dependencies.svg'),
+                                    modules[i].name
+                                ).then(
+                                    data => {
+                                        modules[i].graph = data as string;
+                                        i++;
+                                        loop();
+                                    },
+                                    err => {
+                                        logger.error('Error during graph read: ', err);
+                                    }
+                                );
+                            },
+                            errorMessage => {
+                                logger.error(errorMessage);
+                            }
+                        );
                     } else {
                         i++;
                         loop();
@@ -2756,40 +2750,36 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             finalMainGraphPath += 'graph';
             NgdEngine.init(path.resolve(finalMainGraphPath));
 
-            NgdEngine
-                .renderGraph(
-                    Configuration.mainData.tsconfig,
-                    path.resolve(finalMainGraphPath),
-                    'p'
-                )
-                .then(
-                    () => {
-                        NgdEngine
-                            .readGraph(
-                                path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'),
-                                'Main graph'
-                            )
-                            .then(
-                                data => {
-                                    Configuration.mainData.mainGraph = data as string;
-                                    loop();
-                                },
-                                err => {
-                                    logger.error('Error during main graph reading : ', err);
-                                    Configuration.mainData.disableMainGraph = true;
-                                    loop();
-                                }
-                            );
-                    },
-                    err => {
-                        logger.error(
-                            'Ooops error during main graph generation, moving on next part with main graph disabled : ',
-                            err
-                        );
-                        Configuration.mainData.disableMainGraph = true;
-                        loop();
-                    }
-                );
+            NgdEngine.renderGraph(
+                Configuration.mainData.tsconfig,
+                path.resolve(finalMainGraphPath),
+                'p'
+            ).then(
+                () => {
+                    NgdEngine.readGraph(
+                        path.resolve(finalMainGraphPath + path.sep + 'dependencies.svg'),
+                        'Main graph'
+                    ).then(
+                        data => {
+                            Configuration.mainData.mainGraph = data as string;
+                            loop();
+                        },
+                        err => {
+                            logger.error('Error during main graph reading : ', err);
+                            Configuration.mainData.disableMainGraph = true;
+                            loop();
+                        }
+                    );
+                },
+                err => {
+                    logger.error(
+                        'Ooops error during main graph generation, moving on next part with main graph disabled : ',
+                        err
+                    );
+                    Configuration.mainData.disableMainGraph = true;
+                    loop();
+                }
+            );
         }
     }
 

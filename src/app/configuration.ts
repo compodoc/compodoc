@@ -83,7 +83,7 @@ export class Configuration implements ConfigurationInterface {
     };
 
     private static instance: Configuration;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!Configuration.instance) {
             Configuration.instance = new Configuration();

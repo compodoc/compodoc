@@ -80,8 +80,8 @@ export class JsdocParserUtil {
         const variableStatementNode = isInitializerOfVariableDeclarationInStatement
             ? parent.parent.parent
             : isVariableOfVariableDeclarationStatement
-                ? parent.parent
-                : undefined;
+            ? parent.parent
+            : undefined;
         if (variableStatementNode) {
             cache = this.getJSDocsWorker(variableStatementNode, cache);
         }

@@ -7,7 +7,7 @@ export class ExtendsMerger {
     private classes;
 
     private static instance: ExtendsMerger;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!ExtendsMerger.instance) {
             ExtendsMerger.instance = new ExtendsMerger();

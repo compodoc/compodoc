@@ -37,16 +37,10 @@ import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
 import { I18nHelper } from './html-engine-helpers/i18n.helper';
 
 export class HtmlEngineHelpers {
-    public registerHelpers(
-        bars
-    ): void {
+    public registerHelpers(bars): void {
         this.registerHelper(bars, 'compare', new CompareHelper());
         this.registerHelper(bars, 'or', new OrHelper());
-        this.registerHelper(
-            bars,
-            'functionSignature',
-            new FunctionSignatureHelper()
-        );
+        this.registerHelper(bars, 'functionSignature', new FunctionSignatureHelper());
         this.registerHelper(bars, 'isNotToggle', new IsNotToggleHelper());
         this.registerHelper(bars, 'isInitialTab', new IsInitialTabHelper());
         this.registerHelper(bars, 'isTabEnabled', new IsTabEnabledHelper());
@@ -67,19 +61,11 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'jsdoc-params', new JsdocParamsHelper());
         this.registerHelper(bars, 'jsdoc-params-valid', new JsdocParamsValidHelper());
         this.registerHelper(bars, 'jsdoc-default', new JsdocDefaultHelper());
-        this.registerHelper(
-            bars,
-            'linkType',
-            new LinkTypeHelper()
-        );
+        this.registerHelper(bars, 'linkType', new LinkTypeHelper());
         this.registerHelper(bars, 'indexableSignature', new IndexableSignatureHelper());
         this.registerHelper(bars, 'object', new ObjectHelper());
         this.registerHelper(bars, 'objectLength', new ObjectLengthHelper());
-        this.registerHelper(
-            bars,
-            'parseDescription',
-            new ParseDescriptionHelper()
-        );
+        this.registerHelper(bars, 'parseDescription', new ParseDescriptionHelper());
         this.registerHelper(bars, 'one-parameter-has', new OneParameterHasHelper());
         this.registerHelper(bars, 'element-alone', new ElementAloneHelper());
         this.registerHelper(bars, 'hasOwn', new HasOwnHelper());

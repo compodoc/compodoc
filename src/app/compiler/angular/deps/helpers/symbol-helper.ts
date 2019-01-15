@@ -236,7 +236,7 @@ export class SymbolHelper {
             len = props.length,
             filteredProps = [];
 
-        for (i; i<len; i++) {
+        for (i; i < len; i++) {
             if (props[i].name && props[i].name.text === type) {
                 filteredProps.push(props[i]);
             }

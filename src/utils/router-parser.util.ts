@@ -23,7 +23,7 @@ export class RouterParserUtil {
     private modulesWithRoutes = [];
 
     private static instance: RouterParserUtil;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!RouterParserUtil.instance) {
             RouterParserUtil.instance = new RouterParserUtil();

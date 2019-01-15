@@ -38,7 +38,7 @@ export class MarkdownEngine {
         };
 
         let self = this;
-        renderer.image = function (href: string, title: string, text: string) {
+        renderer.image = function(href: string, title: string, text: string) {
             let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
             if (title) {
                 out += ' title="' + title + '"';
@@ -60,8 +60,7 @@ export class MarkdownEngine {
     }
 
     public getTraditionalMarkdown(filepath: string): Promise<string> {
-        return FileEngine
-            .get(process.cwd() + path.sep + filepath + '.md')
+        return FileEngine.get(process.cwd() + path.sep + filepath + '.md')
             .catch(err => FileEngine.get(process.cwd() + path.sep + filepath).then())
             .then(data => marked(data));
     }
@@ -71,9 +70,7 @@ export class MarkdownEngine {
     }
 
     private getReadmeFile(): Promise<string> {
-        return FileEngine
-            .get(process.cwd() + path.sep + 'README.md')
-            .then(data => marked(data));
+        return FileEngine.get(process.cwd() + path.sep + 'README.md').then(data => marked(data));
     }
 
     public readNeighbourReadmeFile(file: string): string {

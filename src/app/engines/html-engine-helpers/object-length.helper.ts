@@ -5,7 +5,7 @@ export class ObjectLengthHelper implements IHtmlEngineHelper {
         let len = arguments.length - 1;
         let options: IHandlebarsOptions = arguments[len];
 
-        if( typeof obj !== 'object' ) {
+        if (typeof obj !== 'object') {
             return options.inverse(context);
         }
 

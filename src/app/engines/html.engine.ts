@@ -79,7 +79,7 @@ export class HtmlEngine {
                 logger.warn(
                     'Template path specificed but does not exist...using default templates'
                 );
-                //new Error('Template path specified but does not exist');
+                // new Error('Template path specified but does not exist');
             }
         }
 

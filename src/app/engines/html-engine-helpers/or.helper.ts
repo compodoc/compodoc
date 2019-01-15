@@ -1,7 +1,7 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 
 export class OrHelper implements IHtmlEngineHelper {
-    public helperFunc(context: any, /* any, any, ..., options */) {
+    public helperFunc(context: any /* any, any, ..., options */) {
         let len = arguments.length - 1;
         let options: IHandlebarsOptions = arguments[len];
 
