@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import Ast, { ts, SyntaxKind } from 'ts-simple-ast';
 
-import { logger } from '../../logger';
+import { logger } from '../../utils/logger';
 import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
 import ComponentsTreeEngine from '../engines/components-tree.engine';

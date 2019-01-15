@@ -3,7 +3,7 @@ import * as path from 'path';
 import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
 
-import { logger } from './logger';
+import { logger } from './utils/logger';
 
 import { stripBom, hasBom } from './utils/utils';
 

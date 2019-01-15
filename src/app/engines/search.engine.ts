@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import { logger } from '../../logger';
+import { logger } from '../../utils/logger';
 import Configuration from '../configuration';
 import FileEngine from './file.engine';
 import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/constants';
@@ -83,12 +83,13 @@ export class SearchEngine {
                     outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
 
-                return FileEngine
-                    .write(outputFolder + path.sep + '/js/search/search_index.js', result)
-                    .catch(err => {
-                        logger.error('Error during search index file generation ', err);
-                        return Promise.reject(err);
-                    });
+                return FileEngine.write(
+                    outputFolder + path.sep + '/js/search/search_index.js',
+                    result
+                ).catch(err => {
+                    logger.error('Error during search index file generation ', err);
+                    return Promise.reject(err);
+                });
             },
             err => Promise.reject('Error during search index generation')
         );

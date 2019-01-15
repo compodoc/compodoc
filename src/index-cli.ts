@@ -4,7 +4,7 @@ import * as path from 'path';
 import { Application } from './app/application';
 
 import { COMPODOC_DEFAULTS } from './utils/defaults';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 import { readConfig, handlePath } from './utils/utils';
 
 import { ts } from 'ts-simple-ast';

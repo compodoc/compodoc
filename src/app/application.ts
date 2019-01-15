@@ -9,7 +9,7 @@ const chokidar = require('chokidar');
 const marked = require('marked');
 const traverse = require('traverse');
 
-import { logger } from '../logger';
+import { logger } from '../utils/logger';
 import HtmlEngine from './engines/html.engine';
 import MarkdownEngine from './engines/markdown.engine';
 import FileEngine from './engines/file.engine';

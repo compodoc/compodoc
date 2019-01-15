@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as _ from 'lodash';
 import FileEngine from './file.engine';
-import { logger } from '../../logger';
+import { logger } from '../../utils/logger';
 
 const $: any = require('cheerio');
 
