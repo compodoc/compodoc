@@ -1,9 +1,17 @@
 {
     "rules": {
         "align": false,
-        "ban": [true, ["_", "each"], ["$", "each"], ["angular", "forEach"]],
+        "ban": [
+            true,
+            ["_", "each"],
+            ["$", "each"],
+            ["angular", "forEach"]
+        ],
         "class-name": true,
-        "comment-format": [true, "check-space"],
+        "comment-format": [
+            true,
+            "check-space"
+        ],
         "curly": true,
         "forin": false,
         "jsdoc-format": true,
@@ -25,7 +33,10 @@
         "no-eval": true,
         "no-inferrable-types": false,
         "no-internal-module": true,
-        "no-invalid-this": [true, "check-function-in-method"],
+        "no-invalid-this": [
+            true,
+            "check-function-in-method"
+        ],
         "no-null-keyword": true,
         "no-reference": true,
         "no-require-imports": false,
@@ -48,7 +59,11 @@
         "radix": true,
         "switch-default": false,
         "trailing-comma": [false],
-        "triple-equals": [true, "allow-null-check", "allow-undefined-check"],
+        "triple-equals": [
+            true,
+            "allow-null-check",
+            "allow-undefined-check"
+        ],
         "typedef": [
             false,
             "call-signature",
