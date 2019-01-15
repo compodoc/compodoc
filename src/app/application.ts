@@ -25,9 +25,7 @@ import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { COMPODOC_CONSTANTS } from '../utils/constants';
 
-import { cleanSourcesForWatch } from '../utils/utils';
-
-import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../utilities';
+import { findMainSourceFolder, cleanNameWithoutSpaceAndToLowerCase, cleanSourcesForWatch } from '../utils/utils';
 
 import { promiseSequential } from '../utils/promise-sequential';
 import DependenciesEngine from './engines/dependencies.engine';

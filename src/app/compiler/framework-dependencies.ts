@@ -3,7 +3,7 @@ import { ts } from 'ts-simple-ast';
 import { ClassHelper } from './angular/deps/helpers/class-helper';
 import { ComponentHelper } from './angular/deps/helpers/component-helper';
 
-import { compilerHost } from '../../utilities';
+import { compilerHost } from '../../utils';
 
 export class FrameworkDependencies {
     private files: string[];
@@ -13,10 +13,7 @@ export class FrameworkDependencies {
     public componentHelper: ComponentHelper;
     public routerParser;
 
-    constructor(
-        files: string[],
-        options: any
-    ) {
+    constructor(files: string[], options: any) {
         this.files = files;
 
         const transpileOptions = {

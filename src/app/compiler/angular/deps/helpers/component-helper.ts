@@ -1,6 +1,6 @@
 import { ts } from 'ts-simple-ast';
 import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
-import { detectIndent } from '../../../../../utilities';
+import { detectIndent } from '../../../../../utils';
 import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
 
@@ -217,7 +217,7 @@ export class ComponentHelper {
             len = props.length,
             filteredProps = [];
 
-        for (i; i<len; i++) {
+        for (i; i < len; i++) {
             if (props[i].name && props[i].name.text === type) {
                 filteredProps.push(props[i]);
             }
