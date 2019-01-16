@@ -8,6 +8,7 @@ import { SyntaxKind } from 'ts-simple-ast';
 const chokidar = require('chokidar');
 const marked = require('marked');
 const traverse = require('traverse');
+const crypto = require('crypto');
 
 import { logger } from '../utils/logger';
 
@@ -37,7 +38,9 @@ import {
     findMainSourceFolder
 } from '../utils/utils';
 
+import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
+import { resolve } from 'url';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -748,12 +751,17 @@ export class Application {
                     const parsedSummaryData = JSON.parse(summaryData);
 
                     let that = this;
+                    let lastLevelOnePage = null;
 
                     traverse(parsedSummaryData).forEach(function() {
+                        // tslint:disable-next-line:no-invalid-this
                         if (this.notRoot && typeof this.node === 'object') {
+                            // tslint:disable-next-line:no-invalid-this
                             let rawPath = this.path;
-                            let file = this.node.file;
-                            let title = this.node.title;
+                            // tslint:disable-next-line:no-invalid-this
+                            let additionalNode: AdditionalNode = this.node;
+                            let file = additionalNode.file;
+                            let title = additionalNode.title;
                             let finalPath = Configuration.mainData.includesFolder;
 
                             let finalDepth = rawPath.filter(el => {
@@ -763,6 +771,17 @@ export class Application {
                             if (typeof file !== 'undefined' && typeof title !== 'undefined') {
                                 const url = cleanNameWithoutSpaceAndToLowerCase(title);
 
+                                /**
+                                 * Id created with title + file path hash, seems to be hypothetically unique here
+                                 */
+                                const id = crypto
+                                    .createHash('md5')
+                                    .update(title + file)
+                                    .digest('hex');
+
+                                // tslint:disable-next-line:no-invalid-this
+                                this.node.id = id;
+
                                 let lastElementRootTree = null;
                                 finalDepth.forEach(el => {
                                     let elementTree =
@@ -770,7 +789,7 @@ export class Application {
                                             ? parsedSummaryData
                                             : lastElementRootTree;
                                     if (typeof elementTree.children !== 'undefined') {
-                                        elementTree = elementTree.children[el];
+                                        elementTree = elementTree['children'][el];
                                     } else {
                                         elementTree = elementTree[el];
                                     }
@@ -788,16 +807,30 @@ export class Application {
                                 if (finalDepth.length > 5) {
                                     logger.error('Only 5 levels of depth are supported');
                                 } else {
-                                    Configuration.addAdditionalPage({
+                                    let _page = {
                                         name: title,
-                                        id: title,
+                                        id: id,
                                         filename: url,
                                         context: 'additional-page',
                                         path: finalPath,
                                         additionalPage: markdownFile,
                                         depth: finalDepth.length,
+                                        childrenLength: additionalNode.children
+                                            ? additionalNode.children.length
+                                            : 0,
+                                        children: [],
+                                        lastChild: false,
                                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                                    });
+                                    };
+                                    if (finalDepth.length === 1) {
+                                        lastLevelOnePage = _page;
+                                    }
+                                    if (finalDepth.length > 1) {
+                                        // store all child pages of the last root level 1 page inside it
+                                        lastLevelOnePage.children.push(_page);
+                                    } else {
+                                        Configuration.addAdditionalPage(_page);
+                                    }
                                 }
                             }
                         }
@@ -2504,7 +2537,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public processAdditionalPages() {
         logger.info('Process additional pages');
         let pages = Configuration.mainData.additionalPages;
-        Promise.all(pages.map((page, i) => this.processPage(page)))
+        Promise.all(
+            pages.map(page => {
+                if (page.children.length > 0) {
+                    return Promise.all([
+                        this.processPage(page),
+                        ...page.children.map(childPage => this.processPage(childPage))
+                    ]);
+                } else {
+                    return this.processPage(page);
+                }
+            })
+        )
             .then(() => {
                 SearchEngine.generateSearchIndexJson(Configuration.mainData.output).then(() => {
                     if (Configuration.mainData.assetsFolder !== '') {

@@ -6,7 +6,6 @@
 {{!-- https://babeljs.io/repl --}}
 {{!-- or copy render function body below --}}
 
-{{!--
 customElements.define('compodoc-menu', class extends HTMLElement {
     constructor() {
         super();
@@ -18,470 +17,457 @@ customElements.define('compodoc-menu', class extends HTMLElement {
     }
 
     render(isNormalMode) {
-         let tp = lithtml.html(`<nav> 
-    <ul class="list"> 
-        <li class="title"> 
-            {{#if customLogo}} 
-                <a href="index.html" data-type="index-link"> 
-                    <img alt="" class="img-responsive" data-type="compodoc-logo" src="images/logo.png"> 
-                </a> 
-            {{else}} 
-                <a href="index.html" data-type="index-link">{{documentationMainName}}</a> 
-            {{/if}} 
-        </li> 
- 
-        <li class="divider"></li> 
-        ${ isNormalMode ? `{{#unless disableSearch}}{{> search-input }}{{/unless}}` : '' } 
-        <li class="chapter"> 
-            <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>{{t "getting-started" }}</a> 
-            <ul class="links"> 
-                {{#if readme}} 
-                    <li class="link"> 
-                        <a href="overview.html" data-type="chapter-link"> 
-                            <span class="icon ion-ios-keypad"></span>{{t "overview" }} 
-                        </a> 
-                    </li> 
-                    <li class="link"> 
-                        <a href="index.html" data-type="chapter-link"> 
-                            <span class="icon ion-ios-paper"></span>{{t "readme" }} 
-                        </a> 
-                    </li> 
-                {{else}} 
-                    <li class="link"> 
-                        <a href="index.html" data-type="chapter-link"> 
-                            <span class="icon ion-ios-keypad" ></span>{{t "overview" }} 
-                        </a> 
-                    </li> 
-                {{/if}} 
-                {{#each markdowns}} 
-                    <li class="link"> 
-                        {{#compare name "!==" 'readme'}} 
-                            <a href="{{name}}.html" 
-                        {{else}} 
-                            <a href="index.html" 
-                        {{/compare}} 
-                        data-type="chapter-link"> 
-                            <span class="icon ion-ios-paper"></span>{{uppername}} 
-                        </a> 
-                    </li> 
-                {{/each}} 
-                {{#orLength packageDependencies packagePeerDependencies}} 
-                    <li class="link"> 
-                        <a href="dependencies.html" 
-                            data-type="chapter-link"> 
-                            <span class="icon ion-ios-list"></span>{{t "dependencies" }} 
-                        </a> 
-                    </li> 
-                {{/orLength}} 
-            </ul> 
-        </li> 
-        {{#if additionalPages}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-              ${ isNormalMode ? 'data-target="#additional-pages"' : 'data-target="#xs-additional-pages"'}> 
-                <span class="icon ion-ios-book"></span> 
-                <span>{{includesName}}</span> 
-                <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-                ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }> 
-                {{#each additionalPages}} 
-                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}"> 
-                        <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a> 
-                    </li> 
-                {{/each}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#if modules}} 
-        <li class="chapter modules"> 
-            <a data-type="chapter-link" href="modules.html"> 
-                <div class="menu-toggler linked" data-toggle="collapse" 
-                    ${ isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }> 
-                    <span class="icon ion-ios-archive"></span> 
-                    <span class="link-name">{{t "modules" }}</span> 
-                    <span class="icon ion-ios-arrow-down"></span> 
-                </div> 
-            </a> 
-            <ul class="links collapse" 
-            ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }> 
-                {{#each modules}} 
-                    <li class="link"> 
-                        <a href="modules/{{name}}.html" data-type="entity-link">{{ name }}</a> 
-                        {{#compare compodocLinks.components.length ">" 0}} 
-                            <li class="chapter inner"> 
-                                <div class="simple menu-toggler" data-toggle="collapse" 
-                                    ${ isNormalMode ? 'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"' }> 
-                                    <span class="icon ion-md-cog"></span> 
-                                    <span>{{t "components" }}</span> 
-                                    <span class="icon ion-ios-arrow-down"></span> 
-                                </div> 
-                                <ul class="links collapse" 
-                                    ${ isNormalMode ? 'id="components-links-{{id}}"' : 'id="xs-components-links-{{id}}"' }> 
-                                    {{#each compodocLinks.components}} 
-                                        <li class="link"> 
-                                            <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a> 
-                                        </li> 
-                                    {{/each}} 
-                                </ul> 
-                            </li> 
-                        {{/compare}} 
-                        {{#compare compodocLinks.controllers.length ">" 0}} 
-                            <li class="chapter inner"> 
-                                <div class="simple menu-toggler" data-toggle="collapse" 
-                                    ${ isNormalMode ? 'data-target="#controllers-links-{{id}}"' : 'data-target="#xs-controllers-links-{{id}}"' }> 
-                                    <span class="icon ion-md-swap"></span> 
-                                    <span>{{t "controllers" }}</span> 
-                                    <span class="icon ion-ios-arrow-down"></span> 
-                                </div> 
-                                <ul class="links collapse" 
-                                    ${ isNormalMode ? 'id="controllers-links-{{id}}"' : 'id="xs-controllers-links-{{id}}"' }> 
-                                    {{#each compodocLinks.controllers}} 
-                                        <li class="link"> 
-                                            <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a> 
-                                        </li> 
-                                    {{/each}} 
-                                </ul> 
-                            </li> 
-                        {{/compare}} 
-                        {{#compare compodocLinks.directives.length ">" 0}} 
-                            <li class="chapter inner"> 
-                                <div class="simple menu-toggler" data-toggle="collapse" 
-                                    ${ isNormalMode ? 'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"' }> 
-                                    <span class="icon ion-md-code-working"></span> 
-                                    <span>{{t "directives" }}</span> 
-                                    <span class="icon ion-ios-arrow-down"></span> 
-                                </div> 
-                                <ul class="links collapse" 
-                                    ${ isNormalMode ? 'id="directives-links-{{id}}"' : 'id="xs-directives-links-{{id}}"' }> 
-                                    {{#each compodocLinks.directives}} 
-                                        <li class="link"> 
-                                            <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a> 
-                                        </li> 
-                                    {{/each}} 
-                                </ul> 
-                            </li> 
-                        {{/compare}} 
-                        {{#compare compodocLinks.injectables.length ">" 0}} 
-                            <li class="chapter inner"> 
-                                <div class="simple menu-toggler" data-toggle="collapse" 
-                                    ${ isNormalMode ? 'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }> 
-                                    <span class="icon ion-md-arrow-round-down"></span> 
-                                    <span>{{t "injectables" }}</span> 
-                                    <span class="icon ion-ios-arrow-down"></span> 
-                                </div> 
-                                <ul class="links collapse" 
-                                    ${ isNormalMode ? 'id="injectables-links-{{id}}"' : 'id="xs-injectables-links-{{id}}"' }> 
-                                    {{#each compodocLinks.injectables}} 
-                                        <li class="link"> 
-                                            <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules"}>{{ name }}</a> 
-                                        </li> 
-                                    {{/each}} 
-                                </ul> 
-                            </li> 
-                        {{/compare}} 
-                        {{#compare compodocLinks.pipes.length ">" 0}} 
-                            <li class="chapter inner"> 
-                                <div class="simple menu-toggler" data-toggle="collapse" 
-                                    ${ isNormalMode ? 'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"' }> 
-                                    <span class="icon ion-md-add"></span> 
-                                    <span>{{t "pipes" }}</span> 
-                                    <span class="icon ion-ios-arrow-down"></span> 
-                                </div> 
-                                <ul class="links collapse" 
-                                    ${ isNormalMode ? 'id="pipes-links-{{id}}"' : 'id="xs-pipes-links-{{id}}"' }> 
-                                    {{#each compodocLinks.pipes}} 
-                                        <li class="link"> 
-                                            <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a> 
-                                        </li> 
-                                    {{/each}} 
-                                </ul> 
-                            </li> 
-                        {{/compare}} 
-                    </li> 
-                {{/each}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#if components}} 
-            {{#element-alone components 'component'}} 
-                <li class="chapter"> 
-                    <div class="simple menu-toggler" data-toggle="collapse" 
-                    ${ isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"' }> 
-                        <span class="icon ion-md-cog"></span> 
-                        <span>{{t "components" }}</span> 
-                        <span class="icon ion-ios-arrow-down"></span> 
-                    </div> 
-                    <ul class="links collapse" 
-                    ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }> 
-                        {{#each components}} 
-                            <li class="link"> 
-                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                            </li> 
-                        {{/each}} 
-                    </ul> 
-                </li> 
-            {{/element-alone}} 
-        {{/if}} 
-        {{#if controllers}} 
-            {{#element-alone controllers 'controller'}} 
-                <li class="chapter"> 
-                    <div class="simple menu-toggler" data-toggle="collapse" 
-                    ${ isNormalMode ? 'data-target="#controllers-links"' : 'data-target="#xs-controllers-links"' }> 
-                        <span class="icon ion-md-swap"></span> 
-                        <span>{{t "controllers" }}</span> 
-                        <span class="icon ion-ios-arrow-down"></span> 
-                    </div> 
-                    <ul class="links collapse" 
-                    ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }> 
-                        {{#each controllers}} 
-                            <li class="link"> 
-                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                            </li> 
-                        {{/each}} 
-                    </ul> 
-                </li> 
-            {{/element-alone}} 
-        {{/if}} 
-        {{#if directives}} 
-            {{#element-alone directives 'directive'}} 
-                <li class="chapter"> 
-                    <div class="simple menu-toggler" data-toggle="collapse" 
-                    ${ isNormalMode ? 'data-target="#directives-links"' : 'data-target="#xs-directives-links"' }> 
-                        <span class="icon ion-md-code-working"></span> 
-                        <span>{{t "directives" }}</span> 
-                        <span class="icon ion-ios-arrow-down"></span> 
-                    </div> 
-                    <ul class="links collapse" 
-                    ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }> 
-                        {{#each directives}} 
-                            <li class="link"> 
-                                <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                            </li> 
-                        {{/each}} 
-                    </ul> 
-                </li> 
-            {{/element-alone}} 
-        {{/if}} 
-        {{#if classes}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-            ${ isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"' }> 
-                <span class="icon ion-ios-paper"></span> 
-                <span>{{t "classes" }}</span> 
-                <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-            ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }> 
-                {{#each classes}} 
-                    <li class="link"> 
-                        <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                    </li> 
-                {{/each}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#if injectables}} 
-            {{#element-alone injectables 'injectable'}} 
-                <li class="chapter"> 
-                    <div class="simple menu-toggler" data-toggle="collapse" 
-                        ${ isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"' }> 
-                        <span class="icon ion-md-arrow-round-down"></span> 
-                        <span>{{t "injectables" }}</span> 
-                        <span class="icon ion-ios-arrow-down"></span> 
-                    </div> 
-                    <ul class="links collapse" 
-                    ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }> 
-                        {{#each injectables}} 
-                            <li class="link"> 
-                                <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                            </li> 
-                        {{/each}} 
-                    </ul> 
-                </li> 
-            {{/element-alone}} 
-        {{/if}} 
-        {{#if interceptors}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-            ${ isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"' }> 
-                <span class="icon ion-ios-swap"></span> 
-                <span>{{t "interceptors" }}</span> 
-                <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-            ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }> 
-                {{#each interceptors}} 
-                    <li class="link"> 
-                        <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                    </li> 
-                {{/each}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#if guards}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-                 ${ isNormalMode ? 'data-target="#guards-links"' : 'data-target="#xs-guards-links"' }> 
-            <span class="icon ion-ios-lock"></span> 
-            <span>{{t "guards" }}</span> 
-            <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-                ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }> 
-            {{#each guards}} 
-                <li class="link"> 
-                    <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                </li> 
-            {{/each}} 
-            </ul> 
-            </li> 
-        {{/if}} 
-        {{#if interfaces}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-                ${ isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"' }> 
-                <span class="icon ion-md-information-circle-outline"></span> 
-                <span>{{t "interfaces" }}</span> 
-                <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-            ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }> 
-                {{#each interfaces}} 
-                    <li class="link"> 
-                        <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                    </li> 
-                {{/each}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#if pipes}} 
-            {{#element-alone pipes 'pipe'}} 
-                <li class="chapter"> 
-                    <div class="simple menu-toggler" data-toggle="collapse" 
-                    ${ isNormalMode ? 'data-target="#pipes-links"' : 'data-target="#xs-pipes-links"' }> 
-                        <span class="icon ion-md-add"></span> 
-                        <span>{{t "pipes" }}</span> 
-                        <span class="icon ion-ios-arrow-down"></span> 
-                    </div> 
-                    <ul class="links collapse" 
-                    ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }> 
-                        {{#each pipes}} 
-                            <li class="link"> 
-                                <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a> 
-                            </li> 
-                        {{/each}} 
-                    </ul> 
-                </li> 
-            {{/element-alone}} 
-        {{/if}} 
-        {{#if miscellaneous}} 
-        <li class="chapter"> 
-            <div class="simple menu-toggler" data-toggle="collapse" 
-            ${ isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"' }> 
-                <span class="icon ion-ios-cube"></span> 
-                <span>{{t "miscellaneous" }}</span> 
-                <span class="icon ion-ios-arrow-down"></span> 
-            </div> 
-            <ul class="links collapse" 
-            ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }> 
-                {{#compare miscellaneous.enumerations.length ">" 0 }} 
-                    <li class="link"> 
-                      <a href="miscellaneous/enumerations.html" data-type="entity-link">{{t "enums" }}</a> 
-                    </li> 
-                {{/compare}} 
-                {{#compare miscellaneous.functions.length ">" 0 }} 
-                    <li class="link"> 
-                      <a href="miscellaneous/functions.html" data-type="entity-link">{{t "functions" }}</a> 
-                    </li> 
-                {{/compare}} 
-                {{#compare miscellaneous.typealiases.length ">" 0 }} 
-                    <li class="link"> 
-                      <a href="miscellaneous/typealiases.html" data-type="entity-link">{{t "type-aliases" }}</a> 
-                    </li> 
-                {{/compare}} 
-                {{#compare miscellaneous.variables.length ">" 0 }} 
-                    <li class="link"> 
-                      <a href="miscellaneous/variables.html" data-type="entity-link">{{t "variables" }}</a> 
-                    </li> 
-                {{/compare}} 
-            </ul> 
-        </li> 
-        {{/if}} 
-        {{#unless disableRoutesGraph}} 
-            {{#if routes}} 
-            <li class="chapter"> 
-                <a data-type="chapter-link" href="routes.html"><span class="icon ion-ios-git-branch"></span>{{t "routes" }}</a> 
-            </li> 
-            {{/if}} 
-        {{/unless}} 
-        {{#unless disableCoverage}} 
-        <li class="chapter"> 
-            <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>{{t "coverage-page-title" }}</a> 
-        </li> 
-        {{/unless}} 
-        {{#if unitTestData}} 
-            <li class="chapter"> 
-                <a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>{{t "unit-test-coverage" }}</a> 
-            </li> 
-        {{/if}} 
-        {{#unless hideGenerator}} 
-        <li class="divider"></li> 
-        <li class="copyright"> 
-                {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank"> 
-                    {{#if theme }} 
-                        {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}} 
-                            <img data-src="images/compodoc-vectorise-inverted.png" class="img-responsive" data-type="compodoc-logo"> 
-                        {{else}} 
-                            <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo"> 
-                        {{/compare}} 
-                    {{else}} 
-                        <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo"> 
-                    {{/if}} 
-                </a> 
-        </li> 
-        {{/unless}} 
-    </ul>
-</nav>`);
+        let tp = lithtml.html(`
+        <nav>
+            <ul class="list">
+                <li class="title">
+                    {{#if customLogo}}
+                    <a href="index.html" data-type="index-link">
+                        <img alt="" class="img-responsive" data-type="compodoc-logo" data-src="images/logo.png">
+                    </a>
+                    {{else}}
+                    <a href="index.html" data-type="index-link">{{documentationMainName}}</a>
+                    {{/if}}
+                </li>
+
+                <li class="divider"></li>
+                ${ isNormalMode ? `{{#unless disableSearch}}{{> search-input }}{{/unless}}` : '' }
+                <li class="chapter">
+                    <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>{{t "getting-started"
+                        }}</a>
+                    <ul class="links">
+                        {{#if readme}}
+                        <li class="link">
+                            <a href="overview.html" data-type="chapter-link">
+                                <span class="icon ion-ios-keypad"></span>{{t "overview" }}
+                            </a>
+                        </li>
+                        <li class="link">
+                            <a href="index.html" data-type="chapter-link">
+                                <span class="icon ion-ios-paper"></span>{{t "readme" }}
+                            </a>
+                        </li>
+                        {{else}}
+                        <li class="link">
+                            <a href="index.html" data-type="chapter-link">
+                                <span class="icon ion-ios-keypad"></span>{{t "overview" }}
+                            </a>
+                        </li>
+                        {{/if}}
+                        {{#each markdowns}}
+                        <li class="link">
+                            {{#compare name "!==" 'readme'}}
+                            <a href="{{name}}.html" {{else}} <a href="index.html" {{/compare}} data-type="chapter-link">
+                                <span class="icon ion-ios-paper"></span>{{uppername}}
+                            </a>
+                        </li>
+                        {{/each}}
+                        {{#orLength packageDependencies packagePeerDependencies}}
+                        <li class="link">
+                            <a href="dependencies.html" data-type="chapter-link">
+                                <span class="icon ion-ios-list"></span>{{t "dependencies" }}
+                            </a>
+                        </li>
+                        {{/orLength}}
+                    </ul>
+                </li>
+                {{#if additionalPages}}
+                    <li class="chapter additional">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#additional-pages"'
+                            : 'data-target="#xs-additional-pages"' }>
+                            <span class="icon ion-ios-book"></span>
+                            <span>{{includesName}}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }>
+                            {{#each additionalPages}}
+                                {{#compare children.length ">" 0 }}
+                                    {{#compare depth "===" 1 }}
+                                    <li class="chapter inner">
+                                        <a data-type="chapter-link" href="{{path}}/{{filename}}.html" data-context-id="additional">
+                                            <div class="menu-toggler linked" data-toggle="collapse" ${ isNormalMode ?
+                                            'data-target="#additional-page-{{id}}"' : 'data-target="#xs-additional-page-{{id}}"' }>
+                                                <span class="link-name">{{ name }}</span>
+                                                <span class="icon ion-ios-arrow-down"></span>
+                                            </div>
+                                        </a>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="additional-page-{{id}}"' : 'id="xs-additional-page-{{id}}"' }>
+                                            {{#each children}}
+                                            <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
+                                                <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">{{ name
+                                                    }}</a>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                    {{/compare}}
+                                {{else}}
+                                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
+                                        <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name
+                                            }}</a>
+                                    </li>
+                                {{/compare}}
+                            {{/each}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#if modules}}
+                    <li class="chapter modules">
+                        <a data-type="chapter-link" href="modules.html">
+                            <div class="menu-toggler linked" data-toggle="collapse" ${ isNormalMode ?
+                                'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }>
+                                <span class="icon ion-ios-archive"></span>
+                                <span class="link-name">{{t "modules" }}</span>
+                                <span class="icon ion-ios-arrow-down"></span>
+                            </div>
+                        </a>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }>
+                            {{#each modules}}
+                            <li class="link">
+                                <a href="modules/{{name}}.html" data-type="entity-link">{{ name }}</a>
+                                {{#compare compodocLinks.components.length ">" 0}}
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                            'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>{{t "components" }}</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-{{id}}"' :
+                                            'id="xs-components-links-{{id}}"' }>
+                                            {{#each compodocLinks.components}}
+                                            <li class="link">
+                                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/compare}}
+                                {{#compare compodocLinks.controllers.length ">" 0}}
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                            'data-target="#controllers-links-{{id}}"' : 'data-target="#xs-controllers-links-{{id}}"' }>
+                                            <span class="icon ion-md-swap"></span>
+                                            <span>{{t "controllers" }}</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="controllers-links-{{id}}"' :
+                                            'id="xs-controllers-links-{{id}}"' }>
+                                            {{#each compodocLinks.controllers}}
+                                            <li class="link">
+                                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/compare}}
+                                {{#compare compodocLinks.directives.length ">" 0}}
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                        'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"' }>
+                                        <span class="icon ion-md-code-working"></span>
+                                        <span>{{t "directives" }}</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="directives-links-{{id}}"' :
+                                        'id="xs-directives-links-{{id}}"' }>
+                                        {{#each compodocLinks.directives}}
+                                        <li class="link">
+                                            <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                                                data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                                {{/compare}}
+                                {{#compare compodocLinks.injectables.length ">" 0}}
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                        'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>{{t "injectables" }}</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-{{id}}"' :
+                                        'id="xs-injectables-links-{{id}}"' }>
+                                        {{#each compodocLinks.injectables}}
+                                        <li class="link">
+                                            <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                                                data-type="entity-link" data-context="sub-entity" data-context-id="modules" }>{{ name
+                                                }}</a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                                {{/compare}}
+                                {{#compare compodocLinks.pipes.length ">" 0}}
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
+                                            'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"' }>
+                                            <span class="icon ion-md-add"></span>
+                                            <span>{{t "pipes" }}</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="pipes-links-{{id}}"' :
+                                            'id="xs-pipes-links-{{id}}"' }>
+                                            {{#each compodocLinks.pipes}}
+                                            <li class="link">
+                                                <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/compare}}
+                            </li>
+                    {{/each}}
+                </ul>
+                </li>
+                {{/if}}
+                {{#if components}}
+                    {{#element-alone components 'component'}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#components-links"' :
+                            'data-target="#xs-components-links"' }>
+                            <span class="icon ion-md-cog"></span>
+                            <span>{{t "components" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
+                            {{#each components}}
+                            <li class="link">
+                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                    name }}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                    {{/element-alone}}
+                {{/if}}
+                {{#if controllers}}
+                    {{#element-alone controllers 'controller'}}
+                        <li class="chapter">
+                            <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#controllers-links"' :
+                                'data-target="#xs-controllers-links"' }>
+                                <span class="icon ion-md-swap"></span>
+                                <span>{{t "controllers" }}</span>
+                                <span class="icon ion-ios-arrow-down"></span>
+                            </div>
+                            <ul class="links collapse" ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }>
+                                {{#each controllers}}
+                                <li class="link">
+                                    <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                        name }}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/element-alone}}
+                {{/if}}
+                {{#if directives}}
+                    {{#element-alone directives 'directive'}}
+                        <li class="chapter">
+                            <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#directives-links"' :
+                                'data-target="#xs-directives-links"' }>
+                                <span class="icon ion-md-code-working"></span>
+                                <span>{{t "directives" }}</span>
+                                <span class="icon ion-ios-arrow-down"></span>
+                            </div>
+                            <ul class="links collapse" ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
+                                {{#each directives}}
+                                <li class="link">
+                                    <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                        name }}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/element-alone}}
+                {{/if}}
+                {{#if classes}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#classes-links"' :
+                            'data-target="#xs-classes-links"' }>
+                            <span class="icon ion-ios-paper"></span>
+                            <span>{{t "classes" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
+                            {{#each classes}}
+                            <li class="link">
+                                <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                    name }}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#if injectables}}
+                    {{#element-alone injectables 'injectable'}}
+                        <li class="chapter">
+                            <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#injectables-links"' :
+                                'data-target="#xs-injectables-links"' }>
+                                <span class="icon ion-md-arrow-round-down"></span>
+                                <span>{{t "injectables" }}</span>
+                                <span class="icon ion-ios-arrow-down"></span>
+                            </div>
+                            <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
+                                {{#each injectables}}
+                                <li class="link">
+                                    <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                        name }}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/element-alone}}
+                {{/if}}
+                {{#if interceptors}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#interceptors-links"' :
+                            'data-target="#xs-interceptors-links"' }>
+                            <span class="icon ion-ios-swap"></span>
+                            <span>{{t "interceptors" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
+                            {{#each interceptors}}
+                            <li class="link">
+                                <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                    name }}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#if guards}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#guards-links"' :
+                            'data-target="#xs-guards-links"' }>
+                            <span class="icon ion-ios-lock"></span>
+                            <span>{{t "guards" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }>
+                            {{#each guards}}
+                            <li class="link">
+                                <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                    name }}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#if interfaces}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#interfaces-links"' :
+                            'data-target="#xs-interfaces-links"' }>
+                            <span class="icon ion-md-information-circle-outline"></span>
+                            <span>{{t "interfaces" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
+                            {{#each interfaces}}
+                            <li class="link">
+                                <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                    name }}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#if pipes}}
+                    {{#element-alone pipes 'pipe'}}
+                        <li class="chapter">
+                            <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#pipes-links"' :
+                                'data-target="#xs-pipes-links"' }>
+                                <span class="icon ion-md-add"></span>
+                                <span>{{t "pipes" }}</span>
+                                <span class="icon ion-ios-arrow-down"></span>
+                            </div>
+                            <ul class="links collapse" ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
+                                {{#each pipes}}
+                                <li class="link">
+                                    <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
+                                        name }}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/element-alone}}
+                {{/if}}
+                {{#if miscellaneous}}
+                    <li class="chapter">
+                        <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#miscellaneous-links"'
+                            : 'data-target="#xs-miscellaneous-links"' }>
+                            <span class="icon ion-ios-cube"></span>
+                            <span>{{t "miscellaneous" }}</span>
+                            <span class="icon ion-ios-arrow-down"></span>
+                        </div>
+                        <ul class="links collapse" ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
+                            {{#compare miscellaneous.enumerations.length ">" 0 }}
+                            <li class="link">
+                                <a href="miscellaneous/enumerations.html" data-type="entity-link">{{t "enums" }}</a>
+                            </li>
+                            {{/compare}}
+                            {{#compare miscellaneous.functions.length ">" 0 }}
+                            <li class="link">
+                                <a href="miscellaneous/functions.html" data-type="entity-link">{{t "functions" }}</a>
+                            </li>
+                            {{/compare}}
+                            {{#compare miscellaneous.typealiases.length ">" 0 }}
+                            <li class="link">
+                                <a href="miscellaneous/typealiases.html" data-type="entity-link">{{t "type-aliases" }}</a>
+                            </li>
+                            {{/compare}}
+                            {{#compare miscellaneous.variables.length ">" 0 }}
+                            <li class="link">
+                                <a href="miscellaneous/variables.html" data-type="entity-link">{{t "variables" }}</a>
+                            </li>
+                            {{/compare}}
+                        </ul>
+                    </li>
+                {{/if}}
+                {{#unless disableRoutesGraph}}
+                    {{#if routes}}
+                        <li class="chapter">
+                            <a data-type="chapter-link" href="routes.html"><span class="icon ion-ios-git-branch"></span>{{t "routes" }}</a>
+                        </li>
+                    {{/if}}
+                {{/unless}}
+                {{#unless disableCoverage}}
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>{{t
+                            "coverage-page-title" }}</a>
+                    </li>
+                {{/unless}}
+                {{#if unitTestData}}
+                    <li class="chapter">
+                        <a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>{{t
+                            "unit-test-coverage" }}</a>
+                    </li>
+                {{/if}}
+                {{#unless hideGenerator}}
+                    <li class="divider"></li>
+                    <li class="copyright">
+                        {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank">
+                            {{#if theme }}
+                            {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
+                            <img data-src="images/compodoc-vectorise-inverted.png" class="img-responsive" data-type="compodoc-logo">
+                            {{else}}
+                            <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo">
+                            {{/compare}}
+                            {{else}}
+                            <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo">
+                            {{/if}}
+                        </a>
+                    </li>
+                {{/unless}}
+            </ul>
+        </nav>
+        `);
         this.innerHTML = tp.strings;
     }
 });
---}}
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-customElements.define('compodoc-menu', function (_HTMLElement) {
-    _inherits(_class, _HTMLElement);
-
-    function _class() {
-        _classCallCheck(this, _class);
-
-        var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this));
-
-        _this.isNormalMode = _this.getAttribute('mode') === 'normal';
-        return _this;
-    }
-
-    _createClass(_class, [{
-        key: 'connectedCallback',
-        value: function connectedCallback() {
-            this.render(this.isNormalMode);
-        }
-    }, {
-        key: 'render',
-        value: function render(isNormalMode) {
-            let tp = lithtml.html(
-'<nav>\n    <ul class="list">\n        <li class="title">\n            {{#if customLogo}}\n                <a href="index.html" data-type="index-link">\n                    <img alt="" class="img-responsive" data-type="compodoc-logo" data-src="images/logo.png">\n                </a>\n            {{else}}\n                <a href="index.html" data-type="index-link">{{documentationMainName}}</a>\n            {{/if}}\n        </li>\n\n        <li class="divider"></li>\n        ' + (isNormalMode ? '{{#unless disableSearch}}{{> search-input }}{{/unless}}' : '') + '\n        <li class="chapter">\n            <a data-type="chapter-link" href="index.html"><span class="icon ion-ios-home"></span>{{t "getting-started" }}</a>\n            <ul class="links">\n                {{#if readme}}\n                    <li class="link">\n                        <a href="overview.html" data-type="chapter-link">\n                            <span class="icon ion-ios-keypad"></span>{{t "overview" }}\n                        </a>\n                    </li>\n                    <li class="link">\n                        <a href="index.html" data-type="chapter-link">\n                            <span class="icon ion-ios-paper"></span>{{t "readme" }}\n                        </a>\n                    </li>\n                {{else}}\n                    <li class="link">\n                        <a href="index.html" data-type="chapter-link">\n                            <span class="icon ion-ios-keypad" ></span>{{t "overview" }}\n                        </a>\n                    </li>\n                {{/if}}\n                {{#each markdowns}}\n                    <li class="link">\n                        {{#compare name "!==" 'readme'}}\n                            <a href="{{name}}.html"\n                        {{else}}\n                            <a href="index.html"\n                        {{/compare}}\n                        data-type="chapter-link">\n                            <span class="icon ion-ios-paper"></span>{{uppername}}\n                        </a>\n                    </li>\n                {{/each}}\n                {{#orLength packageDependencies packagePeerDependencies}}\n                    <li class="link">\n                        <a href="dependencies.html"\n                            data-type="chapter-link">\n                            <span class="icon ion-ios-list"></span>{{t "dependencies" }}\n                        </a>\n                    </li>\n                {{/orLength}}\n            </ul>\n        </li>\n        {{#if additionalPages}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n              ' + (isNormalMode ? 'data-target="#additional-pages"' : 'data-target="#xs-additional-pages"') + '>\n                <span class="icon ion-ios-book"></span>\n                <span>{{includesName}}</span>\n                <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n                ' + (isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"') + '>\n                {{#each additionalPages}}\n                    <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">\n                        <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a>\n                    </li>\n                {{/each}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#if modules}}\n        <li class="chapter modules">\n            <a data-type="chapter-link" href="modules.html">\n                <div class="menu-toggler linked" data-toggle="collapse"\n                    ' + (isNormalMode ? 'data-target="#modules-links"' : 'data-target="#xs-modules-links"') + '>\n                    <span class="icon ion-ios-archive"></span>\n                    <span class="link-name">{{t "modules" }}</span>\n                    <span class="icon ion-ios-arrow-down"></span>\n                </div>\n            </a>\n            <ul class="links collapse"\n            ' + (isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"') + '>\n                {{#each modules}}\n                    <li class="link">\n                        <a href="modules/{{name}}.html" data-type="entity-link">{{ name }}</a>\n                        {{#compare compodocLinks.components.length ">" 0}}\n                            <li class="chapter inner">\n                                <div class="simple menu-toggler" data-toggle="collapse"\n                                    ' + (isNormalMode ? 'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"') + '>\n                                    <span class="icon ion-md-cog"></span>\n                                    <span>{{t "components" }}</span>\n                                    <span class="icon ion-ios-arrow-down"></span>\n                                </div>\n                                <ul class="links collapse"\n                                    ' + (isNormalMode ? 'id="components-links-{{id}}"' : 'id="xs-components-links-{{id}}"') + '>\n                                    {{#each compodocLinks.components}}\n                                        <li class="link">\n                                            <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>\n                                        </li>\n                                    {{/each}}\n                                </ul>\n                            </li>\n                        {{/compare}}\n                        {{#compare compodocLinks.controllers.length ">" 0}}\n                            <li class="chapter inner">\n                                <div class="simple menu-toggler" data-toggle="collapse"\n                                    ' + (isNormalMode ? 'data-target="#controllers-links-{{id}}"' : 'data-target="#xs-controllers-links-{{id}}"') + '>\n                                    <span class="icon ion-md-swap"></span>\n                                    <span>{{t "controllers" }}</span>\n                                    <span class="icon ion-ios-arrow-down"></span>\n                                </div>\n                                <ul class="links collapse"\n                                    ' + (isNormalMode ? 'id="controllers-links-{{id}}"' : 'id="xs-controllers-links-{{id}}"') + '>\n                                    {{#each compodocLinks.controllers}}\n                                        <li class="link">\n                                            <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>\n                                        </li>\n                                    {{/each}}\n                                </ul>\n                            </li>\n                        {{/compare}}\n                        {{#compare compodocLinks.directives.length ">" 0}}\n                            <li class="chapter inner">\n                                <div class="simple menu-toggler" data-toggle="collapse"\n                                    ' + (isNormalMode ? 'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"') + '>\n                                    <span class="icon ion-md-code-working"></span>\n                                    <span>{{t "directives" }}</span>\n                                    <span class="icon ion-ios-arrow-down"></span>\n                                </div>\n                                <ul class="links collapse"\n                                    ' + (isNormalMode ? 'id="directives-links-{{id}}"' : 'id="xs-directives-links-{{id}}"') + '>\n                                    {{#each compodocLinks.directives}}\n                                        <li class="link">\n                                            <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>\n                                        </li>\n                                    {{/each}}\n                                </ul>\n                            </li>\n                        {{/compare}}\n                        {{#compare compodocLinks.injectables.length ">" 0}}\n                            <li class="chapter inner">\n                                <div class="simple menu-toggler" data-toggle="collapse"\n                                    ' + (isNormalMode ? 'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"') + '>\n                                    <span class="icon ion-md-arrow-round-down"></span>\n                                    <span>{{t "injectables" }}</span>\n                                    <span class="icon ion-ios-arrow-down"></span>\n                                </div>\n                                <ul class="links collapse"\n                                    ' + (isNormalMode ? 'id="injectables-links-{{id}}"' : 'id="xs-injectables-links-{{id}}"') + '>\n                                    {{#each compodocLinks.injectables}}\n                                        <li class="link">\n                                            <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules"}>{{ name }}</a>\n                                        </li>\n                                    {{/each}}\n                                </ul>\n                            </li>\n                        {{/compare}}\n                        {{#compare compodocLinks.pipes.length ">" 0}}\n                            <li class="chapter inner">\n                                <div class="simple menu-toggler" data-toggle="collapse"\n                                    ' + (isNormalMode ? 'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"') + '>\n                                    <span class="icon ion-md-add"></span>\n                                    <span>{{t "pipes" }}</span>\n                                    <span class="icon ion-ios-arrow-down"></span>\n                                </div>\n                                <ul class="links collapse"\n                                    ' + (isNormalMode ? 'id="pipes-links-{{id}}"' : 'id="xs-pipes-links-{{id}}"') + '>\n                                    {{#each compodocLinks.pipes}}\n                                        <li class="link">\n                                            <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules">{{ name }}</a>\n                                        </li>\n                                    {{/each}}\n                                </ul>\n                            </li>\n                        {{/compare}}\n                    </li>\n                {{/each}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#if components}}\n            {{#element-alone components 'component'}}\n                <li class="chapter">\n                    <div class="simple menu-toggler" data-toggle="collapse"\n                    ' + (isNormalMode ? 'data-target="#components-links"' : 'data-target="#xs-components-links"') + '>\n                        <span class="icon ion-md-cog"></span>\n                        <span>{{t "components" }}</span>\n                        <span class="icon ion-ios-arrow-down"></span>\n                    </div>\n                    <ul class="links collapse"\n                    ' + (isNormalMode ? 'id="components-links"' : 'id="xs-components-links"') + '>\n                        {{#each components}}\n                            <li class="link">\n                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                            </li>\n                        {{/each}}\n                    </ul>\n                </li>\n            {{/element-alone}}\n        {{/if}}\n        {{#if controllers}}\n            {{#element-alone controllers 'controller'}}\n                <li class="chapter">\n                    <div class="simple menu-toggler" data-toggle="collapse"\n                    ' + (isNormalMode ? 'data-target="#controllers-links"' : 'data-target="#xs-controllers-links"') + '>\n                        <span class="icon ion-md-swap"></span>\n                        <span>{{t "controllers" }}</span>\n                        <span class="icon ion-ios-arrow-down"></span>\n                    </div>\n                    <ul class="links collapse"\n                    ' + (isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"') + '>\n                        {{#each controllers}}\n                            <li class="link">\n                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                            </li>\n                        {{/each}}\n                    </ul>\n                </li>\n            {{/element-alone}}\n        {{/if}}\n        {{#if directives}}\n            {{#element-alone directives 'directive'}}\n                <li class="chapter">\n                    <div class="simple menu-toggler" data-toggle="collapse"\n                    ' + (isNormalMode ? 'data-target="#directives-links"' : 'data-target="#xs-directives-links"') + '>\n                        <span class="icon ion-md-code-working"></span>\n                        <span>{{t "directives" }}</span>\n                        <span class="icon ion-ios-arrow-down"></span>\n                    </div>\n                    <ul class="links collapse"\n                    ' + (isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"') + '>\n                        {{#each directives}}\n                            <li class="link">\n                                <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                            </li>\n                        {{/each}}\n                    </ul>\n                </li>\n            {{/element-alone}}\n        {{/if}}\n        {{#if classes}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n            ' + (isNormalMode ? 'data-target="#classes-links"' : 'data-target="#xs-classes-links"') + '>\n                <span class="icon ion-ios-paper"></span>\n                <span>{{t "classes" }}</span>\n                <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n            ' + (isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"') + '>\n                {{#each classes}}\n                    <li class="link">\n                        <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                    </li>\n                {{/each}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#if injectables}}\n            {{#element-alone injectables 'injectable'}}\n                <li class="chapter">\n                    <div class="simple menu-toggler" data-toggle="collapse"\n                        ' + (isNormalMode ? 'data-target="#injectables-links"' : 'data-target="#xs-injectables-links"') + '>\n                        <span class="icon ion-md-arrow-round-down"></span>\n                        <span>{{t "injectables" }}</span>\n                        <span class="icon ion-ios-arrow-down"></span>\n                    </div>\n                    <ul class="links collapse"\n                    ' + (isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"') + '>\n                        {{#each injectables}}\n                            <li class="link">\n                                <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                            </li>\n                        {{/each}}\n                    </ul>\n                </li>\n            {{/element-alone}}\n        {{/if}}\n        {{#if interceptors}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n            ' + (isNormalMode ? 'data-target="#interceptors-links"' : 'data-target="#xs-interceptors-links"') + '>\n                <span class="icon ion-ios-swap"></span>\n                <span>{{t "interceptors" }}</span>\n                <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n            ' + (isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"') + '>\n                {{#each interceptors}}\n                    <li class="link">\n                        <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                    </li>\n                {{/each}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#if guards}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n                 ' + (isNormalMode ? 'data-target="#guards-links"' : 'data-target="#xs-guards-links"') + '>\n            <span class="icon ion-ios-lock"></span>\n            <span>{{t "guards" }}</span>\n            <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n                ' + (isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"') + '>\n            {{#each guards}}\n                <li class="link">\n                    <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                </li>\n            {{/each}}\n            </ul>\n            </li>\n        {{/if}}\n        {{#if interfaces}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n                ' + (isNormalMode ? 'data-target="#interfaces-links"' : 'data-target="#xs-interfaces-links"') + '>\n                <span class="icon ion-md-information-circle-outline"></span>\n                <span>{{t "interfaces" }}</span>\n                <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n            ' + (isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"') + '>\n                {{#each interfaces}}\n                    <li class="link">\n                        <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                    </li>\n                {{/each}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#if pipes}}\n            {{#element-alone pipes 'pipe'}}\n                <li class="chapter">\n                    <div class="simple menu-toggler" data-toggle="collapse"\n                    ' + (isNormalMode ? 'data-target="#pipes-links"' : 'data-target="#xs-pipes-links"') + '>\n                        <span class="icon ion-md-add"></span>\n                        <span>{{t "pipes" }}</span>\n                        <span class="icon ion-ios-arrow-down"></span>\n                    </div>\n                    <ul class="links collapse"\n                    ' + (isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"') + '>\n                        {{#each pipes}}\n                            <li class="link">\n                                <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{ name }}</a>\n                            </li>\n                        {{/each}}\n                    </ul>\n                </li>\n            {{/element-alone}}\n        {{/if}}\n        {{#if miscellaneous}}\n        <li class="chapter">\n            <div class="simple menu-toggler" data-toggle="collapse"\n            ' + (isNormalMode ? 'data-target="#miscellaneous-links"' : 'data-target="#xs-miscellaneous-links"') + '>\n                <span class="icon ion-ios-cube"></span>\n                <span>{{t "miscellaneous" }}</span>\n                <span class="icon ion-ios-arrow-down"></span>\n            </div>\n            <ul class="links collapse"\n            ' + (isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"') + '>\n                {{#compare miscellaneous.enumerations.length ">" 0 }}\n                    <li class="link">\n                      <a href="miscellaneous/enumerations.html" data-type="entity-link">{{t "enums" }}</a>\n                    </li>\n                {{/compare}}\n                {{#compare miscellaneous.functions.length ">" 0 }}\n                    <li class="link">\n                      <a href="miscellaneous/functions.html" data-type="entity-link">{{t "functions" }}</a>\n                    </li>\n                {{/compare}}\n                {{#compare miscellaneous.typealiases.length ">" 0 }}\n                    <li class="link">\n                      <a href="miscellaneous/typealiases.html" data-type="entity-link">{{t "type-aliases" }}</a>\n                    </li>\n                {{/compare}}\n                {{#compare miscellaneous.variables.length ">" 0 }}\n                    <li class="link">\n                      <a href="miscellaneous/variables.html" data-type="entity-link">{{t "variables" }}</a>\n                    </li>\n                {{/compare}}\n            </ul>\n        </li>\n        {{/if}}\n        {{#unless disableRoutesGraph}}\n            {{#if routes}}\n            <li class="chapter">\n                <a data-type="chapter-link" href="routes.html"><span class="icon ion-ios-git-branch"></span>{{t "routes" }}</a>\n            </li>\n            {{/if}}\n        {{/unless}}\n        {{#unless disableCoverage}}\n        <li class="chapter">\n            <a data-type="chapter-link" href="coverage.html"><span class="icon ion-ios-stats"></span>{{t "coverage-page-title" }}</a>\n        </li>\n        {{/unless}}\n        {{#if unitTestData}}\n            <li class="chapter">\n                <a data-type="chapter-link" href="unit-test.html"><span class="icon ion-ios-podium"></span>{{t "unit-test-coverage" }}</a>\n            </li>\n        {{/if}}\n        {{#unless hideGenerator}}\n        <li class="divider"></li>\n        <li class="copyright">\n                {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank">\n                    {{#if theme }}\n                        {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}\n                            <img data-src="images/compodoc-vectorise-inverted.png" class="img-responsive" data-type="compodoc-logo">\n                        {{else}}\n                            <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo">\n                        {{/compare}}\n                    {{else}}\n                        <img data-src="images/compodoc-vectorise.png" class="img-responsive" data-type="compodoc-logo">\n                    {{/if}}\n                </a>\n        </li>\n        {{/unless}}\n    </ul>\n</nav>'
-);
-        this.innerHTML = tp.strings;
-        }
-    }]);
-
-    return _class;
-}(HTMLElement));
