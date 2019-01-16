@@ -770,13 +770,14 @@ export class Application {
 
                             if (typeof file !== 'undefined' && typeof title !== 'undefined') {
                                 const url = cleanNameWithoutSpaceAndToLowerCase(title);
-                                
+
                                 /**
                                  * Id created with title + file path hash, seems to be hypothetically unique here
                                  */
-                                const id = crypto.createHash('md5')
-                                .update(title + file)
-                                .digest('hex');
+                                const id = crypto
+                                    .createHash('md5')
+                                    .update(title + file)
+                                    .digest('hex');
 
                                 // tslint:disable-next-line:no-invalid-this
                                 this.node.id = id;
@@ -814,7 +815,9 @@ export class Application {
                                         path: finalPath,
                                         additionalPage: markdownFile,
                                         depth: finalDepth.length,
-                                        childrenLength: additionalNode.children ? additionalNode.children.length : 0,
+                                        childrenLength: additionalNode.children
+                                            ? additionalNode.children.length
+                                            : 0,
                                         children: [],
                                         lastChild: false,
                                         pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
@@ -824,7 +827,7 @@ export class Application {
                                     }
                                     if (finalDepth.length > 1) {
                                         // store all child pages of the last root level 1 page inside it
-                                        lastLevelOnePage.children.push(_page)
+                                        lastLevelOnePage.children.push(_page);
                                     } else {
                                         Configuration.addAdditionalPage(_page);
                                     }
@@ -2534,13 +2537,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
     public processAdditionalPages() {
         logger.info('Process additional pages');
         let pages = Configuration.mainData.additionalPages;
-        Promise.all(pages.map(page => {
-            if (page.children.length > 0) {
-                return Promise.all([this.processPage(page), ...page.children.map(childPage => this.processPage(childPage))]);
-            } else {
-                return this.processPage(page);
-            }
-        }))
+        Promise.all(
+            pages.map(page => {
+                if (page.children.length > 0) {
+                    return Promise.all([
+                        this.processPage(page),
+                        ...page.children.map(childPage => this.processPage(childPage))
+                    ]);
+                } else {
+                    return this.processPage(page);
+                }
+            })
+        )
             .then(() => {
                 SearchEngine.generateSearchIndexJson(Configuration.mainData.output).then(() => {
                     if (Configuration.mainData.assetsFolder !== '') {
