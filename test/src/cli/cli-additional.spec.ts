@@ -37,8 +37,8 @@ describe('CLI Additional documentation', () => {
     after(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
-        expect(fooMenuFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to
-            .be.true;
+        expect(fooMenuFile.indexOf('<a href="additional-documentation/big-introduction') > -1).to.be
+            .true;
         expect(fooMenuFile.indexOf('Big Introduction') > -1).to.be.true;
     });
 
@@ -80,6 +80,8 @@ describe('CLI Additional documentation', () => {
     });
 
     it('should have links in correct order', () => {
-        expect(fooMenuFile).to.contain(`<li class="link for-chapter3">\\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context-id="additional">edit-level3</a>\\n                    </li>\\n                \\n                    <li class="link for-chapter4">\\n                        <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context-id="additional">edit-level4</a>`);
+        expect(fooMenuFile).to.contain(
+            `<li class="link for-chapter3">\n                                                <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">edit-level3</a>\n                                            </li>\n                                            <li class="link for-chapter4">\n                                                <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">edit-level4</a>`
+        );
     });
 });
