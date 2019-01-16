@@ -1,26 +1,28 @@
 import * as _ from 'lodash';
 
-import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
-
-import { getNamesCompareFn } from '../../utils/utils';
-import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
-import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
-import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
-import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { ParsedData } from '../interfaces/parsed-data.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
+
 import AngularApiUtil from '../../utils/angular-api.util';
+import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { getNamesCompareFn } from '../../utils/utils';
+
 import {
+    IEnumDecDep,
+    IFunctionDecDep,
+    IGuardDep,
     IInjectableDep,
+    IInterceptorDep,
     IInterfaceDep,
     IPipeDep,
-    ITypeAliasDecDep,
-    IFunctionDecDep,
-    IEnumDecDep,
-    IInterceptorDep,
-    IGuardDep
+    ITypeAliasDecDep
 } from '../compiler/angular/dependencies.interfaces';
+
+import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
 import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory';
+import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
+import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
 
 const traverse = require('traverse');
 
@@ -104,8 +106,12 @@ export class DependenciesEngine {
     public init(data: ParsedData) {
         traverse(data).forEach(function(node) {
             if (node) {
-                if (node.parent) delete node.parent;
-                if (node.initializer) delete node.initializer;
+                if (node.parent) {
+                    delete node.parent;
+                }
+                if (node.initializer) {
+                    delete node.initializer;
+                }
             }
         });
         this.rawData = data;

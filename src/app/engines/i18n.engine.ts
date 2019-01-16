@@ -3,8 +3,8 @@ import i18next from 'i18next';
 import {
     TRANSLATION_EN_US,
     TRANSLATION_FR_FR,
-    TRANSLATION_ZH_CN,
-    TRANSLATION_PT_BR
+    TRANSLATION_PT_BR,
+    TRANSLATION_ZH_CN
 } from '../../locales';
 
 class I18nEngine {

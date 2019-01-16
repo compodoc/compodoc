@@ -1,8 +1,8 @@
-import { FrameworkDependencies } from './framework-dependencies';
 import { ComponentCache } from './angular/deps/helpers/component-helper';
-import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
+import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
+import { FrameworkDependencies } from './framework-dependencies';
 
 export class AngularJSDependencies extends FrameworkDependencies {
     private engine: any;

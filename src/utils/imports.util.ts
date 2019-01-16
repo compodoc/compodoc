@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import Ast, { PropertyDeclaration, ts, SyntaxKind } from 'ts-simple-ast';
+import Ast, { ts, PropertyDeclaration, SyntaxKind } from 'ts-simple-ast';
 
 const ast = new Ast();
 

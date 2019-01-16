@@ -1,9 +1,11 @@
-import * as path from 'path';
 import * as Handlebars from 'handlebars';
+import * as path from 'path';
+
+import { MAX_SIZE_FILE_CHEERIO_PARSING, MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/constants';
+
 import { logger } from '../../utils/logger';
 import Configuration from '../configuration';
 import FileEngine from './file.engine';
-import { MAX_SIZE_FILE_SEARCH_INDEX, MAX_SIZE_FILE_CHEERIO_PARSING } from '../../utils/constants';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');

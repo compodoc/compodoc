@@ -25,8 +25,12 @@ export class ExportJsonEngine {
 
         traverse(data).forEach(function(node) {
             if (node) {
-                if (node.parent) delete node.parent;
-                if (node.initializer) delete node.initializer;
+                if (node.parent) {
+                    delete node.parent;
+                }
+                if (node.initializer) {
+                    delete node.initializer;
+                }
             }
         });
 
@@ -43,7 +47,7 @@ export class ExportJsonEngine {
 
         return FileEngine.write(
             outputFolder + path.sep + '/documentation.json',
-            JSON.stringify(exportData, null, 4)
+            JSON.stringify(exportData, undefined, 4)
         ).catch(err => {
             logger.error('Error during export file generation ', err);
             return Promise.reject(err);

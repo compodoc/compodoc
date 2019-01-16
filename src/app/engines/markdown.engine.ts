@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import * as _ from 'lodash';
+import * as path from 'path';
+
 import FileEngine from './file.engine';
 
 const marked = require('marked');

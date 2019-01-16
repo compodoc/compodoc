@@ -1,21 +1,21 @@
-export interface jsdocTagNameInterface {
+export interface JsdocTagNameInterface {
     text: string;
 }
 
-export interface jsdocTypeExpressionInterface {
+export interface JsdocTypeExpressionInterface {
     type: any;
 }
 
-export interface jsdocParameterNameInterface {
+export interface JsdocParameterNameInterface {
     text: string;
 }
 
 export interface JsdocTagInterface {
     comment: string;
     name: string;
-    tagName: jsdocTagNameInterface;
-    parameterName: jsdocParameterNameInterface;
+    tagName: JsdocTagNameInterface;
+    parameterName: JsdocParameterNameInterface;
     type: any;
     defaultValue: any;
-    typeExpression: jsdocTypeExpressionInterface;
+    typeExpression: JsdocTypeExpressionInterface;
 }

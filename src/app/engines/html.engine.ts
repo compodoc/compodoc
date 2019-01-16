@@ -1,23 +1,20 @@
-import * as path from 'path';
 import * as Handlebars from 'handlebars';
+import * as path from 'path';
 
 import { logger } from '../../utils/logger';
-import { HtmlEngineHelpers } from './html.engine.helpers';
-import Configuration from '../configuration';
 import FileEngine from './file.engine';
+import { HtmlEngineHelpers } from './html.engine.helpers';
 
 export class HtmlEngine {
     private cache: { page: string } = {} as any;
     private compiledPage;
 
     private precompiledMenu;
-    private compiledMobileMenu;
-    private compiledMenu;
 
     private static instance: HtmlEngine;
     private constructor() {
         const helper = new HtmlEngineHelpers();
-        helper.registerHelpers(Handlebars, Configuration);
+        helper.registerHelpers(Handlebars);
     }
     public static getInstance() {
         if (!HtmlEngine.instance) {
@@ -79,7 +76,6 @@ export class HtmlEngine {
                 logger.warn(
                     'Template path specificed but does not exist...using default templates'
                 );
-                // new Error('Template path specified but does not exist');
             }
         }
 

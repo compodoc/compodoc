@@ -8,6 +8,7 @@ import Configuration from './app/configuration';
 import FileEngine from './app/engines/file.engine';
 import I18nEngine from './app/engines/i18n.engine';
 
+import { ConfigurationFileInterface } from './app/interfaces/configuration-file.interface';
 import AngularVersionUtil from './utils/angular-version.util';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './utils/logger';
@@ -180,7 +181,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         let configExplorerResult;
 
-        let configFile = {};
+        let configFile: ConfigurationFileInterface = {};
 
         if (program.config) {
             let configFilePath = program.config;

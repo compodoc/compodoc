@@ -1,7 +1,7 @@
-import * as path from 'path';
 import * as fs from 'fs-extra';
-import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
+import * as path from 'path';
+import { ts } from 'ts-simple-ast';
 
 import { LinkParser } from './link-parser';
 
@@ -183,10 +183,10 @@ if (!Array.prototype.includes) {
             }
 
             // 1. Let O be ? ToObject(this value).
-            var o = Object(this);
+            let o = Object(this);
 
             // 2. Let len be ? ToLength(? Get(O, "length")).
-            var len = o.length >>> 0;
+            let len = o.length >>> 0;
 
             // 3. If len is 0, return false.
             if (len === 0) {
@@ -195,14 +195,14 @@ if (!Array.prototype.includes) {
 
             // 4. Let n be ? ToInteger(fromIndex).
             //    (If fromIndex is undefined, this step produces the value 0.)
-            var n = fromIndex | 0;
+            let n = fromIndex | 0;
 
             // 5. If n ≥ 0, then
             //  a. Let k be n.
             // 6. Else n < 0,
             //  a. Let k be len + n.
             //  b. If k < 0, let k be 0.
-            var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+            let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
 
             function sameValueZero(x, y) {
                 return (
@@ -310,26 +310,28 @@ export function compilerHost(transpileOptions: any): ts.CompilerHost {
     return toReturn;
 }
 
-export function detectIndent(str, count, indent?): string {
-    let stripIndent = (str: string) => {
-        const match = str.match(/^[ \t]*(?=\S)/gm);
+export function detectIndent(str, count): string {
+    let stripIndent = (stripedString: string) => {
+        const match = stripedString.match(/^[ \t]*(?=\S)/gm);
 
         if (!match) {
-            return str;
+            return stripedString;
         }
 
         // TODO: use spread operator when targeting Node.js 6
         const indent = Math.min.apply(Math, match.map(x => x.length)); // eslint-disable-line
         const re = new RegExp(`^[ \\t]{${indent}}`, 'gm');
 
-        return indent > 0 ? str.replace(re, '') : str;
+        return indent > 0 ? stripedString.replace(re, '') : stripedString;
     };
 
-    let repeating = (n, str) => {
-        str = str === undefined ? ' ' : str;
+    let repeating = (n, repeatString) => {
+        repeatString = repeatString === undefined ? ' ' : repeatString;
 
-        if (typeof str !== 'string') {
-            throw new TypeError(`Expected \`input\` to be a \`string\`, got \`${typeof str}\``);
+        if (typeof repeatString !== 'string') {
+            throw new TypeError(
+                `Expected \`input\` to be a \`string\`, got \`${typeof repeatString}\``
+            );
         }
 
         if (n < 0) {
@@ -340,39 +342,43 @@ export function detectIndent(str, count, indent?): string {
 
         do {
             if (n & 1) {
-                ret += str;
+                ret += repeatString;
             }
 
-            str += str;
+            repeatString += repeatString;
         } while ((n >>= 1));
 
         return ret;
     };
 
-    let indentString = (str, count, indent) => {
-        indent = indent === undefined ? ' ' : indent;
-        count = count === undefined ? 1 : count;
+    let indentString = (indentedString, indentCount) => {
+        let indent = ' ';
+        indentCount = indentCount === undefined ? 1 : indentCount;
 
-        if (typeof str !== 'string') {
-            throw new TypeError(`Expected \`input\` to be a \`string\`, got \`${typeof str}\``);
+        if (typeof indentedString !== 'string') {
+            throw new TypeError(
+                `Expected \`input\` to be a \`string\`, got \`${typeof indentedString}\``
+            );
         }
 
-        if (typeof count !== 'number') {
-            throw new TypeError(`Expected \`count\` to be a \`number\`, got \`${typeof count}\``);
+        if (typeof indentCount !== 'number') {
+            throw new TypeError(
+                `Expected \`count\` to be a \`number\`, got \`${typeof indentCount}\``
+            );
         }
 
         if (typeof indent !== 'string') {
             throw new TypeError(`Expected \`indent\` to be a \`string\`, got \`${typeof indent}\``);
         }
 
-        if (count === 0) {
-            return str;
+        if (indentCount === 0) {
+            return indentedString;
         }
 
-        indent = count > 1 ? repeating(count, indent) : indent;
+        indent = indentCount > 1 ? repeating(indentCount, indent) : indent;
 
-        return str.replace(/^(?!\s*$)/gm, indent);
+        return indentedString.replace(/^(?!\s*$)/gm, indent);
     };
 
-    return indentString(stripIndent(str), count || 0, indent);
+    return indentString(stripIndent(str), count || 0);
 }

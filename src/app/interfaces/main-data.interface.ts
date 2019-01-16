@@ -1,3 +1,5 @@
+import { CoverageData } from './coverageData.interface';
+
 export interface MainDataInterface {
     output: string;
     theme: string;
@@ -62,7 +64,7 @@ export interface MainDataInterface {
     routesLength: number;
     angularVersion: string;
     exportFormat: string;
-    coverageData: Object;
+    coverageData: CoverageData;
     customFavicon: string;
     customLogo: string;
     packageDependencies: Object[];

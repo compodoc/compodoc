@@ -1,8 +1,7 @@
 import { ts } from 'ts-simple-ast';
-import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
 import { detectIndent } from '../../../../../utils';
-import { IDep, Deps } from '../../dependencies.interfaces';
 import { ClassHelper } from './class-helper';
+import { IParseDeepIdentifierResult, SymbolHelper } from './symbol-helper';
 
 export class ComponentHelper {
     constructor(

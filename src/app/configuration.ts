@@ -1,8 +1,10 @@
-import { COMPODOC_DEFAULTS } from '../utils/defaults';
-import { PageInterface } from './interfaces/page.interface';
-import { MainDataInterface } from './interfaces/main-data.interface';
-import { ConfigurationInterface } from './interfaces/configuration.interface';
 import * as _ from 'lodash';
+
+import { COMPODOC_DEFAULTS } from '../utils/defaults';
+
+import { ConfigurationInterface } from './interfaces/configuration.interface';
+import { MainDataInterface } from './interfaces/main-data.interface';
+import { PageInterface } from './interfaces/page.interface';
 
 export class Configuration implements ConfigurationInterface {
     private _pages: PageInterface[] = [];

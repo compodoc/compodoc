@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import * as LiveServer from 'live-server';
 import * as _ from 'lodash';
+import * as path from 'path';
 
 import { SyntaxKind } from 'ts-simple-ast';
 
@@ -10,32 +10,34 @@ const marked = require('marked');
 const traverse = require('traverse');
 
 import { logger } from '../utils/logger';
-import HtmlEngine from './engines/html.engine';
-import MarkdownEngine from './engines/markdown.engine';
-import FileEngine from './engines/file.engine';
+
 import Configuration from './configuration';
+
+import DependenciesEngine from './engines/dependencies.engine';
+import ExportEngine from './engines/export.engine';
+import FileEngine from './engines/file.engine';
+import HtmlEngine from './engines/html.engine';
+import I18nEngine from './engines/i18n.engine';
+import MarkdownEngine from './engines/markdown.engine';
 import NgdEngine from './engines/ngd.engine';
 import SearchEngine from './engines/search.engine';
-import ExportEngine from './engines/export.engine';
-import I18nEngine from './engines/i18n.engine';
 
 import { AngularDependencies } from './compiler/angular-dependencies';
 import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 
-import { COMPODOC_DEFAULTS } from '../utils/defaults';
+import AngularVersionUtil from '../utils/angular-version.util';
 import { COMPODOC_CONSTANTS } from '../utils/constants';
-
-import {
-    findMainSourceFolder,
-    cleanNameWithoutSpaceAndToLowerCase,
-    cleanSourcesForWatch
-} from '../utils/utils';
-
+import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { promiseSequential } from '../utils/promise-sequential';
-import DependenciesEngine from './engines/dependencies.engine';
 import RouterParserUtil from '../utils/router-parser.util';
 
-import AngularVersionUtil from '../utils/angular-version.util';
+import {
+    cleanNameWithoutSpaceAndToLowerCase,
+    cleanSourcesForWatch,
+    findMainSourceFolder
+} from '../utils/utils';
+
+import { CoverageData } from './interfaces/coverageData.interface';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -745,18 +747,17 @@ export class Application {
 
                     const parsedSummaryData = JSON.parse(summaryData);
 
-                    let that = this,
-                        level = 0;
+                    let that = this;
 
                     traverse(parsedSummaryData).forEach(function() {
                         if (this.notRoot && typeof this.node === 'object') {
                             let rawPath = this.path;
-                            let file = this.node['file'];
-                            let title = this.node['title'];
+                            let file = this.node.file;
+                            let title = this.node.title;
                             let finalPath = Configuration.mainData.includesFolder;
 
                             let finalDepth = rawPath.filter(el => {
-                                return !isNaN(parseInt(el));
+                                return !isNaN(parseInt(el, 10));
                             });
 
                             if (typeof file !== 'undefined' && typeof title !== 'undefined') {
@@ -769,7 +770,7 @@ export class Application {
                                             ? parsedSummaryData
                                             : lastElementRootTree;
                                     if (typeof elementTree.children !== 'undefined') {
-                                        elementTree = elementTree['children'][el];
+                                        elementTree = elementTree.children[el];
                                     } else {
                                         elementTree = elementTree[el];
                                     }
@@ -2310,11 +2311,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         return new Promise((resolve, reject) => {
             let covDat, covFileNames;
 
-            if (!Configuration.mainData.coverageData['files']) {
+            let coverageData: CoverageData = Configuration.mainData.coverageData;
+
+            if (!coverageData.files) {
                 logger.warn('Missing documentation coverage data');
             } else {
                 covDat = {};
-                covFileNames = _.map(Configuration.mainData.coverageData['files'], el => {
+                covFileNames = _.map(coverageData.files, el => {
                     let fileName = el.filePath;
                     covDat[fileName] = {
                         type: el.type,
