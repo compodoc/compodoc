@@ -1934,8 +1934,6 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             processComponentsAndDirectivesAndControllers(Configuration.mainData.directives);
             processComponentsAndDirectivesAndControllers(Configuration.mainData.controllers);
 
-            console.log(Configuration.mainData.controllers[4]);
-
             _.forEach(Configuration.mainData.classes, (cl: any) => {
                 let classe = (Object as any).assign({}, cl);
                 if (!classe.properties) {
@@ -2172,8 +2170,6 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             );
 
             files = _.sortBy(files, ['filePath']);
-
-            console.log(files);
 
             let coverageData = {
                 count:
