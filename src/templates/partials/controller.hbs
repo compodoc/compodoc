@@ -74,12 +74,12 @@
             </div>
         {{/if}}
 
-        {{#orLength controller.methods}}
-            {{> index methods=controller.methods}}
+        {{#orLength controller.methodsClass}}
+            {{> index methods=controller.methodsClass}}
         {{/orLength}}
 
-        {{#if controller.methods}}
-            {{> block-method methods=controller.methods file=controller.file }}
+        {{#if controller.methodsClass}}
+            {{> block-method methods=controller.methodsClass file=controller.file }}
         {{/if}}
     </div>
     {{/isTabEnabled}}

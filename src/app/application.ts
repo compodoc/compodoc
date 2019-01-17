@@ -1720,7 +1720,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 }
                 return status;
             };
-            let processComponentsAndDirectives = list => {
+            let processComponentsAndDirectivesAndControllers = list => {
                 _.forEach(list, (el: any) => {
                     let element = (Object as any).assign({}, el);
                     if (!element.propertiesClass) {
@@ -1930,8 +1930,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 });
             };
 
-            processComponentsAndDirectives(Configuration.mainData.components);
-            processComponentsAndDirectives(Configuration.mainData.directives);
+            processComponentsAndDirectivesAndControllers(Configuration.mainData.components);
+            processComponentsAndDirectivesAndControllers(Configuration.mainData.directives);
+            processComponentsAndDirectivesAndControllers(Configuration.mainData.controllers);
+
+            console.log(Configuration.mainData.controllers[4]);
 
             _.forEach(Configuration.mainData.classes, (cl: any) => {
                 let classe = (Object as any).assign({}, cl);
@@ -2002,6 +2005,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cla.coveragePercent;
                 files.push(cla);
             });
+
             _.forEach(Configuration.mainData.injectables, (inj: any) => {
                 let injectable = (Object as any).assign({}, inj);
                 if (!injectable.properties) {
@@ -2069,6 +2073,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
+
             _.forEach(Configuration.mainData.interfaces, (inte: any) => {
                 let inter = (Object as any).assign({}, inte);
                 if (!inter.properties) {
@@ -2136,6 +2141,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 totalProjectStatementDocumented += cl.coveragePercent;
                 files.push(cl);
             });
+
             _.forEach(Configuration.mainData.pipes, (pipe: any) => {
                 let cl: any = {
                     filePath: pipe.file,
@@ -2166,6 +2172,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             );
 
             files = _.sortBy(files, ['filePath']);
+
+            console.log(files);
+
             let coverageData = {
                 count:
                     files.length > 0

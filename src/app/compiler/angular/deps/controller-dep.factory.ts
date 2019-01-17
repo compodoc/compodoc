@@ -22,8 +22,9 @@ export class ControllerDepFactory {
             name,
             id: 'controller-' + name + '-' + hash,
             file: file,
-            methods: IO.methods,
+            methodsClass: IO.methods,
             type: 'controller',
+            description: IO.description,
             sourceCode: srcFile.text
         };
         if (properties && properties.length === 1) {
@@ -38,6 +39,7 @@ export class ControllerDepFactory {
 export interface IControllerDep extends IDep {
     file: any;
     sourceCode: string;
+    description: string;
     prefix?: string;
-    methods: Array<any>;
+    methodsClass: Array<any>;
 }

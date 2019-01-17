@@ -19,6 +19,6 @@ export interface PageInterface {
     component?: any;
     markdown?: string;
     childrenLength?: number;
-    children: any[];
+    children?: any[];
     lastChild?: boolean;
 }
