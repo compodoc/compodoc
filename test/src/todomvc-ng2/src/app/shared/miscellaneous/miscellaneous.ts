@@ -7,7 +7,7 @@ export const PI: number = 3.14;
 export let PIT = 4;
 
 /**
- * A foo bar function
+ * A foo bar function. Test link for other class {@link ListComponent}
  *
  * @param {string} status A status
  */

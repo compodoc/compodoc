@@ -7,5 +7,5 @@
 
 {{#each miscellaneous.groupedEnumerations}}
     <h3>{{@key}}</h3>
-    {{> block-enum enums=this title='false'}}
+    {{> block-enum enums=this title='false' depth=../depth}}
 {{/each}}

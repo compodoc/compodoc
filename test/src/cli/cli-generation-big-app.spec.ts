@@ -760,6 +760,11 @@ describe('CLI simple generation - big app', () => {
         );
     });
 
+    it('correct http reference for other classes using @link in description of a miscellaneous function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<a href="../components/ListComponent.html">ListComponent</a>');
+    });
+
     it('shorten long arrow function declaration for properties', () => {
         let file = read(distFolder + '/classes/Todo.html');
         expect(file).to.contain('() &#x3D;&gt; {...}</code>');

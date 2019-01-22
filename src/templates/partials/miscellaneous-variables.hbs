@@ -7,5 +7,5 @@
 
 {{#each miscellaneous.groupedVariables}}
     <h3>{{@key}}</h3>
-    {{> block-property properties=this title=''}}
+    {{> block-property properties=this title='' depth=../depth}}
 {{/each}}
