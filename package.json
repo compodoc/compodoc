@@ -88,6 +88,7 @@
         "marked": "^0.4.0",
         "opencollective": "^1.0.3",
         "os-name": "^3.0.0",
+        "semver": "^5.6.0",
         "traverse": "^0.6.6",
         "ts-simple-ast": "12.4.0",
         "uuid": "^3.3.2"
@@ -120,7 +121,6 @@
         "rollup-plugin-typescript": "^1.0.0",
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.1",
-        "semver": "^5.6.0",
         "ts-node": "7.0.1",
         "tslint": "^5.12.1"
     },
