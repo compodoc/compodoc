@@ -799,6 +799,9 @@ export class ClassHelper {
             if (node.kind === SyntaxKind.TypeParameter) {
                 _return = node.name.text;
             }
+            if (node.kind === SyntaxKind.LiteralType) {
+                _return = node.literal.text;
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';

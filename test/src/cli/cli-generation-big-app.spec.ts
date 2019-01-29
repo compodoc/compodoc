@@ -613,6 +613,11 @@ describe('CLI simple generation - big app', () => {
         );
     });
 
+    it('should support literal type', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('<code>Pick&lt;NavigationExtras | replaceUrl&gt;</code>');
+    });
+
     it('should support multiple union types with array', () => {
         let file = read(distFolder + '/components/TodoComponent.html');
         expect(file).to.contain('<code>(string | number)[]</code>');

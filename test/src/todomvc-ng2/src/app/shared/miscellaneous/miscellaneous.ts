@@ -58,3 +58,5 @@ export type LinearDomain = [Number, Number];
 export type LinearTodo = [Todo, Todo];
 
 export type TypeOrTypeArray = string | symbol | Array<string | symbol>;
+
+export type RouterAdapterOptions = Pick<NavigationExtras, 'replaceUrl'>;
