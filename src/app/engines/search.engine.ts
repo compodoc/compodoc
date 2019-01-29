@@ -66,6 +66,7 @@ export class SearchEngine {
             this.ref('url');
             this.field('title');
             this.field('body');
+            this.pipeline.remove(lunr.stemmer);
 
             let i = 0;
             let len = that.searchDocuments.length;
