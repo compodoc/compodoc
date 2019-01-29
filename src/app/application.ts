@@ -445,7 +445,7 @@ export class Application {
                 }
             }
         }
-        return result;
+        return false;
     }
 
     private getDependenciesData(): void {
