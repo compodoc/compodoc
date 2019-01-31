@@ -237,7 +237,7 @@ describe('CLI coverage report', () => {
             );
         });
         it('it should not be over threshold', () => {
-            expect(stdoutString).to.contain('is not over threshold');
+            expect(stdoutString).to.contain(') is not over threshold');
         });
     });
 
@@ -272,7 +272,7 @@ describe('CLI coverage report', () => {
             );
         });
         it('it should be over threshold', () => {
-            expect(stdoutString).to.contain('is over threshold');
+            expect(stdoutString).to.contain(') is over threshold');
         });
     });
 
@@ -305,7 +305,7 @@ describe('CLI coverage report', () => {
             expect(stdoutString).to.contain('Documentation coverage per file is over threshold');
         });
         it('it should be over threshold', () => {
-            expect(stdoutString).to.contain('is over threshold');
+            expect(stdoutString).to.contain(') is over threshold');
         });
     });
 
@@ -338,7 +338,7 @@ describe('CLI coverage report', () => {
             expect(stdoutString).to.contain('Documentation coverage per file is over threshold');
         });
         it('it should not be over threshold', () => {
-            expect(stdoutString).to.contain('is not over threshold');
+            expect(stdoutString).to.contain(') is not over threshold');
         });
     });
 
@@ -369,6 +369,43 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('Documentation coverage');
             expect(coverageFile).to.contain('img src="./images/coverage-badge-documentation.svg"');
             expect(coverageFile).to.contain('5/5');
+        });
+    });
+
+    describe('coverage page links', () => {
+        let stdoutString = undefined,
+            coverageFile;
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/src/todomvc-ng2/src/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            coverageFile = read(`${distFolder}/coverage.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('it should have links in coverage page', () => {
+            expect(coverageFile).to.contain('<td>class</td>');
+            expect(coverageFile).to.contain('<td>component</td>');
+            expect(coverageFile).to.contain('<td>directive</td>');
+            expect(coverageFile).to.contain('<td>function</td>');
+            expect(coverageFile).to.contain('<td>guard</td>');
+            expect(coverageFile).to.contain('<td>injectable</td>');
+            expect(coverageFile).to.contain('<td>interceptor</td>');
+            expect(coverageFile).to.contain('<td>interface</td>');
+            expect(coverageFile).to.contain('<td>pipe</td>');
+            expect(coverageFile).to.contain('<td>variable</td>');
         });
     });
 });

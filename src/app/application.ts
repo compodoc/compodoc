@@ -1703,7 +1703,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((resolve, reject) => {
             /*
-             * loop with components, directives, classes, injectables, interfaces, pipes, misc functions variables
+             * loop with components, directives, controllers, classes, injectables, interfaces, pipes, guards, misc functions variables
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
@@ -1930,215 +1930,87 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 });
             };
 
+            let processClasses = (list, type, linktype) => {
+                _.forEach(list, (cl: any) => {
+                    let element = (Object as any).assign({}, cl);
+                    if (!element.properties) {
+                        element.properties = [];
+                    }
+                    if (!element.methods) {
+                        element.methods = [];
+                    }
+                    let cla: any = {
+                        filePath: element.file,
+                        type: type,
+                        linktype: linktype,
+                        name: element.name
+                    };
+                    let totalStatementDocumented = 0;
+                    let totalStatements = element.properties.length + element.methods.length + 1; // +1 for element itself
+
+                    if (element.constructorObj) {
+                        totalStatements += 1;
+                        if (
+                            element.constructorObj &&
+                            element.constructorObj.description &&
+                            element.constructorObj.description !== ''
+                        ) {
+                            totalStatementDocumented += 1;
+                        }
+                    }
+                    if (element.description && element.description !== '') {
+                        totalStatementDocumented += 1;
+                    }
+
+                    _.forEach(element.properties, (property: any) => {
+                        if (property.modifierKind === SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
+                            totalStatements -= 1;
+                        }
+                        if (
+                            property.description &&
+                            property.description !== '' &&
+                            property.modifierKind !== SyntaxKind.PrivateKeyword
+                        ) {
+                            totalStatementDocumented += 1;
+                        }
+                    });
+                    _.forEach(element.methods, (method: any) => {
+                        if (method.modifierKind === SyntaxKind.PrivateKeyword) {
+                            // Doesn't handle private for coverage
+                            totalStatements -= 1;
+                        }
+                        if (
+                            method.description &&
+                            method.description !== '' &&
+                            method.modifierKind !== SyntaxKind.PrivateKeyword
+                        ) {
+                            totalStatementDocumented += 1;
+                        }
+                    });
+
+                    cla.coveragePercent = Math.floor(
+                        (totalStatementDocumented / totalStatements) * 100
+                    );
+                    if (totalStatements === 0) {
+                        cla.coveragePercent = 0;
+                    }
+                    cla.coverageCount = totalStatementDocumented + '/' + totalStatements;
+                    cla.status = getStatus(cla.coveragePercent);
+                    totalProjectStatementDocumented += cla.coveragePercent;
+                    files.push(cla);
+                });
+            };
+
             processComponentsAndDirectivesAndControllers(Configuration.mainData.components);
             processComponentsAndDirectivesAndControllers(Configuration.mainData.directives);
             processComponentsAndDirectivesAndControllers(Configuration.mainData.controllers);
 
-            _.forEach(Configuration.mainData.classes, (cl: any) => {
-                let classe = (Object as any).assign({}, cl);
-                if (!classe.properties) {
-                    classe.properties = [];
-                }
-                if (!classe.methods) {
-                    classe.methods = [];
-                }
-                let cla: any = {
-                    filePath: classe.file,
-                    type: 'class',
-                    linktype: 'classe',
-                    name: classe.name
-                };
-                let totalStatementDocumented = 0;
-                let totalStatements = classe.properties.length + classe.methods.length + 1; // +1 for class itself
-
-                if (classe.constructorObj) {
-                    totalStatements += 1;
-                    if (
-                        classe.constructorObj &&
-                        classe.constructorObj.description &&
-                        classe.constructorObj.description !== ''
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                }
-                if (classe.description && classe.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-
-                _.forEach(classe.properties, (property: any) => {
-                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        property.description &&
-                        property.description !== '' &&
-                        property.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(classe.methods, (method: any) => {
-                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        method.description &&
-                        method.description !== '' &&
-                        method.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-
-                cla.coveragePercent = Math.floor(
-                    (totalStatementDocumented / totalStatements) * 100
-                );
-                if (totalStatements === 0) {
-                    cla.coveragePercent = 0;
-                }
-                cla.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cla.status = getStatus(cla.coveragePercent);
-                totalProjectStatementDocumented += cla.coveragePercent;
-                files.push(cla);
-            });
-
-            _.forEach(Configuration.mainData.injectables, (inj: any) => {
-                let injectable = (Object as any).assign({}, inj);
-                if (!injectable.properties) {
-                    injectable.properties = [];
-                }
-                if (!injectable.methods) {
-                    injectable.methods = [];
-                }
-                let cl: any = {
-                    filePath: injectable.file,
-                    type: injectable.type,
-                    linktype: injectable.type,
-                    name: injectable.name
-                };
-                let totalStatementDocumented = 0;
-                let totalStatements = injectable.properties.length + injectable.methods.length + 1; // +1 for injectable itself
-
-                if (injectable.constructorObj) {
-                    totalStatements += 1;
-                    if (
-                        injectable.constructorObj &&
-                        injectable.constructorObj.description &&
-                        injectable.constructorObj.description !== ''
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                }
-                if (injectable.description && injectable.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-
-                _.forEach(injectable.properties, (property: any) => {
-                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        property.description &&
-                        property.description !== '' &&
-                        property.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(injectable.methods, (method: any) => {
-                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        method.description &&
-                        method.description !== '' &&
-                        method.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
-
-            _.forEach(Configuration.mainData.interfaces, (inte: any) => {
-                let inter = (Object as any).assign({}, inte);
-                if (!inter.properties) {
-                    inter.properties = [];
-                }
-                if (!inter.methods) {
-                    inter.methods = [];
-                }
-                let cl: any = {
-                    filePath: inter.file,
-                    type: inter.type,
-                    linktype: inter.type,
-                    name: inter.name
-                };
-                let totalStatementDocumented = 0;
-                let totalStatements = inter.properties.length + inter.methods.length + 1; // +1 for interface itself
-
-                if (inter.constructorObj) {
-                    totalStatements += 1;
-                    if (
-                        inter.constructorObj &&
-                        inter.constructorObj.description &&
-                        inter.constructorObj.description !== ''
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                }
-                if (inter.description && inter.description !== '') {
-                    totalStatementDocumented += 1;
-                }
-
-                _.forEach(inter.properties, (property: any) => {
-                    if (property.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        property.description &&
-                        property.description !== '' &&
-                        property.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-                _.forEach(inter.methods, (method: any) => {
-                    if (method.modifierKind === SyntaxKind.PrivateKeyword) {
-                        // Doesn't handle private for coverage
-                        totalStatements -= 1;
-                    }
-                    if (
-                        method.description &&
-                        method.description !== '' &&
-                        method.modifierKind !== SyntaxKind.PrivateKeyword
-                    ) {
-                        totalStatementDocumented += 1;
-                    }
-                });
-
-                cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if (totalStatements === 0) {
-                    cl.coveragePercent = 0;
-                }
-                cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
-                cl.status = getStatus(cl.coveragePercent);
-                totalProjectStatementDocumented += cl.coveragePercent;
-                files.push(cl);
-            });
+            processClasses(Configuration.mainData.classes, 'class', 'classe');
+            processClasses(Configuration.mainData.injectables, 'injectable', 'injectable');
+            processClasses(Configuration.mainData.interfaces, 'interface', 'interface');
+            processClasses(Configuration.mainData.guards, 'guard', 'guard');
+            processClasses(Configuration.mainData.interceptors, 'interceptor', 'interceptor');
 
             _.forEach(Configuration.mainData.pipes, (pipe: any) => {
                 let cl: any = {
