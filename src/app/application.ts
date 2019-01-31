@@ -1947,7 +1947,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     };
                     let totalStatementDocumented = 0;
                     let totalStatements = element.properties.length + element.methods.length + 1; // +1 for element itself
-    
+
                     if (element.constructorObj) {
                         totalStatements += 1;
                         if (
@@ -1961,7 +1961,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (element.description && element.description !== '') {
                         totalStatementDocumented += 1;
                     }
-    
+
                     _.forEach(element.properties, (property: any) => {
                         if (property.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
@@ -1988,7 +1988,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             totalStatementDocumented += 1;
                         }
                     });
-    
+
                     cla.coveragePercent = Math.floor(
                         (totalStatementDocumented / totalStatements) * 100
                     );
@@ -2000,7 +2000,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     totalProjectStatementDocumented += cla.coveragePercent;
                     files.push(cla);
                 });
-            }
+            };
 
             processComponentsAndDirectivesAndControllers(Configuration.mainData.components);
             processComponentsAndDirectivesAndControllers(Configuration.mainData.directives);
