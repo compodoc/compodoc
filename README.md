@@ -101,6 +101,12 @@ This project exists thanks to all these people.
 | :---------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                  [dp-1a](https://github.com/dp-1a)                                                  |                                               [ValentinGot](https://github.com/ValentinGot)                                               |                                             [Blake Simmon](https://github.com/Blakesalot)                                              |                                              [Brigitte Hofmeister](https://github.com/bhofmei)                                               |                                              [lichangfeng](https://github.com/lichangfeng)                                              |
 
+# Big Thanks
+
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][homepage]
+
+[homepage]: https://saucelabs.com
+
 # License
 
 Everything in this repository is [licensed under the MIT License][license] unless otherwise specified.
