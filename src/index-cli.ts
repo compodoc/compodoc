@@ -1,25 +1,25 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { Application } from './app/application';
-
-import { COMPODOC_DEFAULTS } from './utils/defaults';
-import { logger } from './logger';
-import { readConfig, handlePath } from './utils/utils';
-
 import { ts } from 'ts-simple-ast';
-import { ParserUtil } from './utils/parser.util.class';
 
-import I18nEngine from './app/engines/i18n.engine';
-
+import { Application } from './app/application';
 import Configuration from './app/configuration';
 import FileEngine from './app/engines/file.engine';
+import I18nEngine from './app/engines/i18n.engine';
 
-const pkg = require('../package.json');
-const program = require('commander');
+import { ConfigurationFileInterface } from './app/interfaces/configuration-file.interface';
+import AngularVersionUtil from './utils/angular-version.util';
+import { COMPODOC_DEFAULTS } from './utils/defaults';
+import { logger } from './utils/logger';
+import { ParserUtil } from './utils/parser.util.class';
+import { handlePath, readConfig } from './utils/utils';
+
+const cosmiconfig = require('cosmiconfig');
 const os = require('os');
 const osName = require('os-name');
-const cosmiconfig = require('cosmiconfig');
+const pkg = require('../package.json');
+const program = require('commander');
 
 const cosmiconfigModuleName = 'compodoc';
 
@@ -80,7 +80,11 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
-            .option('--language [language]', 'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)', COMPODOC_DEFAULTS.language)
+            .option(
+                '--language [language]',
+                'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)',
+                COMPODOC_DEFAULTS.language
+            )
             .option(
                 '--theme [theme]',
                 "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
@@ -177,7 +181,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         let configExplorerResult;
 
-        let configFile = {};
+        let configFile: ConfigurationFileInterface = {};
 
         if (program.config) {
             let configFilePath = program.config;
@@ -374,8 +378,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 configFile.coverageTestShowOnlyFailed;
         }
         if (program.coverageTestShowOnlyFailed) {
-            Configuration.mainData.coverageTestShowOnlyFailed =
-                program.coverageTestShowOnlyFailed;
+            Configuration.mainData.coverageTestShowOnlyFailed = program.coverageTestShowOnlyFailed;
         }
 
         if (configFile.unitTestCoverage) {
@@ -514,8 +517,23 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
             console.log(pkg.version);
             console.log('');
-            console.log(`Typescript version : ${ts.version}`);
+            console.log(`TypeScript version used by Compodoc : ${ts.version}`);
             console.log('');
+
+            if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
+                const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
+                if (packageData) {
+                    const parsedData = JSON.parse(packageData);
+                    const projectDevDependencies = parsedData.devDependencies;
+                    if (projectDevDependencies && projectDevDependencies.typescript) {
+                        const tsProjectVersion = AngularVersionUtil.cleanVersion(
+                            projectDevDependencies.typescript
+                        );
+                        console.log(`TypeScript version of current project : ${tsProjectVersion}`);
+                        console.log('');
+                    }
+                }
+            }
             console.log(`Node.js version : ${process.version}`);
             console.log('');
             console.log(`Operating system : ${osName(os.platform(), os.release())}`);
@@ -533,7 +551,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (program.language && !I18nEngine.supportLanguage(program.language)) {
-            logger.warn(`The language ${program.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`);
+            logger.warn(
+                `The language ${program.language} is not available, falling back to ${
+                    I18nEngine.fallbackLanguage
+                }`
+            );
         }
 
         if (program.tsconfig && typeof program.tsconfig === 'boolean') {
@@ -610,10 +632,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     process.exit(1);
                 } else {
                     let _file = path.join(
-                        path.join(
-                            process.cwd(),
-                            path.dirname(Configuration.mainData.tsconfig)
-                        ),
+                        path.join(process.cwd(), path.dirname(Configuration.mainData.tsconfig)),
                         path.basename(Configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
@@ -742,10 +761,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         process.exit(1);
                     } else {
                         let _file = path.join(
-                            path.join(
-                                process.cwd(),
-                                path.dirname(Configuration.mainData.tsconfig)
-                            ),
+                            path.join(process.cwd(), path.dirname(Configuration.mainData.tsconfig)),
                             path.basename(Configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory

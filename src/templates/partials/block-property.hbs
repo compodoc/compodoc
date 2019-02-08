@@ -18,8 +18,7 @@
                             {{#if optional}}
                                 <span class="modifier">{{t "optional" }}</span>
                             {{/if}}
-                            {{name}}
-                            </b>
+                            {{name}}</b>
                             <a href="#{{name}}"><span class="icon ion-ios-link"></span></a>
                         </span>
                     </td>
@@ -31,11 +30,6 @@
                     </td>
                 </tr>
                 {{/if}}
-                <tr>
-                    <td class="col-md-4">
-                        {{#if modifierKind}}<span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>{{/if}}<code>{{name}}: {{> link-type type=type }}</code>
-                    </td>
-                </tr>
                 {{#if type}}
                     <tr>
                         <td class="col-md-4">

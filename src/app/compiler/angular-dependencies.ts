@@ -3,9 +3,9 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import Ast, { ts, SyntaxKind } from 'ts-simple-ast';
 
-import { logger } from '../../logger';
-import { markedtags, mergeTagsAndArgs, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { kindToType } from '../../utils/kind-to-type';
+import { logger } from '../../utils/logger';
+import { cleanLifecycleHooksFromMethods, markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import ComponentsTreeEngine from '../engines/components-tree.engine';
 
 import { FrameworkDependencies } from './framework-dependencies';
@@ -13,10 +13,10 @@ import { FrameworkDependencies } from './framework-dependencies';
 import ImportsUtil from '../../utils/imports.util';
 
 import {
-    JsdocParserUtil,
-    isModuleWithProviders,
     getModuleWithProviders,
-    isIgnore
+    isIgnore,
+    isModuleWithProviders,
+    JsdocParserUtil
 } from '../../utils';
 
 import ExtendsMerger from '../../utils/extends-merger.util';
@@ -25,24 +25,24 @@ import RouterParserUtil from '../../utils/router-parser.util';
 
 import { CodeGenerator } from './angular/code-generator';
 
-import { DirectiveDepFactory } from './angular/deps/directive-dep.factory';
-import { ComponentCache } from './angular/deps/helpers/component-helper';
-import { ModuleDepFactory } from './angular/deps/module-dep.factory';
 import { ComponentDepFactory } from './angular/deps/component-dep.factory';
 import { ControllerDepFactory } from './angular/deps/controller-dep.factory';
-import { ModuleHelper } from './angular/deps/helpers/module-helper';
+import { DirectiveDepFactory } from './angular/deps/directive-dep.factory';
+import { ComponentCache } from './angular/deps/helpers/component-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
+import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
+import { ModuleDepFactory } from './angular/deps/module-dep.factory';
 
 import Configuration from '../configuration';
 
 import {
-    IInjectableDep,
-    IPipeDep,
     IDep,
-    IInterfaceDep,
-    IFunctionDecDep,
     IEnumDecDep,
+    IFunctionDecDep,
+    IInjectableDep,
+    IInterfaceDep,
+    IPipeDep,
     ITypeAliasDecDep
 } from './angular/dependencies.interfaces';
 
@@ -551,11 +551,21 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
+                        if (infos.returnType) {
+                            functionDep.returnType = infos.returnType;
+                        }
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
                         if (typeof infos.ignore === 'undefined') {
-                            outputSymbols.miscellaneous.functions.push(functionDep);
+                            if (
+                                !(
+                                    this.hasPrivateJSDocTag(functionDep.jsdoctags) &&
+                                    Configuration.mainData.disablePrivate
+                                )
+                            ) {
+                                outputSymbols.miscellaneous.functions.push(functionDep);
+                            }
                         }
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
@@ -742,11 +752,21 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
+                        if (infos.returnType) {
+                            functionDep.returnType = infos.returnType;
+                        }
                         if (infos.jsdoctags && infos.jsdoctags.length > 0) {
                             functionDep.jsdoctags = infos.jsdoctags;
                         }
                         if (typeof infos.ignore === 'undefined') {
-                            outputSymbols.miscellaneous.functions.push(functionDep);
+                            if (
+                                !(
+                                    this.hasPrivateJSDocTag(functionDep.jsdoctags) &&
+                                    Configuration.mainData.disablePrivate
+                                )
+                            ) {
+                                outputSymbols.miscellaneous.functions.push(functionDep);
+                            }
                         }
                     }
                     if (ts.isEnumDeclaration(node)) {
@@ -1040,6 +1060,18 @@ export class AngularDependencies extends FrameworkDependencies {
             case 159:
                 return 'typeReference';
         }
+    }
+
+    private hasPrivateJSDocTag(tags): boolean {
+        let result = false;
+        if (tags) {
+            tags.forEach(tag => {
+                if (tag.tagName && tag.tagName && tag.tagName.text === 'private') {
+                    result = true;
+                }
+            });
+        }
+        return result;
     }
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {

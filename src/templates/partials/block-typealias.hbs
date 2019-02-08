@@ -1,34 +1,34 @@
 <section>
     {{#each typealias}}
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="{{name}}"></a>
-                        <span class="name"><b>{{name}}</b><a href="#{{name}}"><span class="icon ion-ios-link"></span></a></span>
-                    </td>
-                </tr>
-                {{#if description}}
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-description">{{{parseDescription description ../depth}}}</div>
-                        </td>
-                    </tr>
-                {{/if}}
-                {{#compare kind "===" 160}}
-                <tr>
-                    <td class="col-md-4">
-                        <code>{{{functionSignature this}}}</code>
-                    </td>
-                </tr>
-                {{else}}
-                <tr>
-                    <td class="col-md-4">
-                        {{#if modifierKind}}<span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>{{/if}}<code>{{name}}: {{> link-type type=rawtype }}</code>
-                    </td>
-                </tr>
-                {{/compare}}
-            </tbody>
-        </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="{{name}}"></a>
+                    <span class="name"><b>{{name}}</b><a href="#{{name}}"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            {{#if description}}
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description">{{{parseDescription description ../depth}}}</div>
+                </td>
+            </tr>
+            {{/if}}
+            {{#compare kind "===" 160}}
+            <tr>
+                <td class="col-md-4">
+                    <code>{{{functionSignature this}}}</code>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td class="col-md-4">
+                    {{#if modifierKind}}<span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>{{/if}}<code>{{> link-type type=rawtype }}</code>
+                </td>
+            </tr>
+            {{/compare}}
+        </tbody>
+    </table>
     {{/each}}
 </section>

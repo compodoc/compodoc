@@ -1,21 +1,18 @@
-import { FrameworkDependencies } from './framework-dependencies';
 import { ComponentCache } from './angular/deps/helpers/component-helper';
-import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
+import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
+import { FrameworkDependencies } from './framework-dependencies';
 
 export class AngularJSDependencies extends FrameworkDependencies {
-
     private engine: any;
     private cache: ComponentCache = new ComponentCache();
     private moduleHelper = new ModuleHelper(this.cache);
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
 
-    constructor(files: string[],
-        options: any) {
-        super(files,
-            options);
+    constructor(files: string[], options: any) {
+        super(files, options);
     }
 
     public getDependencies() {

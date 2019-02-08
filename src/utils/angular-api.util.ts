@@ -4,9 +4,8 @@ import { IApiSourceResult } from './api-source-result.interface';
 const AngularAPIs: Array<IAngularMainApi> = require('../src/data/api-list.json');
 
 export class AngularApiUtil {
-
     private static instance: AngularApiUtil;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!AngularApiUtil.instance) {
             AngularApiUtil.instance = new AngularApiUtil();

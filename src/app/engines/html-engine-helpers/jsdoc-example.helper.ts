@@ -12,7 +12,9 @@ export class JsdocExampleHelper implements IHtmlEngineHelper {
                 if (jsdocTags[i].tagName.text === 'example') {
                     let tag = {} as JsdocTagInterface;
                     if (jsdocTags[i].comment) {
-                        tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                        tag.comment = jsdocTags[i].comment
+                            .replace(/<caption>/g, '<b><i>')
+                            .replace(/\/caption>/g, '/b></i>');
                     }
                     tags.push(tag);
                 }

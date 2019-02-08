@@ -1,5 +1,5 @@
-import { ts, SyntaxKind } from 'ts-simple-ast';
 import * as _ from 'lodash';
+import { ts, SyntaxKind } from 'ts-simple-ast';
 
 import { JSDocParameterTagExt } from '../app/nodes/jsdoc-parameter-tag.node';
 
@@ -80,8 +80,8 @@ export class JsdocParserUtil {
         const variableStatementNode = isInitializerOfVariableDeclarationInStatement
             ? parent.parent.parent
             : isVariableOfVariableDeclarationStatement
-                ? parent.parent
-                : undefined;
+            ? parent.parent
+            : undefined;
         if (variableStatementNode) {
             cache = this.getJSDocsWorker(variableStatementNode, cache);
         }

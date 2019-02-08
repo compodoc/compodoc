@@ -7,4 +7,5 @@ export interface AngularNgModuleNode {
     bootstrap?;
     schemas?;
     id?;
+    name?;
 }

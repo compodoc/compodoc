@@ -4,19 +4,18 @@
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
-                    <td class="col-md-2">
+                    <td class="col-md-4">
                         <a name="{{name}}"></a>
-                        <code>{{name}}</code>
-                    </td>
-                    <td class="col-md-10">
-                        {{#if description}}
-                        <div>{{{parseDescription description ../depth}}}</div>
-                        {{/if}}
-                        {{#if type}}
-                        <em><code>$event</code> {{t "type" }}:</em>{{> link-type type=type }}
-                        {{/if}}
+                        <b>{{name}}</b>
                     </td>
                 </tr>
+                {{#if type}}
+                <tr>
+                    <td class="col-md-4">
+                        <i>{{t "type" }} : </i>{{> link-type type=type }}
+                    </td>
+                </tr>
+                {{/if}}
                 {{#if line}}
                     {{#isTabEnabled ../navTabs "source"}}
                         {{#if inheritance}}
@@ -36,6 +35,13 @@
                             </td>
                         </tr>
                     {{/isTabEnabled}}
+                {{/if}}
+                {{#if description}}
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description">{{{parseDescription description ../depth}}}</div>
+                    </td>
+                </tr>
                 {{/if}}
             </tbody>
         </table>

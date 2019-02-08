@@ -2,7 +2,6 @@ import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.inte
 import { JsdocTagInterface } from '../../interfaces/jsdoc-tag.interface';
 
 export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
-
     private cleanTag(comment: string): string {
         if (comment.charAt(0) === '*') {
             comment = comment.substring(1, comment.length);
@@ -23,7 +22,11 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
     }
 
     private getHtmlEntities(str): string {
-        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
     public helperFunc(context: any, jsdocTags: JsdocTagInterface[], options: IHandlebarsOptions) {
@@ -42,10 +45,14 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
                     let tag = {} as JsdocTagInterface;
                     if (jsdocTags[i].comment) {
                         if (jsdocTags[i].comment.indexOf('<caption>') !== -1) {
-                            tag.comment = jsdocTags[i].comment.replace(/<caption>/g, '<b><i>').replace(/\/caption>/g, '/b></i>');
+                            tag.comment = jsdocTags[i].comment
+                                .replace(/<caption>/g, '<b><i>')
+                                .replace(/\/caption>/g, '/b></i>');
                         } else {
-                            tag.comment = `<pre class="line-numbers"><code class="language-${type}">` +
-                                this.getHtmlEntities(this.cleanTag(jsdocTags[i].comment)) + `</code></pre>`;
+                            tag.comment =
+                                `<pre class="line-numbers"><code class="language-${type}">` +
+                                this.getHtmlEntities(this.cleanTag(jsdocTags[i].comment)) +
+                                `</code></pre>`;
                         }
                         tags.push(tag);
                     }

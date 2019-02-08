@@ -799,6 +799,9 @@ export class ClassHelper {
             if (node.kind === SyntaxKind.TypeParameter) {
                 _return = node.name.text;
             }
+            if (node.kind === SyntaxKind.LiteralType) {
+                _return = node.literal.text;
+            }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
             _return += '<';
@@ -919,6 +922,10 @@ export class ClassHelper {
             line: this.getPosition(property, sourceFile).line + 1
         };
         let jsdoctags;
+
+        if (property.initializer && property.initializer.kind === SyntaxKind.ArrowFunction) {
+            result.defaultValue = '() => {...}';
+        }
 
         if (typeof result.name === 'undefined' && typeof property.name.expression !== 'undefined') {
             result.name = property.name.expression.text;

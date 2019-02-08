@@ -1,13 +1,14 @@
-import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import * as _ from 'lodash';
 import * as JSON5 from 'json5';
-import Ast, { TypeGuards, SourceFile, ts, SyntaxKind } from 'ts-simple-ast';
+import * as _ from 'lodash';
+import * as path from 'path';
+import Ast, { ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-simple-ast';
 
 import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
+
 import ImportsUtil from './imports.util';
-import { logger } from '../logger';
+import { logger } from './logger';
 
 const traverse = require('traverse');
 
@@ -23,7 +24,7 @@ export class RouterParserUtil {
     private modulesWithRoutes = [];
 
     private static instance: RouterParserUtil;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!RouterParserUtil.instance) {
             RouterParserUtil.instance = new RouterParserUtil();

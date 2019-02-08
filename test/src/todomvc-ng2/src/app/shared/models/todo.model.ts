@@ -84,9 +84,20 @@ export class Todo extends Tada {
         return 5;
     }
 
-    abstract abstractMethod(input : string) : string;
+    abstract abstractMethod(input: string): string;
 
     async asyncMethod() {}
+
+    url2state = async <T>(defaults: Partial<T>) =>
+        await this.route.queryParamMap
+            .pipe(
+                /** use first to make sure this only runs at component init time */
+                first(),
+                map(r => {}),
+                catchError(e => {})
+            )
+            /** cast observable to promise */
+            .toPromise();
 }
 
 export type PopupPosition = ElementRef | HTMLElement;

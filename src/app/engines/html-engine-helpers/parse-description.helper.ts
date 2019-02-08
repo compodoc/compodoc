@@ -33,7 +33,10 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
             } else {
                 let info = matchedTag.text;
                 if (matchedTag.text.indexOf('#') !== -1) {
-                    anchor = matchedTag.text.substr(matchedTag.text.indexOf('#'), matchedTag.text.length);
+                    anchor = matchedTag.text.substr(
+                        matchedTag.text.indexOf('#'),
+                        matchedTag.text.length
+                    );
                     info = matchedTag.text.substr(0, matchedTag.text.indexOf('#'));
                 }
                 resultInCompodoc = DependenciesEngine.findInCompodoc(info);
@@ -59,7 +62,7 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     resultInCompodoc.type === 'miscellaneous' ||
                     (resultInCompodoc.ctype && resultInCompodoc.ctype === 'miscellaneous')
                 ) {
-                    resultInCompodoc.type = 'miscellaneou';
+                    resultInCompodoc.type = 'miscellaneou'; // Not a typo, it is for matching other single types : component, module etc
                     label = resultInCompodoc.name;
                     anchor = '#' + resultInCompodoc.name;
                     if (resultInCompodoc.subtype === 'enum') {
@@ -166,7 +169,9 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     if (parsedATag && parsedATag.length === 2) {
                         let insideMarkedATag = parsedATag[1];
                         description = description.replace(
-                            `{@link <a href="${encodeURI(insideMarkedATag)}">${insideMarkedATag}</a>`,
+                            `{@link <a href="${encodeURI(
+                                insideMarkedATag
+                            )}">${insideMarkedATag}</a>`,
                             `{@link ${insideMarkedATag}`
                         );
                     }

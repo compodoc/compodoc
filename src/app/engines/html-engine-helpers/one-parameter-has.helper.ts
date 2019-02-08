@@ -9,7 +9,7 @@ export class OneParameterHasHelper implements IHtmlEngineHelper {
         let i = 0,
             leng = tags.length;
 
-        for(i; i<leng; i++) {
+        for (i; i < leng; i++) {
             if (typeof tags[i][typeToCheck] !== 'undefined' && tags[i][typeToCheck] !== '') {
                 result = true;
             }

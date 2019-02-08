@@ -6,7 +6,10 @@ export class ShortURLHelper implements IHtmlEngineHelper {
         let firstIndexOfSlash = newUrl.indexOf('/');
         let lastIndexOfSlash = newUrl.lastIndexOf('/');
         if (firstIndexOfSlash !== -1 || lastIndexOfSlash !== -1) {
-            newUrl = newUrl.substr(0, firstIndexOfSlash + 1) + '...' + newUrl.substr(lastIndexOfSlash, newUrl.length);
+            newUrl =
+                newUrl.substr(0, firstIndexOfSlash + 1) +
+                '...' +
+                newUrl.substr(lastIndexOfSlash, newUrl.length);
         }
         return newUrl;
     }

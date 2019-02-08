@@ -13,9 +13,8 @@ enum BasicTypeScriptTypes {
 }
 
 export class BasicTypeUtil {
-
     private static instance: BasicTypeUtil;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!BasicTypeUtil.instance) {
             BasicTypeUtil.instance = new BasicTypeUtil();
@@ -30,7 +29,7 @@ export class BasicTypeUtil {
      */
     public isJavascriptType(type: string): boolean {
         if (typeof type !== 'undefined') {
-            return (type.toLowerCase() in BasicTypes);
+            return type.toLowerCase() in BasicTypes;
         } else {
             return false;
         }
@@ -43,7 +42,7 @@ export class BasicTypeUtil {
      */
     public isTypeScriptType(type: string): boolean {
         if (typeof type !== 'undefined') {
-            return (type.toLowerCase() in BasicTypeScriptTypes);
+            return type.toLowerCase() in BasicTypeScriptTypes;
         } else {
             return false;
         }

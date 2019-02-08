@@ -1,8 +1,11 @@
-import { COMPODOC_DEFAULTS } from '../utils/defaults';
-import { PageInterface } from './interfaces/page.interface';
-import { MainDataInterface } from './interfaces/main-data.interface';
-import { ConfigurationInterface } from './interfaces/configuration.interface';
 import * as _ from 'lodash';
+
+import { COMPODOC_DEFAULTS } from '../utils/defaults';
+
+import { ConfigurationInterface } from './interfaces/configuration.interface';
+import { CoverageData } from './interfaces/coverageData.interface';
+import { MainDataInterface } from './interfaces/main-data.interface';
+import { PageInterface } from './interfaces/page.interface';
 
 export class Configuration implements ConfigurationInterface {
     private _pages: PageInterface[] = [];
@@ -70,7 +73,7 @@ export class Configuration implements ConfigurationInterface {
         routesLength: 0,
         angularVersion: '',
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
-        coverageData: {},
+        coverageData: {} as CoverageData,
         customFavicon: '',
         customLogo: '',
         packageDependencies: [],
@@ -83,7 +86,7 @@ export class Configuration implements ConfigurationInterface {
     };
 
     private static instance: Configuration;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!Configuration.instance) {
             Configuration.instance = new Configuration();
@@ -105,6 +108,10 @@ export class Configuration implements ConfigurationInterface {
 
     public addAdditionalPage(page: PageInterface) {
         this._mainData.additionalPages.push(page);
+    }
+
+    public getAdditionalPageById(id): PageInterface {
+        return this._mainData.additionalPages.find(page => page.id === id);
     }
 
     public resetPages() {

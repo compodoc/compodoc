@@ -11,18 +11,17 @@ describe('CLI simple generation - big app', () => {
 
     let todoComponentFile, listComponentFile, footerComponentFile, routesIndex;
 
-    const distFolder = tmp.name + '-big-app';
+    const tmpFolder = tmp.name + '-big-app';
+    const distFolder = tmpFolder + '/documentation';
 
     before(done => {
-        tmp.create(distFolder);
-
-        let ls = shell('node', [
-            './bin/index-cli.js',
-            '-p',
-            './test/src/todomvc-ng2/src/tsconfig.json',
-            '-d',
-            distFolder
-        ]);
+        tmp.create(tmpFolder);
+        tmp.copy('./test/src/todomvc-ng2/', tmpFolder);
+        let ls = shell(
+            'node',
+            ['../bin/index-cli.js', '-p', './src/tsconfig.json', '-d', 'documentation'],
+            { cwd: tmpFolder }
+        );
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -322,12 +321,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should support simple class with custom decorator', () => {
         let file = read(distFolder + '/classes/Tidi.html');
-        expect(file).to.contain('<code>completed');
+        expect(file).to.contain('completed</b>');
     });
 
     it('should support simple class with custom decorator()', () => {
         let file = read(distFolder + '/classes/DoNothing.html');
-        expect(file).to.contain('<code>aname');
+        expect(file).to.contain('aname</b>');
     });
 
     it('should support TypeLiteral', () => {
@@ -344,7 +343,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support @HostBindings', () => {
         let file = read(distFolder + '/directives/DoNothingDirective.html');
-        expect(file).to.contain('<code>style.color');
+        expect(file).to.contain('style.color</b>');
     });
 
     it('should support @HostListener', () => {
@@ -558,7 +557,11 @@ describe('CLI simple generation - big app', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
         let dependencies = read(distFolder + '/dependencies.html');
-        expect(dependencies).to.contain('commander');
+        expect(dependencies).to.contain('angular/forms');
+    });
+
+    it('should display project local TypeScript version', () => {
+        expect(stdoutString).to.contain('TypeScript version of current project');
     });
 
     /*it('should display project peerDependencies', () => {
@@ -610,6 +613,11 @@ describe('CLI simple generation - big app', () => {
         );
     });
 
+    it('should support literal type', () => {
+        let file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('<code>Pick&lt;NavigationExtras | replaceUrl&gt;</code>');
+    });
+
     it('should support multiple union types with array', () => {
         let file = read(distFolder + '/components/TodoComponent.html');
         expect(file).to.contain('<code>(string | number)[]</code>');
@@ -652,23 +660,21 @@ describe('CLI simple generation - big app', () => {
 
     it('should support component inheritance with base class without @component decorator', () => {
         let file = read(distFolder + '/components/DumbComponent.html');
-        expect(file).to.contain('<code>parentInput</code>');
-        expect(file).to.contain('<code>parentoutput</code>');
-        expect(file).to.contain('<code>style.color');
+        expect(file).to.contain('parentInput</b>');
+        expect(file).to.contain('parentoutput</b>');
+        expect(file).to.contain('style.color</b>');
         expect(file).to.contain('<code>mouseup');
     });
 
     it('should display short filename + long filename in title for index of miscellaneous', () => {
         let file = read(distFolder + '/miscellaneous/variables.html');
-        expect(file).to.contain('(test/.../miscellaneous.ts)');
-        expect(file).to.contain(
-            'title="test/src/todomvc-ng2/src/app/shared/miscellaneous/miscellaneous.ts"'
-        );
+        expect(file).to.contain('(src/.../about.module.ts)');
+        expect(file).to.contain('title="src/app/about/about.module.ts"');
     });
 
     it('should display component even with no hostlisteners', () => {
         let file = read(distFolder + '/coverage.html');
-        expect(file).to.contain('test/src/todomvc-ng2/src/app/footer/footer.component.ts');
+        expect(file).to.contain('src/app/footer/footer.component.ts');
     });
 
     it('should display list of import/exports/declarations/providers in asc order', () => {
@@ -680,10 +686,8 @@ describe('CLI simple generation - big app', () => {
 
     it('should support Tuple types', () => {
         let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>LinearDomain:     <code>[Number, Number]</code>');
-        expect(file).to.contain(
-            '<code>LinearTodo:     <code><a href="../classes/Todo.html" target="_self" >[Todo, Todo]</a></code>'
-        );
+        expect(file).to.contain('<code>[Number, Number]</code>');
+        expect(file).to.contain('[Todo, Todo]</a>');
     });
 
     it('should support Generic array types', () => {
@@ -752,5 +756,22 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/modules/AppModule.html');
         expect(file).to.contain('code>forChild(confi');
         expect(file).to.contain('code>forRoot(confi');
+    });
+
+    it('correct support returned type for miscellaneous function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain(
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string'
+        );
+    });
+
+    it('correct http reference for other classes using @link in description of a miscellaneous function', () => {
+        let file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<a href="../components/ListComponent.html">ListComponent</a>');
+    });
+
+    it('shorten long arrow function declaration for properties', () => {
+        let file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('() &#x3D;&gt; {...}</code>');
     });
 });

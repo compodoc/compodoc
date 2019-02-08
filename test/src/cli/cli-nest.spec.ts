@@ -1,21 +1,22 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI nest projects support', () => {
-
     const distFolder = tmp.name + '-nest';
 
     describe('with simple app', () => {
-
         let indexFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/nest-app/tsconfig.json',
-                '-d', distFolder]);
+                '-p',
+                './test/src/nest-app/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -35,8 +36,11 @@ describe('CLI nest projects support', () => {
             expect(file).to.contain('@Auth(Roles.User)<br');
             expect(file).to.contain('@Post()<br');
             expect(file).to.contain('@UsePipes(new ValidationPipe())<br');
-            expect(file).to.contain('@ApiResponse({description: &#x27;Return all articles.&#x27;})<br');
+            expect(file).to.contain(
+                '@ApiResponse({description: &#x27;Return all articles.&#x27;})<br'
+            );
             expect(file).to.contain(`@Post(&#x27;multiple&#x27;)<br`);
+            expect(file).to.contain('The main app controller</p>');
         });
 
         it('it should contain a module page with controller referenced', () => {
@@ -52,6 +56,5 @@ describe('CLI nest projects support', () => {
             let file = read(`${distFolder}/classes/UserEntity.html`);
             expect(file).to.contain('@Column({default: &#x27;&#x27;})<br');
         });
-
     });
 });

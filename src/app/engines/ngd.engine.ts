@@ -7,7 +7,7 @@ export class NgdEngine {
     public engine;
 
     private static instance: NgdEngine;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!NgdEngine.instance) {
             NgdEngine.instance = new NgdEngine();
@@ -35,9 +35,9 @@ export class NgdEngine {
     }
 
     public readGraph(filepath: string, name: string): Promise<string> {
-        return FileEngine
-            .get(filepath)
-            .catch(err => Promise.reject('Error during graph read ' + name));
+        return FileEngine.get(filepath).catch(err =>
+            Promise.reject('Error during graph read ' + name)
+        );
     }
 }
 

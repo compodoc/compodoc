@@ -1,26 +1,28 @@
 import * as _ from 'lodash';
 
-import { ParsedData } from '../interfaces/parsed-data.interface';
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
-
-import { getNamesCompareFn } from '../../utils/utils';
-import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
-import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
-import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
-import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { ParsedData } from '../interfaces/parsed-data.interface';
 import { RouteInterface } from '../interfaces/routes.interface';
+
 import AngularApiUtil from '../../utils/angular-api.util';
+import { IApiSourceResult } from '../../utils/api-source-result.interface';
+import { getNamesCompareFn } from '../../utils/utils';
+
 import {
+    IEnumDecDep,
+    IFunctionDecDep,
+    IGuardDep,
     IInjectableDep,
+    IInterceptorDep,
     IInterfaceDep,
     IPipeDep,
-    ITypeAliasDecDep,
-    IFunctionDecDep,
-    IEnumDecDep,
-    IInterceptorDep,
-    IGuardDep
+    ITypeAliasDecDep
 } from '../compiler/angular/dependencies.interfaces';
+
+import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
 import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory';
+import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
+import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
 
 const traverse = require('traverse');
 
@@ -41,17 +43,17 @@ export class DependenciesEngine {
     public classes: Object[];
     public miscellaneous: MiscellaneousData = {
         variables: [],
-        functions:[],
-        typealiases:[],
-        enumerations:[],
+        functions: [],
+        typealiases: [],
+        enumerations: [],
         groupedVariables: [],
         groupedFunctions: [],
         groupedEnumerations: [],
-        groupedTypeAliases: [],
+        groupedTypeAliases: []
     };
 
     private static instance: DependenciesEngine;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!DependenciesEngine.instance) {
             DependenciesEngine.instance = new DependenciesEngine();
@@ -60,21 +62,27 @@ export class DependenciesEngine {
     }
 
     private updateModulesDeclarationsExportsTypes() {
-        let _m = this.modules,
-            i = 0,
-            len = this.modules.length;
-
         let mergeTypes = entry => {
-            let directive = this.findInCompodocDependencies(entry.name, this.directives, entry.file);
+            let directive = this.findInCompodocDependencies(
+                entry.name,
+                this.directives,
+                entry.file
+            );
             if (typeof directive.data !== 'undefined') {
                 entry.type = 'directive';
                 entry.id = directive.data.id;
             }
-            let component = this.findInCompodocDependencies(entry.name, this.components, entry.file);
+
+            let component = this.findInCompodocDependencies(
+                entry.name,
+                this.components,
+                entry.file
+            );
             if (typeof component.data !== 'undefined') {
                 entry.type = 'component';
                 entry.id = component.data.id;
             }
+
             let pipe = this.findInCompodocDependencies(entry.name, this.pipes, entry.file);
             if (typeof pipe.data !== 'undefined') {
                 entry.type = 'pipe';
@@ -98,8 +106,12 @@ export class DependenciesEngine {
     public init(data: ParsedData) {
         traverse(data).forEach(function(node) {
             if (node) {
-                if (node.parent) delete node.parent;
-                if (node.initializer) delete node.initializer;
+                if (node.parent) {
+                    delete node.parent;
+                }
+                if (node.initializer) {
+                    delete node.initializer;
+                }
             }
         });
         this.rawData = data;
@@ -135,16 +147,41 @@ export class DependenciesEngine {
             source: 'internal',
             data: undefined
         };
+        let nameFoundCounter = 0;
         if (data && data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 if (typeof name !== 'undefined') {
                     if (typeof file !== 'undefined') {
-                        if (name.indexOf(data[i].name) !== -1 && file.replace(/\\/g, '/').indexOf(data[i].file) !== -1) {
+                        if (
+                            name.indexOf(data[i].name) !== -1 &&
+                            file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
+                        ) {
+                            nameFoundCounter += 1;
                             _result.data = data[i];
                         }
                     } else {
                         if (name.indexOf(data[i].name) !== -1) {
+                            nameFoundCounter += 1;
                             _result.data = data[i];
+                        }
+                    }
+                }
+            }
+            // Prevent wrong matching like MultiSelectOptionDirective with SelectOptionDirective
+            if (nameFoundCounter > 1) {
+                for (let i = 0; i < data.length; i++) {
+                    if (typeof name !== 'undefined') {
+                        if (typeof file !== 'undefined') {
+                            if (
+                                name === data[i].name &&
+                                file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
+                            ) {
+                                _result.data = data[i];
+                            }
+                        } else {
+                            if (name === data[i].name) {
+                                _result.data = data[i];
+                            }
                         }
                     }
                 }
@@ -155,17 +192,16 @@ export class DependenciesEngine {
 
     private manageDuplicatesName() {
         let processDuplicates = (element, index, array) => {
-            let elementsWithSameName = _.filter(array, {name: element.name});
+            let elementsWithSameName = _.filter(array, { name: element.name });
             if (elementsWithSameName.length > 1) {
                 // First element is the reference for duplicates
                 for (let i = 1; i < elementsWithSameName.length; i++) {
                     let elementToEdit = elementsWithSameName[i];
-                    if (
-                        typeof elementToEdit.isDuplicate === 'undefined'
-                    ) {
+                    if (typeof elementToEdit.isDuplicate === 'undefined') {
                         elementToEdit.isDuplicate = true;
                         elementToEdit.duplicateId = i;
-                        elementToEdit.duplicateName = elementToEdit.name + '-' + elementToEdit.duplicateId;
+                        elementToEdit.duplicateName =
+                            elementToEdit.name + '-' + elementToEdit.duplicateId;
                         elementToEdit.id = elementToEdit.id + '-' + elementToEdit.duplicateId;
                     }
                 }

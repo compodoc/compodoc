@@ -3,9 +3,8 @@ import Configuration from '../configuration';
 import ExportJsonEngine from './export-json.engine';
 
 export class ExportEngine {
-
     private static instance: ExportEngine;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!ExportEngine.instance) {
             ExportEngine.instance = new ExportEngine();

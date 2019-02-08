@@ -1,9 +1,11 @@
-import * as path from 'path';
 import * as fs from 'fs-extra';
-import { ts } from 'ts-simple-ast';
 import * as _ from 'lodash';
+import * as path from 'path';
+import { ts } from 'ts-simple-ast';
 
 import { LinkParser } from './link-parser';
+
+import { logger } from './logger';
 
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 import { kindToType } from './kind-to-type';
@@ -15,6 +17,10 @@ const marked = require('marked');
 
 export function getNewLine(): string {
     return newLine;
+}
+
+export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
+    return name.toLowerCase().replace(/ /g, '-');
 }
 
 export function getCanonicalFileName(fileName: string): string {
@@ -52,10 +58,13 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
             });
         }
     });
-    // Add example & returns
+    // Add example & returns & private
     if (jsdoctags) {
         _.forEach(jsdoctags, jsdoctag => {
-            if (jsdoctag.tagName && jsdoctag.tagName.text === 'example') {
+            if (
+                jsdoctag.tagName &&
+                (jsdoctag.tagName.text === 'example' || jsdoctag.tagName.text === 'private')
+            ) {
                 margs.push({
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment
@@ -174,10 +183,10 @@ if (!Array.prototype.includes) {
             }
 
             // 1. Let O be ? ToObject(this value).
-            var o = Object(this);
+            let o = Object(this);
 
             // 2. Let len be ? ToLength(? Get(O, "length")).
-            var len = o.length >>> 0;
+            let len = o.length >>> 0;
 
             // 3. If len is 0, return false.
             if (len === 0) {
@@ -186,14 +195,14 @@ if (!Array.prototype.includes) {
 
             // 4. Let n be ? ToInteger(fromIndex).
             //    (If fromIndex is undefined, this step produces the value 0.)
-            var n = fromIndex | 0;
+            let n = fromIndex | 0;
 
             // 5. If n ≥ 0, then
             //  a. Let k be n.
             // 6. Else n < 0,
             //  a. Let k be len + n.
             //  b. If k < 0, let k be 0.
-            var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+            let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
 
             function sameValueZero(x, y) {
                 return (
@@ -217,4 +226,159 @@ if (!Array.prototype.includes) {
             return false;
         }
     });
+}
+
+export function findMainSourceFolder(files: string[]) {
+    let mainFolder = '';
+    let mainFolderCount = 0;
+    let rawFolders = files.map(filepath => {
+        let shortPath = filepath.replace(process.cwd() + path.sep, '');
+        return path.dirname(shortPath);
+    });
+    let folders = {};
+    rawFolders = _.uniq(rawFolders);
+
+    for (let i = 0; i < rawFolders.length; i++) {
+        let sep = rawFolders[i].split(path.sep);
+        sep.map(folder => {
+            if (folders[folder]) {
+                folders[folder] += 1;
+            } else {
+                folders[folder] = 1;
+            }
+        });
+    }
+    for (let f in folders) {
+        if (folders[f] > mainFolderCount) {
+            mainFolderCount = folders[f];
+            mainFolder = f;
+        }
+    }
+    return mainFolder;
+}
+
+// Create a compilerHost object to allow the compiler to read and write files
+export function compilerHost(transpileOptions: any): ts.CompilerHost {
+    const inputFileName =
+        transpileOptions.fileName || (transpileOptions.jsx ? 'module.tsx' : 'module.ts');
+
+    const toReturn: ts.CompilerHost = {
+        getSourceFile: (fileName: string) => {
+            if (fileName.lastIndexOf('.ts') !== -1 || fileName.lastIndexOf('.js') !== -1) {
+                if (fileName === 'lib.d.ts') {
+                    return undefined;
+                }
+                if (fileName.substr(-5) === '.d.ts') {
+                    return undefined;
+                }
+
+                if (path.isAbsolute(fileName) === false) {
+                    fileName = path.join(transpileOptions.tsconfigDirectory, fileName);
+                }
+                if (!fs.existsSync(fileName)) {
+                    return undefined;
+                }
+
+                let libSource = '';
+
+                try {
+                    libSource = fs.readFileSync(fileName).toString();
+
+                    if (hasBom(libSource)) {
+                        libSource = stripBom(libSource);
+                    }
+                } catch (e) {
+                    logger.debug(e, fileName);
+                }
+
+                return ts.createSourceFile(fileName, libSource, transpileOptions.target, false);
+            }
+            return undefined;
+        },
+        writeFile: (name, text) => {},
+        getDefaultLibFileName: () => 'lib.d.ts',
+        useCaseSensitiveFileNames: () => false,
+        getCanonicalFileName: fileName => fileName,
+        getCurrentDirectory: () => '',
+        getNewLine: () => '\n',
+        fileExists: (fileName): boolean => fileName === inputFileName,
+        readFile: () => '',
+        directoryExists: () => true,
+        getDirectories: () => []
+    };
+
+    return toReturn;
+}
+
+export function detectIndent(str, count): string {
+    let stripIndent = (stripedString: string) => {
+        const match = stripedString.match(/^[ \t]*(?=\S)/gm);
+
+        if (!match) {
+            return stripedString;
+        }
+
+        // TODO: use spread operator when targeting Node.js 6
+        const indent = Math.min.apply(Math, match.map(x => x.length)); // eslint-disable-line
+        const re = new RegExp(`^[ \\t]{${indent}}`, 'gm');
+
+        return indent > 0 ? stripedString.replace(re, '') : stripedString;
+    };
+
+    let repeating = (n, repeatString) => {
+        repeatString = repeatString === undefined ? ' ' : repeatString;
+
+        if (typeof repeatString !== 'string') {
+            throw new TypeError(
+                `Expected \`input\` to be a \`string\`, got \`${typeof repeatString}\``
+            );
+        }
+
+        if (n < 0) {
+            throw new TypeError(`Expected \`count\` to be a positive finite number, got \`${n}\``);
+        }
+
+        let ret = '';
+
+        do {
+            if (n & 1) {
+                ret += repeatString;
+            }
+
+            repeatString += repeatString;
+        } while ((n >>= 1));
+
+        return ret;
+    };
+
+    let indentString = (indentedString, indentCount) => {
+        let indent = ' ';
+        indentCount = indentCount === undefined ? 1 : indentCount;
+
+        if (typeof indentedString !== 'string') {
+            throw new TypeError(
+                `Expected \`input\` to be a \`string\`, got \`${typeof indentedString}\``
+            );
+        }
+
+        if (typeof indentCount !== 'number') {
+            throw new TypeError(
+                `Expected \`count\` to be a \`number\`, got \`${typeof indentCount}\``
+            );
+        }
+
+        if (typeof indent !== 'string') {
+            throw new TypeError(`Expected \`indent\` to be a \`string\`, got \`${typeof indent}\``);
+        }
+
+        if (indentCount === 0) {
+            return indentedString;
+        }
+
+        indent = indentCount > 1 ? repeating(indentCount, indent) : indent;
+
+        return indentedString.replace(/^(?!\s*$)/gm, indent);
+    };
+
+    return indentString(stripIndent(str), count || 0);
 }

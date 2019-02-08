@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { logger } from '../../logger';
+import { logger } from '../../utils/logger';
 import DependenciesEngine from './dependencies.engine';
 
 import { ExportData } from '../interfaces/export-data.interface';
@@ -12,7 +12,7 @@ const traverse = require('traverse');
 
 export class ExportJsonEngine {
     private static instance: ExportJsonEngine;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!ExportJsonEngine.instance) {
             ExportJsonEngine.instance = new ExportJsonEngine();
@@ -25,8 +25,12 @@ export class ExportJsonEngine {
 
         traverse(data).forEach(function(node) {
             if (node) {
-                if (node.parent) delete node.parent;
-                if (node.initializer) delete node.initializer;
+                if (node.parent) {
+                    delete node.parent;
+                }
+                if (node.initializer) {
+                    delete node.initializer;
+                }
             }
         });
 
@@ -41,15 +45,13 @@ export class ExportJsonEngine {
         exportData.routes = data.routes;
         exportData.coverage = data.coverageData;
 
-        return FileEngine
-            .write(
-                outputFolder + path.sep + '/documentation.json',
-                JSON.stringify(exportData, null, 4)
-            )
-            .catch(err => {
-                logger.error('Error during export file generation ', err);
-                return Promise.reject(err);
-            });
+        return FileEngine.write(
+            outputFolder + path.sep + '/documentation.json',
+            JSON.stringify(exportData, undefined, 4)
+        ).catch(err => {
+            logger.error('Error during export file generation ', err);
+            return Promise.reject(err);
+        });
     }
 
     public processModules() {

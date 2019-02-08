@@ -1,4 +1,5 @@
-import { find, concat, cloneDeep } from 'lodash';
+import { cloneDeep, concat, find } from 'lodash';
+
 import { cleanLifecycleHooksFromMethods } from '.';
 import Configuration from '../app/configuration';
 
@@ -7,7 +8,7 @@ export class ExtendsMerger {
     private classes;
 
     private static instance: ExtendsMerger;
-    private constructor() { }
+    private constructor() {}
     public static getInstance() {
         if (!ExtendsMerger.instance) {
             ExtendsMerger.instance = new ExtendsMerger();

@@ -1,22 +1,23 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI disable flags', () => {
-
     const distFolder = tmp.name + '-disable-options';
 
     describe('disabling excluding methods with --disablePrivate', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -36,24 +37,31 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should display lifecyle hooks', () => {
             expect(componentFile).to.contain('<code>ngOnInit');
         });
+
+        it('should exclude miscellaneous function marked as @private', () => {
+            let file = read(distFolder + '/miscellaneous/functions.html');
+            expect(file).not.to.contain('private function');
+        });
     });
 
     describe('disabling excluding methods with --disableProtected', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableProtected',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -82,15 +90,17 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling excluding methods with --disableInternal', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableInternal',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -110,7 +120,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should display lifecyle hooks', () => {
@@ -119,15 +129,17 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling excluding methods with --disableLifeCycleHooks', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableLifeCycleHooks',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -149,7 +161,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('<code>varprotected');
+            expect(componentFile).to.contain('varprotected</b>');
         });
 
         it('should include methods marked as internal', () => {
@@ -158,15 +170,17 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling excluding methods with --disableLifeCycleHooks for component inheritance', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files-extends/src/tsconfig.json',
+                '-p',
+                './test/src/sample-files-extends/src/tsconfig.json',
                 '--disableLifeCycleHooks',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -183,18 +197,20 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling excluding methods with --disableLifeCycleHooks --disableInternal --disableProtected --disablePrivate', () => {
-
         let componentFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '--disableProtected',
                 '--disableInternal',
                 '--disableLifeCycleHooks',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -223,14 +239,16 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling search with --disableSearch', () => {
-
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableSearch',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -254,16 +272,18 @@ describe('CLI disable flags', () => {
     });
 
     describe('minimal with --minimal', () => {
-
         let fileContents;
 
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--minimal',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
