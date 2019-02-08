@@ -1,0 +1,32 @@
+{{#each releases}}
+  {{#if href}}
+    ## [{{title}}]({{href}}){{#if tag}} - {{isoDate}}{{/if}}
+  {{else}}
+    ## {{title}}{{#if tag}} - {{isoDate}}{{/if}}
+  {{/if}}
+
+  {{#if summary}}
+    {{summary}}
+  {{/if}}
+
+  {{#if merges}}
+    ### Merged
+
+    {{#each merges}}
+      - {{{message}}} {{#if href}}[#{{id}}]({{href}}){{/if}}
+    {{/each}}
+  {{/if}}
+
+  {{#if fixes}}
+    ### Bug fixes
+
+    {{#each fixes}}
+      - {{{commit.subject}}}{{#each fixes}} ([{{../commit.shorthash}}](https://github.com/compodoc/compodoc/commit/{{../commit.shorthash}})), closes {{#if href}}[#{{id}}]({{href}}){{/if}}{{/each}}
+    {{/each}}
+  {{/if}}
+
+  {{#commit-list commits heading='### Commits'}}
+    - {{#if breaking}}**Breaking change:** {{/if}}{{{subject}}} {{#if href}}[{{shorthash}}]({{href}}){{/if}}
+  {{/commit-list}}
+
+{{/each}}
