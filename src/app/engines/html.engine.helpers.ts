@@ -35,7 +35,7 @@ import { OrHelper } from './html-engine-helpers/or.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
 import { RelativeURLHelper } from './html-engine-helpers/relative-url.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
-import { I18nHelper } from './html-engine-helpers/i18n.helper';
+import { StripURLHelper } from './html-engine-helpers/strip-url.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(bars): void {
