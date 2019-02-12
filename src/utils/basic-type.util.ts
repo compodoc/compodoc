@@ -28,7 +28,7 @@ export class BasicTypeUtil {
      * @param type The type to check
      */
     public isJavascriptType(type: string): boolean {
-        if (typeof type !== 'undefined') {
+        if (typeof type !== 'undefined' && type.toLowerCase) {
             return type.toLowerCase() in BasicTypes;
         } else {
             return false;
@@ -41,7 +41,7 @@ export class BasicTypeUtil {
      * @param type The type to check
      */
     public isTypeScriptType(type: string): boolean {
-        if (typeof type !== 'undefined') {
+        if (typeof type !== 'undefined' && type.toLowerCase) {
             return type.toLowerCase() in BasicTypeScriptTypes;
         } else {
             return false;

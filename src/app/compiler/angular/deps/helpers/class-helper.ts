@@ -169,7 +169,26 @@ export class ClassHelper {
                     )}: <a href="${path}" target="_blank">${arg.type}</a>`;
                 } else {
                     if (arg.type) {
-                        return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
+                        let finalStringifiedArgument = '';
+                        let separator = ':';
+                        if (arg.name) {
+                            finalStringifiedArgument += arg.name;
+                        }
+                        if (
+                            arg.kind === SyntaxKind.AsExpression &&
+                            arg.expression &&
+                            arg.expression.text
+                        ) {
+                            finalStringifiedArgument += arg.expression.text;
+                            separator = ' as';
+                        }
+                        if (arg.optional) {
+                            finalStringifiedArgument += this.getOptionalString(arg);
+                        }
+                        if (arg.type) {
+                            finalStringifiedArgument += separator + ' ' + this.visitType(arg.type);
+                        }
+                        return finalStringifiedArgument;
                     } else if (arg.text) {
                         return `${arg.text}`;
                     } else {

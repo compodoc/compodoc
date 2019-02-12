@@ -700,7 +700,7 @@ describe('CLI simple generation - big app', () => {
     it('should support Type parameters', () => {
         let file = read(distFolder + '/components/AppComponent.html');
         expect(file).to.contain(
-            `<ul class="type-parameters">\n                                        <li>T</li>\n                                        <li>K</li>\n                                </ul>`
+            `<ul class="type-parameters">\n                        <li>T</li>\n                        <li>K</li>\n                    </ul>`
         );
     });
 
@@ -773,5 +773,10 @@ describe('CLI simple generation - big app', () => {
     it('shorten long arrow function declaration for properties', () => {
         let file = read(distFolder + '/classes/Todo.html');
         expect(file).to.contain('() &#x3D;&gt; {...}</code>');
+    });
+
+    it('correct supports 1000 as PollingSpeed for decorator arguments', () => {
+        let file = read(distFolder + '/classes/SomeFeature.html');
+        expect(file).to.contain('code>@throttle(1000 as PollingSpeed');
     });
 });
