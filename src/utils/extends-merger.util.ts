@@ -25,84 +25,103 @@ export class ExtendsMerger {
             if (typeof component.extends !== 'undefined') {
                 ext = this.findInDependencies(component.extends);
                 if (ext) {
-                    // From class to component
-                    if (typeof ext.methods !== 'undefined' && ext.methods.length > 0) {
-                        let newMethods = cloneDeep(ext.methods);
-                        newMethods = this.markInheritance(newMethods, ext);
-                        if (typeof component.methodsClass !== 'undefined') {
-                            component.methodsClass = [...component.methodsClass, ...newMethods];
+                    let recursiveScanWithInheritance = cls => {
+                        // From class to component
+                        if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
+                            let newMethods = cloneDeep(cls.methods);
+                            newMethods = this.markInheritance(newMethods, cls);
+                            if (typeof component.methodsClass !== 'undefined') {
+                                component.methodsClass = [...component.methodsClass, ...newMethods];
+                            }
                         }
-                    }
-                    if (typeof ext.properties !== 'undefined' && ext.properties.length > 0) {
-                        let newProperties = cloneDeep(ext.properties);
-                        newProperties = this.markInheritance(newProperties, ext);
-                        if (typeof component.propertiesClass !== 'undefined') {
-                            component.propertiesClass = [
-                                ...component.propertiesClass,
-                                ...newProperties
-                            ];
+                        if (typeof cls.properties !== 'undefined' && cls.properties.length > 0) {
+                            let newProperties = cloneDeep(cls.properties);
+                            newProperties = this.markInheritance(newProperties, cls);
+                            if (typeof component.propertiesClass !== 'undefined') {
+                                component.propertiesClass = [
+                                    ...component.propertiesClass,
+                                    ...newProperties
+                                ];
+                            }
                         }
-                    }
-                    // From component to component
-                    if (typeof ext.inputsClass !== 'undefined' && ext.inputsClass.length > 0) {
-                        let newInputs = cloneDeep(ext.inputsClass);
-                        newInputs = this.markInheritance(newInputs, ext);
-                        if (typeof component.inputsClass !== 'undefined') {
-                            component.inputsClass = [...component.inputsClass, ...newInputs];
+                        // From component to component
+                        if (typeof cls.inputsClass !== 'undefined' && cls.inputsClass.length > 0) {
+                            let newInputs = cloneDeep(cls.inputsClass);
+                            newInputs = this.markInheritance(newInputs, cls);
+                            if (typeof component.inputsClass !== 'undefined') {
+                                component.inputsClass = [...component.inputsClass, ...newInputs];
+                            }
                         }
-                    }
-                    if (typeof ext.outputsClass !== 'undefined' && ext.outputsClass.length > 0) {
-                        let newOutputs = cloneDeep(ext.outputsClass);
-                        newOutputs = this.markInheritance(newOutputs, ext);
-                        if (typeof component.outputsClass !== 'undefined') {
-                            component.outputsClass = [...component.outputsClass, ...newOutputs];
+                        if (
+                            typeof cls.outputsClass !== 'undefined' &&
+                            cls.outputsClass.length > 0
+                        ) {
+                            let newOutputs = cloneDeep(cls.outputsClass);
+                            newOutputs = this.markInheritance(newOutputs, cls);
+                            if (typeof component.outputsClass !== 'undefined') {
+                                component.outputsClass = [...component.outputsClass, ...newOutputs];
+                            }
                         }
-                    }
-                    if (typeof ext.methodsClass !== 'undefined' && ext.methodsClass.length > 0) {
-                        let newMethods = cloneDeep(ext.methodsClass);
-                        newMethods = this.markInheritance(newMethods, ext);
-                        if (typeof component.methodsClass !== 'undefined') {
-                            component.methodsClass = [...component.methodsClass, ...newMethods];
+                        if (
+                            typeof cls.methodsClass !== 'undefined' &&
+                            cls.methodsClass.length > 0
+                        ) {
+                            let newMethods = cloneDeep(cls.methodsClass);
+                            newMethods = this.markInheritance(newMethods, cls);
+                            if (typeof component.methodsClass !== 'undefined') {
+                                component.methodsClass = [...component.methodsClass, ...newMethods];
+                            }
                         }
-                    }
-                    if (
-                        typeof ext.propertiesClass !== 'undefined' &&
-                        ext.propertiesClass.length > 0
-                    ) {
-                        let newProperties = cloneDeep(ext.propertiesClass);
-                        newProperties = this.markInheritance(newProperties, ext);
-                        if (typeof component.propertiesClass !== 'undefined') {
-                            component.propertiesClass = [
-                                ...component.propertiesClass,
-                                ...newProperties
-                            ];
+                        if (
+                            typeof cls.propertiesClass !== 'undefined' &&
+                            cls.propertiesClass.length > 0
+                        ) {
+                            let newProperties = cloneDeep(cls.propertiesClass);
+                            newProperties = this.markInheritance(newProperties, cls);
+                            if (typeof component.propertiesClass !== 'undefined') {
+                                component.propertiesClass = [
+                                    ...component.propertiesClass,
+                                    ...newProperties
+                                ];
+                            }
                         }
-                    }
-                    if (typeof ext.hostBindings !== 'undefined' && ext.hostBindings.length > 0) {
-                        let newHostBindings = cloneDeep(ext.hostBindings);
-                        newHostBindings = this.markInheritance(newHostBindings, ext);
-                        if (typeof component.hostBindings !== 'undefined') {
-                            component.hostBindings = [
-                                ...component.hostBindings,
-                                ...newHostBindings
-                            ];
+                        if (
+                            typeof cls.hostBindings !== 'undefined' &&
+                            cls.hostBindings.length > 0
+                        ) {
+                            let newHostBindings = cloneDeep(cls.hostBindings);
+                            newHostBindings = this.markInheritance(newHostBindings, cls);
+                            if (typeof component.hostBindings !== 'undefined') {
+                                component.hostBindings = [
+                                    ...component.hostBindings,
+                                    ...newHostBindings
+                                ];
+                            }
                         }
-                    }
-                    if (typeof ext.hostListeners !== 'undefined' && ext.hostListeners.length > 0) {
-                        let newHostListeners = cloneDeep(ext.hostListeners);
-                        newHostListeners = this.markInheritance(newHostListeners, ext);
-                        if (typeof component.hostListeners !== 'undefined') {
-                            component.hostListeners = [
-                                ...component.hostListeners,
-                                ...newHostListeners
-                            ];
+                        if (
+                            typeof cls.hostListeners !== 'undefined' &&
+                            cls.hostListeners.length > 0
+                        ) {
+                            let newHostListeners = cloneDeep(cls.hostListeners);
+                            newHostListeners = this.markInheritance(newHostListeners, cls);
+                            if (typeof component.hostListeners !== 'undefined') {
+                                component.hostListeners = [
+                                    ...component.hostListeners,
+                                    ...newHostListeners
+                                ];
+                            }
                         }
-                    }
-                    if (Configuration.mainData.disableLifeCycleHooks) {
-                        component.methodsClass = cleanLifecycleHooksFromMethods(
-                            component.methodsClass
-                        );
-                    }
+                        if (Configuration.mainData.disableLifeCycleHooks) {
+                            component.methodsClass = cleanLifecycleHooksFromMethods(
+                                component.methodsClass
+                            );
+                        }
+                        if (cls.extends) {
+                            recursiveScanWithInheritance(this.findInDependencies(cls.extends));
+                        }
+                    };
+                    // From class to class
+                    recursiveScanWithInheritance(ext);
                 }
             }
         });
@@ -112,21 +131,27 @@ export class ExtendsMerger {
             if (typeof cla.extends !== 'undefined') {
                 ext = this.findInDependencies(cla.extends);
                 if (ext) {
+                    let recursiveScanWithInheritance = cls => {
+                        if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
+                            let newMethods = cloneDeep(cls.methods);
+                            newMethods = this.markInheritance(newMethods, cls);
+                            if (typeof cla.methods !== 'undefined') {
+                                cla.methods = [...cla.methods, ...newMethods];
+                            }
+                        }
+                        if (typeof cls.properties !== 'undefined' && cls.properties.length > 0) {
+                            let newProperties = cloneDeep(cls.properties);
+                            newProperties = this.markInheritance(newProperties, cls);
+                            if (typeof cla.properties !== 'undefined') {
+                                cla.properties = [...cla.properties, ...newProperties];
+                            }
+                        }
+                        if (cls.extends) {
+                            recursiveScanWithInheritance(this.findInDependencies(cls.extends));
+                        }
+                    };
                     // From class to class
-                    if (typeof ext.methods !== 'undefined' && ext.methods.length > 0) {
-                        let newMethods = cloneDeep(ext.methods);
-                        newMethods = this.markInheritance(newMethods, ext);
-                        if (typeof cla.methods !== 'undefined') {
-                            cla.methods = [...cla.methods, ...newMethods];
-                        }
-                    }
-                    if (typeof ext.properties !== 'undefined' && ext.properties.length > 0) {
-                        let newProperties = cloneDeep(ext.properties);
-                        newProperties = this.markInheritance(newProperties, ext);
-                        if (typeof cla.properties !== 'undefined') {
-                            cla.properties = [...cla.properties, ...newProperties];
-                        }
-                    }
+                    recursiveScanWithInheritance(ext);
                 }
             }
         });

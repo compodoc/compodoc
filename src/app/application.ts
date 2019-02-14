@@ -2620,7 +2620,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let len = modules.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    logger.info('Process module graph', modules[i].name);
+                    logger.info('Process module graph ', modules[i].name);
                     let finalPath = Configuration.mainData.output;
                     if (Configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';

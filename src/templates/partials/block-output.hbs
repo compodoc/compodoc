@@ -28,7 +28,7 @@
                         <tr>
                             <td class="col-md-2" colspan="2">
                                 {{#if inheritance}}
-                                    <div class="io-line">{{t "defined-in" }} {{inheritance.file}}:{{{line}}}</div>
+                                    <div class="io-line">{{t "defined-in" }} {{> link-type type=inheritance.file withline=true }}</div>
                                 {{else}}
                                     <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}" class="link-to-prism">{{../element.file}}:{{{line}}}</a></div>
                                 {{/if}}
