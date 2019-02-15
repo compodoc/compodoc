@@ -240,8 +240,7 @@ let i = 0,
             process.chdir(repo.name);
 
             exec(
-                'ngd -p ' + repo.tsconfig_path + tsconfig + ' -t svg',
-                {
+                'ngd -p ' + repo.tsconfig_path + tsconfig + ' -t svg', {
                     maxBuffer: 1000 * 1024
                 },
                 (error, stdout, stderr) => {
@@ -256,10 +255,7 @@ let i = 0,
                     } else {
                         process.chdir('../');
                         if (stdout.indexOf('done') !== -1) {
-                            fs.copySync(
-                                repo.name + '/documentation/dependencies.svg',
-                                repo.name + '.svg'
-                            );
+                            fs.copySync(repo.name + '/documentation/dependencies.svg', repo.name + '.svg');
                             fs.removeSync(repo.name);
                             resolve(stdout, stderr);
                         } else {
