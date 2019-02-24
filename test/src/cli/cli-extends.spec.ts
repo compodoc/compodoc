@@ -49,4 +49,11 @@ describe('CLI simple generation - extends app', () => {
         expect(FirstClassFile).to.contain('BSecondClass:4');
         expect(FirstClassFile).to.contain('AThirdClass:2');
     });
+
+    it('CharactersService extends AbstractService', () => {
+        let file = read(distFolder + '/injectables/CharactersService.html');
+        expect(file).to.contain(
+            'code><a href="../injectables/AbstractService.html" target="_self" >AbstractService'
+        );
+    });
 });

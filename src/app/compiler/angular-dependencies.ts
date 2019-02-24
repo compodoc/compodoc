@@ -175,13 +175,14 @@ export class AngularDependencies extends FrameworkDependencies {
          * If one thing extends another, merge them, only for internal sources
          * - classes
          * - components
+         * - injectables
          * for
          * - inputs
          * - outputs
          * - properties
          * - methods
          */
-        deps = ExtendsMerger.merge(deps, Configuration);
+        deps = ExtendsMerger.merge(deps);
 
         // RouterParserUtil.printModulesRoutes();
         // RouterParserUtil.printRoutes();
@@ -410,6 +411,9 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                             if (IO.accessors) {
                                 injectableDeps.accessors = IO.accessors;
+                            }
+                            if (IO.extends) {
+                                injectableDeps.extends = IO.extends;
                             }
                             deps = injectableDeps;
                             if (typeof IO.ignore === 'undefined') {

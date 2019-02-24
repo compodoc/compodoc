@@ -6,6 +6,7 @@ import Configuration from '../app/configuration';
 export class ExtendsMerger {
     private components;
     private classes;
+    private injectables;
 
     private static instance: ExtendsMerger;
     private constructor() {}
@@ -19,6 +20,7 @@ export class ExtendsMerger {
     public merge(deps) {
         this.components = deps.components;
         this.classes = deps.classes;
+        this.injectables = deps.injectables;
 
         this.components.forEach(component => {
             let ext;
@@ -126,35 +128,38 @@ export class ExtendsMerger {
             }
         });
 
-        this.classes.forEach(cla => {
+        const mergeExtendedClasses = el => {
             let ext;
-            if (typeof cla.extends !== 'undefined') {
-                ext = this.findInDependencies(cla.extends);
+            if (typeof el.extends !== 'undefined') {
+                ext = this.findInDependencies(el.extends);
                 if (ext) {
                     let recursiveScanWithInheritance = cls => {
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
                             newMethods = this.markInheritance(newMethods, cls);
-                            if (typeof cla.methods !== 'undefined') {
-                                cla.methods = [...cla.methods, ...newMethods];
+                            if (typeof el.methods !== 'undefined') {
+                                el.methods = [...el.methods, ...newMethods];
                             }
                         }
                         if (typeof cls.properties !== 'undefined' && cls.properties.length > 0) {
                             let newProperties = cloneDeep(cls.properties);
                             newProperties = this.markInheritance(newProperties, cls);
-                            if (typeof cla.properties !== 'undefined') {
-                                cla.properties = [...cla.properties, ...newProperties];
+                            if (typeof el.properties !== 'undefined') {
+                                el.properties = [...el.properties, ...newProperties];
                             }
                         }
                         if (cls.extends) {
                             recursiveScanWithInheritance(this.findInDependencies(cls.extends));
                         }
                     };
-                    // From class to class
+                    // From elss to elss
                     recursiveScanWithInheritance(ext);
                 }
             }
-        });
+        };
+
+        this.classes.forEach(mergeExtendedClasses);
+        this.injectables.forEach(mergeExtendedClasses);
 
         return deps;
     }
@@ -170,7 +175,7 @@ export class ExtendsMerger {
     }
 
     private findInDependencies(name: string) {
-        let mergedData = concat([], this.components, this.classes);
+        let mergedData = concat([], this.components, this.classes, this.injectables);
         let result = find(mergedData, { name: name } as any);
         return result || false;
     }
