@@ -323,7 +323,7 @@ describe('WIN 10 | Chrome 48 | Compodoc page', function() {
 describe('WIN 8 | Chrome 72 | Compodoc page', function() {
     before(function(done) {
         capabilities.platform = 'Windows 8';
-        capabilities.browserName = 'firefox';
+        capabilities.browserName = 'chrome';
         capabilities.version = '72.0';
 
         startDriver(done, 'http://localhost:4000/components/FooComponent.html');
