@@ -1,6 +1,7 @@
+import { ts } from 'ts-simple-ast';
+
 import { IDep } from '../dependencies.interfaces';
 import { ModuleHelper } from './helpers/module-helper';
-import { ts } from 'ts-simple-ast';
 
 const crypto = require('crypto');
 
@@ -33,6 +34,7 @@ export class ModuleDepFactory {
             schemas: this.moduleHelper.getModuleSchemas(properties, srcFile),
             bootstrap: this.moduleHelper.getModuleBootstrap(properties, srcFile),
             type: 'module',
+            rawdescription: IO.rawdescription,
             methods: IO.methods,
             description: IO.description,
             sourceCode: srcFile.text
@@ -50,6 +52,7 @@ export interface IModuleDep extends IDep {
     exports: Array<any>;
     bootstrap: any;
     description: string;
+    rawdescription: string;
     sourceCode: string;
     methods: any;
 }

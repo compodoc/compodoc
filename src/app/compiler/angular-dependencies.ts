@@ -223,6 +223,9 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.description) {
             deps.description = IO.description;
         }
+        if (IO.rawdescription) {
+            deps.rawdescription = IO.rawdescription;
+        }
         if (IO.methods) {
             deps.methods = IO.methods;
         }

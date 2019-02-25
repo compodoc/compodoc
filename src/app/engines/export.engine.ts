@@ -1,6 +1,7 @@
 import Configuration from '../configuration';
 
 import ExportJsonEngine from './export-json.engine';
+import ExportPdfEngine from './export-pdf.engine';
 
 export class ExportEngine {
     private static instance: ExportEngine;
@@ -16,6 +17,8 @@ export class ExportEngine {
         switch (Configuration.mainData.exportFormat) {
             case 'json':
                 return ExportJsonEngine.export(outputFolder, data);
+            case 'pdf':
+                return ExportPdfEngine.export(outputFolder, data);
         }
     }
 }

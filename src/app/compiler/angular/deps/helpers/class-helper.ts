@@ -404,8 +404,10 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ): any {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
+        let rawdescription = '';
         let description = '';
         if (symbol) {
+            rawdescription = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration);
             description = marked(this.jsdocParserUtil.getMainCommentOfNode(classDeclaration));
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
@@ -457,6 +459,7 @@ export class ClassHelper {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
                     return {
                         description,
+                        rawdescription: rawdescription,
                         inputs: members.inputs,
                         outputs: members.outputs,
                         hostBindings: members.hostBindings,
@@ -477,6 +480,7 @@ export class ClassHelper {
                             fileName,
                             className,
                             description,
+                            rawdescription: rawdescription,
                             methods: members.methods,
                             indexSignatures: members.indexSignatures,
                             properties: members.properties,
@@ -494,6 +498,7 @@ export class ClassHelper {
                             fileName,
                             className,
                             description,
+                            rawdescription: rawdescription,
                             jsdoctags: jsdoctags,
                             properties: members.properties,
                             methods: members.methods
@@ -505,6 +510,7 @@ export class ClassHelper {
                             fileName,
                             className,
                             description,
+                            rawdescription: rawdescription,
                             jsdoctags: jsdoctags,
                             methods: members.methods
                         }
@@ -513,6 +519,7 @@ export class ClassHelper {
                     return [
                         {
                             description,
+                            rawdescription: rawdescription,
                             methods: members.methods,
                             indexSignatures: members.indexSignatures,
                             properties: members.properties,
@@ -530,6 +537,7 @@ export class ClassHelper {
             return [
                 {
                     description,
+                    rawdescription: rawdescription,
                     inputs: members.inputs,
                     outputs: members.outputs,
                     hostBindings: members.hostBindings,
