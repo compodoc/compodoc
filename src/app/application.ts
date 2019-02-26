@@ -40,7 +40,6 @@ import {
 
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
-import { resolve } from 'url';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -751,7 +750,7 @@ export class Application {
                     const parsedSummaryData = JSON.parse(summaryData);
 
                     let that = this;
-                    let lastLevelOnePage = null;
+                    let lastLevelOnePage = undefined;
 
                     traverse(parsedSummaryData).forEach(function() {
                         // tslint:disable-next-line:no-invalid-this
@@ -782,14 +781,14 @@ export class Application {
                                 // tslint:disable-next-line:no-invalid-this
                                 this.node.id = id;
 
-                                let lastElementRootTree = null;
+                                let lastElementRootTree;
                                 finalDepth.forEach(el => {
                                     let elementTree =
                                         lastElementRootTree === null
                                             ? parsedSummaryData
                                             : lastElementRootTree;
                                     if (typeof elementTree.children !== 'undefined') {
-                                        elementTree = elementTree['children'][el];
+                                        elementTree = elementTree.children[el];
                                     } else {
                                         elementTree = elementTree[el];
                                     }
