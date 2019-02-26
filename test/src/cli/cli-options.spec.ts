@@ -1,13 +1,12 @@
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import {shell, pkg} from '../helpers';
+import { shell, pkg } from '../helpers';
 
 describe('CLI Options', () => {
-
     let runHelp = undefined;
 
-    before( () => {
+    before(() => {
         runHelp = shell('node', ['./bin/index-cli.js', '-h']);
     });
 
@@ -21,7 +20,6 @@ describe('CLI Options', () => {
     });
 
     describe('should display options in help', () => {
-
         it(`-p`, () => {
             expect(runHelp.stdout.toString()).to.contain('-p, --tsconfig [config]');
             expect(runHelp.stdout.toString()).to.contain('A tsconfig.json file');
@@ -29,7 +27,9 @@ describe('CLI Options', () => {
 
         it(`-d`, () => {
             expect(runHelp.stdout.toString()).to.contain('-d, --output [folder]');
-            expect(runHelp.stdout.toString()).to.contain('Where to store the generated documentation');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Where to store the generated documentation'
+            );
         });
 
         it(`-y`, () => {
@@ -39,7 +39,9 @@ describe('CLI Options', () => {
 
         it(`--theme`, () => {
             expect(runHelp.stdout.toString()).to.contain('--theme [theme]');
-            expect(runHelp.stdout.toString()).to.contain('Choose one of available themes, default is \'gitbook\' (laravel, original, material, postmark, readthedocs, stripe, vagrant)');
+            expect(runHelp.stdout.toString()).to.contain(
+                "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
+            );
         });
 
         it(`-n`, () => {
@@ -49,7 +51,9 @@ describe('CLI Options', () => {
 
         it(`-a`, () => {
             expect(runHelp.stdout.toString()).to.contain('-a, --assetsFolder [folder]');
-            expect(runHelp.stdout.toString()).to.contain('External assets folder to copy in generated documentation folder');
+            expect(runHelp.stdout.toString()).to.contain(
+                'External assets folder to copy in generated documentation folder'
+            );
         });
 
         it(`-o`, () => {
@@ -59,7 +63,9 @@ describe('CLI Options', () => {
 
         it(`-t`, () => {
             expect(runHelp.stdout.toString()).to.contain('-t, --silent');
-            expect(runHelp.stdout.toString()).to.contain('In silent mode, log messages aren\'t logged in the console');
+            expect(runHelp.stdout.toString()).to.contain(
+                "In silent mode, log messages aren't logged in the console"
+            );
         });
 
         it(`-s`, () => {
@@ -74,51 +80,70 @@ describe('CLI Options', () => {
 
         it(`-w`, () => {
             expect(runHelp.stdout.toString()).to.contain('-w, --watch');
-            expect(runHelp.stdout.toString()).to.contain('Watch source files after serve and force documentation rebuild');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Watch source files after serve and force documentation rebuild'
+            );
         });
 
         it(`-e`, () => {
             expect(runHelp.stdout.toString()).to.contain('-e, --exportFormat [format]');
-            expect(runHelp.stdout.toString()).to.contain('Export in specified format (json, html)');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Export in specified format (json, html, pdf)'
+            );
         });
 
         it(`--hideGenerator`, () => {
             expect(runHelp.stdout.toString()).to.contain('--hideGenerator');
-            expect(runHelp.stdout.toString()).to.contain('Do not print the Compodoc link at the bottom of the page');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not print the Compodoc link at the bottom of the page'
+            );
         });
 
         it(`--navTabConfig`, () => {
             expect(runHelp.stdout.toString()).to.contain('--navTabConfig');
             expect(runHelp.stdout.toString()).to.contain(
-`List navigation tab objects in the desired order with two string properties ("id" and "label"). \
+                `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
 Double-quotes must be escaped with '\\'. \
 Available tab IDs are "info", "readme", "source", "templateData", "styleData", "tree", and "example". \
-Note: Certain tabs will only be shown if applicable to a given dependency`);
+Note: Certain tabs will only be shown if applicable to a given dependency`
+            );
         });
 
         it(`--includes`, () => {
             expect(runHelp.stdout.toString()).to.contain('--includes [path]');
-            expect(runHelp.stdout.toString()).to.contain('Path of external markdown files to include');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Path of external markdown files to include'
+            );
         });
 
         it(`--includesName`, () => {
             expect(runHelp.stdout.toString()).to.contain('--includesName [name]');
-            expect(runHelp.stdout.toString()).to.contain('Name of item menu of externals markdown files');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Name of item menu of externals markdown files'
+            );
         });
 
         it(`--coverageTest`, () => {
             expect(runHelp.stdout.toString()).to.contain('--coverageTest');
-            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage with a threshold');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Test command of documentation coverage with a threshold'
+            );
         });
 
         it(`--coverageMinimumPerFile`, () => {
             expect(runHelp.stdout.toString()).to.contain('--coverageMinimumPerFile');
-            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage per file with a minimum (default 0)');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Test command of documentation coverage per file with a minimum (default 0)'
+            );
         });
 
         it(`--coverageTestThresholdFail`, () => {
-            expect(runHelp.stdout.toString()).to.contain('--coverageTestThresholdFail [true|false]');
-            expect(runHelp.stdout.toString()).to.contain('Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)');
+            expect(runHelp.stdout.toString()).to.contain(
+                '--coverageTestThresholdFail [true|false]'
+            );
+            expect(runHelp.stdout.toString()).to.contain(
+                'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)'
+            );
         });
 
         it(`--disableSourceCode`, () => {
@@ -143,27 +168,37 @@ Note: Certain tabs will only be shown if applicable to a given dependency`);
 
         it(`--disableCoverage`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableCoverage');
-            expect(runHelp.stdout.toString()).to.contain('Do not add the documentation coverage report');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not add the documentation coverage report'
+            );
         });
 
         it(`--disablePrivate`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disablePrivate');
-            expect(runHelp.stdout.toString()).to.contain('Do not show private in generated documentation');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show private in generated documentation'
+            );
         });
 
         it(`--disableProtected`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableProtected');
-            expect(runHelp.stdout.toString()).to.contain('Do not show protected in generated documentation');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show protected in generated documentation'
+            );
         });
 
         it(`--disableInternal`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableInternal');
-            expect(runHelp.stdout.toString()).to.contain('Do not show @internal in generated documentation');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show @internal in generated documentation'
+            );
         });
 
         it(`--disableLifeCycleHooks`, () => {
             expect(runHelp.stdout.toString()).to.contain('--disableLifeCycleHooks');
-            expect(runHelp.stdout.toString()).to.contain('Do not show Angular lifecycle hooks in generated documentation');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show Angular lifecycle hooks in generated documentation'
+            );
         });
 
         it(`--customFavicon`, () => {
@@ -175,7 +210,5 @@ Note: Certain tabs will only be shown if applicable to a given dependency`);
             expect(runHelp.stdout.toString()).to.contain('--customLogo [path]');
             expect(runHelp.stdout.toString()).to.contain('Use a custom logo');
         });
-
     });
-
 });
