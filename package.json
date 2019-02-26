@@ -114,7 +114,7 @@
         "nodemon": "^1.18.10",
         "npm-watch": "^0.6.0",
         "nyc": "^13.3.0",
-        "pdf-parse": "^1.1.1",
+        "pdfjs-dist": "^2.0.943",
         "prettier": "^1.16.4",
         "pretty-quick": "^1.10.0",
         "request": "^2.88.0",

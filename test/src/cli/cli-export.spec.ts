@@ -1,7 +1,6 @@
 import * as chai from 'chai';
-import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
+import { exists, read, readPDF, shell, temporaryDir } from '../helpers';
 const fs = require('fs-extra');
-const pdf = require('pdf-parse');
 const expect = chai.expect,
     tmp = temporaryDir();
 
@@ -98,8 +97,8 @@ describe('CLI Export', () => {
 
         it('pdf file should have some data', () => {
             let pdfDataBuffer = fs.readFileSync(`${distFolder}/documentation.pdf`);
-            return pdf(pdfDataBuffer).then(function(data) {
-                // console.log(data.text);
+            return readPDF(pdfDataBuffer).then(function(data) {
+                // console.log(data);
                 expect(data.info.Title).to.equal(title);
                 expect(data.text).to.contain(
                     'AboutModule\nFilename : test/src/todomvc-ng2/src/app/about/about.module.ts'
