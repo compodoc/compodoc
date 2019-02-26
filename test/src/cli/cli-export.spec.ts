@@ -98,7 +98,7 @@ describe('CLI Export', () => {
         it('pdf file should have some data', () => {
             let pdfDataBuffer = fs.readFileSync(`${distFolder}/documentation.pdf`);
             return readPDF(pdfDataBuffer).then(function(data) {
-                // console.log(data);
+                console.log(data);
                 expect(data.info.Title).to.equal(title);
                 expect(data.text).to.contain(
                     'AboutModule\nFilename : test/src/todomvc-ng2/src/app/about/about.module.ts'
