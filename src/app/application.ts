@@ -781,10 +781,10 @@ export class Application {
                                 // tslint:disable-next-line:no-invalid-this
                                 this.node.id = id;
 
-                                let lastElementRootTree;
+                                let lastElementRootTree = undefined;
                                 finalDepth.forEach(el => {
                                     let elementTree =
-                                        lastElementRootTree === null
+                                        typeof lastElementRootTree === 'undefined'
                                             ? parsedSummaryData
                                             : lastElementRootTree;
                                     if (typeof elementTree.children !== 'undefined') {
