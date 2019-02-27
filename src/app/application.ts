@@ -2572,8 +2572,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         if (Configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
-                                path.resolve(cwd + path.sep + Configuration.mainData.customLogo),
-                                path.resolve(finalOutput + '/images/logo.png'),
+                                path.resolve(
+                                    cwd +
+                                    path.sep +
+                                    Configuration.mainData.customLogo
+                                ),
+                                path.resolve(finalOutput + '/images/' + Configuration.mainData.customLogo.split("/").pop()),
                                 errorCopyLogo => {
                                     // tslint:disable-line
                                     if (errorCopyLogo) {
