@@ -84,7 +84,7 @@
         "json5": "^2.1.0",
         "live-server": "^1.2.1",
         "lodash": "^4.17.11",
-        "lunr": "^2.3.5",
+        "lunr": "^2.3.6",
         "marked": "^0.6.1",
         "opencollective": "^1.0.3",
         "os-name": "^3.0.0",
@@ -124,7 +124,7 @@
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.1",
         "ts-node": "^8.0.2",
-        "tslint": "^5.12.1"
+        "tslint": "^5.13.0"
     },
     "nyc": {
         "include": [
