@@ -143,6 +143,10 @@ export class Configuration implements ConfigurationInterface {
         this._pages = [];
     }
 
+    get markDownPages() {
+        return this._pages.filter(page => page.markdown);
+    }
+
     get mainData(): MainDataInterface {
         return this._mainData;
     }

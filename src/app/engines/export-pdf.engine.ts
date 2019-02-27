@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 
 import Configuration from '../configuration';
+import MarkdownToPdfEngine from './markdown-to-pdf.engine';
 
 const PdfPrinter = require('pdfmake');
 
@@ -82,17 +83,43 @@ export class ExportPdfEngine {
             pageBreak: 'after'
         });
 
-        docDefinition.content.push(this.generateModulesContent());
+        // Add README page if available
 
-        docDefinition.content.push({
-            text: ` `,
-            margin: [0, 0, 0, 20],
-            pageBreak: 'after'
-        });
+        docDefinition.content.push(this.generateMarkdownContent());
+
+        // Add CHANGELOG page if available
+
+        // Add CONTRIBUTING page if available
+
+        // Add LICENSE page if available
+
+        // Add TODO page if available
+
+        // Add Dependencies page if available
+
+        // Add Additional pages if available
+
+        docDefinition.content.push(this.generateModulesContent());
 
         docDefinition.content.push(this.generateComponentsContent());
 
-        // docDefinition.content.push(...this.coverageEngine.calculateTable());
+        // Classes
+
+        // Injectables
+
+        // Interceptors
+
+        // Guards
+
+        // Interfaces
+
+        // Pipes
+
+        // Miscellaneous
+
+        // Routes
+
+        // Coverage - docDefinition.content.push(...this.coverageEngine.calculateTable());
 
         let pdfDoc = printer.createPdfKitDocument(docDefinition);
 
@@ -108,6 +135,40 @@ export class ExportPdfEngine {
                     resolve();
                 }
             });
+        });
+    }
+
+    private firstCharacterUpperCase(sentence: string): string {
+        return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+    }
+
+    private generateMarkdownContent() {
+        let pages = Configuration.markDownPages;
+
+        let data = [];
+
+        pages.forEach(page => {
+            data.push({
+                text: `${this.firstCharacterUpperCase(page.name)}`,
+                tocItem: true,
+                style: 'header'
+            });
+            data.push({
+                text: MarkdownToPdfEngine.convert(page.markdown),
+                margin: [0, 10]
+            });
+        });
+
+        this.insertPageReturn(data);
+
+        return data;
+    }
+
+    private insertPageReturn(data) {
+        data.push({
+            text: ` `,
+            margin: [0, 0, 0, 20],
+            pageBreak: 'after'
         });
     }
 
@@ -231,6 +292,8 @@ export class ExportPdfEngine {
             });
         });
 
+        this.insertPageReturn(data);
+
         return data;
     }
 
@@ -281,6 +344,8 @@ export class ExportPdfEngine {
                 margin: [0, 0, 0, 20]
             });
         });
+
+        this.insertPageReturn(data);
 
         return data;
     }
