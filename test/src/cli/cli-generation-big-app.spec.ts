@@ -779,4 +779,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/classes/SomeFeature.html');
         expect(file).to.contain('code>@throttle(1000 as PollingSpeed');
     });
+
+    it('correct supports JSdoc without comment for accessor', () => {
+        let file = read(distFolder + '/classes/Tidi.html');
+        expect(file).to.contain('b>emailAddress</b>');
+    });
 });
