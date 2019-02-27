@@ -80,6 +80,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html, pdf)',
                 COMPODOC_DEFAULTS.exportFormat
             )
+            .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
                 'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)',
@@ -580,6 +581,19 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             includeFiles = configFile.include;
         }
 
+        /**
+         * Check --files argument call
+         */
+        const argv = require('minimist')(process.argv.slice(2));
+        if (argv && argv.files) {
+            Configuration.mainData.hasFilesToCoverage = true;
+            if (typeof argv.files === 'string') {
+                super.setFiles([argv.files]);
+            } else {
+                super.setFiles(argv.files);
+            }
+        }
+
         if (program.serve && !Configuration.mainData.tsconfig && program.output) {
             // if -s & -d, serve it
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
@@ -605,6 +619,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     } at http://127.0.0.1:${program.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
+            }
+        } else if (Configuration.mainData.hasFilesToCoverage) {
+            if (program.coverageMinimumPerFile) {
+                logger.info('Run documentation coverage test for files');
+                super.testCoverage();
+            } else {
+                logger.error('Missing coverage configuration');
             }
         } else {
             if (program.hideGenerator) {

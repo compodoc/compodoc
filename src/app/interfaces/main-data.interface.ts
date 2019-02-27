@@ -12,6 +12,7 @@ export interface MainDataInterface {
     documentationMainDescription: string;
     base: string;
     hideGenerator: boolean;
+    hasFilesToCoverage: boolean;
     modules: any;
     readme: boolean;
     changelog: string;

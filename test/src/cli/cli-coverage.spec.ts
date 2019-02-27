@@ -408,4 +408,39 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('<td>variable</td>');
         });
     });
+
+    describe('coverage test per file command under with one file through --files', () => {
+        let stdoutString = undefined;
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '--files',
+                './test/src/sample-files/bar.directive.ts',
+                '--files',
+                './test/src/sample-files/bar.service.ts',
+                '--coverageMinimumPerFile',
+                '1',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('it should be under threshold for files', () => {
+            expect(stdoutString).to.contain(
+                'test/src/sample-files/bar.directive.ts - BarDirective - under minimum per file'
+            );
+            expect(stdoutString).to.contain(
+                'test/src/sample-files/bar.service.ts - BarService - under minimum per file'
+            );
+        });
+    });
 });

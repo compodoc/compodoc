@@ -21,6 +21,7 @@ export class Configuration implements ConfigurationInterface {
         documentationMainDescription: '',
         base: COMPODOC_DEFAULTS.base,
         hideGenerator: false,
+        hasFilesToCoverage: false,
         modules: [],
         readme: false,
         changelog: '',

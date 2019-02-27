@@ -1870,7 +1870,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent >= Configuration.mainData.coverageMinimumPerFile;
                     if (overTest && !Configuration.mainData.coverageTestShowOnlyFailed) {
                         logger.info(
-                            `${f.coveragePercent} % for file ${f.filePath} - over minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${
+                                f.name
+                            } - over minimum per file`
                         );
                     }
                     return overTest;
@@ -1880,7 +1882,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent < Configuration.mainData.coverageMinimumPerFile;
                     if (underTest) {
                         logger.error(
-                            `${f.coveragePercent} % for file ${f.filePath} - under minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${
+                                f.name
+                            } - under minimum per file`
                         );
                     }
                     return underTest;

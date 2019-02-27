@@ -86,6 +86,7 @@
         "lodash": "^4.17.11",
         "lunr": "^2.3.6",
         "marked": "^0.6.1",
+        "minimist": "^1.2.0",
         "opencollective": "^1.0.3",
         "os-name": "^3.0.0",
         "pdfmake": "^0.1.53",
