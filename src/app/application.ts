@@ -40,7 +40,6 @@ import {
 
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
-import { resolve } from 'url';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -751,7 +750,7 @@ export class Application {
                     const parsedSummaryData = JSON.parse(summaryData);
 
                     let that = this;
-                    let lastLevelOnePage = null;
+                    let lastLevelOnePage = undefined;
 
                     traverse(parsedSummaryData).forEach(function() {
                         // tslint:disable-next-line:no-invalid-this
@@ -782,14 +781,14 @@ export class Application {
                                 // tslint:disable-next-line:no-invalid-this
                                 this.node.id = id;
 
-                                let lastElementRootTree = null;
+                                let lastElementRootTree = undefined;
                                 finalDepth.forEach(el => {
                                     let elementTree =
-                                        lastElementRootTree === null
+                                        typeof lastElementRootTree === 'undefined'
                                             ? parsedSummaryData
                                             : lastElementRootTree;
                                     if (typeof elementTree.children !== 'undefined') {
-                                        elementTree = elementTree['children'][el];
+                                        elementTree = elementTree.children[el];
                                     } else {
                                         elementTree = elementTree[el];
                                     }
@@ -1871,7 +1870,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent >= Configuration.mainData.coverageMinimumPerFile;
                     if (overTest && !Configuration.mainData.coverageTestShowOnlyFailed) {
                         logger.info(
-                            `${f.coveragePercent} % for file ${f.filePath} - over minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${
+                                f.name
+                            } - over minimum per file`
                         );
                     }
                     return overTest;
@@ -1881,7 +1882,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent < Configuration.mainData.coverageMinimumPerFile;
                     if (underTest) {
                         logger.error(
-                            `${f.coveragePercent} % for file ${f.filePath} - under minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${
+                                f.name
+                            } - under minimum per file`
                         );
                     }
                     return underTest;
@@ -2569,8 +2572,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         if (Configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
-                                path.resolve(cwd + path.sep + Configuration.mainData.customLogo),
-                                path.resolve(finalOutput + '/images/logo.png'),
+                                path.resolve(
+                                    cwd +
+                                    path.sep +
+                                    Configuration.mainData.customLogo
+                                ),
+                                path.resolve(finalOutput + '/images/' + Configuration.mainData.customLogo.split("/").pop()),
                                 errorCopyLogo => {
                                     // tslint:disable-line
                                     if (errorCopyLogo) {
@@ -2620,7 +2627,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let len = modules.length;
             let loop = () => {
                 if (i <= len - 1) {
-                    logger.info('Process module graph', modules[i].name);
+                    logger.info('Process module graph ', modules[i].name);
                     let finalPath = Configuration.mainData.output;
                     if (Configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';

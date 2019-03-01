@@ -1,5 +1,9 @@
 {{#linkType type}}
-    <code><a href="{{type.href}}" target="{{type.target}}" >{{type.raw}}</a></code>
+    {{#if withline}}
+        <code><a href="{{type.href}}#source" target="{{type.target}}" >{{type.raw}}:{{{line}}}</a></code>
+    {{else}}
+        <code><a href="{{type.href}}" target="{{type.target}}" >{{type.raw}}</a></code>
+    {{/if}}
 {{else}}
     <code>{{type}}</code>
 {{/linkType}}

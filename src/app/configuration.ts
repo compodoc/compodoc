@@ -21,6 +21,7 @@ export class Configuration implements ConfigurationInterface {
         documentationMainDescription: '',
         base: COMPODOC_DEFAULTS.base,
         hideGenerator: false,
+        hasFilesToCoverage: false,
         modules: [],
         readme: false,
         changelog: '',
@@ -141,6 +142,10 @@ export class Configuration implements ConfigurationInterface {
     }
     set pages(pages: PageInterface[]) {
         this._pages = [];
+    }
+
+    get markDownPages() {
+        return this._pages.filter(page => page.markdown);
     }
 
     get mainData(): MainDataInterface {

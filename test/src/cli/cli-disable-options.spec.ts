@@ -126,6 +126,11 @@ describe('CLI disable flags', () => {
         it('should display lifecyle hooks', () => {
             expect(componentFile).to.contain('<code>ngOnInit');
         });
+
+        it('correct supports @internal + link', () => {
+            let file = read(distFolder + '/directives/QueryParamNameDirective.html');
+            expect(file).to.contain('code>constructor(groupService: QueryParamGroupService');
+        });
     });
 
     describe('disabling excluding methods with --disableLifeCycleHooks', () => {

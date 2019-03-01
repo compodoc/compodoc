@@ -11,6 +11,10 @@ export function StringifyObjectLiteralExpression(ole) {
             if (property.initializer) {
                 if (property.initializer.kind === SyntaxKind.StringLiteral) {
                     returnedString += `'` + property.initializer.text + `'`;
+                } else if (property.initializer.kind === SyntaxKind.TrueKeyword) {
+                    returnedString += `true`;
+                } else if (property.initializer.kind === SyntaxKind.FalseKeyword) {
+                    returnedString += `false`;
                 } else {
                     returnedString += property.initializer.text;
                 }

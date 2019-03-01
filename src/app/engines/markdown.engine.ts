@@ -4,17 +4,17 @@ import * as path from 'path';
 
 import FileEngine from './file.engine';
 
-const marked = require('marked');
-
 export class MarkdownEngine {
     /**
      * List of markdown files without .md extension
      */
     private readonly markdownFiles = ['README', 'CHANGELOG', 'LICENSE', 'CONTRIBUTING', 'TODO'];
 
+    private markedInstance = require('marked');
+
     private static instance: MarkdownEngine;
     private constructor() {
-        const renderer = new marked.Renderer();
+        const renderer = new this.markedInstance.Renderer();
         renderer.code = (code, language) => {
             let highlighted = code;
             if (!language) {
@@ -38,7 +38,6 @@ export class MarkdownEngine {
             );
         };
 
-        let self = this;
         renderer.image = function(href: string, title: string, text: string) {
             let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
             if (title) {
@@ -48,7 +47,7 @@ export class MarkdownEngine {
             return out;
         };
 
-        marked.setOptions({
+        this.markedInstance.setOptions({
             renderer: renderer,
             breaks: false
         });
@@ -63,15 +62,17 @@ export class MarkdownEngine {
     public getTraditionalMarkdown(filepath: string): Promise<string> {
         return FileEngine.get(process.cwd() + path.sep + filepath + '.md')
             .catch(err => FileEngine.get(process.cwd() + path.sep + filepath).then())
-            .then(data => marked(data));
+            .then(data => this.markedInstance(data));
     }
 
     public getTraditionalMarkdownSync(filepath: string): string {
-        return marked(FileEngine.getSync(process.cwd() + path.sep + filepath));
+        return this.markedInstance(FileEngine.getSync(process.cwd() + path.sep + filepath));
     }
 
     private getReadmeFile(): Promise<string> {
-        return FileEngine.get(process.cwd() + path.sep + 'README.md').then(data => marked(data));
+        return FileEngine.get(process.cwd() + path.sep + 'README.md').then(data =>
+            this.markedInstance(data)
+        );
     }
 
     public readNeighbourReadmeFile(file: string): string {

@@ -43,9 +43,13 @@
                                             <thead>
                                                 <tr>
                                                     <td>{{t "name" }}</td>
-                                                    <td>{{t "type" }}</td>
+                                                    {{#one-parameter-has tags 'type'}}
+                                                        <td>{{t "type" }}</td>
+                                                    {{/one-parameter-has}}
                                                     <td>{{t "optional" }}</td>
-                                                    <td>{{t "description" }}</td>
+                                                    {{#one-parameter-has tags 'comment'}}
+                                                        <td>{{t "description" }}</td>
+                                                    {{/one-parameter-has}}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -54,11 +58,15 @@
                                                         {{#if name}}
                                                             <td>{{name}}</td>
                                                         {{/if}}
-                                                        <td>
-                                                            {{#if type}}
-                                                                {{> link-type type=type }}
-                                                            {{/if}}
-                                                        </td>
+                                                        
+                                                        {{#one-parameter-has ../tags 'type'}}
+                                                            <td>
+                                                                {{#if type}}
+                                                                    {{> link-type type=type }}
+                                                                {{/if}}
+                                                            </td>
+                                                        {{/one-parameter-has}}
+
                                                         <td>
                                                             {{#if optional}}
                                                                 {{t "yes" }}
@@ -66,7 +74,14 @@
                                                                 {{t "no" }}
                                                             {{/if}}
                                                         </td>
-                                                        <td>{{{comment}}}</td>
+                                                        
+                                                        {{#one-parameter-has ../tags 'comment'}}
+                                                            <td>
+                                                                {{#if comment}}
+                                                                    <code>{{{comment}}}</code>
+                                                                {{/if}}
+                                                            </td>
+                                                        {{/one-parameter-has}}
                                                     </tr>
                                                 {{/each}}
                                             </tbody>

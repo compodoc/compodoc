@@ -23,7 +23,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 <li class="title">
                     {{#if customLogo}}
                     <a href="index.html" data-type="index-link">
-                        <img alt="" class="img-responsive" data-type="compodoc-logo" data-src="images/logo.png">
+                        <img alt="" class="img-responsive" data-type="compodoc-logo" data-src={{strip-url "images/" customLogo}}> 
                     </a>
                     {{else}}
                     <a href="index.html" data-type="index-link">{{documentationMainName}}</a>

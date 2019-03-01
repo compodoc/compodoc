@@ -35,6 +35,7 @@ import { OrHelper } from './html-engine-helpers/or.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
 import { RelativeURLHelper } from './html-engine-helpers/relative-url.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
+import { StripURLHelper } from './html-engine-helpers/strip-url.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(bars): void {
@@ -70,6 +71,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'element-alone', new ElementAloneHelper());
         this.registerHelper(bars, 'hasOwn', new HasOwnHelper());
         this.registerHelper(bars, 'short-url', new ShortURLHelper());
+        this.registerHelper(bars, 'strip-url', new StripURLHelper());
         this.registerHelper(bars, 't', new I18nHelper());
     }
 

@@ -30,6 +30,15 @@
             </p>
         {{/if}}
 
+        {{#if injectable.extends}}
+            <p class="comment">
+                <h3>{{t "extends" }}</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=injectable.extends }}
+            </p>
+        {{/if}}
+
         {{#if injectable.jsdoctags}}
             <p class="comment">
                 <h3>{{t "example" }}</h3>

@@ -46,6 +46,7 @@ export class ComponentDepFactory {
             hostListeners: IO.hostListeners,
 
             description: IO.description,
+            rawdescription: IO.rawdescription,
             type: 'component',
             sourceCode: srcFile.getText(),
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText()),
@@ -117,6 +118,7 @@ export interface IComponentDep extends IDep {
     hostListeners: Array<any>;
 
     description: string;
+    rawdescription: string;
     sourceCode: string;
     exampleUrls: Array<string>;
 

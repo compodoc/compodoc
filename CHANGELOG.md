@@ -1,3 +1,25 @@
+<a name="1.1.9"></a>
+
+# [1.1.9](https://github.com/compodoc/compodoc/compare/1.1.8...1.1.9) (2019-03-01)
+
+### Features
+
+- feat(app): documentation coverage for files with lint-staged tools ([59ff58e](https://github.com/compodoc/compodoc/commit/59ff58e)), closes [#546](https://github.com/compodoc/compodoc/issues/546)
+
+### Merged
+
+- fix(UI): a few issues with the src on customLogo img [#688](https://github.com/compodoc/compodoc/pull/688) Thanks [Zachary Feldman](https://github.com/feldmanz66)
+- fix: use consistent semver range specifiers [#733](https://github.com/compodoc/compodoc/pull/733) Thanks [Justin Beckwith](https://github.com/JustinBeckwith)
+
+### Bug fixes
+
+- fix(app): output + serve ([8332344](https://github.com/compodoc/compodoc/commit/8332344)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
+- fix(deps): jsdoc param comment for accessor ([655be32](https://github.com/compodoc/compodoc/commit/655be32)), closes [#735](https://github.com/compodoc/compodoc/issues/735)
+- fix(deps): injectables inheritance ([35da83e](https://github.com/compodoc/compodoc/commit/35da83e)), closes [#738](https://github.com/compodoc/compodoc/issues/738)
+- fix(deps): no link if ignored data ([242e42d](https://github.com/compodoc/compodoc/commit/242e42d)), closes [#737](https://github.com/compodoc/compodoc/issues/737)
+- fix(deps): multiple inheritance class support ([62f1bd0](https://github.com/compodoc/compodoc/commit/62f1bd0)), closes [#728](https://github.com/compodoc/compodoc/issues/728)
+- fix(deps): Type casting inside decorator ([f597531](https://github.com/compodoc/compodoc/commit/f597531)), closes [#727](https://github.com/compodoc/compodoc/issues/727)
+
 <a name="1.1.8"></a>
 
 # [1.1.8](https://github.com/compodoc/compodoc/compare/1.1.7...1.1.8) (2019-02-08)

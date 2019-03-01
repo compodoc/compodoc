@@ -80,6 +80,7 @@ export class CliApplication extends Application {
                 'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
+            .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
                 'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)',
@@ -580,31 +581,51 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             includeFiles = configFile.include;
         }
 
+        /**
+         * Check --files argument call
+         */
+        const argv = require('minimist')(process.argv.slice(2));
+        if (argv && argv.files) {
+            Configuration.mainData.hasFilesToCoverage = true;
+            if (typeof argv.files === 'string') {
+                super.setFiles([argv.files]);
+            } else {
+                super.setFiles(argv.files);
+            }
+        }
+
         if (program.serve && !Configuration.mainData.tsconfig && program.output) {
             // if -s & -d, serve it
-            if (!FileEngine.existsSync(program.output)) {
-                logger.error(`${program.output} folder doesn't exist`);
+            if (!FileEngine.existsSync(Configuration.mainData.output)) {
+                logger.error(`${Configuration.mainData.output} folder doesn't exist`);
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${program.output} at http://127.0.0.1:${
-                        program.port
-                    }`
+                    `Serving documentation from ${
+                        Configuration.mainData.output
+                    } at http://127.0.0.1:${program.port}`
                 );
                 super.runWebServer(program.output);
             }
         } else if (program.serve && !Configuration.mainData.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
-            if (!FileEngine.existsSync(program.output)) {
+            if (!FileEngine.existsSync(Configuration.mainData.output)) {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${program.output} at http://127.0.0.1:${
-                        program.port
-                    }`
+                    `Serving documentation from ${
+                        Configuration.mainData.output
+                    } at http://127.0.0.1:${program.port}`
                 );
-                super.runWebServer(program.output);
+                super.runWebServer(Configuration.mainData.output);
+            }
+        } else if (Configuration.mainData.hasFilesToCoverage) {
+            if (program.coverageMinimumPerFile) {
+                logger.info('Run documentation coverage test for files');
+                super.testCoverage();
+            } else {
+                logger.error('Missing coverage configuration');
             }
         } else {
             if (program.hideGenerator) {

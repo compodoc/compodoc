@@ -167,8 +167,10 @@ export class DependenciesEngine {
                     }
                 }
             }
-            // Prevent wrong matching like MultiSelectOptionDirective with SelectOptionDirective
+
+            // Prevent wrong matching like MultiSelectOptionDirective with SelectOptionDirective, or QueryParamGroupService with QueryParamGroup
             if (nameFoundCounter > 1) {
+                let found = false;
                 for (let i = 0; i < data.length; i++) {
                     if (typeof name !== 'undefined') {
                         if (typeof file !== 'undefined') {
@@ -176,14 +178,22 @@ export class DependenciesEngine {
                                 name === data[i].name &&
                                 file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
                             ) {
+                                found = true;
                                 _result.data = data[i];
                             }
                         } else {
                             if (name === data[i].name) {
+                                found = true;
                                 _result.data = data[i];
                             }
                         }
                     }
+                }
+                if (!found) {
+                    _result = {
+                        source: 'internal',
+                        data: undefined
+                    };
                 }
             }
         }

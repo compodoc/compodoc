@@ -1,8 +1,5 @@
 **Don't update the following dependencies**
 
-- handlebars
-- mocha
-- mocha-parallel-tests
-- marked
-- live-server
-- ts-simple-ast
+-   mocha
+-   mocha-parallel-tests
+-   ts-simple-ast
