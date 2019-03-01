@@ -1,6 +1,6 @@
 {
     "name": "@compodoc/compodoc",
-    "version": "1.1.8",
+    "version": "1.1.9",
     "description": "The missing documentation tool for your Angular application",
     "main": "dist/index.js",
     "bin": {
@@ -8,7 +8,7 @@
     },
     "scripts": {
         "build": "rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs",
-        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit XXX",
+        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
         "download-api-list": "node tools/download-api-list.js",
         "start": "npm run test:watch",
         "pretest": "tsc -p test/tsconfig.json && node test/dist/cli/cli-clean-root-folder.js",
