@@ -6,7 +6,7 @@ export const COMPODOC_DEFAULTS = {
     port: 8080,
     theme: 'gitbook',
     exportFormat: 'html',
-    exportFormatsSupported: ['html', 'json'],
+    exportFormatsSupported: ['html', 'json', 'pdf'],
     base: '/',
     defaultCoverageThreshold: 70,
     defaultCoverageMinimumPerFile: 0,
