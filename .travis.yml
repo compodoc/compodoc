@@ -1,17 +1,16 @@
 os:
-  - linux
+    - linux
 language: node_js
 node_js:
-  - "6"
-  - "7"
-  - "8"
-  - "9"
-  - "10"
+    - '7'
+    - '8'
+    - '9'
+    - '10'
 addons:
-  sauce_connect:
-    username: "compodoc"
-  jwt:
-    secure: "Pij3Z+chkGBAHK5S2fTEEmsKlt+5wDkKB2bbKUQ3QWW+WSFg+tTh3KlK6I5qhFC8TC1zqZpaZMZZTEIcIz/hNXdIKQjFUv+91WRqQZRfNJvbnaPV5ZDcK/SN8hSR+Q//dTWlCWTMGGGWGVJwX8AzE0JEphrwSbXq7T1/zdrNFffQ1qqPioqMVRJ/2PAqzNAHMuOo6YfWBze4F2bvHR87bcM9DBhAJSvFjVf1qv0+3aJxo9UPjpBPVo4YgNzwFQzhHyGAvYBOfSBu8g5MMG9Sc4oGjVformPEmglCLCJCxT92wZvU0sopoAedfcTgWgTrdDTNDS/Rx91Xv0vuMg0F1CA/5BRqvcTBGKUB4QLIIWvqLV3NGlJbe0DE0E+Netje8ci+0DSE6EqTeN/v/Up02VKNrjL7Eyz8g2sv6vM8c0roY54+o5xxtyuJQTs5KndXsAHylCGj+SkU+hRYbCxfs++hPMqXUbjDUA6/ezhGvSHIdeTWOMs4BEz6BMgIlZLP+3Z4o2FT3+cWGbEOc0nrawATlbNcexpHNBBW5ihvcpdmFqYdUYtzLPVGPvaIlMhFY+guBqIgKjXxAI0AjV6UruKKeQnfHhONuRw5pQFEb4lDJpVE99gnPLaKs7mpIgEVPbAegZF9T2TsZ7xxYwFjaM17NrS2KkQlk6IgkhxgemE="
+    sauce_connect:
+        username: 'compodoc'
+    jwt:
+        secure: 'Pij3Z+chkGBAHK5S2fTEEmsKlt+5wDkKB2bbKUQ3QWW+WSFg+tTh3KlK6I5qhFC8TC1zqZpaZMZZTEIcIz/hNXdIKQjFUv+91WRqQZRfNJvbnaPV5ZDcK/SN8hSR+Q//dTWlCWTMGGGWGVJwX8AzE0JEphrwSbXq7T1/zdrNFffQ1qqPioqMVRJ/2PAqzNAHMuOo6YfWBze4F2bvHR87bcM9DBhAJSvFjVf1qv0+3aJxo9UPjpBPVo4YgNzwFQzhHyGAvYBOfSBu8g5MMG9Sc4oGjVformPEmglCLCJCxT92wZvU0sopoAedfcTgWgTrdDTNDS/Rx91Xv0vuMg0F1CA/5BRqvcTBGKUB4QLIIWvqLV3NGlJbe0DE0E+Netje8ci+0DSE6EqTeN/v/Up02VKNrjL7Eyz8g2sv6vM8c0roY54+o5xxtyuJQTs5KndXsAHylCGj+SkU+hRYbCxfs++hPMqXUbjDUA6/ezhGvSHIdeTWOMs4BEz6BMgIlZLP+3Z4o2FT3+cWGbEOc0nrawATlbNcexpHNBBW5ihvcpdmFqYdUYtzLPVGPvaIlMhFY+guBqIgKjXxAI0AjV6UruKKeQnfHhONuRw5pQFEb4lDJpVE99gnPLaKs7mpIgEVPbAegZF9T2TsZ7xxYwFjaM17NrS2KkQlk6IgkhxgemE='
 install:
     - npm install npm@latest -g
     - npm ci
@@ -28,26 +27,23 @@ script:
 after_success:
     - npm run codecov
 branches:
-  only:
-    - develop
+    only:
+        - develop
 matrix:
-  allow_failures:
-    - os: osx
-    - node_js: "10"
-  exclude:
-    - node_js: "6"
-    - node_js: "7"
-    - node_js: "8"
-    - node_js: "9"
-    - node_js: "10"
-  include:
-    - node_js: "6"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
-    - node_js: "7"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
-    - node_js: "8"
-      env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
-    - node_js: "9"
-      env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc
-    - node_js: "10"
-      env: TO_TEST=ALL SAUCE_USERNAME=compodoc
+    allow_failures:
+        - os: osx
+        - node_js: '10'
+    exclude:
+        - node_js: '7'
+        - node_js: '8'
+        - node_js: '9'
+        - node_js: '10'
+    include:
+        - node_js: '7'
+          env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
+        - node_js: '8'
+          env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
+        - node_js: '9'
+          env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc
+        - node_js: '10'
+          env: TO_TEST=ALL SAUCE_USERNAME=compodoc

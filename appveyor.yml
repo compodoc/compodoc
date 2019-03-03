@@ -1,30 +1,29 @@
 branches:
-  only:
-    - develop
+    only:
+        - develop
 environment:
-  matrix:
-    - nodejs_version: '6'
-    - nodejs_version: '7'
-    - nodejs_version: '8'
-    - nodejs_version: '9'
-    - nodejs_version: '10'
+    matrix:
+        - nodejs_version: '7'
+        - nodejs_version: '8'
+        - nodejs_version: '9'
+        - nodejs_version: '10'
 install:
-  - ps: Install-Product node $env:nodejs_version
-  - set CI=true
-  - node -v
-  - npm -v
-  - npm -g install npm@latest
-  - npm -v
-  - npm install
+    - ps: Install-Product node $env:nodejs_version
+    - set CI=true
+    - node -v
+    - npm -v
+    - npm -g install npm@latest
+    - npm -v
+    - npm install
 matrix:
-  fast_finish: true
-  allow_failures:
-    - nodejs_version: 10
+    fast_finish: true
+    allow_failures:
+        - nodejs_version: 10
 build: off
 shallow_clone: true
 test_script:
-  - node --version
-  - npm --version
-  - npm run build
-  - npm run test
-  #- node tools/test-watch.js
+    - node --version
+    - npm --version
+    - npm run build
+    - npm run test
+    #- node tools/test-watch.js

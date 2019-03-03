@@ -62,7 +62,7 @@
         "url": "https://github.com/compodoc/compodoc/issues"
     },
     "engines": {
-        "node": ">= 5.4.1"
+        "node": ">= 7.0.0"
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
