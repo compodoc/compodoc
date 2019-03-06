@@ -1,15 +1,13 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      path = require('path'),
-      tmp = temporaryDir();
+    path = require('path'),
+    tmp = temporaryDir();
 
 describe('CLI simple generation', () => {
-
     const distFolder = tmp.name + '-simple-generation';
 
     describe('when generation with d flag - relative folder', () => {
-
         let stdoutString = undefined,
             fooComponentFile,
             fooServiceFile,
@@ -18,12 +16,15 @@ describe('CLI simple generation', () => {
             emptyModuleFile,
             barModuleFile,
             emptyModuleRawFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -32,11 +33,11 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             fooComponentFile = read(`${distFolder}/components/FooComponent.html`);
             fooServiceFile = read(`${distFolder}/injectables/FooService.html`);
-            moduleFile  = read(`${distFolder}/modules/AppModule.html`);
+            moduleFile = read(`${distFolder}/modules/AppModule.html`);
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             emptyModuleFile = read(`${distFolder}/modules/EmptyModule.html`);
             emptyModuleRawFile = read(`${distFolder}/modules/EmptyRawModule.html`);
-            barModuleFile  = read(`${distFolder}/modules/BarModule.html`);
+            barModuleFile = read(`${distFolder}/modules/BarModule.html`);
             done();
         });
         after(() => tmp.clean(distFolder));
@@ -84,11 +85,15 @@ describe('CLI simple generation', () => {
          */
 
         it('it should have a link with this syntax {@link BarComponent}', () => {
-            expect(moduleFile).to.contain('See <a href="../components/BarComponent.html">BarComponent');
+            expect(moduleFile).to.contain(
+                'See <a href="../components/BarComponent.html">BarComponent'
+            );
         });
 
         it('it should have a link with this syntax [The BarComponent]{@link BarComponent}', () => {
-            expect(barModuleFile).to.contain('Watch <a href="../components/BarComponent.html">The BarComponent');
+            expect(barModuleFile).to.contain(
+                'Watch <a href="../components/BarComponent.html">The BarComponent'
+            );
         });
 
         it('it should have a link with this syntax {@link BarComponent|BarComponent3}', () => {
@@ -129,51 +134,53 @@ describe('CLI simple generation', () => {
         /**
          * internal/private methods
          */
-         it('should include by default methods marked as internal', () => {
-             expect(componentFile).to.contain('<code>internalMethod');
-         });
+        it('should include by default methods marked as internal', () => {
+            expect(componentFile).to.contain('<code>internalMethod');
+        });
 
-         it('should exclude methods marked as hidden', () => {
-             expect(componentFile).not.to.contain('<code>hiddenMethod');
-         });
+        it('should exclude methods marked as hidden', () => {
+            expect(componentFile).not.to.contain('<code>hiddenMethod');
+        });
 
-         it('should include by default methods marked as private', () => {
-             expect(componentFile).to.contain('<code>privateMethod');
-         });
+        it('should include by default methods marked as private', () => {
+            expect(componentFile).to.contain('<code>privateMethod');
+        });
 
         /**
          * No graph for empty module
          */
 
-         it('it should not generate graph for empty metadatas module', () => {
-             expect(emptyModuleFile).not.to.contain('module-graph-svg');
-         });
+        it('it should not generate graph for empty metadatas module', () => {
+            expect(emptyModuleFile).not.to.contain('module-graph-svg');
+        });
 
-         it('it should not break for empty raw metadatas module', () => {
-             expect(emptyModuleRawFile).not.to.contain('module-graph-svg');
-         });
+        it('it should not break for empty raw metadatas module', () => {
+            expect(emptyModuleRawFile).not.to.contain('module-graph-svg');
+        });
 
         /**
          * Support of function type parameters
          */
 
-         it('it should display function type parameters', () => {
-             expect(fooServiceFile).to.contain('<code>close(work: (toto: ');
-         });
+        it('it should display function type parameters', () => {
+            expect(fooServiceFile).to.contain('<code>close(work: (toto: ');
+        });
 
-         it('it should display c-style typed arrays', () => {
-             expect(fooServiceFile).to.contain('<code>string');
-         });
-
+        it('it should display c-style typed arrays', () => {
+            expect(fooServiceFile).to.contain('<code>string');
+        });
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -197,18 +204,24 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with d flag - absolute folder', () => {
-
         let stdoutString = undefined,
             fooComponentFile,
             fooServiceFile,
             componentFile,
             moduleFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
-                '../bin/index-cli.js',
-                '-p', '../test/src/sample-files/tsconfig.simple.json',
-                '-d', '/tmp/' + distFolder + '/'], { cwd: distFolder});
+            let ls = shell(
+                'node',
+                [
+                    '../bin/index-cli.js',
+                    '-p',
+                    '../test/src/sample-files/tsconfig.simple.json',
+                    '-d',
+                    '/tmp/' + distFolder + '/'
+                ],
+                { cwd: distFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -217,7 +230,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             fooComponentFile = read(`/tmp/${distFolder}/components/FooComponent.html`);
             fooServiceFile = read(`/tmp/${distFolder}/injectables/FooService.html`);
-            moduleFile  = read(`/tmp/${distFolder}/modules/AppModule.html`);
+            moduleFile = read(`/tmp/${distFolder}/modules/AppModule.html`);
             componentFile = read(`/tmp/${distFolder}/components/BarComponent.html`);
             done();
         });
@@ -325,14 +338,17 @@ describe('CLI simple generation', () => {
     });*/
 
     describe('when generation with d and a flags', () => {
-
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', distFolder,
-                '-a', './screenshots/']);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder,
+                '-a',
+                './screenshots/'
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -349,14 +365,17 @@ describe('CLI simple generation', () => {
     });
 
     describe('when passing a deep path on a flag', () => {
-
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', distFolder,
-                '-a', './test/src/todomvc-ng2/screenshots/actions']);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder,
+                '-a',
+                './test/src/todomvc-ng2/screenshots/actions'
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -373,15 +392,17 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with d flag and src arg', () => {
-
         let stdoutString = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
                 './test/src/sample-files/',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -410,12 +431,13 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation without d flag', () => {
-
         let stdoutString = undefined;
-        before(function (done) {
+        before(function(done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json']);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json'
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -455,15 +477,17 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with -t flag', () => {
-
         let stdoutString = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '-t',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -475,23 +499,25 @@ describe('CLI simple generation', () => {
         after(() => tmp.clean(distFolder));
 
         it('should not display anything', () => {
-            expect(stdoutString).to.contain('Node.js');
             expect(stdoutString).to.not.contain('parsing');
         });
     });
 
     describe('when generation with --theme flag', () => {
-
         let stdoutString = undefined,
             baseTheme = 'laravel',
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '--theme', baseTheme,
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--theme',
+                baseTheme,
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -509,17 +535,20 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with -n flag', () => {
-
         let stdoutString = undefined,
             name = 'TodoMVC-angular2-application',
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '-n', name,
-                '-d', distFolder]);
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '-n',
+                name,
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -537,16 +566,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --hideGenerator flag', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--hideGenerator',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -564,16 +595,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --disableSourceCode flag', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableSourceCode',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -591,16 +624,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --disableDomTree flag', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableDomTree',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -618,19 +653,22 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation of component dependecy doc with --navTabConfig option', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '--navTabConfig', `[
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig',
+                `[
                     {\"id\": \"source\",\"label\": \"Test Label 1\"},
                     {\"id\": \"info\",\"label\": \"Test Label 2\"}
                 ]`,
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -638,7 +676,7 @@ describe('CLI simple generation', () => {
             }
             stdoutString = ls.stdout.toString();
             index = read(`${distFolder}/components/BarComponent.html`);
-            index = index.replace(/\r?\n|\r/g, "");
+            index = index.replace(/\r?\n|\r/g, '');
             done();
         });
         after(() => tmp.clean(distFolder));
@@ -661,20 +699,23 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation of module dependecy doc with --navTabConfig option', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
-                '--navTabConfig', `[
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--navTabConfig',
+                `[
                     {\"id\": \"tree\",\"label\": \"DOM Tree\"},
                     {\"id\": \"source\",\"label\": \"Source\"},
                     {\"id\": \"info\",\"label\": \"Info\"}
                 ]`,
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -692,16 +733,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --disableTemplateTab flag', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableTemplateTab',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -719,16 +762,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --disableStyleTab flag', () => {
-
         let stdoutString = undefined,
             index = undefined;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableStyleTab',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -746,16 +791,18 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with --disableGraph flag', () => {
-
         let stdoutString = undefined,
-          fileContents = undefined;
-        before(function (done) {
+            fileContents = undefined;
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
                 '--disableGraph',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -791,18 +838,16 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with -r flag', () => {
-
         let stdoutString = '',
             port = 6666,
             child;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-s',
-                '-r',
-                '-r', port,
-                '-d', distFolder], { timeout: 10000});
+            let ls = shell(
+                'node',
+                ['./bin/index-cli.js', '-s', '-r', '-r', port, '-d', distFolder],
+                { timeout: 10000 }
+            );
 
             if (ls.stderr.toString() !== '') {
                 done(new Error(`shell error: ${ls.stderr.toString()}`));
@@ -821,16 +866,17 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with -p flag - absolute folder', () => {
-
         let stdoutString = '';
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 path.join(process.cwd() + path.sep + 'test/src/todomvc-ng2/src/tsconfig.json'),
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 done(new Error(`shell error: ${ls.stderr.toString()}`));
@@ -846,5 +892,4 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
     });
-
 });
