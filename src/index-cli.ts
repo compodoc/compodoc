@@ -515,30 +515,36 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (!this.isWatching) {
-            console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
-            console.log(pkg.version);
-            console.log('');
-            console.log(`TypeScript version used by Compodoc : ${ts.version}`);
-            console.log('');
+            if (!logger.silent) {
+                console.log(`Compodoc v${pkg.version}`);
+            } else {
+                console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
+                console.log(pkg.version);
+                console.log('');
+                console.log(`TypeScript version used by Compodoc : ${ts.version}`);
+                console.log('');
 
-            if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
-                const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
-                if (packageData) {
-                    const parsedData = JSON.parse(packageData);
-                    const projectDevDependencies = parsedData.devDependencies;
-                    if (projectDevDependencies && projectDevDependencies.typescript) {
-                        const tsProjectVersion = AngularVersionUtil.cleanVersion(
-                            projectDevDependencies.typescript
-                        );
-                        console.log(`TypeScript version of current project : ${tsProjectVersion}`);
-                        console.log('');
+                if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
+                    const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
+                    if (packageData) {
+                        const parsedData = JSON.parse(packageData);
+                        const projectDevDependencies = parsedData.devDependencies;
+                        if (projectDevDependencies && projectDevDependencies.typescript) {
+                            const tsProjectVersion = AngularVersionUtil.cleanVersion(
+                                projectDevDependencies.typescript
+                            );
+                            console.log(
+                                `TypeScript version of current project : ${tsProjectVersion}`
+                            );
+                            console.log('');
+                        }
                     }
                 }
+                console.log(`Node.js version : ${process.version}`);
+                console.log('');
+                console.log(`Operating system : ${osName(os.platform(), os.release())}`);
+                console.log('');
             }
-            console.log(`Node.js version : ${process.version}`);
-            console.log('');
-            console.log(`Operating system : ${osName(os.platform(), os.release())}`);
-            console.log('');
         }
 
         if (configExplorerResult) {
