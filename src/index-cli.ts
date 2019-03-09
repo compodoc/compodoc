@@ -611,7 +611,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         Configuration.mainData.output
                     } at http://127.0.0.1:${program.port}`
                 );
-                super.runWebServer(program.output);
+                super.runWebServer(Configuration.mainData.output);
             }
         } else if (program.serve && !Configuration.mainData.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
