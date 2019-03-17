@@ -64,7 +64,7 @@ describe('CLI i18n', () => {
                 '-p',
                 './test/src/sample-files/tsconfig.simple.json',
                 '--language',
-                'es-ES',
+                'invalid-Lang',
                 '-d',
                 distFolder
             ]);
