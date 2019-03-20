@@ -49,6 +49,7 @@ export class MarkdownEngine {
 
         this.markedInstance.setOptions({
             renderer: renderer,
+            gfm: true,
             breaks: false
         });
     }
