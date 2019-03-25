@@ -29,7 +29,7 @@
         "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
         "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
         "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
-        "postinstall": "opencollective postinstall",
+        "postinstall": "opencollective postinstall || exit 0",
         "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*.ts\"",
         "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\""
     },
