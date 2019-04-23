@@ -2359,10 +2359,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             });
         }
 
-        return FileEngine.write(finalPath, htmlData).catch(err => {
-            logger.error('Error during ' + page.name + ' page generation');
-            return Promise.reject('');
-        });
+        FileEngine.writeSync(finalPath, htmlData);
+        return Promise.resolve();
     }
 
     public processPages() {
@@ -2572,12 +2570,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         if (Configuration.mainData.customLogo !== '') {
                             logger.info(`Custom logo supplied`);
                             fs.copy(
+                                path.resolve(cwd + path.sep + Configuration.mainData.customLogo),
                                 path.resolve(
-                                    cwd +
-                                    path.sep +
-                                    Configuration.mainData.customLogo
+                                    finalOutput +
+                                        '/images/' +
+                                        Configuration.mainData.customLogo.split('/').pop()
                                 ),
-                                path.resolve(finalOutput + '/images/' + Configuration.mainData.customLogo.split("/").pop()),
                                 errorCopyLogo => {
                                     // tslint:disable-line
                                     if (errorCopyLogo) {
