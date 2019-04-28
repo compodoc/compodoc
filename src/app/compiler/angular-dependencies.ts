@@ -399,7 +399,10 @@ export class AngularDependencies extends FrameworkDependencies {
                                 id: 'injectable-' + name + '-' + hash,
                                 file: file,
                                 properties: IO.properties,
-                                methods: IO.methods,
+                                methods: IO.methods.map(method => ({
+                                    ...method,
+                                    type: 'typescript'
+                                })),
                                 description: IO.description,
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(

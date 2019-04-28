@@ -36,7 +36,7 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
         let type = 'html';
 
         if (options.hash.type) {
-            type = options.hash.type;
+            type = options.hash.type || context.type;
         }
 
         for (i; i < len; i++) {
@@ -49,10 +49,11 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
                                 .replace(/<caption>/g, '<b><i>')
                                 .replace(/\/caption>/g, '/b></i>');
                         } else {
-                            tag.comment =
-                                `<pre class="line-numbers"><code class="language-${type}">` +
-                                this.getHtmlEntities(this.cleanTag(jsdocTags[i].comment)) +
-                                `</code></pre>`;
+                            const comment =
+                                type === 'html'
+                                    ? this.getHtmlEntities(this.cleanTag(jsdocTags[i].comment))
+                                    : jsdocTags[i].comment;
+                            tag.comment = `<pre class="line-numbers"><code class="language-${type}">${comment}</code></pre>`;
                         }
                         tags.push(tag);
                     }
