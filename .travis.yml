@@ -2,7 +2,6 @@ os:
     - linux
 language: node_js
 node_js:
-    - '7'
     - '8'
     - '9'
     - '10'
@@ -34,7 +33,6 @@ matrix:
         - os: osx
         - node_js: '10'
     exclude:
-        - node_js: '7'
         - node_js: '8'
         - node_js: '9'
         - node_js: '10'
