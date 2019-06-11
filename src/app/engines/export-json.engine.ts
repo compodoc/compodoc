@@ -1,5 +1,7 @@
 import * as path from 'path';
 
+import Configuration from '../configuration';
+
 import { logger } from '../../utils/logger';
 import DependenciesEngine from './dependencies.engine';
 
@@ -31,6 +33,9 @@ export class ExportJsonEngine {
                 if (node.initializer) {
                     delete node.initializer;
                 }
+                if (Configuration.mainData.disableSourceCode) {
+                    delete node.sourceCode;
+                }
             }
         });
 
@@ -42,8 +47,12 @@ export class ExportJsonEngine {
         exportData.components = data.components;
         exportData.modules = this.processModules();
         exportData.miscellaneous = data.miscellaneous;
-        exportData.routes = data.routes;
-        exportData.coverage = data.coverageData;
+        if (!Configuration.mainData.disableRoutesGraph) {
+            exportData.routes = data.routes;
+        }
+        if (!Configuration.mainData.disableCoverage) {
+            exportData.coverage = data.coverageData;
+        }
 
         return FileEngine.write(
             outputFolder + path.sep + '/documentation.json',
