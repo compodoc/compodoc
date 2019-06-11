@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: "[BUG]"
+labels: 'Type: Bug'
+assignees: vogloblinsky
+
+---
+
 <!--
 > Please follow the issue template below for bug reports.
 > For issue, start the label of the title with [BUG]
