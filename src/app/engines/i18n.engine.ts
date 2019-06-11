@@ -5,6 +5,7 @@ import {
     TRANSLATION_ES_ES,
     TRANSLATION_FR_FR,
     TRANSLATION_IT_IT,
+    TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
     TRANSLATION_ZH_CN
 } from '../../locales';
@@ -24,6 +25,7 @@ class I18nEngine {
         'es-ES': 'es-ES',
         'fr-FR': 'fr-FR',
         'it-IT': 'it-IT',
+        'nl-NL': 'nl-NL',
         'pt-BR': 'pt-BR',
         'zh-CN': 'zh-CN'
     };
@@ -39,6 +41,7 @@ class I18nEngine {
         i18next.addResources('es-ES', 'translation', TRANSLATION_ES_ES);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);
         i18next.addResources('it-IT', 'translation', TRANSLATION_IT_IT);
+        i18next.addResources('nl-NL', 'translation', TRANSLATION_NL_NL);
         i18next.addResources('pt-BR', 'translation', TRANSLATION_PT_BR);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
     }
