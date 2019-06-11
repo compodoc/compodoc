@@ -40,6 +40,7 @@ import {
 
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
+import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -703,9 +704,7 @@ export class Application {
                         ) > -1
                     ) {
                         logger.info(
-                            `Generating documentation in export format ${
-                                Configuration.mainData.exportFormat
-                            }`
+                            `Generating documentation in export format ${Configuration.mainData.exportFormat}`
                         );
                         ExportEngine.export(
                             Configuration.mainData.output,
@@ -1023,9 +1022,7 @@ export class Application {
                         )
                     ) {
                         logger.info(
-                            ` ${
-                                Configuration.mainData.modules[i].name
-                            } has a README file, include it`
+                            ` ${Configuration.mainData.modules[i].name} has a README file, include it`
                         );
                         let readme = MarkdownEngine.readNeighbourReadmeFile(
                             Configuration.mainData.modules[i].file
@@ -1349,9 +1346,7 @@ export class Application {
         });
 
         if (navTabs.length === 0) {
-            throw new Error(`No valid navigation tabs have been defined for dependency type '${
-                dependency.type
-            }'. Specify \
+            throw new Error(`No valid navigation tabs have been defined for dependency type '${dependency.type}'. Specify \
 at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         }
 
@@ -1870,9 +1865,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent >= Configuration.mainData.coverageMinimumPerFile;
                     if (overTest && !Configuration.mainData.coverageTestShowOnlyFailed) {
                         logger.info(
-                            `${f.coveragePercent} % for file ${f.filePath} - ${
-                                f.name
-                            } - over minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${f.name} - over minimum per file`
                         );
                     }
                     return overTest;
@@ -1882,9 +1875,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         f.coveragePercent < Configuration.mainData.coverageMinimumPerFile;
                     if (underTest) {
                         logger.error(
-                            `${f.coveragePercent} % for file ${f.filePath} - ${
-                                f.name
-                            } - under minimum per file`
+                            `${f.coveragePercent} % for file ${f.filePath} - ${f.name} - under minimum per file`
                         );
                     }
                     return underTest;
@@ -2083,16 +2074,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 // Global coverage test and not per file
                 if (coverageData.count >= Configuration.mainData.coverageTestThreshold) {
                     logger.info(
-                        `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            Configuration.mainData.coverageTestThreshold
-                        }%)`
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${Configuration.mainData.coverageTestThreshold}%)`
                     );
                     generationPromiseResolve();
                     process.exit(0);
                 } else {
-                    let message = `Documentation coverage (${
-                        coverageData.count
-                    }%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`;
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2109,9 +2096,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 coverageTestPerFileResults = processCoveragePerFile();
                 // Per file coverage test and not global
                 if (coverageTestPerFileResults.underFiles.length > 0) {
-                    let message = `Documentation coverage per file is not over threshold (${
-                        Configuration.mainData.coverageMinimumPerFile
-                    }%)`;
+                    let message = `Documentation coverage per file is not over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2122,9 +2107,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 } else {
                     logger.info(
-                        `Documentation coverage per file is over threshold (${
-                            Configuration.mainData.coverageMinimumPerFile
-                        }%)`
+                        `Documentation coverage per file is over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`
                     );
                     generationPromiseResolve();
                     process.exit(0);
@@ -2140,14 +2123,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     coverageTestPerFileResults.underFiles.length === 0
                 ) {
                     logger.info(
-                        `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            Configuration.mainData.coverageTestThreshold
-                        }%)`
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${Configuration.mainData.coverageTestThreshold}%)`
                     );
                     logger.info(
-                        `Documentation coverage per file is over threshold (${
-                            Configuration.mainData.coverageMinimumPerFile
-                        }%)`
+                        `Documentation coverage per file is over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`
                     );
                     generationPromiseResolve();
                     process.exit(0);
@@ -2156,13 +2135,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     coverageTestPerFileResults.underFiles.length > 0
                 ) {
                     logger.info(
-                        `Documentation coverage (${coverageData.count}%) is over threshold (${
-                            Configuration.mainData.coverageTestThreshold
-                        }%)`
+                        `Documentation coverage (${coverageData.count}%) is over threshold (${Configuration.mainData.coverageTestThreshold}%)`
                     );
-                    let message = `Documentation coverage per file is not over threshold (${
-                        Configuration.mainData.coverageMinimumPerFile
-                    }%)`;
+                    let message = `Documentation coverage per file is not over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2175,14 +2150,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     coverageData.count < Configuration.mainData.coverageTestThreshold &&
                     coverageTestPerFileResults.underFiles.length > 0
                 ) {
-                    let messageGlobal = `Documentation coverage (${
-                            coverageData.count
-                        }%) is not over threshold (${
-                            Configuration.mainData.coverageTestThreshold
-                        }%)`,
-                        messagePerFile = `Documentation coverage per file is not over threshold (${
-                            Configuration.mainData.coverageMinimumPerFile
-                        }%)`;
+                    let messageGlobal = `Documentation coverage (${coverageData.count}%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`,
+                        messagePerFile = `Documentation coverage per file is not over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(messageGlobal);
@@ -2194,14 +2163,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         process.exit(0);
                     }
                 } else {
-                    let message = `Documentation coverage (${
-                            coverageData.count
-                        }%) is not over threshold (${
-                            Configuration.mainData.coverageTestThreshold
-                        }%)`,
-                        messagePerFile = `Documentation coverage per file is over threshold (${
-                            Configuration.mainData.coverageMinimumPerFile
-                        }%)`;
+                    let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`,
+                        messagePerFile = `Documentation coverage per file is over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`;
                     generationPromiseReject();
                     if (Configuration.mainData.coverageTestThresholdFail) {
                         logger.error(message);
@@ -2488,9 +2451,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             );
             if (Configuration.mainData.serve) {
                 logger.info(
-                    `Serving documentation from ${
-                        Configuration.mainData.output
-                    } at http://127.0.0.1:${Configuration.mainData.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${Configuration.mainData.port}`
                 );
                 this.runWebServer(Configuration.mainData.output);
             } else {
@@ -2714,14 +2675,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public runWebServer(folder) {
         if (!this.isWatching) {
-            LiveServer.start({
+            let liveServerConfiguration: LiveServerConfiguration = {
                 root: folder,
                 open: Configuration.mainData.open,
                 quiet: true,
                 logLevel: 0,
                 wait: 1000,
                 port: Configuration.mainData.port
-            });
+            };
+            if (Configuration.mainData.host !== '') {
+                liveServerConfiguration.host = Configuration.mainData.host;
+            }
+            LiveServer.start(liveServerConfiguration);
         }
         if (Configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {

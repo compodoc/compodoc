@@ -69,6 +69,7 @@ export class CliApplication extends Application {
                 'Serve generated documentation (default http://localhost:8080/)',
                 false
             )
+            .option('--host [host]', 'Change default host address')
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option(
                 '-w, --watch',
@@ -305,6 +306,15 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.serve) {
             Configuration.mainData.serve = program.serve;
+        }
+
+        if (configFile.host) {
+            Configuration.mainData.host = configFile.host;
+            Configuration.mainData.hostname = configFile.host;
+        }
+        if (program.host) {
+            Configuration.mainData.host = program.host;
+            Configuration.mainData.hostname = program.host;
         }
 
         if (configFile.port) {
@@ -559,9 +569,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         if (program.language && !I18nEngine.supportLanguage(program.language)) {
             logger.warn(
-                `The language ${program.language} is not available, falling back to ${
-                    I18nEngine.fallbackLanguage
-                }`
+                `The language ${program.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`
             );
         }
 
@@ -607,9 +615,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${
-                        Configuration.mainData.output
-                    } at http://127.0.0.1:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
@@ -620,9 +626,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${
-                        Configuration.mainData.output
-                    } at http://127.0.0.1:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
@@ -652,9 +656,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                 if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                     logger.error(
-                        `"${
-                            Configuration.mainData.tsconfig
-                        }" file was not found in the current directory`
+                        `"${Configuration.mainData.tsconfig}" file was not found in the current directory`
                     );
                     process.exit(1);
                 } else {
@@ -781,9 +783,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                         logger.error(
-                            `"${
-                                Configuration.mainData.tsconfig
-                            }" file was not found in the current directory`
+                            `"${Configuration.mainData.tsconfig}" file was not found in the current directory`
                         );
                         process.exit(1);
                     } else {

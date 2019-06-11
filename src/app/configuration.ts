@@ -14,6 +14,8 @@ export class Configuration implements ConfigurationInterface {
         theme: COMPODOC_DEFAULTS.theme,
         extTheme: '',
         serve: false,
+        hostname: COMPODOC_DEFAULTS.hostname,
+        host: '',
         port: COMPODOC_DEFAULTS.port,
         open: false,
         assetsFolder: '',

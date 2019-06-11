@@ -13,6 +13,7 @@ export interface ConfigurationFileInterface {
     includesName: string;
     silent: boolean;
     serve;
+    host: string;
     port: number;
     watch: boolean;
     exportFormat: string;

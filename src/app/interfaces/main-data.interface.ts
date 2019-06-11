@@ -5,6 +5,8 @@ export interface MainDataInterface {
     theme: string;
     extTheme: string;
     serve: boolean;
+    hostname: string;
+    host: string;
     port: number;
     open: boolean;
     assetsFolder: string;
