@@ -55,6 +55,10 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('it-IT', 'Documentazione generata usando');
     });
 
+    describe('with supported language - ja-JP', () => {
+        return checkWcMenuFile('ja-JP', 'このドキュメントは以下を使用して生成されています');
+    });
+
     describe('with supported language - nl-NL', () => {
         return checkWcMenuFile('nl-NL', 'Documentatie gegenereed met');
     });
