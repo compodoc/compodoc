@@ -4,6 +4,7 @@ import {
     TRANSLATION_EN_US,
     TRANSLATION_ES_ES,
     TRANSLATION_FR_FR,
+    TRANSLATION_HU_HU,
     TRANSLATION_IT_IT,
     TRANSLATION_JA_JP,
     TRANSLATION_NL_NL,
@@ -25,6 +26,7 @@ class I18nEngine {
         'en-US': 'en-US',
         'es-ES': 'es-ES',
         'fr-FR': 'fr-FR',
+        'hu-HU': 'hu-HU',
         'it-IT': 'it-IT',
         'ja-JP': 'ja-JP',
         'nl-NL': 'nl-NL',
@@ -42,6 +44,7 @@ class I18nEngine {
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
         i18next.addResources('es-ES', 'translation', TRANSLATION_ES_ES);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);
+        i18next.addResources('hu-HU', 'translation', TRANSLATION_HU_HU);
         i18next.addResources('it-IT', 'translation', TRANSLATION_IT_IT);
         i18next.addResources('ja-JP', 'translation', TRANSLATION_JA_JP);
         i18next.addResources('nl-NL', 'translation', TRANSLATION_NL_NL);

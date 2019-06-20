@@ -84,7 +84,7 @@ export class CliApplication extends Application {
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
-                'Language used for the generated documentation (en-US, es-ES, fr-FR, it-IT, ja-JP, nl-NL, pt-BR, zh-CN)',
+                'Language used for the generated documentation (en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, zh-CN)',
                 COMPODOC_DEFAULTS.language
             )
             .option(
