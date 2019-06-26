@@ -164,6 +164,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             )
             .option('--disableSearch', 'Do not add the search input', false)
             .option(
+                '--disableDependencies',
+                'Do not add the dependencies list',
+                COMPODOC_DEFAULTS.disableDependencies
+            )
+            .option(
                 '--minimal',
                 'Minimal mode with only documentation. No search, no graph, no coverage.',
                 false
@@ -481,6 +486,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.disableSearch) {
             Configuration.mainData.disableSearch = program.disableSearch;
+        }
+
+        if (configFile.disableDependencies) {
+            Configuration.mainData.disableDependencies = configFile.disableDependencies;
+        }
+        if (program.disableDependencies) {
+            Configuration.mainData.disableDependencies = program.disableDependencies;
         }
 
         if (configFile.minimal) {

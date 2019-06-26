@@ -224,11 +224,13 @@ export class Application {
                 );
                 logger.info('package.json file found');
 
-                if (typeof parsedData.dependencies !== 'undefined') {
-                    this.processPackageDependencies(parsedData.dependencies);
-                }
-                if (typeof parsedData.peerDependencies !== 'undefined') {
-                    this.processPackagePeerDependencies(parsedData.peerDependencies);
+                if (!Configuration.mainData.disableDependencies) {
+                    if (typeof parsedData.dependencies !== 'undefined') {
+                        this.processPackageDependencies(parsedData.dependencies);
+                    }
+                    if (typeof parsedData.peerDependencies !== 'undefined') {
+                        this.processPackagePeerDependencies(parsedData.peerDependencies);
+                    }
                 }
 
                 this.processMarkdowns().then(
