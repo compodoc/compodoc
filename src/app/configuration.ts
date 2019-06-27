@@ -63,6 +63,7 @@ export class Configuration implements ConfigurationInterface {
         disableLifeCycleHooks: COMPODOC_DEFAULTS.disableLifeCycleHooks,
         disableRoutesGraph: COMPODOC_DEFAULTS.disableRoutesGraph,
         disableSearch: false,
+        disableDependencies: COMPODOC_DEFAULTS.disableDependencies,
         watch: false,
         mainGraph: '',
         coverageTest: false,

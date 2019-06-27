@@ -104,10 +104,12 @@
                         {{~> routes data ~}}
                    {{/compare}}
 
-                   {{#compare data.context "===" 'package-dependencies'}}
-                        {{~> package-dependencies data ~}}
-                   {{/compare}}
-
+                    {{#unless data.disableDependencies}}
+                         {{#compare data.context "===" 'package-dependencies'}}
+                              {{~> package-dependencies data ~}}
+                         {{/compare}}
+                    {{/unless}}
+                   
                    {{#compare data.context "===" 'miscellaneous-functions'}}
                         {{~> miscellaneous-functions data ~}}
                    {{/compare}}
@@ -125,7 +127,7 @@
                         {{~> coverage-report data ~}}
                    {{/compare}}
 
-									 {{#compare data.context "===" 'unit-test'}}
+				{{#compare data.context "===" 'unit-test'}}
                         {{~> unit-test-report data ~}}
                    {{/compare}}
 

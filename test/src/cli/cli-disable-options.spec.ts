@@ -276,6 +276,32 @@ describe('CLI disable flags', () => {
         });
     });
 
+    describe('disabling dependencies with --disableDependencies', () => {
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/src/sample-files/tsconfig.simple.json',
+                '--disableDependencies',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate the dependencies list', () => {
+            let file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('href="dependencies.html"');
+        });
+    });
+
     describe('minimal with --minimal', () => {
         let fileContents;
 
