@@ -1,154 +1,154 @@
 {
-    "name": "@compodoc/compodoc",
-    "version": "1.1.9",
-    "description": "The missing documentation tool for your Angular application",
-    "main": "dist/index.js",
-    "bin": {
-        "compodoc": "./bin/index-cli.js"
-    },
-    "scripts": {
-        "build": "rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs",
-        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
-        "download-api-list": "node tools/download-api-list.js",
-        "start": "npm run test:watch",
-        "pretest": "tsc -p test/tsconfig.json && node test/dist/cli/cli-clean-root-folder.js",
-        "test": "mocha-parallel-tests test --max-parallel 2 && node test/dist/cli/cli-revert-root-folder.js",
-        "posttest": "rimraf test/dist",
-        "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
-        "nyc": "nyc npm test",
-        "codecov": "codecov -f coverage/*.json",
-        "backup-package-json": "node tools/backup-package-json.js",
-        "restore-package-json": "node tools/restore-package-json.js",
-        "prepublishOnly": "npm run build && npm run backup-package-json",
-        "postpublish": "npm run restore-package-json",
-        "lint": "tslint -p tsconfig.json src/**/*.ts",
-        "test:watch": "npm-watch",
-        "test:simple-doc": "ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
-        "pretest-e2e-mocha": "tsc -p test/tsconfig-e2e.json",
-        "test-e2e-mocha": "mocha --opts test/mocha-e2e.opts",
-        "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
-        "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
-        "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
-        "postinstall": "opencollective postinstall || exit 0",
-        "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*.ts\"",
-        "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\""
-    },
-    "watch": {
-        "build": {
-            "patterns": [
-                "src/**/*.ts"
-            ],
-            "extensions": "js,ts",
-            "quiet": true
-        }
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/compodoc/compodoc.git"
-    },
-    "keywords": [
-        "angular2",
-        "angular",
-        "documentation",
-        "components",
-        "module",
-        "graph",
-        "dependencies",
-        "markdown"
-    ],
-    "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/compodoc/compodoc/issues"
-    },
-    "engines": {
-        "node": ">= 8.0.0"
-    },
-    "homepage": "https://github.com/compodoc/compodoc#readme",
-    "dependencies": {
-        "@compodoc/ngd-transformer": "^2.0.0",
-        "chalk": "^2.4.2",
-        "cheerio": "^1.0.0-rc.3",
-        "chokidar": "^3.0.1",
-        "colors": "^1.3.3",
-        "commander": "^2.20.0",
-        "cosmiconfig": "^5.2.1",
-        "fancy-log": "^1.3.3",
-        "findit2": "^2.2.3",
-        "fs-extra": "^8.0.1",
-        "glob": "^7.1.4",
-        "handlebars": "^4.1.2",
-        "html-entities": "^1.2.1",
-        "i18next": "^17.0.3",
-        "inside": "^1.0.0",
-        "json5": "^2.1.0",
-        "live-server": "^1.2.1",
-        "lodash": "^4.17.11",
-        "lunr": "^2.3.6",
-        "marked": "^0.6.2",
-        "minimist": "^1.2.0",
-        "opencollective": "^1.0.3",
-        "os-name": "^3.1.0",
-        "pdfmake": "^0.1.57",
-        "semver": "^6.1.1",
-        "traverse": "^0.6.6",
-        "ts-simple-ast": "12.4.0",
-        "uuid": "^3.3.2"
-    },
-    "devDependencies": {
-        "@types/chai": "^4.1.7",
-        "@types/fs-extra": "^7.0.0",
-        "@types/lodash": "^4.14.134",
-        "@types/marked": "^0.6.5",
-        "@types/mocha": "^5.2.7",
-        "@types/node": "^12.0.8",
-        "@types/semver": "^6.0.0",
-        "@types/traverse": "^0.6.32",
-        "auto-changelog": "^1.13.0",
-        "chai": "^4.2.0",
-        "codecov": "^3.5.0",
-        "cross-env": "^5.2.0",
-        "husky": "^2.4.0",
-        "mocha": "^6.1.4",
-        "mocha-parallel-tests": "^2.2.0",
-        "nodemon": "^1.19.1",
-        "npm-watch": "^0.6.0",
-        "nyc": "^14.1.1",
-        "pdfjs-dist": "^2.0.943",
-        "prettier": "^1.18.2",
-        "pretty-quick": "^1.11.0",
-        "request": "^2.88.0",
-        "rimraf": "^2.6.3",
-        "rollup": "^1.15.1",
-        "rollup-plugin-typescript": "^1.0.1",
-        "rollup-watch": "^4.3.1",
-        "selenium-webdriver": "^4.0.0-alpha.1",
-        "ts-node": "^8.2.0",
-        "tslint": "^5.17.0"
-    },
-    "nyc": {
-        "include": [
-            "dist/index-cli.js",
-            "bin/*.js"
-        ],
-        "extension": [
-            ".js"
-        ],
-        "reporter": [
-            "json",
-            "html",
-            "text-summary"
-        ],
-        "all": true
-    },
-    "collective": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/compodoc",
-        "logo": "https://opencollective.com/compodoc/logo.txt"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "pretty-quick --staged --pattern \"**/*.ts\""
-        }
+  "name": "@compodoc/compodoc",
+  "version": "1.1.9",
+  "description": "The missing documentation tool for your Angular application",
+  "main": "dist/index.js",
+  "bin": {
+    "compodoc": "./bin/index-cli.js"
+  },
+  "scripts": {
+    "build": "rollup -c rollup/rollup.config.js -i ./src/index-cli.ts -o dist/index-cli.js -f cjs && rollup -c rollup/rollup.config.js -i ./src/index.ts -o dist/index.js -f cjs",
+    "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
+    "download-api-list": "node tools/download-api-list.js",
+    "start": "npm run test:watch",
+    "pretest": "tsc -p test/tsconfig.json && node test/dist/cli/cli-clean-root-folder.js",
+    "test": "mocha-parallel-tests test --max-parallel 2 && node test/dist/cli/cli-revert-root-folder.js",
+    "posttest": "rimraf test/dist",
+    "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
+    "nyc": "nyc npm test",
+    "codecov": "codecov -f coverage/*.json",
+    "backup-package-json": "node tools/backup-package-json.js",
+    "restore-package-json": "node tools/restore-package-json.js",
+    "prepublishOnly": "npm run build && npm run backup-package-json",
+    "postpublish": "npm run restore-package-json",
+    "lint": "tslint -p tsconfig.json src/**/*.ts",
+    "test:watch": "npm-watch",
+    "test:simple-doc": "ts-node ./bin/index-cli.js -p ./test/src/sample-files/tsconfig.simple.json -d doc -s --port 4000 & sleep 20",
+    "pretest-e2e-mocha": "tsc -p test/tsconfig-e2e.json",
+    "test-e2e-mocha": "mocha --opts test/mocha-e2e.opts",
+    "presaucelabs-test-e2e-mocha": "npm run test:simple-doc",
+    "saucelabs-test-e2e-mocha": "cross-env MODE_LOCAL=0 npm run test-e2e-mocha",
+    "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
+    "postinstall": "opencollective-postinstall || exit 0",
+    "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*.ts\"",
+    "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\""
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src/**/*.ts"
+      ],
+      "extensions": "js,ts",
+      "quiet": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/compodoc/compodoc.git"
+  },
+  "keywords": [
+    "angular2",
+    "angular",
+    "documentation",
+    "components",
+    "module",
+    "graph",
+    "dependencies",
+    "markdown"
+  ],
+  "author": "Vindent Ogloblinsky (vincent.ogloblinsky@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/compodoc/compodoc/issues"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "homepage": "https://github.com/compodoc/compodoc#readme",
+  "dependencies": {
+    "@compodoc/ngd-transformer": "^2.0.0",
+    "chalk": "^2.4.2",
+    "cheerio": "^1.0.0-rc.3",
+    "chokidar": "^3.0.1",
+    "colors": "^1.3.3",
+    "commander": "^2.20.0",
+    "cosmiconfig": "^5.2.1",
+    "fancy-log": "^1.3.3",
+    "findit2": "^2.2.3",
+    "fs-extra": "^8.0.1",
+    "glob": "^7.1.4",
+    "handlebars": "^4.1.2",
+    "html-entities": "^1.2.1",
+    "i18next": "^17.0.3",
+    "inside": "^1.0.0",
+    "json5": "^2.1.0",
+    "live-server": "^1.2.1",
+    "lodash": "^4.17.11",
+    "lunr": "^2.3.6",
+    "marked": "^0.6.2",
+    "minimist": "^1.2.0",
+    "opencollective-postinstall": "^2.0.2",
+    "os-name": "^3.1.0",
+    "pdfmake": "^0.1.57",
+    "semver": "^6.1.1",
+    "traverse": "^0.6.6",
+    "ts-simple-ast": "12.4.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/fs-extra": "^7.0.0",
+    "@types/lodash": "^4.14.134",
+    "@types/marked": "^0.6.5",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.0.8",
+    "@types/semver": "^6.0.0",
+    "@types/traverse": "^0.6.32",
+    "auto-changelog": "^1.13.0",
+    "chai": "^4.2.0",
+    "codecov": "^3.5.0",
+    "cross-env": "^5.2.0",
+    "husky": "^2.4.0",
+    "mocha": "^6.1.4",
+    "mocha-parallel-tests": "^2.2.0",
+    "nodemon": "^1.19.1",
+    "npm-watch": "^0.6.0",
+    "nyc": "^14.1.1",
+    "pdfjs-dist": "^2.0.943",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.0",
+    "request": "^2.88.0",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.15.1",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-watch": "^4.3.1",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "ts-node": "^8.2.0",
+    "tslint": "^5.17.0"
+  },
+  "nyc": {
+    "include": [
+      "dist/index-cli.js",
+      "bin/*.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "reporter": [
+      "json",
+      "html",
+      "text-summary"
+    ],
+    "all": true
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/compodoc",
+    "logo": "https://opencollective.com/compodoc/logo.txt"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --pattern \"**/*.ts\""
+    }
+  }
 }
