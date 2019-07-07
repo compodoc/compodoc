@@ -1,22 +1,25 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI toggle menu items', () => {
-
     describe('with a list', () => {
         const distFolder = tmp.name + '-toggle';
         let stdoutString = undefined,
             fooIndexFile,
             fooServiceFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/todomvc-ng2/src/tsconfig.json',
-                '-d', distFolder,
-                '--toggleMenuItems', 'modules']);
+                '-p',
+                './test/src/todomvc-ng2/src/tsconfig.json',
+                '-d',
+                distFolder,
+                '--toggleMenuItems',
+                'modules'
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -29,7 +32,7 @@ describe('CLI toggle menu items', () => {
         after(() => tmp.clean(distFolder));
 
         it('it should have a toggled item menu', () => {
-            expect(fooIndexFile).to.contain('ion-ios-arrow-down');
+            expect(fooIndexFile).to.contain('ion-ios-arrow-up');
         });
     });
 });

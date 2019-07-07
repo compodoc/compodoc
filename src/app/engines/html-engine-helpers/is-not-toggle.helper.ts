@@ -9,7 +9,7 @@ export class IsNotToggleHelper implements IHtmlEngineHelper {
 
         if (Configuration.mainData.toggleMenuItems.indexOf('all') !== -1) {
             return options.inverse(context);
-        } else if (result === -1) {
+        } else if (result !== -1) {
             return options.fn(context);
         } else {
             return options.inverse(context);

@@ -98,7 +98,7 @@ export class CliApplication extends Application {
             )
             .option(
                 '--toggleMenuItems <items>',
-                "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','classes','injectables','interfaces','pipes','additionalPages']",
+                "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','controllers','classes','injectables','guards','interfaces','interceptors','pipes','miscellaneous','additionalPages']",
                 list,
                 COMPODOC_DEFAULTS.toggleMenuItems
             )
