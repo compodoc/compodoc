@@ -78,7 +78,7 @@ export class CliApplication extends Application {
             )
             .option(
                 '-e, --exportFormat [format]',
-                'Export in specified format (json, html, pdf)',
+                'Export in specified format (json, html)',
                 COMPODOC_DEFAULTS.exportFormat
             )
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
