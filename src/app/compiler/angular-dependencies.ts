@@ -1073,7 +1073,7 @@ export class AngularDependencies extends FrameworkDependencies {
         let result = false;
         if (tags) {
             tags.forEach(tag => {
-                if (tag.tagName && tag.tagName && tag.tagName.text === 'private') {
+                if (tag.tagName && tag.tagName.text && tag.tagName.text === 'private') {
                     result = true;
                 }
             });
