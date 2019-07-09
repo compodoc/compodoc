@@ -240,7 +240,7 @@ export function findMainSourceFolder(files: string[]) {
 
     for (let i = 0; i < rawFolders.length; i++) {
         let sep = rawFolders[i].split(path.sep);
-        sep.map(folder => {
+        sep.forEach(folder => {
             if (folders[folder]) {
                 folders[folder] += 1;
             } else {

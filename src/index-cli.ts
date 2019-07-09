@@ -69,6 +69,7 @@ export class CliApplication extends Application {
                 'Serve generated documentation (default http://localhost:8080/)',
                 false
             )
+            .option('--host [host]', 'Change default host address')
             .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
             .option(
                 '-w, --watch',
@@ -83,7 +84,7 @@ export class CliApplication extends Application {
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
-                'Language used for the generated documentation (en-US, fr-FR, zh-CN, pt-BR)',
+                'Language used for the generated documentation (en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, zh-CN)',
                 COMPODOC_DEFAULTS.language
             )
             .option(
@@ -97,7 +98,7 @@ export class CliApplication extends Application {
             )
             .option(
                 '--toggleMenuItems <items>',
-                "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','classes','injectables','interfaces','pipes','additionalPages']",
+                "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','controllers','classes','injectables','guards','interfaces','interceptors','pipes','miscellaneous','additionalPages']",
                 list,
                 COMPODOC_DEFAULTS.toggleMenuItems
             )
@@ -162,6 +163,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 COMPODOC_DEFAULTS.disableRoutesGraph
             )
             .option('--disableSearch', 'Do not add the search input', false)
+            .option(
+                '--disableDependencies',
+                'Do not add the dependencies list',
+                COMPODOC_DEFAULTS.disableDependencies
+            )
             .option(
                 '--minimal',
                 'Minimal mode with only documentation. No search, no graph, no coverage.',
@@ -305,6 +311,15 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.serve) {
             Configuration.mainData.serve = program.serve;
+        }
+
+        if (configFile.host) {
+            Configuration.mainData.host = configFile.host;
+            Configuration.mainData.hostname = configFile.host;
+        }
+        if (program.host) {
+            Configuration.mainData.host = program.host;
+            Configuration.mainData.hostname = program.host;
         }
 
         if (configFile.port) {
@@ -473,6 +488,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.disableSearch = program.disableSearch;
         }
 
+        if (configFile.disableDependencies) {
+            Configuration.mainData.disableDependencies = configFile.disableDependencies;
+        }
+        if (program.disableDependencies) {
+            Configuration.mainData.disableDependencies = program.disableDependencies;
+        }
+
         if (configFile.minimal) {
             Configuration.mainData.disableSearch = true;
             Configuration.mainData.disableRoutesGraph = true;
@@ -515,30 +537,36 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (!this.isWatching) {
-            console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
-            console.log(pkg.version);
-            console.log('');
-            console.log(`TypeScript version used by Compodoc : ${ts.version}`);
-            console.log('');
+            if (!logger.silent) {
+                console.log(`Compodoc v${pkg.version}`);
+            } else {
+                console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
+                console.log(pkg.version);
+                console.log('');
+                console.log(`TypeScript version used by Compodoc : ${ts.version}`);
+                console.log('');
 
-            if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
-                const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
-                if (packageData) {
-                    const parsedData = JSON.parse(packageData);
-                    const projectDevDependencies = parsedData.devDependencies;
-                    if (projectDevDependencies && projectDevDependencies.typescript) {
-                        const tsProjectVersion = AngularVersionUtil.cleanVersion(
-                            projectDevDependencies.typescript
-                        );
-                        console.log(`TypeScript version of current project : ${tsProjectVersion}`);
-                        console.log('');
+                if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
+                    const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
+                    if (packageData) {
+                        const parsedData = JSON.parse(packageData);
+                        const projectDevDependencies = parsedData.devDependencies;
+                        if (projectDevDependencies && projectDevDependencies.typescript) {
+                            const tsProjectVersion = AngularVersionUtil.cleanVersion(
+                                projectDevDependencies.typescript
+                            );
+                            console.log(
+                                `TypeScript version of current project : ${tsProjectVersion}`
+                            );
+                            console.log('');
+                        }
                     }
                 }
+                console.log(`Node.js version : ${process.version}`);
+                console.log('');
+                console.log(`Operating system : ${osName(os.platform(), os.release())}`);
+                console.log('');
             }
-            console.log(`Node.js version : ${process.version}`);
-            console.log('');
-            console.log(`Operating system : ${osName(os.platform(), os.release())}`);
-            console.log('');
         }
 
         if (configExplorerResult) {
@@ -553,9 +581,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         if (program.language && !I18nEngine.supportLanguage(program.language)) {
             logger.warn(
-                `The language ${program.language} is not available, falling back to ${
-                    I18nEngine.fallbackLanguage
-                }`
+                `The language ${program.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`
             );
         }
 
@@ -601,11 +627,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${
-                        Configuration.mainData.output
-                    } at http://127.0.0.1:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
                 );
-                super.runWebServer(program.output);
+                super.runWebServer(Configuration.mainData.output);
             }
         } else if (program.serve && !Configuration.mainData.tsconfig && !program.output) {
             // if only -s find ./documentation, if ok serve, else error provide -d
@@ -614,9 +638,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${
-                        Configuration.mainData.output
-                    } at http://127.0.0.1:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
@@ -646,9 +668,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                 if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                     logger.error(
-                        `"${
-                            Configuration.mainData.tsconfig
-                        }" file was not found in the current directory`
+                        `"${Configuration.mainData.tsconfig}" file was not found in the current directory`
                     );
                     process.exit(1);
                 } else {
@@ -775,9 +795,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                         logger.error(
-                            `"${
-                                Configuration.mainData.tsconfig
-                            }" file was not found in the current directory`
+                            `"${Configuration.mainData.tsconfig}" file was not found in the current directory`
                         );
                         process.exit(1);
                     } else {

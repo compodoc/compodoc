@@ -18,7 +18,7 @@ export class ExportEngine {
             case 'json':
                 return ExportJsonEngine.export(outputFolder, data);
             case 'pdf':
-                return ExportPdfEngine.export(outputFolder, data);
+                return ExportPdfEngine.export(outputFolder);
         }
     }
 }

@@ -210,8 +210,6 @@ export class SymbolHelper {
         } else if (ts.isPropertyAccessExpression(localNode.initializer)) {
             let identifier = this.parseSymbolElements(localNode.initializer);
             return [identifier];
-        } else if (ts.isArrayLiteralExpression(localNode.initializer)) {
-            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         } else if (
             localNode.initializer &&
             localNode.initializer.elements &&

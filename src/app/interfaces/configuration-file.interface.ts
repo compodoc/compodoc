@@ -13,6 +13,7 @@ export interface ConfigurationFileInterface {
     includesName: string;
     silent: boolean;
     serve;
+    host: string;
     port: number;
     watch: boolean;
     exportFormat: string;
@@ -34,6 +35,7 @@ export interface ConfigurationFileInterface {
     disableLifeCycleHooks: boolean;
     disableRoutesGraph: boolean;
     disableSearch: boolean;
+    disableDependencies: boolean;
     minimal: boolean;
     customFavicon: string;
     customLogo: string;

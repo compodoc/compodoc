@@ -3,10 +3,11 @@ export const COMPODOC_DEFAULTS = {
     additionalEntryName: 'Additional documentation',
     additionalEntryPath: 'additional-documentation',
     folder: './documentation/',
+    hostname: '127.0.0.1',
     port: 8080,
     theme: 'gitbook',
     exportFormat: 'html',
-    exportFormatsSupported: ['html', 'json'],
+    exportFormatsSupported: ['html', 'json', 'pdf'],
     base: '/',
     defaultCoverageThreshold: 70,
     defaultCoverageMinimumPerFile: 0,
@@ -25,6 +26,7 @@ export const COMPODOC_DEFAULTS = {
     disableInternal: false,
     disableLifeCycleHooks: false,
     disableRoutesGraph: false,
+    disableDependencies: false,
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'

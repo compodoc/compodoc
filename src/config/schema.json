@@ -342,6 +342,15 @@
                 false
             ]
         },
+        "disableDependencies": {
+            "$id": "/properties/disableDependencies",
+            "type": "boolean",
+            "title": "Do not add the dependencies list",
+            "default": false,
+            "examples": [
+                false
+            ]
+        },
         "minimal": {
             "$id": "/properties/minimal",
             "type": "boolean",

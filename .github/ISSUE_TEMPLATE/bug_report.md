@@ -1,12 +1,20 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: "[BUG]"
+labels: 'Type: Bug'
+assignees: vogloblinsky
+
+---
+
 <!--
-> Please follow the issue template below for bug reports and queries.
+> Please follow the issue template below for bug reports.
 > For issue, start the label of the title with [BUG]
-> For feature requests, start the label of the title with [FEATURE] and explain your use case and ideas clearly below, you can remove sections which are not relevant.
 -->
 
 ##### **Overview of the issue**
 
-<!-- explain the issue or feature request, if an error is being thrown a stack trace helps -->
+<!-- explain the issue, if an error is being thrown a stack trace helps -->
 
 ##### **Operating System, Node.js, npm, compodoc version(s)**
 
