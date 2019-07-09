@@ -22,7 +22,8 @@ install:
 script:
     - npm run build
     - npm run test
-    - if [ $TO_TEST == 'ALL' ]; then npm run saucelabs-test-e2e-mocha; sonar-scanner; fi
+    - if [ $TO_TEST == 'UNIT' ]; then sonar-scanner; fi
+    - if [ $TO_TEST == 'ALL' ]; then npm run saucelabs-test-e2e-mocha; fi
     - if [ $TO_TEST == 'OTHERS' ]; then npm run angularexpo; fi
 after_success:
     - npm run codecov
