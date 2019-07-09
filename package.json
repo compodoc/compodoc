@@ -1,6 +1,6 @@
 {
     "name": "@compodoc/compodoc",
-    "version": "1.1.9",
+    "version": "1.1.10",
     "description": "The missing documentation tool for your Angular application",
     "main": "dist/index.js",
     "bin": {
