@@ -1,3 +1,34 @@
+<a name="1.1.10"></a>
+
+# [1.1.10](https://github.com/compodoc/compodoc/compare/1.1.9...1.1.10) (2019-07-09)
+
+### Features
+
+- feat(CLI): disableDependencies flag [#798](https://github.com/compodoc/compodoc/pull/798)
+
+### Merged
+
+- Upgrade to opencollective-postinstall [#804](https://github.com/compodoc/compodoc/pull/804) Thanks [Emanuel](https://github.com/emanuelbuholzer)
+- Update postinstall so that it doesn't cause failures [#758](https://github.com/compodoc/compodoc/pull/758) Thanks [Matt Ezell](https://github.com/mattezell)
+- Avoid pathological out of memory on large datasets [#778](https://github.com/compodoc/compodoc/pull/778) Thanks [Ali Ijaz Sheikh](https://github.com/ofrobots)
+- fix(Engine): Code blocks in Markdown not work as expected [#755](https://github.com/compodoc/compodoc/pull/755) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
+- feat(i18n): Spanish language [#753](https://github.com/compodoc/compodoc/pull/753) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
+- feat(i18n): Italian language [#748](https://github.com/compodoc/compodoc/pull/748) Thanks [Marco](https://github.com/predorock)
+- feat(i18n): add hungarian language [#796](https://github.com/compodoc/compodoc/pull/796) Thanks [Nagy, Gábor](https://github.com/mercury83)
+- feat(i18n): add japanese language translations [#794](https://github.com/compodoc/compodoc/pull/794) Thanks [tkt989](https://github.com/tkt989)
+- feat(i18n): add dutch language translations [#792](https://github.com/compodoc/compodoc/pull/792) Thanks [Bjørn Wikkeling](https://github.com/magikMaker)
+
+### Bug fixes
+
+- fix(app): toggleMenuItems ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#790](https://github.com/compodoc/compodoc/issues/790)
+- fix(app): Code blocks in Markdown not work as expected ([9b829ed](https://github.com/compodoc/compodoc/commit/9b829ed)), closes [#750](https://github.com/compodoc/compodoc/issues/750)
+- fix(export): disableSourceCode flag for json format ([171862d](https://github.com/compodoc/compodoc/commit/171862d)), closes [#785](https://github.com/compodoc/compodoc/issues/785)
+- fix(CLI): rendering with --disableCoverage ([55944ff](https://github.com/compodoc/compodoc/commit/55944ff)), closes [#786](https://github.com/compodoc/compodoc/issues/786)
+- feat(CLI): disableDependencies flag ([399054e](https://github.com/compodoc/compodoc/commit/399054e)), closes [#797](https://github.com/compodoc/compodoc/issues/797)
+- fix(CLI): flag for host url ([b2ec5b9](https://github.com/compodoc/compodoc/commit/b2ec5b9)), closes [#787](https://github.com/compodoc/compodoc/issues/787)
+- fix(CLI): output + serve ([94e2f82](https://github.com/compodoc/compodoc/commit/94e2f82)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
+- fix(CLI): Hide banner in silent mode ([fea00d3](https://github.com/compodoc/compodoc/commit/fea00d3)), closes [#747](https://github.com/compodoc/compodoc/issues/747)
+
 <a name="1.1.9"></a>
 
 # [1.1.9](https://github.com/compodoc/compodoc/compare/1.1.8...1.1.9) (2019-03-01)
