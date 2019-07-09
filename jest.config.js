@@ -9,5 +9,5 @@ module.exports = {
             tsConfig: 'test/tsconfig-jest.json'
         }
     },
-    collectCoverageFrom: ['./src/**/*.ts', '!**/node_modules/**', './dist/*.js']
+    collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test']
 };
