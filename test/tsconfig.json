@@ -3,6 +3,7 @@
         "module": "commonjs",
         "target": "es2015",
         "outDir": "./dist",
+        "sourceMap": true,
         "typeRoots": [
             "../../node_modules/@types"
         ],
