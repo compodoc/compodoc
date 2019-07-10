@@ -7,7 +7,8 @@ module.exports = {
     globals: {
         'ts-jest': {
             tsConfig: 'test/tsconfig-jest.json',
-            diagnostics: false
+            diagnostics: false,
+            isolatedModules: false
         }
     },
     collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test/**']
