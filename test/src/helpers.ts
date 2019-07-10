@@ -144,7 +144,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
 
     return new Promise((resolve, reject) => {
         PDFJS.getDocument(dataBuffer)
-            .then(document => {
+            .promise.then(document => {
                 doc = document;
                 ret.numpages = doc.numPages;
 
