@@ -1,4 +1,4 @@
-import { temporaryDir } from '../helpers';
+import { temporaryDir } from './helpers';
 
 const tmp = temporaryDir();
 
