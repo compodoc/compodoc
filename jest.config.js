@@ -3,11 +3,12 @@ module.exports = {
     collectCoverage: true,
     preset: 'ts-jest',
     testEnvironment: 'node',
-    roots: ['test/src/cli-jest'],
+    testMatch: ['**/cli-jest/**/*.ts'],
     globals: {
         'ts-jest': {
-            tsConfig: 'test/tsconfig-jest.json'
+            tsConfig: 'test/tsconfig-jest.json',
+            diagnostics: false
         }
     },
-    collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test']
+    collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test/**']
 };

@@ -8,6 +8,10 @@
         "outDir": "dist",
         "sourceMap": true
     },
-    "include": ["src/cli-jest/*"],
+    "include": [
+        "src/cli-jest/*",
+        "src/cli-clean-root-folder.ts",
+        "src/cli-revert-root-folder.ts"
+    ],
     "exclude": ["node_modules", "**/*.spec.ts"]
 }
