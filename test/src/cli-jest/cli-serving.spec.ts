@@ -8,7 +8,7 @@ describe('CLI serving', () => {
     describe('when serving with -s flag in another directory', () => {
         let stdoutString = '',
             child;
-        beforeEach((function(done) {
+        beforeEach(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', ['./bin/index-cli.js', '-s', '-d', distFolder], {
                 timeout: TIMEOUT
@@ -21,7 +21,7 @@ describe('CLI serving', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach((() => tmp.clean(distFolder));
+        afterEach(() => tmp.clean(distFolder));
 
         it('should serve', () => {
             expect(stdoutString).toContain(
@@ -33,7 +33,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory', () => {
         let stdoutString = '',
             child;
-        beforeEach((function(done) {
+        beforeEach(function(done) {
             tmp.create('documentation');
             let ls = shell(
                 'node',
@@ -59,7 +59,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory and different host', () => {
         let stdoutString = '',
             child;
-        beforeEach((function(done) {
+        beforeEach(function(done) {
             tmp.create('documentation');
             let ls = shell(
                 'node',
@@ -92,7 +92,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory and without doc generation', () => {
         let stdoutString = '',
             child;
-        beforeEach((function(done) {
+        beforeEach(function(done) {
             let ls = shell('node', ['./bin/index-cli.js', '-s', '-d', './documentation/'], {
                 timeout: TIMEOUT
             });
@@ -115,7 +115,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory, without -d and without doc generation', () => {
         let stdoutString = '',
             child;
-        beforeEach((function(done) {
+        beforeEach(function(done) {
             let ls = shell('node', ['./bin/index-cli.js', '-s'], { timeout: TIMEOUT });
 
             if (ls.stderr.toString() !== '') {
@@ -125,7 +125,7 @@ describe('CLI serving', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach((() => tmp.clean('documentation'));
+        afterEach(() => tmp.clean('documentation'));
 
         it('should display message', () => {
             expect(stdoutString).toContain(
