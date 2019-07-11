@@ -4,16 +4,26 @@ import * as path from 'path';
 
 import FileEngine from './file.engine';
 
+const decache = require('decache');
+
+export interface markdownReadedDatas {
+    markdown: string;
+    rawData: string;
+}
+
 export class MarkdownEngine {
     /**
      * List of markdown files without .md extension
      */
     private readonly markdownFiles = ['README', 'CHANGELOG', 'LICENSE', 'CONTRIBUTING', 'TODO'];
 
-    private markedInstance = require('marked');
+    private markedInstance;
 
     private static instance: MarkdownEngine;
     private constructor() {
+        decache('marked');
+        this.markedInstance = require('marked');
+
         const renderer = new this.markedInstance.Renderer();
         renderer.code = (code, language) => {
             let highlighted = code;
@@ -60,10 +70,16 @@ export class MarkdownEngine {
         return MarkdownEngine.instance;
     }
 
-    public getTraditionalMarkdown(filepath: string): Promise<string> {
+    public getTraditionalMarkdown(filepath: string): Promise<markdownReadedDatas> {
         return FileEngine.get(process.cwd() + path.sep + filepath + '.md')
             .catch(err => FileEngine.get(process.cwd() + path.sep + filepath).then())
-            .then(data => this.markedInstance(data));
+            .then(data => {
+                const returnedData: markdownReadedDatas = {
+                    markdown: this.markedInstance(data),
+                    rawData: data
+                };
+                return returnedData;
+            });
     }
 
     public getTraditionalMarkdownSync(filepath: string): string {

@@ -19,7 +19,7 @@ import ExportEngine from './engines/export.engine';
 import FileEngine from './engines/file.engine';
 import HtmlEngine from './engines/html.engine';
 import I18nEngine from './engines/i18n.engine';
-import MarkdownEngine from './engines/markdown.engine';
+import MarkdownEngine, { markdownReadedDatas } from './engines/markdown.engine';
 import NgdEngine from './engines/ngd.engine';
 import SearchEngine from './engines/search.engine';
 
@@ -295,12 +295,13 @@ export class Application {
             let loop = () => {
                 if (i < numberOfMarkdowns) {
                     MarkdownEngine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
-                        (readmeData: string) => {
+                        (readmeData: markdownReadedDatas) => {
                             Configuration.addPage({
                                 name: markdowns[i] === 'readme' ? 'index' : markdowns[i],
                                 context: 'getting-started',
                                 id: 'getting-started',
-                                markdown: readmeData,
+                                markdown: readmeData.markdown,
+                                data: readmeData.rawData,
                                 depth: 0,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                             });

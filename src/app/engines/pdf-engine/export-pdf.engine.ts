@@ -2,7 +2,8 @@ import * as fs from 'fs-extra';
 import * as _ from 'lodash';
 import * as path from 'path';
 
-import Configuration from '../configuration';
+import Configuration from '../../configuration';
+import I18nEngine from '../i18n.engine';
 import MarkdownToPdfEngine from './markdown-to-pdf.engine';
 
 const PdfPrinter = require('pdfmake');
@@ -21,7 +22,8 @@ export class ExportPdfEngine {
         let fonts = {
             Roboto: {
                 normal: path.join(__dirname, '../src/resources/fonts/roboto-v15-latin-regular.ttf'),
-                bold: path.join(__dirname, '../src/resources/fonts/roboto-v15-latin-700.ttf')
+                bold: path.join(__dirname, '../src/resources/fonts/roboto-v15-latin-700.ttf'),
+                italics: path.join(__dirname, '../src/resources/fonts/roboto-v15-latin-italic.ttf')
             }
         };
 
@@ -51,12 +53,12 @@ export class ExportPdfEngine {
             alignment: 'center',
             bold: true,
             fontSize: 22,
-            margin: [10, 350, 10, 300]
+            margin: [10, 350, 10, 270]
         });
 
         if (!Configuration.mainData.hideGenerator) {
             docDefinition.content.push({
-                text: 'Documentation generated using',
+                text: I18nEngine.translate('generated-using'),
                 alignment: 'center'
             });
             docDefinition.content.push({
@@ -70,7 +72,7 @@ export class ExportPdfEngine {
         docDefinition.content.push({
             toc: {
                 title: {
-                    text: 'Table of contents',
+                    text: I18nEngine.translate('table-of-contents'),
                     bold: true,
                     alignment: 'center',
                     fontSize: 18,
@@ -153,10 +155,11 @@ export class ExportPdfEngine {
                 tocItem: true,
                 style: 'header'
             });
-            data.push({
-                text: MarkdownToPdfEngine.convert(page.markdown),
-                margin: [0, 10]
-            });
+
+            let convertedMarkdownObject = MarkdownToPdfEngine.convert(page.data);
+            convertedMarkdownObject.margin = [0, 10];
+
+            data.push(convertedMarkdownObject);
         });
 
         this.insertPageReturn(data);

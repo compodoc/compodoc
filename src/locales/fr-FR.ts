@@ -84,6 +84,7 @@ export const TRANSLATION_FR_FR = {
     selector: 'Sélecteur',
     signature: 'Signature',
     statements: 'Déclarations',
+    'table-of-contents': 'Table des matières',
     type: 'Type',
     'type-aliases': 'Alias de type',
     'type-parameters': 'Paramètres de type',
