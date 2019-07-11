@@ -12,7 +12,7 @@
         "download-api-list": "node tools/download-api-list.js",
         "start": "npm run test:watch",
         "pretest": "tsc -p test/tsconfig.json && node test/dist/cli-clean-root-folder.js",
-        "test": "./node_modules/.bin/jest --maxWorkers=2 && node test/dist/cli-revert-root-folder.js",
+        "test": "./node_modules/.bin/jest --maxWorkers=1 && node test/dist/cli-revert-root-folder.js",
         "posttest": "rimraf test/dist",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "nyc": "nyc npm test",
