@@ -317,7 +317,8 @@ export class AngularDependencies extends FrameworkDependencies {
             logger.info('Analysing routes definitions and clean them if necessary');
 
             // scannedFile = RouterParserUtil.cleanFileIdentifiers(astFile).compilerNode;
-            let firstClean = RouterParserUtil.cleanFileSpreads(astFile).compilerNode;
+            RouterParserUtil.cleanFileSpreads(astFile);
+
             scannedFile = RouterParserUtil.cleanCallExpressions(astFile).compilerNode;
             scannedFile = RouterParserUtil.cleanFileDynamics(astFile).compilerNode;
 
@@ -343,7 +344,6 @@ export class AngularDependencies extends FrameworkDependencies {
                     let visitDecorator = (visitedDecorator, index) => {
                         let deps: IDep;
 
-                        let metadata = node.decorators;
                         let name = this.getSymboleName(node);
                         let props = this.findProperties(visitedDecorator, srcFile);
                         let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);

@@ -991,7 +991,6 @@ export class ClassHelper {
     }
 
     private visitConstructorProperties(constr, sourceFile) {
-        let that = this;
         if (constr.parameters) {
             let _parameters = [];
             let i = 0;

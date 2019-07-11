@@ -2614,7 +2614,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     modules[i].name
                                 ).then(
                                     data => {
-                                        modules[i].graph = data as string;
+                                        modules[i].graph = data;
                                         i++;
                                         loop();
                                     },
@@ -2653,7 +2653,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         'Main graph'
                     ).then(
                         data => {
-                            Configuration.mainData.mainGraph = data as string;
+                            Configuration.mainData.mainGraph = data;
                             loop();
                         },
                         err => {
