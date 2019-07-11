@@ -11,9 +11,6 @@
         "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
         "download-api-list": "node tools/download-api-list.js",
         "start": "npm run test:watch",
-        "pretest-jest": "tsc -p test/tsconfig.json && node test/dist/cli-clean-root-folder.js",
-        "test-jest": "./node_modules/.bin/jest --maxWorkers=2 && node test/dist/cli-revert-root-folder.js",
-        "posttest-jest": "rimraf test/dist",
         "pretest": "tsc -p test/tsconfig.json && node test/dist/cli-clean-root-folder.js",
         "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc --reporter=lcov mocha --opts test/mocha.opts && node test/dist/cli-revert-root-folder.js",
         "posttest": "rimraf test/dist",
@@ -101,7 +98,6 @@
     "devDependencies": {
         "@types/chai": "^4.1.7",
         "@types/fs-extra": "^8.0.0",
-        "@types/jest": "^24.0.15",
         "@types/lodash": "^4.14.136",
         "@types/marked": "^0.6.5",
         "@types/mocha": "^5.2.7",
@@ -113,7 +109,6 @@
         "codecov": "^3.5.0",
         "cross-env": "^5.2.0",
         "husky": "^3.0.0",
-        "jest": "^24.8.0",
         "mocha": "^6.1.4",
         "nodemon": "^1.19.1",
         "npm-watch": "^0.6.0",
@@ -127,24 +122,8 @@
         "rollup-plugin-typescript": "^1.0.1",
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.1",
-        "ts-jest": "^24.0.2",
         "ts-node": "^8.2.0",
         "tslint": "^5.17.0"
-    },
-    "nyc": {
-        "include": [
-            "dist/index-cli.js",
-            "bin/*.js"
-        ],
-        "extension": [
-            ".js"
-        ],
-        "reporter": [
-            "json",
-            "html",
-            "text-summary"
-        ],
-        "all": true
     },
     "collective": {
         "type": "opencollective",
