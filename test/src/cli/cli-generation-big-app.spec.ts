@@ -9,7 +9,20 @@ describe('CLI simple generation - big app', () => {
     let clockInterfaceFile;
     let searchFuncFile;
 
-    let todoComponentFile, listComponentFile, footerComponentFile, routesIndex;
+    let todoComponentFile,
+        homeComponentFile,
+        aboutComponentFile,
+        appComponentFile,
+        listComponentFile,
+        footerComponentFile,
+        todoClassFile,
+        tidiClassFile,
+        aboutModuleFile,
+        todoStoreFile,
+        typeAliasesFile,
+        functionsFile;
+
+    let routesIndex;
 
     const tmpFolder = tmp.name + '-big-app';
     const distFolder = tmpFolder + '/documentation';
@@ -34,7 +47,21 @@ describe('CLI simple generation - big app', () => {
         routesIndex = read(`${distFolder}/js/routes/routes_index.js`);
         todoComponentFile = read(`${distFolder}/components/TodoComponent.html`);
         footerComponentFile = read(`${distFolder}/components/FooterComponent.html`);
+        homeComponentFile = read(`${distFolder}/components/HomeComponent.html`);
+        aboutComponentFile = read(`${distFolder}/components/AboutComponent.html`);
+        appComponentFile = read(`${distFolder}/components/AppComponent.html`);
         listComponentFile = read(`${distFolder}/components/ListComponent.html`);
+
+        todoClassFile = read(`${distFolder}/classes/Todo.html`);
+        tidiClassFile = read(`${distFolder}/classes/Tidi.html`);
+
+        aboutModuleFile = read(`${distFolder}/modules/AboutModule.html`);
+
+        todoStoreFile = read(`${distFolder}/injectables/TodoStore.html`);
+
+        typeAliasesFile = read(`${distFolder}/miscellaneous/typealiases.html`);
+        functionsFile = read(`${distFolder}/miscellaneous/functions.html`);
+
         done();
     });
     after(() => {
@@ -134,8 +161,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have generated extends information for todo class', () => {
-        const todoModelFile = read(`${distFolder}/classes/Todo.html`);
-        expect(todoModelFile).to.contain('Extends');
+        expect(todoClassFile).to.contain('Extends');
     });
 
     it('should have generated implements information for clock class', () => {
@@ -229,37 +255,33 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have generated args and return informations for todo store', () => {
-        const file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('Promise&lt;void&gt;');
-        expect(file).to.contain('string | number');
-        expect(file).to.contain('number[]');
-        expect(file).to.contain(
+        expect(todoStoreFile).to.contain('Promise&lt;void&gt;');
+        expect(todoStoreFile).to.contain('string | number');
+        expect(todoStoreFile).to.contain('number[]');
+        expect(todoStoreFile).to.contain(
             '<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>'
         );
-        expect(file).to.contain('service is a todo store');
-        expect(file).to.contain('all todos status (completed');
-        expect(file).to.contain('Local array of Todos');
+        expect(todoStoreFile).to.contain('service is a todo store');
+        expect(todoStoreFile).to.contain('all todos status (completed');
+        expect(todoStoreFile).to.contain('Local array of Todos');
     });
 
     it('should have correct types for todo model', () => {
-        const file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain(
+        expect(todoClassFile).to.contain(
             'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean'
         );
-        expect(file).to.contain(
+        expect(todoClassFile).to.contain(
             'testCommentFunction(dig: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number'
         );
     });
 
     it('should have correct spread support', () => {
-        const file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('...theArgs');
+        expect(todoStoreFile).to.contain('...theArgs');
     });
 
     it('should have an example tab', () => {
-        const file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('data-link="example">Examples</a');
-        expect(file).to.contain('iframe class="exampleContainer"');
+        expect(todoComponentFile).to.contain('data-link="example">Examples</a');
+        expect(todoComponentFile).to.contain('iframe class="exampleContainer"');
     });
 
     it('should have managed array declaration in modules', () => {
@@ -270,58 +292,49 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have README tabs for each types', () => {
-        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(todoComponentFile).to.contain('id="readme-tab"');
+        expect(aboutModuleFile).to.contain('id="readme-tab"');
+        let file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('id="readme-tab"');
-        file = read(distFolder + '/modules/AboutModule.html');
-        expect(file).to.contain('id="readme-tab"');
-        file = read(distFolder + '/directives/DoNothingDirective.html');
-        expect(file).to.contain('id="readme-tab"');
-        file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('id="readme-tab"');
+        expect(todoStoreFile).to.contain('id="readme-tab"');
         file = read(distFolder + '/pipes/FirstUpperPipe.html');
         expect(file).to.contain('id="readme-tab"');
-        file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('id="readme-tab"');
+
+        expect(todoClassFile).to.contain('id="readme-tab"');
+
         file = read(distFolder + '/interfaces/ClockInterface.html');
         expect(file).to.contain('id="readme-tab"');
     });
 
     it('should support indexable for class', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('<code>[index: number]');
+        expect(todoClassFile).to.contain('<code>[index: number]');
     });
 
     it('should have correct links for {@link into main description and constructor}', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('See <a href="../injectables/TodoStore');
-        expect(file).to.contain('Watch <a href="../injectables/TodoStore');
+        expect(todoClassFile).to.contain('See <a href="../injectables/TodoStore');
+        expect(todoClassFile).to.contain('Watch <a href="../injectables/TodoStore');
     });
 
     it('should support misc links', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('../miscellaneous/enumerations.html');
+        expect(todoClassFile).to.contain('../miscellaneous/enumerations.html');
     });
 
     it('should have public function for component', () => {
-        let file = read(distFolder + '/components/HomeComponent.html');
-        expect(file).to.contain('code>showTab(');
+        expect(homeComponentFile).to.contain('code>showTab(');
     });
 
     it('should have override types for arguments of function', () => {
-        const file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
+        expect(todoStoreFile).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
     });
 
     it('should have inherreturn type', () => {
-        const file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain(
+        expect(todoClassFile).to.contain(
             'code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"'
         );
     });
 
     it('should support simple class with custom decorator', () => {
-        let file = read(distFolder + '/classes/Tidi.html');
-        expect(file).to.contain('completed</b>');
+        expect(tidiClassFile).to.contain('completed</b>');
     });
 
     it('should support simple class with custom decorator()', () => {
@@ -330,15 +343,13 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support TypeLiteral', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain(
+        expect(typeAliasesFile).to.contain(
             '&quot;creating&quot; | &quot;created&quot; | &quot;updating&quot; | &quot;updated&quot'
         );
     });
 
     it('should support return multiple with null & TypeLiteral', () => {
-        let file = read(distFolder + '/classes/Tidi.html');
-        expect(file).to.contain('<code>literal type | null');
+        expect(tidiClassFile).to.contain('<code>literal type | null');
     });
 
     it('should support @HostBindings', () => {
@@ -347,9 +358,8 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support @HostListener', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<code>mouseup(mouseX');
-        expect(file).to.contain("i>Arguments : </i><code>'$event.clientX");
+        expect(aboutComponentFile).to.contain('<code>mouseup(mouseX');
+        expect(aboutComponentFile).to.contain("i>Arguments : </i><code>'$event.clientX");
     });
 
     it('should support extends for interface', () => {
@@ -358,41 +368,34 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support optional', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('Yes');
+        expect(todoStoreFile).to.contain('Yes');
     });
 
     it('should support optional', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<code>Subscription[]');
+        expect(aboutComponentFile).to.contain('<code>Subscription[]');
     });
 
     it('should support @link with anchor', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('../classes/Todo.html#completed');
+        expect(todoStoreFile).to.contain('../classes/Todo.html#completed');
     });
 
     it('should support self-defined type', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('../miscellaneous/typealiases.html#PopupPosition');
-        file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>ElementRef | HTMLElement</code>');
+        expect(todoClassFile).to.contain('../miscellaneous/typealiases.html#PopupPosition');
+        expect(typeAliasesFile).to.contain('<code>ElementRef | HTMLElement</code>');
     });
 
     it('should support accessors for class', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('<a href="#title">title</a>');
-        expect(file).to.contain('Accessors');
-        expect(file).to.contain('Setter of _title');
-        expect(file).to.contain('<p>Returns the runtime path</p>');
-        expect(file).to.contain('<code>title(value');
+        expect(todoClassFile).to.contain('<a href="#title">title</a>');
+        expect(todoClassFile).to.contain('Accessors');
+        expect(todoClassFile).to.contain('Setter of _title');
+        expect(todoClassFile).to.contain('<p>Returns the runtime path</p>');
+        expect(todoClassFile).to.contain('<code>title(value');
     });
 
     it('should support accessors for injectables', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('Accessors');
-        expect(file).to.contain('Getter of _fullName');
-        expect(file).to.contain('Setter of _fullName');
+        expect(todoStoreFile).to.contain('Accessors');
+        expect(todoStoreFile).to.contain('Getter of _fullName');
+        expect(todoStoreFile).to.contain('Setter of _fullName');
     });
 
     it('should support accessors for directives', () => {
@@ -412,8 +415,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support QualifiedName for type', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('Highcharts.Options');
+        expect(aboutComponentFile).to.contain('Highcharts.Options');
     });
 
     it('should support namespace', () => {
@@ -441,11 +443,9 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/miscellaneous/enumerations.html');
         expect(file).to.contain('PopupEffect2');
 
-        file = read(distFolder + '/miscellaneous/functions.html');
-        expect(file).to.contain('foo2');
+        expect(functionsFile).to.contain('foo2');
 
-        file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('Name2');
+        expect(typeAliasesFile).to.contain('Name2');
 
         file = read(distFolder + '/miscellaneous/variables.html');
         expect(file).to.contain('PI2');
@@ -464,41 +464,37 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should have DOM tree tab for component with inline template', () => {
-        let file = read(distFolder + '/components/HomeComponent.html');
-        expect(file).to.contain('<header class="header"');
+        expect(homeComponentFile).to.contain('<header class="header"');
     });
 
     it('should have parsed correctly private, public, and static methods or properties', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<code>privateStaticMethod()');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain('<code>privateStaticMethod()');
+        expect(aboutComponentFile).to.contain(
             `<span class="modifier">Private</span>\n                                    <span class="modifier">Static</span>`
         );
-        expect(file).to.contain('<code>protectedStaticMethod()');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain('<code>protectedStaticMethod()');
+        expect(aboutComponentFile).to.contain(
             `<span class="modifier">Protected</span>\n                                    <span class="modifier">Static</span>`
         );
-        expect(file).to.contain('<code>publicMethod()');
-        expect(file).to.contain('<code>publicStaticMethod()');
-        expect(file).to.contain('<code>staticMethod()');
-        expect(file).to.contain('staticReadonlyVariable');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain('<code>publicMethod()');
+        expect(aboutComponentFile).to.contain('<code>publicStaticMethod()');
+        expect(aboutComponentFile).to.contain('<code>staticMethod()');
+        expect(aboutComponentFile).to.contain('staticReadonlyVariable');
+        expect(aboutComponentFile).to.contain(
             `<span class="modifier">Static</span>\n                                    <span class="modifier">Readonly</span>`
         );
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain(
             `<span class="modifier">Public</span>\n                                    <span class="modifier">Async</span>`
         );
     });
 
     it('should support entryComponents for modules', () => {
-        let file = read(distFolder + '/modules/AboutModule.html');
-        expect(file).to.contain('<h3>EntryComponents');
-        expect(file).to.contain('href="../components/AboutComponent.html"');
+        expect(aboutModuleFile).to.contain('<h3>EntryComponents');
+        expect(aboutModuleFile).to.contain('href="../components/AboutComponent.html"');
     });
 
     it('should id for modules', () => {
-        let file = read(distFolder + '/modules/AboutModule.html');
-        expect(file).to.contain('<h3>Id');
+        expect(aboutModuleFile).to.contain('<h3>Id');
     });
 
     it('should schemas for modules', () => {
@@ -515,35 +511,36 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support Object Literal Property Value Shorthand support for metadatas for modules', () => {
-        let file = read(distFolder + '/modules/AboutModule.html');
-        expect(file).to.contain('<h3>Declarations');
-        expect(file).to.contain('<h3>Imports');
-        expect(file).to.contain('<h3>EntryComponents');
-        expect(file).to.contain('<h3>Providers');
-        expect(file).to.contain('<h3>Bootstrap');
-        expect(file).to.contain('<h3>Schemas');
+        expect(aboutModuleFile).to.contain('<h3>Declarations');
+        expect(aboutModuleFile).to.contain('<h3>Imports');
+        expect(aboutModuleFile).to.contain('<h3>EntryComponents');
+        expect(aboutModuleFile).to.contain('<h3>Providers');
+        expect(aboutModuleFile).to.contain('<h3>Bootstrap');
+        expect(aboutModuleFile).to.contain('<h3>Schemas');
     });
 
     it('should support Object Literal Property Value Shorthand support for metadatas for components', () => {
-        let file = read(distFolder + '/components/HomeComponent.html');
-        expect(file).to.contain('<h3>Metadata');
-        expect(file).to.contain('<code>home</code>');
-        expect(file).to.contain('<code>ChangeDetectionStrategy.OnPush</code>');
-        expect(file).to.contain('<code>ViewEncapsulation.Emulated</code>');
-        expect(file).to.contain('<code>./home.component.html</code>');
-        expect(file).to.contain('<td class="col-md-3">template</td>');
+        expect(homeComponentFile).to.contain('<h3>Metadata');
+        expect(homeComponentFile).to.contain('<code>home</code>');
+        expect(homeComponentFile).to.contain('<code>ChangeDetectionStrategy.OnPush</code>');
+        expect(homeComponentFile).to.contain('<code>ViewEncapsulation.Emulated</code>');
+        expect(homeComponentFile).to.contain('<code>./home.component.html</code>');
+        expect(homeComponentFile).to.contain('<td class="col-md-3">template</td>');
     });
 
     it('should support @link to miscellaneous', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<a href="../miscellaneous/variables.html#PIT">PIT</a>');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain(
+            '<a href="../miscellaneous/variables.html#PIT">PIT</a>'
+        );
+        expect(aboutComponentFile).to.contain(
             '<a href="../miscellaneous/enumerations.html#Direction">Direction</a>'
         );
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain(
             '<a href="../miscellaneous/typealiases.html#ChartChange">ChartChange</a>'
         );
-        expect(file).to.contain('<a href="../miscellaneous/functions.html#foo">foo</a>');
+        expect(aboutComponentFile).to.contain(
+            '<a href="../miscellaneous/functions.html#foo">foo</a>'
+        );
     });
 
     it('should support default type on default value', () => {
@@ -572,8 +569,7 @@ describe('CLI simple generation - big app', () => {
     });*/
 
     it('should support optional for classes', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('Optional');
+        expect(todoClassFile).to.contain('Optional');
     });
 
     it('should support optional for interfaces', () => {
@@ -592,35 +588,31 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support union type with array', () => {
-        let file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('>string[] | Todo</a>');
+        expect(todoComponentFile).to.contain('>string[] | Todo</a>');
     });
 
     it('should support multiple union types with array', () => {
-        let file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('<code>(string | number)[]</code>');
+        expect(todoComponentFile).to.contain('<code>(string | number)[]</code>');
     });
 
     it('should support multiple union types with array again', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>number | string | (number | string)[]</code>');
+        expect(typeAliasesFile).to.contain('<code>number | string | (number | string)[]</code>');
     });
 
     it('should support union type with generic', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain(
+        expect(typeAliasesFile).to.contain(
             '<code>Type&lt;TableCellRendererBase&gt; | TemplateRef&lt;any&gt;</code>'
         );
     });
 
     it('should support literal type', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>Pick&lt;NavigationExtras | replaceUrl&gt;</code>');
+        expect(typeAliasesFile).to.contain(
+            '<code>Pick&lt;NavigationExtras | replaceUrl&gt;</code>'
+        );
     });
 
     it('should support multiple union types with array', () => {
-        let file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('<code>(string | number)[]</code>');
+        expect(todoComponentFile).to.contain('<code>(string | number)[]</code>');
     });
 
     it('should support alone elements in their own entry menu', () => {
@@ -640,20 +632,17 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support component metadata preserveWhiteSpaces', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain('<td class="col-md-3">preserveWhitespaces</td>');
+        expect(aboutComponentFile).to.contain('<td class="col-md-3">preserveWhitespaces</td>');
     });
 
     it('should support component metadata entryComponents', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain(
             '<code><a href="../classes/Todo.html" target="_self" >TodoComponent</a></code>'
         );
     });
 
     it('should support component metadata providers', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
-        expect(file).to.contain(
+        expect(aboutComponentFile).to.contain(
             '<code><a href="../injectables/EmitterService.html" target="_self" >EmitterService</a></code>'
         );
     });
@@ -685,21 +674,18 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support Tuple types', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('<code>[Number, Number]</code>');
-        expect(file).to.contain('[Todo, Todo]</a>');
+        expect(typeAliasesFile).to.contain('<code>[Number, Number]</code>');
+        expect(typeAliasesFile).to.contain('[Todo, Todo]</a>');
     });
 
     it('should support Generic array types', () => {
-        let file = read(distFolder + '/components/AppComponent.html');
-        expect(file).to.contain(
+        expect(appComponentFile).to.contain(
             '<a href="../classes/Todo.html" target="_self" >Observable&lt;Todo[]&gt;</a>'
         );
     });
 
     it('should support Type parameters', () => {
-        let file = read(distFolder + '/components/AppComponent.html');
-        expect(file).to.contain(
+        expect(appComponentFile).to.contain(
             `<ul class="type-parameters">\n                        <li>T</li>\n                        <li>K</li>\n                    </ul>`
         );
     });
@@ -715,41 +701,35 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct support of generic type Map<K, V>', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
-        expect(file).to.contain('Map&lt;string, number&gt;');
+        expect(todoStoreFile).to.contain('Map&lt;string, number&gt;');
     });
 
     it('correct support of abstract and async modifiers', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('<span class="modifier">Abstract</span>');
-        expect(file).to.contain('<span class="modifier">Async</span>');
+        expect(todoClassFile).to.contain('<span class="modifier">Abstract</span>');
+        expect(todoClassFile).to.contain('<span class="modifier">Async</span>');
     });
 
     it('correct support function with empty typed arguments', () => {
-        let file = read(distFolder + '/components/AppComponent.html');
-        expect(file).to.contain('<code>openSomeDialog(model,');
+        expect(appComponentFile).to.contain('<code>openSomeDialog(model,');
     });
 
     it('correct support unnamed function', () => {
-        let file = read(distFolder + '/miscellaneous/functions.html');
-        expect(file).to.contain('Unnamed');
+        expect(functionsFile).to.contain('Unnamed');
     });
 
     it('correct display styles tab', () => {
         let file = read(distFolder + '/components/HeaderComponent.html');
         expect(file).to.contain('styleData-tab');
         expect(file).to.contain('language-scss');
-        file = read(distFolder + '/components/AppComponent.html');
-        expect(file).to.contain('styleData-tab');
-        expect(file).to.contain('font-size');
+        expect(appComponentFile).to.contain('styleData-tab');
+        expect(appComponentFile).to.contain('font-size');
         file = read(distFolder + '/components/TodoMVCComponent.html');
         expect(file).to.contain('styleData-tab');
         expect(file).to.contain('pointer-events');
     });
 
     it('correct support symbol type', () => {
-        let file = read(distFolder + '/miscellaneous/typealiases.html');
-        expect(file).to.contain('string | symbol | Array&lt;string | symbol&gt;');
+        expect(typeAliasesFile).to.contain('string | symbol | Array&lt;string | symbol&gt;');
     });
 
     it('correct support gorRoot & forChild methods for modules', () => {
@@ -759,20 +739,19 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct support returned type for miscellaneous function', () => {
-        let file = read(distFolder + '/miscellaneous/functions.html');
-        expect(file).to.contain(
+        expect(functionsFile).to.contain(
             'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string'
         );
     });
 
     it('correct http reference for other classes using @link in description of a miscellaneous function', () => {
-        let file = read(distFolder + '/miscellaneous/functions.html');
-        expect(file).to.contain('<a href="../components/ListComponent.html">ListComponent</a>');
+        expect(functionsFile).to.contain(
+            '<a href="../components/ListComponent.html">ListComponent</a>'
+        );
     });
 
     it('shorten long arrow function declaration for properties', () => {
-        let file = read(distFolder + '/classes/Todo.html');
-        expect(file).to.contain('() &#x3D;&gt; {...}</code>');
+        expect(todoClassFile).to.contain('() &#x3D;&gt; {...}</code>');
     });
 
     it('correct supports 1000 as PollingSpeed for decorator arguments', () => {
@@ -781,7 +760,6 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct supports JSdoc without comment for accessor', () => {
-        let file = read(distFolder + '/classes/Tidi.html');
-        expect(file).to.contain('b>emailAddress</b>');
+        expect(tidiClassFile).to.contain('b>emailAddress</b>');
     });
 });

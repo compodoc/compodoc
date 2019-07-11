@@ -14,6 +14,7 @@
         ]
     },
     "include": [
+        "./src/cli/**/*.spec.ts",
         "./src/cli-clean-root-folder.ts",
         "./src/cli-revert-root-folder.ts"
     ]
