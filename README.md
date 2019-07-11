@@ -5,10 +5,14 @@
   <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://img.shields.io/appveyor/ci/vogloblinsky/compodoc/develop.svg?label=Windows%20build" alt="Windows Build Status"/></a>
   <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"/></a>
   <a href="https://www.npmjs.com/package/@compodoc/compodoc"><img src="https://badge.fury.io/js/%40compodoc%2Fcompodoc.svg" alt="npm badge"/></a>
+  <a href="https://sonarcloud.io/dashboard?id=compodoc_compodoc"><img src="https://sonarcloud.io/api/project_badges/measure?project=compodoc_compodoc&metric=alert_status" alt="Quality Gate Status"/></a>
+  <br/>
   <a href="https://david-dm.org/compodoc/compodoc"><img src="https://david-dm.org/compodoc/compodoc.svg" alt="npm dependencies"/></a>
   <a href="https://david-dm.org/compodoc/compodoc?type=dev"><img src="https://david-dm.org/compodoc/compodoc/dev-status.svg" alt="npm devDependencies"/></a>
+  <br/>
   <a href="https://npmcharts.com/compare/@compodoc/compodoc?minimal=true"><img src="https://img.shields.io/npm/dm/@compodoc/compodoc.svg?style=flat" alt="NPM Downloads"/></a>
   <a href="https://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"/></a>
+  <br/>
   <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/compodoc/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" /></a>
 </p>
 <p align="center">
