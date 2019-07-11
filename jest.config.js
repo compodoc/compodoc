@@ -6,7 +6,8 @@ module.exports = {
     testMatch: ['**/cli-jest/**/*.ts'],
     globals: {
         'ts-jest': {
-            tsConfig: 'test/tsconfig-jest.json'
+            tsConfig: 'test/tsconfig-jest.json',
+            diagnostics: false
         }
     },
     collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test/**']
