@@ -8,7 +8,7 @@ describe('CLI Additional documentation', () => {
 
     const distFolder = tmp.name + '-additional';
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -32,7 +32,7 @@ describe('CLI Additional documentation', () => {
         fooMenuFile = read(`${distFolder}/js/menu-wc.js`);
         done();
     });
-    afterEach(() => tmp.clean(distFolder));
+    afterAll(() => tmp.clean(distFolder));
 
     it('it should have a menu with links', () => {
         expect(

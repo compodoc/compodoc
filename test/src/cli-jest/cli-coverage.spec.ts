@@ -205,7 +205,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 1/4', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -226,7 +226,7 @@ describe('CLI coverage report', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('it should be over threshold per file', () => {
             expect(stdoutString).toContain('Documentation coverage per file is not over threshold');
@@ -238,7 +238,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 2/4', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -259,7 +259,7 @@ describe('CLI coverage report', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('it should be not over threshold per file', () => {
             expect(stdoutString).toContain('Documentation coverage per file is not over threshold');
@@ -271,7 +271,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 3/4', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -292,7 +292,7 @@ describe('CLI coverage report', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('it should be over threshold per file', () => {
             expect(stdoutString).toContain('Documentation coverage per file is over threshold');
@@ -304,7 +304,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 4/4', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -325,7 +325,7 @@ describe('CLI coverage report', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        beforeAll(() => tmp.clean(distFolder));
 
         it('it should be over threshold per file', () => {
             expect(stdoutString).toContain('Documentation coverage per file is over threshold');

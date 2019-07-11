@@ -1,4 +1,4 @@
-import { temporaryDir, shell, read } from '../helpers';
+import { read, shell, temporaryDir } from '../helpers';
 
 const tmp = temporaryDir();
 
@@ -9,7 +9,7 @@ describe('CLI simple generation - extends app', () => {
 
     const distFolder = tmp.name + '-big-app-extends';
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -28,7 +28,7 @@ describe('CLI simple generation - extends app', () => {
         myInitialClassFile = read(`${distFolder}/classes/MyInitialClass.html`);
         done();
     });
-    afterEach(() => tmp.clean(distFolder));
+    afterAll(() => tmp.clean(distFolder));
 
     it('AppComponent extends AnotherComponent', () => {
         expect(appComponentFile).toContain('myprop');

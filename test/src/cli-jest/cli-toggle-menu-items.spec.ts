@@ -5,8 +5,8 @@ describe('CLI toggle menu items', () => {
     describe('with a list', () => {
         const distFolder = tmp.name + '-toggle';
         let stdoutString = undefined,
-            fooIndexFile,
-            fooServiceFile;
+            fooIndexFile;
+
         beforeEach(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [

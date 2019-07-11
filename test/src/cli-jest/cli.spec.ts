@@ -7,7 +7,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json provided', () => {
         let command = undefined;
-        beforeEach(() => {
+        beforeAll(() => {
             command = shell('node', ['./bin/index-cli.js']);
         });
 
@@ -25,7 +25,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json provided with just -p', () => {
         let command = undefined;
-        beforeEach(() => {
+        beforeAll(() => {
             command = shell('node', ['./bin/index-cli.js', '-p']);
         });
 
@@ -36,7 +36,7 @@ describe('CLI simple flags', () => {
 
     describe('when no tsconfig.json is found in cwd', () => {
         let command = undefined;
-        beforeEach(() => {
+        beforeAll(() => {
             command = shell('node', ['./bin/index-cli.js', '-p', './test.json']);
         });
 
@@ -54,7 +54,7 @@ describe('CLI simple flags', () => {
 
     describe('when just serving without generation', () => {
         let command = undefined;
-        beforeEach(() => {
+        beforeAll(() => {
             command = shell('node', ['./bin/index-cli.js', '-s']);
         });
 
@@ -65,7 +65,7 @@ describe('CLI simple flags', () => {
 
     describe("when just serving without generation and folder which does't exist", () => {
         let command = undefined;
-        beforeEach(() => {
+        beforeAll(() => {
             command = shell('node', ['./bin/index-cli.js', '-s', '-d', 'doc']);
         });
 
@@ -77,7 +77,7 @@ describe('CLI simple flags', () => {
     describe('when no README/package.json files available', () => {
         let command = undefined;
 
-        beforeEach(() => {
+        beforeAll(() => {
             tmp.create(distFolder);
             tmp.copy('./test/src/sample-files/', distFolder);
             command = shell(
@@ -86,7 +86,7 @@ describe('CLI simple flags', () => {
                 { cwd: distFolder }
             );
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display error message', () => {
             const output: string = command.stdout.toString();
@@ -98,7 +98,7 @@ describe('CLI simple flags', () => {
 
     describe('showing the output type', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -115,7 +115,7 @@ describe('CLI simple flags', () => {
             componentFile = read(`${distFolder}/components/FooComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should show the event output type', () => {
             expect(componentFile).toContain('{foo: string}');
@@ -124,7 +124,7 @@ describe('CLI simple flags', () => {
 
     describe('when specific files are included in tsconfig', () => {
         let moduleFile = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -141,7 +141,7 @@ describe('CLI simple flags', () => {
             moduleFile = read(`${distFolder}/modules/AppModule.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should only create links to files included via tsconfig', () => {
             expect(moduleFile).toContain('components/FooComponent.html');

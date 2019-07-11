@@ -6,7 +6,7 @@ describe('CLI nest projects support', () => {
 
     describe('with simple app', () => {
         let indexFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -22,7 +22,7 @@ describe('CLI nest projects support', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('it should contain a controller page', () => {
             let isFileExists = exists(`${distFolder}/controllers/AppController.html`);

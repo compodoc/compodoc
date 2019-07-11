@@ -4,12 +4,10 @@ const tmp = temporaryDir();
 
 describe('CLI option file', () => {
     let stdoutString = undefined;
-    let clockInterfaceFile;
-    let searchFuncFile;
 
     const distFolder = 'test-config-file'; // Match /test/src/todomvc-ng2/.compodocrc
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(distFolder);
 
         let ls = shell('node', [
@@ -28,7 +26,7 @@ describe('CLI option file', () => {
 
         done();
     });
-    afterEach(() => {
+    afterAll(() => {
         tmp.clean(distFolder);
     });
 

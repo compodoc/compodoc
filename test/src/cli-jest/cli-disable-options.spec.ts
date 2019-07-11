@@ -7,7 +7,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disablePrivate', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -25,7 +25,7 @@ describe('CLI disable flags', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as private', () => {
             expect(componentFile).toEqual(expect.not.stringContaining('<code>privateMethod'));
@@ -51,7 +51,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableProtected', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -69,7 +69,7 @@ describe('CLI disable flags', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as protected', () => {
             expect(componentFile).toEqual(expect.not.stringContaining('<code>varprotected'));
@@ -90,7 +90,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableInternal', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -108,7 +108,7 @@ describe('CLI disable flags', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should exclude methods marked as @internal', () => {
             expect(componentFile).toEqual(expect.not.stringContaining('<code>internalMethod'));
@@ -134,7 +134,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableLifeCycleHooks', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -152,7 +152,7 @@ describe('CLI disable flags', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should exclude lifecyle hooks', () => {
             expect(componentFile).toEqual(expect.not.stringContaining('<code>ngOnInit'));
@@ -202,7 +202,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableLifeCycleHooks --disableInternal --disableProtected --disablePrivate', () => {
         let componentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -223,7 +223,7 @@ describe('CLI disable flags', () => {
             componentFile = read(`${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should exclude lifecyle hooks', () => {
             expect(componentFile).toEqual(expect.not.stringContaining('<code>ngOnInit'));
@@ -243,7 +243,7 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling search with --disableSearch', () => {
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -260,7 +260,7 @@ describe('CLI disable flags', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should not generate search JS files', () => {
             let file = read(`${distFolder}/index.html`);
@@ -304,7 +304,7 @@ describe('CLI disable flags', () => {
     describe('minimal with --minimal', () => {
         let fileContents;
 
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -321,7 +321,7 @@ describe('CLI disable flags', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should not generate search JS files', () => {
             let file = read(`${distFolder}/index.html`);

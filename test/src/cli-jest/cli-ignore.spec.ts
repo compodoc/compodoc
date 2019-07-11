@@ -6,7 +6,7 @@ describe('CLI ignore JSDoc tag support', () => {
     const distFolder = tmp.name + '-ignore-jsdoc';
 
     describe('without --disableLifeCycleHooks', () => {
-        beforeEach(done => {
+        beforeAll(done => {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -22,7 +22,7 @@ describe('CLI ignore JSDoc tag support', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('AppComponent ignored', () => {
             const file = exists(distFolder + '/components/AppComponent.html');
@@ -131,7 +131,7 @@ describe('CLI ignore JSDoc tag support', () => {
     });
 
     describe('with --disableLifeCycleHooks', () => {
-        beforeEach(done => {
+        beforeAll(done => {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -153,7 +153,7 @@ describe('CLI ignore JSDoc tag support', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('AppComponent ignored', () => {
             const file = exists(distFolder + '/components/AppComponent.html');

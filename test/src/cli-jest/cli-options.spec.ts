@@ -3,7 +3,7 @@ import { pkg, shell } from '../helpers';
 describe('CLI Options', () => {
     let runHelp = undefined;
 
-    beforeEach(() => {
+    beforeAll(() => {
         runHelp = shell('node', ['./bin/index-cli.js', '-h']);
     });
 

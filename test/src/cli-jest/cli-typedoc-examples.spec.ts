@@ -5,7 +5,7 @@ describe('CLI generation - TypeDoc examples', () => {
     let stdoutString = undefined;
     const distFolder = tmp.name + '-typedoc';
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -22,7 +22,7 @@ describe('CLI generation - TypeDoc examples', () => {
         stdoutString = ls.stdout.toString();
         done();
     });
-    afterEach(() => tmp.clean(distFolder));
+    afterAll(() => tmp.clean(distFolder));
 
     it('should display generated message', () => {
         expect(stdoutString).toContain('Documentation generated');

@@ -9,7 +9,7 @@ describe('CLI Export', () => {
     describe('when specified JSON', () => {
         let stdoutString = undefined;
 
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -28,7 +28,7 @@ describe('CLI Export', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -60,7 +60,7 @@ describe('CLI Export', () => {
     describe('when specified JSON and disable things', () => {
         let stdoutString = undefined;
 
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -81,7 +81,7 @@ describe('CLI Export', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -116,7 +116,7 @@ describe('CLI Export', () => {
 
         const title = 'Documentation in pdf';
 
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -137,7 +137,7 @@ describe('CLI Export', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');

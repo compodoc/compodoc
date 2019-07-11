@@ -25,7 +25,7 @@ describe('CLI simple generation - big app', () => {
     const tmpFolder = tmp.name + '-big-app';
     const distFolder = tmpFolder + '/documentation';
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(tmpFolder);
         tmp.copy('./test/src/todomvc-ng2/', tmpFolder);
         let ls = shell(
@@ -63,7 +63,7 @@ describe('CLI simple generation - big app', () => {
 
         done();
     });
-    afterEach(() => {
+    afterAll(() => {
         tmp.clean(distFolder);
     });
 

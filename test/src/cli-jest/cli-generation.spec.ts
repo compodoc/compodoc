@@ -15,7 +15,7 @@ describe('CLI simple generation', () => {
             emptyModuleFile,
             barModuleFile,
             emptyModuleRawFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -39,7 +39,7 @@ describe('CLI simple generation', () => {
             barModuleFile = read(`${distFolder}/modules/BarModule.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -171,7 +171,7 @@ describe('CLI simple generation', () => {
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -187,7 +187,7 @@ describe('CLI simple generation', () => {
             }
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should have generated main folder', () => {
             const isFolderExists = exists(`${distFolder}`);
@@ -208,7 +208,7 @@ describe('CLI simple generation', () => {
             fooServiceFile,
             componentFile,
             moduleFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell(
                 'node',
@@ -233,7 +233,7 @@ describe('CLI simple generation', () => {
             componentFile = read(`/tmp/${distFolder}/components/BarComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -392,7 +392,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag and src arg', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -410,7 +410,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -431,7 +431,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation without d flag', () => {
         let stdoutString = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
@@ -445,7 +445,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean('documentation'));
+        afterAll(() => tmp.clean('documentation'));
 
         it('should display generated message', () => {
             expect(stdoutString).toContain('Documentation generated');
@@ -656,7 +656,7 @@ describe('CLI simple generation', () => {
     describe('when generation of component dependecy doc with --navTabConfig option', () => {
         let stdoutString = undefined,
             index = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -680,7 +680,7 @@ describe('CLI simple generation', () => {
             index = index.replace(/\r?\n|\r/g, '');
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should not contain a domTree tab', () => {
             expect(index).toEqual(expect.not.stringContaining('id="tree-tab"'));
@@ -794,7 +794,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableGraph flag', () => {
         let stdoutString = undefined,
             fileContents = undefined;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -812,7 +812,7 @@ describe('CLI simple generation', () => {
             stdoutString = ls.stdout.toString();
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should not generate any graph data', () => {
             expect(stdoutString).toContain('Graph generation disabled');

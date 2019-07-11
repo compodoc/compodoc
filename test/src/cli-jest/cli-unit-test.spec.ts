@@ -1,4 +1,5 @@
-import { exists, exec, pkg, read, shell, shellAsync, temporaryDir } from '../helpers';
+import { read, shell, temporaryDir } from '../helpers';
+
 const tmp = temporaryDir();
 
 describe('CLI Unit Test Report', () => {
@@ -7,7 +8,7 @@ describe('CLI Unit Test Report', () => {
     describe('full path in JSON', () => {
         let stdoutString = undefined,
             unitTestFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -27,7 +28,7 @@ describe('CLI Unit Test Report', () => {
             unitTestFile = read(`${distFolder}/unit-test.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should have unit test page', () => {
             expect(unitTestFile).toContain('Unit test coverage');
@@ -54,7 +55,7 @@ describe('CLI Unit Test Report', () => {
     describe('partial path in JSON', () => {
         let stdoutString = undefined,
             unitTestFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -74,7 +75,7 @@ describe('CLI Unit Test Report', () => {
             unitTestFile = read(`${distFolder}/unit-test.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should have unit test page', () => {
             expect(unitTestFile).toContain('Unit test coverage');

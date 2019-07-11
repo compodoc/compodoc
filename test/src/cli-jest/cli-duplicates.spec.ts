@@ -5,7 +5,7 @@ const tmp = temporaryDir();
 describe('CLI duplicates support', () => {
     const distFolder = tmp.name + '-duplicates';
 
-    beforeEach(done => {
+    beforeAll(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -21,7 +21,7 @@ describe('CLI duplicates support', () => {
         }
         done();
     });
-    afterEach(() => tmp.clean(distFolder));
+    afterAll(() => tmp.clean(distFolder));
 
     it('Todo class generated', () => {
         const file = exists(distFolder + '/classes/Todo.html');

@@ -6,7 +6,7 @@ describe('CLI handlebars templates', () => {
 
     describe('with alternative handlebar template files', () => {
         let indexFile, barComponentFile, fooComponentFile;
-        beforeEach(function(done) {
+        beforeAll(function(done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [
@@ -28,7 +28,7 @@ describe('CLI handlebars templates', () => {
             fooComponentFile = read(`${distFolder}/components/FooComponent.html`);
             done();
         });
-        afterEach(() => tmp.clean(distFolder));
+        afterAll(() => tmp.clean(distFolder));
 
         it('should use templated "page.hbs"', () => {
             expect(indexFile).toContain('<span>THIS IS TEST CONTENT</span>');
