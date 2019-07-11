@@ -15,7 +15,7 @@
         "test-jest": "./node_modules/.bin/jest --maxWorkers=2 && node test/dist/cli-revert-root-folder.js",
         "posttest-jest": "rimraf test/dist",
         "pretest": "tsc -p test/tsconfig.json && node test/dist/cli-clean-root-folder.js",
-        "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc mocha --opts test/mocha.opts && node test/dist/cli-revert-root-folder.js",
+        "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json TS_NODE_DISABLE_WARNINGS=1 nyc --reporter=lcov mocha --opts test/mocha.opts && node test/dist/cli-revert-root-folder.js",
         "posttest": "rimraf test/dist",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "nyc": "nyc npm test",
