@@ -17,3 +17,9 @@
 -   application.ts - 2800 lines
 -   router-parser.util.ts - 642 lines
 -   class-helper.ts - 1200 lines
+
+## Clean architecture refactoring
+
+[] - serve dans un service
+[] - coverage dans un service
+[] - process in application.ts linked sequentialy
