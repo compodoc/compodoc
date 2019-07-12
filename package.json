@@ -31,12 +31,22 @@
         "local-test-e2e-mocha": "cross-env MODE_LOCAL=1 npm run test-e2e-mocha",
         "postinstall": "opencollective-postinstall || exit 0",
         "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*.ts\"",
-        "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\""
+        "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
+        "test-jest": "jest",
+        "test-jest:watch": "jest --watch",
+        "build-refactoring": "rollup -c rollup/rollup.config.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs"
     },
     "watch": {
         "build": {
             "patterns": [
                 "src/**/*.ts"
+            ],
+            "extensions": "js,ts",
+            "quiet": true
+        },
+        "build-refactoring": {
+            "patterns": [
+                "src-refactored/**/*.ts"
             ],
             "extensions": "js,ts",
             "quiet": true
@@ -93,12 +103,14 @@
         "pdfmake": "^0.1.57",
         "semver": "^6.1.1",
         "traverse": "^0.6.6",
+        "ts-morph": "^3.1.0",
         "ts-simple-ast": "12.4.0",
         "uuid": "^3.3.2"
     },
     "devDependencies": {
         "@types/chai": "^4.1.7",
         "@types/fs-extra": "^8.0.0",
+        "@types/jest": "^24.0.15",
         "@types/lodash": "^4.14.136",
         "@types/marked": "^0.6.5",
         "@types/mocha": "^5.2.7",
@@ -110,6 +122,7 @@
         "codecov": "^3.5.0",
         "cross-env": "^5.2.0",
         "husky": "^3.0.0",
+        "jest": "^24.8.0",
         "mocha": "^6.1.4",
         "nodemon": "^1.19.1",
         "npm-watch": "^0.6.0",
@@ -123,6 +136,7 @@
         "rollup-plugin-typescript": "^1.0.1",
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.1",
+        "ts-jest": "^24.0.2",
         "ts-node": "^8.2.0",
         "tslint": "^5.17.0"
     },

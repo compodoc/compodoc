@@ -3,12 +3,12 @@ module.exports = {
     collectCoverage: true,
     preset: 'ts-jest',
     testEnvironment: 'node',
-    testMatch: ['**/helpers/**/**.spec.ts', '**/cli-jest/**/*.ts'],
+    testMatch: ['**/src-refactored/**/**.spec.ts'],
     globals: {
         'ts-jest': {
             diagnostics: false
         }
     },
     verbose: true,
-    collectCoverageFrom: ['**/src/**/*.ts', '!**/node_modules/**', '!**/test/**']
+    collectCoverageFrom: ['**/src-refactored/**/*.ts', '!**/node_modules/**', '!**/test/**']
 };

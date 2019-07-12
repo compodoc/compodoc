@@ -34,7 +34,7 @@ export class CliApplication extends Application {
     /**
      * Run compodoc from the command line.
      */
-    protected generate(): any {
+    protected start(): any {
         function list(val) {
             return val.split(',');
         }
