@@ -13,7 +13,7 @@ export class ParseFile {
         });
     }
 
-    parseFiles() {}
+    public parseFiles() {}
 
-    parseFile() {}
+    private parseFile() {}
 }

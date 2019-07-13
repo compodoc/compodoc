@@ -10,7 +10,7 @@ interface ScannedFile {
 export class ScanFile {
     private static instance: ScanFile;
 
-    private scannedFiles: ScannedFile[] = [];
+    private scannedFiles: string[] = [];
 
     private constructor() {}
 
@@ -21,25 +21,30 @@ export class ScanFile {
         return ScanFile.instance;
     }
 
-    public async scan(folder) {
-        const finder = require('findit2')('.');
-        console.log(process.cwd());
+    public async scan(folder): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            const finder = require('findit2')(path.resolve(folder));
 
-        finder.on('directory', function(dir, stat, stop) {
-            let base = path.basename(dir);
-            if (base === '.git' || base === 'node_modules') {
-                stop();
-            }
-        });
+            finder.on('directory', function(dir, stat, stop) {
+                let base = path.basename(dir);
+                if (base === '.git' || base === 'node_modules') {
+                    stop();
+                }
+            });
 
-        finder.on('file', (file, stat) => {
-            console.log(file);
-            this.scannedFiles.push(file);
-        });
+            finder.on('error', error => {
+                reject(error);
+            });
 
-        finder.on('end', () => {
-            console.log('END');
-            return this.scannedFiles;
+            finder.on('file', (file, stat) => {
+                if (path.extname(file) === '.ts') {
+                    this.scannedFiles.push(file);
+                }
+            });
+
+            finder.on('end', () => {
+                resolve(this.scannedFiles);
+            });
         });
     }
 }
