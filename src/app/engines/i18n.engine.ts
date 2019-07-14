@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import {
     TRANSLATION_EN_US,
     TRANSLATION_ES_ES,
+    TRANSLATION_DE_DE,
     TRANSLATION_FR_FR,
     TRANSLATION_HU_HU,
     TRANSLATION_IT_IT,
@@ -23,6 +24,7 @@ class I18nEngine {
     }
 
     private availablesLanguages = {
+        'de-DE': 'de-DE',
         'en-US': 'en-US',
         'es-ES': 'es-ES',
         'fr-FR': 'fr-FR',
@@ -41,6 +43,7 @@ class I18nEngine {
             lng: language,
             fallbackLng: this.fallbackLanguage
         });
+        i18next.addResources('de-DE', 'translation', TRANSLATION_DE_DE);
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
         i18next.addResources('es-ES', 'translation', TRANSLATION_ES_ES);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);

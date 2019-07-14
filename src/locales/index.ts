@@ -7,3 +7,4 @@ export { TRANSLATION_JA_JP } from './ja-JP';
 export { TRANSLATION_PT_BR } from './pt-BR';
 export { TRANSLATION_ZH_CN } from './zh-CN';
 export { TRANSLATION_NL_NL } from './nl-NL';
+export { TRANSLATION_DE_DE } from './de-DE';
