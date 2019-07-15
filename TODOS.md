@@ -20,6 +20,24 @@
 
 ## Clean architecture refactoring
 
-[] - serve dans un service
-[] - coverage dans un service
+### main todos
+
+[] - serve in a service
+[] - coverage in a service
 [] - process in application.ts linked sequentialy
+
+### new splitted architecture
+
+#### start phase
+
+-   init flags
+-   handle global actions : serve, generate, coverage
+-   for serving : check folder and run
+-   for coverage and generate : all the stuff
+
+-   handle tsconfig
+-   find files
+-   init ts-morph with files
+-   parse files AST
+-   find doc informations
+-   process informations : generate doc or coverage

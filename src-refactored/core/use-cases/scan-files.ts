@@ -1,8 +1,6 @@
 import * as path from 'path';
 
-interface ScannedFile {
-    name: string;
-}
+const DEFAULT_EXCLUDED_DIRECTORIES = ['.git', 'node_modules'];
 
 /**
  * Handle scan source code
@@ -27,7 +25,7 @@ export class ScanFile {
 
             finder.on('directory', function(dir, stat, stop) {
                 let base = path.basename(dir);
-                if (base === '.git' || base === 'node_modules') {
+                if (DEFAULT_EXCLUDED_DIRECTORIES.includes(base)) {
                     stop();
                 }
             });
