@@ -34,7 +34,8 @@
         "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
         "test-jest": "jest",
         "test-jest:watch": "jest --watch",
-        "build-refactoring": "rollup -c rollup/rollup.config.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs"
+        "build-refactoring": "rollup -c rollup/rollup.config.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs",
+        "madge": "./node_modules/.bin/madge --warning -i dist/madge.png src-refactored/index-cli.ts"
     },
     "watch": {
         "build": {
@@ -123,6 +124,7 @@
         "cross-env": "^5.2.0",
         "husky": "^3.0.0",
         "jest": "^24.8.0",
+        "madge": "^3.4.4",
         "mocha": "^6.1.4",
         "nodemon": "^1.19.1",
         "npm-watch": "^0.6.0",
