@@ -1,9 +1,9 @@
-import * as commander from 'commander';
+import { CommanderStatic } from 'commander';
 
 export class SetupFlags {
     private static instance: SetupFlags;
 
-    public program: commander.CommanderStatic;
+    public program: CommanderStatic;
 
     constructor() {
         this.program = require('commander');
@@ -16,7 +16,7 @@ export class SetupFlags {
         return SetupFlags.instance;
     }
 
-    public setup(pkg, COMPODOC_DEFAULTS) {
+    public setup(pkg, COMPODOC_DEFAULTS): CommanderStatic {
         function list(val) {
             return val.split(',');
         }
@@ -160,6 +160,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
             .parse(process.argv);
+
+        return this.program;
     }
 }
 
