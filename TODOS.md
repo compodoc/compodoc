@@ -11,30 +11,34 @@
 -   jsdoc-parser.util.ts - 159 lines
 -   router-parser.util.ts - 775 lines
 
-## split files
+## Split files
 
--   angular-dependencies.ts - 1300 lines
+-   index-cli.ts - 910 lines
 -   application.ts - 2800 lines
+-   angular-dependencies.ts - 1300 lines
 -   router-parser.util.ts - 642 lines
 -   class-helper.ts - 1200 lines
--   index-cli.ts - 910 lines
 
 ## Clean architecture refactoring
 
-### main todos
+### Main todos
 
 [] - serve in a service
 [] - coverage in a service
-[] - process in application.ts linked sequentialy
+[] - process in application.ts linked sequentially
 
-### new splitted architecture
+### New splitted architecture
 
-#### start phase
+Domain driven design + TDD refactoring
 
--   init flags
+#### Start phase
+
+-   [x] init flags
+-   [x] init config
 -   handle global actions : serve, generate, coverage
 -   for serving : check folder and run
--   for coverage and generate : all the stuff
+
+#### For coverage and generate phase
 
 -   handle tsconfig
 -   find files
