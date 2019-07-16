@@ -17,6 +17,7 @@
 -   application.ts - 2800 lines
 -   router-parser.util.ts - 642 lines
 -   class-helper.ts - 1200 lines
+-   index-cli.ts - 910 lines
 
 ## Clean architecture refactoring
 
