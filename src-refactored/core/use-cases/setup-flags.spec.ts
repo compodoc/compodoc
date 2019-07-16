@@ -7,21 +7,24 @@ describe('Should setup flags', () => {
         version: '0.0.1'
     };
     let program;
+    let options;
 
     beforeAll(() => {
-        SetupFlags.setup(pkg, COMPODOC_DEFAULTS);
+        SetupFlags.setup(pkg);
         program = SetupFlags.program;
+        options = program.opts();
     });
 
     it('should handle options', async () => {
-        expect(program._version).toEqual(pkg.version);
-        expect(program.output).toEqual(COMPODOC_DEFAULTS.folder);
-        expect(program.name).toEqual(COMPODOC_DEFAULTS.title);
-        expect(program.port).toEqual(COMPODOC_DEFAULTS.port);
-        expect(program.exportFormat).toEqual(COMPODOC_DEFAULTS.exportFormat);
-        expect(program.language).toEqual(COMPODOC_DEFAULTS.language);
-        expect(program.includesName).toEqual(COMPODOC_DEFAULTS.additionalEntryName);
-        expect(program.coverageTestThresholdFail).toBeTruthy();
-        expect(program.gaSite).toEqual(COMPODOC_DEFAULTS.gaSite);
+        expect(options.version).toEqual(pkg.version);
+        expect(options.coverageTestThresholdFail).toBeTruthy();
+        expect(options.exportFormat).toEqual(COMPODOC_DEFAULTS.exportFormat);
+        expect(options.gaSite).toEqual(COMPODOC_DEFAULTS.gaSite);
+        expect(options.includesName).toEqual(COMPODOC_DEFAULTS.additionalEntryName);
+        expect(options.language).toEqual(COMPODOC_DEFAULTS.language);
+        expect(options.name).toEqual(COMPODOC_DEFAULTS.title);
+        expect(options.output).toEqual(COMPODOC_DEFAULTS.folder);
+        expect(options.port).toEqual(COMPODOC_DEFAULTS.port);
+        expect(options.toggleMenuItems).toEqual(COMPODOC_DEFAULTS.toggleMenuItems);
     });
 });

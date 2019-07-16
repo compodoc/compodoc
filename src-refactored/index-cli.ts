@@ -6,16 +6,16 @@ import HandleConfigFile from './core/use-cases/handle-config';
 import ScanFile from './core/use-cases/scan-files';
 import SetupFlags from './core/use-cases/setup-flags';
 
-import { COMPODOC_DEFAULTS } from './core/defaults';
-
 const pkg = require('../package.json');
+
+process.setMaxListeners(0);
 
 export class CliApplication {
     public async start() {
         /**
          * Setup flags with commander
          */
-        const currentProgram: CommanderStatic = SetupFlags.setup(pkg, COMPODOC_DEFAULTS);
+        const currentProgram: CommanderStatic = SetupFlags.setup(pkg);
         /**
          * Detect config file
          */
@@ -31,9 +31,6 @@ export class CliApplication {
          * Update internal configuration
          */
         ConfigurationRepository.init(currentProgram);
-
-        console.log(ConfigurationRepository.publicConfiguration);
-        console.log(ConfigurationRepository.internalConfiguration);
 
         /**
          * Scan files

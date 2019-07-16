@@ -1,6 +1,5 @@
 let log = require('fancy-log');
 let c = require('chalk');
-let pkg = require('../package.json');
 
 enum LEVEL {
     INFO,
@@ -10,14 +9,10 @@ enum LEVEL {
 }
 
 class Logger {
-    public name;
     public logger;
-    public version;
     public silent;
 
     constructor() {
-        this.name = pkg.name;
-        this.version = pkg.version;
         this.logger = log;
         this.silent = true;
     }

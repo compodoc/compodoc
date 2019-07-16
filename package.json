@@ -96,6 +96,8 @@
         "json5": "^2.1.0",
         "live-server": "^1.2.1",
         "lodash": "^4.17.14",
+        "loglevel": "^1.6.3",
+        "loglevel-plugin-prefix": "^0.8.4",
         "lunr": "^2.3.6",
         "marked": "^0.7.0",
         "minimist": "^1.2.0",

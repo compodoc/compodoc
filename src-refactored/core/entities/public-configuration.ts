@@ -19,15 +19,12 @@ export class PublicConfiguration {
     public disableSourceCode: boolean;
     public disableStyleTab: boolean;
     public disableTemplateTab: boolean;
-    public exclude;
     public exportFormat: string;
     public extTheme: string;
-    public files;
     public gaID: string;
     public gaSite: string;
     public hideGenerator: boolean;
     public host: string;
-    public include;
     public includes;
     public includesName: string;
     public language: string;
@@ -45,4 +42,6 @@ export class PublicConfiguration {
     public tsconfig: string;
     public unitTestCoverage: string;
     public watch: boolean;
+
+    constructor() {}
 }

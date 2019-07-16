@@ -19,6 +19,8 @@ export class InternalConfiguration extends PublicConfiguration {
     public disableMainGraph: boolean;
     public documentationMainDescription: string;
     public documentationMainName: string;
+    public exclude;
+    public files;
     public guards: any;
     public hasFilesToCoverage: boolean;
     public hostname: string;
