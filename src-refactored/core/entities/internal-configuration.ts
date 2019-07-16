@@ -1,0 +1,42 @@
+import { CoverageData } from './coverageData.interface';
+import { PublicConfiguration } from './public-configuration';
+
+export class InternalConfiguration extends PublicConfiguration {
+    public additionalPages: any;
+    public angularJSProject: boolean;
+    public angularProject: boolean;
+    public angularVersion: string;
+    public base: string;
+    public changelog: string;
+    public classes: any;
+    public components: any;
+    public contributing: string;
+    public controllers: any;
+    public coverageData: CoverageData;
+    public coverageTestPerFile: boolean;
+    public coverageTestThreshold: number;
+    public directives: any;
+    public disableMainGraph: boolean;
+    public documentationMainDescription: string;
+    public documentationMainName: string;
+    public guards: any;
+    public hasFilesToCoverage: boolean;
+    public hostname: string;
+    public includesFolder: string;
+    public injectables: any;
+    public interceptors: any;
+    public interfaces: any;
+    public license: string;
+    public mainGraph: string;
+    public markdowns: any[];
+    public miscellaneous: any;
+    public modules: any;
+    public packageDependencies: any[];
+    public packagePeerDependencies: Object[];
+    public pipes: any;
+    public readme: boolean;
+    public routes: any;
+    public routesLength: number;
+    public todo: string;
+    public unitTestData: Object;
+}

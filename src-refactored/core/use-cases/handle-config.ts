@@ -1,8 +1,9 @@
 import { CommanderStatic } from 'commander';
-import { cosmiconfig } from 'cosmiconfig';
 import * as path from 'path';
 
 import { PublicConfiguration } from '../entities/public-configuration';
+
+const cosmiconfig = require('cosmiconfig');
 
 export class HandleConfigFile {
     private static instance: HandleConfigFile;
@@ -33,6 +34,7 @@ export class HandleConfigFile {
                     if (testConfigFilePath && testConfigFilePath.length > 0) {
                         configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
                     }
+
                     this.configExplorerResult = this.configExplorer.load(
                         path.resolve(configFilePath)
                     );
