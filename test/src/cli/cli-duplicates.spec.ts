@@ -12,7 +12,7 @@ describe('CLI duplicates support', () => {
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
-            './test/src/todomvc-ng2-duplicates/src/tsconfig.json',
+            './test/fixtures/todomvc-ng2-duplicates/src/tsconfig.json',
             '-d',
             distFolder
         ]);

@@ -9,7 +9,7 @@ describe('CLI option file', () => {
     let clockInterfaceFile;
     let searchFuncFile;
 
-    const distFolder = 'test-config-file'; // Match /test/src/todomvc-ng2/.compodocrc
+    const distFolder = 'test-config-file'; // Match /test/fixtures/todomvc-ng2/.compodocrc
 
     before(done => {
         tmp.create(distFolder);
@@ -17,9 +17,9 @@ describe('CLI option file', () => {
         let ls = shell('node', [
             './bin/index-cli.js',
             '-c',
-            './test/src/todomvc-ng2/.compodocrc',
+            './test/fixtures/todomvc-ng2/.compodocrc',
             '-p',
-            './test/src/todomvc-ng2/src/tsconfig.json'
+            './test/fixtures/todomvc-ng2/src/tsconfig.json'
         ]);
 
         if (ls.stderr.toString() !== '') {
@@ -30,7 +30,9 @@ describe('CLI option file', () => {
 
         done();
     });
-    after(() => { tmp.clean(distFolder); });
+    after(() => {
+        tmp.clean(distFolder);
+    });
 
     it('should display generated message', () => {
         expect(stdoutString).to.contain('Documentation generated');

@@ -15,7 +15,7 @@ describe('CLI Export', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder,
                 '-e',
@@ -66,7 +66,7 @@ describe('CLI Export', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder,
                 '-e',
@@ -122,7 +122,7 @@ describe('CLI Export', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder,
                 '-n',
@@ -154,7 +154,7 @@ describe('CLI Export', () => {
             return readPDF(pdfDataBuffer).then(function(data) {
                 // console.log(data);
                 expect(data.text).to.contain(
-                    'AboutModule\nFilename : test/src/todomvc-ng2/src/app/about/about.module.ts'
+                    'AboutModule\nFilename : test/fixtures/todomvc-ng2/src/app/about/about.module.ts'
                 );
             });
         });
@@ -168,7 +168,7 @@ describe('CLI Export', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder,
                 '-e',

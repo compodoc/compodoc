@@ -29,7 +29,7 @@ describe('CLI simple generation - big app', () => {
 
     before(done => {
         tmp.create(tmpFolder);
-        tmp.copy('./test/src/todomvc-ng2/', tmpFolder);
+        tmp.copy('./test/fixtures/todomvc-ng2/', tmpFolder);
         let ls = shell(
             'node',
             ['../bin/index-cli.js', '-p', './src/tsconfig.json', '-d', 'documentation'],

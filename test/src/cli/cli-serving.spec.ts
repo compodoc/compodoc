@@ -39,7 +39,12 @@ describe('CLI serving', () => {
             tmp.create('documentation');
             let ls = shell(
                 'node',
-                ['./bin/index-cli.js', '-p', './test/src/sample-files/tsconfig.simple.json', '-s'],
+                [
+                    './bin/index-cli.js',
+                    '-p',
+                    './test/fixtures/sample-files/tsconfig.simple.json',
+                    '-s'
+                ],
                 { timeout: 25000 }
             );
 
@@ -68,7 +73,7 @@ describe('CLI serving', () => {
                 [
                     './bin/index-cli.js',
                     '-p',
-                    './test/src/sample-files/tsconfig.simple.json',
+                    './test/fixtures/sample-files/tsconfig.simple.json',
                     '-s',
                     '--host',
                     '127.0.0.2'

@@ -14,7 +14,7 @@ describe('CLI toggle menu items', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder,
                 '--toggleMenuItems',

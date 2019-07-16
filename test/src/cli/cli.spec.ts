@@ -80,7 +80,7 @@ describe('CLI simple flags', () => {
 
         beforeEach(() => {
             tmp.create(distFolder);
-            tmp.copy('./test/src/sample-files/', distFolder);
+            tmp.copy('./test/fixtures/sample-files/', distFolder);
             command = shell(
                 'node',
                 ['../bin/index-cli.js', '-p', 'tsconfig.simple.json', '-d', distFolder],
@@ -110,7 +110,7 @@ describe('CLI simple flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.entry.json',
+                './test/fixtures/sample-files/tsconfig.entry.json',
                 '-d',
                 distFolder
             ]);
@@ -136,7 +136,7 @@ describe('CLI simple flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.entry.json',
+                './test/fixtures/sample-files/tsconfig.entry.json',
                 '-d',
                 distFolder
             ]);

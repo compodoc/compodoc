@@ -12,7 +12,7 @@ describe('CLI simple flags', () => {
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
-            './test/src/sample-files/tsconfig.simple.json',
+            './test/fixtures/sample-files/tsconfig.simple.json',
             '-d',
             distFolder,
             '--silent'

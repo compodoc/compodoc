@@ -4,16 +4,18 @@ const expect = chai.expect;
 const tmp = temporaryDir();
 
 describe('CLI generation - TypeDoc examples', () => {
-
     let stdoutString = undefined;
     const distFolder = tmp.name + '-typedoc';
 
-    before((done) => {
+    before(done => {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
-            '-p', './test/src/typedoc-examples/tsconfig.json',
-            '-d', distFolder]);
+            '-p',
+            './test/fixtures/typedoc-examples/tsconfig.json',
+            '-d',
+            distFolder
+        ]);
 
         if (ls.stderr.toString() !== '') {
             console.error(`shell error: ${ls.stderr.toString()}`);
@@ -31,8 +33,12 @@ describe('CLI generation - TypeDoc examples', () => {
     it('interfaces - INameInterface', () => {
         const file = read(`${distFolder}/interfaces/INameInterface.html`);
         expect(file, 'Did not contain class comment').to.contain('This is a simple interface.');
-        expect(file, 'Did not contain function commment').to.contain('This is a interface function of INameInterface.');
-        expect(file, 'Did not contain member comment').to.contain('This is a interface member of INameInterface.');
+        expect(file, 'Did not contain function commment').to.contain(
+            'This is a interface function of INameInterface.'
+        );
+        expect(file, 'Did not contain member comment').to.contain(
+            'This is a interface member of INameInterface.'
+        );
     });
 
     it('interfaces - IPrintNameInterface', () => {
@@ -48,5 +54,4 @@ describe('CLI generation - TypeDoc examples', () => {
         expect(file).to.contain('Implements');
         expect(file).to.contain('This is a private function.');
     });
-
 });

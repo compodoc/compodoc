@@ -12,7 +12,7 @@ describe('CLI Routes graph', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
                 '--disableRoutesGraph',
                 '-d',
                 distFolder
@@ -38,7 +38,7 @@ describe('CLI Routes graph', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2-simple-routing/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
                 '-d',
                 distFolder
             ]);
@@ -63,7 +63,7 @@ describe('CLI Routes graph', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/routing-without-module/src/tsconfig.app.json',
+                './test/fixtures/routing-without-module/src/tsconfig.app.json',
                 '-d',
                 distFolder
             ]);
@@ -90,7 +90,7 @@ describe('CLI Routes graph', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2-simple-routing-with-if/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2-simple-routing-with-if/src/tsconfig.json',
                 '-d',
                 distFolder
             ]);

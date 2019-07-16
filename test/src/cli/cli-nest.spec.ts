@@ -13,7 +13,7 @@ describe('CLI nest projects support', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/nest-app/tsconfig.json',
+                './test/fixtures/nest-app/tsconfig.json',
                 '-d',
                 distFolder
             ]);

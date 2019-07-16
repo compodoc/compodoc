@@ -13,7 +13,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '-d',
                 distFolder
@@ -57,7 +57,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableProtected',
                 '-d',
                 distFolder
@@ -96,7 +96,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableInternal',
                 '-d',
                 distFolder
@@ -140,7 +140,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableLifeCycleHooks',
                 '-d',
                 distFolder
@@ -181,7 +181,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files-extends/src/tsconfig.json',
+                './test/fixtures/sample-files-extends/src/tsconfig.json',
                 '--disableLifeCycleHooks',
                 '-d',
                 distFolder
@@ -208,7 +208,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '--disableProtected',
                 '--disableInternal',
@@ -249,7 +249,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableSearch',
                 '-d',
                 distFolder
@@ -282,7 +282,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableDependencies',
                 '-d',
                 distFolder
@@ -310,7 +310,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--minimal',
                 '-d',
                 distFolder

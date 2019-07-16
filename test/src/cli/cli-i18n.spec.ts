@@ -13,7 +13,7 @@ describe('CLI i18n', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--language',
                 lang,
                 '-d',
@@ -82,7 +82,7 @@ describe('CLI i18n', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--language',
                 'invalid-Lang',
                 '-d',

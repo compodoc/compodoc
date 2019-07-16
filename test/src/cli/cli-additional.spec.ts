@@ -15,13 +15,13 @@ describe('CLI Additional documentation', () => {
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
-            './test/src/todomvc-ng2/src/tsconfig.json',
+            './test/fixtures/todomvc-ng2/src/tsconfig.json',
             '-d',
             distFolder,
             '-a',
-            './test/src/todomvc-ng2/screenshots',
+            './test/fixtures/todomvc-ng2/screenshots',
             '--includes',
-            './test/src/todomvc-ng2/additional-doc',
+            './test/fixtures/todomvc-ng2/additional-doc',
             '--includesName',
             '"Additional documentation"'
         ]);

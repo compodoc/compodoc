@@ -21,7 +21,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder
             ]);
@@ -177,7 +177,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder
             ]);
@@ -216,7 +216,7 @@ describe('CLI simple generation', () => {
                 [
                     '../bin/index-cli.js',
                     '-p',
-                    '../test/src/sample-files/tsconfig.simple.json',
+                    '../test/fixtures/sample-files/tsconfig.simple.json',
                     '-d',
                     '/tmp/' + distFolder + '/'
                 ],
@@ -288,7 +288,7 @@ describe('CLI simple generation', () => {
 
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p', './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d', actualDir + '/' + distFolder], { cwd: distFolder});
 
             if (ls.stderr.toString() !== '') {
@@ -343,7 +343,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder,
                 '-a',
@@ -370,11 +370,11 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder,
                 '-a',
-                './test/src/todomvc-ng2/screenshots/actions'
+                './test/fixtures/todomvc-ng2/screenshots/actions'
             ]);
 
             if (ls.stderr.toString() !== '') {
@@ -397,9 +397,9 @@ describe('CLI simple generation', () => {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                './test/src/sample-files/',
+                './test/fixtures/sample-files/',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder
             ]);
@@ -436,7 +436,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json'
+                './test/fixtures/sample-files/tsconfig.simple.json'
             ]);
 
             if (ls.stderr.toString() !== '') {
@@ -483,7 +483,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-t',
                 '-d',
                 distFolder
@@ -512,7 +512,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--theme',
                 baseTheme,
                 '-d',
@@ -543,7 +543,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-n',
                 name,
                 '-d',
@@ -573,7 +573,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--hideGenerator',
                 '-d',
                 distFolder
@@ -602,7 +602,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableSourceCode',
                 '-d',
                 distFolder
@@ -631,7 +631,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableDomTree',
                 '-d',
                 distFolder
@@ -660,7 +660,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--navTabConfig',
                 `[
                     {\"id\": \"source\",\"label\": \"Test Label 1\"},
@@ -706,7 +706,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--navTabConfig',
                 `[
                     {\"id\": \"tree\",\"label\": \"DOM Tree\"},
@@ -740,7 +740,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableTemplateTab',
                 '-d',
                 distFolder
@@ -769,7 +769,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableStyleTab',
                 '-d',
                 distFolder
@@ -798,7 +798,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableGraph',
                 '-d',
                 distFolder
@@ -873,7 +873,7 @@ describe('CLI simple generation', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                path.join(process.cwd() + path.sep + 'test/src/todomvc-ng2/src/tsconfig.json'),
+                path.join(process.cwd() + path.sep + 'test/fixtures/todomvc-ng2/src/tsconfig.json'),
                 '-d',
                 distFolder
             ]);
