@@ -125,7 +125,7 @@ describe('CLI simple flags', () => {
         after(() => tmp.clean(distFolder));
 
         it('should show the event output type', () => {
-            expect(componentFile).to.contain('{foo: string}');
+            expect(componentFile).to.contain('foo: string');
         });
     });
 

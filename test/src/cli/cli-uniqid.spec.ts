@@ -28,6 +28,6 @@ describe('CLI Uniq id for file', () => {
     after(() => tmp.clean(distFolder));
 
     it('it should contain a uniqid', () => {
-        expect(indexFile).to.contain('6392bbbd114021b59c52f837ecd63c53');
+        expect(indexFile).to.contain('e359b2a2e33e7b411a7b7e52efea7ba0');
     });
 });
