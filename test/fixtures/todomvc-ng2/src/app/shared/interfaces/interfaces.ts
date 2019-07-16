@@ -52,6 +52,6 @@ interface StringArray {
 }
 
 class Clock implements ClockInterface {
-     currentTime: Date;
-     constructor(h: number, m: number) { }
+    currentTime: Date;
+    constructor(h: number, m: number) {}
 }

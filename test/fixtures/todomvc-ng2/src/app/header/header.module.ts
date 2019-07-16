@@ -7,12 +7,8 @@ import { HeaderComponent } from './header.component';
  * The header module
  */
 @NgModule({
-    imports: [
-        FormsModule
-    ],
-    declarations: [
-        HeaderComponent
-    ],
+    imports: [FormsModule],
+    declarations: [HeaderComponent],
     exports: [HeaderComponent]
 })
-export class HeaderModule { }
+export class HeaderModule {}

@@ -9,12 +9,11 @@ import { Todo } from './app/shared/models/todo.model';
 import { LabelledTodo } from './app/shared/interfaces/interfaces';
 
 namespace BSBO {
-
-	export namespace Events {
+    export namespace Events {
         /**
          * A time interface just for documentation purpose
          */
-		export interface TimeInterface2 {
+        export interface TimeInterface2 {
             /**
              * The zone
              */
@@ -30,11 +29,11 @@ namespace BSBO {
             /**
              * Completed status
              */
-             completed: boolean;
-             /**
-              * Editing status
-              */
-             editing: boolean;
+            completed: boolean;
+            /**
+             * Editing status
+             */
+            editing: boolean;
 
             /**
              * Title
@@ -107,7 +106,7 @@ namespace BSBO {
             constructor() {
                 let persistedTodos = JSON.parse(localStorage.getItem('angular2-todos') || '[]');
                 // Normalize back into classes
-                this.todos = persistedTodos.map((todo: { _title: string, completed: boolean }) => {
+                this.todos = persistedTodos.map((todo: { _title: string; completed: boolean }) => {
                     let ret = new Todo(todo._title);
                     ret.completed = todo.completed;
                     return ret;
@@ -145,7 +144,7 @@ namespace BSBO {
              * @param {boolean} completed Status of all todos
              */
             setAllTo(completed: boolean) {
-                this.todos.forEach((t: Todo) => t.completed = completed);
+                this.todos.forEach((t: Todo) => (t.completed = completed));
                 this.updateStore();
             }
 
@@ -262,23 +261,17 @@ namespace BSBO {
              * HostListener description 1
              */
             @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
-            onMouseup(mouseX: number, mouseY: number): void {
-
-            }
+            onMouseup(mouseX: number, mouseY: number): void {}
             /**
              * HostListener description 2
              */
             @HostListener('mousedown', ['$event.clientX', '$event.clientY'])
-            onMousedown(mouseX: number, mouseY: number): void {
-
-            }
+            onMousedown(mouseX: number, mouseY: number): void {}
             /**
              * HostListener description 3
              */
             @HostListener('click')
-            onClick(): void {
-
-            }
+            onClick(): void {}
         }
 
         /**
@@ -291,17 +284,13 @@ namespace BSBO {
             template: 'about.component'
         })
         export class AboutComponent2 implements OnInit {
-            ngOnInit() {
-
-            }
+            ngOnInit() {}
 
             /**
              * HostListener mouseup description
              */
             @HostListener('mouseup')
-            onMouseup(): void {
-
-            }
+            onMouseup(): void {}
         }
 
         /**
@@ -310,18 +299,16 @@ namespace BSBO {
          * Just embedding <about> component and it's routing definition in {@link AboutRoutingModule}
          */
         @NgModule({
-            declarations: [
-
-            ],
+            declarations: [],
             imports: []
         })
-        export class AboutModule2 { }
+        export class AboutModule2 {}
 
         /**
          * PI constant
          * See {@link Todo} for service using it
          */
-        export const PI2:number = 3.14;
+        export const PI2: number = 3.14;
 
         /**
          * A foo bar function
@@ -335,8 +322,10 @@ namespace BSBO {
         export type Name2 = string;
 
         export enum PopupEffect2 {
-            fadeIn, fadeOut, bubbleIn, bubbleOut
+            fadeIn,
+            fadeOut,
+            bubbleIn,
+            bubbleOut
         }
-	}
-
+    }
 }

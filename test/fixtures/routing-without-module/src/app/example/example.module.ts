@@ -4,12 +4,8 @@ import { ExampleRoutingModule } from './example-routing.module';
 
 import { ExampleComponent } from './example.component';
 
-
 @NgModule({
-  imports: [
-    CommonModule,
-    ExampleRoutingModule
-  ],
-  declarations: [ExampleComponent]
+    imports: [CommonModule, ExampleRoutingModule],
+    declarations: [ExampleComponent]
 })
-export class ExampleModule { }
+export class ExampleModule {}

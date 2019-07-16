@@ -1,6 +1,6 @@
 export function LogMethod(target: any, key: string) {
     console.log('LogMethod: ' + key);
-};
+}
 
 export function LogProperty(target: any, key: string) {
     console.log('LogProperty: ', key);
@@ -16,6 +16,5 @@ export function LogClass(target: any) {
 
 export function LogClassWithArgs(filter: string) {
     console.log('LogClass: ', filter);
-    return (target: Object) => {
-    }
+    return (target: Object) => {};
 }

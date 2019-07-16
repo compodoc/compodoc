@@ -33,10 +33,10 @@ export class ListComponent {
 
     constructor(todoStore: TodoStore) {
         let that = this;
-		this.todoStore = todoStore;
+        this.todoStore = todoStore;
         this.todos = todoStore.getAll();
         this.watchTest = Observable.of(todoStore.todos);
-        EmitterService.get('FooterComponent').subscribe((value) => {
+        EmitterService.get('FooterComponent').subscribe(value => {
             console.log(value);
             switch (value) {
                 case 'displayCompleted':
@@ -53,5 +53,5 @@ export class ListComponent {
         this.watchTest.subscribe(data => {
             console.log(data);
         });
-	}
+    }
 }

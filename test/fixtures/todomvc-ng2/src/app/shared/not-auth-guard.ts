@@ -5,9 +5,7 @@ import { CanLoad } from '@angular/router';
     providedIn: 'root'
 })
 class NotAuthGuard implements CanLoad {
-
-    public canLoad () {
+    public canLoad() {
         return true;
     }
-
 }

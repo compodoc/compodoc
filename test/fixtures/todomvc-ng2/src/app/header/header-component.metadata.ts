@@ -7,4 +7,4 @@ export const HeaderComponentSchema = {
     margin-top: 75px;
 }`
     ]
-}
+};

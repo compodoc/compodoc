@@ -16,9 +16,7 @@ import { FooterModule } from '../footer/';
  * Just embedding <home> component and it's routing definition in {@link HomeRoutingModule}
  */
 @NgModule({
-    declarations: [
-        HomeComponent
-    ],
+    declarations: [HomeComponent],
     imports: [
         BrowserModule,
         FormsModule,
@@ -31,4 +29,4 @@ import { FooterModule } from '../footer/';
     ],
     exports: [HomeComponent]
 })
-export class HomeModule { }
+export class HomeModule {}

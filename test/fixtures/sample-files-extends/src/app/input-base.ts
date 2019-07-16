@@ -3,9 +3,7 @@ import { Input, Output } from '@angular/core';
 export class InputBase {
     public id = 'yo';
 
-    public thefx() {
-        
-    }
+    public thefx() {}
 
     @Input() public externalLabel: string;
 

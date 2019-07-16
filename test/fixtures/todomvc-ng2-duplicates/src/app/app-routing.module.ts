@@ -8,8 +8,8 @@ enum APP_ENUM {
 }
 
 const DEFAULT: Routes = [
-    { path: '', redirectTo: APP_ENUMS.home, pathMatch: 'full'},
-    { path: '**', redirectTo: APP_ENUM.home, pathMatch: 'full'}
+    { path: '', redirectTo: APP_ENUMS.home, pathMatch: 'full' },
+    { path: '**', redirectTo: APP_ENUM.home, pathMatch: 'full' }
 ];
 
 export const APP_ROUTES: Routes = [
@@ -23,7 +23,7 @@ export const APP_ROUTES: Routes = [
  * Link to about module with lazy-loading, and instead to home component
  */
 @NgModule({
-  imports: [RouterModule.forRoot(APP_ROUTES)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(APP_ROUTES)],
+    exports: [RouterModule]
 })
 export class AppRoutingModule {}

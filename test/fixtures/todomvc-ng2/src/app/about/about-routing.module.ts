@@ -11,14 +11,20 @@ import { pathMatchStrategy } from './path-match';
 
 import { utils, oneFunction } from './utils';
 
-const extract = function(s: string) {}
+const extract = function(s: string) {};
 
 const ABOUT_ROUTES: Routes = [
     {
-        path: ABOUT_ENUMS.todomvc, component: AboutComponent,
+        path: ABOUT_ENUMS.todomvc,
+        component: AboutComponent,
         children: [
-            { path: '', redirectTo: 'todomvc', pathMatch: pathMatchStrategy.full, data: utils.doWork() },
-            { path: 'todomvc', component: TodoMVCComponent, data: {title: extract('Home')} },
+            {
+                path: '',
+                redirectTo: 'todomvc',
+                pathMatch: pathMatchStrategy.full,
+                data: utils.doWork()
+            },
+            { path: 'todomvc', component: TodoMVCComponent, data: { title: extract('Home') } },
             { path: 'compodoc', component: CompodocComponent, data: oneFunction() }
         ]
     }
@@ -33,9 +39,6 @@ const ABOUT_ROUTES: Routes = [
 @NgModule({
     imports: [RouterModule.forChild(ABOUT_ROUTES)],
     exports: [RouterModule],
-    declarations: [
-        TodoMVCComponent,
-        CompodocComponent
-    ]
+    declarations: [TodoMVCComponent, CompodocComponent]
 })
-export class AboutRoutingModule { }
+export class AboutRoutingModule {}

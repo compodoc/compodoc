@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class FooService {
-
     ex: any;
 
     bar: string[] = [];

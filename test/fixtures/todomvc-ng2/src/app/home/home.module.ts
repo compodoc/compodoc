@@ -10,12 +10,7 @@ import { HeaderModule } from '../header/';
 import { ListModule } from '../list/';
 import { FooterModule } from '../footer/';
 
-const INTERNAL_MODULES = [
-    HeaderModule,
-    ListModule,
-    FooterModule,
-    HomeRoutingModule
-]
+const INTERNAL_MODULES = [HeaderModule, ListModule, FooterModule, HomeRoutingModule];
 
 /**
  * The header module
@@ -23,16 +18,8 @@ const INTERNAL_MODULES = [
  * Just embedding <home> component and it's routing definition in {@link HomeRoutingModule}
  */
 @NgModule({
-    declarations: [
-        HomeComponent
-    ],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        HttpModule,
-
-        ...INTERNAL_MODULES
-    ],
+    declarations: [HomeComponent],
+    imports: [BrowserModule, FormsModule, HttpModule, ...INTERNAL_MODULES],
     exports: [HomeComponent]
 })
-export class HomeModule { }
+export class HomeModule {}

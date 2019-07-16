@@ -18,7 +18,6 @@ const pure = true;
     pure
 })
 export class FirstUpperPipe implements PipeTransform {
-
     /**
      * Example property
      */

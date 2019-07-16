@@ -3,8 +3,8 @@ import { LogClass } from '../decorators/log.decorator';
 
 @Nothing()
 export class DoNothing {
-  aname: string;
-  doNothing() {
-    // nothing here
-  }
+    aname: string;
+    doNothing() {
+        // nothing here
+    }
 }

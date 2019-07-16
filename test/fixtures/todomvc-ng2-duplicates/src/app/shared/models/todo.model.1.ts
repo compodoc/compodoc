@@ -11,9 +11,9 @@ export class Todo {
     /**
      * Completed status
      */
-     completed: boolean;
-     /**
-      * Editing status
-      */
-     editing: boolean;
+    completed: boolean;
+    /**
+     * Editing status
+     */
+    editing: boolean;
 }

@@ -4,7 +4,13 @@ import { TodoStore } from '../shared/services/todo.store';
 
 import { EmitterService } from '../shared/services/emitter.service';
 
-import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass, LogClassWithArgs } from '../shared/decorators/log.decorator';
+import {
+    LogMethod,
+    LogProperty,
+    LogPropertyWithArgs,
+    LogClass,
+    LogClassWithArgs
+} from '../shared/decorators/log.decorator';
 
 import { FooterComponentSchema } from './footer-component.metadata';
 
@@ -36,16 +42,16 @@ export class FooterComponent {
      * @param {TodoStore} todoStore A TodoStore
      */
     constructor(todoStore: TodoStore) {
-		this.todoStore = todoStore;
-	}
+        this.todoStore = todoStore;
+    }
 
     /**
      * Removes all the completed todos
      */
     @LogMethod
     removeCompleted() {
-		this.todoStore.removeCompleted();
-	}
+        this.todoStore.removeCompleted();
+    }
 
     /**
      * Display only completed todos

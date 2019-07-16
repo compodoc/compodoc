@@ -30,7 +30,9 @@ describe('CLI option file', () => {
 
         done();
     });
-    after(() => { tmp.clean(distFolder); });
+    after(() => {
+        tmp.clean(distFolder);
+    });
 
     it('should display generated message', () => {
         expect(stdoutString).to.contain('Documentation generated');

@@ -25,18 +25,18 @@ export class HeaderComponent {
     newTodoText: string = '';
 
     constructor(todoStore: TodoStore) {
-		this.todoStore = todoStore;
-	}
+        this.todoStore = todoStore;
+    }
 
     /**
      * Ad a todo to the list
      */
     addTodo() {
-		if (this.newTodoText.trim().length) {
+        if (this.newTodoText.trim().length) {
             this.todoStore.add(this.newTodoText);
-			this.newTodoText = '';
-		}
-	}
+            this.newTodoText = '';
+        }
+    }
 
     private _fullName: string;
 

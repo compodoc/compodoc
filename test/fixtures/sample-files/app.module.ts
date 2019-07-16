@@ -13,20 +13,9 @@ import { FooModule } from './foo.module';
  * See {@link BarComponent}
  */
 @NgModule({
-  declarations: [
-    FooDirective,
-    FooComponent,
-    BarComponent
-  ],
-  providers: [
-    FooService
-  ],
-  imports: [
-    BarModule,
-    FooModule
-  ],
-  bootstrap: [
-    FooComponent
-  ]
+    declarations: [FooDirective, FooComponent, BarComponent],
+    providers: [FooService],
+    imports: [BarModule, FooModule],
+    bootstrap: [FooComponent]
 })
-export class AppModule { }
+export class AppModule {}

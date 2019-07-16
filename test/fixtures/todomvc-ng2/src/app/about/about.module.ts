@@ -6,21 +6,13 @@ import { AboutRoutingModule } from './about-routing.module';
 
 import { TodoStore } from '../shared/services/todo.store';
 
-const declarations = [
-    AboutComponent
-];
-const imports = [
-    AboutRoutingModule
-];
+const declarations = [AboutComponent];
+const imports = [AboutRoutingModule];
 const entryComponents = [AboutComponent];
-const bootstrap = [
-    AboutComponent
-];
+const bootstrap = [AboutComponent];
 const id = 'toto';
 
-const providers = [
-    TodoStore
-];
+const providers = [TodoStore];
 const schemas = [NO_ERRORS_SCHEMA];
 
 /**
@@ -37,4 +29,4 @@ const schemas = [NO_ERRORS_SCHEMA];
     id,
     schemas
 })
-export class AboutModule { }
+export class AboutModule {}
