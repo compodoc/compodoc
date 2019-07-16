@@ -4,13 +4,13 @@ import { Subscription } from 'rxjs/Subscription';
 
 /**
  * The about component
- *
+ * 
  * {@link PIT}
- *
+ * 
  * {@link Direction}
- *
+ * 
  * {@link ChartChange}
- *
+ * 
  * {@link foo}
  *
  * Display some text with links for details about TodoMVC & Compodoc.
@@ -23,70 +23,62 @@ import { Subscription } from 'rxjs/Subscription';
     preserveWhitespaces: false
 })
 export class AboutComponent {
-    public subscriptions: Subscription[];
+
+     public subscriptions: Subscription[];
 
     /**
      * HostListener mouseup description
      */
-    @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
-    onMouseup(mouseX: number, mouseY: number): void {}
+     @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
+     onMouseup(mouseX: number, mouseY: number): void {
 
-    chartOptions: Highcharts.Options = {
-        colors: [
-            '#7cb5ec',
-            '#434348',
-            '#90ed7d',
-            '#f7a35c',
-            '#8085e9',
-            '#f15c80',
-            '#e4d354',
-            '#2b908f',
-            '#f45b5b',
-            '#91e8e1'
-        ]
-    };
+     }
 
-    private _fullName: string;
+     chartOptions: Highcharts.Options = {
+         colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1']
+     }
 
-    /**
-     * Getter of _fullName
-     * @return {string} _fullName value
-     */
-    get fullName(): string {
-        return this._fullName;
-    }
+     private _fullName: string;
 
-    /**
-     * Setter of _fullName
-     * @param  {string} newName The new name
-     */
-    set fullName(newName: string) {
-        this._fullName = newName;
-    }
+     /**
+      * Getter of _fullName
+      * @return {string} _fullName value
+      */
+     get fullName(): string {
+         return this._fullName;
+     }
 
-    static readonly staticReadonlyVariable: string;
+     /**
+      * Setter of _fullName
+      * @param  {string} newName The new name
+      */
+     set fullName(newName: string) {
+         this._fullName = newName;
+     }
 
-    public static publicStaticVariable: string;
+     static readonly staticReadonlyVariable: string;
 
-    protected static protectedStaticMethod(): string {
-        return '';
-    }
+     public static publicStaticVariable: string;
 
-    private static privateStaticMethod(): string {
-        return '';
-    }
+     protected static protectedStaticMethod(): string {
+         return '';
+     }
 
-    public static publicStaticMethod(): string {
-        return '';
-    }
+     private static privateStaticMethod(): string {
+         return '';
+     }
 
-    static staticMethod(): string {
-        return '';
-    }
+     public static publicStaticMethod(): string {
+         return '';
+     }
 
-    public publicMethod(): string {
-        return '';
-    }
+     static staticMethod(): string {
+         return '';
+     }
 
-    public async foo(): Promise<any> {}
+     public publicMethod(): string {
+         return '';
+     }
+
+     public async foo(): Promise<any> {}
 }

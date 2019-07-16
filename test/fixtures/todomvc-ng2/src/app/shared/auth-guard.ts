@@ -1,7 +1,9 @@
 import { CanActivate } from '@angular/router';
 
 class AuthGuard implements CanActivate {
-    public canActivate() {
+
+    public canActivate () {
         return true;
     }
+
 }

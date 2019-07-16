@@ -2,40 +2,42 @@ import { Component, OnInit } from '@angular/core';
 import { BarService } from './bar.service';
 
 @Component({
-    selector: 'app-bar',
-    templateUrl: `bar.template.html`,
-    styleUrls: ['bar.style.scss', 'bar2.style.scss'],
-    providers: [BarService]
+	selector: 'app-bar',
+	templateUrl: `bar.template.html`,
+	styleUrls: ['bar.style.scss', 'bar2.style.scss'],
+	providers: [BarService]
+
 })
 export class BarComponent implements OnInit {
     /**
-     * foo method
-     */
-    normalMethod() {}
+	 * foo method
+	 */
+	normalMethod() {}
 
-    /**
-     * bar method
-     * @internal
-     */
-    internalMethod() {}
+	/**
+	 * bar method
+	 * @internal
+	 */
+	internalMethod() {}
 
-    /**
-     * @hidden
-     */
-    hiddenMethod() {}
+	/**
+	 * @hidden
+	 */
+	hiddenMethod() {}
 
-    /**
-     * @private
-     */
-    privateCommentMethod() {}
+	/**
+	 * @private
+	 */
+	privateCommentMethod() {}
 
-    private privateMethod() {}
+	private privateMethod() {}
 
-    protected varprotected: string;
+  protected varprotected: string;
 
-    ngOnInit() {}
+  ngOnInit() {}
 
-    public showTab(index) {
-        // TOTO
-    }
+	public showTab(index) {
+			// TOTO
+	}
+
 }

@@ -8,6 +8,7 @@ describe('CLI ignore JSDoc tag support', () => {
     const distFolder = tmp.name + '-ignore-jsdoc';
 
     describe('without --disableLifeCycleHooks', () => {
+
         before(done => {
             tmp.create(distFolder);
             let ls = shell('node', [
@@ -130,9 +131,11 @@ describe('CLI ignore JSDoc tag support', () => {
             const file = read(distFolder + '/miscellaneous/typealiases.html');
             expect(file).to.not.contain('<code>ChartChange');
         });
+
     });
 
     describe('with --disableLifeCycleHooks', () => {
+
         before(done => {
             tmp.create(distFolder);
             let ls = shell('node', [
@@ -166,5 +169,6 @@ describe('CLI ignore JSDoc tag support', () => {
             const file = exists(distFolder + '/directives/DoNothingDirective.html');
             expect(file).to.be.false;
         });
+
     });
 });

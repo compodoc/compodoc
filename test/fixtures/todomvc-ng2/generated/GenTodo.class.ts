@@ -6,5 +6,5 @@ export class GenTodo {
     /**
      * Completed status
      */
-    completed: boolean;
+     completed: boolean;
 }

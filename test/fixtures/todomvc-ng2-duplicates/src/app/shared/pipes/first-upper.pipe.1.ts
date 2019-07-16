@@ -5,7 +5,7 @@ import { PipeTransform, Pipe } from '@angular/core';
  *
  * __Usage :__
  *   value | firstUpper:exponent
- *
+ *   
  * __Example :__
  *   {{ car |  firstUpper}}
  *   formats to: Car

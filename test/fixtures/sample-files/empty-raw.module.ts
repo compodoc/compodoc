@@ -1,4 +1,4 @@
 import { NgModule } from '@angular/core';
 
 @NgModule()
-export class EmptyRawModule {}
+export class EmptyRawModule { }

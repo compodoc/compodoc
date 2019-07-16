@@ -13,9 +13,13 @@ export class DoNothingDirective {
         console.log('Do nothing directive');
     }
 
-    ngOnDestroy() {}
+    ngOnDestroy() {
 
-    public submitTriggered() {}
+    }
+
+    public submitTriggered() {
+
+    }
 
     /**
      * HostBinding description
@@ -26,17 +30,23 @@ export class DoNothingDirective {
      * HostListener description 1
      */
     @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
-    onMouseup(mouseX: number, mouseY: number): void {}
+    onMouseup(mouseX: number, mouseY: number): void {
+
+    }
     /**
      * HostListener description 2
      */
     @HostListener('mousedown', ['$event.clientX', '$event.clientY'])
-    onMousedown(mouseX: number, mouseY: number): void {}
+    onMousedown(mouseX: number, mouseY: number): void {
+
+    }
     /**
      * HostListener description 3
      */
     @HostListener('click')
-    onClick(): void {}
+    onClick(): void {
+
+    }
 
     private _fullName: string;
 

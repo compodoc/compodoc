@@ -22,5 +22,7 @@ const encapsulation = ViewEncapsulation.Emulated;
     encapsulation
 })
 export class HomeComponent {
-    public showTab() {}
+    public showTab() {
+
+    }
 }

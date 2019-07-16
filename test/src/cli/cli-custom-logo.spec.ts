@@ -1,27 +1,24 @@
 import * as chai from 'chai';
-import { temporaryDir, shell, pkg, exists, exec, read, shellAsync, stats } from '../helpers';
+import {temporaryDir, shell, pkg, exists, exec, read, shellAsync, stats} from '../helpers';
 const expect = chai.expect,
-    tmp = temporaryDir();
+      tmp = temporaryDir();
 
 interface Image {
     size: number;
 }
 
 describe('CLI custom logo', () => {
+
     const distFolder = tmp.name + '-logo';
 
     describe('when specifying a custom logo png image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '-d',
-                distFolder,
-                '--customLogo',
-                './test/fixtures/todomvc-ng2/logo.png'
-            ]);
+                '-p', './test/fixtures/todomvc-ng2/src/tsconfig.json',
+                '-d', distFolder,
+                '--customLogo', './test/fixtures/todomvc-ng2/logo.png']);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -42,17 +39,13 @@ describe('CLI custom logo', () => {
     });
 
     describe('when specifying a custom logo svg image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '-d',
-                distFolder,
-                '--customLogo',
-                './test/fixtures/todomvc-ng2/logo.svg'
-            ]);
+                '-p', './test/fixtures/todomvc-ng2/src/tsconfig.json',
+                '-d', distFolder,
+                '--customLogo', './test/fixtures/todomvc-ng2/logo.svg']);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -73,14 +66,12 @@ describe('CLI custom logo', () => {
     });
 
     describe('when not specifying a custom logo svg image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '-d',
-                distFolder
+                '-p', './test/fixtures/todomvc-ng2/src/tsconfig.json',
+                '-d', distFolder
             ]);
 
             if (ls.stderr.toString() !== '') {

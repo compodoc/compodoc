@@ -4,7 +4,11 @@ import { HttpModule } from '@angular/http';
 import { FomsModule } from '@angular/forms';
 
 @NgModule({
-    imports: [BrowserModule, FomsModule],
-    exports: [RouterModule, HttpModule]
+  imports: [
+    BrowserModule, FomsModule
+  ],
+  exports: [
+    RouterModule, HttpModule
+  ]
 })
-export class FooModule {}
+export class FooModule { }
