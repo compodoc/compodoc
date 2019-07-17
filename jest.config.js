@@ -1,5 +1,5 @@
 module.exports = {
-    coverageDirectory: './coverage/',
+    coverageDirectory: './coverage-refactoring/',
     collectCoverage: true,
     preset: 'ts-jest',
     testEnvironment: 'node',

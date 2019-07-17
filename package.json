@@ -16,7 +16,7 @@
         "posttest": "rimraf test/dist",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "nyc": "nyc npm test",
-        "codecov": "codecov -f coverage/*.info",
+        "codecov": "codecov -f coverage/lcov_merged.info",
         "backup-package-json": "node tools/backup-package-json.js",
         "restore-package-json": "node tools/restore-package-json.js",
         "prepublishOnly": "npm run build && npm run backup-package-json",
@@ -35,7 +35,9 @@
         "test-jest": "jest",
         "test-jest:watch": "jest --watch",
         "build-refactoring": "rollup -c rollup/rollup.config.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs",
-        "madge": "./node_modules/.bin/madge --warning -i dist/madge.png src-refactored/index-cli.ts"
+        "madge": "./node_modules/.bin/madge --warning -i dist/madge.png src-refactored/index-cli.ts",
+        "premerge-lcov": "mv coverage-refactoring/lcov.info coverage/lcov-refactoring.info",
+        "merge-lcov": "./node_modules/.bin/lcov-result-merger 'coverage/lcov-*.info' 'coverage/lcov_merged.info'"
     },
     "watch": {
         "build": {
@@ -126,6 +128,7 @@
         "cross-env": "^5.2.0",
         "husky": "^3.0.0",
         "jest": "^24.8.0",
+        "lcov-result-merger": "^3.1.0",
         "madge": "^3.4.4",
         "mocha": "^6.1.4",
         "nodemon": "^1.19.1",

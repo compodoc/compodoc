@@ -21,6 +21,7 @@ documentation
 doc
 
 # Coverage directory used by tools like istanbul
+coverage-refactoring
 coverage
 .nyc_output
 coverage.*
