@@ -2,20 +2,23 @@ import { CommanderStatic } from 'commander';
 
 import ConfigurationRepository from './core/repositories/config.repository';
 
+import DisplayEnvironmentVersions from './core/use-cases/display-environment-versions';
 import HandleConfigFile from './core/use-cases/handle-config';
 import ScanFile from './core/use-cases/scan-files';
 import SetupFlags from './core/use-cases/setup-flags';
 
-const pkg = require('../package.json');
+const compodocPackageJsonFile = require('../package.json');
 
 process.setMaxListeners(0);
 
 export class CliApplication {
+    public isWatching = false;
+
     public async start() {
         /**
          * Setup flags with commander
          */
-        const currentProgram: CommanderStatic = SetupFlags.setup(pkg);
+        const currentProgram: CommanderStatic = SetupFlags.setup(compodocPackageJsonFile);
         /**
          * Detect config file
          */
@@ -31,6 +34,11 @@ export class CliApplication {
          * Update internal configuration
          */
         ConfigurationRepository.init(currentProgram);
+
+        /**
+         * Display environement versions : compodoc, TypeScript, Node.js, OS
+         */
+        DisplayEnvironmentVersions.display(compodocPackageJsonFile);
 
         /**
          * Scan files

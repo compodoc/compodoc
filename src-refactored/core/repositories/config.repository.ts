@@ -127,10 +127,10 @@ export class ConfigurationRepository {
         }
 
         if (this.publicConfiguration.silent) {
-            Logger.silent = false;
+            Logger.silent = true;
         }
         if (currentProgram.silent) {
-            Logger.silent = false;
+            Logger.silent = true;
         }
     }
 }
