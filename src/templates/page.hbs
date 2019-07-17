@@ -154,6 +154,9 @@
             {{else}}
             var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
             {{/if}}
+            {{#unless data.disableSearch}}
+            var MAX_SEARCH_RESULTS = {{data.maxSearchResults}};
+            {{/unless}}
        </script>
 
        <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>

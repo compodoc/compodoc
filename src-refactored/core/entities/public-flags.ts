@@ -270,5 +270,11 @@ export const PUBLIC_FLAGS: Flag[] = [
         flag: '-w, --watch',
         description: 'Watch source files after serve and force documentation rebuild',
         defaultValue: false
+    },
+    {
+        label: 'maxSearchResults',
+        flag: '--maxSearchResults [number]',
+        description: 'Max search results on the results page. To show all results, set to 0',
+        defaultValue: 15
     }
 ];

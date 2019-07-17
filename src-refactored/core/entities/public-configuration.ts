@@ -42,6 +42,7 @@ export class PublicConfiguration {
     public tsconfig: string;
     public unitTestCoverage: string;
     public watch: boolean;
+    public maxSearchResults: string;
 
     constructor() {}
 }

@@ -33,5 +33,6 @@ export const COMPODOC_DEFAULTS = {
     },
     gaSite: 'auto',
     coverageTestShowOnlyFailed: false,
-    language: 'en-US'
+    language: 'en-US',
+    maxSearchResults: 15
 };

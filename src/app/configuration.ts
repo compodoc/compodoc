@@ -86,7 +86,8 @@ export class Configuration implements ConfigurationInterface {
         gaSite: '',
         angularProject: false,
         angularJSProject: false,
-        language: COMPODOC_DEFAULTS.language
+        language: COMPODOC_DEFAULTS.language,
+        maxSearchResults: 15
     };
 
     private static instance: Configuration;
