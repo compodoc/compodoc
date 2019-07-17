@@ -62,9 +62,7 @@ let endTests = function(context, cb) {
         request(
             {
                 method: 'PUT',
-                uri: `https://${process.env.SAUCE_USERNAME}:${
-                    process.env.SAUCE_ACCESS_KEY
-                }@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
+                uri: `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@saucelabs.com/rest/v1/${process.env.SAUCE_USERNAME}/jobs/${driver.sessionID}`,
                 json: {
                     passed: result
                 }
@@ -84,7 +82,7 @@ let testSearchBarWithResults = function(cb) {
         .then(function(elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.sendKeys('exampleInput');
-            driver.sleep(1000).then(function() {
+            driver.sleep(2000).then(function() {
                 searchBox.getAttribute('value').then(function(value) {
                     expect(value).to.equal('exampleInput');
 
@@ -92,12 +90,12 @@ let testSearchBarWithResults = function(cb) {
                         writeScreenshot(data, 'test.png');
                     });*/
 
-                    driver.sleep(1000).then(function() {
+                    driver.sleep(2000).then(function() {
                         driver
                             .findElements(webdriver.By.className('search-results-item'))
                             .then(function(elems) {
                                 expect(elems.length).to.equal(1);
-                                driver.sleep(1000).then(function() {
+                                driver.sleep(2000).then(function() {
                                     cb();
                                 });
                             });
@@ -113,9 +111,9 @@ let testSearchBarWithNoResults = function(cb) {
         .then(function(elems) {
             searchBox = elems[1]; // First one is the mobile one hidden;
             searchBox.clear();
-            driver.sleep(1000).then(function() {
+            driver.sleep(2000).then(function() {
                 searchBox.sendKeys('waza');
-                driver.sleep(1000).then(function() {
+                driver.sleep(2000).then(function() {
                     searchBox.getAttribute('value').then(function(value) {
                         expect(value).to.equal('waza');
                         driver.sleep(4000).then(function() {
@@ -123,7 +121,7 @@ let testSearchBarWithNoResults = function(cb) {
                                 .findElements(webdriver.By.className('search-results-item'))
                                 .then(function(elems1) {
                                     expect(elems1.length).to.equal(0);
-                                    driver.sleep(1000).then(function() {
+                                    driver.sleep(2000).then(function() {
                                         cb();
                                     });
                                 });
