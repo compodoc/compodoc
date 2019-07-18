@@ -1,11 +1,32 @@
 import * as _ from 'lodash';
-import { IApiSourceResult } from './api-source-result.interface';
 
-const AngularAPIs: Array<IAngularMainApi> = require('../src/data/api-list.json');
+const AngularAPIs: Array<IAngularMainApi> = require('../../data/api-list.json');
+
+export interface IApiSourceResult<T> {
+    source: string;
+    data: T | undefined;
+}
+
+export interface IAngularMainApi {
+    title: string;
+    name: string;
+    items: IAngularApi[];
+}
+
+export interface IAngularApi {
+    title: string;
+    path: string;
+    docType: string;
+    stability: string;
+    secure: string;
+    barrel: string;
+}
 
 export class AngularApiUtil {
     private static instance: AngularApiUtil;
+
     private constructor() {}
+
     public static getInstance() {
         if (!AngularApiUtil.instance) {
             AngularApiUtil.instance = new AngularApiUtil();
@@ -30,18 +51,3 @@ export class AngularApiUtil {
 }
 
 export default AngularApiUtil.getInstance();
-
-export interface IAngularMainApi {
-    title: string;
-    name: string;
-    items: IAngularApi[];
-}
-
-export interface IAngularApi {
-    title: string;
-    path: string;
-    docType: string;
-    stability: string;
-    secure: string;
-    barrel: string;
-}
