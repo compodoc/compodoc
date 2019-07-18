@@ -177,6 +177,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             .option('--customLogo [path]', 'Use a custom logo')
             .option('--gaID [id]', 'Google Analytics tracking ID')
             .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
+            .option(
+                '--maxSearchResults [maxSearchResults]',
+                'Max search results on the results page. To show all results, set to 0',
+                COMPODOC_DEFAULTS.maxSearchResults
+            )
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -595,6 +600,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.tsconfig) {
             Configuration.mainData.tsconfig = program.tsconfig;
+        }
+
+        if (program.maxSearchResults) {
+            Configuration.mainData.maxSearchResults = program.maxSearchResults;
         }
 
         if (configFile.files) {
