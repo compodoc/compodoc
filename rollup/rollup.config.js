@@ -24,6 +24,7 @@ export default {
         'json5',
         'ts-simple-ast',
         'i18next',
-        'loglevel'
+        'loglevel',
+        'ts-morph'
     ]
 };

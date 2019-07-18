@@ -3,7 +3,9 @@ import * as path from 'path';
 
 export class FileEngine {
     private static instance: FileEngine;
+
     private constructor() {}
+
     public static getInstance() {
         if (!FileEngine.instance) {
             FileEngine.instance = new FileEngine();
@@ -11,7 +13,11 @@ export class FileEngine {
         return FileEngine.instance;
     }
 
-    public get(filepath: string): Promise<string> {
+    /**
+     * Read async proxy
+     * @param filepath Path of the file to read
+     */
+    public async get(filepath: string): Promise<string> {
         return new Promise((resolve, reject) => {
             fs.readFile(path.resolve(filepath), 'utf8', (err, data) => {
                 if (err) {
@@ -23,7 +29,20 @@ export class FileEngine {
         });
     }
 
-    public write(filepath: string, contents: string): Promise<void> {
+    /**
+     * Read sync proxy
+     * @param filepath Path of the file to read
+     */
+    public getSync(filepath: string): string {
+        return fs.readFileSync(path.resolve(filepath), 'utf8');
+    }
+
+    /**
+     * Async write content to file
+     * @param filepath Path of the file to write
+     * @param contents Content of the file to write
+     */
+    public async write(filepath: string, contents: string): Promise<void> {
         return new Promise((resolve, reject) => {
             fs.outputFile(path.resolve(filepath), contents, err => {
                 if (err) {
@@ -35,15 +54,17 @@ export class FileEngine {
         });
     }
 
+    /**
+     * Sync write content to file
+     * @param filepath Path of the file to write
+     * @param contents Content of the file to write
+     */
     public writeSync(filepath: string, contents: string): void {
         fs.outputFileSync(filepath, contents);
     }
 
-    public getSync(filepath: string): string {
-        return fs.readFileSync(path.resolve(filepath), 'utf8');
-    }
-
     /**
+     * Sync check file exist
      * @param file The file to check
      */
     public existsSync(file: string): boolean {

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { ts } from 'ts-morph';
@@ -9,8 +9,6 @@ const osName = require('os-name');
 import AngularVersionUtil from '../../infrastructure/angular/angular-version.util';
 import FileEngine from '../../infrastructure/files/file.engine';
 import Logger from '../../infrastructure/logging/logger';
-
-let cwd = process.cwd();
 
 export class DisplayEnvironmentVersions {
     private static instance: DisplayEnvironmentVersions;
@@ -25,10 +23,20 @@ export class DisplayEnvironmentVersions {
     }
 
     public display(compodocPackageJsonFile) {
+        const cwd = process.cwd();
         if (Logger.silent) {
             console.log(`Compodoc v${compodocPackageJsonFile.version}`);
         } else {
-            console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
+            let bannerPath = '../src/banner';
+
+            /**
+             * Switch between CLI and Unit testing environment
+             */
+            if (__dirname.substr(-4) !== 'dist') {
+                bannerPath = '../../../src/banner';
+            }
+
+            console.log(fs.readFileSync(path.join(__dirname, bannerPath)).toString());
             console.log(compodocPackageJsonFile.version);
             console.log('');
             console.log(`TypeScript version used by Compodoc : ${ts.version}`);
