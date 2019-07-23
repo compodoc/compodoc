@@ -84,6 +84,33 @@ describe('CLI Routes graph', () => {
         });
     });
 
+    describe('should support lazy loading modules with new loadChildren syntax', () => {
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it("should have a clean graph", () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.true;
+            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('AboutComponent');
+        });
+    });
+
     describe('should support if statement for bootstrapModule', () => {
         before(function(done) {
             tmp.create(distFolder);
