@@ -56,10 +56,6 @@ export class CliApplication {
 
         I18nEngine.init(currentProgram.language);
 
-        setTimeout(() => {
-            console.log(I18nEngine.translate('constructor'));
-        }, 1000);
-
         /**
          * Scan files
          */

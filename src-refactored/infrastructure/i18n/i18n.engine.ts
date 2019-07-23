@@ -1,6 +1,4 @@
-import i18next from 'i18next';
-
-// const i18next = require('i18next');
+const i18next = require('i18next');
 
 import {
     TRANSLATION_DE_DE,
@@ -13,7 +11,7 @@ import {
     TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
     TRANSLATION_ZH_CN
-} from '../../locales';
+} from './locales';
 
 class I18nEngine {
     private static instance: I18nEngine;
