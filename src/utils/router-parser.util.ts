@@ -22,6 +22,7 @@ export class RouterParserUtil {
     private rootModule: string;
     private cleanModulesTree;
     private modulesWithRoutes = [];
+    private transformAngular8ImportSyntax = /(['"]loadChildren['"]:)\(\)=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\w+?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -65,6 +66,12 @@ export class RouterParserUtil {
         if (testTrailingComma !== -1) {
             routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
         }
+
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntax,
+            '$1"$3#$5"'
+        );
+
         return JSON5.parse(routesWithoutSpaces);
     }
 
@@ -74,6 +81,12 @@ export class RouterParserUtil {
         if (testTrailingComma !== -1) {
             routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
         }
+
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntax,
+            '$1"$3#$5"'
+        );
+
         return routesWithoutSpaces;
     }
 
