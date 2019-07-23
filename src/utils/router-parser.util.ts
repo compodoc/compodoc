@@ -154,14 +154,11 @@ export class RouterParserUtil {
                                                 argument.text,
                                                 this.modulesWithRoutes[i].filename
                                             );
-                                            let cleaner = (process.cwd() + path.sep).replace(
-                                                /\\/g,
-                                                '/'
-                                            );
-                                            argumentImportPath = argumentImportPath.replace(
-                                                cleaner,
-                                                ''
-                                            );
+
+                                            argumentImportPath = argumentImportPath
+                                                .replace(process.cwd() + path.sep, '')
+                                                .replace(/\\/g, '/');
+
                                             if (
                                                 argument.text &&
                                                 route.name === argument.text &&
