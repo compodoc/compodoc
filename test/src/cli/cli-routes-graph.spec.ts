@@ -90,7 +90,7 @@ describe('CLI Routes graph', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2-simple-routing-standard/src/tsconfig.json',
                 '-d',
                 distFolder
             ]);
@@ -103,7 +103,7 @@ describe('CLI Routes graph', () => {
         });
         after(() => tmp.clean(distFolder));
 
-        it("should have a clean graph", () => {
+        it('should have a clean graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
             let file = read(`${distFolder}/js/routes/routes_index.js`);
