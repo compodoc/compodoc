@@ -11,8 +11,8 @@ import { Flag, PUBLIC_FLAGS } from '../entities/public-flags';
 export class ConfigurationRepository {
     private static instance: ConfigurationRepository;
 
-    public publicConfiguration;
-    public internalConfiguration;
+    public publicConfiguration: PublicConfiguration;
+    public internalConfiguration: InternalConfiguration;
 
     constructor() {
         this.publicConfiguration = new PublicConfiguration();

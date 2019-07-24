@@ -3,6 +3,7 @@ import { CommanderStatic } from 'commander';
 import ConfigurationRepository from './core/repositories/config.repository';
 import DisplayEnvironmentVersions from './core/use-cases/display-environment-versions';
 import HandleConfigFile from './core/use-cases/handle-config';
+import HandleTsconfigFile from './core/use-cases/handle-tsconfig-file';
 import ScanFile from './core/use-cases/scan-files';
 import SetupFlags from './core/use-cases/setup-flags';
 
@@ -43,7 +44,7 @@ export class CliApplication {
         DisplayEnvironmentVersions.display(compodocPackageJsonFile);
 
         if (configExplorerResult) {
-            Logger.info(`Using configuration file : ${configExplorerResult.filepath}`);
+            Logger.info(`Using configuration file : ${HandleConfigFile.configFilePath}`);
         } else {
             Logger.warn(`No configuration file found, switching to CLI flags.`);
         }
@@ -55,6 +56,33 @@ export class CliApplication {
         }
 
         I18nEngine.init(currentProgram.language);
+
+        /**
+         * 1. Serve ?
+         */
+        if (currentProgram.serve) {
+            Logger.info(
+                `Serving documentation from ${ConfigurationRepository.internalConfiguration.output} at http://${ConfigurationRepository.internalConfiguration.hostname}:${currentProgram.port}`
+            );
+            return;
+        }
+
+        /**
+         * 2. Coverage ?
+         */
+        if (ConfigurationRepository.internalConfiguration.hasFilesToCoverage) {
+            Logger.info('Run documentation coverage test for files');
+            return;
+        }
+
+        /**
+         * 3. Generate ?
+         */
+
+        /**
+         * Detect tsconfig file
+         */
+        const tsConfigExplorerResult = await HandleTsconfigFile.handle();
 
         /**
          * Scan files

@@ -20,6 +20,12 @@ export const PUBLIC_FLAGS: Flag[] = [
         description: 'External assets folder to copy in generated documentation folder'
     },
     {
+        label: 'config',
+        flag: '-c, --config [config]',
+        description:
+            'A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json'
+    },
+    {
         label: 'coverageMinimumPerFile',
         flag: '--coverageMinimumPerFile [minimum]',
         description: 'Test command of documentation coverage per file with a minimum (default 0)'
@@ -131,14 +137,19 @@ export const PUBLIC_FLAGS: Flag[] = [
     },
     {
         label: 'exportFormat',
-        flag: '--exportFormat [format]',
+        flag: '-e, --exportFormat [format]',
         description: 'Export in specified format (json, html)',
         defaultValue: COMPODOC_DEFAULTS.exportFormat
     },
     {
         label: 'extTheme',
-        flag: '--extTheme [file]',
+        flag: '-y, --extTheme [file]',
         description: 'External styling theme file'
+    },
+    {
+        label: 'files',
+        flag: '--files [files]',
+        description: 'Files provided by external tool, used for coverage test'
     },
     {
         label: 'gaID',
@@ -188,7 +199,7 @@ export const PUBLIC_FLAGS: Flag[] = [
     },
     {
         label: 'name',
-        flag: '--name [name]',
+        flag: '-n, --name [name]',
         description: 'Title documentation',
         defaultValue: COMPODOC_DEFAULTS.title
     },
@@ -205,12 +216,12 @@ export const PUBLIC_FLAGS: Flag[] = [
     },
     {
         label: 'open',
-        flag: '--open [value]',
+        flag: '-o, --open [value]',
         description: 'Open the generated documentation'
     },
     {
         label: 'output',
-        flag: '--output [folder]',
+        flag: '-d, --output [folder]',
         description: 'Where to store the generated documentation',
         defaultValue: COMPODOC_DEFAULTS.folder
     },
@@ -228,13 +239,13 @@ export const PUBLIC_FLAGS: Flag[] = [
     },
     {
         label: 'silent',
-        flag: '--silent',
+        flag: '-t, --silent',
         description: `In silent mode, log messages aren't logged in the console`,
         defaultValue: false
     },
     {
         label: 'serve',
-        flag: '--serve',
+        flag: '-s, --serve',
         description: 'Serve generated documentation (default http://localhost:8080/)',
         defaultValue: false
     },

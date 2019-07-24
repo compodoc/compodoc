@@ -1,8 +1,6 @@
 import { CommanderStatic } from 'commander';
 import * as path from 'path';
 
-import { PublicConfiguration } from '../entities/public-configuration';
-
 const cosmiconfig = require('cosmiconfig');
 
 export class HandleConfigFile {
@@ -12,7 +10,7 @@ export class HandleConfigFile {
     private configExplorer;
     private configExplorerResult;
 
-    public publicConfig: PublicConfiguration;
+    public configFilePath: string = '';
 
     constructor() {
         this.configExplorer = cosmiconfig(this.cosmiconfigModuleName);
@@ -26,20 +24,24 @@ export class HandleConfigFile {
     }
 
     public async handle(currentProgram: CommanderStatic) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 if (currentProgram.config) {
                     let configFilePath = currentProgram.config;
+                    this.configFilePath = configFilePath;
                     let testConfigFilePath = configFilePath.match(process.cwd());
                     if (testConfigFilePath && testConfigFilePath.length > 0) {
                         configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
                     }
 
-                    this.configExplorerResult = this.configExplorer.load(
+                    this.configExplorerResult = await this.configExplorer.load(
                         path.resolve(configFilePath)
                     );
                 } else {
-                    this.configExplorerResult = this.configExplorer.search();
+                    this.configExplorerResult = await this.configExplorer.search();
+                    if (this.configExplorerResult) {
+                        this.configFilePath = path.basename(this.configExplorerResult.filepath);
+                    }
                 }
                 resolve(this.configExplorerResult);
             } catch (error) {
