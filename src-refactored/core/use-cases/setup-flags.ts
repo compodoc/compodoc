@@ -22,7 +22,7 @@ export class SetupFlags {
         this.program.version(pkg.version).usage('<src> [options]');
 
         PUBLIC_FLAGS.forEach((publicFlag: Flag) => {
-            if (publicFlag.defaultValue) {
+            if (publicFlag.hasOwnProperty('defaultValue')) {
                 this.program.option(
                     publicFlag.flag,
                     publicFlag.description,

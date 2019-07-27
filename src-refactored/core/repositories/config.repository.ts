@@ -40,17 +40,9 @@ export class ConfigurationRepository {
                     publicFlag.label
                 ];
             }
-            if (publicFlag.defaultValue) {
-                if (
-                    currentProgram[publicFlag.label] &&
-                    currentProgram[publicFlag.label] !== publicFlag.defaultValue
-                ) {
-                    this.internalConfiguration[publicFlag.label] = currentProgram[publicFlag.label];
-                }
-            } else {
-                if (currentProgram[publicFlag.label]) {
-                    this.internalConfiguration[publicFlag.label] = currentProgram[publicFlag.label];
-                }
+
+            if (currentProgram.hasOwnProperty(publicFlag.label)) {
+                this.internalConfiguration[publicFlag.label] = currentProgram[publicFlag.label];
             }
         });
 

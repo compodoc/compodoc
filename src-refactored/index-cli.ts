@@ -5,6 +5,7 @@ import DisplayEnvironmentVersions from './core/use-cases/display-environment-ver
 import HandleConfigFile from './core/use-cases/handle-config';
 import HandleTsconfigFile from './core/use-cases/handle-tsconfig-file';
 import ScanFile from './core/use-cases/scan-files';
+import ServeFiles from './core/use-cases/serve-files';
 import SetupFlags from './core/use-cases/setup-flags';
 
 import I18nEngine from './infrastructure/i18n/i18n.engine';
@@ -61,9 +62,7 @@ export class CliApplication {
          * 1. Serve ?
          */
         if (currentProgram.serve) {
-            Logger.info(
-                `Serving documentation from ${ConfigurationRepository.internalConfiguration.output} at http://${ConfigurationRepository.internalConfiguration.hostname}:${currentProgram.port}`
-            );
+            ServeFiles.serve(ConfigurationRepository.internalConfiguration);
             return;
         }
 

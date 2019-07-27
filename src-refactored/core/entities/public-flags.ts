@@ -171,7 +171,8 @@ export const PUBLIC_FLAGS: Flag[] = [
     {
         label: 'host',
         flag: '--host [host]',
-        description: 'Change default host address'
+        description: 'Change default host address',
+        defaultValue: COMPODOC_DEFAULTS.hostname
     },
     {
         label: 'includes',
@@ -217,7 +218,8 @@ export const PUBLIC_FLAGS: Flag[] = [
     {
         label: 'open',
         flag: '-o, --open [value]',
-        description: 'Open the generated documentation'
+        description: 'Open the generated documentation',
+        defaultValue: false
     },
     {
         label: 'output',
@@ -233,7 +235,7 @@ export const PUBLIC_FLAGS: Flag[] = [
     },
     {
         label: 'serve',
-        flag: '--serve',
+        flag: '-s, --serve',
         description: 'Serve generated documentation (default http://localhost:8080/)',
         defaultValue: false
     },
@@ -244,12 +246,6 @@ export const PUBLIC_FLAGS: Flag[] = [
         defaultValue: false
     },
     {
-        label: 'serve',
-        flag: '-s, --serve',
-        description: 'Serve generated documentation (default http://localhost:8080/)',
-        defaultValue: false
-    },
-    {
         label: 'templates',
         flag: '--templates [folder]',
         description: 'Path to directory of Handlebars templates to override built-in templates'
@@ -257,7 +253,8 @@ export const PUBLIC_FLAGS: Flag[] = [
     {
         label: 'theme',
         flag: '--theme [theme]',
-        description: `Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)`
+        description: `Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)`,
+        defaultValue: COMPODOC_DEFAULTS.theme
     },
     {
         label: 'toggleMenuItems',

@@ -11,12 +11,9 @@ describe('Should find config file', () => {
     let program;
 
     beforeEach(() => {
-        SetupFlags.setup(
-            {
-                version: '0.0.1'
-            },
-            COMPODOC_DEFAULTS
-        );
+        SetupFlags.setup({
+            version: '0.0.1'
+        });
         program = SetupFlags.program;
     });
 
