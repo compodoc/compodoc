@@ -20,7 +20,7 @@ export class Logger {
         log.setLevel(0);
         loglevelpluginPrefix.reg(log);
         loglevelpluginPrefix.apply(log, {
-            template: '[%t] :'
+            template: '[%t]'
         });
     }
 
