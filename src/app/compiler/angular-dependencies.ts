@@ -981,7 +981,7 @@ export class AngularDependencies extends FrameworkDependencies {
             } else if (pop && pop.kind && pop.kind === SyntaxKind.StringLiteral) {
                 return [pop];
             } else {
-                logger.warn('Empty metadatas, trying to found it with imports.');
+                logger.warn('Empty metadatas, trying to find it with imports.');
                 return ImportsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
             }
         }
