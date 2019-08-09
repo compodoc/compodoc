@@ -1,3 +1,4 @@
+const eol = require('os').EOL;
 import * as chai from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 
@@ -470,21 +471,21 @@ describe('CLI simple generation - big app', () => {
     it('should have parsed correctly private, public, and static methods or properties', () => {
         expect(aboutComponentFile).to.contain('<code>privateStaticMethod()');
         expect(aboutComponentFile).to.contain(
-            `<span class="modifier">Private</span>\n                                    <span class="modifier">Static</span>`
+            `<span class="modifier">Private</span>${eol}                                    <span class="modifier">Static</span>`
         );
         expect(aboutComponentFile).to.contain('<code>protectedStaticMethod()');
         expect(aboutComponentFile).to.contain(
-            `<span class="modifier">Protected</span>\n                                    <span class="modifier">Static</span>`
+            `<span class="modifier">Protected</span>${eol}                                    <span class="modifier">Static</span>`
         );
         expect(aboutComponentFile).to.contain('<code>publicMethod()');
         expect(aboutComponentFile).to.contain('<code>publicStaticMethod()');
         expect(aboutComponentFile).to.contain('<code>staticMethod()');
         expect(aboutComponentFile).to.contain('staticReadonlyVariable');
         expect(aboutComponentFile).to.contain(
-            `<span class="modifier">Static</span>\n                                    <span class="modifier">Readonly</span>`
+            `<span class="modifier">Static</span>${eol}                                    <span class="modifier">Readonly</span>`
         );
         expect(aboutComponentFile).to.contain(
-            `<span class="modifier">Public</span>\n                                    <span class="modifier">Async</span>`
+            `<span class="modifier">Public</span>${eol}                                    <span class="modifier">Async</span>`
         );
     });
 
@@ -669,7 +670,7 @@ describe('CLI simple generation - big app', () => {
     it('should display list of import/exports/declarations/providers in asc order', () => {
         let file = read(distFolder + '/modules/AboutRoutingModule.html');
         expect(file).to.contain(
-            `<li class="list-group-item">\n                            <a href="../components/CompodocComponent.html">CompodocComponent</a>\n                        </li>\n                        <li class="list-group-item">\n                            <a href="../components/TodoMVCComponent.html">`
+            `<li class="list-group-item">${eol}                            <a href="../components/CompodocComponent.html">CompodocComponent</a>${eol}                        </li>${eol}                        <li class="list-group-item">${eol}                            <a href="../components/TodoMVCComponent.html">`
         );
     });
 
@@ -686,7 +687,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support Type parameters', () => {
         expect(appComponentFile).to.contain(
-            `<ul class="type-parameters">\n                        <li>T</li>\n                        <li>K</li>\n                    </ul>`
+            `<ul class="type-parameters">${eol}                        <li>T</li>${eol}                        <li>K</li>${eol}                    </ul>`
         );
     });
 
