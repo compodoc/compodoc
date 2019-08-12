@@ -71,6 +71,10 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('pt-BR', 'Documentação gerada usando');
     });
 
+    describe('with supported language - sk-SK', () => {
+        return checkWcMenuFile('sk-SK', 'Dokumentácia vytvorená pomocou');
+    });
+
     describe('with supported language - zh-CN', () => {
         return checkWcMenuFile('zh-CN', '文档生成使用');
     });

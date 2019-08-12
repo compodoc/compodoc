@@ -10,6 +10,7 @@ import {
     TRANSLATION_JA_JP,
     TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
+    TRANSLATION_SK_SK,
     TRANSLATION_ZH_CN
 } from './locales';
 
@@ -35,6 +36,7 @@ class I18nEngine {
         'ja-JP': 'ja-JP',
         'nl-NL': 'nl-NL',
         'pt-BR': 'pt-BR',
+        'sk-SK': 'sk-SK',
         'zh-CN': 'zh-CN'
     };
 
@@ -71,6 +73,9 @@ class I18nEngine {
                 },
                 'pt-BR': {
                     translation: TRANSLATION_PT_BR
+                },
+                'sk-SK': {
+                    translation: TRANSLATION_SK_SK
                 },
                 'zh-CN': {
                     translation: TRANSLATION_ZH_CN

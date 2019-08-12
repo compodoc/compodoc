@@ -10,6 +10,7 @@ import {
     TRANSLATION_JA_JP,
     TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
+    TRANSLATION_SK_SK,
     TRANSLATION_ZH_CN
 } from '../../locales';
 
@@ -33,6 +34,7 @@ class I18nEngine {
         'ja-JP': 'ja-JP',
         'nl-NL': 'nl-NL',
         'pt-BR': 'pt-BR',
+        'sk-SK': 'sk-SK',
         'zh-CN': 'zh-CN'
     };
 
@@ -52,6 +54,7 @@ class I18nEngine {
         i18next.addResources('ja-JP', 'translation', TRANSLATION_JA_JP);
         i18next.addResources('nl-NL', 'translation', TRANSLATION_NL_NL);
         i18next.addResources('pt-BR', 'translation', TRANSLATION_PT_BR);
+        i18next.addResources('sk-SK', 'translation', TRANSLATION_SK_SK);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
     }
 
