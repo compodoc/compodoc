@@ -113,7 +113,7 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
-        "@types/chai": "^4.2.0",
+        "@types/chai": "4.1.7",
         "@types/fs-extra": "^8.0.0",
         "@types/jest": "^24.0.17",
         "@types/lodash": "^4.14.136",
@@ -130,7 +130,7 @@
         "jest": "^24.8.0",
         "lcov-result-merger": "^3.1.0",
         "madge": "^3.4.4",
-        "mocha": "^6.2.0",
+        "mocha": "6.2.0",
         "nodemon": "^1.19.1",
         "npm-watch": "^0.6.0",
         "nyc": "14.1.1",

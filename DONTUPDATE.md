@@ -1,4 +1,4 @@
 **Don't update the following dependencies**
 
 -   ts-simple-ast
--   nyc
+-   @types/chai pb with TSC during npm run test
