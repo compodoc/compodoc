@@ -28,6 +28,11 @@ describe('CLI Uniq id for file', () => {
     after(() => tmp.clean(distFolder));
 
     it('it should contain a uniqid', () => {
-        expect(indexFile).to.contain('e359b2a2e33e7b411a7b7e52efea7ba0');
+        const expectedHash =
+            process.platform === 'win32'
+                ? '275074cbab50c18beecd656b624c9356'
+                : 'e359b2a2e33e7b411a7b7e52efea7ba0';
+
+        expect(indexFile).to.contain(expectedHash);
     });
 });

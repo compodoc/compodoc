@@ -1,3 +1,4 @@
+const eol = require('os').EOL;
 import * as chai from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 
@@ -102,7 +103,7 @@ describe('CLI duplicates support', () => {
             'components-links-module-ValidationDemoModule'
         );
         expect(file).to.contain(
-            `id="xs-components-links-module-ValidationDemoModule"\' }>\n                                            <li class="link">\n                                                <a href="components/ValidationDemo.html"\n                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`
+            `id="xs-components-links-module-ValidationDemoModule"\' }>${eol}                                            <li class="link">${eol}                                                <a href="components/ValidationDemo.html"${eol}                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">ValidationDemo</a>`
         );
     });
 
@@ -114,10 +115,10 @@ describe('CLI duplicates support', () => {
         );
         // tslint:disable-next-line:max-line-length
         expect(file).to.contain(
-            `id="xs-components-links-module-FooterModule"\' }>\n                                            <li class="link">\n                                                <a href="components/FooterComponent-1.html"\n                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`
+            `id="xs-components-links-module-FooterModule"\' }>${eol}                                            <li class="link">${eol}                                                <a href="components/FooterComponent-1.html"${eol}                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">FooterComponent</a>`
         );
         expect(file).to.contain(
-            `<li class="link">\n                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`
+            `<li class="link">${eol}                                <a href="components/FooterComponent.html" data-type="entity-link">FooterComponent</a>`
         );
     });
 
