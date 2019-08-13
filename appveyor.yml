@@ -6,7 +6,6 @@ environment:
         - nodejs_version: '8'
         - nodejs_version: '9'
         - nodejs_version: '10'
-        - nodejs_version: '11'
         - nodejs_version: '12'
 install:
     - ps: Install-Product node $env:nodejs_version
@@ -19,7 +18,6 @@ install:
 matrix:
     fast_finish: true
     allow_failures:
-        - nodejs_version: 11
         - nodejs_version: 12
 build: off
 shallow_clone: true

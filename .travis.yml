@@ -5,7 +5,6 @@ node_js:
     - '8'
     - '9'
     - '10'
-    - '11'
     - '12'
 addons:
     sauce_connect:
@@ -32,13 +31,11 @@ branches:
 matrix:
     allow_failures:
         - os: osx
-        - node_js: '11'
         - node_js: '12'
     exclude:
         - node_js: '8'
         - node_js: '9'
         - node_js: '10'
-        - node_js: '11'
         - node_js: '12'
     include:
         - node_js: '8'
@@ -47,7 +44,5 @@ matrix:
           env: TO_TEST=OTHERS SAUCE_USERNAME=compodoc
         - node_js: '10'
           env: TO_TEST=ALL SAUCE_USERNAME=compodoc
-        - node_js: '11'
-          env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
         - node_js: '12'
           env: TO_TEST=UNIT SAUCE_USERNAME=compodoc
