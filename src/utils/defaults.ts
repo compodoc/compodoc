@@ -34,5 +34,6 @@ export const COMPODOC_DEFAULTS = {
     gaSite: 'auto',
     coverageTestShowOnlyFailed: false,
     language: 'en-US',
-    maxSearchResults: 15
+    maxSearchResults: 15,
+    maxSizeFileSearchIndex: 50000
 };

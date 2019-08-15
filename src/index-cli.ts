@@ -182,6 +182,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 'Max search results on the results page. To show all results, set to 0',
                 COMPODOC_DEFAULTS.maxSearchResults
             )
+            .option(
+                '--maxSizeFileSearchIndex [maxSizeFileSearchIndex]',
+                'Max length of file during Lunr search engine indexing.',
+                COMPODOC_DEFAULTS.maxSizeFileSearchIndex
+            )
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -604,6 +609,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
         if (program.maxSearchResults) {
             Configuration.mainData.maxSearchResults = program.maxSearchResults;
+        }
+
+        if (program.maxSizeFileSearchIndex) {
+            Configuration.mainData.maxSizeFileSearchIndex = program.maxSizeFileSearchIndex;
         }
 
         if (configFile.files) {

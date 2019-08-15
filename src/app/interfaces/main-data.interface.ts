@@ -79,4 +79,5 @@ export interface MainDataInterface {
     angularJSProject: boolean;
     language: string;
     maxSearchResults: number;
+    maxSizeFileSearchIndex: number;
 }

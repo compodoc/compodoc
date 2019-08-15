@@ -284,5 +284,11 @@ export const PUBLIC_FLAGS: Flag[] = [
         flag: '--maxSearchResults [number]',
         description: 'Max search results on the results page. To show all results, set to 0',
         defaultValue: 15
+    },
+    {
+        label: 'maxFileSearchIndex',
+        flag: '--maxSizeFileSearchIndex [number]',
+        description: 'Max length of file during Lunr search engine indexing.',
+        defaultValue: 50000
     }
 ];
