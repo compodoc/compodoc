@@ -3,7 +3,7 @@
         "module": "commonjs",
         "target": "es2015",
         "outDir": "./dist",
-        "sourceMap": true,
+        "sourceMap": false,
         "typeRoots": [
             "../../node_modules/@types"
         ],
@@ -14,7 +14,6 @@
         ]
     },
     "include": [
-        "./src/cli/**/*.spec.ts",
         "./src/cli-clean-root-folder.ts",
         "./src/cli-revert-root-folder.ts"
     ]

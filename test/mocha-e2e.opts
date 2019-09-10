@@ -1,6 +1,0 @@
---reporter spec
---ui bdd
---colors
---harmony
---timeout 120000
-test/dist/mocha.spec.js
