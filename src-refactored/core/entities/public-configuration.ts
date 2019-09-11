@@ -3,7 +3,7 @@ export class PublicConfiguration {
     public coverageMinimumPerFile: number;
     public coverageTest: number;
     public coverageTestShowOnlyFailed: boolean;
-    public coverageTestThresholdFail: string;
+    public coverageTestThresholdFail: boolean;
     public customFavicon: string;
     public customLogo: string;
     public disableCoverage: boolean;

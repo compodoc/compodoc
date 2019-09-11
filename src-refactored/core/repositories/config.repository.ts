@@ -51,14 +51,14 @@ export class ConfigurationRepository {
          */
 
         if (this.publicConfiguration.coverageTest) {
-            this.internalConfiguration.coverageTest = true;
+            this.internalConfiguration.coverageTest = 0;
             this.internalConfiguration.coverageTestThreshold =
                 typeof this.publicConfiguration.coverageTest === 'string'
                     ? parseInt(this.publicConfiguration.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
         if (currentProgram.coverageTest) {
-            this.internalConfiguration.coverageTest = true;
+            this.internalConfiguration.coverageTest = 0;
             this.internalConfiguration.coverageTestThreshold =
                 typeof currentProgram.coverageTest === 'string'
                     ? parseInt(currentProgram.coverageTest, 10)

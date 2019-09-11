@@ -7,7 +7,11 @@ export default {
     },
     plugins: [
         typescript({
-            typescript: require('typescript')
+            tsconfigDefaults: {
+                compilerOptions: {
+                    lib: ['es2018']
+                }
+            }
         })
     ],
     external: [

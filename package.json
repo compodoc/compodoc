@@ -33,7 +33,8 @@
         "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
         "test-jest": "jest",
         "test-jest:watch": "jest --watch",
-        "build-refactoring": "rollup -c rollup/rollup.config.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs",
+        "test-refactoring": "cross-env mocha --config src-refactored/.mocharc.json",
+        "build-refactoring": "rollup -c rollup/rollup.config-refactored.js -i ./src-refactored/index-cli.ts -o dist/index-cli.js -f cjs",
         "madge": "./node_modules/.bin/madge --warning -i dist/madge.png src-refactored/index-cli.ts",
         "premerge-lcov": "mv coverage-refactoring/lcov.info coverage/lcov-refactoring.info",
         "merge-lcov": "./node_modules/.bin/lcov-result-merger 'coverage/lcov-*.info' 'coverage/lcov_merged.info'"
@@ -140,6 +141,7 @@
         "rimraf": "^3.0.0",
         "rollup": "^1.20.3",
         "rollup-plugin-typescript": "^1.0.1",
+        "rollup-plugin-typescript2": "^0.24.1",
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.5",
         "supertest": "^4.0.2",
