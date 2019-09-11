@@ -1,5 +1,6 @@
 // RUN webdriver-manager start --standalone & npm run test:simple-doc before starting local test
-const expect = require('chai').expect;
+import * as chai from 'chai';
+const expect = chai.expect;
 const fs = require('fs');
 const webdriver = require('selenium-webdriver');
 const request = require('request');
