@@ -18,7 +18,7 @@ export class FileEngine {
      * @param filepath Path of the file to read
      */
     public async get(filepath: string): Promise<string> {
-        return new Promise((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             fs.readFile(path.resolve(filepath), 'utf8', (err, data) => {
                 if (err) {
                     reject('Error during ' + filepath + ' read');
@@ -43,7 +43,7 @@ export class FileEngine {
      * @param contents Content of the file to write
      */
     public async write(filepath: string, contents: string): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             fs.outputFile(path.resolve(filepath), contents, err => {
                 if (err) {
                     reject(err);

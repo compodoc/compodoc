@@ -19,8 +19,8 @@ export class ScanFile {
         return ScanFile.instance;
     }
 
-    public async scan(folder): Promise<string[]> {
-        return new Promise((resolve, reject) => {
+    public async scan(folder: string): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
             const finder = require('findit2')(path.resolve(folder));
 
             finder.on('directory', function(dir, stat, stop) {

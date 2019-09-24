@@ -1,6 +1,7 @@
 import { CommanderStatic } from 'commander';
 
 import ConfigurationRepository from './core/repositories/config.repository';
+
 import DisplayEnvironmentVersions from './core/use-cases/display-environment-versions';
 import HandleConfigFile from './core/use-cases/handle-config';
 import HandleTsconfigFile from './core/use-cases/handle-tsconfig-file';
