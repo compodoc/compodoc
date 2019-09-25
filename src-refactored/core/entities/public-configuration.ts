@@ -1,5 +1,6 @@
 export class PublicConfiguration {
     public assetsFolder: string;
+    public config: string;
     public coverageMinimumPerFile: number;
     public coverageTest: number;
     public coverageTestShowOnlyFailed: boolean;
@@ -21,6 +22,7 @@ export class PublicConfiguration {
     public disableTemplateTab: boolean;
     public exportFormat: string;
     public extTheme: string;
+    public files: string;
     public gaID: string;
     public gaSite: string;
     public hideGenerator: boolean;
@@ -34,7 +36,7 @@ export class PublicConfiguration {
     public open: boolean;
     public output: string;
     public port: number;
-    public serve;
+    public serve: boolean;
     public silent: boolean;
     public templates: string;
     public theme: string;

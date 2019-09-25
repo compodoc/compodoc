@@ -3,6 +3,9 @@ import * as path from 'path';
 
 const cosmiconfig = require('cosmiconfig');
 
+/**
+ * Detect config file with cosmiconfig
+ */
 export class HandleConfigFile {
     private static instance: HandleConfigFile;
 

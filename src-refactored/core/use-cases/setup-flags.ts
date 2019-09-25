@@ -45,6 +45,9 @@ export class SetupFlags {
 
         this.program.parse(process.argv);
 
+        /**
+         * TODO : return something wrapping program and handling internal configuration
+         */
         return this.program;
     }
 }
