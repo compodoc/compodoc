@@ -1,5 +1,3 @@
-import { CommanderStatic } from 'commander';
-
 import Logger from '../../infrastructure/logging/logger';
 
 import { COMPODOC_DEFAULTS } from '../defaults';
@@ -7,6 +5,7 @@ import { COMPODOC_DEFAULTS } from '../defaults';
 import { InternalConfiguration } from '../entities/internal-configuration';
 import { PublicConfiguration } from '../entities/public-configuration';
 import { Flag, PUBLIC_FLAGS } from '../entities/public-flags';
+import { CLIProgram } from '../entities/cli-program';
 
 export class ConfigurationRepository {
     private static instance: ConfigurationRepository;
@@ -33,7 +32,7 @@ export class ConfigurationRepository {
         );
     }
 
-    public init(currentProgram: PublicConfiguration | CommanderStatic) {
+    public init(currentProgram: CLIProgram) {
         PUBLIC_FLAGS.forEach((publicFlag: Flag) => {
             if (this.publicConfiguration[publicFlag.label]) {
                 this.internalConfiguration[publicFlag.label] = this.publicConfiguration[
@@ -81,12 +80,11 @@ export class ConfigurationRepository {
         }
 
         if (this.publicConfiguration.coverageTestThresholdFail) {
-            this.internalConfiguration.coverageTestThresholdFail =
-                this.publicConfiguration.coverageTestThresholdFail === 'false' ? false : true;
+            this.internalConfiguration.coverageTestThresholdFail = this.publicConfiguration.coverageTestThresholdFail;
         }
         if (currentProgram.coverageTestThresholdFail) {
             this.internalConfiguration.coverageTestThresholdFail =
-                currentProgram.coverageTestThresholdFail === 'false' ? false : true;
+                currentProgram.coverageTestThresholdFail;
         }
 
         if (this.publicConfiguration.host) {

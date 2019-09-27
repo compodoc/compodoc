@@ -1,6 +1,6 @@
-import { CommanderStatic } from 'commander';
-
 import ConfigurationRepository from './core/repositories/config.repository';
+
+import { CLIProgram } from './core/entities/cli-program';
 
 import DisplayEnvironmentVersions from './core/use-cases/display-environment-versions';
 import HandleConfigFile from './core/use-cases/handle-config';
@@ -23,7 +23,7 @@ export class CliApplication {
         /**
          * Setup flags with commander
          */
-        const currentProgram: CommanderStatic = SetupFlags.setup(compodocPackageJsonFile);
+        const currentProgram: CLIProgram = SetupFlags.setup(compodocPackageJsonFile);
         /**
          * Detect config file
          */

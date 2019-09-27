@@ -1,11 +1,10 @@
-import { CommanderStatic } from 'commander';
-
 import { Flag, PUBLIC_FLAGS } from '../entities/public-flags';
+import { CLIProgram } from '../entities/cli-program';
 
 export class SetupFlags {
     private static instance: SetupFlags;
 
-    public program: CommanderStatic;
+    public program: CLIProgram;
 
     constructor() {
         this.program = require('commander');
@@ -18,7 +17,7 @@ export class SetupFlags {
         return SetupFlags.instance;
     }
 
-    public setup(pkg): CommanderStatic {
+    public setup(pkg): CLIProgram {
         this.program.version(pkg.version).usage('<src> [options]');
 
         PUBLIC_FLAGS.forEach((publicFlag: Flag) => {

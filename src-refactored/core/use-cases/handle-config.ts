@@ -1,5 +1,6 @@
-import { CommanderStatic } from 'commander';
 import * as path from 'path';
+
+import { CLIProgram } from '../entities/cli-program';
 
 const cosmiconfig = require('cosmiconfig');
 
@@ -26,7 +27,7 @@ export class HandleConfigFile {
         return HandleConfigFile.instance;
     }
 
-    public async handle(currentProgram: CommanderStatic) {
+    public async handle(currentProgram: CLIProgram) {
         return new Promise(async (resolve, reject) => {
             try {
                 if (currentProgram.config) {
