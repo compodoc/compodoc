@@ -20,7 +20,7 @@ install:
     - npm ci
 script:
     - npm run build
-    - if [ $TO_TEST == 'UNIT' ]; then npm run test; npm run merge-lcov; sonar-scanner; fi
+    - if [ $TO_TEST == 'UNIT' ]; then npm run test; npm run test-refactoring; npm run merge-lcov; sonar-scanner; fi
     - if [ $TO_TEST == 'ALL' ]; then npm run test; npm run saucelabs-test-e2e-mocha; fi
     - if [ $TO_TEST == 'OTHERS' ]; then npm run test; npm run angularexpo; fi
 after_success:
