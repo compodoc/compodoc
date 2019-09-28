@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 import { COMPODOC_DEFAULTS } from '../defaults';
 
 import HandleConfigFile from './handle-config';
@@ -22,16 +24,14 @@ describe('Should find config file', () => {
         const configExplorerResult = (await HandleConfigFile.handle(
             program
         )) as ConfigurationParsedByCosmiconfig;
-        expect(configExplorerResult.config).toEqual(
-            expect.objectContaining({
-                output: 'test-config-file'
-            })
-        );
+        expect(configExplorerResult.config).to.have.key({
+            output: 'test-config-file'
+        });
     });
 
     it('there is no config file, should not find it', async () => {
         program.config = '';
         const configExplorerResult = await HandleConfigFile.handle(program);
-        expect(configExplorerResult).toBeNull();
+        expect(configExplorerResult).to.be.null;
     });
 });

@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 import AngularVersionUtil from './angular-version.util';
 
 describe('Manage Angular APIs', () => {
@@ -6,10 +8,10 @@ describe('Manage Angular APIs', () => {
     it('should clean version', () => {
         let version = '~8.0.1';
         let cleanedVersion = AngularVersionUtil.cleanVersion(version);
-        expect(cleanedVersion).toEqual(finalCleanedVersion);
+        expect(cleanedVersion).equal(finalCleanedVersion);
         version = '^8.0.1';
         cleanedVersion = AngularVersionUtil.cleanVersion(version);
-        expect(cleanedVersion).toEqual(finalCleanedVersion);
+        expect(cleanedVersion).equal(finalCleanedVersion);
     });
 
     it('should retrieve Angular version of project', () => {
@@ -19,7 +21,7 @@ describe('Manage Angular APIs', () => {
             }
         };
         const version = AngularVersionUtil.getAngularVersionOfProject(packageData);
-        expect(version).toEqual(finalCleanedVersion);
+        expect(version).equal(finalCleanedVersion);
     });
 
     it('should not retrieve Angular version of project', () => {
@@ -29,7 +31,7 @@ describe('Manage Angular APIs', () => {
             }
         };
         const version = AngularVersionUtil.getAngularVersionOfProject(packageData);
-        expect(version).toEqual('');
+        expect(version).equal('');
     });
 
     it('should getApiLink for API', () => {
@@ -44,6 +46,6 @@ describe('Manage Angular APIs', () => {
             },
             '8.0.1'
         );
-        expect(apiLink).toEqual('https://angular.io/api/core/NgModule');
+        expect(apiLink).equal('https://angular.io/api/core/NgModule');
     });
 });

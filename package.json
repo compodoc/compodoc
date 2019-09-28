@@ -147,6 +147,7 @@
         "rollup-plugin-typescript2": "^0.24.2",
         "rollup-watch": "^4.3.1",
         "selenium-webdriver": "^4.0.0-alpha.5",
+        "sinon": "^7.5.0",
         "supertest": "^4.0.2",
         "ts-jest": "^24.1.0",
         "ts-node": "^8.4.1"

@@ -1,63 +1,92 @@
+const sinon = require('sinon');
+
 import Logger from './logger';
 
 import * as log from 'loglevel';
 
 describe('Display informations', () => {
+    let logStubDebug;
+    let logStubInfo;
+    let logStubWarn;
+    let logStubError;
+
+    beforeEach(() => {
+        logStubDebug = sinon.stub(log, 'debug');
+        logStubInfo = sinon.stub(log, 'info');
+        logStubWarn = sinon.stub(log, 'warn');
+        logStubError = sinon.stub(log, 'error');
+    });
+
+    afterEach(() => {
+        logStubDebug.restore();
+        logStubInfo.restore();
+        logStubWarn.restore();
+        logStubError.restore();
+    });
+
     it('with log', async () => {
-        jest.spyOn(log, 'debug').mockImplementation();
         Logger.log('log information');
-        expect(log.debug).toHaveBeenCalledTimes(1);
+        sinon.assert.calledOnce(log.debug);
     });
     it('with debug', async () => {
-        jest.spyOn(log, 'debug').mockImplementation();
         Logger.debug('debug information');
-        expect(log.debug).toHaveBeenCalledTimes(2);
+        sinon.assert.calledOnce(log.debug);
     });
     it('with info', async () => {
-        jest.spyOn(log, 'info').mockImplementation();
         Logger.info('info information');
-        expect(log.info).toHaveBeenCalledTimes(1);
+        sinon.assert.calledOnce(log.info);
     });
     it('with warn', async () => {
-        jest.spyOn(log, 'warn').mockImplementation();
         Logger.warn('warn information');
-        expect(log.warn).toHaveBeenCalledTimes(1);
+        sinon.assert.calledOnce(log.warn);
     });
     it('with error', async () => {
-        jest.spyOn(log, 'error').mockImplementation();
         Logger.error('error information');
-        expect(log.error).toHaveBeenCalledTimes(1);
+        sinon.assert.calledOnce(log.error);
     });
 });
 
 describe(`Doesn't display informations`, () => {
-    beforeAll(() => {
+    let logStubDebug;
+    let logStubInfo;
+    let logStubWarn;
+    let logStubError;
+
+    beforeEach(() => {
+        logStubDebug = sinon.stub(log, 'debug');
+        logStubInfo = sinon.stub(log, 'info');
+        logStubWarn = sinon.stub(log, 'warn');
+        logStubError = sinon.stub(log, 'error');
+    });
+
+    afterEach(() => {
+        logStubDebug.restore();
+        logStubInfo.restore();
+        logStubWarn.restore();
+        logStubError.restore();
+    });
+
+    before(() => {
         Logger.silent = true;
-        jest.clearAllMocks();
     });
     it('with log', async () => {
-        jest.spyOn(log, 'debug').mockImplementation();
         Logger.log('log information');
-        expect(log.debug).toHaveBeenCalledTimes(0);
+        sinon.assert.notCalled(log.debug);
     });
     it('with debug', async () => {
-        jest.spyOn(log, 'debug').mockImplementation();
         Logger.debug('debug information');
-        expect(log.debug).toHaveBeenCalledTimes(0);
+        sinon.assert.notCalled(log.debug);
     });
     it('with info', async () => {
-        jest.spyOn(log, 'info').mockImplementation();
         Logger.info('info information');
-        expect(log.info).toHaveBeenCalledTimes(0);
+        sinon.assert.notCalled(log.info);
     });
     it('with warn', async () => {
-        jest.spyOn(log, 'warn').mockImplementation();
         Logger.warn('warn information');
-        expect(log.warn).toHaveBeenCalledTimes(0);
+        sinon.assert.notCalled(log.warn);
     });
     it('with error', async () => {
-        jest.spyOn(log, 'error').mockImplementation();
         Logger.error('error information');
-        expect(log.error).toHaveBeenCalledTimes(0);
+        sinon.assert.notCalled(log.error);
     });
 });

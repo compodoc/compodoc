@@ -10,6 +10,7 @@ export interface IApiSourceResult<T> {
 export interface IAngularMainApi {
     title: string;
     name: string;
+    path: string;
     items: IAngularApi[];
 }
 
