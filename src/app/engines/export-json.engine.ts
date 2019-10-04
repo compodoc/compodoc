@@ -42,6 +42,8 @@ export class ExportJsonEngine {
         exportData.pipes = data.pipes;
         exportData.interfaces = data.interfaces;
         exportData.injectables = data.injectables;
+        exportData.guards = data.guards;
+        exportData.interceptors = data.interceptors;
         exportData.classes = data.classes;
         exportData.directives = data.directives;
         exportData.components = data.components;
