@@ -5,7 +5,7 @@ const sinon = require('sinon');
 import Logger from '../../infrastructure/logging/logger';
 import DisplayEnvironmentVersions from './display-environment-versions';
 
-describe('Display informations', () => {
+describe('Use-cases - Display informations', () => {
     let consoleStubLog;
 
     beforeEach(() => {

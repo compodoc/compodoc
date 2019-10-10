@@ -4,7 +4,7 @@ import FileEngine from './file.engine';
 
 const rimraf = require('rimraf');
 
-describe('Test FileEngine', () => {
+describe('Infrastructure - FileEngine', () => {
     after(() => {
         rimraf.sync('tmp');
     });

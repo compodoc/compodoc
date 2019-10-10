@@ -4,7 +4,7 @@ import Logger from './logger';
 
 import * as log from 'loglevel';
 
-describe('Display informations', () => {
+describe('Infrastructure - Log - Display informations', () => {
     let logStubDebug;
     let logStubInfo;
     let logStubWarn;
@@ -46,7 +46,7 @@ describe('Display informations', () => {
     });
 });
 
-describe(`Doesn't display informations`, () => {
+describe(`Infrastructure - Log - Doesn't display informations`, () => {
     let logStubDebug;
     let logStubInfo;
     let logStubWarn;

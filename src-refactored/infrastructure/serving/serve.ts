@@ -37,7 +37,7 @@ export class ServeService {
             this.liveServerConfiguration.host = configuration.host;
         }
         this.liveServerConfiguration.root = configuration.output;
-        this.liveServerConfiguration.open = true;
+        this.liveServerConfiguration.open = false;
         this.liveServerConfiguration.port = configuration.port;
 
         return LiveServer.start(this.liveServerConfiguration);

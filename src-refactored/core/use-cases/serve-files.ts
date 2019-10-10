@@ -7,6 +7,8 @@ import { InternalConfiguration } from '../entities/internal-configuration';
 export class ServeFiles {
     private static instance: ServeFiles;
 
+    private server;
+
     constructor() {}
 
     public static getInstance() {
@@ -22,8 +24,12 @@ export class ServeFiles {
             process.exit(1);
         } else {
             this.displayServingMessage(configuration);
-            ServeService.serve(configuration);
+            this.server = ServeService.serve(configuration);
         }
+    }
+
+    public stop() {
+        this.server.close();
     }
 
     private displayServingMessage(configuration: InternalConfiguration) {

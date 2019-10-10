@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 
 import { File } from './file';
 
-describe('File entity', () => {
+describe('Entity - File entity', () => {
     it('should create a file', () => {
         const fileName = 'newFile';
         const newFile = new File(fileName);

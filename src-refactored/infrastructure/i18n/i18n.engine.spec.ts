@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 
 import I18nEngine from './i18n.engine';
 
-describe('Setup i18n and use it', () => {
+describe('Infrastructure - Setup i18n and use it', () => {
     before(async () => {
         return I18nEngine.init('fr-FR');
     });

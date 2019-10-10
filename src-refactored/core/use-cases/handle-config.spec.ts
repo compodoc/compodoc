@@ -9,7 +9,7 @@ interface ConfigurationParsedByCosmiconfig {
     config: string;
 }
 
-describe('Should find config file', () => {
+describe('Use-cases - Should find config file', () => {
     let program;
 
     beforeEach(() => {

@@ -2,7 +2,8 @@
     "reporter": "spec",
     "extension": ["ts"],
     "ui": "bdd",
-    "timeout": 120000,
+    "timeout": 3000,
     "spec": "src-refactored/**/*.spec.ts",
-    "require": "ts-node/register"
+    "require": "ts-node/register",
+    "exit": true
 }

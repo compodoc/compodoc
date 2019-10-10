@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 
 import AngularVersionUtil from './angular-version.util';
 
-describe('Manage Angular APIs', () => {
+describe('Infrastructure - Manage Angular APIs', () => {
     const finalCleanedVersion = '8.0.1';
 
     it('should clean version', () => {

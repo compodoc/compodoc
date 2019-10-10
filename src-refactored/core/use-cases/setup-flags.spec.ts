@@ -4,7 +4,7 @@ import SetupFlags from './setup-flags';
 
 import { COMPODOC_DEFAULTS } from '../defaults';
 
-describe('Should setup flags', () => {
+describe('Use-cases - Should setup flags', () => {
     const pkg = {
         version: '0.0.1'
     };
