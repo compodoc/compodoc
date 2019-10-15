@@ -1,3 +1,19 @@
+<a name="1.1.11"></a>
+
+# [1.1.11](https://github.com/compodoc/compodoc/compare/1.1.10...1.1.11) (2019-10-15)
+
+### Features
+
+- feat(i18n): de-DE language [#810](https://github.com/compodoc/compodoc/pull/810) Thanks [hueppee](https://github.com/hueppee)
+- feat(i18n): sk-SK language [#830](https://github.com/compodoc/compodoc/pull/830) Thanks [Marek Závacký](https://github.com/emzet)
+- feat(routes): support new lazy loading syntax in Angular 8 [#819](https://github.com/compodoc/compodoc/pull/819) Thanks [Adam Stanley](https://github.com/astanley218)
+
+### Bug fixes
+
+- fix(app): max-search-result in options ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#816](https://github.com/compodoc/compodoc/issues/816) Thanks [tzinckgraf](https://github.com/tzinckgraf)
+- fix(app): fix path separator replace on Windows during route processing [#827](https://github.com/compodoc/compodoc/pull/827) Thanks [Adam Stanley](https://github.com/AdamStanley)
+- fix(app): fix unit tests failing on Windows [#826](https://github.com/compodoc/compodoc/pull/826) Thanks [Adam Stanley](https://github.com/AdamStanley)
+
 <a name="1.1.10"></a>
 
 # [1.1.10](https://github.com/compodoc/compodoc/compare/1.1.9...1.1.10) (2019-07-09)
