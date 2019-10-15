@@ -107,6 +107,7 @@
         "pdfmake": "^0.1.60",
         "semver": "^6.3.0",
         "traverse": "^0.6.6",
+        "ts-morph": "^4.2.0",
         "ts-simple-ast": "12.4.0",
         "uuid": "^3.3.3"
     },
