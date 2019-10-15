@@ -1,0 +1,7 @@
+{
+    "backgroundColor": "#ffffff",
+    "layout": "sfdp",
+    "fontSize": "32",
+    "noDependencyColor": "#4caf50",
+    "nodeColor": "#3f51b5"
+}

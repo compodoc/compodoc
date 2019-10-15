@@ -1,25 +1,26 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI Analytics tracking', () => {
-
     const distFolder = tmp.name + '-tracking';
 
     describe('add tracking code', () => {
-
         let coverageFile;
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.simple.json',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--gaID',
                 'UA-XXXXX-Y',
                 '--gaSite',
                 'demo',
-                '-d', distFolder]);
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -34,6 +35,5 @@ describe('CLI Analytics tracking', () => {
             expect(coverageFile).to.contain('www.google-analytics.com');
             expect(coverageFile).to.contain('demo');
         });
-
     });
 });

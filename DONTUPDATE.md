@@ -1,5 +1,4 @@
 **Don't update the following dependencies**
 
--   mocha
--   mocha-parallel-tests
 -   ts-simple-ast
+-   @types/chai pb with TSC during npm run test

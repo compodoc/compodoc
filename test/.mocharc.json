@@ -1,0 +1,8 @@
+{
+    "reporter": "spec",
+    "extension": ["ts"],
+    "ui": "bdd",
+    "timeout": 120000,
+    "spec": "test/src/cli/*.spec.ts",
+    "require": "ts-node/register"
+}

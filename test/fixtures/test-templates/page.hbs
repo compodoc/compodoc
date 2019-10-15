@@ -1,0 +1,194 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{data.documentationMainName}}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
+	      <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+        {{#if data.theme}}
+            {{#compare data.theme "!==" 'gitbook'}}
+        <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
+            {{/compare}}
+        {{/if}}
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="{{relativeURL data.depth }}" class="navbar-brand">{{data.documentationMainName}}</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            {{#unless data.disableSearch}}
+                {{> search-input data }}
+            {{/unless}}
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content {{data.context}} bg-info">
+                   <div class="content-data">
+                     <span>THIS IS TEST CONTENT</span>
+                   {{#compare data.context "===" 'getting-started'}}
+                        {{~> markdown data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'overview'}}
+                        {{~> overview data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'modules'}}
+                        {{~> modules data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'module'}}
+                        {{~> module data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'components'}}
+                        {{~> components data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'component'}}
+                        {{~> component data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'directives'}}
+                        {{~> directives data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'directive'}}
+                        {{~> directive data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'injectables'}}
+                        {{~> injectables data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'injectable'}}
+                        {{~> injectable data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'interceptor'}}
+                        {{~> interceptor data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'guard'}}
+                       {{~> guard data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'pipes'}}
+                        {{~> pipes data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'pipe'}}
+                        {{~> pipe data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'classes'}}
+                        {{~> classes data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'class'}}
+                        {{~> class data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'interface'}}
+                        {{~> interface data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'routes'}}
+                        {{~> routes data ~}}
+                   {{/compare}}
+
+                    {{#unless data.disableDependencies}}
+                         {{#compare data.context "===" 'package-dependencies'}}
+                              {{~> package-dependencies data ~}}
+                         {{/compare}}
+                    {{/unless}}
+                   
+                   {{#compare data.context "===" 'miscellaneous-functions'}}
+                        {{~> miscellaneous-functions data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'miscellaneous-variables'}}
+                        {{~> miscellaneous-variables data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'miscellaneous-typealiases'}}
+                        {{~> miscellaneous-typealiases data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'miscellaneous-enumerations'}}
+                        {{~> miscellaneous-enumerations data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'coverage'}}
+                        {{~> coverage-report data ~}}
+                   {{/compare}}
+
+				{{#compare data.context "===" 'unit-test'}}
+                        {{~> unit-test-report data ~}}
+                   {{/compare}}
+
+                   {{#compare data.context "===" 'additional-page'}}
+                        {{~> additional-page data ~}}
+                   {{/compare}}
+                   </div>
+                   {{~> search-results data ~}}
+               </div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = {{data.depth}};
+            var COMPODOC_CURRENT_PAGE_CONTEXT = '{{data.context}}';
+            {{#if data.filename }}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.filename}}.html';
+            {{else}}
+            var COMPODOC_CURRENT_PAGE_URL = '{{data.name}}.html';
+            {{/if}}
+            {{#unless data.disableSearch}}
+            var MAX_SEARCH_RESULTS = {{data.maxSearchResults}};
+            {{/unless}}
+       </script>
+
+       <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/lit-html.js"></script>
+       <script src="{{relativeURL data.depth }}js/menu-wc.js"></script>
+
+       <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
+
+       <script src="{{relativeURL data.depth }}js/libs/es6-shim.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/EventDispatcher.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/promise.min.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/zepto.min.js"></script>
+
+       <script src="{{relativeURL data.depth }}js/compodoc.js"></script>
+
+       <script src="{{relativeURL data.depth }}js/tabs.js"></script>
+       <script src="{{relativeURL data.depth }}js/menu.js"></script>
+       <script src="{{relativeURL data.depth }}js/libs/prism.js"></script>
+       <script src="{{relativeURL data.depth }}js/sourceCode.js"></script>
+       {{#unless data.disableSearch}}
+          <script src="{{relativeURL data.depth }}js/search/search.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/lunr.min.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/search-lunr.js"></script>
+          <script src="{{relativeURL data.depth }}js/search/search_index.js"></script>
+       {{/unless}}
+       <script src="{{relativeURL data.depth }}js/lazy-load-graphs.js"></script>
+
+        {{#if data.gaID}}
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                ga('create', '{{data.gaID}}', '{{data.gaSite}}');
+                ga('send', 'pageview');
+            </script>
+        {{/if}}
+
+    </body>
+</html>

@@ -2,8 +2,14 @@
 import typescript from 'rollup-plugin-typescript';
 
 export default {
+    input: {
+        'index-cli': './src/index-cli.ts',
+        index: './src/index.ts'
+    },
     output: {
-        sourcemap: 'inline'
+        sourcemap: 'inline',
+        format: 'cjs',
+        dir: 'dist'
     },
     plugins: [
         typescript({
@@ -23,6 +29,8 @@ export default {
         'semver',
         'json5',
         'ts-simple-ast',
-        'i18next'
+        'i18next',
+        'loglevel',
+        'ts-morph'
     ]
 };

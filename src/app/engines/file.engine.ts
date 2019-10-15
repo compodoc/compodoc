@@ -35,6 +35,10 @@ export class FileEngine {
         });
     }
 
+    public writeSync(filepath: string, contents: string): void {
+        fs.outputFileSync(filepath, contents);
+    }
+
     public getSync(filepath: string): string {
         return fs.readFileSync(path.resolve(filepath), 'utf8');
     }

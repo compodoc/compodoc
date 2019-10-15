@@ -317,7 +317,8 @@ export class AngularDependencies extends FrameworkDependencies {
             logger.info('Analysing routes definitions and clean them if necessary');
 
             // scannedFile = RouterParserUtil.cleanFileIdentifiers(astFile).compilerNode;
-            let firstClean = RouterParserUtil.cleanFileSpreads(astFile).compilerNode;
+            RouterParserUtil.cleanFileSpreads(astFile);
+
             scannedFile = RouterParserUtil.cleanCallExpressions(astFile).compilerNode;
             scannedFile = RouterParserUtil.cleanFileDynamics(astFile).compilerNode;
 
@@ -343,7 +344,6 @@ export class AngularDependencies extends FrameworkDependencies {
                     let visitDecorator = (visitedDecorator, index) => {
                         let deps: IDep;
 
-                        let metadata = node.decorators;
                         let name = this.getSymboleName(node);
                         let props = this.findProperties(visitedDecorator, srcFile);
                         let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
@@ -981,7 +981,7 @@ export class AngularDependencies extends FrameworkDependencies {
             } else if (pop && pop.kind && pop.kind === SyntaxKind.StringLiteral) {
                 return [pop];
             } else {
-                logger.warn('Empty metadatas, trying to found it with imports.');
+                logger.warn('Empty metadatas, trying to find it with imports.');
                 return ImportsUtil.findValueInImportOrLocalVariables(pop.text, sourceFile);
             }
         }
@@ -1073,7 +1073,7 @@ export class AngularDependencies extends FrameworkDependencies {
         let result = false;
         if (tags) {
             tags.forEach(tag => {
-                if (tag.tagName && tag.tagName && tag.tagName.text === 'private') {
+                if (tag.tagName && tag.tagName.text && tag.tagName.text === 'private') {
                     result = true;
                 }
             });

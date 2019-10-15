@@ -1,0 +1,18 @@
+{
+    "exclude": [
+        "src/**/*.js"
+    ],
+    "include": [
+        "dist/index-cli.js",
+        "bin/*.js"
+    ],
+    "extension": [
+        ".js"
+    ],
+    "reporter": [
+        "json",
+        "html",
+        "text-summary"
+    ],
+    "all": true
+}

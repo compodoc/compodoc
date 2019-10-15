@@ -13,7 +13,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '-d',
                 distFolder
@@ -57,7 +57,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableProtected',
                 '-d',
                 distFolder
@@ -96,7 +96,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableInternal',
                 '-d',
                 distFolder
@@ -140,7 +140,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableLifeCycleHooks',
                 '-d',
                 distFolder
@@ -181,7 +181,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files-extends/src/tsconfig.json',
+                './test/fixtures/sample-files-extends/src/tsconfig.json',
                 '--disableLifeCycleHooks',
                 '-d',
                 distFolder
@@ -208,7 +208,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disablePrivate',
                 '--disableProtected',
                 '--disableInternal',
@@ -249,7 +249,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableSearch',
                 '-d',
                 distFolder
@@ -276,6 +276,32 @@ describe('CLI disable flags', () => {
         });
     });
 
+    describe('disabling dependencies with --disableDependencies', () => {
+        before(function(done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '--disableDependencies',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate the dependencies list', () => {
+            let file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('href="dependencies.html"');
+        });
+    });
+
     describe('minimal with --minimal', () => {
         let fileContents;
 
@@ -284,7 +310,7 @@ describe('CLI disable flags', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--minimal',
                 '-d',
                 distFolder

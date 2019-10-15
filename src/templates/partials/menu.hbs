@@ -62,13 +62,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </a>
                         </li>
                         {{/each}}
-                        {{#orLength packageDependencies packagePeerDependencies}}
-                        <li class="link">
-                            <a href="dependencies.html" data-type="chapter-link">
-                                <span class="icon ion-ios-list"></span>{{t "dependencies" }}
-                            </a>
-                        </li>
-                        {{/orLength}}
+                        {{#unless disableDependencies}}
+                            {{#orLength packageDependencies packagePeerDependencies}}
+                                <li class="link">
+                                    <a href="dependencies.html" data-type="chapter-link">
+                                        <span class="icon ion-ios-list"></span>{{t "dependencies" }}
+                                    </a>
+                                </li>
+                            {{/orLength}}
+                        {{/unless}}
                     </ul>
                 </li>
                 {{#if additionalPages}}
@@ -77,9 +79,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             : 'data-target="#xs-additional-pages"' }>
                             <span class="icon ion-ios-book"></span>
                             <span>{{includesName}}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'additionalPages'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }>
+                        <ul class="links collapse {{#isNotToggle 'additionalPages'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="additional-pages"' : 'id="xs-additional-pages"' }>
                             {{#each additionalPages}}
                                 {{#compare children.length ">" 0 }}
                                     {{#compare depth "===" 1 }}
@@ -118,10 +120,10 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 'data-target="#modules-links"' : 'data-target="#xs-modules-links"' }>
                                 <span class="icon ion-ios-archive"></span>
                                 <span class="link-name">{{t "modules" }}</span>
-                                <span class="icon ion-ios-arrow-down"></span>
+                                <span class="icon {{#isNotToggle 'modules'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                             </div>
                         </a>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'modules'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="modules-links"' : 'id="xs-modules-links"' }>
                             {{#each modules}}
                             <li class="link">
                                 <a href="modules/{{name}}.html" data-type="entity-link">{{ name }}</a>
@@ -131,7 +133,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'data-target="#components-links-{{id}}"' : 'data-target="#xs-components-links-{{id}}"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>{{t "components" }}</span>
-                                            <span class="icon ion-ios-arrow-down"></span>
+                                            <span class="icon {{#isNotToggle 'components'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                                         </div>
                                         <ul class="links collapse" ${ isNormalMode ? 'id="components-links-{{id}}"' :
                                             'id="xs-components-links-{{id}}"' }>
@@ -150,7 +152,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'data-target="#controllers-links-{{id}}"' : 'data-target="#xs-controllers-links-{{id}}"' }>
                                             <span class="icon ion-md-swap"></span>
                                             <span>{{t "controllers" }}</span>
-                                            <span class="icon ion-ios-arrow-down"></span>
+                                            <span class="icon {{#isNotToggle 'controllers'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                                         </div>
                                         <ul class="links collapse" ${ isNormalMode ? 'id="controllers-links-{{id}}"' :
                                             'id="xs-controllers-links-{{id}}"' }>
@@ -169,7 +171,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         'data-target="#directives-links-{{id}}"' : 'data-target="#xs-directives-links-{{id}}"' }>
                                         <span class="icon ion-md-code-working"></span>
                                         <span>{{t "directives" }}</span>
-                                        <span class="icon ion-ios-arrow-down"></span>
+                                        <span class="icon {{#isNotToggle 'directives'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                                     </div>
                                     <ul class="links collapse" ${ isNormalMode ? 'id="directives-links-{{id}}"' :
                                         'id="xs-directives-links-{{id}}"' }>
@@ -188,7 +190,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         'data-target="#injectables-links-{{id}}"' : 'data-target="#xs-injectables-links-{{id}}"' }>
                                         <span class="icon ion-md-arrow-round-down"></span>
                                         <span>{{t "injectables" }}</span>
-                                        <span class="icon ion-ios-arrow-down"></span>
+                                        <span class="icon {{#isNotToggle 'injectables'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                                     </div>
                                     <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-{{id}}"' :
                                         'id="xs-injectables-links-{{id}}"' }>
@@ -208,7 +210,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'data-target="#pipes-links-{{id}}"' : 'data-target="#xs-pipes-links-{{id}}"' }>
                                             <span class="icon ion-md-add"></span>
                                             <span>{{t "pipes" }}</span>
-                                            <span class="icon ion-ios-arrow-down"></span>
+                                            <span class="icon {{#isNotToggle 'pipes'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                                         </div>
                                         <ul class="links collapse" ${ isNormalMode ? 'id="pipes-links-{{id}}"' :
                                             'id="xs-pipes-links-{{id}}"' }>
@@ -233,9 +235,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             'data-target="#xs-components-links"' }>
                             <span class="icon ion-md-cog"></span>
                             <span>{{t "components" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'components'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
                             {{#each components}}
                             <li class="link">
                                 <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -253,9 +255,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 'data-target="#xs-controllers-links"' }>
                                 <span class="icon ion-md-swap"></span>
                                 <span>{{t "controllers" }}</span>
-                                <span class="icon ion-ios-arrow-down"></span>
+                                <span class="icon {{#isNotToggle 'controllers'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                             </div>
-                            <ul class="links collapse" ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }>
+                            <ul class="links collapse {{#isNotToggle 'controllers'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }>
                                 {{#each controllers}}
                                 <li class="link">
                                     <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -273,9 +275,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 'data-target="#xs-directives-links"' }>
                                 <span class="icon ion-md-code-working"></span>
                                 <span>{{t "directives" }}</span>
-                                <span class="icon ion-ios-arrow-down"></span>
+                                <span class="icon {{#isNotToggle 'directives'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                             </div>
-                            <ul class="links collapse" ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
+                            <ul class="links collapse {{#isNotToggle 'directives'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
                                 {{#each directives}}
                                 <li class="link">
                                     <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -292,9 +294,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             'data-target="#xs-classes-links"' }>
                             <span class="icon ion-ios-paper"></span>
                             <span>{{t "classes" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'classes'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
                             {{#each classes}}
                             <li class="link">
                                 <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -311,9 +313,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 'data-target="#xs-injectables-links"' }>
                                 <span class="icon ion-md-arrow-round-down"></span>
                                 <span>{{t "injectables" }}</span>
-                                <span class="icon ion-ios-arrow-down"></span>
+                                <span class="icon {{#isNotToggle 'injectables'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                             </div>
-                            <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
+                            <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
                                 {{#each injectables}}
                                 <li class="link">
                                     <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -330,9 +332,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             'data-target="#xs-interceptors-links"' }>
                             <span class="icon ion-ios-swap"></span>
                             <span>{{t "interceptors" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'interceptors'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
                             {{#each interceptors}}
                             <li class="link">
                                 <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -348,9 +350,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             'data-target="#xs-guards-links"' }>
                             <span class="icon ion-ios-lock"></span>
                             <span>{{t "guards" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'guards'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'guards'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }>
                             {{#each guards}}
                             <li class="link">
                                 <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -366,9 +368,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             'data-target="#xs-interfaces-links"' }>
                             <span class="icon ion-md-information-circle-outline"></span>
                             <span>{{t "interfaces" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'interfaces'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
                             {{#each interfaces}}
                             <li class="link">
                                 <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -385,9 +387,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 'data-target="#xs-pipes-links"' }>
                                 <span class="icon ion-md-add"></span>
                                 <span>{{t "pipes" }}</span>
-                                <span class="icon ion-ios-arrow-down"></span>
+                                <span class="icon {{#isNotToggle 'pipes'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                             </div>
-                            <ul class="links collapse" ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
+                            <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
                                 {{#each pipes}}
                                 <li class="link">
                                     <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link">{{
@@ -404,9 +406,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             : 'data-target="#xs-miscellaneous-links"' }>
                             <span class="icon ion-ios-cube"></span>
                             <span>{{t "miscellaneous" }}</span>
-                            <span class="icon ion-ios-arrow-down"></span>
+                            <span class="icon {{#isNotToggle 'miscellaneous'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
                         </div>
-                        <ul class="links collapse" ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
+                        <ul class="links collapse {{#isNotToggle 'miscellaneous'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="miscellaneous-links"' : 'id="xs-miscellaneous-links"' }>
                             {{#compare miscellaneous.enumerations.length ">" 0 }}
                             <li class="link">
                                 <a href="miscellaneous/enumerations.html" data-type="entity-link">{{t "enums" }}</a>

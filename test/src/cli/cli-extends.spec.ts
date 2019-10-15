@@ -16,7 +16,7 @@ describe('CLI simple generation - extends app', () => {
         let ls = shell('node', [
             './bin/index-cli.js',
             '-p',
-            './test/src/sample-files-extends/src/tsconfig.json',
+            './test/fixtures/sample-files-extends/src/tsconfig.json',
             '-d',
             distFolder
         ]);

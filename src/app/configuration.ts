@@ -14,6 +14,8 @@ export class Configuration implements ConfigurationInterface {
         theme: COMPODOC_DEFAULTS.theme,
         extTheme: '',
         serve: false,
+        hostname: COMPODOC_DEFAULTS.hostname,
+        host: '',
         port: COMPODOC_DEFAULTS.port,
         open: false,
         assetsFolder: '',
@@ -42,7 +44,7 @@ export class Configuration implements ConfigurationInterface {
         miscellaneous: [],
         routes: [],
         tsconfig: '',
-        toggleMenuItems: [],
+        toggleMenuItems: COMPODOC_DEFAULTS.toggleMenuItems,
         navTabConfig: [],
         templates: '',
         includes: '',
@@ -61,6 +63,7 @@ export class Configuration implements ConfigurationInterface {
         disableLifeCycleHooks: COMPODOC_DEFAULTS.disableLifeCycleHooks,
         disableRoutesGraph: COMPODOC_DEFAULTS.disableRoutesGraph,
         disableSearch: false,
+        disableDependencies: COMPODOC_DEFAULTS.disableDependencies,
         watch: false,
         mainGraph: '',
         coverageTest: false,
@@ -83,7 +86,8 @@ export class Configuration implements ConfigurationInterface {
         gaSite: '',
         angularProject: false,
         angularJSProject: false,
-        language: COMPODOC_DEFAULTS.language
+        language: COMPODOC_DEFAULTS.language,
+        maxSearchResults: 15
     };
 
     private static instance: Configuration;

@@ -1,20 +1,22 @@
 import * as chai from 'chai';
-import {temporaryDir, shell, pkg, exists, exec, read, shellAsync} from '../helpers';
+import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 const expect = chai.expect,
-      tmp = temporaryDir();
+    tmp = temporaryDir();
 
 describe('CLI exclude from tsconfig', () => {
-
     const distFolder = tmp.name + '-exclude';
 
     describe('when specific files are excluded in tsconfig', () => {
-        before(function (done) {
+        before(function(done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [
                 './bin/index-cli.js',
-                '-p', './test/src/sample-files/tsconfig.exclude.json',
-                '-d', distFolder]);
+                '-p',
+                './test/fixtures/sample-files/tsconfig.exclude.json',
+                '-d',
+                distFolder
+            ]);
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -31,5 +33,4 @@ describe('CLI exclude from tsconfig', () => {
             expect(isFileExists).to.be.false;
         });
     });
-
 });

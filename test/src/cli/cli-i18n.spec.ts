@@ -13,7 +13,7 @@ describe('CLI i18n', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--language',
                 lang,
                 '-d',
@@ -43,16 +43,40 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('en-US', 'Documentation generated using');
     });
 
+    describe('with supported language - es-ES', () => {
+        return checkWcMenuFile('es-ES', 'Documentación generada utilizando');
+    });
+
     describe('with supported language - fr-FR', () => {
         return checkWcMenuFile('fr-FR', 'Documentation générée avec');
     });
 
-    describe('with supported language - zh-CN', () => {
-        return checkWcMenuFile('zh-CN', '文档生成使用');
+    describe('with supported language - hu-HU', () => {
+        return checkWcMenuFile('hu-HU', 'A dokumentációt generálta:');
+    });
+
+    describe('with supported language - it-IT', () => {
+        return checkWcMenuFile('it-IT', 'Documentazione generata usando');
+    });
+
+    describe('with supported language - ja-JP', () => {
+        return checkWcMenuFile('ja-JP', 'このドキュメントは以下を使用して生成されています');
+    });
+
+    describe('with supported language - nl-NL', () => {
+        return checkWcMenuFile('nl-NL', 'Documentatie gegenereed met');
     });
 
     describe('with supported language - pt-BR', () => {
         return checkWcMenuFile('pt-BR', 'Documentação gerada usando');
+    });
+
+    describe('with supported language - sk-SK', () => {
+        return checkWcMenuFile('sk-SK', 'Dokumentácia vytvorená pomocou');
+    });
+
+    describe('with supported language - zh-CN', () => {
+        return checkWcMenuFile('zh-CN', '文档生成使用');
     });
 
     describe('with un-supported language', () => {
@@ -62,9 +86,9 @@ describe('CLI i18n', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--language',
-                'es-ES',
+                'invalid-Lang',
                 '-d',
                 distFolder
             ]);

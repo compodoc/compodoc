@@ -36,7 +36,7 @@
 
         d.done({
             query: q,
-            results: results.slice(0, length),
+            results: length === 0 ? results : results.slice(0, length),
             count: results.length
         });
 

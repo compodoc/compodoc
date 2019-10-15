@@ -13,7 +13,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--disableCoverage',
                 '-d',
                 distFolder
@@ -40,7 +40,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageTest',
                 '10',
                 '-d',
@@ -67,9 +67,9 @@ describe('CLI coverage report', () => {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
-                './test/src/sample-files/',
+                './test/fixtures/sample-files/',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageTest',
                 '10',
                 '-d',
@@ -97,7 +97,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageTest',
                 '40',
                 '-d',
@@ -125,7 +125,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '1',
                 '-d',
@@ -155,7 +155,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '1',
                 '--coverageTestShowOnlyFailed',
@@ -185,7 +185,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '0',
                 '-d',
@@ -213,7 +213,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '30',
                 '--coverageTest',
@@ -248,7 +248,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '50',
                 '--coverageTest',
@@ -283,7 +283,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '0',
                 '--coverageTest',
@@ -316,7 +316,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '--coverageMinimumPerFile',
                 '0',
                 '--coverageTest',
@@ -350,7 +350,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/sample-files/tsconfig.simple.json',
+                './test/fixtures/sample-files/tsconfig.simple.json',
                 '-d',
                 distFolder
             ]);
@@ -380,7 +380,7 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
-                './test/src/todomvc-ng2/src/tsconfig.json',
+                './test/fixtures/todomvc-ng2/src/tsconfig.json',
                 '-d',
                 distFolder
             ]);
@@ -416,9 +416,9 @@ describe('CLI coverage report', () => {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '--files',
-                './test/src/sample-files/bar.directive.ts',
+                './test/fixtures/sample-files/bar.directive.ts',
                 '--files',
-                './test/src/sample-files/bar.service.ts',
+                './test/fixtures/sample-files/bar.service.ts',
                 '--coverageMinimumPerFile',
                 '1',
                 '-d',
@@ -436,10 +436,10 @@ describe('CLI coverage report', () => {
 
         it('it should be under threshold for files', () => {
             expect(stdoutString).to.contain(
-                'test/src/sample-files/bar.directive.ts - BarDirective - under minimum per file'
+                'test/fixtures/sample-files/bar.directive.ts - BarDirective - under minimum per file'
             );
             expect(stdoutString).to.contain(
-                'test/src/sample-files/bar.service.ts - BarService - under minimum per file'
+                'test/fixtures/sample-files/bar.service.ts - BarService - under minimum per file'
             );
         });
     });
