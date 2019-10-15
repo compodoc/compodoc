@@ -1,9 +1,8 @@
 const expect = require('chai').expect;
 
-import { COMPODOC_DEFAULTS } from '../defaults';
+import SetupFlags from './setup-flags';
 
 import HandleConfigFile from './handle-config';
-import SetupFlags from './setup-flags';
 
 interface ConfigurationParsedByCosmiconfig {
     config: string;

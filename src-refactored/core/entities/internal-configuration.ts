@@ -39,5 +39,7 @@ export class InternalConfiguration extends PublicConfiguration {
     public routes: any;
     public routesLength: number;
     public todo: string;
+    public tsconfigFilePath: string;
+    public tsconfigData: Object;
     public unitTestData: Object;
 }

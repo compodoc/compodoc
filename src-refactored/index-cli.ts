@@ -68,6 +68,46 @@ export class CliApplication {
         }
 
         /**
+         * Detect tsconfig file
+         */
+        let tsconfigExplorerResult;
+
+        try {
+            tsconfigExplorerResult = await HandleTsconfigFile.handle();
+        } catch (error) {
+            Logger.error(error);
+            process.exit(1);
+        }
+
+        if (tsconfigExplorerResult) {
+            ConfigurationRepository.update(tsconfigExplorerResult);
+        }
+
+        /**
+         * Scan files
+         */
+        let files;
+        ScanFile.scan('').then(scannedFiles => {
+            files = scannedFiles;
+        });
+
+        /**
+         * Check include are in
+         */
+
+        /**
+         * Filter with exclude, .spec|d.ts
+         */
+
+        /**
+         * Display files handled : excluded, included
+         */
+
+        /**
+         * Find core informations with AST
+         */
+
+        /**
          * 2. Coverage ?
          */
         if (ConfigurationRepository.internalConfiguration.hasFilesToCoverage) {
@@ -78,18 +118,5 @@ export class CliApplication {
         /**
          * 3. Generate ?
          */
-
-        /**
-         * Detect tsconfig file
-         */
-        const tsConfigExplorerResult = await HandleTsconfigFile.handle();
-
-        /**
-         * Scan files
-         */
-        let files;
-        ScanFile.scan('').then(scannedFiles => {
-            files = scannedFiles;
-        });
     }
 }
