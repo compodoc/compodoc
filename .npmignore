@@ -2,6 +2,7 @@ screenshots/
 tsconfig.json
 rollup/
 test/
+src-refactored/
 coverage
 .nyc_output
 .tmp-compodoc-test/
