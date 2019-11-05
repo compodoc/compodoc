@@ -31,6 +31,7 @@ export default {
         'ts-simple-ast',
         'i18next',
         'loglevel',
-        'ts-morph'
+        'ts-morph',
+        'cosmiconfig'
     ]
 };

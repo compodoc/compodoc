@@ -15,7 +15,7 @@ import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
 import { handlePath, readConfig } from './utils/utils';
 
-import { cosmiconfig } from 'cosmiconfig';
+import { cosmiconfigSync } from 'cosmiconfig';
 
 const os = require('os');
 const osName = require('os-name');
@@ -190,7 +190,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             process.exit(1);
         };
 
-        const configExplorer = cosmiconfig(cosmiconfigModuleName);
+        const configExplorer = cosmiconfigSync(cosmiconfigModuleName);
 
         let configExplorerResult;
 
@@ -206,6 +206,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         } else {
             configExplorerResult = configExplorer.search();
         }
+
         if (configExplorerResult) {
             if (typeof configExplorerResult.config !== 'undefined') {
                 configFile = configExplorerResult.config;
