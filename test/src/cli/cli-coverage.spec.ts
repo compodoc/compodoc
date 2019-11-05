@@ -406,6 +406,19 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('<td>interface</td>');
             expect(coverageFile).to.contain('<td>pipe</td>');
             expect(coverageFile).to.contain('<td>variable</td>');
+
+            expect(coverageFile).to.contain('components/CompodocComponent.html');
+            expect(coverageFile).to.contain('interfaces/ClockInterface.html');
+            expect(coverageFile).to.contain('miscellaneous/functions.html#foo');
+            expect(coverageFile).to.contain('variables.html#PI');
+            expect(coverageFile).to.contain('pipes/FirstUpperPipe.html');
+            expect(coverageFile).to.contain('directives/DoNothingDirective2.html');
+            expect(coverageFile).to.contain('injectables/TodoStore2.html');
+            expect(coverageFile).to.contain('classes/Todo2.html');
+            expect(coverageFile).to.contain('guards/AuthGuard.html');
+            expect(coverageFile).to.contain('interceptors/NoopInterceptor.html');
+            expect(coverageFile).to.contain('variables.html#PI');
+            expect(coverageFile).to.contain('variables.html#PI');
         });
     });
 

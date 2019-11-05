@@ -1899,7 +1899,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         linksubtype: el.subtype,
                         name: el.name
                     };
-                    if (type === 'variable') {
+                    if (type === 'variable' || type === 'function') {
                         cl.linktype = 'miscellaneous';
                     }
                     let totalStatementDocumented = 0;
