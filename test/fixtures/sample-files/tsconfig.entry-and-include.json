@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "commonjs"
+    },
+    "files": [
+        "app.module.ts",
+        "foo.component.ts",
+        "foo.module.ts"
+    ],
+    "include": [
+        "bar.component.ts"
+    ],
+}

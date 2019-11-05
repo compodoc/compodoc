@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import { CLIProgram } from '../entities/cli-program';
 
-const cosmiconfig = require('cosmiconfig');
+import { cosmiconfig } from 'cosmiconfig';
 
 /**
  * Detect config file with cosmiconfig
