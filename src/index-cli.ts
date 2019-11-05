@@ -15,7 +15,8 @@ import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
 import { handlePath, readConfig } from './utils/utils';
 
-const cosmiconfig = require('cosmiconfig');
+import { cosmiconfig } from 'cosmiconfig';
+
 const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
@@ -201,9 +202,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             if (testConfigFilePath && testConfigFilePath.length > 0) {
                 configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
             }
-            configExplorerResult = configExplorer.loadSync(path.resolve(configFilePath));
+            configExplorerResult = configExplorer.load(path.resolve(configFilePath));
         } else {
-            configExplorerResult = configExplorer.searchSync();
+            configExplorerResult = configExplorer.search();
         }
         if (configExplorerResult) {
             if (typeof configExplorerResult.config !== 'undefined') {
