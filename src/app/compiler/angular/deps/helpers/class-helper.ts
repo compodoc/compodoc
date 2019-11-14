@@ -515,24 +515,24 @@ export class ClassHelper {
                             methods: members.methods
                         }
                     ];
-                } else {
-                    return [
-                        {
-                            description,
-                            rawdescription: rawdescription,
-                            methods: members.methods,
-                            indexSignatures: members.indexSignatures,
-                            properties: members.properties,
-                            kind: members.kind,
-                            constructor: members.constructor,
-                            jsdoctags: jsdoctags,
-                            extends: extendsElement,
-                            implements: implementsElements,
-                            accessors: members.accessors
-                        }
-                    ];
                 }
+                // Did not find an angular decorator in first iteration, try the next
             }
+            return [
+                {
+                    description,
+                    rawdescription: rawdescription,
+                    methods: members.methods,
+                    indexSignatures: members.indexSignatures,
+                    properties: members.properties,
+                    kind: members.kind,
+                    constructor: members.constructor,
+                    jsdoctags: jsdoctags,
+                    extends: extendsElement,
+                    implements: implementsElements,
+                    accessors: members.accessors
+                }
+            ];
         } else if (description) {
             return [
                 {
