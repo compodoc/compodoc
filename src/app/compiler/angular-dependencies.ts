@@ -401,6 +401,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 description: IO.description,
+                                rawdescription: IO.rawdescription,
                                 sourceCode: srcFile.getText(),
                                 exampleUrls: this.componentHelper.getComponentExampleUrls(
                                     srcFile.getText()
@@ -441,6 +442,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 file: file,
                                 type: 'pipe',
                                 description: IO.description,
+                                rawdescription: IO.rawdescription,
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 pure: this.componentHelper.getComponentPure(props, srcFile),
@@ -531,6 +533,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                         if (IO.description) {
                             interfaceDeps.description = IO.description;
+                            interfaceDeps.rawdescription = IO.rawdescription;
                         }
                         if (IO.methods) {
                             interfaceDeps.methods = IO.methods;
