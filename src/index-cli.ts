@@ -13,7 +13,7 @@ import AngularVersionUtil from './utils/angular-version.util';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
-import { handlePath, readConfig } from './utils/utils';
+import { handlePath, readConfig, ignoreDirectory } from './utils/utils';
 
 import { cosmiconfigSync } from 'cosmiconfig';
 
@@ -733,8 +733,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     let finder = require('findit2')(startCwd || '.');
 
                     finder.on('directory', function(dir, stat, stop) {
-                        let base = path.basename(dir);
-                        if (base === '.git' || base === 'node_modules') {
+                        if (ignoreDirectory(dir)) {
                             stop();
                         }
                     });
@@ -856,8 +855,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         let finder = require('findit2')(path.resolve(startCwd));
 
                         finder.on('directory', function(dir, stat, stop) {
-                            let base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') {
+                            if (ignoreDirectory(dir)) {
                                 stop();
                             }
                         });
