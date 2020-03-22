@@ -208,5 +208,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`
             expect(runHelp.stdout.toString()).to.contain('--customLogo [path]');
             expect(runHelp.stdout.toString()).to.contain('Use a custom logo');
         });
+
+        it(`--markdownsPath`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--markdownsPath [path]');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Custom path to directory with markdown files'
+            );
+        });
     });
 });

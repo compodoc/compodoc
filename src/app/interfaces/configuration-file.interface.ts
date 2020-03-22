@@ -45,4 +45,5 @@ export interface ConfigurationFileInterface {
     files;
     exclude;
     include;
+    markdownsPath: string;
 }

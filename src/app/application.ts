@@ -289,12 +289,17 @@ export class Application {
         );
 
         return new Promise((resolve, reject) => {
+            let filePath = '';
             let i = 0;
             let markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'];
             let numberOfMarkdowns = 5;
             let loop = () => {
                 if (i < numberOfMarkdowns) {
-                    MarkdownEngine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
+                    filePath =
+                        Configuration.mainData.markdownsPath +
+                        path.sep +
+                        markdowns[i].toUpperCase();
+                    MarkdownEngine.getTraditionalMarkdown(filePath).then(
                         (readmeData: markdownReadedDatas) => {
                             Configuration.addPage({
                                 name: markdowns[i] === 'readme' ? 'index' : markdowns[i],

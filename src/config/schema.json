@@ -395,6 +395,13 @@
             "examples": [
                 ""
             ]
+        },
+        "markdownsPath": {
+            "$id": "/properties/markdownsPath",
+            "type": "string",
+            "title": "Custom path to directory with markdown files",
+            "default": "",
+            "examples": ["markdowns/"]
         }
     }
 }

@@ -31,6 +31,7 @@ export class Configuration implements ConfigurationInterface {
         license: '',
         todo: '',
         markdowns: [],
+        markdownsPath: '',
         additionalPages: [],
         pipes: [],
         classes: [],

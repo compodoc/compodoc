@@ -183,6 +183,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 'Max search results on the results page. To show all results, set to 0',
                 COMPODOC_DEFAULTS.maxSearchResults
             )
+            .option('--markdownsPath [path]', 'Custom path to directory with markdown files')
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -541,6 +542,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (program.gaSite && program.gaSite !== COMPODOC_DEFAULTS.gaSite) {
             Configuration.mainData.gaSite = program.gaSite;
+        }
+
+        if (configFile.markdownsPath) {
+            Configuration.mainData.markdownsPath = configFile.markdownsPath;
+        }
+        if (program.markdownsPath) {
+            Configuration.mainData.markdownsPath = program.markdownsPath;
         }
 
         if (!this.isWatching) {

@@ -22,6 +22,7 @@ export interface MainDataInterface {
     license: string;
     todo: string;
     markdowns: any[];
+    markdownsPath: string;
     additionalPages: any;
     pipes: any;
     classes: any;
