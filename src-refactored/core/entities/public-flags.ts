@@ -189,7 +189,7 @@ export const PUBLIC_FLAGS: Flag[] = [
         label: 'language',
         flag: '--language [language]',
         description:
-            'Language used for the generated documentation (en-US, de-DE, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, zh-CN)',
+            'Language used for the generated documentation (de-DE, EL-GR, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, zh-CN)',
         defaultValue: COMPODOC_DEFAULTS.language
     },
     {

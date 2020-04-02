@@ -13,6 +13,7 @@ import {
     TRANSLATION_SK_SK,
     TRANSLATION_ZH_CN
 } from './locales';
+import { TRANSLATION_EL_GR } from '../../../src/locales';
 
 class I18nEngine {
     private static instance: I18nEngine;
@@ -28,6 +29,7 @@ class I18nEngine {
 
     private availablesLanguages = {
         'de-DE': 'de-DE',
+        'el-GR': 'el-GR',
         'en-US': 'en-US',
         'es-ES': 'es-ES',
         'fr-FR': 'fr-FR',
@@ -55,6 +57,9 @@ class I18nEngine {
                 },
                 'es-ES': {
                     translation: TRANSLATION_ES_ES
+                },
+                'el-GR': {
+                    translation: TRANSLATION_EL_GR
                 },
                 'fr-FR': {
                     translation: TRANSLATION_FR_FR

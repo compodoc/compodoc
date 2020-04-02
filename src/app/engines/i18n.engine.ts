@@ -11,7 +11,8 @@ import {
     TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
     TRANSLATION_SK_SK,
-    TRANSLATION_ZH_CN
+    TRANSLATION_ZH_CN,
+    TRANSLATION_EL_GR
 } from '../../locales';
 
 class I18nEngine {
@@ -26,6 +27,7 @@ class I18nEngine {
 
     private availablesLanguages = {
         'de-DE': 'de-DE',
+        'el-GR': 'el-GR',
         'en-US': 'en-US',
         'es-ES': 'es-ES',
         'fr-FR': 'fr-FR',
@@ -46,6 +48,7 @@ class I18nEngine {
             fallbackLng: this.fallbackLanguage
         });
         i18next.addResources('de-DE', 'translation', TRANSLATION_DE_DE);
+        i18next.addResources('el-EL', 'translation', TRANSLATION_EL_GR);
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
         i18next.addResources('es-ES', 'translation', TRANSLATION_ES_ES);
         i18next.addResources('fr-FR', 'translation', TRANSLATION_FR_FR);

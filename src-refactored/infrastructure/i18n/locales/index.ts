@@ -1,4 +1,5 @@
 export { TRANSLATION_DE_DE } from './de-DE';
+export { TRANSLATION_EL_GR } from './el-EL';
 export { TRANSLATION_EN_US } from './en-US';
 export { TRANSLATION_ES_ES } from './es-ES';
 export { TRANSLATION_FR_FR } from './fr-FR';
