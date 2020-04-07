@@ -34,6 +34,7 @@ export class AngularApiUtil {
     }
 
     public findApi(type: string): IApiSourceResult<IAngularMainApi> {
+        type = type.replace(/(\w+)<.+>/, '$1');
         let foundApi;
         AngularAPIs.some(mainApi => {
             return mainApi.items.some(api => {

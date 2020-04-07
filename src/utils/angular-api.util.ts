@@ -14,6 +14,7 @@ export class AngularApiUtil {
     }
 
     public findApi(type: string): IApiSourceResult<IAngularMainApi> {
+        type = type.replace(/(\w+)<.+>/, '$1');
         let foundedApi;
         _.forEach(AngularAPIs, mainApi => {
             _.forEach(mainApi.items, api => {

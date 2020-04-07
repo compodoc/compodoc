@@ -10,4 +10,12 @@ describe('Infrastructure - Handle Angular APIs', () => {
 
         expect(apiFoundDataPathKey).equal('api/common/http/HttpClientModule');
     });
+
+    it('should detect it with generic types', () => {
+        const API_TO_FIND = 'HttpRequest<any>';
+        const apiFound = AngularApiUtil.findApi(API_TO_FIND);
+        const apiFoundDataPathKey = apiFound.data.path;
+
+        expect(apiFoundDataPathKey).equal('api/common/http/HttpRequest');
+    });
 });
