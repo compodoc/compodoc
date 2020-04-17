@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -30,6 +30,11 @@ export class AboutComponent {
      */
     @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
     onMouseup(mouseX: number, mouseY: number): void {}
+
+    /**
+     * Inherited type of Angular Version
+     */
+    @Input() public angularVersion = 'Angular 2';
 
     chartOptions: Highcharts.Options = {
         colors: [
