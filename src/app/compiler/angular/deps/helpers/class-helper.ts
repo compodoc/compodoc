@@ -242,6 +242,7 @@ export class ClassHelper {
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
                     let comment = nodeAccessor.jsDoc[0].comment;
                     if (typeof comment !== 'undefined') {
+                        setSignature.rawdescription = comment;
                         setSignature.description = marked(comment);
                     }
                 }
@@ -273,6 +274,7 @@ export class ClassHelper {
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
                     let comment = nodeAccessor.jsDoc[0].comment;
                     if (typeof comment !== 'undefined') {
+                        getSignature.rawdescription = comment;
                         getSignature.description = marked(comment);
                     }
                 }
@@ -408,7 +410,7 @@ export class ClassHelper {
         let description = '';
         if (symbol) {
             rawdescription = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration);
-            description = marked(this.jsdocParserUtil.getMainCommentOfNode(classDeclaration));
+            description = marked(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
@@ -859,7 +861,9 @@ export class ClassHelper {
             line: this.getPosition(method, sourceFile).line + 1
         };
         if (method.jsDoc) {
-            result.description = marked(marked(this.jsdocParserUtil.getMainCommentOfNode(method)));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -886,7 +890,9 @@ export class ClassHelper {
             line: this.getPosition(method, sourceFile).line + 1
         };
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
         return result;
     }
@@ -907,7 +913,9 @@ export class ClassHelper {
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (method.modifiers) {
@@ -960,7 +968,9 @@ export class ClassHelper {
 
         if (property.jsDoc) {
             jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (property.decorators) {
@@ -1044,7 +1054,9 @@ export class ClassHelper {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
+                        const rawDescription = property.jsDoc[0].comment;
+                        _return.rawdescription = rawDescription;
+                        _return.description = marked(rawDescription);
                     }
                 }
             }
@@ -1112,7 +1124,9 @@ export class ClassHelper {
         }
 
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (method.decorators) {
@@ -1159,14 +1173,16 @@ export class ClassHelper {
                 : undefined
         };
         if (property.jsDoc) {
-            _return.description = marked(
-                marked(this.jsdocParserUtil.getMainCommentOfNode(property))
-            );
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            _return.rawdescription = rawDescription;
+            _return.description = marked(rawDescription);
         }
         if (!_return.description) {
             if (property.jsDoc && property.jsDoc.length > 0) {
                 if (typeof property.jsDoc[0].comment !== 'undefined') {
-                    _return.description = marked(property.jsDoc[0].comment);
+                    const rawDescription = property.jsDoc[0].comment;
+                    _return.rawdescription = rawDescription;
+                    _return.description = marked(rawDescription);
                 }
             }
         }
@@ -1224,13 +1240,17 @@ export class ClassHelper {
                   })
                 : [];
         if (property.jsDoc) {
-            _return.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            _return.rawdescription = rawDescription;
+            _return.description = marked(rawDescription);
         }
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
+                        const rawDescription = property.jsDoc[0].comment;
+                        _return.rawdescription = rawDescription;
+                        _return.description = marked(rawDescription);
                     }
                 }
             }

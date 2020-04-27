@@ -720,7 +720,9 @@ export class AngularDependencies extends FrameworkDependencies {
                             deps.initializer = infos.initializer;
                         }
                         if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
-                            deps.description = marked(node.jsDoc[0].comment);
+                            const rawDescription = node.jsDoc[0].comment;
+                            deps.rawdescription = rawDescription;
+                            deps.description = marked(rawDescription);
                         }
                         if (isModuleWithProviders(node)) {
                             let routingInitializer = getModuleWithProviders(node);

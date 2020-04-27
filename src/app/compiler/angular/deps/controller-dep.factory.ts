@@ -25,6 +25,7 @@ export class ControllerDepFactory {
             methodsClass: IO.methods,
             type: 'controller',
             description: IO.description,
+            rawdescription: IO.rawdescription,
             sourceCode: srcFile.text
         };
         if (properties && properties.length === 1) {
