@@ -8,8 +8,8 @@ export const fs = require('fs-extra');
 export const path = require('path');
 export const pkg = require('../../package.json');
 
-export function read(file: string): string {
-    return fs.readFileSync(file).toString();
+export function read(file: string, encoding = null): string {
+    return fs.readFileSync(file, encoding).toString();
 }
 
 export function exists(file: string): boolean {
