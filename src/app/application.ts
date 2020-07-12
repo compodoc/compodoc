@@ -1,5 +1,4 @@
 import * as fs from 'fs-extra';
-import * as LiveServer from 'live-server';
 import * as _ from 'lodash';
 import * as path from 'path';
 
@@ -32,6 +31,11 @@ import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { promiseSequential } from '../utils/promise-sequential';
 import RouterParserUtil from '../utils/router-parser.util';
 
+import * as livereload from 'livereload';
+import connectLivereload from 'connect-livereload';
+import detectPort from 'detect-port';
+import express from 'express';
+
 import {
     cleanNameWithoutSpaceAndToLowerCase,
     cleanSourcesForWatch,
@@ -40,7 +44,6 @@ import {
 
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
-import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
 
 let cwd = process.cwd();
 let startTime = new Date();
@@ -74,6 +77,16 @@ export class Application {
      * Store package.json data
      */
     private packageJsonData = {};
+
+    /**
+     * Maintain a reference to the liveReloadServer so that its refresh
+     * method can be called from elsewhere in the code.
+     */
+    private liveReloadServer: {
+        createServer(): void;
+        refresh(path: string): void;
+        // This is a subset of methods available
+    };
 
     /**
      * Create a new compodoc application instance.
@@ -2453,9 +2466,6 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     ' theme'
             );
             if (Configuration.mainData.serve) {
-                logger.info(
-                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${Configuration.mainData.port}`
-                );
                 this.runWebServer(Configuration.mainData.output);
             } else {
                 generationPromiseResolve();
@@ -2678,18 +2688,29 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public runWebServer(folder) {
         if (!this.isWatching) {
-            let liveServerConfiguration: LiveServerConfiguration = {
-                root: folder,
-                open: Configuration.mainData.open,
-                quiet: true,
-                logLevel: 0,
-                wait: 1000,
-                port: Configuration.mainData.port
-            };
-            if (Configuration.mainData.host !== '') {
-                liveServerConfiguration.host = Configuration.mainData.host;
-            }
-            LiveServer.start(liveServerConfiguration);
+            const serverRoot = cwd + path.sep + folder;
+            this.liveReloadServer = livereload.createServer();
+            let app = express();
+            app.use(connectLivereload());
+            app.use(express.static(serverRoot));
+            app.get('/', function(req, res) {
+                res.sendFile(serverRoot + '/index.html');
+            });
+            const { port } = Configuration.mainData;
+            detectPort(port)
+                .then(_port => {
+                    if (port !== _port) {
+                        logger.info(`Port ${port} was already in use.`);
+                    }
+                    app.listen(_port, () => {
+                        logger.info(
+                            `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${_port}`
+                        );
+                    });
+                })
+                .catch(err => {
+                    logger.error(err);
+                });
         }
         if (Configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {
@@ -2701,6 +2722,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             }
         } else if (Configuration.mainData.watch && this.isWatching) {
             let srcFolder = findMainSourceFolder(this.files);
+            this.liveReloadServer.refresh('/');
             logger.info(`Already watching sources in ${srcFolder} folder`);
         }
     }
