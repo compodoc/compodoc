@@ -37,7 +37,7 @@ jobs:
         run: npm ci
       
       - name: Checks
-        run: node -v && node -p -e "require('./node_modules/@types/node/package.json').version"
+        run: node -v && node -p -e "require('./node_modules/@types/node/package.json').version" && ./node_modules/.bin/tsc -v
 
       - name: Test
         run: npm run test
