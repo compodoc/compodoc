@@ -104,7 +104,7 @@
         "minimist": "^1.2.5",
         "opencollective-postinstall": "^2.0.3",
         "os-name": "^3.1.0",
-        "pdfmake": "^0.1.68",
+        "pdfmake": "^0.1.62",
         "semver": "^7.3.2",
         "traverse": "^0.6.6",
         "ts-morph": "^4.3.2",
