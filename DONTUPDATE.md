@@ -2,4 +2,10 @@
 
 -   ts-simple-ast
 -   @types/chai pb with TSC during npm run test
--   cosmiconfig : v7 drop support of Node.js 8.x
+
+Node.js < v10 support
+
+-   fs-extra
+-   rollup
+-   cosmiconfig
+-   osname
