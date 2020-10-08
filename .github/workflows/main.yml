@@ -36,8 +36,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       
-      - name: Checks
-        run: node -v && node -p -e "require('./node_modules/@types/node/package.json').version" && ./node_modules/.bin/tsc -v
+      - name: Build
+        run: npm run build
 
       - name: Test
         run: npm run test
