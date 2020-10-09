@@ -40,5 +40,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
+      - name: Unit tests
         run: npm run test
+      
+      - name: Unit tests refactoring
+        run: npm run test-refactoring
