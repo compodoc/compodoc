@@ -12,7 +12,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [8.x]
+        node-version: [8.x, 10.x, 12.x]
         os: [ubuntu-latest, windows-latest]
 
     steps:
@@ -34,7 +34,7 @@ jobs:
             ${{ runner.OS }}-
 
       - name: Install Dependencies
-        run: npm i
+        run: npm ci
       
       - name: Build
         run: npm run build
