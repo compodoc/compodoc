@@ -1,4 +1,4 @@
-const PDFJS = require('pdfjs-dist');
+const PDFJS = require('pdfjs-dist/es5/build/pdf.js');
 
 export const shell = require('child_process').spawnSync;
 export const spawn = require('child_process').spawn;
