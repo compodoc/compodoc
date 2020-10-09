@@ -83,7 +83,7 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
-        "@compodoc/ngd-transformer": "^2.0.0",
+        "@compodoc/ngd-transformer": "^2.1.0",
         "chalk": "^4.1.0",
         "cheerio": "^1.0.0-rc.3",
         "chokidar": "^3.4.2",
