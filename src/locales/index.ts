@@ -6,6 +6,7 @@ export { TRANSLATION_HU_HU } from './hu-HU';
 export { TRANSLATION_IT_IT } from './it-IT';
 export { TRANSLATION_JA_JP } from './ja-JP';
 export { TRANSLATION_NL_NL } from './nl-NL';
+export { TRANSLATION_PL_PL } from './pl-PL';
 export { TRANSLATION_PT_BR } from './pt-BR';
 export { TRANSLATION_SK_SK } from './sk-SK';
 export { TRANSLATION_ZH_CN } from './zh-CN';
