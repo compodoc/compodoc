@@ -35,6 +35,50 @@ describe('CLI Export', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
+        it('should display descriptions and raw descriptions', () => {
+            const file = read(`${distFolder}/documentation.json`, 'utf8');
+
+            // property
+            expect(file).to.contain('"rawdescription": "The current time"');
+            expect(file).to.contain('"description": "<p>The current time</p>\\n"');
+
+            // method
+            expect(file).to.contain('"rawdescription": "the transform function"');
+            expect(file).to.contain('"description": "<p>the transform function</p>\\n"');
+
+            // pipe
+            expect(file).to.contain(
+                '"rawdescription": "Uppercase the first letter of the string\\n\\n__Usage :__\\n   value | firstUpper:exponent\\n\\n__Example :__\\n   {{ car |  firstUpper}}\\n   formats to: Car"'
+            );
+            expect(file).to.contain(
+                '"description": "<p>Uppercase the first letter of the string</p>\\n<p><strong>Usage :</strong>\\n   value | firstUpper:exponent</p>\\n<p><strong>Example :</strong>\\n   {{ car |  firstUpper}}\\n   formats to: Car</p>\\n"'
+            );
+
+            // interface
+            expect(file).to.contain(
+                '"rawdescription": "An interface just for documentation purpose"'
+            );
+            expect(file).to.contain(
+                '"description": "<p>An interface just for documentation purpose</p>\\n"'
+            );
+
+            // service
+            expect(file).to.contain(
+                '"rawdescription": "This service is a todo store\\nSee {@link Todo} for details about the main data of this store"'
+            );
+            expect(file).to.contain(
+                '"description": "<p>This service is a todo store\\nSee {@link Todo} for details about the main data of this store</p>\\n"'
+            );
+
+            // accessor (setter)
+            expect(file).to.contain('"rawdescription": "Setter of _fullName"');
+            expect(file).to.contain('"description": "<p>Setter of _fullName</p>\\n"');
+
+            // accessor (getter)
+            expect(file).to.contain('"rawdescription": "Getter of _fullName"');
+            expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n"');
+        });
+
         it('should create json file', () => {
             let isFileExists = exists(`${distFolder}/documentation.json`);
             expect(isFileExists).to.be.true;
