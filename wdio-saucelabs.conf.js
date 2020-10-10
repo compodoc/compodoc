@@ -66,8 +66,8 @@ exports.config = {
         { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '18.17763' },
         { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '17.17134' },
         { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '16.16299' },
-        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: 'latest' }
-        { browserName: 'firefox', platform: 'Windows 10', version: '65.0' }
+        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: 'latest' },
+        { browserName: 'firefox', platform: 'Windows 10', version: '65.0' },
         { browserName: 'firefox', platform: 'Windows 10', version: '62.0' },
         { browserName: 'firefox', platform: 'Windows 10', version: 'latest' },
         { browserName: 'safari', platform: 'macOS 10.15', version: 'latest' },
