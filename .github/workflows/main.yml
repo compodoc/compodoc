@@ -42,9 +42,52 @@ jobs:
 
       - name: Unit tests
         run: npm run test
-        
-      - name: Angular expo test
-        run: npm run angularexpo
       
       - name: Unit tests refactoring
         run: npm run test-refactoring
+
+      - name: Angular expo test
+        if: ${{ matrix.node-version == '12.x' }}
+        run: npm run angularexpo
+      
+  e2e:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [12.x]
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: saucelabs/sauce-connect-action@master
+        with:
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+          tunnelIdentifier: github-action-tunnel
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+
+      - name: Install Dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+
+      - name: E2E tests
+        run: npm run saucelabs-test-e2e-mocha
