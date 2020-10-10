@@ -90,4 +90,7 @@ jobs:
         run: npm run build
 
       - name: E2E tests
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
         run: npm run saucelabs-test-e2e-mocha
