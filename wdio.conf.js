@@ -57,6 +57,12 @@ exports.config = {
             // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
             // excludeDriverLogs: ['bugreport', 'server'],
         },
+        {
+            browserName: 'firefox',
+            'moz:firefoxOptions': {
+                binary: '/usr/bin/firefox-trunk',
+            },
+        },
     ],
     //
     // ===================
