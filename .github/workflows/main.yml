@@ -93,4 +93,4 @@ jobs:
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-        run: ./node_modules/.bin/wdio wdio-saucelabs.conf.js
+        run: npm run saucelabs-test-e2e-mocha
