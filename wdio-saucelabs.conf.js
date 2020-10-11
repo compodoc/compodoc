@@ -60,95 +60,17 @@ exports.config = {
     // https://docs.saucelabs.com/reference/platforms-configurator
     //
     capabilities: [
-        {
-            browserName: 'chrome',
-            browserVersion: 'latest',
-            platformName: 'Windows 10',
-            'sauce:options': {
-                public: 'public',
-                recordScreenshots: false,
-            },
-        } /*,
-        {
-            browserName: 'chrome',
-            platformName: 'Windows 10',
-            browserVersion: '72.0',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'chrome',
-            platformName: 'Windows 10',
-            browserVersion: '48.0',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: '18.17763',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: '17.17134',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: '16.16299',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: 'latest',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'firefox',
-            platformName: 'Windows 10',
-            browserVersion: '65.0',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'firefox',
-            platformName: 'Windows 10',
-            browserVersion: '62.0',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'firefox',
-            platformName: 'Windows 10',
-            browserVersion: 'latest',
-            'sauce:options': {
-                public: 'public',
-            },
-        },
-        {
-            browserName: 'safari',
-            platformName: 'macOS 10.15',
-            browserVersion: 'latest',
-            'sauce:options': {
-                public: 'public',
-            },
-        },*/,
+        { browserName: 'chrome', platform: 'Windows 10', version: 'latest' },
+        { browserName: 'chrome', platform: 'Windows 10', version: '72.0' },
+        { browserName: 'chrome', platform: 'Windows 10', version: '48.0' },
+        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '18.17763' },
+        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '17.17134' },
+        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '16.16299' },
+        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: 'latest' },
+        { browserName: 'firefox', platform: 'Windows 10', version: '65.0' },
+        { browserName: 'firefox', platform: 'Windows 10', version: '62.0' },
+        { browserName: 'firefox', platform: 'Windows 10', version: 'latest' },
+        { browserName: 'safari', platform: 'macOS 10.15', version: 'latest' },
     ],
     //
     // ===================
