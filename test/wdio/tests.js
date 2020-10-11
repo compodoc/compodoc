@@ -1,6 +1,7 @@
 describe('Compodoc page', () => {
     it('should have a search bar, and handle results', async () => {
         await browser.url('http://localhost:4000/components/FooComponent.html');
+        await browser.pause(2000);
         const searchBoxes = await $$("//*[@id='book-search-input']/input");
         const searchBox = searchBoxes[1];
         await searchBox.click();
@@ -14,6 +15,7 @@ describe('Compodoc page', () => {
 
     it('should have a search bar, and handle results empty', async () => {
         await browser.url('http://localhost:4000/components/FooComponent.html');
+        await browser.pause(2000);
         const searchBoxes = await $$("//*[@id='book-search-input']/input");
         const searchBox = searchBoxes[1];
         await searchBox.click();
