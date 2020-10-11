@@ -52,10 +52,6 @@ jobs:
         if: ${{ matrix.node-version == '10.x' && matrix.os == 'ubuntu-latest' }}
         run: npm run merge-lcov
         
-      - name: Sonar scanner
-        if: ${{ matrix.node-version == '10.x' && matrix.os == 'ubuntu-latest' }}
-        run: ./node_modules/.bin/sonar-scanner
-        
       - name: Sonarcloud
         if: ${{ matrix.node-version == '10.x' && matrix.os == 'ubuntu-latest' }}
         uses: sonarsource/sonarcloud-github-action@master
