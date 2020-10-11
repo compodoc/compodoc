@@ -18,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
         
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -45,6 +47,21 @@ jobs:
       
       - name: Unit tests refactoring
         run: npm run test-refactoring
+        
+      - name: Merge lcov
+        if: ${{ matrix.node-version == '10.x' && runner.OS == 'ubuntu-latest' }}
+        run: npm run merge-lcov
+        
+      - name: Sonar scanner
+        if: ${{ matrix.node-version == '10.x' && runner.OS == 'ubuntu-latest' }}
+        run: ./node_modules/.bin/sonar-scanner
+        
+      - name: Sonarcloud
+        if: ${{ matrix.node-version == '10.x' && runner.OS == 'ubuntu-latest' }}
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Angular expo test
         if: ${{ matrix.node-version == '12.x' }}
