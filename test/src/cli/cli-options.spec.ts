@@ -45,7 +45,7 @@ describe('CLI Options', () => {
         });
 
         it(`-n`, () => {
-            expect(runHelp.stdout.toString()).to.contain('-n, --name [name]');
+            expect(runHelp.stdout.toString()).to.contain('-n, --docName [name]');
             expect(runHelp.stdout.toString()).to.contain('Title documentation');
         });
 
