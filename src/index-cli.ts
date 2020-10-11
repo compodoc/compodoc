@@ -54,7 +54,7 @@ export class CliApplication extends Application {
                 COMPODOC_DEFAULTS.folder
             )
             .option('-y, --extTheme [file]', 'External styling theme file')
-            .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
+            .option('-n, --docName [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option(
                 '-a, --assetsFolder [folder]',
                 'External assets folder to copy in generated documentation folder'
@@ -241,11 +241,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.theme = program.theme;
         }
 
-        if (configFile.name) {
-            Configuration.mainData.documentationMainName = configFile.name;
+        if (configFile.docName) {
+            Configuration.mainData.documentationMainName = configFile.docName;
         }
-        if (program.name && program.name !== COMPODOC_DEFAULTS.title) {
-            Configuration.mainData.documentationMainName = program.name;
+        if (program.docName && program.docName !== COMPODOC_DEFAULTS.title) {
+            Configuration.mainData.documentationMainName = program.docName;
         }
 
         if (configFile.assetsFolder) {
@@ -688,10 +688,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         path.basename(Configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
-                    cwd = _file
-                        .split(path.sep)
-                        .slice(0, -1)
-                        .join(path.sep);
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig file ', _file);
 
                     let tsConfigFile = readConfig(_file);
@@ -732,7 +729,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     let finder = require('findit2')(startCwd || '.');
 
-                    finder.on('directory', function(dir, stat, stop) {
+                    finder.on('directory', function (dir, stat, stop) {
                         if (ignoreDirectory(dir)) {
                             stop();
                         }
@@ -810,10 +807,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                             path.basename(Configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory
-                        cwd = _file
-                            .split(path.sep)
-                            .slice(0, -1)
-                            .join(path.sep);
+                        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                         logger.info('Using tsconfig file ', _file);
 
                         let tsConfigFile = readConfig(_file);
@@ -854,7 +848,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                         let finder = require('findit2')(path.resolve(startCwd));
 
-                        finder.on('directory', function(dir, stat, stop) {
+                        finder.on('directory', function (dir, stat, stop) {
                             if (ignoreDirectory(dir)) {
                                 stop();
                             }
