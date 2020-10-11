@@ -61,11 +61,12 @@ exports.config = {
     //
     capabilities: [
         {
+            browserName: 'chrome',
+            browserVersion: 'latest',
+            platformName: 'Windows 10',
             'sauce:options': {
-                browserName: 'chrome',
-                platformName: 'Windows 10',
-                browserVersion: 'latest',
                 public: 'public',
+                recordScreenshots: false,
             },
         } /*,
         {
