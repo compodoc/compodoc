@@ -61,13 +61,13 @@ exports.config = {
     //
     capabilities: [
         {
-            browserName: 'chrome',
-            platformName: 'Windows 10',
-            browserVersion: 'latest',
             'sauce:options': {
+                browserName: 'chrome',
+                platformName: 'Windows 10',
+                browserVersion: 'latest',
                 public: 'public',
             },
-        },
+        } /*,
         {
             browserName: 'chrome',
             platformName: 'Windows 10',
@@ -147,7 +147,7 @@ exports.config = {
             'sauce:options': {
                 public: 'public',
             },
-        },
+        },*/,
     ],
     //
     // ===================
