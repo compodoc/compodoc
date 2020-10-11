@@ -60,17 +60,94 @@ exports.config = {
     // https://docs.saucelabs.com/reference/platforms-configurator
     //
     capabilities: [
-        { browserName: 'chrome', platform: 'Windows 10', version: 'latest' },
-        { browserName: 'chrome', platform: 'Windows 10', version: '72.0' },
-        { browserName: 'chrome', platform: 'Windows 10', version: '48.0' },
-        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '18.17763' },
-        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '17.17134' },
-        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '16.16299' },
-        { browserName: 'MicrosoftEdge', platform: 'Windows 10', version: 'latest' },
-        { browserName: 'firefox', platform: 'Windows 10', version: '65.0' },
-        { browserName: 'firefox', platform: 'Windows 10', version: '62.0' },
-        { browserName: 'firefox', platform: 'Windows 10', version: 'latest' },
-        { browserName: 'safari', platform: 'macOS 10.15', version: 'latest' },
+        {
+            browserName: 'chrome',
+            platform: 'Windows 10',
+            version: 'latest',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'chrome',
+            platform: 'Windows 10',
+            version: '72.0',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'chrome',
+            platform: 'Windows 10',
+            version: '48.0',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'MicrosoftEdge',
+            platform: 'Windows 10',
+            version: '18.17763',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'MicrosoftEdge',
+            platform: 'Windows 10',
+            version: '17.17134',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'MicrosoftEdge',
+            platform: 'Windows 10',
+            version: '16.16299',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'MicrosoftEdge',
+            platform: 'Windows 10',
+            version: 'latest',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'firefox',
+            platform: 'Windows 10',
+            version: '65.0',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'firefox',
+            platform: 'Windows 10',
+            version: '62.0',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'firefox',
+            platform: 'Windows 10',
+            version: 'latest',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
+        {
+            browserName: 'safari',
+            platform: 'macOS 10.15',
+            version: 'latest',
+            'sauce:options': {
+                build: `Build ${Math.ceil(Date.now() / 1000)}`,
+            },
+        },
     ],
     //
     // ===================
