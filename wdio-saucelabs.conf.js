@@ -64,88 +64,110 @@ exports.config = {
             browserName: 'chrome',
             platformName: 'Windows 10',
             browserVersion: 'latest',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'chrome',
             platformName: 'Windows 10',
             browserVersion: '72.0',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'chrome',
             platformName: 'Windows 10',
             browserVersion: '48.0',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'MicrosoftEdge',
             platformName: 'Windows 10',
             browserVersion: '18.17763',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'MicrosoftEdge',
             platformName: 'Windows 10',
             browserVersion: '17.17134',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'MicrosoftEdge',
             platformName: 'Windows 10',
             browserVersion: '16.16299',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'MicrosoftEdge',
             platformName: 'Windows 10',
             browserVersion: 'latest',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'firefox',
             platformName: 'Windows 10',
             browserVersion: '65.0',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'firefox',
             platformName: 'Windows 10',
             browserVersion: '62.0',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'firefox',
             platformName: 'Windows 10',
             browserVersion: 'latest',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
         {
             browserName: 'safari',
             platformName: 'macOS 10.15',
             browserVersion: 'latest',
+            maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
+                public: 'public',
             },
         },
     ],
