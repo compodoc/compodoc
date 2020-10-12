@@ -31,7 +31,7 @@ export class PublicConfiguration {
     public includesName: string;
     public language: string;
     public minimal: boolean;
-    public docName: string;
+    public name: string;
     public navTabConfig;
     public open: boolean;
     public output: string;

@@ -3,7 +3,7 @@ export interface ConfigurationFileInterface {
     extTheme: string;
     language: string;
     theme: string;
-    docName: string;
+    name: string;
     assetsFolder: string;
     open: boolean;
     toggleMenuItems;

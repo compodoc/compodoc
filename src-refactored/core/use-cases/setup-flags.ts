@@ -8,6 +8,7 @@ export class SetupFlags {
 
     constructor() {
         this.program = require('commander');
+        this.program.storeOptionsAsProperties(true);
     }
 
     public static getInstance() {

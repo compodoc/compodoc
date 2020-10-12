@@ -40,6 +40,8 @@ export class CliApplication extends Application {
             return val.split(',');
         }
 
+        program.storeOptionsAsProperties(true);
+
         program
             .version(pkg.version)
             .usage('<src> [options]')
@@ -54,7 +56,7 @@ export class CliApplication extends Application {
                 COMPODOC_DEFAULTS.folder
             )
             .option('-y, --extTheme [file]', 'External styling theme file')
-            .option('-n, --docName [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
+            .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
             .option(
                 '-a, --assetsFolder [folder]',
                 'External assets folder to copy in generated documentation folder'
@@ -241,11 +243,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.theme = program.theme;
         }
 
-        if (configFile.docName) {
-            Configuration.mainData.documentationMainName = configFile.docName;
+        if (configFile.name) {
+            Configuration.mainData.documentationMainName = configFile.name;
         }
-        if (program.docName && program.docName !== COMPODOC_DEFAULTS.title) {
-            Configuration.mainData.documentationMainName = program.docName;
+        if (program.name && program.name !== COMPODOC_DEFAULTS.title) {
+            Configuration.mainData.documentationMainName = program.name;
         }
 
         if (configFile.assetsFolder) {

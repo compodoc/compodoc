@@ -1,10 +1,8 @@
-import { CommandOptions } from 'commander';
+import { Command } from 'commander';
 
 import { InternalConfiguration } from './internal-configuration';
 
-export interface CLIProgram extends InternalConfiguration {
-    version(str: string, flags?: string, description?: string);
-
+export interface CLIProgram extends InternalConfiguration, Command {
     option(
         flags: string,
         description?: string,
@@ -12,7 +10,4 @@ export interface CLIProgram extends InternalConfiguration {
         defaultValue?: any
     );
     option(flags: string, description?: string, defaultValue?: any);
-
-    command(nameAndArgs: string, description: string, opts?: CommandOptions);
-    parse(argv: string[]);
 }

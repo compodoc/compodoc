@@ -199,8 +199,8 @@ export const PUBLIC_FLAGS: Flag[] = [
         defaultValue: false,
     },
     {
-        label: 'docName',
-        flag: '-n, --docName [name]',
+        label: 'name',
+        flag: '-n, --name [name]',
         description: 'Title documentation',
         defaultValue: COMPODOC_DEFAULTS.title,
     },
