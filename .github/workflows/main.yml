@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-test:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
     
     strategy:
@@ -60,10 +61,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Angular expo test
-        if: ${{ matrix.node-version == '12.x' }}
+        if: ${{ matrix.node-version == '12.x' && matrix.os == 'ubuntu-latest' }}
         run: npm run angularexpo
       
   e2e:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
     continue-on-error: true
     
