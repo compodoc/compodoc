@@ -9,6 +9,7 @@ const chokidar = require('chokidar');
 const marked = require('marked');
 const traverse = require('traverse');
 const crypto = require('crypto');
+const babel = require('@babel/core');
 
 import { logger } from '../utils/logger';
 
@@ -754,7 +755,7 @@ export class Application {
                     let that = this;
                     let lastLevelOnePage = undefined;
 
-                    traverse(parsedSummaryData).forEach(function() {
+                    traverse(parsedSummaryData).forEach(function () {
                         // tslint:disable-next-line:no-invalid-this
                         if (this.notRoot && typeof this.node === 'object') {
                             // tslint:disable-next-line:no-invalid-this
@@ -1339,8 +1340,8 @@ export class Application {
             }
             if (
                 customTab.id === 'styleData' &&
-                ((!dependency.styleUrls || dependency.styleUrls.length === 0) &&
-                    (!dependency.styles || dependency.styles.length === 0))
+                (!dependency.styleUrls || dependency.styleUrls.length === 0) &&
+                (!dependency.styles || dependency.styles.length === 0)
             ) {
                 return;
             }
@@ -1704,7 +1705,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
-            let getStatus = function(percent) {
+            let getStatus = function (percent) {
                 let status;
                 if (percent <= 25) {
                     status = 'low';
@@ -2215,7 +2216,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             } else {
                 return Promise.reject('Error reading unit test coverage file');
             }
-            let getCovStatus = function(percent, totalLines) {
+            let getCovStatus = function (percent, totalLines) {
                 let status;
                 if (totalLines === 0) {
                     status = 'uncovered';
@@ -2230,7 +2231,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 }
                 return status;
             };
-            let getCoverageData = function(data, fileName) {
+            let getCoverageData = function (data, fileName) {
                 let out = {};
                 if (fileName !== 'total') {
                     if (covDat === undefined) {
@@ -2366,15 +2367,60 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             });
     }
 
+    private transpileMenuWCToES5(es6Code) {
+        return babel.transformAsync(es6Code, {
+            presets: [
+                [
+                    '@babel/preset-env',
+                    {
+                        targets: {
+                            ie: '11'
+                        }
+                    }
+                ]
+            ]
+        });
+    }
+
     private processMenu(mainData): Promise<void> {
         logger.info('Process menu...');
 
-        return HtmlEngine.renderMenu(Configuration.mainData.templates, mainData).then(htmlData => {
-            let finalPath = `${mainData.output}/js/menu-wc.js`;
-            return FileEngine.write(finalPath, htmlData).catch(err => {
-                logger.error('Error during ' + finalPath + ' page generation');
-                return Promise.reject('');
-            });
+        return new Promise((resolveProcessMenu, rejectProcessMenu) => {
+            const finalPathES6 = `${mainData.output}/js/menu-wc.js`;
+            const finalPathES5 = `${mainData.output}/js/menu-wc_es5.js`;
+            HtmlEngine.renderMenu(Configuration.mainData.templates, mainData)
+                .then(htmlData => {
+                    FileEngine.write(finalPathES6, htmlData)
+                        .then(() => {
+                            this.transpileMenuWCToES5(htmlData)
+                                .then(es5Data => {
+                                    FileEngine.write(finalPathES5, es5Data.code)
+                                        .then(() => {
+                                            resolveProcessMenu();
+                                        })
+                                        .catch(err => {
+                                            logger.error(
+                                                'Error during ' + finalPathES5 + ' page generation'
+                                            );
+                                            return rejectProcessMenu('');
+                                        });
+                                })
+                                .catch(err => {
+                                    logger.error(
+                                        'Error during ' + finalPathES5 + ' page generation'
+                                    );
+                                    return rejectProcessMenu('');
+                                });
+                        })
+                        .catch(err => {
+                            logger.error('Error during ' + finalPathES6 + ' page generation');
+                            return rejectProcessMenu('');
+                        });
+                })
+                .catch(err => {
+                    logger.error('Error during ' + finalPathES6 + ' page generation');
+                    return rejectProcessMenu('');
+                });
         });
     }
 
@@ -2483,7 +2529,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             fs.copy(
                                 path.resolve(cwd + path.sep + Configuration.mainData.extTheme),
                                 path.resolve(finalOutput + '/styles/'),
-                                function(errorCopyTheme) {
+                                function (errorCopyTheme) {
                                     if (errorCopyTheme) {
                                         logger.error(
                                             'Error during external styling theme copy ',
