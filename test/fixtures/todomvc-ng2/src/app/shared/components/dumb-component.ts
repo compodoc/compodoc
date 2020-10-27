@@ -1,14 +1,65 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, HostBinding, HostListener } from '@angular/core';
 
-import { EmptyParentComponent } from './empty-parent.component';
+import { DumbParentComponent } from './dumb-parent-component';
 
 /**
- * Dumb component for inheritance demo
+ * @example
+ * empty component
  */
 @Component({
     selector: 'cp-dumb',
     template: 'dumb component'
 })
 export class DumbComponent extends DumbParentComponent {
+    /**
+     * @example
+     * component property
+     */
+    emptyProperty = '';
+
+    /**
+     * @example
+     * component input
+     */
     @Input() public emptyInput: string;
+
+    /**
+     * @example
+     * component output
+     */
+    @Output() public emptyOutput: string;
+
+    /**
+     * @example
+     * component accessor
+     */
+    get emptyAccessor() {
+        return this._emptyAccessor;
+    }
+    set emptyAccessor(val) {
+        this._emptyAccessor = val;
+    }
+    private _emptyAccessor = '';
+
+    /**
+     * @example
+     * component hostBinding
+     */
+    @HostBinding('')
+    emptyHostBinding: string;
+
+    /**
+     * @example
+     * component hostListener
+     */
+    @HostListener('')
+    emptyHostListener() {}
+
+    /**
+     * @param emptyParam component method param
+     * @returns component method return
+     */
+    emptyMethod(emptyParam: string) {
+        return emptyParam;
+    }
 }

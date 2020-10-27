@@ -1,4 +1,4 @@
-import { PipeTransform, Pipe } from '@angular/core';
+import { Input, Output, PipeTransform, Pipe } from '@angular/core';
 
 const name = 'firstUpper';
 const pure = true;
@@ -9,7 +9,7 @@ const pure = true;
  * __Usage :__
  *   value | firstUpper
  *
- * __Example :__
+ * @example
  *   {{ car |  firstUpper}}
  *   formats to: Car
  */
@@ -22,6 +22,44 @@ export class FirstUpperPipe implements PipeTransform {
      * Example property
      */
     private cachedUrl: string = '';
+
+    /**
+     * @example
+     * pipe property
+     */
+    emptyProperty = '';
+
+    /**
+     * @example
+     * pipe input
+     */
+    @Input() public emptyInput: string;
+
+    /**
+     * @example
+     * pipe output
+     */
+    @Output() public emptyOutput: string;
+
+    /**
+     * @example
+     * pipe accessor
+     */
+    get emptyAccessor() {
+        return this._emptyAccessor;
+    }
+    set emptyAccessor(val) {
+        this._emptyAccessor = val;
+    }
+    private _emptyAccessor = '';
+
+    /**
+     * @param emptyParam pipe method param
+     * @returns pipe method return
+     */
+    emptyMethod(emptyParam: string) {
+        return emptyParam;
+    }
 
     /**
      * the transform function
