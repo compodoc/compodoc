@@ -3,8 +3,14 @@
  */
 export interface TimeInterface {
     /**
-     * The zone
+     * @example
+     * interface property
      */
     zone: string;
+
+    /**
+     * @example
+     * interface method
+     */
     foo?(): string;
 }

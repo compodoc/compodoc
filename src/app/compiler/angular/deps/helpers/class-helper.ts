@@ -408,6 +408,7 @@ export class ClassHelper {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         let rawdescription = '';
         let description = '';
+        let jsdoctags = [];
         if (symbol) {
             rawdescription = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration);
             description = marked(rawdescription);
@@ -419,12 +420,19 @@ export class ClassHelper {
                     return [{ ignore: true }];
                 }
             }
+            if (symbol.valueDeclaration) {
+                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+            }
         }
         let className = classDeclaration.name.text;
         let members;
         let implementsElements = [];
         let extendsElement;
-        let jsdoctags = [];
 
         if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
             let implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
@@ -447,13 +455,6 @@ export class ClassHelper {
                 }
             }
         }
-
-        if (symbol) {
-            if (symbol.valueDeclaration) {
-                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
-            }
-        }
-
         members = this.visitMembers(classDeclaration.members, sourceFile);
 
         if (classDeclaration.decorators) {
@@ -850,10 +851,7 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result: any = {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -879,10 +877,7 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result = {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -891,9 +886,18 @@ export class ClassHelper {
         };
         if (method.jsDoc) {
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
+
             result.rawdescription = rawDescription;
             result.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    result.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
+
         return result;
     }
 
@@ -1053,6 +1057,13 @@ export class ClassHelper {
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
+                    const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
+                    if (jsdoctags && jsdoctags.length >= 1) {
+                        if (jsdoctags[0].tags) {
+                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                        }
+                    }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
                         const rawDescription = property.jsDoc[0].comment;
                         _return.rawdescription = rawDescription;
@@ -1174,8 +1185,16 @@ export class ClassHelper {
         };
         if (property.jsDoc) {
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
         if (!_return.description) {
             if (property.jsDoc && property.jsDoc.length > 0) {
@@ -1240,9 +1259,17 @@ export class ClassHelper {
                   })
                 : [];
         if (property.jsDoc) {
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
         if (!_return.description) {
             if (property.jsDoc) {
