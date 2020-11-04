@@ -48,7 +48,7 @@ describe('CLI Export', () => {
 
             // pipe
             expect(file).to.contain(
-                '"rawdescription": "Uppercase the first letter of the string\\r\\n\\r\\n__Usage :__\\r\\n   value | firstUpper"'
+                '"rawdescription": "Uppercase the first letter of the string\\n\\n__Usage :__\\n   value | firstUpper"'
             );
             expect(file).to.contain(
                 '"description": "<p>Uppercase the first letter of the string</p>\\n<p><strong>Usage :</strong>\\n   value | firstUpper</p>\\n"'
@@ -64,7 +64,7 @@ describe('CLI Export', () => {
 
             // service
             expect(file).to.contain(
-                '"rawdescription": "This service is a todo store\\r\\nSee {@link Todo} for details about the main data of this store"'
+                '"rawdescription": "This service is a todo store\\nSee {@link Todo} for details about the main data of this store"'
             );
             expect(file).to.contain(
                 '"description": "<p>This service is a todo store\\nSee {@link Todo} for details about the main data of this store</p>\\n"'
