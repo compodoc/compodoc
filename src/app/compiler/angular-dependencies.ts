@@ -878,6 +878,15 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
+    private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
+        _.forEach(tags, tag => {
+            if (tag.tagName && tag.tagName.text && tag.tagName.text.indexOf('deprecated') > -1) {
+                result.deprecated = true;
+                result.deprecationMessage = tag.comment || '';
+            }
+        });
+    }
+
     private findExpressionByNameInExpressions(entryNode, name) {
         let result;
         let loop = function (node, z) {
@@ -1054,20 +1063,9 @@ export class AngularDependencies extends FrameworkDependencies {
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
 
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         return result;
     }
@@ -1096,19 +1094,8 @@ export class AngularDependencies extends FrameworkDependencies {
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
 
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
         }
         return result;
     }
@@ -1175,29 +1162,18 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
+            _.forEach(jsdoctags[0].tags, tag => {
+                if (tag.tagName) {
+                    if (tag.tagName.text) {
+                        if (tag.tagName.text.indexOf('ignore') > -1) {
+                            result.ignore = true;
                         }
                     }
-                });
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('ignore') > -1) {
-                                result.ignore = true;
-                            }
-                        }
-                    }
-                });
-            }
+                }
+            });
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
             result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
@@ -1236,19 +1212,8 @@ export class AngularDependencies extends FrameworkDependencies {
                 let jsdoctags = this.jsdocParserUtil.getJSDocs(
                     node.declarationList.declarations[i]
                 );
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        _.forEach(jsdoctags[0].tags, tag => {
-                            if (tag.tagName) {
-                                if (tag.tagName.text) {
-                                    if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                        result.deprecated = true;
-                                        result.deprecationMessage = tag.comment || '';
-                                    }
-                                }
-                            }
-                        });
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    this.checkForDeprecation(jsdoctags[0].tags, result);
                 }
                 return result;
             }
@@ -1299,37 +1264,15 @@ export class AngularDependencies extends FrameworkDependencies {
                     member.value = node.members[i].initializer.text;
                 }
                 memberjsdoctags = this.jsdocParserUtil.getJSDocs(node.members[i]);
-                if (memberjsdoctags && memberjsdoctags.length >= 1) {
-                    if (memberjsdoctags[0].tags) {
-                        _.forEach(memberjsdoctags[0].tags, tag => {
-                            if (tag.tagName) {
-                                if (tag.tagName.text) {
-                                    if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                        member.deprecated = true;
-                                        member.deprecationMessage = tag.comment || '';
-                                    }
-                                }
-                            }
-                        });
-                    }
+                if (memberjsdoctags && memberjsdoctags.length >= 1 && memberjsdoctags[0].tags) {
+                    this.checkForDeprecation(memberjsdoctags[0].tags, member);
                 }
                 result.members.push(member);
             }
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
         }
         return result;
     }

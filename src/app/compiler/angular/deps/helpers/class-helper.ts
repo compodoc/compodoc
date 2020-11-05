@@ -40,6 +40,15 @@ export class ClassHelper {
         }
     }
 
+    private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
+        _.forEach(tags, tag => {
+            if (tag.tagName && tag.tagName.text && tag.tagName.text.indexOf('deprecated') > -1) {
+                result.deprecated = true;
+                result.deprecationMessage = tag.comment || '';
+            }
+        });
+    }
+
     private getDecoratorOfType(node, decoratorType) {
         let decorators = node.decorators || [];
 
@@ -249,20 +258,9 @@ export class ClassHelper {
                     }
                 }
 
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        _.forEach(jsdoctags[0].tags, tag => {
-                            if (tag.tagName) {
-                                if (tag.tagName.text) {
-                                    if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                        setSignature.deprecated = true;
-                                        setSignature.deprecationMessage = tag.comment || '';
-                                    }
-                                }
-                            }
-                        });
-                        setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    this.checkForDeprecation(jsdoctags[0].tags, setSignature);
+                    setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
                 }
                 if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
                     setSignature.jsdoctags = mergeTagsAndArgs(
@@ -431,19 +429,15 @@ export class ClassHelper {
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
                 let declarationsjsdoctags = this.jsdocParserUtil.getJSDocs(symbol.declarations[0]);
-                if (declarationsjsdoctags && declarationsjsdoctags.length >= 1) {
-                    if (declarationsjsdoctags[0].tags) {
-                        _.forEach(declarationsjsdoctags[0].tags, tag => {
-                            if (tag.tagName) {
-                                if (tag.tagName.text) {
-                                    if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                        deprecated = true;
-                                        deprecationMessage = tag.comment || '';
-                                    }
-                                }
-                            }
-                        });
-                    }
+                if (
+                    declarationsjsdoctags &&
+                    declarationsjsdoctags.length >= 1 &&
+                    declarationsjsdoctags[0].tags
+                ) {
+                    const deprecation = { deprecated: false, deprecationMessage: '' };
+                    this.checkForDeprecation(declarationsjsdoctags[0].tags, deprecation);
+                    deprecated = deprecation.deprecated;
+                    deprecationMessage = deprecation.deprecationMessage;
                 }
                 if (isIgnore(symbol.declarations[0])) {
                     return [{ ignore: true }];
@@ -451,20 +445,12 @@ export class ClassHelper {
             }
             if (symbol.valueDeclaration) {
                 jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        _.forEach(jsdoctags[0].tags, tag => {
-                            if (tag.tagName) {
-                                if (tag.tagName.text) {
-                                    if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                        deprecated = true;
-                                        deprecationMessage = tag.comment || '';
-                                    }
-                                }
-                            }
-                        });
-                        jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    const deprecation = { deprecated: false, deprecationMessage: '' };
+                    this.checkForDeprecation(jsdoctags[0].tags, deprecation);
+                    deprecated = deprecation.deprecated;
+                    deprecationMessage = deprecation.deprecationMessage;
+                    jsdoctags = markedtags(jsdoctags[0].tags);
                 }
             }
         }
@@ -991,20 +977,9 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
             result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
@@ -1063,21 +1038,10 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                result.deprecated = true;
-                                result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-                if (property.jsDoc) {
-                    result.jsdoctags = markedtags(jsdoctags[0].tags);
-                }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            if (property.jsDoc) {
+                result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
 
@@ -1141,20 +1105,9 @@ export class ClassHelper {
                 if (property.jsDoc.length > 0) {
                     const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
 
-                    if (jsdoctags && jsdoctags.length >= 1) {
-                        if (jsdoctags[0].tags) {
-                            _.forEach(jsdoctags[0].tags, tag => {
-                                if (tag.tagName) {
-                                    if (tag.tagName.text) {
-                                        if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                            _return.deprecated = true;
-                                            _return.deprecationMessage = tag.comment || '';
-                                        }
-                                    }
-                                }
-                            });
-                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                        }
+                    if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                        this.checkForDeprecation(jsdoctags[0].tags, _return);
+                        _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
                         const rawDescription = property.jsDoc[0].comment;
@@ -1284,20 +1237,9 @@ export class ClassHelper {
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
 
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
-                    _.forEach(jsdoctags[0].tags, tag => {
-                        if (tag.tagName) {
-                            if (tag.tagName.text) {
-                                if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                    _return.deprecated = true;
-                                    _return.deprecationMessage = tag.comment || '';
-                                }
-                            }
-                        }
-                    });
-                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                }
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, _return);
+                _return.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
         if (!_return.description) {
@@ -1352,19 +1294,8 @@ export class ClassHelper {
             _result.defaultValue = this.stringifyDefaultValue(arg.initializer);
         }
         const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                _result.deprecated = true;
-                                _result.deprecationMessage = tag.comment || '';
-                            }
-                        }
-                    }
-                });
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, _result);
         }
         return _result;
     }
@@ -1391,20 +1322,9 @@ export class ClassHelper {
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
 
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
-                    _.forEach(jsdoctags[0].tags, tag => {
-                        if (tag.tagName) {
-                            if (tag.tagName.text) {
-                                if (tag.tagName.text.indexOf('deprecated') > -1) {
-                                    _return.deprecated = true;
-                                    _return.deprecationMessage = tag.comment || '';
-                                }
-                            }
-                        }
-                    });
-                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                }
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, _return);
+                _return.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
         if (!_return.description) {
