@@ -1084,6 +1084,19 @@ export class ClassHelper {
                     }
                 }
             }
+            // Try to get inferred type
+            if (property.symbol) {
+                let symbol: ts.Symbol = property.symbol;
+                if (symbol.valueDeclaration) {
+                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                        symbol,
+                        symbol.valueDeclaration
+                    );
+                    if (symbolType) {
+                        _return.type = this.typeChecker.typeToString(symbolType);
+                    }
+                }
+            }
         }
         if (property.kind === SyntaxKind.SetAccessor) {
             // For setter accessor, find type in first parameter
