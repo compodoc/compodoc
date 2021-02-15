@@ -32,6 +32,7 @@ export default {
         'i18next',
         'loglevel',
         'ts-morph',
-        'cosmiconfig'
+        'cosmiconfig',
+        'html-entities'
     ]
 };
