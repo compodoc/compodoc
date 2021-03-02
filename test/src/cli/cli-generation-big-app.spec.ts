@@ -328,9 +328,15 @@ describe('CLI simple generation - big app', () => {
         expect(todoStoreFile).to.contain('code><a href="../classes/Todo.html" target="_self" >To');
     });
 
-    it('should have inherreturn type', () => {
+    it('should have inherit return type', () => {
         expect(todoClassFile).to.contain(
             'code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number"'
+        );
+    });
+
+    it('should have inherit input type', () => {
+        expect(aboutComponentFile).to.contain(
+            'code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"'
         );
     });
 

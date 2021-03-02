@@ -20,9 +20,10 @@ export class DirectiveDepFactory {
             file: file,
             type: 'directive',
             description: IO.description,
+            rawdescription: IO.rawdescription,
             sourceCode: srcFile.getText(),
-            selector: this.helper.getComponentSelector(props),
-            providers: this.helper.getComponentProviders(props),
+            selector: this.helper.getComponentSelector(props, srcFile),
+            providers: this.helper.getComponentProviders(props, srcFile),
 
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
@@ -56,6 +57,7 @@ export class DirectiveDepFactory {
 export interface IDirectiveDep extends IDep {
     file: any;
     description: string;
+    rawdescription: string;
     sourceCode: string;
 
     selector: string;

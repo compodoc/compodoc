@@ -1,3 +1,5 @@
+import { HostBinding, HostListener, Input, Output } from '@angular/core';
+
 import { ClockInterface } from './clock.interface';
 
 /**
@@ -52,6 +54,56 @@ interface StringArray {
 }
 
 class Clock implements ClockInterface {
+    /**
+     * @example
+     * class property
+     */
     currentTime: Date;
+
+    /**
+     * @example
+     * class accessor
+     */
+    get emptyAccessor() {
+        return this._emptyAccessor;
+    }
+    set emptyAccessor(val) {
+        this._emptyAccessor = val;
+    }
+    private _emptyAccessor = '';
     constructor(h: number, m: number) {}
+
+    /**
+     * @example
+     * class hostBinding
+     */
+    @HostBinding('')
+    emptyHostBinding: string;
+
+    /**
+     * @example
+     * class hostListener
+     */
+    @HostListener('')
+    emptyHostListener() {}
+
+    /**
+     * @example
+     * class input
+     */
+    @Input() public emptyInput: string;
+
+    /**
+     * @example
+     * class output
+     */
+    @Output() public emptyOutput: string;
+
+    /**
+     * @param emptyParam class method param
+     * @returns class method return
+     */
+    emptyMethod(emptyParam: string) {
+        return emptyParam;
+    }
 }

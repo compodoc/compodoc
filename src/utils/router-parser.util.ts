@@ -689,8 +689,9 @@ export class RouterParserUtil {
 
         const variableStatements = sourceFile.getVariableDeclaration(v => {
             let result = false;
-            if (typeof v.compilerNode.type !== 'undefined') {
-                result = v.compilerNode.type.typeName.text === 'Routes';
+            const type = v.compilerNode.type;
+            if (typeof type !== 'undefined' && typeof type.typeName !== 'undefined') {
+                result = type.typeName.text === 'Routes';
             }
             return result;
         });

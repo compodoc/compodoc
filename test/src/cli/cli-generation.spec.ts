@@ -16,7 +16,7 @@ describe('CLI simple generation', () => {
             emptyModuleFile,
             barModuleFile,
             emptyModuleRawFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -169,10 +169,20 @@ describe('CLI simple generation', () => {
         it('it should display c-style typed arrays', () => {
             expect(fooServiceFile).to.contain('<code>string');
         });
+
+        /**
+         * WC Menu
+         */
+        it('should have generated wc menu', () => {
+            const isWCFile = exists(`${distFolder}/js/menu-wc.js`);
+            expect(isWCFile).to.be.true;
+            const isWCFileES5 = exists(`${distFolder}/js/menu-wc_es5.js`);
+            expect(isWCFileES5).to.be.true;
+        });
     });
 
     describe('when generation with d flag without / at the end - relative folder', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -209,7 +219,7 @@ describe('CLI simple generation', () => {
             fooServiceFile,
             componentFile,
             moduleFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell(
                 'node',
@@ -338,7 +348,7 @@ describe('CLI simple generation', () => {
     });*/
 
     describe('when generation with d and a flags', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -365,7 +375,7 @@ describe('CLI simple generation', () => {
     });
 
     describe('when passing a deep path on a flag', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -393,7 +403,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with d flag and src arg', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -432,7 +442,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation without d flag', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             let ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
@@ -478,7 +488,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with -t flag', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -507,7 +517,7 @@ describe('CLI simple generation', () => {
         let stdoutString = undefined,
             baseTheme = 'laravel',
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -538,7 +548,7 @@ describe('CLI simple generation', () => {
         let stdoutString = undefined,
             name = 'TodoMVC-angular2-application',
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -568,7 +578,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --hideGenerator flag', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -597,7 +607,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableSourceCode flag', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -626,7 +636,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableDomTree flag', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -655,7 +665,7 @@ describe('CLI simple generation', () => {
     describe('when generation of component dependecy doc with --navTabConfig option', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -701,7 +711,7 @@ describe('CLI simple generation', () => {
     describe('when generation of module dependecy doc with --navTabConfig option', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -735,7 +745,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableTemplateTab flag', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -764,7 +774,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableStyleTab flag', () => {
         let stdoutString = undefined,
             index = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -793,7 +803,7 @@ describe('CLI simple generation', () => {
     describe('when generation with --disableGraph flag', () => {
         let stdoutString = undefined,
             fileContents = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -841,7 +851,7 @@ describe('CLI simple generation', () => {
         let stdoutString = '',
             port = 6666,
             child;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell(
                 'node',
@@ -867,7 +877,7 @@ describe('CLI simple generation', () => {
 
     describe('when generation with -p flag - absolute folder', () => {
         let stdoutString = '';
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [

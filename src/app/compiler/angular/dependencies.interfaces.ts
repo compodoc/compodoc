@@ -10,6 +10,7 @@ export interface IInjectableDep extends IDep {
     properties: Array<any>;
     methods: Array<any>;
     description: string;
+    rawdescription: string;
     sourceCode: string;
     exampleUrls?;
     extends?;
@@ -46,6 +47,7 @@ export interface IGuardDep extends IDep {
 export interface IPipeDep extends IDep {
     file: any;
     description: string;
+    rawdescription: string;
     sourceCode: string;
     exampleUrls?;
 
@@ -65,6 +67,7 @@ export interface IInterfaceDep extends IDep {
     indexSignatures?: any;
     kind?: any;
     description?: string;
+    rawdescription?: string;
     methods?: Array<any>;
     extends?: Array<any>;
 }

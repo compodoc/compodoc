@@ -1,6 +1,8 @@
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
 
+import { decode } from 'html-entities';
+
 import { MAX_SIZE_FILE_CHEERIO_PARSING, MAX_SIZE_FILE_SEARCH_INDEX } from '../../utils/constants';
 
 import { logger } from '../../utils/logger';
@@ -9,8 +11,6 @@ import FileEngine from './file.engine';
 
 const lunr: any = require('lunr');
 const cheerio: any = require('cheerio');
-const Entities: any = require('html-entities').AllHtmlEntities;
-const Html = new Entities();
 
 export class SearchEngine {
     public searchIndex: any;
@@ -38,7 +38,7 @@ export class SearchEngine {
             let $ = cheerio.load(page.rawData.substring(indexStartContent + 1, indexEndContent));
 
             text = $('.content').html();
-            text = Html.decode(text);
+            text = decode(text);
             text = text.replace(/(<([^>]+)>)/gi, '');
 
             page.url = page.url.replace(Configuration.mainData.output, '');
@@ -61,7 +61,7 @@ export class SearchEngine {
 
     public generateSearchIndexJson(outputFolder: string): Promise<void> {
         let that = this;
-        let searchIndex = lunr(function() {
+        let searchIndex = lunr(function () {
             /* tslint:disable:no-invalid-this */
             this.ref('url');
             this.field('title');

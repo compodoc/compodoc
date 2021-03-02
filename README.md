@@ -1,8 +1,7 @@
 <p align="center">
   <img src="https://avatars3.githubusercontent.com/u/23202313" alt="Compodoc: The missing documentation tool for your Angular application" width="226">
   <br/>
-  <a href="https://travis-ci.org/compodoc/compodoc"><img src="https://img.shields.io/travis/compodoc/compodoc/develop.svg?label=Linux%20build" alt="Linux Build Status"/></a>
-  <a href="https://ci.appveyor.com/project/vogloblinsky/compodoc/branch/develop"><img src="https://img.shields.io/appveyor/ci/vogloblinsky/compodoc/develop.svg?label=Windows%20build" alt="Windows Build Status"/></a>
+  <a href="https://github.com/compodoc/compodoc/actions"><img src="https://github.com/compodoc/compodoc/workflows/CI/badge.svg" alt="Github action Build Status"/></a>
   <a href="https://codecov.io/gh/compodoc/compodoc"><img src="https://codecov.io/gh/compodoc/compodoc/branch/develop/graph/badge.svg" alt="Codecov"/></a>
   <a href="https://www.npmjs.com/package/@compodoc/compodoc"><img src="https://badge.fury.io/js/%40compodoc%2Fcompodoc.svg" alt="npm badge"/></a>
   <a href="https://sonarcloud.io/dashboard?id=compodoc_compodoc"><img src="https://sonarcloud.io/api/project_badges/measure?project=compodoc_compodoc&metric=alert_status" alt="Quality Gate Status"/></a>
@@ -122,3 +121,4 @@ Copyright (c) 2016 – 2019 [Vincent Ogloblinsky]
 [support-url]: https://opencollective.com/compodoc#support
 [backers-image]: https://opencollective.com/compodoc/backers.svg
 [sponsors-image]: https://opencollective.com/compodoc/sponsors.svg
+[github-action-badge]: https://github.com/compodoc/compodoc/workflows/CI/badge.svg

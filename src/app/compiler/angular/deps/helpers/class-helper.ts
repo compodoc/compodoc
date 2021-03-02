@@ -242,6 +242,7 @@ export class ClassHelper {
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
                     let comment = nodeAccessor.jsDoc[0].comment;
                     if (typeof comment !== 'undefined') {
+                        setSignature.rawdescription = comment;
                         setSignature.description = marked(comment);
                     }
                 }
@@ -273,6 +274,7 @@ export class ClassHelper {
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
                     let comment = nodeAccessor.jsDoc[0].comment;
                     if (typeof comment !== 'undefined') {
+                        getSignature.rawdescription = comment;
                         getSignature.description = marked(comment);
                     }
                 }
@@ -406,9 +408,10 @@ export class ClassHelper {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         let rawdescription = '';
         let description = '';
+        let jsdoctags = [];
         if (symbol) {
             rawdescription = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration);
-            description = marked(this.jsdocParserUtil.getMainCommentOfNode(classDeclaration));
+            description = marked(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
@@ -417,12 +420,19 @@ export class ClassHelper {
                     return [{ ignore: true }];
                 }
             }
+            if (symbol.valueDeclaration) {
+                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
+                if (jsdoctags && jsdoctags.length >= 1) {
+                    if (jsdoctags[0].tags) {
+                        jsdoctags = markedtags(jsdoctags[0].tags);
+                    }
+                }
+            }
         }
         let className = classDeclaration.name.text;
         let members;
         let implementsElements = [];
         let extendsElement;
-        let jsdoctags = [];
 
         if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
             let implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
@@ -445,13 +455,6 @@ export class ClassHelper {
                 }
             }
         }
-
-        if (symbol) {
-            if (symbol.valueDeclaration) {
-                jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
-            }
-        }
-
         members = this.visitMembers(classDeclaration.members, sourceFile);
 
         if (classDeclaration.decorators) {
@@ -848,10 +851,7 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result: any = {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -859,7 +859,9 @@ export class ClassHelper {
             line: this.getPosition(method, sourceFile).line + 1
         };
         if (method.jsDoc) {
-            result.description = marked(marked(this.jsdocParserUtil.getMainCommentOfNode(method)));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -875,10 +877,7 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let result = {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -886,8 +885,19 @@ export class ClassHelper {
             line: this.getPosition(method, sourceFile).line + 1
         };
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
+
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    result.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
+
         return result;
     }
 
@@ -907,7 +917,9 @@ export class ClassHelper {
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (method.modifiers) {
@@ -960,7 +972,9 @@ export class ClassHelper {
 
         if (property.jsDoc) {
             jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (property.decorators) {
@@ -1043,8 +1057,17 @@ export class ClassHelper {
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
+                    const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
+                    if (jsdoctags && jsdoctags.length >= 1) {
+                        if (jsdoctags[0].tags) {
+                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                        }
+                    }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
+                        const rawDescription = property.jsDoc[0].comment;
+                        _return.rawdescription = rawDescription;
+                        _return.description = marked(rawDescription);
                     }
                 }
             }
@@ -1058,6 +1081,19 @@ export class ClassHelper {
                 if (ts.isNewExpression(property.initializer)) {
                     if (property.initializer.expression) {
                         _return.type = property.initializer.expression.text;
+                    }
+                }
+            }
+            // Try to get inferred type
+            if (property.symbol) {
+                let symbol: ts.Symbol = property.symbol;
+                if (symbol.valueDeclaration) {
+                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                        symbol,
+                        symbol.valueDeclaration
+                    );
+                    if (symbolType) {
+                        _return.type = this.typeChecker.typeToString(symbolType);
                     }
                 }
             }
@@ -1112,7 +1148,9 @@ export class ClassHelper {
         }
 
         if (method.jsDoc) {
-            result.description = marked(this.jsdocParserUtil.getMainCommentOfNode(method));
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
+            result.rawdescription = rawDescription;
+            result.description = marked(rawDescription);
         }
 
         if (method.decorators) {
@@ -1159,14 +1197,24 @@ export class ClassHelper {
                 : undefined
         };
         if (property.jsDoc) {
-            _return.description = marked(
-                marked(this.jsdocParserUtil.getMainCommentOfNode(property))
-            );
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
+            _return.rawdescription = rawDescription;
+            _return.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
         if (!_return.description) {
             if (property.jsDoc && property.jsDoc.length > 0) {
                 if (typeof property.jsDoc[0].comment !== 'undefined') {
-                    _return.description = marked(property.jsDoc[0].comment);
+                    const rawDescription = property.jsDoc[0].comment;
+                    _return.rawdescription = rawDescription;
+                    _return.description = marked(rawDescription);
                 }
             }
         }
@@ -1224,13 +1272,25 @@ export class ClassHelper {
                   })
                 : [];
         if (property.jsDoc) {
-            _return.description = marked(this.jsdocParserUtil.getMainCommentOfNode(property));
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
+
+            _return.rawdescription = rawDescription;
+            _return.description = marked(rawDescription);
+
+            if (jsdoctags && jsdoctags.length >= 1) {
+                if (jsdoctags[0].tags) {
+                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                }
+            }
         }
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        _return.description = marked(property.jsDoc[0].comment);
+                        const rawDescription = property.jsDoc[0].comment;
+                        _return.rawdescription = rawDescription;
+                        _return.description = marked(rawDescription);
                     }
                 }
             }

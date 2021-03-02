@@ -13,9 +13,10 @@ import AngularVersionUtil from './utils/angular-version.util';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
-import { handlePath, readConfig } from './utils/utils';
+import { handlePath, readConfig, ignoreDirectory } from './utils/utils';
 
-const cosmiconfig = require('cosmiconfig');
+import { cosmiconfigSync } from 'cosmiconfig';
+
 const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
@@ -38,6 +39,8 @@ export class CliApplication extends Application {
         function list(val) {
             return val.split(',');
         }
+
+        program.storeOptionsAsProperties(true);
 
         program
             .version(pkg.version)
@@ -84,7 +87,7 @@ export class CliApplication extends Application {
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
-                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, sk-SK, zh-CN)',
+                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, sk-SK, zh-CN)',
                 COMPODOC_DEFAULTS.language
             )
             .option(
@@ -189,7 +192,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             process.exit(1);
         };
 
-        const configExplorer = cosmiconfig(cosmiconfigModuleName);
+        const configExplorer = cosmiconfigSync(cosmiconfigModuleName);
 
         let configExplorerResult;
 
@@ -201,10 +204,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             if (testConfigFilePath && testConfigFilePath.length > 0) {
                 configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
             }
-            configExplorerResult = configExplorer.loadSync(path.resolve(configFilePath));
+            configExplorerResult = configExplorer.load(path.resolve(configFilePath));
         } else {
-            configExplorerResult = configExplorer.searchSync();
+            configExplorerResult = configExplorer.search();
         }
+
         if (configExplorerResult) {
             if (typeof configExplorerResult.config !== 'undefined') {
                 configFile = configExplorerResult.config;
@@ -686,92 +690,84 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         path.basename(Configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
-                    cwd = _file
-                        .split(path.sep)
-                        .slice(0, -1)
-                        .join(path.sep);
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig file ', _file);
 
                     let tsConfigFile = readConfig(_file);
-                    scannedFiles = tsConfigFile.files;
-                    if (scannedFiles) {
-                        scannedFiles = handlePath(scannedFiles, cwd);
+                    if (tsConfigFile.files) {
+                        scannedFiles = tsConfigFile.files;
                     }
 
-                    if (typeof scannedFiles === 'undefined') {
-                        excludeFiles = tsConfigFile.exclude || [];
-                        includeFiles = tsConfigFile.include || [];
-                        scannedFiles = [];
+                    // even if files are supplied with "files" attributes, enhance the array with includes
+                    excludeFiles = tsConfigFile.exclude || [];
+                    includeFiles = tsConfigFile.include || [];
 
-                        let excludeParser = new ParserUtil(),
-                            includeParser = new ParserUtil();
+                    if (scannedFiles.length > 0) {
+                        includeFiles = [...includeFiles, ...scannedFiles];
+                    }
 
-                        excludeParser.init(excludeFiles, cwd);
-                        includeParser.init(includeFiles, cwd);
+                    let excludeParser = new ParserUtil(),
+                        includeParser = new ParserUtil();
 
-                        let startCwd = cwd;
+                    excludeParser.init(excludeFiles, cwd);
+                    includeParser.init(includeFiles, cwd);
 
-                        let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
-                        if (!excludeParserTestFilesWithCwdDepth.status) {
-                            startCwd = excludeParser.updateCwd(
-                                cwd,
-                                excludeParserTestFilesWithCwdDepth.level
-                            );
+                    let startCwd = cwd;
+
+                    let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
+                    if (!excludeParserTestFilesWithCwdDepth.status) {
+                        startCwd = excludeParser.updateCwd(
+                            cwd,
+                            excludeParserTestFilesWithCwdDepth.level
+                        );
+                    }
+                    let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
+                    if (!includeParser.testFilesWithCwdDepth().status) {
+                        startCwd = includeParser.updateCwd(
+                            cwd,
+                            includeParserTestFilesWithCwdDepth.level
+                        );
+                    }
+
+                    let finder = require('findit2')(startCwd || '.');
+
+                    finder.on('directory', function (dir, stat, stop) {
+                        if (ignoreDirectory(dir)) {
+                            stop();
                         }
-                        let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
-                        if (!includeParser.testFilesWithCwdDepth().status) {
-                            startCwd = includeParser.updateCwd(
-                                cwd,
-                                includeParserTestFilesWithCwdDepth.level
-                            );
-                        }
+                    });
 
-                        let finder = require('findit2')(startCwd || '.');
-
-                        finder.on('directory', function(dir, stat, stop) {
-                            let base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') {
-                                stop();
-                            }
-                        });
-
-                        finder.on('file', (file, stat) => {
-                            if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.warn('Ignoring', file);
-                            } else if (
-                                excludeParser.testFile(file) &&
-                                path.extname(file) === '.ts'
+                    finder.on('file', (file, stat) => {
+                        if (/(spec|\.d)\.ts/.test(file)) {
+                            logger.warn('Ignoring', file);
+                        } else if (
+                            excludeParser.testFile(file) &&
+                            (path.extname(file) === '.ts' || path.extname(file) === '.tsx')
+                        ) {
+                            logger.warn('Excluding', file);
+                        } else if (includeFiles.length > 0) {
+                            /**
+                             * If include provided in tsconfig, use only this source,
+                             * and not files found with global findit scan in working directory
+                             */
+                            if (
+                                (path.extname(file) === '.ts' || path.extname(file) === '.tsx') &&
+                                includeParser.testFile(file)
                             ) {
-                                logger.warn('Excluding', file);
-                            } else if (includeFiles.length > 0) {
-                                /**
-                                 * If include provided in tsconfig, use only this source,
-                                 * and not files found with global findit scan in working directory
-                                 */
-                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
-                                    logger.debug('Including', file);
-                                    scannedFiles.push(file);
-                                } else {
-                                    if (path.extname(file) === '.ts') {
-                                        logger.warn('Excluding', file);
-                                    }
-                                }
-                            } else {
                                 logger.debug('Including', file);
                                 scannedFiles.push(file);
-                            }
-                        });
-
-                        finder.on('end', () => {
-                            super.setFiles(scannedFiles);
-                            if (program.coverageTest || program.coverageTestPerFile) {
-                                logger.info('Run documentation coverage test');
-                                super.testCoverage();
                             } else {
-                                super.generate();
+                                if (path.extname(file) === '.ts' || path.extname(file) === '.tsx') {
+                                    logger.warn('Excludinge', file);
+                                }
                             }
-                        });
-                    } else {
+                        } else {
+                            logger.debug('Including', file);
+                            scannedFiles.push(file);
+                        }
+                    });
+
+                    finder.on('end', () => {
                         super.setFiles(scannedFiles);
                         if (program.coverageTest || program.coverageTestPerFile) {
                             logger.info('Run documentation coverage test');
@@ -779,7 +775,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         } else {
                             super.generate();
                         }
-                    }
+                    });
                 }
             } else if (Configuration.mainData.tsconfig && program.args.length > 0) {
                 /**
@@ -813,92 +809,78 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                             path.basename(Configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory
-                        cwd = _file
-                            .split(path.sep)
-                            .slice(0, -1)
-                            .join(path.sep);
+                        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                         logger.info('Using tsconfig file ', _file);
 
                         let tsConfigFile = readConfig(_file);
-                        scannedFiles = tsConfigFile.files;
-                        if (scannedFiles) {
-                            scannedFiles = handlePath(scannedFiles, cwd);
+                        if (tsConfigFile.files) {
+                            scannedFiles = tsConfigFile.files;
                         }
 
-                        if (typeof scannedFiles === 'undefined') {
-                            excludeFiles = tsConfigFile.exclude || [];
-                            includeFiles = tsConfigFile.include || [];
-                            scannedFiles = [];
+                        // even if files are supplied with "files" attributes, enhance the array with includes
+                        excludeFiles = tsConfigFile.exclude || [];
+                        includeFiles = tsConfigFile.include || [];
 
-                            let excludeParser = new ParserUtil(),
-                                includeParser = new ParserUtil();
+                        if (scannedFiles.length > 0) {
+                            includeFiles = [...includeFiles, ...scannedFiles];
+                        }
 
-                            excludeParser.init(excludeFiles, cwd);
-                            includeParser.init(includeFiles, cwd);
+                        let excludeParser = new ParserUtil(),
+                            includeParser = new ParserUtil();
 
-                            let startCwd = sourceFolder;
+                        excludeParser.init(excludeFiles, cwd);
+                        includeParser.init(includeFiles, cwd);
 
-                            let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
-                            if (!excludeParserTestFilesWithCwdDepth.status) {
-                                startCwd = excludeParser.updateCwd(
-                                    cwd,
-                                    excludeParserTestFilesWithCwdDepth.level
-                                );
+                        let startCwd = sourceFolder;
+
+                        let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
+                        if (!excludeParserTestFilesWithCwdDepth.status) {
+                            startCwd = excludeParser.updateCwd(
+                                cwd,
+                                excludeParserTestFilesWithCwdDepth.level
+                            );
+                        }
+                        let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
+                        if (!includeParser.testFilesWithCwdDepth().status) {
+                            startCwd = includeParser.updateCwd(
+                                cwd,
+                                includeParserTestFilesWithCwdDepth.level
+                            );
+                        }
+
+                        let finder = require('findit2')(path.resolve(startCwd));
+
+                        finder.on('directory', function (dir, stat, stop) {
+                            if (ignoreDirectory(dir)) {
+                                stop();
                             }
-                            let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
-                            if (!includeParser.testFilesWithCwdDepth().status) {
-                                startCwd = includeParser.updateCwd(
-                                    cwd,
-                                    includeParserTestFilesWithCwdDepth.level
-                                );
-                            }
+                        });
 
-                            let finder = require('findit2')(path.resolve(startCwd));
-
-                            finder.on('directory', function(dir, stat, stop) {
-                                let base = path.basename(dir);
-                                if (base === '.git' || base === 'node_modules') {
-                                    stop();
-                                }
-                            });
-
-                            finder.on('file', (file, stat) => {
-                                if (/(spec|\.d)\.ts/.test(file)) {
-                                    logger.warn('Ignoring', file);
-                                } else if (excludeParser.testFile(file)) {
-                                    logger.warn('Excluding', file);
-                                } else if (includeFiles.length > 0) {
-                                    /**
-                                     * If include provided in tsconfig, use only this source,
-                                     * and not files found with global findit scan in working directory
-                                     */
-                                    if (
-                                        path.extname(file) === '.ts' &&
-                                        includeParser.testFile(file)
-                                    ) {
-                                        logger.debug('Including', file);
-                                        scannedFiles.push(file);
-                                    } else {
-                                        if (path.extname(file) === '.ts') {
-                                            logger.warn('Excluding', file);
-                                        }
-                                    }
-                                } else {
+                        finder.on('file', (file, stat) => {
+                            if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.warn('Ignoring', file);
+                            } else if (excludeParser.testFile(file)) {
+                                logger.warn('Excluding', file);
+                            } else if (includeFiles.length > 0) {
+                                /**
+                                 * If include provided in tsconfig, use only this source,
+                                 * and not files found with global findit scan in working directory
+                                 */
+                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
                                     logger.debug('Including', file);
                                     scannedFiles.push(file);
-                                }
-                            });
-
-                            finder.on('end', () => {
-                                super.setFiles(scannedFiles);
-                                if (program.coverageTest || program.coverageTestPerFile) {
-                                    logger.info('Run documentation coverage test');
-                                    super.testCoverage();
                                 } else {
-                                    super.generate();
+                                    if (path.extname(file) === '.ts') {
+                                        logger.warn('Excluding', file);
+                                    }
                                 }
-                            });
-                        } else {
+                            } else {
+                                logger.debug('Including', file);
+                                scannedFiles.push(file);
+                            }
+                        });
+
+                        finder.on('end', () => {
                             super.setFiles(scannedFiles);
                             if (program.coverageTest || program.coverageTestPerFile) {
                                 logger.info('Run documentation coverage test');
@@ -906,7 +888,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                             } else {
                                 super.generate();
                             }
-                        }
+                        });
                     }
                 }
             } else {

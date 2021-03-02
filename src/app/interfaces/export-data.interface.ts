@@ -3,6 +3,8 @@ export interface ExportData {
     modules?: any;
     interfaces?: any;
     injectables?: any;
+    guards?: any;
+    interceptors?: any;
     classes?: any;
     directives?: any;
     routes?: any;
