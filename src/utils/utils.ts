@@ -20,7 +20,7 @@ export function getNewLine(): string {
 }
 
 export function cleanNameWithoutSpaceAndToLowerCase(name: string): string {
-    return name.toLowerCase().replace(/ /g, '-');
+    return name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 export function getCanonicalFileName(fileName: string): string {
