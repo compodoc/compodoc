@@ -166,11 +166,6 @@ const TEST_FOLDER = 'angularexpo-tests',
             tsconfig_path: './',
         },
         {
-            name: 'ng2-bootstrap',
-            maintainer: 'valor-software',
-            tsconfig_path: './src/',
-        },
-        {
             name: 'angular2-rxjs-chat',
             maintainer: 'ng-book',
             tsconfig_path: './',
