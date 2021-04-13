@@ -38,7 +38,7 @@ The process of Compodoc is :
 
 Unit testing is done by running severals documentation generation with many different files and projects.
 
-E2E testing id done with saucelabs service.
+E2E testing is done with saucelabs service.
 
 ### Local unit testing
 
