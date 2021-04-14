@@ -10,6 +10,7 @@
         "start": "npm run test:watch",
         "postinstall": "opencollective-postinstall || exit 0",
         "*********BUILD********": "*******************",
+        "prebuild": "rimraf dist/*",
         "build": "rollup -c rollup/rollup.config.js",
         "*********UTILS********": "*******************",
         "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
