@@ -758,7 +758,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                                 scannedFiles.push(file);
                             } else {
                                 if (path.extname(file) === '.ts' || path.extname(file) === '.tsx') {
-                                    logger.warn('Excludinge', file);
+                                    logger.warn('Excluding', file);
                                 }
                             }
                         } else {
