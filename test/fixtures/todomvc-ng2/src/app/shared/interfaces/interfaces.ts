@@ -107,3 +107,7 @@ class Clock implements ClockInterface {
         return emptyParam;
     }
 }
+
+interface IDATA {
+    value: [number, string, number[]];
+}

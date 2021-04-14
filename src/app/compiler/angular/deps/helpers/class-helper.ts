@@ -698,7 +698,9 @@ export class ClassHelper {
         if (typeName.text) {
             return typeName.text;
         }
-        return `${this.visitTypeName(typeName.left)}.${this.visitTypeName(typeName.right)}`;
+        if (typeName.left && typeName.right) {
+            return this.visitTypeName(typeName.left) + '.' + this.visitTypeName(typeName.right);
+        }
     }
 
     public visitType(node): string {
@@ -778,7 +780,12 @@ export class ClassHelper {
                     _return = '[';
                     for (i; i < len; i++) {
                         let type = elementTypes[i];
-                        _return += kindToType(type.kind);
+                        if (type.kind === SyntaxKind.ArrayType && type.elementType) {
+                            _return += kindToType(type.elementType.kind);
+                            _return += kindToType(type.kind);
+                        } else {
+                            _return += kindToType(type.kind);
+                        }
                         if (ts.isLiteralTypeNode(type) && type.literal) {
                             _return += '"' + type.literal.text + '"';
                         }

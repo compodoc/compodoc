@@ -8,6 +8,7 @@ const tmp = temporaryDir();
 describe('CLI simple generation - big app', () => {
     let stdoutString = undefined;
     let clockInterfaceFile;
+    let interfaceIDATAFile;
     let searchFuncFile;
 
     let todoComponentFile,
@@ -43,6 +44,7 @@ describe('CLI simple generation - big app', () => {
         }
         stdoutString = ls.stdout.toString();
         clockInterfaceFile = read(`${distFolder}/interfaces/ClockInterface.html`);
+        interfaceIDATAFile = read(`${distFolder}/interfaces/IDATA.html`);
         searchFuncFile = read(`${distFolder}/interfaces/SearchFunc.html`);
 
         routesIndex = read(`${distFolder}/js/routes/routes_index.js`);
@@ -768,5 +770,9 @@ describe('CLI simple generation - big app', () => {
 
     it('correct supports JSdoc without comment for accessor', () => {
         expect(tidiClassFile).to.contain('b>emailAddress</b>');
+    });
+
+    it('correct supports ArrayType', () => {
+        expect(interfaceIDATAFile).to.contain('<code>[number, string, number[]]</code>');
     });
 });
