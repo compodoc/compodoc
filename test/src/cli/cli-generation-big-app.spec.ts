@@ -683,7 +683,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support Tuple types', () => {
-        expect(typeAliasesFile).to.contain('<code>[Number, Number]</code>');
+        expect(typeAliasesFile).to.contain('<code>[number, number]</code>');
         expect(typeAliasesFile).to.contain('[Todo, Todo]</a>');
     });
 
@@ -774,5 +774,9 @@ describe('CLI simple generation - big app', () => {
 
     it('correct supports ArrayType', () => {
         expect(interfaceIDATAFile).to.contain('<code>[number, string, number[]]</code>');
+    });
+
+    it('correct supports ArrayType with spread', () => {
+        expect(interfaceIDATAFile).to.contain('<code>[string, string, boolean[]]</code>');
     });
 });

@@ -110,4 +110,5 @@ class Clock implements ClockInterface {
 
 interface IDATA {
     value: [number, string, number[]];
+    value2: [string, string, ...boolean[]];
 }

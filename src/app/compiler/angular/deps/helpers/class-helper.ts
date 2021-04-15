@@ -695,12 +695,16 @@ export class ClassHelper {
     }
 
     private visitTypeName(typeName: ts.Identifier) {
+        if (typeName.escapedText) {
+            return typeName.escapedText;
+        }
         if (typeName.text) {
             return typeName.text;
         }
         if (typeName.left && typeName.right) {
             return this.visitTypeName(typeName.left) + '.' + this.visitTypeName(typeName.right);
         }
+        return '';
     }
 
     public visitType(node): string {
@@ -778,6 +782,7 @@ export class ClassHelper {
                 let len = elementTypes.length;
                 if (len > 0) {
                     _return = '[';
+
                     for (i; i < len; i++) {
                         let type = elementTypes[i];
                         if (type.kind === SyntaxKind.ArrayType && type.elementType) {
@@ -791,6 +796,15 @@ export class ClassHelper {
                         }
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
+                        }
+
+                        if (
+                            type.kind === SyntaxKind.TypeReference &&
+                            type.typeName &&
+                            typeof type.typeName.escapedText !== 'undefined' &&
+                            type.typeName.escapedText === ''
+                        ) {
+                            continue;
                         }
                         if (i < len - 1) {
                             _return += ', ';

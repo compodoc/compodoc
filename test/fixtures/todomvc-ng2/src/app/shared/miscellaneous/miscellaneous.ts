@@ -53,7 +53,7 @@ export type TableSyncRenderer = Type<TableCellRendererBase> | TemplateRef<any>;
 
 import { Todo } from '../models/todo.model';
 
-export type LinearDomain = [Number, Number];
+export type LinearDomain = [number, number];
 
 export type LinearTodo = [Todo, Todo];
 
