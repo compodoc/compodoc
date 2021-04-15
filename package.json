@@ -113,6 +113,7 @@
         "os-name": "^4.0.0",
         "pdfmake": "^0.1.71",
         "semver": "^7.3.5",
+        "sleep": "^6.3.0",
         "traverse": "^0.6.6",
         "ts-morph": "^10.0.2",
         "ts-simple-ast": "12.4.0",

@@ -21,6 +21,7 @@ const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
 const program = require('commander');
+const sleep = require('sleep');
 
 const cosmiconfigModuleName = 'compodoc';
 
@@ -631,6 +632,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             } else {
                 super.setFiles(argv.files);
             }
+        }
+
+        const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
+
+        if (isInInspectMode) {
+            // wait 10 seconds for debugger to connect in Chrome devtools
+            sleep.sleep(10);
         }
 
         if (program.serve && !Configuration.mainData.tsconfig && program.output) {
