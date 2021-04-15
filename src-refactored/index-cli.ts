@@ -60,14 +60,6 @@ export class CliApplication {
         I18nEngine.init(currentProgram.language);
 
         /**
-         * 1. Serve ?
-         */
-        if (currentProgram.serve) {
-            ServeFiles.serve(ConfigurationRepository.internalConfiguration);
-            return;
-        }
-
-        /**
          * Detect tsconfig file
          */
         let tsconfigExplorerResult;
@@ -81,6 +73,14 @@ export class CliApplication {
 
         if (tsconfigExplorerResult) {
             ConfigurationRepository.update(tsconfigExplorerResult);
+        }
+
+        /**
+         * 1. Serve ?
+         */
+        if (currentProgram.serve) {
+            ServeFiles.serve(ConfigurationRepository.internalConfiguration);
+            return;
         }
 
         /**
