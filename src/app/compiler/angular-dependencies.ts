@@ -455,6 +455,11 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                         } else if (this.isDirective(visitedDecorator)) {
                             if (props.length === 0) {
+                                // Fallback to Class if Directive has no properties -> Angular >= 9.x Support
+                                if (ts.isClassDeclaration(node)) {
+                                    this.processClass(node, file, srcFile, outputSymbols, fileBody);
+                                }
+
                                 return;
                             }
                             let directiveDeps = new DirectiveDepFactory(
