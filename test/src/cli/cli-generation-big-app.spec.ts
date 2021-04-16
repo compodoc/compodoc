@@ -787,4 +787,14 @@ describe('CLI simple generation - big app', () => {
     it('correct supports ArrayType with spread', () => {
         expect(interfaceIDATAFile).to.contain('<code>[string, string, boolean[]]</code>');
     });
+
+    it('should support inheritance with abstract class', () => {
+        let file = read(distFolder + '/components/SonComponent.html');
+        expect(file).to.contain(
+            'href="../components/MotherComponent.html#source" target="_self" >MotherComponent:20'
+        );
+        expect(file).to.contain(
+            'href="../components/MotherComponent.html#source" target="_self" >MotherComponent:14'
+        );
+    });
 });
