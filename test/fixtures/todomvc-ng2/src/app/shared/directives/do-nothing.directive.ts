@@ -78,8 +78,9 @@ export class DoNothingDirective {
     /**
      * HostListener description 3
      */
-    @HostListener('click')
-    onClick(): void {}
+    @HostListener('focus', ['$event'])
+    @HostListener('click', ['$event'])
+    onClick(e: Event): void {}
 
     private _fullName: string;
 

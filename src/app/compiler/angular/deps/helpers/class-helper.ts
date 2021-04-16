@@ -42,11 +42,25 @@ export class ClassHelper {
 
     private getDecoratorOfType(node, decoratorType) {
         let decorators = node.decorators || [];
+        let result = [];
+        const len = decorators.length;
 
-        for (let i = 0; i < decorators.length; i++) {
-            if (decorators[i].expression.expression) {
-                if (decorators[i].expression.expression.text === decoratorType) {
-                    return decorators[i];
+        if (len > 1) {
+            for (let i = 0; i < decorators.length; i++) {
+                if (decorators[i].expression.expression) {
+                    if (decorators[i].expression.expression.text === decoratorType) {
+                        result.push(decorators[i]);
+                    }
+                }
+            }
+            if (result.length > 0) {
+                return result;
+            }
+        } else {
+            if (len === 1 && decorators[0].expression && decorators[0].expression.expression) {
+                if (decorators[0].expression.expression.text === decoratorType) {
+                    result.push(decorators[0]);
+                    return result;
                 }
             }
         }
@@ -160,6 +174,23 @@ export class ClassHelper {
                     return 'new ' + arg.expression.text + '()';
                 } else if (arg.kind && arg.kind === SyntaxKind.StringLiteral) {
                     return `'` + arg.text + `'`;
+                } else if (
+                    arg.kind &&
+                    arg.kind === SyntaxKind.ArrayLiteralExpression &&
+                    arg.elements &&
+                    arg.elements.length > 0
+                ) {
+                    let i = 0,
+                        len = arg.elements.length,
+                        result = '[';
+                    for (i; i < len; i++) {
+                        result += `'` + arg.elements[i].text + `'`;
+                        if (i < len - 1) {
+                            result += ', ';
+                        }
+                    }
+                    result += ']';
+                    return result;
                 } else if (arg.kind && arg.kind === SyntaxKind.ObjectLiteralExpression) {
                     return StringifyObjectLiteralExpression(arg);
                 } else if (BasicTypeUtil.isKnownType(arg.type)) {
@@ -585,17 +616,15 @@ export class ClassHelper {
          */
         let inputs = [];
         let outputs = [];
-        let hostBindings = [];
-        let hostListeners = [];
         let methods = [];
         let properties = [];
         let indexSignatures = [];
         let kind;
         let inputDecorator;
-        let hostBinding;
-        let hostListener;
+        let hostBindings = [];
+        let hostListeners = [];
         let constructor;
-        let outDecorator;
+        let outputDecorator;
         let accessors = {};
         let result = {};
 
@@ -604,9 +633,9 @@ export class ClassHelper {
             let member = members[i];
 
             inputDecorator = this.getDecoratorOfType(member, 'Input');
-            outDecorator = this.getDecoratorOfType(member, 'Output');
-            hostBinding = this.getDecoratorOfType(member, 'HostBinding');
-            hostListener = this.getDecoratorOfType(member, 'HostListener');
+            outputDecorator = this.getDecoratorOfType(member, 'Output');
+            const parsedHostBindings = this.getDecoratorOfType(member, 'HostBinding');
+            const parsedHostListeners = this.getDecoratorOfType(member, 'HostListener');
 
             kind = member.kind;
 
@@ -614,18 +643,32 @@ export class ClassHelper {
                 continue;
             }
 
-            if (inputDecorator) {
-                inputs.push(this.visitInputAndHostBinding(member, inputDecorator, sourceFile));
+            if (inputDecorator && inputDecorator.length > 0) {
+                inputs.push(this.visitInputAndHostBinding(member, inputDecorator[0], sourceFile));
                 if (ts.isSetAccessorDeclaration(member)) {
                     this.addAccessor(accessors, members[i], sourceFile);
                 }
-            } else if (outDecorator) {
-                outputs.push(this.visitOutput(member, outDecorator, sourceFile));
-            } else if (hostBinding) {
-                hostBindings.push(this.visitInputAndHostBinding(member, hostBinding, sourceFile));
-            } else if (hostListener) {
-                hostListeners.push(this.visitHostListener(member, hostListener, sourceFile));
-            } else if (!this.isHiddenMember(member)) {
+            } else if (outputDecorator && outputDecorator.length > 0) {
+                outputs.push(this.visitOutput(member, outputDecorator[0], sourceFile));
+            } else if (parsedHostBindings && parsedHostBindings.length > 0) {
+                let k = 0,
+                    lenHB = parsedHostBindings.length;
+                for (k; k < lenHB; k++) {
+                    hostBindings.push(
+                        this.visitInputAndHostBinding(member, parsedHostBindings[k], sourceFile)
+                    );
+                }
+            } else if (parsedHostListeners && parsedHostListeners.length > 0) {
+                let l = 0,
+                    lenHL = parsedHostListeners.length;
+                for (l; l < lenHL; l++) {
+                    hostListeners.push(
+                        this.visitHostListener(member, parsedHostListeners[l], sourceFile)
+                    );
+                }
+            }
+
+            if (!this.isHiddenMember(member)) {
                 if (!(this.isPrivate(member) && Configuration.mainData.disablePrivate)) {
                     if (!(this.isInternal(member) && Configuration.mainData.disableInternal)) {
                         if (
@@ -1068,68 +1111,6 @@ export class ClassHelper {
         }
     }
 
-    private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
-        let inArgs = inDecorator.expression.arguments;
-        let _return: any = {};
-        _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
-        _return.defaultValue = property.initializer
-            ? this.stringifyDefaultValue(property.initializer)
-            : undefined;
-        if (!_return.description) {
-            if (property.jsDoc) {
-                if (property.jsDoc.length > 0) {
-                    const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-
-                    if (jsdoctags && jsdoctags.length >= 1) {
-                        if (jsdoctags[0].tags) {
-                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                        }
-                    }
-                    if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        const rawDescription = property.jsDoc[0].comment;
-                        _return.rawdescription = rawDescription;
-                        _return.description = marked(rawDescription);
-                    }
-                }
-            }
-        }
-        _return.line = this.getPosition(property, sourceFile).line + 1;
-        if (property.type) {
-            _return.type = this.visitType(property);
-        } else {
-            // handle NewExpression
-            if (property.initializer) {
-                if (ts.isNewExpression(property.initializer)) {
-                    if (property.initializer.expression) {
-                        _return.type = property.initializer.expression.text;
-                    }
-                }
-            }
-            // Try to get inferred type
-            if (property.symbol) {
-                let symbol: ts.Symbol = property.symbol;
-                if (symbol.valueDeclaration) {
-                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
-                        symbol,
-                        symbol.valueDeclaration
-                    );
-                    if (symbolType) {
-                        _return.type = this.typeChecker.typeToString(symbolType);
-                    }
-                }
-            }
-        }
-        if (property.kind === SyntaxKind.SetAccessor) {
-            // For setter accessor, find type in first parameter
-            if (property.parameters && property.parameters.length === 1) {
-                if (property.parameters[0].type) {
-                    _return.type = kindToType(property.parameters[0].type.kind);
-                }
-            }
-        }
-        return _return;
-    }
-
     private visitMethodDeclaration(method: ts.MethodDeclaration, sourceFile: ts.SourceFile) {
         let result: any = {
             name: method.name.text,
@@ -1277,6 +1258,68 @@ export class ClassHelper {
             _result.defaultValue = this.stringifyDefaultValue(arg.initializer);
         }
         return _result;
+    }
+
+    private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
+        let inArgs = inDecorator.expression.arguments;
+        let _return: any = {};
+        _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
+        _return.defaultValue = property.initializer
+            ? this.stringifyDefaultValue(property.initializer)
+            : undefined;
+        if (!_return.description) {
+            if (property.jsDoc) {
+                if (property.jsDoc.length > 0) {
+                    const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
+                    if (jsdoctags && jsdoctags.length >= 1) {
+                        if (jsdoctags[0].tags) {
+                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
+                        }
+                    }
+                    if (typeof property.jsDoc[0].comment !== 'undefined') {
+                        const rawDescription = property.jsDoc[0].comment;
+                        _return.rawdescription = rawDescription;
+                        _return.description = marked(rawDescription);
+                    }
+                }
+            }
+        }
+        _return.line = this.getPosition(property, sourceFile).line + 1;
+        if (property.type) {
+            _return.type = this.visitType(property);
+        } else {
+            // handle NewExpression
+            if (property.initializer) {
+                if (ts.isNewExpression(property.initializer)) {
+                    if (property.initializer.expression) {
+                        _return.type = property.initializer.expression.text;
+                    }
+                }
+            }
+            // Try to get inferred type
+            if (property.symbol) {
+                let symbol: ts.Symbol = property.symbol;
+                if (symbol.valueDeclaration) {
+                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                        symbol,
+                        symbol.valueDeclaration
+                    );
+                    if (symbolType) {
+                        _return.type = this.typeChecker.typeToString(symbolType);
+                    }
+                }
+            }
+        }
+        if (property.kind === SyntaxKind.SetAccessor) {
+            // For setter accessor, find type in first parameter
+            if (property.parameters && property.parameters.length === 1) {
+                if (property.parameters[0].type) {
+                    _return.type = kindToType(property.parameters[0].type.kind);
+                }
+            }
+        }
+        return _return;
     }
 
     private visitHostListener(property, hostListenerDecorator, sourceFile?) {

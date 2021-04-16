@@ -17,6 +17,7 @@ describe('CLI simple generation - big app', () => {
         appComponentFile,
         listComponentFile,
         footerComponentFile,
+        doNothingDirectiveFile,
         todoClassFile,
         tidiClassFile,
         aboutModuleFile,
@@ -54,6 +55,8 @@ describe('CLI simple generation - big app', () => {
         aboutComponentFile = read(`${distFolder}/components/AboutComponent.html`);
         appComponentFile = read(`${distFolder}/components/AppComponent.html`);
         listComponentFile = read(`${distFolder}/components/ListComponent.html`);
+
+        doNothingDirectiveFile = read(`${distFolder}/directives/DoNothingDirective.html`);
 
         todoClassFile = read(`${distFolder}/classes/Todo.html`);
         tidiClassFile = read(`${distFolder}/classes/Tidi.html`);
@@ -366,9 +369,14 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('style.color</b>');
     });
 
-    it('should support @HostListener', () => {
-        expect(aboutComponentFile).to.contain('<code>mouseup(mouseX');
-        expect(aboutComponentFile).to.contain("i>Arguments : </i><code>'$event.clientX");
+    it('should support @HostListener and multiple', () => {
+        expect(aboutComponentFile).to.contain(
+            "i>Arguments : </i><code>'$event.clientX' '$event.clientY'"
+        );
+
+        expect(doNothingDirectiveFile).to.contain(
+            `<code>@HostListener(&#x27;focus&#x27;, [&#x27;$event&#x27;])<br />@HostListener(&#x27;click&#x27;, [&#x27;$event&#x27;])<br /></code>`
+        );
     });
 
     it('should support extends for interface', () => {
