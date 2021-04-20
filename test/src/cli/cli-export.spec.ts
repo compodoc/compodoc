@@ -79,6 +79,40 @@ describe('CLI Export', () => {
             expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n"');
         });
 
+        it('should display deprecated and deprecation messages', () => {
+            const file = read(`${distFolder}/documentation.json`, 'utf8');
+
+            expect(file).to.contain('"deprecated": true');
+            expect(file).to.contain('"deprecated": false');
+
+            // property
+            expect(file).to.contain('"deprecationMessage": "The current time property is deprecated"');
+
+            // method
+            expect(file).to.contain('"deprecationMessage": "the transform function is deprecated"');
+
+            // pipe
+            expect(file).to.contain(
+                '"deprecationMessage": "This pipe is deprecated"'
+            );
+
+            // interface
+            expect(file).to.contain(
+                '"deprecationMessage": "This interface is deprecated"'
+            );
+
+            // service
+            expect(file).to.contain(
+                '"deprecationMessage": "This service is deprecated"'
+            );
+
+            // accessor (setter)
+            expect(file).to.contain('"deprecationMessage": "This setter is deprecated"');
+
+            // accessor (getter)
+            expect(file).to.contain('"deprecationMessage": "This getter is deprecated"');
+        });
+
         it('should create json file', () => {
             let isFileExists = exists(`${distFolder}/documentation.json`);
             expect(isFileExists).to.be.true;
