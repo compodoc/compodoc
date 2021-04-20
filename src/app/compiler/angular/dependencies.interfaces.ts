@@ -9,6 +9,8 @@ export interface IInjectableDep extends IDep {
     file: any;
     properties: Array<any>;
     methods: Array<any>;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
     rawdescription: string;
     sourceCode: string;
@@ -24,6 +26,8 @@ export interface IInterceptorDep extends IDep {
     file: any;
     properties: Array<any>;
     methods: Array<any>;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
     sourceCode: string;
 
@@ -36,6 +40,8 @@ export interface IGuardDep extends IDep {
     file: any;
     properties: Array<any>;
     methods: Array<any>;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
     sourceCode: string;
 
@@ -46,6 +52,8 @@ export interface IGuardDep extends IDep {
 
 export interface IPipeDep extends IDep {
     file: any;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
     rawdescription: string;
     sourceCode: string;
@@ -66,6 +74,8 @@ export interface IInterfaceDep extends IDep {
     properties?: Array<any>;
     indexSignatures?: any;
     kind?: any;
+    deprecated: boolean;
+    deprecationMessage: string;
     description?: string;
     rawdescription?: string;
     methods?: Array<any>;
@@ -75,6 +85,8 @@ export interface IInterfaceDep extends IDep {
 export interface IFunctionDecDep extends IDep {
     file: any;
     subtype: string;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
 
     returnType?: string;
@@ -85,6 +97,8 @@ export interface IFunctionDecDep extends IDep {
 export interface IEnumDecDep extends IDep {
     childs: Array<any>;
     subtype: string;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
     file: any;
 }
@@ -93,6 +107,8 @@ export interface ITypeAliasDecDep extends IDep {
     subtype: string;
     file: any;
     rawtype: any;
+    deprecated: boolean;
+    deprecationMessage: string;
     description: string;
 
     kind?;
@@ -108,6 +124,8 @@ export interface Deps {
     label?: string;
     file?: string;
     sourceCode?: string;
+    deprecated?: boolean;
+    deprecationMessage?: string;
     description?: string;
 
     // Component
