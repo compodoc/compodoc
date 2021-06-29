@@ -12,4 +12,15 @@ describe('Compodoc page', () => {
         const searchResults = await $$('.search-results-item');
         await expect(searchResults.length).toEqual(0);
     });
+
+    it('should support dark mode', async () => {
+        const browserName = browser.capabilities.browserName;
+        if (browserName === 'chrome') {
+            await browser.url('http://localhost:4000/?q=waza');
+            await browser.pause(3000);
+            const $body = await $('body');
+            const color = $body.getCSSProperty('background');
+            await expect(color.value).toEqual('black');
+        }
+    });
 });
