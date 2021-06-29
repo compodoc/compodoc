@@ -797,4 +797,14 @@ describe('CLI simple generation - big app', () => {
             'href="../components/MotherComponent.html#source" target="_self" >MotherComponent:14'
         );
     });
+
+    it('should support generic in function arguments', () => {
+        let file = read(distFolder + '/components/GenericComponent.html');
+        expect(file).to.contain(
+            'code>getData(foo: <a href="../interfaces/Foo.html" target="_self">Foo&lt;object&gt;</a>)</code'
+        );
+        expect(file).to.contain(
+            'code><a href="../interfaces/Foo.html" target="_self" >Foo&lt;object&gt;</a></code'
+        );
+    });
 });

@@ -1,4 +1,5 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
+import * as Handlebars from 'handlebars';
 
 import DependenciesEngine from '../dependencies.engine';
 import AngularVersionUtil from '../../../utils/angular-version.util';
@@ -72,7 +73,9 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                             }
                             return `${arg.name}${this.getOptionalString(
                                 arg
-                            )}: <a href="../${path}s/${_result.data.name}.html">${arg.type}</a>`;
+                            )}: <a href="../${path}s/${
+                                _result.data.name
+                            }.html" target="_self">${Handlebars.escapeExpression(arg.type)}</a>`;
                         } else {
                             let path = AngularVersionUtil.getApiLink(
                                 _result.data,
@@ -80,7 +83,9 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                             );
                             return `${arg.name}${this.getOptionalString(
                                 arg
-                            )}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                            )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
+                                arg.type
+                            )}</a>`;
                         }
                     } else if (arg.dotDotDotToken) {
                         return `...${arg.name}: ${arg.type}`;
@@ -90,7 +95,9 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                         let path = BasicTypeUtil.getTypeUrl(arg.type);
                         return `${arg.name}${this.getOptionalString(
                             arg
-                        )}: <a href="${path}" target="_blank">${arg.type}</a>`;
+                        )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
+                            arg.type
+                        )}</a>`;
                     } else {
                         if (arg.type) {
                             return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
