@@ -67,8 +67,11 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
+                public: 'public'
             },
+            'goog:chromeOptions': {
+                args: ['--force-dark-mode=true']
+            }
         },
         {
             browserName: 'MicrosoftEdge',
@@ -77,8 +80,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'MicrosoftEdge',
@@ -87,8 +90,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'MicrosoftEdge',
@@ -97,8 +100,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'MicrosoftEdge',
@@ -107,8 +110,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'internet explorer',
@@ -117,8 +120,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'firefox',
@@ -127,8 +130,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'firefox',
@@ -137,8 +140,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'firefox',
@@ -147,8 +150,8 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
+                public: 'public'
+            }
         },
         {
             browserName: 'safari',
@@ -157,9 +160,9 @@ exports.config = {
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public',
-            },
-        },
+                public: 'public'
+            }
+        }
     ],
     //
     // ===================
@@ -212,9 +215,9 @@ exports.config = {
         [
             'sauce',
             {
-                sauceConnect: true,
-            },
-        ],
+                sauceConnect: true
+            }
+        ]
     ],
 
     // Framework you want to run your specs with.
@@ -244,8 +247,8 @@ exports.config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        timeout: 60000,
-    },
+        timeout: 60000
+    }
     //
     // =====
     // Hooks
