@@ -265,7 +265,7 @@ describe('CLI simple generation - big app', () => {
         expect(todoStoreFile).to.contain('string | number');
         expect(todoStoreFile).to.contain('number[]');
         expect(todoStoreFile).to.contain(
-            '<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html">LabelledTodo</a>)</code>'
+            '<code>stopMonitoring(theTodo?: <a href="../interfaces/LabelledTodo.html" target="_self">LabelledTodo</a>)</code>'
         );
         expect(todoStoreFile).to.contain('service is a todo store');
         expect(todoStoreFile).to.contain('all todos status (completed');
