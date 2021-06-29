@@ -8,7 +8,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
-	      <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+	   <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+        <link rel="stylesheet" href="{{relativeURL data.depth }}styles/dark.css" media="(prefers-color-scheme: dark)">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
         <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">

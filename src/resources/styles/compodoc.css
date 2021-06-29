@@ -964,6 +964,10 @@ ul.index-list {
     position: relative;
 }
 
+.module-graph-container .size-buttons {
+    margin-top: 10px;
+}
+
 .module-graph-fullscreen-btn {
     position: absolute;
     right: 5px;

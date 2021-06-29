@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var menuCollapsed = false,
         mobileMenu = document.getElementById('mobile-menu');
 
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return el.className && new RegExp('(\\s|^)' + cls + '(\\s|$)').test(el.className);
     }
 
-    var processLink = function(link, url) {
+    var processLink = function (link, url) {
         if (url.charAt(0) !== '.') {
             var prefix = '';
             switch (COMPODOC_CURRENT_PAGE_DEPTH) {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    var processMenuLinks = function(links, dontAddClass) {
+    var processMenuLinks = function (links, dontAddClass) {
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var linkHref = link.getAttribute('href');
@@ -79,11 +79,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var indexLinks = document.querySelectorAll('[data-type="index-link"]');
     processMenuLinks(indexLinks, true);
     var entityLogos = document.querySelectorAll('[data-type="compodoc-logo"]');
-    var processLogos = function(entityLogo) {
+    var processLogos = function (entityLogo) {
         for (var i = 0; i < entityLogos.length; i++) {
             var entityLogo = entityLogos[i];
             if (entityLogo) {
                 var url = entityLogo.getAttribute('data-src');
+                // Dark mode + logo
+                let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (isDarkMode) {
+                    url = 'images/compodoc-vectorise-inverted.png';
+                }
                 if (url.charAt(0) !== '.') {
                     var prefix = '';
                     switch (COMPODOC_CURRENT_PAGE_DEPTH) {
@@ -113,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     processLogos(entityLogos);
 
-    setTimeout(function() {
-        document.getElementById('btn-menu').addEventListener('click', function() {
+    setTimeout(function () {
+        document.getElementById('btn-menu').addEventListener('click', function () {
             if (menuCollapsed) {
                 mobileMenu.style.display = 'none';
             } else {
@@ -139,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var classnameMenuToggler = document.getElementsByClassName('menu-toggler'),
             faAngleUpClass = 'ion-ios-arrow-up',
             faAngleDownClass = 'ion-ios-arrow-down',
-            toggleItemMenu = function(e) {
+            toggleItemMenu = function (e) {
                 var element = $(e.target),
                     parent = element[0].parentNode,
                     parentLink,
@@ -204,9 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             parentChapterMenu = parentUl.parentNode;
                             if (parentChapterMenu) {
                                 var toggler = parentChapterMenu.querySelector('.menu-toggler'),
-                                    elementIconChild = toggler.getElementsByClassName(
-                                        faAngleUpClass
-                                    )[0];
+                                    elementIconChild =
+                                        toggler.getElementsByClassName(faAngleUpClass)[0];
                                 if (toggler && !elementIconChild) {
                                     toggler.click();
                                 }
@@ -246,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
-                setTimeout(function() {
+                setTimeout(function () {
                     activeMenu.scrollTop = activeLink.offsetTop;
                     if (
                         activeLink.innerHTML.toLowerCase().indexOf('readme') != -1 ||
