@@ -20,7 +20,7 @@ describe('Compodoc page', () => {
             await browser.pause(3000);
             const $body = await $('body');
             const color = await $body.getCSSProperty('background-color');
-            await expect(color.value).toEqual('rgba(0, 0, 0, 1)');
+            await expect(color.value).toEqual('rgba(0,0,0,1)');
         }
     });
 });
