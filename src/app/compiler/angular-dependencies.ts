@@ -206,6 +206,8 @@ export class AngularDependencies extends FrameworkDependencies {
             name,
             id: 'class-' + name + '-' + hash,
             file: file,
+            deprecated: IO.deprecated,
+            deprecationMessage: IO.deprecationMessage,
             type: 'class',
             sourceCode: srcFile.getText()
         };
@@ -394,6 +396,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                 file: file,
                                 properties: IO.properties,
                                 methods: IO.methods,
+                                deprecated: IO.deprecated,
+                                deprecationMessage: IO.deprecationMessage,
                                 description: IO.description,
                                 rawdescription: IO.rawdescription,
                                 sourceCode: srcFile.getText(),
@@ -435,6 +439,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                 id: 'pipe-' + name + '-' + hash,
                                 file: file,
                                 type: 'pipe',
+                                deprecated: IO.deprecated,
+                                deprecationMessage: IO.deprecationMessage,
                                 description: IO.description,
                                 rawdescription: IO.rawdescription,
                                 properties: IO.properties,
@@ -518,6 +524,8 @@ export class AngularDependencies extends FrameworkDependencies {
                             name,
                             id: 'interface-' + name + '-' + hash,
                             file: file,
+                            deprecated: IO.deprecated,
+                            deprecationMessage: IO.deprecationMessage,
                             type: 'interface',
                             sourceCode: srcFile.getText()
                         };
@@ -550,11 +558,15 @@ export class AngularDependencies extends FrameworkDependencies {
                         let infos = this.visitFunctionDeclaration(node);
                         // let tags = this.visitFunctionDeclarationJSDocTags(node);
                         let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let functionDep: IFunctionDecDep = {
                             name,
                             file: file,
                             ctype: 'miscellaneous',
                             subtype: 'function',
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -578,12 +590,16 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     } else if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
-                        let name = node.name.text;
+                        let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let enumDeps: IEnumDecDep = {
                             name,
-                            childs: infos,
+                            childs: infos.members,
                             ctype: 'miscellaneous',
                             subtype: 'enum',
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(
                                 node
                             ),
@@ -595,12 +611,16 @@ export class AngularDependencies extends FrameworkDependencies {
                     } else if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
                         let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let typeAliasDeps: ITypeAliasDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (node.type) {
@@ -709,11 +729,15 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (ts.isVariableStatement(node) && !RouterParserUtil.isVariableRoutes(node)) {
                         let infos: any = this.visitVariableDeclaration(node);
                         let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let deps: any = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'variable',
-                            file: file
+                            file: file,
+                            deprecated,
+                            deprecationMessage
                         };
                         deps.type = infos.type ? infos.type : '';
                         if (infos.defaultValue) {
@@ -739,12 +763,16 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (ts.isTypeAliasDeclaration(node)) {
                         let infos = this.visitTypeDeclaration(node);
                         let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let deps: ITypeAliasDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'typealias',
                             rawtype: this.classHelper.visitType(node),
                             file: file,
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (node.type) {
@@ -757,11 +785,15 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (ts.isFunctionDeclaration(node)) {
                         let infos = this.visitFunctionDeclaration(node);
                         let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let functionDep: IFunctionDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'function',
                             file: file,
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -786,12 +818,16 @@ export class AngularDependencies extends FrameworkDependencies {
                     }
                     if (ts.isEnumDeclaration(node)) {
                         let infos = this.visitEnumDeclaration(node);
-                        let name = node.name.text;
+                        let name = infos.name;
+                        let deprecated = infos.deprecated;
+                        let deprecationMessage = infos.deprecationMessage;
                         let enumDeps: IEnumDecDep = {
                             name,
-                            childs: infos,
+                            childs: infos.members,
                             ctype: 'miscellaneous',
                             subtype: 'enum',
+                            deprecated,
+                            deprecationMessage,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(
                                 node
                             ),
@@ -849,6 +885,15 @@ export class AngularDependencies extends FrameworkDependencies {
         } else {
             return;
         }
+    }
+
+    private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
+        _.forEach(tags, tag => {
+            if (tag.tagName && tag.tagName.text && tag.tagName.text.indexOf('deprecated') > -1) {
+                result.deprecated = true;
+                result.deprecationMessage = tag.comment || '';
+            }
+        });
     }
 
     private findExpressionByNameInExpressions(entryNode, name) {
@@ -1020,15 +1065,16 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private visitTypeDeclaration(node: ts.TypeAliasDeclaration) {
         let result: any = {
+            deprecated: false,
+            deprecationMessage: '',
             name: node.name.text,
             kind: node.kind
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
 
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         return result;
     }
@@ -1036,7 +1082,9 @@ export class AngularDependencies extends FrameworkDependencies {
     private visitArgument(arg) {
         let result: any = {
             name: arg.name.text,
-            type: this.classHelper.visitType(arg)
+            type: this.classHelper.visitType(arg),
+            deprecated: false,
+            deprecationMessage: ''
         };
         if (arg.dotDotDotToken) {
             result.dotDotDotToken = true;
@@ -1052,6 +1100,11 @@ export class AngularDependencies extends FrameworkDependencies {
                     result.type = arg.type.typeName.text;
                 }
             }
+        }
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
         }
         return result;
     }
@@ -1092,6 +1145,8 @@ export class AngularDependencies extends FrameworkDependencies {
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
         let methodName = method.name ? method.name.text : 'Unnamed function';
         let result: any = {
+            deprecated: false,
+            deprecationMessage: '',
             name: methodName,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
         };
@@ -1116,19 +1171,18 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-                _.forEach(jsdoctags[0].tags, tag => {
-                    if (tag.tagName) {
-                        if (tag.tagName.text) {
-                            if (tag.tagName.text.indexOf('ignore') > -1) {
-                                result.ignore = true;
-                            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
+            _.forEach(jsdoctags[0].tags, tag => {
+                if (tag.tagName) {
+                    if (tag.tagName.text) {
+                        if (tag.tagName.text.indexOf('ignore') > -1) {
+                            result.ignore = true;
                         }
                     }
-                });
-            }
+                }
+            });
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
             result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
@@ -1149,7 +1203,9 @@ export class AngularDependencies extends FrameworkDependencies {
                         ? this.classHelper.stringifyDefaultValue(
                               node.declarationList.declarations[i].initializer
                           )
-                        : undefined
+                        : undefined,
+                    deprecated: false,
+                    deprecationMessage: ''
                 };
                 if (node.declarationList.declarations[i].initializer) {
                     result.initializer = node.declarationList.declarations[i].initializer;
@@ -1161,6 +1217,12 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
                 if (typeof result.type === 'undefined' && result.initializer) {
                     result.type = kindToType(result.initializer.kind);
+                }
+                let jsdoctags = this.jsdocParserUtil.getJSDocs(
+                    node.declarationList.declarations[i]
+                );
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    this.checkForDeprecation(jsdoctags[0].tags, result);
                 }
                 return result;
             }
@@ -1191,19 +1253,35 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitEnumDeclaration(node: ts.EnumDeclaration) {
-        let result = [];
+        let result: any = {
+            deprecated: false,
+            deprecationMessage: '',
+            name: node.name.text,
+            members: []
+        };
         if (node.members) {
             let i = 0;
             let len = node.members.length;
+            let memberjsdoctags = [];
             for (i; i < len; i++) {
                 let member: any = {
-                    name: node.members[i].name.text
+                    name: node.members[i].name.text,
+                    deprecated: false,
+                    deprecationMessage: ''
                 };
                 if (node.members[i].initializer) {
                     member.value = node.members[i].initializer.text;
                 }
-                result.push(member);
+                memberjsdoctags = this.jsdocParserUtil.getJSDocs(node.members[i]);
+                if (memberjsdoctags && memberjsdoctags.length >= 1 && memberjsdoctags[0].tags) {
+                    this.checkForDeprecation(memberjsdoctags[0].tags, member);
+                }
+                result.members.push(member);
             }
+        }
+        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
         }
         return result;
     }

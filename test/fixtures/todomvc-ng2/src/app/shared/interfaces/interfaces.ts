@@ -4,6 +4,7 @@ import { ClockInterface } from './clock.interface';
 
 /**
  * An interface just for documentation purpose
+ * @deprecated This interface is deprecated
  */
 interface LabelledTodo {
     title: string;

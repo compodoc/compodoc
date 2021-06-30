@@ -13,6 +13,7 @@ interface ClockInterface extends TimeInterface {
     /**
      * The current time
      * @type {Date}
+     * @deprecated The current time property is deprecated
      */
     currentTime: Date;
     /**

@@ -40,6 +40,15 @@ export class ClassHelper {
         }
     }
 
+    private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
+        _.forEach(tags, tag => {
+            if (tag.tagName && tag.tagName.text && tag.tagName.text.indexOf('deprecated') > -1) {
+                result.deprecated = true;
+                result.deprecationMessage = tag.comment || '';
+            }
+        });
+    }
+
     private getDecoratorOfType(node, decoratorType) {
         let decorators = node.decorators || [];
         let result = [];
@@ -260,6 +269,8 @@ export class ClassHelper {
                 let setSignature = {
                     name: nodeName,
                     type: 'void',
+                    deprecated: false,
+                    deprecationMessage: '',
                     args: nodeAccessor.parameters.map(param => {
                         return {
                             name: param.name.text,
@@ -278,10 +289,9 @@ export class ClassHelper {
                     }
                 }
 
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    this.checkForDeprecation(jsdoctags[0].tags, setSignature);
+                    setSignature.jsdoctags = markedtags(jsdoctags[0].tags);
                 }
                 if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
                     setSignature.jsdoctags = mergeTagsAndArgs(
@@ -310,10 +320,9 @@ export class ClassHelper {
                     }
                 }
 
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        getSignature.jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    this.checkForDeprecation(jsdoctags[0].tags, getSignature);
+                    getSignature.jsdoctags = markedtags(jsdoctags[0].tags);
                 }
 
                 accessors[nodeName].getSignature = getSignature;
@@ -438,6 +447,8 @@ export class ClassHelper {
     ): any {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         let rawdescription = '';
+        let deprecated = false;
+        let deprecationMessage = '';
         let description = '';
         let jsdoctags = [];
         if (symbol) {
@@ -447,16 +458,29 @@ export class ClassHelper {
                 return [{ ignore: true }];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
+                let declarationsjsdoctags = this.jsdocParserUtil.getJSDocs(symbol.declarations[0]);
+                if (
+                    declarationsjsdoctags &&
+                    declarationsjsdoctags.length >= 1 &&
+                    declarationsjsdoctags[0].tags
+                ) {
+                    const deprecation = { deprecated: false, deprecationMessage: '' };
+                    this.checkForDeprecation(declarationsjsdoctags[0].tags, deprecation);
+                    deprecated = deprecation.deprecated;
+                    deprecationMessage = deprecation.deprecationMessage;
+                }
                 if (isIgnore(symbol.declarations[0])) {
                     return [{ ignore: true }];
                 }
             }
             if (symbol.valueDeclaration) {
                 jsdoctags = this.jsdocParserUtil.getJSDocs(symbol.valueDeclaration);
-                if (jsdoctags && jsdoctags.length >= 1) {
-                    if (jsdoctags[0].tags) {
-                        jsdoctags = markedtags(jsdoctags[0].tags);
-                    }
+                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                    const deprecation = { deprecated: false, deprecationMessage: '' };
+                    this.checkForDeprecation(jsdoctags[0].tags, deprecation);
+                    deprecated = deprecation.deprecated;
+                    deprecationMessage = deprecation.deprecationMessage;
+                    jsdoctags = markedtags(jsdoctags[0].tags);
                 }
             }
         }
@@ -492,6 +516,8 @@ export class ClassHelper {
             for (let i = 0; i < classDeclaration.decorators.length; i++) {
                 if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
                     return {
+                        deprecated,
+                        deprecationMessage,
                         description,
                         rawdescription: rawdescription,
                         inputs: members.inputs,
@@ -513,6 +539,8 @@ export class ClassHelper {
                         {
                             fileName,
                             className,
+                            deprecated,
+                            deprecationMessage,
                             description,
                             rawdescription: rawdescription,
                             methods: members.methods,
@@ -531,6 +559,8 @@ export class ClassHelper {
                         {
                             fileName,
                             className,
+                            deprecated,
+                            deprecationMessage,
                             description,
                             rawdescription: rawdescription,
                             jsdoctags: jsdoctags,
@@ -543,6 +573,8 @@ export class ClassHelper {
                         {
                             fileName,
                             className,
+                            deprecated,
+                            deprecationMessage,
                             description,
                             rawdescription: rawdescription,
                             jsdoctags: jsdoctags,
@@ -552,6 +584,8 @@ export class ClassHelper {
                 } else {
                     return [
                         {
+                            deprecated,
+                            deprecationMessage,
                             description,
                             rawdescription: rawdescription,
                             methods: members.methods,
@@ -570,6 +604,8 @@ export class ClassHelper {
         } else if (description) {
             return [
                 {
+                    deprecated,
+                    deprecationMessage,
                     description,
                     rawdescription: rawdescription,
                     inputs: members.inputs,
@@ -590,6 +626,8 @@ export class ClassHelper {
         } else {
             return [
                 {
+                    deprecated,
+                    deprecationMessage,
                     methods: members.methods,
                     inputs: members.inputs,
                     outputs: members.outputs,
@@ -920,7 +958,9 @@ export class ClassHelper {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
-            line: this.getPosition(method, sourceFile).line + 1
+            line: this.getPosition(method, sourceFile).line + 1,
+            deprecated: false,
+            deprecationMessage: ''
         };
         if (method.jsDoc) {
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
@@ -928,10 +968,9 @@ export class ClassHelper {
             result.description = marked(rawDescription);
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         return result;
     }
@@ -946,17 +985,22 @@ export class ClassHelper {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
-            line: this.getPosition(method, sourceFile).line + 1
+            line: this.getPosition(method, sourceFile).line + 1,
+            deprecated: false,
+            deprecationMessage: ''
         };
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (method.jsDoc) {
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method);
-            const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
             result.rawdescription = rawDescription;
             result.description = marked(rawDescription);
+        }
 
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
+        if (jsdoctags && jsdoctags.length >= 1) {
+            if (jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, result);
+                if (method.jsDoc) {
                     result.jsdoctags = markedtags(jsdoctags[0].tags);
                 }
             }
@@ -975,6 +1019,8 @@ export class ClassHelper {
         let result: any = {
             name: 'constructor',
             description: '',
+            deprecated: false,
+            deprecationMessage: '',
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             line: this.getPosition(method, sourceFile).line + 1
         };
@@ -1000,10 +1046,9 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
             result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
@@ -1019,6 +1064,8 @@ export class ClassHelper {
             defaultValue: property.initializer
                 ? this.stringifyDefaultValue(property.initializer)
                 : undefined,
+            deprecated: false,
+            deprecationMessage: '',
             type: this.visitType(property),
             optional: typeof property.questionToken !== 'undefined',
             description: '',
@@ -1034,8 +1081,9 @@ export class ClassHelper {
             result.name = property.name.expression.text;
         }
 
+        jsdoctags = this.jsdocParserUtil.getJSDocs(property);
+
         if (property.jsDoc) {
-            jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
             result.rawdescription = rawDescription;
             result.description = marked(rawDescription);
@@ -1059,8 +1107,9 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            if (property.jsDoc) {
                 result.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
@@ -1118,7 +1167,9 @@ export class ClassHelper {
             optional: typeof method.questionToken !== 'undefined',
             returnType: this.visitType(method.type),
             typeParameters: [],
-            line: this.getPosition(method, sourceFile).line + 1
+            line: this.getPosition(method, sourceFile).line + 1,
+            deprecated: false,
+            deprecationMessage: ''
         };
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
@@ -1173,10 +1224,9 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result.jsdoctags = markedtags(jsdoctags[0].tags);
-            }
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, result);
+            result.jsdoctags = markedtags(jsdoctags[0].tags);
         }
         if (result.jsdoctags && result.jsdoctags.length > 0) {
             result.jsdoctags = mergeTagsAndArgs(result.args, result.jsdoctags);
@@ -1196,7 +1246,9 @@ export class ClassHelper {
             name: inArgs.length > 0 ? inArgs[0].text : property.name.text,
             defaultValue: property.initializer
                 ? this.stringifyDefaultValue(property.initializer)
-                : undefined
+                : undefined,
+            deprecated: false,
+            deprecationMessage: ''
         };
         if (property.jsDoc) {
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
@@ -1205,10 +1257,9 @@ export class ClassHelper {
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
 
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
-                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                }
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, _return);
+                _return.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
         if (!_return.description) {
@@ -1238,7 +1289,12 @@ export class ClassHelper {
     }
 
     private visitArgument(arg: ts.ParameterDeclaration) {
-        let _result: any = { name: arg.name.text, type: this.visitType(arg) };
+        let _result: any = {
+            name: arg.name.text,
+            type: this.visitType(arg),
+            deprecated: false,
+            deprecationMessage: ''
+        };
         if (arg.dotDotDotToken) {
             _result.dotDotDotToken = true;
         }
@@ -1257,6 +1313,10 @@ export class ClassHelper {
         if (arg.initializer) {
             _result.defaultValue = this.stringifyDefaultValue(arg.initializer);
         }
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+            this.checkForDeprecation(jsdoctags[0].tags, _result);
+        }
         return _result;
     }
 
@@ -1267,15 +1327,16 @@ export class ClassHelper {
         _return.defaultValue = property.initializer
             ? this.stringifyDefaultValue(property.initializer)
             : undefined;
+        _return.deprecated = false;
+        _return.deprecationMessage = '';
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
                     const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
 
-                    if (jsdoctags && jsdoctags.length >= 1) {
-                        if (jsdoctags[0].tags) {
-                            _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                        }
+                    if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                        this.checkForDeprecation(jsdoctags[0].tags, _return);
+                        _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
                         const rawDescription = property.jsDoc[0].comment;
@@ -1335,6 +1396,8 @@ export class ClassHelper {
                       return prop.text;
                   })
                 : [];
+        _return.deprecated = false;
+        _return.deprecationMessage = '';
         if (property.jsDoc) {
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property);
@@ -1342,10 +1405,9 @@ export class ClassHelper {
             _return.rawdescription = rawDescription;
             _return.description = marked(rawDescription);
 
-            if (jsdoctags && jsdoctags.length >= 1) {
-                if (jsdoctags[0].tags) {
-                    _return.jsdoctags = markedtags(jsdoctags[0].tags);
-                }
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, _return);
+                _return.jsdoctags = markedtags(jsdoctags[0].tags);
             }
         }
         if (!_return.description) {
