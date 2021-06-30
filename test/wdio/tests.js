@@ -19,10 +19,8 @@ describe('Compodoc page', () => {
             await browser.url('http://localhost:4000/?q=waza');
             await browser.pause(3000);
             const $body = await $('body');
-            const color = $body.getCSSProperty('background-color');
-            console.log($body);
-            console.log(color);
-            await expect(color.value).toEqual('black');
+            const color = await $body.getCSSProperty('background-color');
+            await expect(color.value).toEqual('rgba(0, 0, 0, 1)');
         }
     });
 });
