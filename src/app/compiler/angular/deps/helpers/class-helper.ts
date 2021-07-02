@@ -271,12 +271,7 @@ export class ClassHelper {
                     type: 'void',
                     deprecated: false,
                     deprecationMessage: '',
-                    args: nodeAccessor.parameters.map(param => {
-                        return {
-                            name: param.name.text,
-                            type: param.type ? kindToType(param.type.kind) : ''
-                        };
-                    }),
+                    args: nodeAccessor.parameters.map(param => this.visitArgument(param)),
                     returnType: nodeAccessor.type ? this.visitType(nodeAccessor.type) : 'void',
                     line: this.getPosition(nodeAccessor, sourceFile).line + 1
                 };

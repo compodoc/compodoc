@@ -1,4 +1,5 @@
 import { Component, Input, Output, HostBinding, HostListener } from '@angular/core';
+import { Todo } from '../models/todo.model';
 
 import { DumbParentComponent } from './dumb-parent-component';
 
@@ -16,6 +17,8 @@ export class DumbComponent extends DumbParentComponent {
      * component property
      */
     emptyProperty = '';
+
+    _todo;
 
     /**
      * @example
@@ -61,5 +64,12 @@ export class DumbComponent extends DumbParentComponent {
      */
     emptyMethod(emptyParam: string) {
         return emptyParam;
+    }
+
+    /**
+     * @param {VisibleLayer} value
+     */
+    set visibleTodos(value: Todo) {
+        this._todo = value;
     }
 }

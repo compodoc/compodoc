@@ -429,6 +429,11 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('Setter of _fullName');
 
         expect(file).to.contain('Inputs');
+
+        file = read(distFolder + '/components/DumbComponent.html');
+        expect(file).to.contain(
+            '<code>visibleTodos(value: <a href="../classes/Todo.html" target="_self">Todo</a>)</code>'
+        );
     });
 
     it('should support QualifiedName for type', () => {
