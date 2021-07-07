@@ -1,18 +1,63 @@
+<a name="1.1.12"></a>
+
+## [1.1.12](https://github.com/compodoc/compodoc/compare/1.1.11...1.1.12) (2021-06-07)
+
+Thanks to all contributors ! 👏
+
+### Features
+
+-   feat(app): @deprecated support [0b2ecde](https://github.com/compodoc/compodoc/commit/0b2ecdee790996c887826fdf2b8a2c6edaea2211) [#1032](https://github.com/compodoc/compodoc/pull/1032)
+-   feat(i18n): Korean language [#1030](https://github.com/compodoc/compodoc/pull/1030)
+-   feat(i18n): Polish language [#991](https://github.com/compodoc/compodoc/pull/991)
+-   feat(app): add support for inferred input types [#998](https://github.com/compodoc/compodoc/pull/998)
+-   feat(app): Dark mode support ([2bb51cb](https://github.com/compodoc/compodoc/commit/2bb51cb)), closes [#1064](https://github.com/compodoc/compodoc/issues/1064)
+-   feat(app): add support for inferred input types ([11c4a68](https://github.com/compodoc/compodoc/commit/11c4a68)), closes [#896](https://github.com/compodoc/compodoc/issues/896)
+
+### Merged
+
+-   HTTPS link in .editorconfig [#1083](https://github.com/compodoc/compodoc/pull/1083)
+-   fix(app): fix some bug reports with angular &gt;= 9 and extended classes in components [#1037](https://github.com/compodoc/compodoc/pull/1037)
+-   fix(app): merge overridden with inherited class members so they are not duplicated in the generated docs [#1035](https://github.com/compodoc/compodoc/pull/1035)
+-   provide jsdoctags [#1001](https://github.com/compodoc/compodoc/pull/1001)
+-   Add raw descriptions [#949](https://github.com/compodoc/compodoc/pull/949)
+-   Angular lazy loading fix - extra undefined check in router-parser [#924](https://github.com/compodoc/compodoc/pull/924)
+-   fix: generating documentation on project including inacessible folders [#916](https://github.com/compodoc/compodoc/pull/916)
+-   fix(cli): tsx files not considered in include entries [#906](https://github.com/compodoc/compodoc/pull/906)
+-   Fix: Added missing guards and interceptors to the json exporter. [#847](https://github.com/compodoc/compodoc/pull/847)
+-   updates locales for de-DE [#861](https://github.com/compodoc/compodoc/pull/861)
+-   update(angular-util): update findApi to reduce runtime [#858](https://github.com/compodoc/compodoc/pull/858)
+
+### Bug fixes
+
+-   fix(app): directive with no option, and inheritance between component and directives ([a6c678c](https://github.com/compodoc/compodoc/commit/a6c678c)), closes [#984](https://github.com/compodoc/compodoc/issues/984)
+-   fix(app): main comment parsing for ``` ([3226d01](https://github.com/compodoc/compodoc/commit/3226d01)), closes [#1059](https://github.com/compodoc/compodoc/issues/1059)
+-   fix(app): setters arguments correctly documented ([8190df5](https://github.com/compodoc/compodoc/commit/8190df5)), closes [#1062](https://github.com/compodoc/compodoc/issues/1062)
+-   Merge pull request #1032 from Killusions/feat/parse-jsdoc-deprecated ([2ff7c21](https://github.com/compodoc/compodoc/commit/2ff7c21)), closes [#937](https://github.com/compodoc/compodoc/issues/937)
+-   fix(app): generic support in function arguments ([6b9a1d0](https://github.com/compodoc/compodoc/commit/6b9a1d0)), closes [#1076](https://github.com/compodoc/compodoc/issues/1076)
+-   fix(app): inheritance & Properties and methods are being duplicate ([3dd3e27](https://github.com/compodoc/compodoc/commit/3dd3e27)), closes [#1034](https://github.com/compodoc/compodoc/issues/1034)
+-   fix(app): multiple hostlisteners support ([2837cea](https://github.com/compodoc/compodoc/commit/2837cea)), closes [#1022](https://github.com/compodoc/compodoc/issues/1022)
+-   fix(app): more prism languages support ([816f6e1](https://github.com/compodoc/compodoc/commit/816f6e1)), closes [#1048](https://github.com/compodoc/compodoc/issues/1048)
+-   fix(app): spread and tuple type support ([c7cd839](https://github.com/compodoc/compodoc/commit/c7cd839)), closes [#1052](https://github.com/compodoc/compodoc/issues/1052)
+-   fix(app): Overview page not scrolling ([fe9cd04](https://github.com/compodoc/compodoc/commit/fe9cd04)), closes [#997](https://github.com/compodoc/compodoc/issues/997)
+-   fix(app): Directives missing "rawdescription" in JSON output ([7d7e1a9](https://github.com/compodoc/compodoc/commit/7d7e1a9)), closes [#875](https://github.com/compodoc/compodoc/issues/875)
+-   fix(coverage): function links in documentation coverage are broken ([59f2902](https://github.com/compodoc/compodoc/commit/59f2902)), closes [#859](https://github.com/compodoc/compodoc/issues/859)
+-   fix(cli): tsconfig with files and include entries ([baf122c](https://github.com/compodoc/compodoc/commit/baf122c)), closes [#860](https://github.com/compodoc/compodoc/issues/860)
+
 <a name="1.1.11"></a>
 
 # [1.1.11](https://github.com/compodoc/compodoc/compare/1.1.10...1.1.11) (2019-10-15)
 
 ### Features
 
-- feat(i18n): de-DE language [#810](https://github.com/compodoc/compodoc/pull/810) Thanks [hueppee](https://github.com/hueppee)
-- feat(i18n): sk-SK language [#830](https://github.com/compodoc/compodoc/pull/830) Thanks [Marek Závacký](https://github.com/emzet)
-- feat(routes): support new lazy loading syntax in Angular 8 [#819](https://github.com/compodoc/compodoc/pull/819) Thanks [Adam Stanley](https://github.com/astanley218)
+-   feat(i18n): de-DE language [#810](https://github.com/compodoc/compodoc/pull/810) Thanks [hueppee](https://github.com/hueppee)
+-   feat(i18n): sk-SK language [#830](https://github.com/compodoc/compodoc/pull/830) Thanks [Marek Závacký](https://github.com/emzet)
+-   feat(routes): support new lazy loading syntax in Angular 8 [#819](https://github.com/compodoc/compodoc/pull/819) Thanks [Adam Stanley](https://github.com/astanley218)
 
 ### Bug fixes
 
-- fix(app): max-search-result in options ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#816](https://github.com/compodoc/compodoc/issues/816) Thanks [tzinckgraf](https://github.com/tzinckgraf)
-- fix(app): fix path separator replace on Windows during route processing [#827](https://github.com/compodoc/compodoc/pull/827) Thanks [Adam Stanley](https://github.com/AdamStanley)
-- fix(app): fix unit tests failing on Windows [#826](https://github.com/compodoc/compodoc/pull/826) Thanks [Adam Stanley](https://github.com/AdamStanley)
+-   fix(app): max-search-result in options ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#816](https://github.com/compodoc/compodoc/issues/816) Thanks [tzinckgraf](https://github.com/tzinckgraf)
+-   fix(app): fix path separator replace on Windows during route processing [#827](https://github.com/compodoc/compodoc/pull/827) Thanks [Adam Stanley](https://github.com/AdamStanley)
+-   fix(app): fix unit tests failing on Windows [#826](https://github.com/compodoc/compodoc/pull/826) Thanks [Adam Stanley](https://github.com/AdamStanley)
 
 <a name="1.1.10"></a>
 
@@ -20,30 +65,30 @@
 
 ### Features
 
-- feat(CLI): disableDependencies flag [#798](https://github.com/compodoc/compodoc/pull/798)
+-   feat(CLI): disableDependencies flag [#798](https://github.com/compodoc/compodoc/pull/798)
 
 ### Merged
 
-- Upgrade to opencollective-postinstall [#804](https://github.com/compodoc/compodoc/pull/804) Thanks [Emanuel](https://github.com/emanuelbuholzer)
-- Update postinstall so that it doesn't cause failures [#758](https://github.com/compodoc/compodoc/pull/758) Thanks [Matt Ezell](https://github.com/mattezell)
-- Avoid pathological out of memory on large datasets [#778](https://github.com/compodoc/compodoc/pull/778) Thanks [Ali Ijaz Sheikh](https://github.com/ofrobots)
-- fix(Engine): Code blocks in Markdown not work as expected [#755](https://github.com/compodoc/compodoc/pull/755) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
-- feat(i18n): Spanish language [#753](https://github.com/compodoc/compodoc/pull/753) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
-- feat(i18n): Italian language [#748](https://github.com/compodoc/compodoc/pull/748) Thanks [Marco](https://github.com/predorock)
-- feat(i18n): add hungarian language [#796](https://github.com/compodoc/compodoc/pull/796) Thanks [Nagy, Gábor](https://github.com/mercury83)
-- feat(i18n): add japanese language translations [#794](https://github.com/compodoc/compodoc/pull/794) Thanks [tkt989](https://github.com/tkt989)
-- feat(i18n): add dutch language translations [#792](https://github.com/compodoc/compodoc/pull/792) Thanks [Bjørn Wikkeling](https://github.com/magikMaker)
+-   Upgrade to opencollective-postinstall [#804](https://github.com/compodoc/compodoc/pull/804) Thanks [Emanuel](https://github.com/emanuelbuholzer)
+-   Update postinstall so that it doesn't cause failures [#758](https://github.com/compodoc/compodoc/pull/758) Thanks [Matt Ezell](https://github.com/mattezell)
+-   Avoid pathological out of memory on large datasets [#778](https://github.com/compodoc/compodoc/pull/778) Thanks [Ali Ijaz Sheikh](https://github.com/ofrobots)
+-   fix(Engine): Code blocks in Markdown not work as expected [#755](https://github.com/compodoc/compodoc/pull/755) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
+-   feat(i18n): Spanish language [#753](https://github.com/compodoc/compodoc/pull/753) Thanks [José Antonio Yáñez Jiménez](https://github.com/berikin)
+-   feat(i18n): Italian language [#748](https://github.com/compodoc/compodoc/pull/748) Thanks [Marco](https://github.com/predorock)
+-   feat(i18n): add hungarian language [#796](https://github.com/compodoc/compodoc/pull/796) Thanks [Nagy, Gábor](https://github.com/mercury83)
+-   feat(i18n): add japanese language translations [#794](https://github.com/compodoc/compodoc/pull/794) Thanks [tkt989](https://github.com/tkt989)
+-   feat(i18n): add dutch language translations [#792](https://github.com/compodoc/compodoc/pull/792) Thanks [Bjørn Wikkeling](https://github.com/magikMaker)
 
 ### Bug fixes
 
-- fix(app): toggleMenuItems ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#790](https://github.com/compodoc/compodoc/issues/790)
-- fix(app): Code blocks in Markdown not work as expected ([9b829ed](https://github.com/compodoc/compodoc/commit/9b829ed)), closes [#750](https://github.com/compodoc/compodoc/issues/750)
-- fix(export): disableSourceCode flag for json format ([171862d](https://github.com/compodoc/compodoc/commit/171862d)), closes [#785](https://github.com/compodoc/compodoc/issues/785)
-- fix(CLI): rendering with --disableCoverage ([55944ff](https://github.com/compodoc/compodoc/commit/55944ff)), closes [#786](https://github.com/compodoc/compodoc/issues/786)
-- feat(CLI): disableDependencies flag ([399054e](https://github.com/compodoc/compodoc/commit/399054e)), closes [#797](https://github.com/compodoc/compodoc/issues/797)
-- fix(CLI): flag for host url ([b2ec5b9](https://github.com/compodoc/compodoc/commit/b2ec5b9)), closes [#787](https://github.com/compodoc/compodoc/issues/787)
-- fix(CLI): output + serve ([94e2f82](https://github.com/compodoc/compodoc/commit/94e2f82)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
-- fix(CLI): Hide banner in silent mode ([fea00d3](https://github.com/compodoc/compodoc/commit/fea00d3)), closes [#747](https://github.com/compodoc/compodoc/issues/747)
+-   fix(app): toggleMenuItems ([d759b4f](https://github.com/compodoc/compodoc/commit/d759b4f)), closes [#790](https://github.com/compodoc/compodoc/issues/790)
+-   fix(app): Code blocks in Markdown not work as expected ([9b829ed](https://github.com/compodoc/compodoc/commit/9b829ed)), closes [#750](https://github.com/compodoc/compodoc/issues/750)
+-   fix(export): disableSourceCode flag for json format ([171862d](https://github.com/compodoc/compodoc/commit/171862d)), closes [#785](https://github.com/compodoc/compodoc/issues/785)
+-   fix(CLI): rendering with --disableCoverage ([55944ff](https://github.com/compodoc/compodoc/commit/55944ff)), closes [#786](https://github.com/compodoc/compodoc/issues/786)
+-   feat(CLI): disableDependencies flag ([399054e](https://github.com/compodoc/compodoc/commit/399054e)), closes [#797](https://github.com/compodoc/compodoc/issues/797)
+-   fix(CLI): flag for host url ([b2ec5b9](https://github.com/compodoc/compodoc/commit/b2ec5b9)), closes [#787](https://github.com/compodoc/compodoc/issues/787)
+-   fix(CLI): output + serve ([94e2f82](https://github.com/compodoc/compodoc/commit/94e2f82)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
+-   fix(CLI): Hide banner in silent mode ([fea00d3](https://github.com/compodoc/compodoc/commit/fea00d3)), closes [#747](https://github.com/compodoc/compodoc/issues/747)
 
 <a name="1.1.9"></a>
 
@@ -51,21 +96,21 @@
 
 ### Features
 
-- feat(app): documentation coverage for files with lint-staged tools ([59ff58e](https://github.com/compodoc/compodoc/commit/59ff58e)), closes [#546](https://github.com/compodoc/compodoc/issues/546)
+-   feat(app): documentation coverage for files with lint-staged tools ([59ff58e](https://github.com/compodoc/compodoc/commit/59ff58e)), closes [#546](https://github.com/compodoc/compodoc/issues/546)
 
 ### Merged
 
-- fix(UI): a few issues with the src on customLogo img [#688](https://github.com/compodoc/compodoc/pull/688) Thanks [Zachary Feldman](https://github.com/feldmanz66)
-- fix: use consistent semver range specifiers [#733](https://github.com/compodoc/compodoc/pull/733) Thanks [Justin Beckwith](https://github.com/JustinBeckwith)
+-   fix(UI): a few issues with the src on customLogo img [#688](https://github.com/compodoc/compodoc/pull/688) Thanks [Zachary Feldman](https://github.com/feldmanz66)
+-   fix: use consistent semver range specifiers [#733](https://github.com/compodoc/compodoc/pull/733) Thanks [Justin Beckwith](https://github.com/JustinBeckwith)
 
 ### Bug fixes
 
-- fix(app): output + serve ([8332344](https://github.com/compodoc/compodoc/commit/8332344)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
-- fix(deps): jsdoc param comment for accessor ([655be32](https://github.com/compodoc/compodoc/commit/655be32)), closes [#735](https://github.com/compodoc/compodoc/issues/735)
-- fix(deps): injectables inheritance ([35da83e](https://github.com/compodoc/compodoc/commit/35da83e)), closes [#738](https://github.com/compodoc/compodoc/issues/738)
-- fix(deps): no link if ignored data ([242e42d](https://github.com/compodoc/compodoc/commit/242e42d)), closes [#737](https://github.com/compodoc/compodoc/issues/737)
-- fix(deps): multiple inheritance class support ([62f1bd0](https://github.com/compodoc/compodoc/commit/62f1bd0)), closes [#728](https://github.com/compodoc/compodoc/issues/728)
-- fix(deps): Type casting inside decorator ([f597531](https://github.com/compodoc/compodoc/commit/f597531)), closes [#727](https://github.com/compodoc/compodoc/issues/727)
+-   fix(app): output + serve ([8332344](https://github.com/compodoc/compodoc/commit/8332344)), closes [#742](https://github.com/compodoc/compodoc/issues/742)
+-   fix(deps): jsdoc param comment for accessor ([655be32](https://github.com/compodoc/compodoc/commit/655be32)), closes [#735](https://github.com/compodoc/compodoc/issues/735)
+-   fix(deps): injectables inheritance ([35da83e](https://github.com/compodoc/compodoc/commit/35da83e)), closes [#738](https://github.com/compodoc/compodoc/issues/738)
+-   fix(deps): no link if ignored data ([242e42d](https://github.com/compodoc/compodoc/commit/242e42d)), closes [#737](https://github.com/compodoc/compodoc/issues/737)
+-   fix(deps): multiple inheritance class support ([62f1bd0](https://github.com/compodoc/compodoc/commit/62f1bd0)), closes [#728](https://github.com/compodoc/compodoc/issues/728)
+-   fix(deps): Type casting inside decorator ([f597531](https://github.com/compodoc/compodoc/commit/f597531)), closes [#727](https://github.com/compodoc/compodoc/issues/727)
 
 <a name="1.1.8"></a>
 
