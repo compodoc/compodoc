@@ -7,7 +7,7 @@
                     <ul class="index-list">
                     {{#each list}}
                         <li>
-                            <a href="#{{name}}" title="{{file}}"><b>{{name}}</b>&nbsp;&nbsp;&nbsp;({{short-url file}})</a>
+                            <a href="#{{name}}" title="{{file}}" {{#if deprecated}}class="deprecated-name"{{/if}}><b>{{name}}</b>&nbsp;&nbsp;&nbsp;({{short-url file}})</a>
                         </li>
                     {{/each}}
                     </ul>

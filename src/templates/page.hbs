@@ -8,7 +8,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" type="image/x-icon" href="{{relativeURL data.depth }}images/favicon.ico">
-	      <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+	   <link rel="stylesheet" href="{{relativeURL data.depth }}styles/style.css">
+        <link rel="stylesheet" href="{{relativeURL data.depth }}styles/dark.css" media="(prefers-color-scheme: dark)">
         {{#if data.theme}}
             {{#compare data.theme "!==" 'gitbook'}}
         <link rel="stylesheet" href="{{relativeURL data.depth }}styles/{{data.theme}}.css">
@@ -161,9 +162,9 @@
 
        <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
        <script src="{{relativeURL data.depth }}js/libs/lit-html.js"></script>
-       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
-       <script src="{{relativeURL data.depth }}js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
-       <script src="{{relativeURL data.depth }}js/menu-wc.js" defer></script>
+       
+       <script type="module" src="{{relativeURL data.depth }}js/menu-wc.js" defer></script>
+       <script nomodule src="{{relativeURL data.depth }}js/menu-wc_es5.js" defer></script>
 
        <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>
 

@@ -5,6 +5,7 @@ export class SetupFlags {
     private static instance: SetupFlags;
 
     public program: CLIProgram;
+    public programOptions;
 
     constructor() {
         this.program = require('commander');
@@ -44,10 +45,12 @@ export class SetupFlags {
 
         this.program.parse(process.argv);
 
+        this.programOptions = this.program.opts();
+
         /**
          * TODO : return something wrapping program and handling internal configuration
          */
-        return this.program;
+        return this.programOptions;
     }
 }
 

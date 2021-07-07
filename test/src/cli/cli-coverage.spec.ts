@@ -8,7 +8,7 @@ describe('CLI coverage report', () => {
 
     describe('excluding coverage', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -35,7 +35,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test command above', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -63,7 +63,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test command above with src folder provided in arguments', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -92,7 +92,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test command under', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -120,7 +120,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command under', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -150,7 +150,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command under with --coverageTestShowOnlyFailed', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -180,7 +180,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -208,7 +208,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 1/4', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -243,7 +243,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 2/4', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -278,7 +278,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 3/4', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -311,7 +311,7 @@ describe('CLI coverage report', () => {
 
     describe('coverage test per file command over and global threshold - 4/4', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -320,7 +320,7 @@ describe('CLI coverage report', () => {
                 '--coverageMinimumPerFile',
                 '0',
                 '--coverageTest',
-                '30',
+                '40',
                 '-d',
                 distFolder
             ]);
@@ -345,7 +345,7 @@ describe('CLI coverage report', () => {
     describe('coverage page', () => {
         let stdoutString = undefined,
             coverageFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -365,17 +365,21 @@ describe('CLI coverage report', () => {
         });
         after(() => tmp.clean(distFolder));
 
-        it('it should have coverage page', () => {
+        it('it should have coverage page - title', () => {
             expect(coverageFile).to.contain('Documentation coverage');
+        });
+        it('it should have coverage page - badge', () => {
             expect(coverageFile).to.contain('img src="./images/coverage-badge-documentation.svg"');
-            expect(coverageFile).to.contain('5/5');
+        });
+        it('it should have coverage page - score', () => {
+            expect(coverageFile).to.contain('7/7');
         });
     });
 
     describe('coverage page links', () => {
         let stdoutString = undefined,
             coverageFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -406,12 +410,25 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('<td>interface</td>');
             expect(coverageFile).to.contain('<td>pipe</td>');
             expect(coverageFile).to.contain('<td>variable</td>');
+
+            expect(coverageFile).to.contain('components/CompodocComponent.html');
+            expect(coverageFile).to.contain('interfaces/ClockInterface.html');
+            expect(coverageFile).to.contain('miscellaneous/functions.html#foo');
+            expect(coverageFile).to.contain('variables.html#PI');
+            expect(coverageFile).to.contain('pipes/FirstUpperPipe.html');
+            expect(coverageFile).to.contain('directives/DoNothingDirective2.html');
+            expect(coverageFile).to.contain('injectables/TodoStore2.html');
+            expect(coverageFile).to.contain('classes/Todo2.html');
+            expect(coverageFile).to.contain('guards/AuthGuard.html');
+            expect(coverageFile).to.contain('interceptors/NoopInterceptor.html');
+            expect(coverageFile).to.contain('variables.html#PI');
+            expect(coverageFile).to.contain('variables.html#PI');
         });
     });
 
     describe('coverage test per file command under with one file through --files', () => {
         let stdoutString = undefined;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

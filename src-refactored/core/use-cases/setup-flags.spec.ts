@@ -8,17 +8,14 @@ describe('Use-cases - Should setup flags', () => {
     const pkg = {
         version: '0.0.1'
     };
-    let program;
     let options;
 
     beforeEach(() => {
         SetupFlags.setup(pkg);
-        program = SetupFlags.program;
-        options = program.opts();
+        options = SetupFlags.programOptions;
     });
 
     it('should handle options', async () => {
-        expect(options.version).equal(pkg.version);
         expect(options.coverageTestThresholdFail).to.be.true;
         expect(options.exportFormat).equal(COMPODOC_DEFAULTS.exportFormat);
         expect(options.gaSite).equal(COMPODOC_DEFAULTS.gaSite);

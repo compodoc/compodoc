@@ -402,6 +402,22 @@
         "securityRisk": false
       },
       {
+        "name": "httpcontext",
+        "title": "HttpContext",
+        "path": "api/common/http/HttpContext",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "httpcontexttoken",
+        "title": "HttpContextToken",
+        "path": "api/common/http/HttpContextToken",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "httpdownloadprogressevent",
         "title": "HttpDownloadProgressEvent",
         "path": "api/common/http/HttpDownloadProgressEvent",
@@ -482,6 +498,14 @@
         "securityRisk": false
       },
       {
+        "name": "httpparamsoptions",
+        "title": "HttpParamsOptions",
+        "path": "api/common/http/HttpParamsOptions",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "httpprogressevent",
         "title": "HttpProgressEvent",
         "path": "api/common/http/HttpProgressEvent",
@@ -518,6 +542,14 @@
         "title": "HttpSentEvent",
         "path": "api/common/http/HttpSentEvent",
         "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "httpstatuscode",
+        "title": "HttpStatusCode",
+        "path": "api/common/http/HttpStatusCode",
+        "docType": "enum",
         "stability": "stable",
         "securityRisk": false
       },
@@ -581,8 +613,8 @@
         "name": "xhrfactory",
         "title": "XhrFactory",
         "path": "api/common/http/XhrFactory",
-        "docType": "class",
-        "stability": "stable",
+        "docType": "type-alias",
+        "stability": "deprecated",
         "securityRisk": false
       }
     ]
@@ -680,46 +712,6 @@
         "securityRisk": false
       },
       {
-        "name": "deprecatedcurrencypipe",
-        "title": "DeprecatedCurrencyPipe",
-        "path": "api/common/DeprecatedCurrencyPipe",
-        "docType": "pipe",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "deprecateddatepipe",
-        "title": "DeprecatedDatePipe",
-        "path": "api/common/DeprecatedDatePipe",
-        "docType": "pipe",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "deprecateddecimalpipe",
-        "title": "DeprecatedDecimalPipe",
-        "path": "api/common/DeprecatedDecimalPipe",
-        "docType": "pipe",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "deprecatedi18npipesmodule",
-        "title": "DeprecatedI18NPipesModule",
-        "path": "api/common/DeprecatedI18NPipesModule",
-        "docType": "ngmodule",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "deprecatedpercentpipe",
-        "title": "DeprecatedPercentPipe",
-        "path": "api/common/DeprecatedPercentPipe",
-        "docType": "pipe",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
         "name": "document",
         "title": "DOCUMENT",
         "path": "api/common/DOCUMENT",
@@ -784,6 +776,14 @@
         "securityRisk": false
       },
       {
+        "name": "getlocalecurrencycode",
+        "title": "getLocaleCurrencyCode",
+        "path": "api/common/getLocaleCurrencyCode",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "getlocalecurrencyname",
         "title": "getLocaleCurrencyName",
         "path": "api/common/getLocaleCurrencyName",
@@ -827,6 +827,14 @@
         "name": "getlocaledayperiods",
         "title": "getLocaleDayPeriods",
         "path": "api/common/getLocaleDayPeriods",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "getlocaledirection",
+        "title": "getLocaleDirection",
+        "path": "api/common/getLocaleDirection",
         "docType": "function",
         "stability": "stable",
         "securityRisk": false
@@ -1064,14 +1072,6 @@
         "securityRisk": false
       },
       {
-        "name": "ngclassbase",
-        "title": "NgClassBase",
-        "path": "api/common/NgClassBase",
-        "docType": "class",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
         "name": "ngcomponentoutlet",
         "title": "NgComponentOutlet",
         "path": "api/common/NgComponentOutlet",
@@ -1148,14 +1148,6 @@
         "title": "NgStyle",
         "path": "api/common/NgStyle",
         "docType": "directive",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "ngstylebase",
-        "title": "NgStyleBase",
-        "path": "api/common/NgStyleBase",
-        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -1310,6 +1302,14 @@
         "docType": "enum",
         "stability": "stable",
         "securityRisk": false
+      },
+      {
+        "name": "xhrfactory",
+        "title": "XhrFactory",
+        "path": "api/common/XhrFactory",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
       }
     ]
   },
@@ -1429,6 +1429,30 @@
     "path": "api/core",
     "items": [
       {
+        "name": "<ng-container>",
+        "title": "<ng-container>",
+        "path": "api/core/ng-container",
+        "docType": "element",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "<ng-content>",
+        "title": "<ng-content>",
+        "path": "api/core/ng-content",
+        "docType": "element",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "<ng-template>",
+        "title": "<ng-template>",
+        "path": "api/core/ng-template",
+        "docType": "element",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "abstracttype",
         "title": "AbstractType",
         "path": "api/core/AbstractType",
@@ -1473,7 +1497,7 @@
         "title": "ANALYZE_FOR_ENTRY_COMPONENTS",
         "path": "api/core/ANALYZE_FOR_ENTRY_COMPONENTS",
         "docType": "const",
-        "stability": "stable",
+        "stability": "deprecated",
         "securityRisk": false
       },
       {
@@ -1520,7 +1544,7 @@
         "name": "applicationref",
         "title": "ApplicationRef",
         "path": "api/core/ApplicationRef",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -1544,7 +1568,15 @@
         "name": "attribute",
         "title": "Attribute",
         "path": "api/core/Attribute",
-        "docType": "decorator",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "attributedecorator",
+        "title": "AttributeDecorator",
+        "path": "api/core/AttributeDecorator",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -1578,14 +1610,6 @@
         "path": "api/core/ClassSansProvider",
         "docType": "interface",
         "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "collectionchangerecord",
-        "title": "CollectionChangeRecord",
-        "path": "api/core/CollectionChangeRecord",
-        "docType": "interface",
-        "stability": "deprecated",
         "securityRisk": false
       },
       {
@@ -1653,6 +1677,14 @@
         "securityRisk": false
       },
       {
+        "name": "constructorprovider",
+        "title": "ConstructorProvider",
+        "path": "api/core/ConstructorProvider",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "constructorsansprovider",
         "title": "ConstructorSansProvider",
         "path": "api/core/ConstructorSansProvider",
@@ -1704,7 +1736,7 @@
         "name": "debugelement",
         "title": "DebugElement",
         "path": "api/core/DebugElement",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -1720,7 +1752,15 @@
         "name": "debugnode",
         "title": "DebugNode",
         "path": "api/core/DebugNode",
-        "docType": "interface",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "default_currency_code",
+        "title": "DEFAULT_CURRENCY_CODE",
+        "path": "api/core/DEFAULT_CURRENCY_CODE",
+        "docType": "const",
         "stability": "stable",
         "securityRisk": false
       },
@@ -1821,9 +1861,25 @@
         "securityRisk": false
       },
       {
+        "name": "existingsansprovider",
+        "title": "ExistingSansProvider",
+        "path": "api/core/ExistingSansProvider",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "factoryprovider",
         "title": "FactoryProvider",
         "path": "api/core/FactoryProvider",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "factorysansprovider",
+        "title": "FactorySansProvider",
+        "path": "api/core/FactorySansProvider",
         "docType": "interface",
         "stability": "stable",
         "securityRisk": false
@@ -2264,7 +2320,7 @@
         "name": "platformref",
         "title": "PlatformRef",
         "path": "api/core/PlatformRef",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -2280,6 +2336,14 @@
         "name": "provider",
         "title": "Provider",
         "path": "api/core/Provider",
+        "docType": "type-alias",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "providertoken",
+        "title": "ProviderToken",
+        "path": "api/core/ProviderToken",
         "docType": "type-alias",
         "stability": "stable",
         "securityRisk": false
@@ -2312,22 +2376,6 @@
         "name": "reflectivekey",
         "title": "ReflectiveKey",
         "path": "api/core/ReflectiveKey",
-        "docType": "class",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "rendercomponenttype",
-        "title": "RenderComponentType",
-        "path": "api/core/RenderComponentType",
-        "docType": "class",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "renderer",
-        "title": "Renderer",
-        "path": "api/core/Renderer",
         "docType": "class",
         "stability": "deprecated",
         "securityRisk": false
@@ -2386,14 +2434,6 @@
         "path": "api/core/resolveForwardRef",
         "docType": "function",
         "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "rootrenderer",
-        "title": "RootRenderer",
-        "path": "api/core/RootRenderer",
-        "docType": "class",
-        "stability": "deprecated",
         "securityRisk": false
       },
       {
@@ -2457,6 +2497,22 @@
         "title": "SkipSelf",
         "path": "api/core/SkipSelf",
         "docType": "decorator",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "staticclassprovider",
+        "title": "StaticClassProvider",
+        "path": "api/core/StaticClassProvider",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "staticclasssansprovider",
+        "title": "StaticClassSansProvider",
+        "path": "api/core/StaticClassSansProvider",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -2536,7 +2592,7 @@
         "name": "type",
         "title": "Type",
         "path": "api/core/Type",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -2625,47 +2681,118 @@
         "title": "WrappedValue",
         "path": "api/core/WrappedValue",
         "docType": "class",
+        "stability": "deprecated",
+        "securityRisk": false
+      }
+    ]
+  },
+  {
+    "name": "core/global",
+    "title": "core/global",
+    "path": "api/core/global",
+    "items": [
+      {
+        "name": "componentdebugmetadata",
+        "title": "ComponentDebugMetadata",
+        "path": "api/core/global/ComponentDebugMetadata",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
       {
-        "name": "wtfcreatescope",
-        "title": "wtfCreateScope",
-        "path": "api/core/wtfCreateScope",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "wtfendtimerange",
-        "title": "wtfEndTimeRange",
-        "path": "api/core/wtfEndTimeRange",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "wtfleave",
-        "title": "wtfLeave",
-        "path": "api/core/wtfLeave",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "wtfscopefn",
-        "title": "WtfScopeFn",
-        "path": "api/core/WtfScopeFn",
+        "name": "directivedebugmetadata",
+        "title": "DirectiveDebugMetadata",
+        "path": "api/core/global/DirectiveDebugMetadata",
         "docType": "interface",
-        "stability": "deprecated",
+        "stability": "stable",
         "securityRisk": false
       },
       {
-        "name": "wtfstarttimerange",
-        "title": "wtfStartTimeRange",
-        "path": "api/core/wtfStartTimeRange",
-        "docType": "const",
-        "stability": "deprecated",
+        "name": "listener",
+        "title": "Listener",
+        "path": "api/core/global/Listener",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.applychanges",
+        "title": "ng.applyChanges",
+        "path": "api/core/global/ngApplyChanges",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getcomponent",
+        "title": "ng.getComponent",
+        "path": "api/core/global/ngGetComponent",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getcontext",
+        "title": "ng.getContext",
+        "path": "api/core/global/ngGetContext",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getdirectivemetadata",
+        "title": "ng.getDirectiveMetadata",
+        "path": "api/core/global/ngGetDirectiveMetadata",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getdirectives",
+        "title": "ng.getDirectives",
+        "path": "api/core/global/ngGetDirectives",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.gethostelement",
+        "title": "ng.getHostElement",
+        "path": "api/core/global/ngGetHostElement",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getinjector",
+        "title": "ng.getInjector",
+        "path": "api/core/global/ngGetInjector",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getlisteners",
+        "title": "ng.getListeners",
+        "path": "api/core/global/ngGetListeners",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getowningcomponent",
+        "title": "ng.getOwningComponent",
+        "path": "api/core/global/ngGetOwningComponent",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "ng.getrootcomponents",
+        "title": "ng.getRootComponents",
+        "path": "api/core/global/ngGetRootComponents",
+        "docType": "function",
+        "stability": "stable",
         "securityRisk": false
       }
     ]
@@ -2680,7 +2807,7 @@
         "title": "async",
         "path": "api/core/testing/async",
         "docType": "function",
-        "stability": "stable",
+        "stability": "deprecated",
         "securityRisk": false
       },
       {
@@ -2772,6 +2899,14 @@
         "securityRisk": false
       },
       {
+        "name": "moduleteardownoptions",
+        "title": "ModuleTeardownOptions",
+        "path": "api/core/testing/ModuleTeardownOptions",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "resetfakeasynczone",
         "title": "resetFakeAsyncZone",
         "path": "api/core/testing/resetFakeAsyncZone",
@@ -2783,7 +2918,7 @@
         "name": "testbed",
         "title": "TestBed",
         "path": "api/core/testing/TestBed",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -2804,6 +2939,14 @@
         "securityRisk": false
       },
       {
+        "name": "testenvironmentoptions",
+        "title": "TestEnvironmentOptions",
+        "path": "api/core/testing/TestEnvironmentOptions",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "testmodulemetadata",
         "title": "TestModuleMetadata",
         "path": "api/core/testing/TestModuleMetadata",
@@ -2815,6 +2958,14 @@
         "name": "tick",
         "title": "tick",
         "path": "api/core/testing/tick",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "waitforasync",
+        "title": "waitForAsync",
+        "path": "api/core/testing/waitForAsync",
         "docType": "function",
         "stability": "stable",
         "securityRisk": false
@@ -2933,7 +3084,7 @@
         "name": "abstractformgroupdirective",
         "title": "AbstractFormGroupDirective",
         "path": "api/forms/AbstractFormGroupDirective",
-        "docType": "class",
+        "docType": "directive",
         "stability": "stable",
         "securityRisk": false
       },
@@ -3106,9 +3257,25 @@
         "securityRisk": false
       },
       {
+        "name": "maxvalidator",
+        "title": "MaxValidator",
+        "path": "api/forms/MaxValidator",
+        "docType": "directive",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "minlengthvalidator",
         "title": "MinLengthValidator",
         "path": "api/forms/MinLengthValidator",
+        "docType": "directive",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "minvalidator",
+        "title": "MinValidator",
+        "path": "api/forms/MinValidator",
         "docType": "directive",
         "stability": "stable",
         "securityRisk": false
@@ -3167,14 +3334,6 @@
         "path": "api/forms/NgForm",
         "docType": "directive",
         "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "ngformselectorwarning",
-        "title": "NgFormSelectorWarning",
-        "path": "api/forms/NgFormSelectorWarning",
-        "docType": "directive",
-        "stability": "deprecated",
         "securityRisk": false
       },
       {
@@ -3300,6 +3459,44 @@
     ]
   },
   {
+    "name": "localize",
+    "title": "localize",
+    "path": "api/localize",
+    "items": [
+      {
+        "name": "cleartranslations",
+        "title": "clearTranslations",
+        "path": "api/localize/clearTranslations",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "loadtranslations",
+        "title": "loadTranslations",
+        "path": "api/localize/loadTranslations",
+        "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      }
+    ]
+  },
+  {
+    "name": "localize/init",
+    "title": "localize/init",
+    "path": "api/localize/init",
+    "items": [
+      {
+        "name": "$localize",
+        "title": "$localize",
+        "path": "api/localize/init/$localize",
+        "docType": "const",
+        "stability": "stable",
+        "securityRisk": false
+      }
+    ]
+  },
+  {
     "name": "platform-browser",
     "title": "platform-browser",
     "path": "api/platform-browser",
@@ -3397,6 +3594,14 @@
         "title": "HammerLoader",
         "path": "api/platform-browser/HammerLoader",
         "docType": "type-alias",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "hammermodule",
+        "title": "HammerModule",
+        "path": "api/platform-browser/HammerModule",
+        "docType": "ngmodule",
         "stability": "stable",
         "securityRisk": false
       },
@@ -3524,6 +3729,14 @@
         "title": "BrowserAnimationsModule",
         "path": "api/platform-browser/animations/BrowserAnimationsModule",
         "docType": "ngmodule",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "browseranimationsmoduleconfig",
+        "title": "BrowserAnimationsModuleConfig",
+        "path": "api/platform-browser/animations/BrowserAnimationsModuleConfig",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -3702,6 +3915,12 @@
     ]
   },
   {
+    "name": "platform-server/init",
+    "title": "platform-server/init",
+    "path": "api/platform-server/init",
+    "items": []
+  },
+  {
     "name": "platform-server/testing",
     "title": "platform-server/testing",
     "path": "api/platform-server/testing",
@@ -3725,164 +3944,6 @@
     ]
   },
   {
-    "name": "platform-webworker",
-    "title": "platform-webworker",
-    "path": "api/platform-webworker",
-    "items": [
-      {
-        "name": "bootstrapworkerui",
-        "title": "bootstrapWorkerUi",
-        "path": "api/platform-webworker/bootstrapWorkerUi",
-        "docType": "function",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "clientmessagebroker",
-        "title": "ClientMessageBroker",
-        "path": "api/platform-webworker/ClientMessageBroker",
-        "docType": "interface",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "clientmessagebrokerfactory",
-        "title": "ClientMessageBrokerFactory",
-        "path": "api/platform-webworker/ClientMessageBrokerFactory",
-        "docType": "interface",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "fnarg",
-        "title": "FnArg",
-        "path": "api/platform-webworker/FnArg",
-        "docType": "class",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "messagebus",
-        "title": "MessageBus",
-        "path": "api/platform-webworker/MessageBus",
-        "docType": "class",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "messagebussink",
-        "title": "MessageBusSink",
-        "path": "api/platform-webworker/MessageBusSink",
-        "docType": "interface",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "messagebussource",
-        "title": "MessageBusSource",
-        "path": "api/platform-webworker/MessageBusSource",
-        "docType": "interface",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "platformworkerapp",
-        "title": "platformWorkerApp",
-        "path": "api/platform-webworker/platformWorkerApp",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "platformworkerui",
-        "title": "platformWorkerUi",
-        "path": "api/platform-webworker/platformWorkerUi",
-        "docType": "const",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "receivedmessage",
-        "title": "ReceivedMessage",
-        "path": "api/platform-webworker/ReceivedMessage",
-        "docType": "interface",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "serializertypes",
-        "title": "SerializerTypes",
-        "path": "api/platform-webworker/SerializerTypes",
-        "docType": "enum",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "servicemessagebroker",
-        "title": "ServiceMessageBroker",
-        "path": "api/platform-webworker/ServiceMessageBroker",
-        "docType": "interface",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "servicemessagebrokerfactory",
-        "title": "ServiceMessageBrokerFactory",
-        "path": "api/platform-webworker/ServiceMessageBrokerFactory",
-        "docType": "interface",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "uiarguments",
-        "title": "UiArguments",
-        "path": "api/platform-webworker/UiArguments",
-        "docType": "class",
-        "stability": "stable",
-        "securityRisk": false
-      },
-      {
-        "name": "worker_app_location_providers",
-        "title": "WORKER_APP_LOCATION_PROVIDERS",
-        "path": "api/platform-webworker/WORKER_APP_LOCATION_PROVIDERS",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "worker_ui_location_providers",
-        "title": "WORKER_UI_LOCATION_PROVIDERS",
-        "path": "api/platform-webworker/WORKER_UI_LOCATION_PROVIDERS",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      },
-      {
-        "name": "workerappmodule",
-        "title": "WorkerAppModule",
-        "path": "api/platform-webworker/WorkerAppModule",
-        "docType": "ngmodule",
-        "stability": "deprecated",
-        "securityRisk": false
-      }
-    ]
-  },
-  {
-    "name": "platform-webworker-dynamic",
-    "title": "platform-webworker-dynamic",
-    "path": "api/platform-webworker-dynamic",
-    "items": [
-      {
-        "name": "platformworkerappdynamic",
-        "title": "platformWorkerAppDynamic",
-        "path": "api/platform-webworker-dynamic/platformWorkerAppDynamic",
-        "docType": "const",
-        "stability": "deprecated",
-        "securityRisk": false
-      }
-    ]
-  },
-  {
     "name": "router",
     "title": "router",
     "path": "api/router",
@@ -3891,7 +3952,7 @@
         "name": "activatedroute",
         "title": "ActivatedRoute",
         "path": "api/router/ActivatedRoute",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -3899,7 +3960,7 @@
         "name": "activatedroutesnapshot",
         "title": "ActivatedRouteSnapshot",
         "path": "api/router/ActivatedRouteSnapshot",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -3915,6 +3976,14 @@
         "name": "activationstart",
         "title": "ActivationStart",
         "path": "api/router/ActivationStart",
+        "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "baseroutereusestrategy",
+        "title": "BaseRouteReuseStrategy",
+        "path": "api/router/BaseRouteReuseStrategy",
         "docType": "class",
         "stability": "stable",
         "securityRisk": false
@@ -4048,6 +4117,22 @@
         "securityRisk": false
       },
       {
+        "name": "initialnavigation",
+        "title": "InitialNavigation",
+        "path": "api/router/InitialNavigation",
+        "docType": "type-alias",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "isactivematchoptions",
+        "title": "IsActiveMatchOptions",
+        "path": "api/router/IsActiveMatchOptions",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "loadchildren",
         "title": "LoadChildren",
         "path": "api/router/LoadChildren",
@@ -4067,7 +4152,15 @@
         "name": "navigation",
         "title": "Navigation",
         "path": "api/router/Navigation",
-        "docType": "type-alias",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "navigationbehavioroptions",
+        "title": "NavigationBehaviorOptions",
+        "path": "api/router/NavigationBehaviorOptions",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4172,6 +4265,14 @@
         "title": "provideRoutes",
         "path": "api/router/provideRoutes",
         "docType": "function",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "queryparamshandling",
+        "title": "QueryParamsHandling",
+        "path": "api/router/QueryParamsHandling",
+        "docType": "type-alias",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4312,6 +4413,14 @@
         "securityRisk": false
       },
       {
+        "name": "routeroutletcontract",
+        "title": "RouterOutletContract",
+        "path": "api/router/RouterOutletContract",
+        "docType": "interface",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
         "name": "routerpreloader",
         "title": "RouterPreloader",
         "path": "api/router/RouterPreloader",
@@ -4323,7 +4432,7 @@
         "name": "routerstate",
         "title": "RouterState",
         "path": "api/router/RouterState",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4331,7 +4440,7 @@
         "name": "routerstatesnapshot",
         "title": "RouterStateSnapshot",
         "path": "api/router/RouterStateSnapshot",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4372,6 +4481,14 @@
         "title": "Scroll",
         "path": "api/router/Scroll",
         "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "urlcreationoptions",
+        "title": "UrlCreationOptions",
+        "path": "api/router/UrlCreationOptions",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4427,7 +4544,7 @@
         "name": "urltree",
         "title": "UrlTree",
         "path": "api/router/UrlTree",
-        "docType": "interface",
+        "docType": "class",
         "stability": "stable",
         "securityRisk": false
       }
@@ -4521,6 +4638,14 @@
         "title": "SwUpdate",
         "path": "api/service-worker/SwUpdate",
         "docType": "class",
+        "stability": "stable",
+        "securityRisk": false
+      },
+      {
+        "name": "unrecoverablestateevent",
+        "title": "UnrecoverableStateEvent",
+        "path": "api/service-worker/UnrecoverableStateEvent",
+        "docType": "interface",
         "stability": "stable",
         "securityRisk": false
       },
@@ -4630,7 +4755,7 @@
         "name": "upgradecomponent",
         "title": "UpgradeComponent",
         "path": "api/upgrade/static/UpgradeComponent",
-        "docType": "class",
+        "docType": "directive",
         "stability": "stable",
         "securityRisk": false
       },

@@ -57,12 +57,12 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                 }
 
                 if (resultInCompodoc.type === 'class') {
-                    resultInCompodoc.type = 'classe';
+                    resultInCompodoc.type = 'classes';
                 } else if (
                     resultInCompodoc.type === 'miscellaneous' ||
                     (resultInCompodoc.ctype && resultInCompodoc.ctype === 'miscellaneous')
                 ) {
-                    resultInCompodoc.type = 'miscellaneou'; // Not a typo, it is for matching other single types : component, module etc
+                    resultInCompodoc.type = 'miscellaneous'; // Not a typo, it is for matching other single types : component, module etc
                     label = resultInCompodoc.name;
                     anchor = '#' + resultInCompodoc.name;
                     if (resultInCompodoc.subtype === 'enum') {
@@ -98,9 +98,11 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     label = split.linkText;
                 }
 
-                newLink = `<a href="${rootPath}${
-                    resultInCompodoc.type
-                }s/${pageName}.html${anchor}">${label}</a>`;
+                if (resultInCompodoc.type === 'miscellaneous') {
+                    newLink = `<a href="${rootPath}${resultInCompodoc.type}/${pageName}.html${anchor}">${label}</a>`;
+                } else {
+                    newLink = `<a href="${rootPath}${resultInCompodoc.type}s/${pageName}.html${anchor}">${label}</a>`;
+                }
 
                 return originalDescription.replace(stringtoReplace, newLink);
             } else if (!resultInCompodoc && typeof split.linkText !== 'undefined') {

@@ -1,21 +1,20 @@
-import { Component, Input, Output, OnInit } from '@angular/core';
+import { Input, Output, HostBinding, HostListener } from '@angular/core';
 
 /**
  * Empty parent component for inheritance demo
  */
-export class DumbParentComponent implements OnInit {
+export class DumbParentComponent {
     @Input() public parentInput: string;
 
     @Output() public parentoutput;
 
     public parentProperty;
 
-    ngOnInit() {}
-
     /**
      * HostBinding description
      */
-    @HostBinding('style.color') color: string;
+    @HostBinding('style.color')
+    color: string;
 
     @HostListener('mouseup')
     onMouseup(): void {}

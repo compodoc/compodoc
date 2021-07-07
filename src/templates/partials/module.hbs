@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
     <li>{{t "modules" }}</li>
-    <li>{{name}}</li>
+    <li {{#if module.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{name}}</li>
 </ol>
 
 {{#unless disableGraph}}
@@ -10,7 +12,7 @@
         {{{ module.graph }}}
     </div>
     <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
-    <div class="btn-group">
+    <div class="btn-group size-buttons">
         <button id="zoom-in" class="btn btn-default btn-sm">{{t "zoomin" }}</button>
         <button id="reset" class="btn btn-default btn-sm">{{t "reset" }}</button>
         <button id="zoom-out" class="btn btn-default btn-sm">{{t "zoomout" }}</button>
@@ -47,6 +49,15 @@
         <p class="comment">
             {{module.ngid}}
         </p>
+        {{/if}}
+
+        {{#if module.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ module.deprecationMessage }}}
+            </p>
         {{/if}}
 
         {{#if module.description}}

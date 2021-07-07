@@ -13,13 +13,15 @@ import AngularVersionUtil from './utils/angular-version.util';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
-import { handlePath, readConfig } from './utils/utils';
+import { handlePath, readConfig, ignoreDirectory } from './utils/utils';
 
-const cosmiconfig = require('cosmiconfig');
+import { cosmiconfigSync } from 'cosmiconfig';
+
 const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
 const program = require('commander');
+const sleep = require('sleep');
 
 const cosmiconfigModuleName = 'compodoc';
 
@@ -84,7 +86,7 @@ export class CliApplication extends Application {
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
-                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, nl-NL, pt-BR, sk-SK, zh-CN)',
+                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, sk-SK, zh-CN)',
                 COMPODOC_DEFAULTS.language
             )
             .option(
@@ -189,22 +191,25 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             process.exit(1);
         };
 
-        const configExplorer = cosmiconfig(cosmiconfigModuleName);
+        const configExplorer = cosmiconfigSync(cosmiconfigModuleName);
 
         let configExplorerResult;
 
         let configFile: ConfigurationFileInterface = {};
 
-        if (program.config) {
-            let configFilePath = program.config;
+        const programOptions = program.opts();
+
+        if (programOptions.config) {
+            let configFilePath = programOptions.config;
             let testConfigFilePath = configFilePath.match(process.cwd());
             if (testConfigFilePath && testConfigFilePath.length > 0) {
                 configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
             }
-            configExplorerResult = configExplorer.loadSync(path.resolve(configFilePath));
+            configExplorerResult = configExplorer.load(path.resolve(configFilePath));
         } else {
-            configExplorerResult = configExplorer.searchSync();
+            configExplorerResult = configExplorer.search();
         }
+
         if (configExplorerResult) {
             if (typeof configExplorerResult.config !== 'undefined') {
                 configFile = configExplorerResult.config;
@@ -214,145 +219,148 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.output) {
             Configuration.mainData.output = configFile.output;
         }
-        if (program.output && program.output !== COMPODOC_DEFAULTS.folder) {
-            Configuration.mainData.output = program.output;
+        if (programOptions.output && programOptions.output !== COMPODOC_DEFAULTS.folder) {
+            Configuration.mainData.output = programOptions.output;
         }
 
         if (configFile.extTheme) {
             Configuration.mainData.extTheme = configFile.extTheme;
         }
-        if (program.extTheme) {
-            Configuration.mainData.extTheme = program.extTheme;
+        if (programOptions.extTheme) {
+            Configuration.mainData.extTheme = programOptions.extTheme;
         }
 
         if (configFile.language) {
             Configuration.mainData.language = configFile.language;
         }
-        if (program.language) {
-            Configuration.mainData.language = program.language;
+        if (programOptions.language) {
+            Configuration.mainData.language = programOptions.language;
         }
 
         if (configFile.theme) {
             Configuration.mainData.theme = configFile.theme;
         }
-        if (program.theme) {
-            Configuration.mainData.theme = program.theme;
+        if (programOptions.theme) {
+            Configuration.mainData.theme = programOptions.theme;
         }
 
         if (configFile.name) {
             Configuration.mainData.documentationMainName = configFile.name;
         }
-        if (program.name && program.name !== COMPODOC_DEFAULTS.title) {
-            Configuration.mainData.documentationMainName = program.name;
+        if (programOptions.name && programOptions.name !== COMPODOC_DEFAULTS.title) {
+            Configuration.mainData.documentationMainName = programOptions.name;
         }
 
         if (configFile.assetsFolder) {
             Configuration.mainData.assetsFolder = configFile.assetsFolder;
         }
-        if (program.assetsFolder) {
-            Configuration.mainData.assetsFolder = program.assetsFolder;
+        if (programOptions.assetsFolder) {
+            Configuration.mainData.assetsFolder = programOptions.assetsFolder;
         }
 
         if (configFile.open) {
             Configuration.mainData.open = configFile.open;
         }
-        if (program.open) {
-            Configuration.mainData.open = program.open;
+        if (programOptions.open) {
+            Configuration.mainData.open = programOptions.open;
         }
 
         if (configFile.toggleMenuItems) {
             Configuration.mainData.toggleMenuItems = configFile.toggleMenuItems;
         }
         if (
-            program.toggleMenuItems &&
-            program.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems
+            programOptions.toggleMenuItems &&
+            programOptions.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems
         ) {
-            Configuration.mainData.toggleMenuItems = program.toggleMenuItems;
+            Configuration.mainData.toggleMenuItems = programOptions.toggleMenuItems;
         }
 
         if (configFile.templates) {
             Configuration.mainData.templates = configFile.templates;
         }
-        if (program.templates) {
-            Configuration.mainData.templates = program.templates;
+        if (programOptions.templates) {
+            Configuration.mainData.templates = programOptions.templates;
         }
 
         if (configFile.navTabConfig) {
             Configuration.mainData.navTabConfig = configFile.navTabConfig;
         }
         if (
-            program.navTabConfig &&
-            JSON.parse(program.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length
+            programOptions.navTabConfig &&
+            JSON.parse(programOptions.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length
         ) {
-            Configuration.mainData.navTabConfig = JSON.parse(program.navTabConfig);
+            Configuration.mainData.navTabConfig = JSON.parse(programOptions.navTabConfig);
         }
 
         if (configFile.includes) {
             Configuration.mainData.includes = configFile.includes;
         }
-        if (program.includes) {
-            Configuration.mainData.includes = program.includes;
+        if (programOptions.includes) {
+            Configuration.mainData.includes = programOptions.includes;
         }
 
         if (configFile.includesName) {
             Configuration.mainData.includesName = configFile.includesName;
         }
         if (
-            program.includesName &&
-            program.includesName !== COMPODOC_DEFAULTS.additionalEntryName
+            programOptions.includesName &&
+            programOptions.includesName !== COMPODOC_DEFAULTS.additionalEntryName
         ) {
-            Configuration.mainData.includesName = program.includesName;
+            Configuration.mainData.includesName = programOptions.includesName;
         }
 
         if (configFile.silent) {
             logger.silent = false;
         }
-        if (program.silent) {
+        if (programOptions.silent) {
             logger.silent = false;
         }
 
         if (configFile.serve) {
             Configuration.mainData.serve = configFile.serve;
         }
-        if (program.serve) {
-            Configuration.mainData.serve = program.serve;
+        if (programOptions.serve) {
+            Configuration.mainData.serve = programOptions.serve;
         }
 
         if (configFile.host) {
             Configuration.mainData.host = configFile.host;
             Configuration.mainData.hostname = configFile.host;
         }
-        if (program.host) {
-            Configuration.mainData.host = program.host;
-            Configuration.mainData.hostname = program.host;
+        if (programOptions.host) {
+            Configuration.mainData.host = programOptions.host;
+            Configuration.mainData.hostname = programOptions.host;
         }
 
         if (configFile.port) {
             Configuration.mainData.port = configFile.port;
         }
-        if (program.port && program.port !== COMPODOC_DEFAULTS.port) {
-            Configuration.mainData.port = program.port;
+        if (programOptions.port && programOptions.port !== COMPODOC_DEFAULTS.port) {
+            Configuration.mainData.port = programOptions.port;
         }
 
         if (configFile.watch) {
             Configuration.mainData.watch = configFile.watch;
         }
-        if (program.watch) {
-            Configuration.mainData.watch = program.watch;
+        if (programOptions.watch) {
+            Configuration.mainData.watch = programOptions.watch;
         }
 
         if (configFile.exportFormat) {
             Configuration.mainData.exportFormat = configFile.exportFormat;
         }
-        if (program.exportFormat && program.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
-            Configuration.mainData.exportFormat = program.exportFormat;
+        if (
+            programOptions.exportFormat &&
+            programOptions.exportFormat !== COMPODOC_DEFAULTS.exportFormat
+        ) {
+            Configuration.mainData.exportFormat = programOptions.exportFormat;
         }
 
         if (configFile.hideGenerator) {
             Configuration.mainData.hideGenerator = configFile.hideGenerator;
         }
-        if (program.hideGenerator) {
-            Configuration.mainData.hideGenerator = program.hideGenerator;
+        if (programOptions.hideGenerator) {
+            Configuration.mainData.hideGenerator = programOptions.hideGenerator;
         }
 
         if (configFile.coverageTest) {
@@ -362,11 +370,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     ? parseInt(configFile.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
-        if (program.coverageTest) {
+        if (programOptions.coverageTest) {
             Configuration.mainData.coverageTest = true;
             Configuration.mainData.coverageTestThreshold =
-                typeof program.coverageTest === 'string'
-                    ? parseInt(program.coverageTest, 10)
+                typeof programOptions.coverageTest === 'string'
+                    ? parseInt(programOptions.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
 
@@ -377,11 +385,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     ? parseInt(configFile.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
-        if (program.coverageMinimumPerFile) {
+        if (programOptions.coverageMinimumPerFile) {
             Configuration.mainData.coverageTestPerFile = true;
             Configuration.mainData.coverageMinimumPerFile =
-                typeof program.coverageMinimumPerFile === 'string'
-                    ? parseInt(program.coverageMinimumPerFile, 10)
+                typeof programOptions.coverageMinimumPerFile === 'string'
+                    ? parseInt(programOptions.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
 
@@ -389,115 +397,116 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.coverageTestThresholdFail =
                 configFile.coverageTestThresholdFail === 'false' ? false : true;
         }
-        if (program.coverageTestThresholdFail) {
+        if (programOptions.coverageTestThresholdFail) {
             Configuration.mainData.coverageTestThresholdFail =
-                program.coverageTestThresholdFail === 'false' ? false : true;
+                programOptions.coverageTestThresholdFail === 'false' ? false : true;
         }
 
         if (configFile.coverageTestShowOnlyFailed) {
             Configuration.mainData.coverageTestShowOnlyFailed =
                 configFile.coverageTestShowOnlyFailed;
         }
-        if (program.coverageTestShowOnlyFailed) {
-            Configuration.mainData.coverageTestShowOnlyFailed = program.coverageTestShowOnlyFailed;
+        if (programOptions.coverageTestShowOnlyFailed) {
+            Configuration.mainData.coverageTestShowOnlyFailed =
+                programOptions.coverageTestShowOnlyFailed;
         }
 
         if (configFile.unitTestCoverage) {
             Configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
         }
-        if (program.unitTestCoverage) {
-            Configuration.mainData.unitTestCoverage = program.unitTestCoverage;
+        if (programOptions.unitTestCoverage) {
+            Configuration.mainData.unitTestCoverage = programOptions.unitTestCoverage;
         }
 
         if (configFile.disableSourceCode) {
             Configuration.mainData.disableSourceCode = configFile.disableSourceCode;
         }
-        if (program.disableSourceCode) {
-            Configuration.mainData.disableSourceCode = program.disableSourceCode;
+        if (programOptions.disableSourceCode) {
+            Configuration.mainData.disableSourceCode = programOptions.disableSourceCode;
         }
 
         if (configFile.disableDomTree) {
             Configuration.mainData.disableDomTree = configFile.disableDomTree;
         }
-        if (program.disableDomTree) {
-            Configuration.mainData.disableDomTree = program.disableDomTree;
+        if (programOptions.disableDomTree) {
+            Configuration.mainData.disableDomTree = programOptions.disableDomTree;
         }
 
         if (configFile.disableTemplateTab) {
             Configuration.mainData.disableTemplateTab = configFile.disableTemplateTab;
         }
-        if (program.disableTemplateTab) {
-            Configuration.mainData.disableTemplateTab = program.disableTemplateTab;
+        if (programOptions.disableTemplateTab) {
+            Configuration.mainData.disableTemplateTab = programOptions.disableTemplateTab;
         }
 
         if (configFile.disableStyleTab) {
             Configuration.mainData.disableStyleTab = configFile.disableStyleTab;
         }
-        if (program.disableStyleTab) {
-            Configuration.mainData.disableStyleTab = program.disableStyleTab;
+        if (programOptions.disableStyleTab) {
+            Configuration.mainData.disableStyleTab = programOptions.disableStyleTab;
         }
 
         if (configFile.disableGraph) {
             Configuration.mainData.disableGraph = configFile.disableGraph;
         }
-        if (program.disableGraph) {
-            Configuration.mainData.disableGraph = program.disableGraph;
+        if (programOptions.disableGraph) {
+            Configuration.mainData.disableGraph = programOptions.disableGraph;
         }
 
         if (configFile.disableCoverage) {
             Configuration.mainData.disableCoverage = configFile.disableCoverage;
         }
-        if (program.disableCoverage) {
-            Configuration.mainData.disableCoverage = program.disableCoverage;
+        if (programOptions.disableCoverage) {
+            Configuration.mainData.disableCoverage = programOptions.disableCoverage;
         }
 
         if (configFile.disablePrivate) {
             Configuration.mainData.disablePrivate = configFile.disablePrivate;
         }
-        if (program.disablePrivate) {
-            Configuration.mainData.disablePrivate = program.disablePrivate;
+        if (programOptions.disablePrivate) {
+            Configuration.mainData.disablePrivate = programOptions.disablePrivate;
         }
 
         if (configFile.disableProtected) {
             Configuration.mainData.disableProtected = configFile.disableProtected;
         }
-        if (program.disableProtected) {
-            Configuration.mainData.disableProtected = program.disableProtected;
+        if (programOptions.disableProtected) {
+            Configuration.mainData.disableProtected = programOptions.disableProtected;
         }
 
         if (configFile.disableInternal) {
             Configuration.mainData.disableInternal = configFile.disableInternal;
         }
-        if (program.disableInternal) {
-            Configuration.mainData.disableInternal = program.disableInternal;
+        if (programOptions.disableInternal) {
+            Configuration.mainData.disableInternal = programOptions.disableInternal;
         }
 
         if (configFile.disableLifeCycleHooks) {
             Configuration.mainData.disableLifeCycleHooks = configFile.disableLifeCycleHooks;
         }
-        if (program.disableLifeCycleHooks) {
-            Configuration.mainData.disableLifeCycleHooks = program.disableLifeCycleHooks;
+        if (programOptions.disableLifeCycleHooks) {
+            Configuration.mainData.disableLifeCycleHooks = programOptions.disableLifeCycleHooks;
         }
 
         if (configFile.disableRoutesGraph) {
             Configuration.mainData.disableRoutesGraph = configFile.disableRoutesGraph;
         }
-        if (program.disableRoutesGraph) {
-            Configuration.mainData.disableRoutesGraph = program.disableRoutesGraph;
+        if (programOptions.disableRoutesGraph) {
+            Configuration.mainData.disableRoutesGraph = programOptions.disableRoutesGraph;
         }
 
         if (configFile.disableSearch) {
             Configuration.mainData.disableSearch = configFile.disableSearch;
         }
-        if (program.disableSearch) {
-            Configuration.mainData.disableSearch = program.disableSearch;
+        if (programOptions.disableSearch) {
+            Configuration.mainData.disableSearch = programOptions.disableSearch;
         }
 
         if (configFile.disableDependencies) {
             Configuration.mainData.disableDependencies = configFile.disableDependencies;
         }
-        if (program.disableDependencies) {
-            Configuration.mainData.disableDependencies = program.disableDependencies;
+        if (programOptions.disableDependencies) {
+            Configuration.mainData.disableDependencies = programOptions.disableDependencies;
         }
 
         if (configFile.minimal) {
@@ -506,7 +515,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.disableGraph = true;
             Configuration.mainData.disableCoverage = true;
         }
-        if (program.minimal) {
+        if (programOptions.minimal) {
             Configuration.mainData.disableSearch = true;
             Configuration.mainData.disableRoutesGraph = true;
             Configuration.mainData.disableGraph = true;
@@ -516,29 +525,29 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.customFavicon) {
             Configuration.mainData.customFavicon = configFile.customFavicon;
         }
-        if (program.customFavicon) {
-            Configuration.mainData.customFavicon = program.customFavicon;
+        if (programOptions.customFavicon) {
+            Configuration.mainData.customFavicon = programOptions.customFavicon;
         }
 
         if (configFile.customLogo) {
             Configuration.mainData.customLogo = configFile.customLogo;
         }
-        if (program.customLogo) {
-            Configuration.mainData.customLogo = program.customLogo;
+        if (programOptions.customLogo) {
+            Configuration.mainData.customLogo = programOptions.customLogo;
         }
 
         if (configFile.gaID) {
             Configuration.mainData.gaID = configFile.gaID;
         }
-        if (program.gaID) {
-            Configuration.mainData.gaID = program.gaID;
+        if (programOptions.gaID) {
+            Configuration.mainData.gaID = programOptions.gaID;
         }
 
         if (configFile.gaSite) {
             Configuration.mainData.gaSite = configFile.gaSite;
         }
-        if (program.gaSite && program.gaSite !== COMPODOC_DEFAULTS.gaSite) {
-            Configuration.mainData.gaSite = program.gaSite;
+        if (programOptions.gaSite && programOptions.gaSite !== COMPODOC_DEFAULTS.gaSite) {
+            Configuration.mainData.gaSite = programOptions.gaSite;
         }
 
         if (!this.isWatching) {
@@ -584,13 +593,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             logger.warn(`No configuration file found, switching to CLI flags.`);
         }
 
-        if (program.language && !I18nEngine.supportLanguage(program.language)) {
+        if (programOptions.language && !I18nEngine.supportLanguage(programOptions.language)) {
             logger.warn(
-                `The language ${program.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`
+                `The language ${programOptions.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`
             );
         }
 
-        if (program.tsconfig && typeof program.tsconfig === 'boolean') {
+        if (programOptions.tsconfig && typeof programOptions.tsconfig === 'boolean') {
             logger.error(`Please provide a tsconfig file.`);
             process.exit(1);
         }
@@ -598,12 +607,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.tsconfig) {
             Configuration.mainData.tsconfig = configFile.tsconfig;
         }
-        if (program.tsconfig) {
-            Configuration.mainData.tsconfig = program.tsconfig;
+        if (programOptions.tsconfig) {
+            Configuration.mainData.tsconfig = programOptions.tsconfig;
         }
 
-        if (program.maxSearchResults) {
-            Configuration.mainData.maxSearchResults = program.maxSearchResults;
+        if (programOptions.maxSearchResults) {
+            Configuration.mainData.maxSearchResults = programOptions.maxSearchResults;
         }
 
         if (configFile.files) {
@@ -629,37 +638,48 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             }
         }
 
-        if (program.serve && !Configuration.mainData.tsconfig && program.output) {
+        const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
+
+        if (isInInspectMode) {
+            // wait 10 seconds for debugger to connect in Chrome devtools
+            sleep.sleep(10);
+        }
+
+        if (programOptions.serve && !Configuration.mainData.tsconfig && programOptions.output) {
             // if -s & -d, serve it
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
                 logger.error(`${Configuration.mainData.output} folder doesn't exist`);
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
-        } else if (program.serve && !Configuration.mainData.tsconfig && !program.output) {
+        } else if (
+            programOptions.serve &&
+            !Configuration.mainData.tsconfig &&
+            !programOptions.output
+        ) {
             // if only -s find ./documentation, if ok serve, else error provide -d
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
                 logger.error('Provide output generated folder with -d flag');
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${program.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
         } else if (Configuration.mainData.hasFilesToCoverage) {
-            if (program.coverageMinimumPerFile) {
+            if (programOptions.coverageMinimumPerFile) {
                 logger.info('Run documentation coverage test for files');
                 super.testCoverage();
             } else {
                 logger.error('Missing coverage configuration');
             }
         } else {
-            if (program.hideGenerator) {
+            if (programOptions.hideGenerator) {
                 Configuration.mainData.hideGenerator = true;
             }
 
@@ -686,100 +706,92 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         path.basename(Configuration.mainData.tsconfig)
                     );
                     // use the current directory of tsconfig.json as a working directory
-                    cwd = _file
-                        .split(path.sep)
-                        .slice(0, -1)
-                        .join(path.sep);
+                    cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig file ', _file);
 
                     let tsConfigFile = readConfig(_file);
-                    scannedFiles = tsConfigFile.files;
-                    if (scannedFiles) {
-                        scannedFiles = handlePath(scannedFiles, cwd);
+                    if (tsConfigFile.files) {
+                        scannedFiles = tsConfigFile.files;
                     }
 
-                    if (typeof scannedFiles === 'undefined') {
-                        excludeFiles = tsConfigFile.exclude || [];
-                        includeFiles = tsConfigFile.include || [];
-                        scannedFiles = [];
+                    // even if files are supplied with "files" attributes, enhance the array with includes
+                    excludeFiles = tsConfigFile.exclude || [];
+                    includeFiles = tsConfigFile.include || [];
 
-                        let excludeParser = new ParserUtil(),
-                            includeParser = new ParserUtil();
+                    if (scannedFiles.length > 0) {
+                        includeFiles = [...includeFiles, ...scannedFiles];
+                    }
 
-                        excludeParser.init(excludeFiles, cwd);
-                        includeParser.init(includeFiles, cwd);
+                    let excludeParser = new ParserUtil(),
+                        includeParser = new ParserUtil();
 
-                        let startCwd = cwd;
+                    excludeParser.init(excludeFiles, cwd);
+                    includeParser.init(includeFiles, cwd);
 
-                        let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
-                        if (!excludeParserTestFilesWithCwdDepth.status) {
-                            startCwd = excludeParser.updateCwd(
-                                cwd,
-                                excludeParserTestFilesWithCwdDepth.level
-                            );
+                    let startCwd = cwd;
+
+                    let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
+                    if (!excludeParserTestFilesWithCwdDepth.status) {
+                        startCwd = excludeParser.updateCwd(
+                            cwd,
+                            excludeParserTestFilesWithCwdDepth.level
+                        );
+                    }
+                    let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
+                    if (!includeParser.testFilesWithCwdDepth().status) {
+                        startCwd = includeParser.updateCwd(
+                            cwd,
+                            includeParserTestFilesWithCwdDepth.level
+                        );
+                    }
+
+                    let finder = require('findit2')(startCwd || '.');
+
+                    finder.on('directory', function (dir, stat, stop) {
+                        if (ignoreDirectory(dir)) {
+                            stop();
                         }
-                        let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
-                        if (!includeParser.testFilesWithCwdDepth().status) {
-                            startCwd = includeParser.updateCwd(
-                                cwd,
-                                includeParserTestFilesWithCwdDepth.level
-                            );
-                        }
+                    });
 
-                        let finder = require('findit2')(startCwd || '.');
-
-                        finder.on('directory', function(dir, stat, stop) {
-                            let base = path.basename(dir);
-                            if (base === '.git' || base === 'node_modules') {
-                                stop();
-                            }
-                        });
-
-                        finder.on('file', (file, stat) => {
-                            if (/(spec|\.d)\.ts/.test(file)) {
-                                logger.warn('Ignoring', file);
-                            } else if (
-                                excludeParser.testFile(file) &&
-                                path.extname(file) === '.ts'
+                    finder.on('file', (file, stat) => {
+                        if (/(spec|\.d)\.ts/.test(file)) {
+                            logger.warn('Ignoring', file);
+                        } else if (
+                            excludeParser.testFile(file) &&
+                            (path.extname(file) === '.ts' || path.extname(file) === '.tsx')
+                        ) {
+                            logger.warn('Excluding', file);
+                        } else if (includeFiles.length > 0) {
+                            /**
+                             * If include provided in tsconfig, use only this source,
+                             * and not files found with global findit scan in working directory
+                             */
+                            if (
+                                (path.extname(file) === '.ts' || path.extname(file) === '.tsx') &&
+                                includeParser.testFile(file)
                             ) {
-                                logger.warn('Excluding', file);
-                            } else if (includeFiles.length > 0) {
-                                /**
-                                 * If include provided in tsconfig, use only this source,
-                                 * and not files found with global findit scan in working directory
-                                 */
-                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
-                                    logger.debug('Including', file);
-                                    scannedFiles.push(file);
-                                } else {
-                                    if (path.extname(file) === '.ts') {
-                                        logger.warn('Excluding', file);
-                                    }
-                                }
-                            } else {
                                 logger.debug('Including', file);
                                 scannedFiles.push(file);
-                            }
-                        });
-
-                        finder.on('end', () => {
-                            super.setFiles(scannedFiles);
-                            if (program.coverageTest || program.coverageTestPerFile) {
-                                logger.info('Run documentation coverage test');
-                                super.testCoverage();
                             } else {
-                                super.generate();
+                                if (path.extname(file) === '.ts' || path.extname(file) === '.tsx') {
+                                    logger.warn('Excluding', file);
+                                }
                             }
-                        });
-                    } else {
+                        } else {
+                            logger.debug('Including', file);
+                            scannedFiles.push(file);
+                        }
+                    });
+
+                    finder.on('end', () => {
                         super.setFiles(scannedFiles);
-                        if (program.coverageTest || program.coverageTestPerFile) {
+                        if (programOptions.coverageTest || programOptions.coverageTestPerFile) {
                             logger.info('Run documentation coverage test');
                             super.testCoverage();
                         } else {
                             super.generate();
                         }
-                    }
+                    });
                 }
             } else if (Configuration.mainData.tsconfig && program.args.length > 0) {
                 /**
@@ -813,100 +825,86 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                             path.basename(Configuration.mainData.tsconfig)
                         );
                         // use the current directory of tsconfig.json as a working directory
-                        cwd = _file
-                            .split(path.sep)
-                            .slice(0, -1)
-                            .join(path.sep);
+                        cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                         logger.info('Using tsconfig file ', _file);
 
                         let tsConfigFile = readConfig(_file);
-                        scannedFiles = tsConfigFile.files;
-                        if (scannedFiles) {
-                            scannedFiles = handlePath(scannedFiles, cwd);
+                        if (tsConfigFile.files) {
+                            scannedFiles = tsConfigFile.files;
                         }
 
-                        if (typeof scannedFiles === 'undefined') {
-                            excludeFiles = tsConfigFile.exclude || [];
-                            includeFiles = tsConfigFile.include || [];
-                            scannedFiles = [];
+                        // even if files are supplied with "files" attributes, enhance the array with includes
+                        excludeFiles = tsConfigFile.exclude || [];
+                        includeFiles = tsConfigFile.include || [];
 
-                            let excludeParser = new ParserUtil(),
-                                includeParser = new ParserUtil();
+                        if (scannedFiles.length > 0) {
+                            includeFiles = [...includeFiles, ...scannedFiles];
+                        }
 
-                            excludeParser.init(excludeFiles, cwd);
-                            includeParser.init(includeFiles, cwd);
+                        let excludeParser = new ParserUtil(),
+                            includeParser = new ParserUtil();
 
-                            let startCwd = sourceFolder;
+                        excludeParser.init(excludeFiles, cwd);
+                        includeParser.init(includeFiles, cwd);
 
-                            let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
-                            if (!excludeParserTestFilesWithCwdDepth.status) {
-                                startCwd = excludeParser.updateCwd(
-                                    cwd,
-                                    excludeParserTestFilesWithCwdDepth.level
-                                );
+                        let startCwd = sourceFolder;
+
+                        let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
+                        if (!excludeParserTestFilesWithCwdDepth.status) {
+                            startCwd = excludeParser.updateCwd(
+                                cwd,
+                                excludeParserTestFilesWithCwdDepth.level
+                            );
+                        }
+                        let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
+                        if (!includeParser.testFilesWithCwdDepth().status) {
+                            startCwd = includeParser.updateCwd(
+                                cwd,
+                                includeParserTestFilesWithCwdDepth.level
+                            );
+                        }
+
+                        let finder = require('findit2')(path.resolve(startCwd));
+
+                        finder.on('directory', function (dir, stat, stop) {
+                            if (ignoreDirectory(dir)) {
+                                stop();
                             }
-                            let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
-                            if (!includeParser.testFilesWithCwdDepth().status) {
-                                startCwd = includeParser.updateCwd(
-                                    cwd,
-                                    includeParserTestFilesWithCwdDepth.level
-                                );
-                            }
+                        });
 
-                            let finder = require('findit2')(path.resolve(startCwd));
-
-                            finder.on('directory', function(dir, stat, stop) {
-                                let base = path.basename(dir);
-                                if (base === '.git' || base === 'node_modules') {
-                                    stop();
-                                }
-                            });
-
-                            finder.on('file', (file, stat) => {
-                                if (/(spec|\.d)\.ts/.test(file)) {
-                                    logger.warn('Ignoring', file);
-                                } else if (excludeParser.testFile(file)) {
-                                    logger.warn('Excluding', file);
-                                } else if (includeFiles.length > 0) {
-                                    /**
-                                     * If include provided in tsconfig, use only this source,
-                                     * and not files found with global findit scan in working directory
-                                     */
-                                    if (
-                                        path.extname(file) === '.ts' &&
-                                        includeParser.testFile(file)
-                                    ) {
-                                        logger.debug('Including', file);
-                                        scannedFiles.push(file);
-                                    } else {
-                                        if (path.extname(file) === '.ts') {
-                                            logger.warn('Excluding', file);
-                                        }
-                                    }
-                                } else {
+                        finder.on('file', (file, stat) => {
+                            if (/(spec|\.d)\.ts/.test(file)) {
+                                logger.warn('Ignoring', file);
+                            } else if (excludeParser.testFile(file)) {
+                                logger.warn('Excluding', file);
+                            } else if (includeFiles.length > 0) {
+                                /**
+                                 * If include provided in tsconfig, use only this source,
+                                 * and not files found with global findit scan in working directory
+                                 */
+                                if (path.extname(file) === '.ts' && includeParser.testFile(file)) {
                                     logger.debug('Including', file);
                                     scannedFiles.push(file);
-                                }
-                            });
-
-                            finder.on('end', () => {
-                                super.setFiles(scannedFiles);
-                                if (program.coverageTest || program.coverageTestPerFile) {
-                                    logger.info('Run documentation coverage test');
-                                    super.testCoverage();
                                 } else {
-                                    super.generate();
+                                    if (path.extname(file) === '.ts') {
+                                        logger.warn('Excluding', file);
+                                    }
                                 }
-                            });
-                        } else {
+                            } else {
+                                logger.debug('Including', file);
+                                scannedFiles.push(file);
+                            }
+                        });
+
+                        finder.on('end', () => {
                             super.setFiles(scannedFiles);
-                            if (program.coverageTest || program.coverageTestPerFile) {
+                            if (programOptions.coverageTest || programOptions.coverageTestPerFile) {
                                 logger.info('Run documentation coverage test');
                                 super.testCoverage();
                             } else {
                                 super.generate();
                             }
-                        }
+                        });
                     }
                 }
             } else {

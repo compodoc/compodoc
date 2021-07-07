@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
   <li>{{t "directives" }}</li>
-  <li>{{directive.name}}</li>
+  <li {{#if directive.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{directive.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -20,6 +22,15 @@
         <p class="comment">
             <code>{{directive.file}}</code>
         </p>
+
+        {{#if directive.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ directive.deprecationMessage }}}
+            </p>
+        {{/if}}
 
         {{#if directive.description}}
             <p class="comment">
@@ -56,6 +67,7 @@
             </div>
         {{/if}}
 
+        {{#orLength directive.selector directive.providers}}
         <section>
             <h3>{{t "metadata" }}</h3>
             <table class="table table-sm table-hover">
@@ -83,6 +95,7 @@
                 </tbody>
             </table>
         </section>
+        {{/orLength}}
 
         {{#orLength directive.propertiesClass directive.methodsClass directive.inputsClass directive.outputClass directive.hostBindings directive.hostListeners directive.accessors}}
             {{> index methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass outputs=directive.outputsClass hostBindings=directive.hostBindings hostListeners=directive.hostListeners accessors=directive.accessors }}
@@ -105,7 +118,7 @@
         {{/if}}
 
         {{#if directive.hostListeners}}
-            {{> block-method methods=directive.hostListeners file=directive.file title="HostListeners" }}
+            {{> block-host-listener methods=directive.hostListeners file=directive.file title="HostListeners" }}
         {{/if}}
 
         {{#if directive.methodsClass}}

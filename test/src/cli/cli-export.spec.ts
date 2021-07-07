@@ -10,7 +10,7 @@ describe('CLI Export', () => {
     describe('when specified JSON', () => {
         let stdoutString = undefined;
 
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -35,6 +35,80 @@ describe('CLI Export', () => {
             expect(stdoutString).to.contain('Documentation generated');
         });
 
+        it('should display descriptions and raw descriptions', () => {
+            const file = read(`${distFolder}/documentation.json`, 'utf8');
+
+            // property
+            expect(file).to.contain('"rawdescription": "\\n\\nThe current time');
+            expect(file).to.contain('"description": "<p>The current time</p>\\n');
+
+            // method
+            expect(file).to.contain('"rawdescription": "\\n\\nthe transform function');
+            expect(file).to.contain('"description": "<p>the transform function</p>\\n');
+
+            // pipe
+            expect(file).to.contain(
+                '"rawdescription": "\\n\\nUppercase the first letter of the string\\n\\n__Usage :__\\n  value | firstUpper'
+            );
+            expect(file).to.contain(
+                '"description": "<p>Uppercase the first letter of the string</p>\\n<p><strong>Usage :</strong>\\n  value | firstUpper</p>\\n'
+            );
+
+            // interface
+            expect(file).to.contain(
+                '"rawdescription": "\\n\\nAn interface just for documentation purpose'
+            );
+            expect(file).to.contain(
+                '"description": "<p>An interface just for documentation purpose</p>\\n'
+            );
+
+            // service
+            expect(file).to.contain(
+                '"rawdescription": "\\n\\nThis service is a todo store\\n\\nSee {@link Todo} for details about the main data of this store'
+            );
+            expect(file).to.contain(
+                '"description": "<p>This service is a todo store</p>\\n<p>See {@link Todo} for details about the main data of this store</p>\\n'
+            );
+
+            // accessor (setter)
+            expect(file).to.contain('"rawdescription": "Setter of _fullName');
+            expect(file).to.contain('"description": "<p>Setter of _fullName</p>\\n');
+
+            // accessor (getter)
+            expect(file).to.contain('"rawdescription": "Getter of _fullName');
+            expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n');
+        });
+
+        it('should display deprecated and deprecation messages', () => {
+            const file = read(`${distFolder}/documentation.json`, 'utf8');
+
+            expect(file).to.contain('"deprecated": true');
+            expect(file).to.contain('"deprecated": false');
+
+            // property
+            expect(file).to.contain(
+                '"deprecationMessage": "The current time property is deprecated"'
+            );
+
+            // method
+            expect(file).to.contain('"deprecationMessage": "the transform function is deprecated"');
+
+            // pipe
+            expect(file).to.contain('"deprecationMessage": "This pipe is deprecated"');
+
+            // interface
+            expect(file).to.contain('"deprecationMessage": "This interface is deprecated"');
+
+            // service
+            expect(file).to.contain('"deprecationMessage": "This service is deprecated"');
+
+            // accessor (setter)
+            expect(file).to.contain('"deprecationMessage": "This setter is deprecated"');
+
+            // accessor (getter)
+            expect(file).to.contain('"deprecationMessage": "This getter is deprecated"');
+        });
+
         it('should create json file', () => {
             let isFileExists = exists(`${distFolder}/documentation.json`);
             expect(isFileExists).to.be.true;
@@ -56,12 +130,111 @@ describe('CLI Export', () => {
             expect(file).to.contain('APP_ROUTES');
             expect(file).to.contain('coveragePercent');
         });
+
+        it('should get jsdoctags in component', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Property
+            expect(file).to.contain('"comment": "<p>component property</p>');
+
+            // Input
+            expect(file).to.contain('"comment": "<p>component input</p>');
+
+            // Accessor
+            expect(file).to.contain('"comment": "<p>component accessor</p>');
+
+            // HostBinding
+            expect(file).to.contain('"comment": "<p>component hostBinding</p>');
+
+            // HostListener
+            expect(file).to.contain('"comment": "<p>component hostListener</p>');
+
+            // Output
+            expect(file).to.contain('"comment": "<p>component output</p>');
+
+            // Method
+            expect(file).to.contain('"comment": "<p>component method param</p>');
+            expect(file).to.contain('"comment": "<p>component method return</p>');
+        });
+
+        it('should get jsdoctags in directive', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Property
+            expect(file).to.contain('"comment": "<p>directive property</p>');
+
+            // Input
+            expect(file).to.contain('"comment": "<p>directive input</p>');
+
+            // Accessor
+            expect(file).to.contain('"comment": "<p>directive accessor</p>');
+
+            // HostBinding
+            expect(file).to.contain('"comment": "<p>directive hostBinding</p>');
+
+            // HostListener
+            expect(file).to.contain('"comment": "<p>directive hostListener</p>');
+
+            // Output
+            expect(file).to.contain('"comment": "<p>directive output</p>');
+
+            // Method
+            expect(file).to.contain('"comment": "<p>directive method param</p>');
+            expect(file).to.contain('"comment": "<p>directive method return</p>');
+        });
+
+        it('should get jsdoctags in pipe', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Property
+            expect(file).to.contain('"comment": "<p>pipe property</p>');
+
+            // Method
+            expect(file).to.contain('"comment": "<p>pipe method param</p>');
+            expect(file).to.contain('"comment": "<p>pipe method return</p>');
+        });
+
+        it('should get jsdoctags in interface', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Property
+            expect(file).to.contain('"comment": "<p>interface property</p>');
+
+            // Method
+            expect(file).to.contain('"comment": "<p>interface method</p>');
+        });
+
+        it('should get jsdoctags in class', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Property
+            expect(file).to.contain('"comment": "<p>class property</p>');
+
+            // Input
+            expect(file).to.contain('"comment": "<p>class input</p>');
+
+            // Accessor
+            expect(file).to.contain('"comment": "<p>class accessor</p>');
+
+            // HostBinding
+            expect(file).to.contain('"comment": "<p>class hostBinding</p>');
+
+            // HostListener
+            expect(file).to.contain('"comment": "<p>class hostListener</p>');
+
+            // Output
+            expect(file).to.contain('"comment": "<p>class output</p>');
+
+            // Method
+            expect(file).to.contain('"comment": "<p>class method param</p>');
+            expect(file).to.contain('"comment": "<p>class method return</p>');
+        });
     });
 
     describe('when specified JSON and disable things', () => {
         let stdoutString = undefined;
 
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -117,7 +290,7 @@ describe('CLI Export', () => {
 
         const title = 'Documentation in pdf';
 
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -151,7 +324,7 @@ describe('CLI Export', () => {
 
         it('pdf file should have some data', () => {
             let pdfDataBuffer = fs.readFileSync(`${distFolder}/documentation.pdf`);
-            return readPDF(pdfDataBuffer).then(function(data) {
+            return readPDF(pdfDataBuffer).then(function (data) {
                 // console.log(data);
                 expect(data.text).to.contain(
                     'AboutModule\nFilename : test/fixtures/todomvc-ng2/src/app/about/about.module.ts'
@@ -163,7 +336,7 @@ describe('CLI Export', () => {
     describe('when specified not supported format', () => {
         let stdoutString = undefined;
 
-        before(function(done) {
+        before(function (done) {
             tmp.create();
             let ls = shell('node', [
                 './bin/index-cli.js',

@@ -1,0 +1,104 @@
+body {
+    background: black;
+    color: #c7c7c7;
+}
+
+.menu {
+    background: #050505;
+    border-right: 1px solid #444;
+}
+
+.menu ul.list li a {
+    color: #c7c7c7;
+}
+
+.menu ul.list li.divider {
+    background: #444;
+}
+
+.xs-menu ul.list li:nth-child(2) {
+    margin: 0;
+    background: none;
+}
+
+.menu ul.list li:nth-child(2) {
+    margin: 0;
+    background: none;
+}
+
+#book-search-input {
+    background: #050505;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    color: #c7c7c7;
+}
+
+.table-bordered {
+    border: 1px solid #444;
+}
+
+.table-bordered > tbody > tr > td,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > td,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > thead > tr > th {
+    border: 1px solid #444;
+}
+
+.coverage a,
+.coverage-count {
+    color: #c7c7c7;
+}
+
+.coverage-header {
+    color: black;
+}
+
+.routes svg text,
+.routes svg a {
+    fill: white;
+}
+.routes svg rect {
+    fill: black !important;
+}
+
+.navbar-default,
+.btn-default {
+    background-color: black;
+    border-color: #444;
+    color: #c7c7c7;
+}
+
+.navbar-default .navbar-brand {
+    color: #c7c7c7;
+}
+
+.overview .card,
+.modules .card {
+    background: black;
+    color: #c7c7c7;
+    border: 1px solid #444;
+}
+.overview .card a {
+    color: #c7c7c7;
+}
+
+.modules .card-header {
+    background: none;
+    border-bottom: 1px solid #444;
+}
+
+.module .list-group-item {
+    background: none;
+    border: 1px solid #444;
+}
+
+.container-fluid.module h3 a {
+    color: #337ab7;
+}
+
+table.params thead {
+    background: #484848;
+    color: #c7c7c7;
+}

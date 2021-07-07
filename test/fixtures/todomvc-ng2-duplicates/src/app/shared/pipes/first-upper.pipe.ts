@@ -12,6 +12,7 @@ const pure = true;
  * __Example :__
  *   {{ car |  firstUpper}}
  *   formats to: Car
+ * @deprecated This pipe is deprecated
  */
 @Pipe({
     name,
@@ -25,6 +26,7 @@ export class FirstUpperPipe implements PipeTransform {
 
     /**
      * the transform function
+     * @deprecated the transform function is deprecated
      * @param  {string} value the value of the pipe
      */
     transform(value: string): string {

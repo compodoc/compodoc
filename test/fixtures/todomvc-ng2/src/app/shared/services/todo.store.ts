@@ -5,6 +5,7 @@ import { Todo } from '../models/todo.model';
 /**
  * This service is a todo store
  * See {@link Todo} for details about the main data of this store
+ * @deprecated This service is deprecated
  */
 @Injectable()
 export class TodoStore {
@@ -166,6 +167,7 @@ export class TodoStore {
 
     /**
      * Getter of _fullName
+     * @deprecated This getter is deprecated
      * @return {string} _fullName value
      */
     get fullName(): string {
@@ -174,6 +176,7 @@ export class TodoStore {
 
     /**
      * Setter of _fullName
+     * @deprecated This setter is deprecated
      * @param  {string} newName The new name
      */
     set fullName(newName: string) {

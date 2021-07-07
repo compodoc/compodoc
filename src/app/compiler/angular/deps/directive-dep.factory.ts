@@ -10,22 +10,23 @@ export class DirectiveDepFactory {
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
         let sourceCode = srcFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let directiveDeps: IDirectiveDep = {
             name,
             id: 'directive-' + name + '-' + hash,
             file: file,
             type: 'directive',
             description: IO.description,
+            rawdescription: IO.rawdescription,
             sourceCode: srcFile.getText(),
-            selector: this.helper.getComponentSelector(props),
-            providers: this.helper.getComponentProviders(props),
+            selector: this.helper.getComponentSelector(props, srcFile),
+            providers: this.helper.getComponentProviders(props, srcFile),
 
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
+
+            deprecated: IO.deprecated,
+            deprecationMessage: IO.deprecationMessage,
 
             hostBindings: IO.hostBindings,
             hostListeners: IO.hostListeners,
@@ -56,6 +57,7 @@ export class DirectiveDepFactory {
 export interface IDirectiveDep extends IDep {
     file: any;
     description: string;
+    rawdescription: string;
     sourceCode: string;
 
     selector: string;
@@ -63,6 +65,9 @@ export interface IDirectiveDep extends IDep {
 
     inputsClass: any;
     outputsClass: any;
+
+    deprecated: boolean;
+    deprecationMessage: string;
 
     hostBindings: any;
     hostListeners: any;

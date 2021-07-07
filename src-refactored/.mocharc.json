@@ -4,6 +4,6 @@
     "ui": "bdd",
     "timeout": 3000,
     "spec": "src-refactored/**/*.spec.ts",
-    "require": "ts-node/register",
+    "require": ["ts-node/register", "source-map-support/register"],
     "exit": true
 }

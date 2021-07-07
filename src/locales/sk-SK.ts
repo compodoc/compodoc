@@ -17,6 +17,7 @@ export const TRANSLATION_SK_SK = {
     'default-value': 'Predvolená hodnota',
     'defined-in': 'Definované v',
     dependencies: 'Závislosti',
+    deprecated: 'Zastarel',
     description: 'Popis',
     directive: 'Direktíva',
     directives: 'Direktívy',

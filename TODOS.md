@@ -1,5 +1,9 @@
 # Todos
 
+## Dependencies
+
+-   pdfjs : move to modern version if Node.js > 14 | Optional chaining support
+
 ## TypeScript errors to fix
 
 -   code-generator.ts - 80 lines

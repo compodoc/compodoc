@@ -7,6 +7,7 @@ export class ExtendsMerger {
     private components;
     private classes;
     private injectables;
+    private directives;
 
     private static instance: ExtendsMerger;
     private constructor() {}
@@ -21,37 +22,36 @@ export class ExtendsMerger {
         this.components = deps.components;
         this.classes = deps.classes;
         this.injectables = deps.injectables;
+        this.directives = deps.directives;
 
         this.components.forEach(component => {
             let ext;
             if (typeof component.extends !== 'undefined') {
                 ext = this.findInDependencies(component.extends);
+
                 if (ext) {
-                    let recursiveScanWithInheritance = cls => {
+                    const recursiveScanWithInheritance = cls => {
                         // From class to component
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
                             newMethods = this.markInheritance(newMethods, cls);
                             if (typeof component.methodsClass !== 'undefined') {
-                                component.methodsClass = [...component.methodsClass, ...newMethods];
+                                this.mergeInheritance(component, 'methodsClass', newMethods);
                             }
                         }
                         if (typeof cls.properties !== 'undefined' && cls.properties.length > 0) {
                             let newProperties = cloneDeep(cls.properties);
                             newProperties = this.markInheritance(newProperties, cls);
                             if (typeof component.propertiesClass !== 'undefined') {
-                                component.propertiesClass = [
-                                    ...component.propertiesClass,
-                                    ...newProperties
-                                ];
+                                this.mergeInheritance(component, 'propertiesClass', newProperties);
                             }
                         }
-                        // From component to component
+                        // From component to component or directive to component
                         if (typeof cls.inputsClass !== 'undefined' && cls.inputsClass.length > 0) {
                             let newInputs = cloneDeep(cls.inputsClass);
                             newInputs = this.markInheritance(newInputs, cls);
                             if (typeof component.inputsClass !== 'undefined') {
-                                component.inputsClass = [...component.inputsClass, ...newInputs];
+                                this.mergeInheritance(component, 'inputsClass', newInputs);
                             }
                         }
                         if (
@@ -61,7 +61,7 @@ export class ExtendsMerger {
                             let newOutputs = cloneDeep(cls.outputsClass);
                             newOutputs = this.markInheritance(newOutputs, cls);
                             if (typeof component.outputsClass !== 'undefined') {
-                                component.outputsClass = [...component.outputsClass, ...newOutputs];
+                                this.mergeInheritance(component, 'outputsClass', newOutputs);
                             }
                         }
                         if (
@@ -71,7 +71,7 @@ export class ExtendsMerger {
                             let newMethods = cloneDeep(cls.methodsClass);
                             newMethods = this.markInheritance(newMethods, cls);
                             if (typeof component.methodsClass !== 'undefined') {
-                                component.methodsClass = [...component.methodsClass, ...newMethods];
+                                this.mergeInheritance(component, 'methodsClass', newMethods);
                             }
                         }
                         if (
@@ -81,10 +81,7 @@ export class ExtendsMerger {
                             let newProperties = cloneDeep(cls.propertiesClass);
                             newProperties = this.markInheritance(newProperties, cls);
                             if (typeof component.propertiesClass !== 'undefined') {
-                                component.propertiesClass = [
-                                    ...component.propertiesClass,
-                                    ...newProperties
-                                ];
+                                this.mergeInheritance(component, 'propertiesClass', newProperties);
                             }
                         }
                         if (
@@ -94,10 +91,7 @@ export class ExtendsMerger {
                             let newHostBindings = cloneDeep(cls.hostBindings);
                             newHostBindings = this.markInheritance(newHostBindings, cls);
                             if (typeof component.hostBindings !== 'undefined') {
-                                component.hostBindings = [
-                                    ...component.hostBindings,
-                                    ...newHostBindings
-                                ];
+                                this.mergeInheritance(component, 'hostBindings', newHostBindings);
                             }
                         }
                         if (
@@ -107,10 +101,7 @@ export class ExtendsMerger {
                             let newHostListeners = cloneDeep(cls.hostListeners);
                             newHostListeners = this.markInheritance(newHostListeners, cls);
                             if (typeof component.hostListeners !== 'undefined') {
-                                component.hostListeners = [
-                                    ...component.hostListeners,
-                                    ...newHostListeners
-                                ];
+                                this.mergeInheritance(component, 'hostListeners', newHostListeners);
                             }
                         }
                         if (Configuration.mainData.disableLifeCycleHooks) {
@@ -133,19 +124,19 @@ export class ExtendsMerger {
             if (typeof el.extends !== 'undefined') {
                 ext = this.findInDependencies(el.extends);
                 if (ext) {
-                    let recursiveScanWithInheritance = cls => {
+                    const recursiveScanWithInheritance = cls => {
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
                             newMethods = this.markInheritance(newMethods, cls);
                             if (typeof el.methods !== 'undefined') {
-                                el.methods = [...el.methods, ...newMethods];
+                                this.mergeInheritance(el, 'methods', newMethods);
                             }
                         }
                         if (typeof cls.properties !== 'undefined' && cls.properties.length > 0) {
                             let newProperties = cloneDeep(cls.properties);
                             newProperties = this.markInheritance(newProperties, cls);
                             if (typeof el.properties !== 'undefined') {
-                                el.properties = [...el.properties, ...newProperties];
+                                this.mergeInheritance(el, 'properties', newProperties);
                             }
                         }
                         if (cls.extends) {
@@ -166,7 +157,7 @@ export class ExtendsMerger {
 
     private markInheritance(data, originalource) {
         return data.map(el => {
-            let newElement = el;
+            const newElement = el;
             newElement.inheritance = {
                 file: originalource.name
             };
@@ -174,9 +165,29 @@ export class ExtendsMerger {
         });
     }
 
+    private mergeInheritance(component: any, metaPropertyId: string, newMembers: any) {
+        newMembers.forEach(newMember => {
+            const overriddenMethod = component[metaPropertyId].find(
+                componentMember => componentMember.name === newMember.name
+            );
+
+            if (overriddenMethod) {
+                overriddenMethod.inheritance = newMember.inheritance;
+            } else {
+                component[metaPropertyId].push(newMember);
+            }
+        });
+    }
+
     private findInDependencies(name: string) {
-        let mergedData = concat([], this.components, this.classes, this.injectables);
-        let result = find(mergedData, { name: name } as any);
+        const mergedData = concat(
+            [],
+            this.components,
+            this.classes,
+            this.injectables,
+            this.directives
+        );
+        const result = find(mergedData, { name: name } as any);
         return result || false;
     }
 }

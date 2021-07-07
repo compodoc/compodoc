@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import { ts, SyntaxKind } from 'ts-simple-ast';
 
+import * as _ts from './ts-internal';
+
 import { JSDocParameterTagExt } from '../app/nodes/jsdoc-parameter-tag.node';
 
 export class JsdocParserUtil {
@@ -21,16 +23,103 @@ export class JsdocParserUtil {
         return false;
     }
 
-    public getMainCommentOfNode(node: ts.Node): string {
+    isTopmostModuleDeclaration(node: ts.ModuleDeclaration): boolean {
+        if (node.nextContainer && node.nextContainer.kind === ts.SyntaxKind.ModuleDeclaration) {
+            let next = <ts.ModuleDeclaration>node.nextContainer;
+            if (node.name.end + 1 === next.name.pos) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    getRootModuleDeclaration(node: ts.ModuleDeclaration): ts.Node {
+        while (node.parent && node.parent.kind === ts.SyntaxKind.ModuleDeclaration) {
+            let parent = <ts.ModuleDeclaration>node.parent;
+            if (node.name.pos === parent.name.end + 1) {
+                node = parent;
+            } else {
+                break;
+            }
+        }
+
+        return node;
+    }
+
+    public getMainCommentOfNode(node: ts.Node, sourceFile?: ts.SourceFile): string {
         let description: string = '';
-        if (node.jsDoc) {
-            if (node.jsDoc.length > 0) {
-                if (typeof node.jsDoc[0].comment !== 'undefined') {
-                    description = node.jsDoc[0].comment;
+
+        if (node.parent && node.parent.kind === ts.SyntaxKind.VariableDeclarationList) {
+            node = node.parent.parent;
+        } else if (node.kind === ts.SyntaxKind.ModuleDeclaration) {
+            if (!this.isTopmostModuleDeclaration(<ts.ModuleDeclaration>node)) {
+                return null;
+            } else {
+                node = this.getRootModuleDeclaration(<ts.ModuleDeclaration>node);
+            }
+        }
+
+        const comments = _ts.getJSDocCommentRanges(node, sourceFile.text);
+        if (comments && comments.length) {
+            let comment: ts.CommentRange;
+            if (node.kind === ts.SyntaxKind.SourceFile) {
+                if (comments.length === 1) {
+                    return null;
+                }
+                comment = comments[0];
+            } else {
+                comment = comments[comments.length - 1];
+            }
+
+            description = sourceFile.text.substring(comment.pos, comment.end);
+        }
+        return description;
+    }
+
+    public parseComment(text: string): string {
+        let comment = '';
+        let shortText = 0;
+
+        function readBareLine(line: string) {
+            comment += '\n' + line;
+            if (line === '' && shortText === 0) {
+                // Ignore
+            } else if (line === '' && shortText === 1) {
+                shortText = 2;
+            } else {
+                if (shortText === 2) {
+                    comment += (comment === '' ? '' : '\n') + line;
                 }
             }
         }
-        return description;
+
+        const CODE_FENCE = /^\s*```(?!.*```)/;
+        let inCode = false;
+        function readLine(line: string) {
+            line = line.replace(/^\s*\*? ?/, '');
+            line = line.replace(/\s*$/, '');
+
+            if (CODE_FENCE.test(line)) {
+                inCode = !inCode;
+            }
+
+            if (!inCode) {
+                const tag = /^@(\S+)/.exec(line);
+                if (tag) {
+                    return;
+                }
+            }
+
+            readBareLine(line);
+        }
+
+        text = text.replace(/^\s*\/\*+/, '');
+        text = text.replace(/\*+\/\s*$/, '');
+
+        text.split(/\r\n?|\n/).forEach(readLine);
+
+        return comment;
     }
 
     private getJSDocTags(node: ts.Node, kind: SyntaxKind): ts.JSDocTag[] {

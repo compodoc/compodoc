@@ -64,7 +64,7 @@ describe('CLI simple flags', () => {
         });
     });
 
-    describe("when just serving without generation and folder which does't exist", () => {
+    /*describe("when just serving without generation and folder which does't exist", () => {
         let command = undefined;
         beforeEach(() => {
             command = shell('node', ['./bin/index-cli.js', '-s', '-d', 'doc']);
@@ -73,7 +73,7 @@ describe('CLI simple flags', () => {
         it('should display error message', () => {
             expect(command.stdout.toString()).to.contain("folder doesn't exist");
         });
-    });
+    });*/
 
     describe('when no README/package.json files available', () => {
         let command = undefined;
@@ -105,7 +105,7 @@ describe('CLI simple flags', () => {
 
     describe('showing the output type', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -126,36 +126,6 @@ describe('CLI simple flags', () => {
 
         it('should show the event output type', () => {
             expect(componentFile).to.contain('foo: string');
-        });
-    });
-
-    describe('when specific files are included in tsconfig', () => {
-        let moduleFile = undefined;
-        before(function(done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/sample-files/tsconfig.entry.json',
-                '-d',
-                distFolder
-            ]);
-
-            if (ls.stderr.toString() !== '') {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done('error');
-            }
-            moduleFile = read(`${distFolder}/modules/AppModule.html`);
-            done();
-        });
-        after(() => tmp.clean(distFolder));
-
-        it('should only create links to files included via tsconfig', () => {
-            expect(moduleFile).to.contain('components/FooComponent.html');
-            expect(moduleFile).to.contain('modules/FooModule.html');
-            expect(moduleFile).not.to.contain('components/BarComponent.html');
-            expect(moduleFile).not.to.contain('injectables/FooService.html');
-            expect(moduleFile).not.to.contain('modules/BarModule.html');
         });
     });
 });

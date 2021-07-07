@@ -1,4 +1,4 @@
-const PDFJS = require('pdfjs-dist');
+const PDFJS = require('pdfjs-dist/legacy/build/pdf.js');
 
 export const shell = require('child_process').spawnSync;
 export const spawn = require('child_process').spawn;
@@ -8,8 +8,8 @@ export const fs = require('fs-extra');
 export const path = require('path');
 export const pkg = require('../../package.json');
 
-export function read(file: string): string {
-    return fs.readFileSync(file).toString();
+export function read(file: string, encoding = null): string {
+    return fs.readFileSync(file, encoding).toString();
 }
 
 export function exists(file: string): boolean {
@@ -97,7 +97,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
             disableCombineTextItems: false
         };
 
-        return pageData.getTextContent(render_options).then(function(textContent) {
+        return pageData.getTextContent(render_options).then(function (textContent) {
             let lastY,
                 text = '';
             for (let item of textContent.items) {
@@ -187,11 +187,11 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
                                 doc.destroy();
                                 resolve(ret);
                             })
-                            .catch(function(err) {
+                            .catch(function (err) {
                                 reject(err);
                             });
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         reject(err);
                     });
             })

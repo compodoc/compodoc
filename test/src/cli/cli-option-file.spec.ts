@@ -1,13 +1,11 @@
 import * as chai from 'chai';
-import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
+import { temporaryDir, shell, exists } from '../helpers';
 
 const expect = chai.expect;
 const tmp = temporaryDir();
 
 describe('CLI option file', () => {
     let stdoutString = undefined;
-    let clockInterfaceFile;
-    let searchFuncFile;
 
     const distFolder = 'test-config-file'; // Match /test/fixtures/todomvc-ng2/.compodocrc
 

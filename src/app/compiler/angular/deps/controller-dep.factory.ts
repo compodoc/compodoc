@@ -13,11 +13,8 @@ export class ControllerDepFactory {
         properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
         IO: any
     ): IControllerDep {
-        let sourceCode = srcFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        const sourceCode = srcFile.getText();
+        const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let infos: IControllerDep = {
             name,
             id: 'controller-' + name + '-' + hash,
@@ -25,7 +22,10 @@ export class ControllerDepFactory {
             methodsClass: IO.methods,
             type: 'controller',
             description: IO.description,
-            sourceCode: srcFile.text
+            rawdescription: IO.rawdescription,
+            sourceCode: srcFile.text,
+            deprecated: IO.deprecated,
+            deprecationMessage: IO.deprecationMessage
         };
         if (properties && properties.length === 1) {
             if (properties[0].text) {
@@ -40,6 +40,9 @@ export interface IControllerDep extends IDep {
     file: any;
     sourceCode: string;
     description: string;
+    rawdescription: string;
     prefix?: string;
     methodsClass: Array<any>;
+    deprecated: boolean;
+    deprecationMessage: string;
 }

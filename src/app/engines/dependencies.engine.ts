@@ -104,7 +104,7 @@ export class DependenciesEngine {
     }
 
     public init(data: ParsedData) {
-        traverse(data).forEach(function(node) {
+        traverse(data).forEach(function (node) {
             if (node) {
                 if (node.parent) {
                     delete node.parent;
@@ -239,6 +239,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(name, this.classes),
             () => this.findInCompodocDependencies(name, this.components),
             () => this.findInCompodocDependencies(name, this.controllers),
+            () => this.findInCompodocDependencies(name, this.directives),
             () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
             () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
