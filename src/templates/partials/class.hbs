@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
   <li>{{t "classes" }}</li>
-  <li>{{class.name}}</li>
+  <li {{#if class.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{class.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -20,6 +22,15 @@
         <p class="comment">
             <code>{{class.file}}</code>
         </p>
+
+        {{#if class.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ class.deprecationMessage }}}
+            </p>
+        {{/if}}
 
         {{#if class.description}}
             <p class="comment">

@@ -447,12 +447,9 @@ export class ClassHelper {
         let description = '';
         let jsdoctags = [];
         if (symbol) {
-            rawdescription = this.jsdocParserUtil.getMainCommentOfNode(
-                classDeclaration,
-                sourceFile
-            );
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawdescription);
-            description = marked(cleanedDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration, sourceFile);
+            rawdescription = this.jsdocParserUtil.parseComment(comment);
+            description = marked(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
@@ -962,9 +959,9 @@ export class ClassHelper {
             deprecationMessage: ''
         };
         if (method.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
-            result.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
             result.description = marked(cleanedDescription);
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -991,9 +988,9 @@ export class ClassHelper {
         };
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (method.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
-            result.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
             result.description = marked(cleanedDescription);
         }
 
@@ -1027,9 +1024,9 @@ export class ClassHelper {
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (method.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
-            result.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
             result.description = marked(cleanedDescription);
         }
 
@@ -1085,9 +1082,9 @@ export class ClassHelper {
         jsdoctags = this.jsdocParserUtil.getJSDocs(property);
 
         if (property.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
-            result.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
             result.description = marked(cleanedDescription);
         }
 
@@ -1203,9 +1200,9 @@ export class ClassHelper {
         }
 
         if (method.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
-            result.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
             result.description = marked(cleanedDescription);
         }
 
@@ -1254,10 +1251,10 @@ export class ClassHelper {
             deprecationMessage: ''
         };
         if (property.jsDoc) {
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-            _return.rawdescription = rawDescription;
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            _return.rawdescription = cleanedDescription;
             _return.description = marked(cleanedDescription);
 
             if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
@@ -1402,12 +1399,10 @@ export class ClassHelper {
         _return.deprecated = false;
         _return.deprecationMessage = '';
         if (property.jsDoc) {
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
-            const rawDescription = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
-
-            _return.rawdescription = rawDescription;
-
-            const cleanedDescription = this.jsdocParserUtil.parseComment(rawDescription);
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            _return.rawdescription = cleanedDescription;
             _return.description = marked(cleanedDescription);
 
             if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {

@@ -16,10 +16,7 @@ export class ModuleDepFactory {
         IO: any
     ): IModuleDep {
         let sourceCode = srcFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         return {
             name,
             id: 'module-' + name + '-' + hash,
@@ -37,7 +34,9 @@ export class ModuleDepFactory {
             rawdescription: IO.rawdescription,
             methods: IO.methods,
             description: IO.description,
-            sourceCode: srcFile.text
+            sourceCode: srcFile.text,
+            deprecated: IO.deprecated,
+            deprecationMessage: IO.deprecationMessage
         } as IModuleDep;
     }
 }

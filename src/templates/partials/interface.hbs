@@ -1,6 +1,11 @@
 <ol class="breadcrumb">
   <li>{{t "interfaces" }}</li>
-  <li>{{interface.name}}</li>
+  <li
+    {{#if interface.deprecated}}
+        class="deprecated-name"
+    {{/if}}
+  >
+  {{interface.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -20,6 +25,15 @@
         <p class="comment">
             <code>{{interface.file}}</code>
         </p>
+
+        {{#if interface.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ interface.deprecationMessage }}}
+            </p>
+        {{/if}}
 
         {{#if interface.description}}
             <p class="comment">
@@ -59,7 +73,12 @@
                                         {{#if optional}}
                                             <span class="modifier">{{t "optional" }}</span>
                                         {{/if}}
-                                        <a href="#{{name}}">{{name}}</a>
+                                        <a href="#{{name}}" 
+                                            {{#if deprecated}}
+                                                class="deprecated-name"
+                                            {{/if}}>
+                                            {{name}}
+                                        </a>
                                     {{else}}
                                         {{#if id}}
                                             <a href="#{{id}}">{{t "unamed-property" }}</a>
@@ -88,7 +107,12 @@
                                     {{#if optional}}
                                         <span class="modifier">{{t "optional" }}</span>
                                     {{/if}}
-                                    <a href="#{{name}}">{{name}}</a>
+                                    <a href="#{{name}}" 
+                                        {{#if deprecated}}
+                                            class="deprecated-name"
+                                        {{/if}}>
+                                        {{name}}
+                                    </a>
                                 </li>
                             {{/each}}
                             </ul>
@@ -118,9 +142,20 @@
                                 <tr>
                                     <td class="col-md-4">
                                         <a name="{{name}}"></a>
-                                        <span class="name"><b>{{name}}</b><a href="#{{name}}"><span class="icon ion-ios-link"></span></a></span>
+                                        <span class="name {{#if deprecated}}deprecated-name{{/if}}"><b>{{name}}</b>
+                                            <a href="#{{name}}">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
                                     </td>
                                 </tr>
+                                {{#if deprecated}}
+                                <tr>
+                                    <td class="col-md-4 deprecated">
+                                        {{{ deprecationMessage }}}
+                                    </td>
+                                </tr>
+                                {{/if}}
                                 <tr>
                                     <td class="col-md-4">
                                         <code>{{name}}: {{> link-type type=type }}</code>

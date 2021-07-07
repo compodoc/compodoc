@@ -39,44 +39,44 @@ describe('CLI Export', () => {
             const file = read(`${distFolder}/documentation.json`, 'utf8');
 
             // property
-            expect(file).to.contain('"rawdescription": "The current time"');
-            expect(file).to.contain('"description": "<p>The current time</p>\\n"');
+            expect(file).to.contain('"rawdescription": "\\n\\nThe current time');
+            expect(file).to.contain('"description": "<p>The current time</p>\\n');
 
             // method
-            expect(file).to.contain('"rawdescription": "the transform function"');
-            expect(file).to.contain('"description": "<p>the transform function</p>\\n"');
+            expect(file).to.contain('"rawdescription": "\\n\\nthe transform function');
+            expect(file).to.contain('"description": "<p>the transform function</p>\\n');
 
             // pipe
             expect(file).to.contain(
-                '"rawdescription": "Uppercase the first letter of the string\\n\\n__Usage :__\\n   value | firstUpper"'
+                '"rawdescription": "\\n\\nUppercase the first letter of the string\\n\\n__Usage :__\\n  value | firstUpper'
             );
             expect(file).to.contain(
-                '"description": "<p>Uppercase the first letter of the string</p>\\n<p><strong>Usage :</strong>\\n   value | firstUpper</p>\\n"'
+                '"description": "<p>Uppercase the first letter of the string</p>\\n<p><strong>Usage :</strong>\\n  value | firstUpper</p>\\n'
             );
 
             // interface
             expect(file).to.contain(
-                '"rawdescription": "An interface just for documentation purpose"'
+                '"rawdescription": "\\n\\nAn interface just for documentation purpose'
             );
             expect(file).to.contain(
-                '"description": "<p>An interface just for documentation purpose</p>\\n"'
+                '"description": "<p>An interface just for documentation purpose</p>\\n'
             );
 
             // service
             expect(file).to.contain(
-                '"rawdescription": "This service is a todo store\\nSee {@link Todo} for details about the main data of this store"'
+                '"rawdescription": "\\n\\nThis service is a todo store\\n\\nSee {@link Todo} for details about the main data of this store'
             );
             expect(file).to.contain(
-                '"description": "<p>This service is a todo store\\nSee {@link Todo} for details about the main data of this store</p>\\n"'
+                '"description": "<p>This service is a todo store</p>\\n<p>See {@link Todo} for details about the main data of this store</p>\\n'
             );
 
             // accessor (setter)
-            expect(file).to.contain('"rawdescription": "Setter of _fullName"');
-            expect(file).to.contain('"description": "<p>Setter of _fullName</p>\\n"');
+            expect(file).to.contain('"rawdescription": "Setter of _fullName');
+            expect(file).to.contain('"description": "<p>Setter of _fullName</p>\\n');
 
             // accessor (getter)
-            expect(file).to.contain('"rawdescription": "Getter of _fullName"');
-            expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n"');
+            expect(file).to.contain('"rawdescription": "Getter of _fullName');
+            expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n');
         });
 
         it('should display deprecated and deprecation messages', () => {
@@ -86,25 +86,21 @@ describe('CLI Export', () => {
             expect(file).to.contain('"deprecated": false');
 
             // property
-            expect(file).to.contain('"deprecationMessage": "The current time property is deprecated"');
+            expect(file).to.contain(
+                '"deprecationMessage": "The current time property is deprecated"'
+            );
 
             // method
             expect(file).to.contain('"deprecationMessage": "the transform function is deprecated"');
 
             // pipe
-            expect(file).to.contain(
-                '"deprecationMessage": "This pipe is deprecated"'
-            );
+            expect(file).to.contain('"deprecationMessage": "This pipe is deprecated"');
 
             // interface
-            expect(file).to.contain(
-                '"deprecationMessage": "This interface is deprecated"'
-            );
+            expect(file).to.contain('"deprecationMessage": "This interface is deprecated"');
 
             // service
-            expect(file).to.contain(
-                '"deprecationMessage": "This service is deprecated"'
-            );
+            expect(file).to.contain('"deprecationMessage": "This service is deprecated"');
 
             // accessor (setter)
             expect(file).to.contain('"deprecationMessage": "This setter is deprecated"');

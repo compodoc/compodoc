@@ -17,6 +17,7 @@ export const TRANSLATION_ES_ES = {
     'default-value': 'Valor por defecto',
     'defined-in': 'Definido en',
     dependencies: 'Dependencias',
+    deprecated: 'Obsoleta',
     description: 'Descripción',
     directive: 'Directiva',
     directives: 'Directivas',

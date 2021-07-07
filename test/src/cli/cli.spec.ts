@@ -64,7 +64,7 @@ describe('CLI simple flags', () => {
         });
     });
 
-    describe("when just serving without generation and folder which does't exist", () => {
+    /*describe("when just serving without generation and folder which does't exist", () => {
         let command = undefined;
         beforeEach(() => {
             command = shell('node', ['./bin/index-cli.js', '-s', '-d', 'doc']);
@@ -73,7 +73,7 @@ describe('CLI simple flags', () => {
         it('should display error message', () => {
             expect(command.stdout.toString()).to.contain("folder doesn't exist");
         });
-    });
+    });*/
 
     describe('when no README/package.json files available', () => {
         let command = undefined;
@@ -105,7 +105,7 @@ describe('CLI simple flags', () => {
 
     describe('showing the output type', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

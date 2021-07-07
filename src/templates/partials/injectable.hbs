@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
   <li>{{t "injectables" }}</li>
-  <li>{{injectable.name}}</li>
+  <li {{#if injectable.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{injectable.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -20,6 +22,15 @@
         <p class="comment">
             <code>{{injectable.file}}</code>
         </p>
+
+        {{#if injectable.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ injectable.deprecationMessage }}}
+            </p>
+        {{/if}}
 
         {{#if injectable.description}}
             <p class="comment">

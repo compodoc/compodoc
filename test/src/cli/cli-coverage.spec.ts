@@ -320,7 +320,7 @@ describe('CLI coverage report', () => {
                 '--coverageMinimumPerFile',
                 '0',
                 '--coverageTest',
-                '30',
+                '40',
                 '-d',
                 distFolder
             ]);
@@ -365,10 +365,14 @@ describe('CLI coverage report', () => {
         });
         after(() => tmp.clean(distFolder));
 
-        it('it should have coverage page', () => {
+        it('it should have coverage page - title', () => {
             expect(coverageFile).to.contain('Documentation coverage');
+        });
+        it('it should have coverage page - badge', () => {
             expect(coverageFile).to.contain('img src="./images/coverage-badge-documentation.svg"');
-            expect(coverageFile).to.contain('3/5');
+        });
+        it('it should have coverage page - score', () => {
+            expect(coverageFile).to.contain('7/7');
         });
     });
 

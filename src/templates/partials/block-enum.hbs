@@ -5,9 +5,16 @@
                 <tr>
                     <td class="col-md-4">
                         <a name="{{name}}"></a>
-                        <span class="name"><b>{{name}}</b><a href="#{{name}}"><span class="icon ion-ios-link"></span></a></span>
+                        <span class="name {{#if deprecated}}deprecated-name{{/if}}"><b>{{name}}</b><a href="#{{name}}"><span class="icon ion-ios-link"></span></a></span>
                     </td>
                 </tr>
+                {{#if deprecated}}
+                <tr>
+                    <td class="col-md-4 deprecated">
+                        {{{ deprecationMessage }}}
+                    </td>
+                </tr>
+                {{/if}}
                 {{#if description}}
                     <tr>
                         <td class="col-md-4">

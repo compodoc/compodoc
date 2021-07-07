@@ -11,19 +11,24 @@
                 <td class="col-md-4">
                     <a name="{{name}}"></a>
                     <span class="name">
-                        <b>
-                            {{#each modifierKind}}
-                            <span class="modifier">{{modifKind this}}</span>
-                            {{/each}}
-                            {{#if optional}}
-                            <span class="modifier">{{t "optional" }}</span>
-                            {{/if}}
-                            {{name}}
-                        </b>
+                        {{#each modifierKind}}
+                        <span class="modifier">{{modifKind this}}</span>
+                        {{/each}}
+                        {{#if optional}}
+                        <span class="modifier">{{t "optional" }}</span>
+                        {{/if}}
+                        <span {{#if deprecated}}class="deprecated-name"{{/if}}><b>{{name}}</b></span>
                         <a href="#{{name}}"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
+            {{#if deprecated}}
+            <tr>
+                <td class="col-md-4 deprecated">
+                    {{{ deprecationMessage }}}
+                </td>
+            </tr>
+            {{/if}}
             {{#if ../file-path}}
             <tr>
                 <td class="col-md-4">

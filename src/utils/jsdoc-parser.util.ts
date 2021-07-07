@@ -3,8 +3,6 @@ import { ts, SyntaxKind } from 'ts-simple-ast';
 
 import * as _ts from './ts-internal';
 
-import * as Handlebars from 'handlebars';
-
 import { JSDocParameterTagExt } from '../app/nodes/jsdoc-parameter-tag.node';
 
 export class JsdocParserUtil {
@@ -84,7 +82,7 @@ export class JsdocParserUtil {
         let shortText = 0;
 
         function readBareLine(line: string) {
-            comment += '\n' + Handlebars.escapeExpression(line);
+            comment += '\n' + line;
             if (line === '' && shortText === 0) {
                 // Ignore
             } else if (line === '' && shortText === 1) {
@@ -104,6 +102,13 @@ export class JsdocParserUtil {
 
             if (CODE_FENCE.test(line)) {
                 inCode = !inCode;
+            }
+
+            if (!inCode) {
+                const tag = /^@(\S+)/.exec(line);
+                if (tag) {
+                    return;
+                }
             }
 
             readBareLine(line);

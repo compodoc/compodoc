@@ -402,7 +402,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support accessors for class', () => {
-        expect(todoClassFile).to.contain('<a href="#title">title</a>');
+        expect(todoClassFile).to.contain('<a href="#title" >title</a>');
         expect(todoClassFile).to.contain('Accessors');
         expect(todoClassFile).to.contain('Setter of _title');
         expect(todoClassFile).to.contain('<p>Returns the runtime path</p>');
@@ -640,16 +640,16 @@ describe('CLI simple generation - big app', () => {
     it('should support alone elements in their own entry menu', () => {
         let file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain(
-            '<a href="components/JigsawTab.html" data-type="entity-link">JigsawTab</a>'
+            '<a href="components/JigsawTab.html" data-type="entity-link" >JigsawTab</a>'
         );
         expect(file).to.contain(
-            '<a href="directives/DoNothingDirective2.html" data-type="entity-link">DoNothingDirective2</a>'
+            '<a href="directives/DoNothingDirective2.html" data-type="entity-link" >DoNothingDirective2</a>'
         );
         expect(file).to.contain(
-            '<a href="injectables/EmitterService.html" data-type="entity-link">EmitterService</a>'
+            '<a href="injectables/EmitterService.html" data-type="entity-link" >EmitterService</a>'
         );
         expect(file).to.contain(
-            '<a href="pipes/FirstUpperPipe2.html" data-type="entity-link">FirstUpperPipe2</a>'
+            '<a href="pipes/FirstUpperPipe2.html" data-type="entity-link" >FirstUpperPipe2</a>'
         );
     });
 

@@ -20,7 +20,7 @@
                                 {{#if optional}}
                                     <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -47,7 +47,7 @@
                                 {{#if optional}}
                                     <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -68,7 +68,7 @@
                         <ul class="index-list">
                         {{#each inputs}}
                             <li>
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -89,7 +89,7 @@
                         <ul class="index-list">
                         {{#each outputs}}
                             <li>
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -110,7 +110,7 @@
                         <ul class="index-list">
                         {{#each hostBindings}}
                             <li>
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -131,7 +131,7 @@
                         <ul class="index-list">
                         {{#each hostListeners}}
                             <li>
-                                <a href="#{{name}}">{{name}}</a>
+                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
                             </li>
                         {{/each}}
                         </ul>
@@ -155,7 +155,7 @@
                                     {{#each modifierKind}}
                                         <span class="modifier">{{modifKind this}}</span>
                                     {{/each}}
-                                    <a href="#{{@key}}">{{@key}}</a>
+                                    <a href="#{{@key}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{@key}}</a>
                                 </li>
                             {{/each}}
                             </ul>

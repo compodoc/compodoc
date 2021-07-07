@@ -11,10 +11,7 @@ export class ComponentDepFactory {
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
         let sourceCode = srcFile.getText();
-        let hash = crypto
-            .createHash('md5')
-            .update(sourceCode)
-            .digest('hex');
+        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
         let componentDep: IComponentDep = {
             name,
             id: 'component-' + name + '-' + hash,
@@ -41,6 +38,9 @@ export class ComponentDepFactory {
             outputsClass: IO.outputs,
             propertiesClass: IO.properties,
             methodsClass: IO.methods,
+
+            deprecated: IO.deprecated,
+            deprecationMessage: IO.deprecationMessage,
 
             hostBindings: IO.hostBindings,
             hostListeners: IO.hostListeners,
@@ -111,6 +111,9 @@ export interface IComponentDep extends IDep {
     outputsClass: Array<any>;
     propertiesClass: Array<any>;
     methodsClass: Array<any>;
+
+    deprecated: boolean;
+    deprecationMessage: string;
 
     entryComponents: Array<any>;
 

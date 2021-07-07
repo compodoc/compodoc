@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
   <li>{{t "controllers" }}</li>
-  <li>{{controller.name}}</li>
+  <li {{#if controller.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{controller.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -27,6 +29,15 @@
             </p>
             <p class="comment">
                 <code>{{controller.prefix}}</code>
+            </p>
+        {{/if}}
+
+        {{#if controller.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ controller.deprecationMessage }}}
             </p>
         {{/if}}
 

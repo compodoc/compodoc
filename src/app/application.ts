@@ -220,9 +220,8 @@ export class Application {
                 if (typeof parsedData.description !== 'undefined') {
                     Configuration.mainData.documentationMainDescription = parsedData.description;
                 }
-                Configuration.mainData.angularVersion = AngularVersionUtil.getAngularVersionOfProject(
-                    parsedData
-                );
+                Configuration.mainData.angularVersion =
+                    AngularVersionUtil.getAngularVersionOfProject(parsedData);
                 logger.info('package.json file found');
 
                 if (!Configuration.mainData.disableDependencies) {
@@ -2402,6 +2401,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                             logger.error(
                                                 'Error during ' + finalPathES5 + ' page generation'
                                             );
+                                            logger.error(err);
                                             return rejectProcessMenu('');
                                         });
                                 })
@@ -2409,6 +2409,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     logger.error(
                                         'Error during ' + finalPathES5 + ' page generation'
                                     );
+                                    logger.error(err);
                                     return rejectProcessMenu('');
                                 });
                         })

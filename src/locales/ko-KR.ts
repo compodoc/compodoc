@@ -17,6 +17,7 @@ export const TRANSLATION_KO_KR = {
     'default-value': '기본 값',
     'defined-in': '다음에 정의됨',
     dependencies: '의존성',
+    deprecated: '비추천',
     description: '설명',
     directive: 'Directive',
     directives: 'Directives',

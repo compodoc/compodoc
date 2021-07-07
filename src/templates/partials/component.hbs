@@ -1,6 +1,11 @@
 <ol class="breadcrumb">
   <li>{{t "components" }}</li>
-  <li>{{component.name}}</li>
+  <li
+    {{#if component.deprecated}}
+        class="deprecated-name"
+    {{/if}}
+  >
+  {{component.name}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">

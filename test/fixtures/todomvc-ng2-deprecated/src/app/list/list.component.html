@@ -1,0 +1,9 @@
+<input class="toggle-all" type="checkbox"
+        *ngIf="todoStore.todos.length" #toggleall
+        [checked]="todoStore.allCompleted()"
+        (click)="todoStore.setAllTo(toggleall.checked)">
+<div *ngIf="todoStore.todos.length > 0">
+    <ul class="todo-list" >
+        <todo *ngFor="let todo of todos" [todo]='todo'></todo>
+    </ul>
+</div>

@@ -8,7 +8,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disablePrivate', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -37,7 +37,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('varprotected</b>');
+            expect(componentFile).to.contain('varprotected</b></span>');
         });
 
         it('should display lifecyle hooks', () => {
@@ -52,7 +52,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableProtected', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -91,7 +91,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableInternal', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -120,7 +120,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('varprotected</b>');
+            expect(componentFile).to.contain('varprotected</b></span>');
         });
 
         it('should display lifecyle hooks', () => {
@@ -135,7 +135,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableLifeCycleHooks', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -166,7 +166,7 @@ describe('CLI disable flags', () => {
         });
 
         it('should include stuff marked as protected', () => {
-            expect(componentFile).to.contain('varprotected</b>');
+            expect(componentFile).to.contain('varprotected</b></span>');
         });
 
         it('should include methods marked as internal', () => {
@@ -176,7 +176,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableLifeCycleHooks for component inheritance', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -203,7 +203,7 @@ describe('CLI disable flags', () => {
 
     describe('disabling excluding methods with --disableLifeCycleHooks --disableInternal --disableProtected --disablePrivate', () => {
         let componentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -244,7 +244,7 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling search with --disableSearch', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -277,7 +277,7 @@ describe('CLI disable flags', () => {
     });
 
     describe('disabling dependencies with --disableDependencies', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -305,7 +305,7 @@ describe('CLI disable flags', () => {
     describe('minimal with --minimal', () => {
         let fileContents;
 
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

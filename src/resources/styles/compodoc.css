@@ -987,3 +987,18 @@ ul.index-list {
 .package-dependencies li {
     margin: 5px 0;
 }
+
+.deprecated {
+    color: #e73440;
+}
+.deprecated p {
+    margin-bottom: 0;
+}
+.deprecated-name,
+.deprecated-name:hover {
+    text-decoration: line-through;
+}
+.deprecated-name::before {
+    text-decoration: none;
+    display: inline-block;
+}
