@@ -33,7 +33,7 @@ describe('CLI simple generation - big app', () => {
     before(done => {
         tmp.create(tmpFolder);
         tmp.copy('./test/fixtures/todomvc-ng2/', tmpFolder);
-        let ls = shell(
+        const ls = shell(
             'node',
             ['../bin/index-cli.js', '-p', './src/tsconfig.json', '-d', 'documentation'],
             { cwd: tmpFolder }
@@ -104,7 +104,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should add correct path to css', () => {
-        let index = read(`${distFolder}/index.html`);
+        const index = read(`${distFolder}/index.html`);
         expect(index).to.contain('href="./styles/style.css"');
     });
 
@@ -350,7 +350,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support simple class with custom decorator()', () => {
-        let file = read(distFolder + '/classes/DoNothing.html');
+        const file = read(distFolder + '/classes/DoNothing.html');
         expect(file).to.contain('aname</b>');
     });
 
@@ -365,7 +365,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support @HostBindings', () => {
-        let file = read(distFolder + '/directives/DoNothingDirective.html');
+        const file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('style.color</b>');
     });
 
@@ -380,7 +380,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support extends for interface', () => {
-        let file = read(distFolder + '/interfaces/ClockInterface.html');
+        const file = read(distFolder + '/interfaces/ClockInterface.html');
         expect(file).to.contain('Extends');
     });
 
@@ -416,7 +416,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support accessors for directives', () => {
-        let file = read(distFolder + '/directives/DoNothingDirective.html');
+        const file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('Accessors');
         expect(file).to.contain('Getter of _fullName');
         expect(file).to.contain('Setter of _fullName');
@@ -474,12 +474,12 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support spread operator for modules metadatas', () => {
-        let file = read(distFolder + '/modules/HomeModule.html');
+        const file = read(distFolder + '/modules/HomeModule.html');
         expect(file).to.contain('../modules/FooterModule.html');
     });
 
     it('should support interceptors', () => {
-        let file = read(distFolder + '/modules/AppModule.html');
+        const file = read(distFolder + '/modules/AppModule.html');
         expect(file).to.contain('../interceptors/NoopInterceptor.html');
         const fileTest = exists(distFolder + '/interceptors/NoopInterceptor.html');
         expect(fileTest).to.be.true;
@@ -520,12 +520,12 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should schemas for modules', () => {
-        let file = read(distFolder + '/modules/FooterModule.html');
+        const file = read(distFolder + '/modules/FooterModule.html');
         expect(file).to.contain('<h3>Schemas');
     });
 
     it('should support dynamic path for routes', () => {
-        let routesFile = read(distFolder + '/js/routes/routes_index.js');
+        const routesFile = read(distFolder + '/js/routes/routes_index.js');
         expect(routesFile).to.contain('homeimported');
         expect(routesFile).to.contain('homeenumimported');
         expect(routesFile).to.contain('homeenuminfile');
@@ -566,7 +566,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support default type on default value', () => {
-        let file = read(distFolder + '/classes/TODO_STATUS.html');
+        const file = read(distFolder + '/classes/TODO_STATUS.html');
         expect(file).to.contain(
             'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string"'
         );
@@ -575,7 +575,7 @@ describe('CLI simple generation - big app', () => {
     it('should display project dependencies', () => {
         const file = exists(distFolder + '/dependencies.html');
         expect(file).to.be.true;
-        let dependencies = read(distFolder + '/dependencies.html');
+        const dependencies = read(distFolder + '/dependencies.html');
         expect(dependencies).to.contain('angular/forms');
     });
 
@@ -595,17 +595,17 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support optional for interfaces', () => {
-        let file = read(distFolder + '/interfaces/LabelledTodo.html');
+        const file = read(distFolder + '/interfaces/LabelledTodo.html');
         expect(file).to.contain('Optional');
     });
 
     it('should support optional for interfaces / methods', () => {
-        let file = read(distFolder + '/interfaces/TimeInterface.html');
+        const file = read(distFolder + '/interfaces/TimeInterface.html');
         expect(file).to.contain('Optional');
     });
 
     it('should support private for constructor', () => {
-        let file = read(distFolder + '/classes/PrivateConstructor.html');
+        const file = read(distFolder + '/classes/PrivateConstructor.html');
         expect(file).to.contain('<span class="modifier">Private</span>');
     });
 
@@ -638,7 +638,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support alone elements in their own entry menu', () => {
-        let file = read(distFolder + '/js/menu-wc.js');
+        const file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain(
             '<a href="components/JigsawTab.html" data-type="entity-link" >JigsawTab</a>'
         );
@@ -670,7 +670,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support component inheritance with base class without @component decorator', () => {
-        let file = read(distFolder + '/components/DumbComponent.html');
+        const file = read(distFolder + '/components/DumbComponent.html');
         expect(file).to.contain('parentInput</b>');
         expect(file).to.contain('parentoutput</b>');
         expect(file).to.contain('style.color</b>');
@@ -678,18 +678,18 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should display short filename + long filename in title for index of miscellaneous', () => {
-        let file = read(distFolder + '/miscellaneous/variables.html');
+        const file = read(distFolder + '/miscellaneous/variables.html');
         expect(file).to.contain('(src/.../about.module.ts)');
         expect(file).to.contain('title="src/app/about/about.module.ts"');
     });
 
     it('should display component even with no hostlisteners', () => {
-        let file = read(distFolder + '/coverage.html');
+        const file = read(distFolder + '/coverage.html');
         expect(file).to.contain('src/app/footer/footer.component.ts');
     });
 
     it('should display list of import/exports/declarations/providers in asc order', () => {
-        let file = read(distFolder + '/modules/AboutRoutingModule.html');
+        const file = read(distFolder + '/modules/AboutRoutingModule.html');
         expect(file).to.contain(
             `<li class="list-group-item">${eol}                            <a href="../components/CompodocComponent.html">CompodocComponent</a>${eol}                        </li>${eol}                        <li class="list-group-item">${eol}                            <a href="../components/TodoMVCComponent.html">`
         );
@@ -713,12 +713,12 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support spread elements with external variables', () => {
-        let file = read(distFolder + '/modules/FooterModule.html');
+        const file = read(distFolder + '/modules/FooterModule.html');
         expect(file).to.contain('<h3>Declarations<a href=');
     });
 
     it('should support interfaces with custom variables names', () => {
-        let file = read(distFolder + '/interfaces/ValueInRes.html');
+        const file = read(distFolder + '/interfaces/ValueInRes.html');
         expect(file).to.contain('<a href="#__allAnd">');
     });
 
@@ -755,7 +755,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct support gorRoot & forChild methods for modules', () => {
-        let file = read(distFolder + '/modules/AppModule.html');
+        const file = read(distFolder + '/modules/AppModule.html');
         expect(file).to.contain('code>forChild(confi');
         expect(file).to.contain('code>forRoot(confi');
     });
@@ -777,7 +777,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct supports 1000 as PollingSpeed for decorator arguments', () => {
-        let file = read(distFolder + '/classes/SomeFeature.html');
+        const file = read(distFolder + '/classes/SomeFeature.html');
         expect(file).to.contain('code>@throttle(1000 as PollingSpeed');
     });
 
@@ -794,7 +794,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support inheritance with abstract class', () => {
-        let file = read(distFolder + '/components/SonComponent.html');
+        const file = read(distFolder + '/components/SonComponent.html');
         expect(file).to.contain(
             'href="../components/MotherComponent.html#source" target="_self" >MotherComponent:20'
         );
@@ -804,12 +804,18 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support generic in function arguments', () => {
-        let file = read(distFolder + '/components/GenericComponent.html');
+        const file = read(distFolder + '/components/GenericComponent.html');
         expect(file).to.contain(
             'code>getData(foo: <a href="../interfaces/Foo.html" target="_self">Foo&lt;object&gt;</a>)</code'
         );
         expect(file).to.contain(
             'code><a href="../interfaces/Foo.html" target="_self" >Foo&lt;object&gt;</a></code'
         );
+    });
+
+    it('should support inheritance between component and directive', () => {
+        const file = read(distFolder + '/components/InheritDirComponent.html');
+        expect(file).to.contain('BaseDirective.html" target="_self" >BaseDirective');
+        expect(file).to.contain('b>testPropertyInBase</b');
     });
 });

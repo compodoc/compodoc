@@ -7,6 +7,7 @@ export class ExtendsMerger {
     private components;
     private classes;
     private injectables;
+    private directives;
 
     private static instance: ExtendsMerger;
     private constructor() {}
@@ -21,13 +22,15 @@ export class ExtendsMerger {
         this.components = deps.components;
         this.classes = deps.classes;
         this.injectables = deps.injectables;
+        this.directives = deps.directives;
 
         this.components.forEach(component => {
             let ext;
             if (typeof component.extends !== 'undefined') {
                 ext = this.findInDependencies(component.extends);
+
                 if (ext) {
-                    let recursiveScanWithInheritance = cls => {
+                    const recursiveScanWithInheritance = cls => {
                         // From class to component
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
@@ -43,7 +46,7 @@ export class ExtendsMerger {
                                 this.mergeInheritance(component, 'propertiesClass', newProperties);
                             }
                         }
-                        // From component to component
+                        // From component to component or directive to component
                         if (typeof cls.inputsClass !== 'undefined' && cls.inputsClass.length > 0) {
                             let newInputs = cloneDeep(cls.inputsClass);
                             newInputs = this.markInheritance(newInputs, cls);
@@ -121,7 +124,7 @@ export class ExtendsMerger {
             if (typeof el.extends !== 'undefined') {
                 ext = this.findInDependencies(el.extends);
                 if (ext) {
-                    let recursiveScanWithInheritance = cls => {
+                    const recursiveScanWithInheritance = cls => {
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
                             newMethods = this.markInheritance(newMethods, cls);
@@ -154,7 +157,7 @@ export class ExtendsMerger {
 
     private markInheritance(data, originalource) {
         return data.map(el => {
-            let newElement = el;
+            const newElement = el;
             newElement.inheritance = {
                 file: originalource.name
             };
@@ -177,8 +180,14 @@ export class ExtendsMerger {
     }
 
     private findInDependencies(name: string) {
-        let mergedData = concat([], this.components, this.classes, this.injectables);
-        let result = find(mergedData, { name: name } as any);
+        const mergedData = concat(
+            [],
+            this.components,
+            this.classes,
+            this.injectables,
+            this.directives
+        );
+        const result = find(mergedData, { name: name } as any);
         return result || false;
     }
 }

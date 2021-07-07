@@ -58,6 +58,11 @@
     </div>
 {{/if}}
 
+{{#orLength component.animations component.changeDetection component.encapsulation component.entryComponents
+            component.exportAs component.host component.interpolation component.moduleId
+            component.providers component.queries component.selector component.styleUrls component.styles
+            component.template component.templateUrl component.viewProviders component.tag component.styleUrl
+            component.shadow component.scoped component.assetsDir component.assetsDirs}}
 <section>
     <h3>{{t "metadata" }}</h3>
     <table class="table table-sm table-hover">
@@ -240,6 +245,7 @@
         </tbody>
     </table>
 </section>
+{{/orLength}}
 
 {{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners component.accessors}}
     {{> index methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners accessors=component.accessors}}

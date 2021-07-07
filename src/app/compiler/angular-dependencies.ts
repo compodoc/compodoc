@@ -176,6 +176,7 @@ export class AngularDependencies extends FrameworkDependencies {
          * - classes
          * - components
          * - injectables
+         * - directives
          * for
          * - inputs
          * - outputs
@@ -460,14 +461,6 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.pipes.push(pipeDeps);
                             }
                         } else if (this.isDirective(visitedDecorator)) {
-                            if (props.length === 0) {
-                                // Fallback to Class if Directive has no properties -> Angular >= 9.x Support
-                                if (ts.isClassDeclaration(node)) {
-                                    this.processClass(node, file, srcFile, outputSymbols, fileBody);
-                                }
-
-                                return;
-                            }
                             let directiveDeps = new DirectiveDepFactory(
                                 this.componentHelper
                             ).create(file, srcFile, name, props, IO);
@@ -600,9 +593,8 @@ export class AngularDependencies extends FrameworkDependencies {
                             subtype: 'enum',
                             deprecated,
                             deprecationMessage,
-                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(
-                                node
-                            ),
+                            description:
+                                this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
                         };
                         if (!isIgnore(node)) {
@@ -828,9 +820,8 @@ export class AngularDependencies extends FrameworkDependencies {
                             subtype: 'enum',
                             deprecated,
                             deprecationMessage,
-                            description: this.visitEnumTypeAliasFunctionDeclarationDescription(
-                                node
-                            ),
+                            description:
+                                this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
                         };
                         if (!isIgnore(node)) {
