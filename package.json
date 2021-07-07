@@ -13,7 +13,7 @@
         "prebuild": "rimraf dist/*",
         "build": "rollup -c rollup/rollup.config.js",
         "*********UTILS********": "*******************",
-        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs --starting-commit f597531e",
+        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs -u",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "download-api-list": "node tools/download-api-list.js",
         "codecov": "codecov -f coverage/lcov_merged.info",
