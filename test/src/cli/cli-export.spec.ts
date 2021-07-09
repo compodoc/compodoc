@@ -229,6 +229,16 @@ describe('CLI Export', () => {
             expect(file).to.contain('"comment": "<p>class method param</p>');
             expect(file).to.contain('"comment": "<p>class method return</p>');
         });
+
+        it('should get modules informations', () => {
+            const file = read(`${distFolder}/documentation.json`);
+
+            // Description
+            expect(file).to.contain('"description": "<p>The list of todos module');
+
+            // Sourcecode
+            expect(file).to.contain('"sourceCode": "import { NgModule } from');
+        });
     });
 
     describe('when specified JSON and disable things', () => {

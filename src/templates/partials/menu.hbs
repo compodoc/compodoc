@@ -96,8 +96,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         <ul class="links collapse" ${ isNormalMode ? 'id="additional-page-{{id}}"' : 'id="xs-additional-page-{{id}}"' }>
                                             {{#each children}}
                                             <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
-                                                <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">{{ name
-                                                    }}</a>
+                                                <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">{{ name }}</a>
                                             </li>
                                             {{/each}}
                                         </ul>
@@ -105,8 +104,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                     {{/compare}}
                                 {{else}}
                                     <li class="link {{#compare depth ">" 1 }}for-chapter{{depth}}{{/compare}}">
-                                        <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name
-                                            }}</a>
+                                        <a href="{{path}}/{{filename}}.html" data-type="entity-link" data-context-id="additional">{{ name }}</a>
                                     </li>
                                 {{/compare}}
                             {{/each}}
@@ -139,8 +137,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'id="xs-components-links-{{id}}"' }>
                                             {{#each compodocLinks.components}}
                                             <li class="link">
-                                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
-                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                             </li>
                                             {{/each}}
                                         </ul>
@@ -158,8 +155,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'id="xs-controllers-links-{{id}}"' }>
                                             {{#each compodocLinks.controllers}}
                                             <li class="link">
-                                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
-                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                                <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                             </li>
                                             {{/each}}
                                         </ul>
@@ -177,8 +173,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         'id="xs-directives-links-{{id}}"' }>
                                         {{#each compodocLinks.directives}}
                                         <li class="link">
-                                            <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
-                                                data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                            <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                         </li>
                                         {{/each}}
                                     </ul>
@@ -196,9 +191,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                         'id="xs-injectables-links-{{id}}"' }>
                                         {{#each compodocLinks.injectables}}
                                         <li class="link">
-                                            <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
-                                                data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name
-                                                }}</a>
+                                            <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                         </li>
                                         {{/each}}
                                     </ul>
@@ -216,8 +209,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             'id="xs-pipes-links-{{id}}"' }>
                                             {{#each compodocLinks.pipes}}
                                             <li class="link">
-                                                <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html"
-                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                                <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                             </li>
                                             {{/each}}
                                         </ul>
@@ -240,8 +232,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'components'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="components-links"' : 'id="xs-components-links"' }>
                             {{#each components}}
                             <li class="link">
-                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                    name }}</a>
+                                <a href="components/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -260,8 +251,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <ul class="links collapse {{#isNotToggle 'controllers'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="controllers-links"' : 'id="xs-controllers-links"' }>
                                 {{#each controllers}}
                                 <li class="link">
-                                    <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                        name }}</a>
+                                    <a href="controllers/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                 </li>
                                 {{/each}}
                             </ul>
@@ -280,8 +270,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <ul class="links collapse {{#isNotToggle 'directives'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="directives-links"' : 'id="xs-directives-links"' }>
                                 {{#each directives}}
                                 <li class="link">
-                                    <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                        name }}</a>
+                                    <a href="directives/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                 </li>
                                 {{/each}}
                             </ul>
@@ -299,8 +288,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
                             {{#each classes}}
                             <li class="link">
-                                <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                    name }}</a>
+                                <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -318,8 +306,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <ul class="links collapse {{#isNotToggle 'injectables'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
                                 {{#each injectables}}
                                 <li class="link">
-                                    <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                        name }}</a>
+                                    <a href="injectables/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                 </li>
                                 {{/each}}
                             </ul>
@@ -337,8 +324,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'interceptors'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="interceptors-links"' : 'id="xs-interceptors-links"' }>
                             {{#each interceptors}}
                             <li class="link">
-                                <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                    name }}</a>
+                                <a href="interceptors/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -355,8 +341,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'guards'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="guards-links"' : 'id="xs-guards-links"' }>
                             {{#each guards}}
                             <li class="link">
-                                <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                    name }}</a>
+                                <a href="guards/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -373,8 +358,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
                             {{#each interfaces}}
                             <li class="link">
-                                <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                    name }}</a>
+                                <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -392,8 +376,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <ul class="links collapse {{#isNotToggle 'pipes'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="pipes-links"' : 'id="xs-pipes-links"' }>
                                 {{#each pipes}}
                                 <li class="link">
-                                    <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{
-                                        name }}</a>
+                                    <a href="pipes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
                                 </li>
                                 {{/each}}
                             </ul>

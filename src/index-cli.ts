@@ -13,7 +13,7 @@ import AngularVersionUtil from './utils/angular-version.util';
 import { COMPODOC_DEFAULTS } from './utils/defaults';
 import { logger } from './utils/logger';
 import { ParserUtil } from './utils/parser.util.class';
-import { handlePath, readConfig, ignoreDirectory } from './utils/utils';
+import { readConfig, ignoreDirectory } from './utils/utils';
 
 import { cosmiconfigSync } from 'cosmiconfig';
 
@@ -21,7 +21,6 @@ const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
 const program = require('commander');
-const sleep = require('sleep');
 
 const cosmiconfigModuleName = 'compodoc';
 
@@ -638,13 +637,6 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             }
         }
 
-        const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
-
-        if (isInInspectMode) {
-            // wait 10 seconds for debugger to connect in Chrome devtools
-            sleep.sleep(10);
-        }
-
         if (programOptions.serve && !Configuration.mainData.tsconfig && programOptions.output) {
             // if -s & -d, serve it
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
@@ -849,14 +841,16 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                         let startCwd = sourceFolder;
 
-                        let excludeParserTestFilesWithCwdDepth = excludeParser.testFilesWithCwdDepth();
+                        let excludeParserTestFilesWithCwdDepth =
+                            excludeParser.testFilesWithCwdDepth();
                         if (!excludeParserTestFilesWithCwdDepth.status) {
                             startCwd = excludeParser.updateCwd(
                                 cwd,
                                 excludeParserTestFilesWithCwdDepth.level
                             );
                         }
-                        let includeParserTestFilesWithCwdDepth = includeParser.testFilesWithCwdDepth();
+                        let includeParserTestFilesWithCwdDepth =
+                            includeParser.testFilesWithCwdDepth();
                         if (!includeParser.testFilesWithCwdDepth().status) {
                             startCwd = includeParser.updateCwd(
                                 cwd,

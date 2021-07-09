@@ -1,15 +1,24 @@
 body {
-    background: black;
-    color: #c7c7c7;
+    background: #212121;
+    color: #fafafa;
+}
+
+code {
+    color: #e09393;
+}
+
+a,
+.menu ul.list li a.active {
+    color: #7fc9ff;
 }
 
 .menu {
-    background: #050505;
+    background: #212121;
     border-right: 1px solid #444;
 }
 
 .menu ul.list li a {
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .menu ul.list li.divider {
@@ -27,10 +36,10 @@ body {
 }
 
 #book-search-input {
-    background: #050505;
+    background: #212121;
     border-top: 1px solid #444;
     border-bottom: 1px solid #444;
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .table-bordered {
@@ -48,7 +57,7 @@ body {
 
 .coverage a,
 .coverage-count {
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .coverage-header {
@@ -60,28 +69,28 @@ body {
     fill: white;
 }
 .routes svg rect {
-    fill: black !important;
+    fill: #212121 !important;
 }
 
 .navbar-default,
 .btn-default {
     background-color: black;
     border-color: #444;
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .navbar-default .navbar-brand {
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .overview .card,
 .modules .card {
-    background: black;
-    color: #c7c7c7;
+    background: #171717;
+    color: #fafafa;
     border: 1px solid #444;
 }
 .overview .card a {
-    color: #c7c7c7;
+    color: #fafafa;
 }
 
 .modules .card-header {
@@ -100,5 +109,5 @@ body {
 
 table.params thead {
     background: #484848;
-    color: #c7c7c7;
+    color: #fafafa;
 }

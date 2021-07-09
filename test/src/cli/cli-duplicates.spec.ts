@@ -97,28 +97,19 @@ describe('CLI duplicates support', () => {
     });
 
     it('should support component inside module', () => {
-        let file = read(distFolder + '/js/menu-wc.js');
-        file = file.replace(
-            /components-links-module-ValidationDemoModule-([a-zA-Z0-9-])+/g,
-            'components-links-module-ValidationDemoModule'
-        );
+        const file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain(
-            `id="xs-components-links-module-ValidationDemoModule"\' }>${eol}                                            <li class="link">${eol}                                                <a href="components/ValidationDemo.html"${eol}                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ValidationDemo</a>`
+            `<a href="components/ValidationDemo.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ValidationDemo</a>`
         );
     });
 
     it('should support component inside module with duplicate', () => {
-        let file = read(distFolder + '/js/menu-wc.js');
-        file = file.replace(
-            /components-links-module-FooterModule-([a-zA-Z0-9-])+/g,
-            'components-links-module-FooterModule'
-        );
-        // tslint:disable-next-line:max-line-length
+        const file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain(
-            `id="xs-components-links-module-FooterModule"\' }>${eol}                                            <li class="link">${eol}                                                <a href="components/FooterComponent-1.html"${eol}                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules" >FooterComponent</a>`
+            `<a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >FooterComponent</a>`
         );
         expect(file).to.contain(
-            `<li class="link">${eol}                                <a href="components/FooterComponent.html" data-type="entity-link" >FooterComponent</a>`
+            `<a href="components/FooterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >FooterComponent</a>`
         );
     });
 
