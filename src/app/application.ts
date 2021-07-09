@@ -551,8 +551,42 @@ export class Application {
 
         promiseSequential(actions)
             .then(res => {
-                this.processGraphs();
-                this.clearUpdatedFiles();
+                if (Configuration.mainData.exportFormat !== COMPODOC_DEFAULTS.exportFormat) {
+                    if (
+                        COMPODOC_DEFAULTS.exportFormatsSupported.indexOf(
+                            Configuration.mainData.exportFormat
+                        ) > -1
+                    ) {
+                        logger.info(
+                            `Generating documentation in export format ${Configuration.mainData.exportFormat}`
+                        );
+                        ExportEngine.export(
+                            Configuration.mainData.output,
+                            Configuration.mainData
+                        ).then(() => {
+                            generationPromiseResolve();
+                            this.endCallback();
+                            logger.info(
+                                'Documentation generated in ' +
+                                    Configuration.mainData.output +
+                                    ' in ' +
+                                    this.getElapsedTime() +
+                                    ' seconds'
+                            );
+                            if (Configuration.mainData.serve) {
+                                logger.info(
+                                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${Configuration.mainData.port}`
+                                );
+                                this.runWebServer(Configuration.mainData.output);
+                            }
+                        });
+                    } else {
+                        logger.warn(`Exported format not supported`);
+                    }
+                } else {
+                    this.processGraphs();
+                    this.clearUpdatedFiles();
+                }
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
@@ -722,6 +756,12 @@ export class Application {
                                     this.getElapsedTime() +
                                     ' seconds'
                             );
+                            if (Configuration.mainData.serve) {
+                                logger.info(
+                                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${Configuration.mainData.port}`
+                                );
+                                this.runWebServer(Configuration.mainData.output);
+                            }
                         });
                     } else {
                         logger.warn(`Exported format not supported`);
