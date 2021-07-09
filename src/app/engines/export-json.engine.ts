@@ -71,8 +71,17 @@ export class ExportJsonEngine {
         let _resultedModules = [];
 
         for (let moduleNr = 0; moduleNr < modules.length; moduleNr++) {
+            const module = modules[moduleNr];
             const moduleElement = {
-                name: modules[moduleNr].name,
+                name: module.name,
+                id: module.id,
+                description: module.description,
+                rawDescription: module.rawDescription,
+                deprecationMessage: module.deprecationMessage,
+                deprecated: module.deprecated,
+                file: module.file,
+                methods: module.methods,
+                sourceCode: module.sourceCode,
                 children: [
                     {
                         type: 'providers',
@@ -101,33 +110,33 @@ export class ExportJsonEngine {
                 ]
             };
 
-            for (let k = 0; k < modules[moduleNr].providers.length; k++) {
+            for (let k = 0; k < module.providers.length; k++) {
                 const providerElement = {
-                    name: modules[moduleNr].providers[k].name
+                    name: module.providers[k].name
                 };
                 moduleElement.children[0].elements.push(providerElement);
             }
-            for (let k = 0; k < modules[moduleNr].declarations.length; k++) {
+            for (let k = 0; k < module.declarations.length; k++) {
                 const declarationElement = {
-                    name: modules[moduleNr].declarations[k].name
+                    name: module.declarations[k].name
                 };
                 moduleElement.children[1].elements.push(declarationElement);
             }
-            for (let k = 0; k < modules[moduleNr].imports.length; k++) {
+            for (let k = 0; k < module.imports.length; k++) {
                 const importElement = {
-                    name: modules[moduleNr].imports[k].name
+                    name: module.imports[k].name
                 };
                 moduleElement.children[2].elements.push(importElement);
             }
-            for (let k = 0; k < modules[moduleNr].exports.length; k++) {
+            for (let k = 0; k < module.exports.length; k++) {
                 const exportElement = {
-                    name: modules[moduleNr].exports[k].name
+                    name: module.exports[k].name
                 };
                 moduleElement.children[3].elements.push(exportElement);
             }
-            for (let k = 0; k < modules[moduleNr].bootstrap.length; k++) {
+            for (let k = 0; k < module.bootstrap.length; k++) {
                 const bootstrapElement = {
-                    name: modules[moduleNr].bootstrap[k].name
+                    name: module.bootstrap[k].name
                 };
                 moduleElement.children[4].elements.push(bootstrapElement);
             }
