@@ -27,7 +27,7 @@ export default {
         'path',
         'util',
         'fs-extra',
-        'live-server',
+        '@compodoc/live-server',
         'typescript',
         'highlight.js',
         'semver',

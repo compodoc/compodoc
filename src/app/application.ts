@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import * as LiveServer from 'live-server';
+import * as LiveServer from '@compodoc/live-server';
 import * as _ from 'lodash';
 import * as path from 'path';
 

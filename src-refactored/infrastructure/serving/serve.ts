@@ -1,4 +1,4 @@
-import * as LiveServer from 'live-server';
+import * as LiveServer from '@compodoc/live-server';
 
 import { InternalConfiguration } from '../../core/entities/internal-configuration';
 
