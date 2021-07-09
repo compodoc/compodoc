@@ -87,3 +87,24 @@ This will put compodoc command available everywhere.
 > npm start
 
 Launch watch process for source files and rollup build.
+
+## Node.js inspecting
+
+-   install sleep package `npm i sleep`
+-   add these lines in index-cli.ts, atfer --files check
+
+```
+const sleep = require('sleep');
+const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
+if (isInInspectMode) {
+    // wait 10 seconds for debugger to connect in Chrome devtools
+    sleep.sleep(10);
+}
+```
+
+-   open one terminal and run inside compodoc folder : `npm run start`
+-   add `debugger`statement where you want to debug your code
+-   open Chrome and this url : chrome://inspect
+-   open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node --inspect ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s`
+-   Compodoc will wait 10s before starting when it detects --inspect flag
+-   open the debug window in Chrome, and click `inspect`

@@ -29,6 +29,18 @@ See this folder for more details : [DOCS](./docs/README.md)
 
 ### Debugging process
 
+-   install sleep package `npm i sleep`
+-   add these lines in index-cli.ts, atfer --files check
+
+```
+const sleep = require('sleep');
+const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
+if (isInInspectMode) {
+    // wait 10 seconds for debugger to connect in Chrome devtools
+    sleep.sleep(10);
+}
+```
+
 -   open one terminal and run inside compodoc folder : `npm run start`
 -   add `debugger`statement where you want to debug your code
 -   open Chrome and this url : chrome://inspect
