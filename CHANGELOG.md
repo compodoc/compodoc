@@ -1,3 +1,16 @@
+<a name="1.1.13"></a>
+
+## [1.1.13](https://github.com/compodoc/compodoc/compare/1.1.12...1.1.13) (2021-06-09)
+
+### Features
+
+-   feat(cli): Support --watch with --exportFormat json ([fdfe925](https://github.com/compodoc/compodoc/commit/fdfe925)), closes [#1087](https://github.com/compodoc/compodoc/issues/1087)
+
+### Bug fixes
+
+-   fix(dark): better dark mode ([f93090b](https://github.com/compodoc/compodoc/commit/f93090b)), closes [#1092](https://github.com/compodoc/compodoc/issues/1092)
+-   fix(cli): remove sleep package | wait 10s if --inspect flag in CONTRIBUTING.md and docs/README.md ([a1d5a1a](https://github.com/compodoc/compodoc/commit/a1d5a1a)), closes [#1090](https://github.com/compodoc/compodoc/issues/1090)
+
 <a name="1.1.12"></a>
 
 ## [1.1.12](https://github.com/compodoc/compodoc/compare/1.1.11...1.1.12) (2021-06-07)
