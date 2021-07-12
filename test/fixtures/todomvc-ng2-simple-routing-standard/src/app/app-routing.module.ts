@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AboutModule } from './about';
 
 export const APP_ROUTES: Routes = [
-    { path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },
+    {
+        path: 'about',
+        loadChildren: (): Promise<AboutModule> =>
+            import('./about/about.module').then(m => m.AboutModule)
+    },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
