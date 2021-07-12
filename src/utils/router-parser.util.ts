@@ -657,24 +657,31 @@ export class RouterParserUtil {
 
         // inline the property access expressions
         for (const propertyAccessExpression of propertyAccessExpressionsInRoutesVariableStatement) {
-            const referencedDeclaration = propertyAccessExpression
-                .getNameNode()
-                .getSymbolOrThrow()
-                .getValueDeclarationOrThrow();
-            if (
-                !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                TypeGuards.isEnumMember(referencedDeclaration) &&
-                TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                !TypeGuards.isEnumMember(referencedDeclaration)
-            ) {
-                throw new Error(
-                    `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
-                );
-            }
-            if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
-                propertyAccessExpression.replaceWithText(
-                    referencedDeclaration.getInitializerOrThrow().getText()
-                );
+            const propertyAccessExpressionNodeName = propertyAccessExpression.getNameNode();
+            if (propertyAccessExpressionNodeName) {
+                try {
+                    const propertyAccessExpressionNodeNameSymbol =
+                        propertyAccessExpressionNodeName.getSymbolOrThrow();
+                    if (propertyAccessExpressionNodeNameSymbol) {
+                        const referencedDeclaration =
+                            propertyAccessExpressionNodeNameSymbol.getValueDeclarationOrThrow();
+                        if (
+                            !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
+                            TypeGuards.isEnumMember(referencedDeclaration) &&
+                            TypeGuards.isPropertyAssignment(referencedDeclaration) &&
+                            !TypeGuards.isEnumMember(referencedDeclaration)
+                        ) {
+                            throw new Error(
+                                `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
+                            );
+                        }
+                        if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
+                            propertyAccessExpression.replaceWithText(
+                                referencedDeclaration.getInitializerOrThrow().getText()
+                            );
+                        }
+                    }
+                } catch (e) {}
             }
         }
 
