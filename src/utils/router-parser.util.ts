@@ -22,7 +22,8 @@ export class RouterParserUtil {
     private rootModule: string;
     private cleanModulesTree;
     private modulesWithRoutes = [];
-    private transformAngular8ImportSyntax = /(['"]loadChildren['"]:)\(\)=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\w+?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
+    private transformAngular8ImportSyntax =
+        /(['"]loadChildren['"]:)\(\)=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\w+?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -150,10 +151,11 @@ export class RouterParserUtil {
                                             route.name === argument.text &&
                                             route.filename !== this.modulesWithRoutes[i].filename
                                         ) {
-                                            let argumentImportPath = ImportsUtil.findFilePathOfImportedVariable(
-                                                argument.text,
-                                                this.modulesWithRoutes[i].filename
-                                            );
+                                            let argumentImportPath =
+                                                ImportsUtil.findFilePathOfImportedVariable(
+                                                    argument.text,
+                                                    this.modulesWithRoutes[i].filename
+                                                );
 
                                             argumentImportPath = argumentImportPath
                                                 .replace(process.cwd() + path.sep, '')
@@ -212,7 +214,7 @@ export class RouterParserUtil {
         // routes[] contains routes with module link
         // modulesTree contains modules tree
         // make a final routes tree with that
-        traverse(this.modulesTree).forEach(function(node) {
+        traverse(this.modulesTree).forEach(function (node) {
             if (node) {
                 if (node.parent) {
                     delete node.parent;
@@ -496,8 +498,8 @@ export class RouterParserUtil {
             if (
                 !TypeGuards.isPropertyAssignment(identifierDeclaration) &&
                 TypeGuards.isVariableDeclaration(identifierDeclaration) &&
-                (TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                    !TypeGuards.isVariableDeclaration(identifierDeclaration))
+                TypeGuards.isPropertyAssignment(identifierDeclaration) &&
+                !TypeGuards.isVariableDeclaration(identifierDeclaration)
             ) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`
@@ -556,8 +558,8 @@ export class RouterParserUtil {
                         let importName = namedImports[j].getNameNode().getText() as string,
                             importAlias;
 
-                        if (namedImports[j].getAliasIdentifier()) {
-                            importAlias = namedImports[j].getAliasIdentifier().getText();
+                        if (namedImports[j].getAliasNode()) {
+                            importAlias = namedImports[j].getAliasNode().getText();
                         }
 
                         if (importName === spreadElementIdentifier) {
@@ -594,9 +596,8 @@ export class RouterParserUtil {
                         let variableName = foundWithAlias
                             ? aliasOriginalName
                             : spreadElementIdentifier;
-                        referencedDeclaration = sourceFileImport.getVariableDeclaration(
-                            variableName
-                        );
+                        referencedDeclaration =
+                            sourceFileImport.getVariableDeclaration(variableName);
                     }
                 }
             } else {
@@ -663,8 +664,8 @@ export class RouterParserUtil {
             if (
                 !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
                 TypeGuards.isEnumMember(referencedDeclaration) &&
-                (TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                    !TypeGuards.isEnumMember(referencedDeclaration))
+                TypeGuards.isPropertyAssignment(referencedDeclaration) &&
+                !TypeGuards.isEnumMember(referencedDeclaration)
             ) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
@@ -756,16 +757,19 @@ export class RouterParserUtil {
                                 if (
                                     propertyInitializer.kind === SyntaxKind.PropertyAccessExpression
                                 ) {
-                                    let lastObjectLiteralAttributeName = propertyInitializer.name.getText(),
+                                    let lastObjectLiteralAttributeName =
+                                            propertyInitializer.name.getText(),
                                         firstObjectLiteralAttributeName;
                                     if (propertyInitializer.expression) {
-                                        firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
-                                        let result = ImportsUtil.findPropertyValueInImportOrLocalVariables(
-                                            firstObjectLiteralAttributeName +
-                                                '.' +
-                                                lastObjectLiteralAttributeName,
-                                            sourceFile
-                                        ); // tslint:disable-line
+                                        firstObjectLiteralAttributeName =
+                                            propertyInitializer.expression.getText();
+                                        let result =
+                                            ImportsUtil.findPropertyValueInImportOrLocalVariables(
+                                                firstObjectLiteralAttributeName +
+                                                    '.' +
+                                                    lastObjectLiteralAttributeName,
+                                                sourceFile
+                                            ); // tslint:disable-line
                                         if (result !== '') {
                                             propertyInitializer.kind = 9;
                                             propertyInitializer.text = result;
