@@ -125,8 +125,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === metadataVariableName) {
                         searchedImport = i;
@@ -182,9 +182,11 @@ export class ImportsUtil {
                                 len = exportDeclarations.length;
                             for (i; i < len; i++) {
                                 let exportDeclaration = exportDeclarations[i];
-                                let sourceFileExportedReference = exportDeclaration.getModuleSpecifierSourceFile();
+                                let sourceFileExportedReference =
+                                    exportDeclaration.getModuleSpecifierSourceFile();
                                 if (sourceFileExportedReference) {
-                                    let sourceFileExportedReferencePath = sourceFileExportedReference.getFilePath();
+                                    let sourceFileExportedReferencePath =
+                                        sourceFileExportedReference.getFilePath();
 
                                     const sourceFileExported =
                                         typeof ast.getSourceFile(
@@ -196,9 +198,8 @@ export class ImportsUtil {
                                               );
 
                                     if (sourceFileExported) {
-                                        variableDeclaration = sourceFileExported.getVariableDeclaration(
-                                            variableName
-                                        );
+                                        variableDeclaration =
+                                            sourceFileExported.getVariableDeclaration(variableName);
                                         if (variableDeclaration) {
                                             return hasFoundValues(variableDeclaration);
                                         }
@@ -223,7 +224,8 @@ export class ImportsUtil {
                             initializerKind &&
                             initializerKind === SyntaxKind.ObjectLiteralExpression
                         ) {
-                            let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
+                            let compilerNode =
+                                initializer.compilerNode as ts.ObjectLiteralExpression;
                             return compilerNode.properties;
                         } else if (initializerKind) {
                             return variableDeclaration.compilerNode;
@@ -256,8 +258,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === variableName) {
                         searchedImport = i;
@@ -314,8 +316,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === inputVariableName) {
                         searchedImport = i;
@@ -372,8 +374,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === metadataVariableName) {
                         searchedImport = i;
