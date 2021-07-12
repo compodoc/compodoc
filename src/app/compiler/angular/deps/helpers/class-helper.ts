@@ -721,7 +721,9 @@ export class ClassHelper {
                                 ts.isPropertyDeclaration(member) ||
                                 ts.isPropertySignature(member)
                             ) {
-                                properties.push(this.visitProperty(member, sourceFile));
+                                if (!inputDecorator && !outputDecorator) {
+                                    properties.push(this.visitProperty(member, sourceFile));
+                                }
                             } else if (ts.isCallSignatureDeclaration(member)) {
                                 properties.push(this.visitCallDeclaration(member, sourceFile));
                             } else if (
