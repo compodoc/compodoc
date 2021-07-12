@@ -704,6 +704,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     let tsConfigFile = readConfig(_file);
                     if (tsConfigFile.files) {
                         scannedFiles = tsConfigFile.files;
+                        // Normalize path of these files
+                        scannedFiles = scannedFiles.map(scannedFile => {
+                            return cwd + path.sep + scannedFile;
+                        });
                     }
 
                     // even if files are supplied with "files" attributes, enhance the array with includes
@@ -823,6 +827,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         let tsConfigFile = readConfig(_file);
                         if (tsConfigFile.files) {
                             scannedFiles = tsConfigFile.files;
+                            // Normalize path of these files
+                            scannedFiles = scannedFiles.map(scannedFile => {
+                                return cwd + path.sep + scannedFile;
+                            });
                         }
 
                         // even if files are supplied with "files" attributes, enhance the array with includes
