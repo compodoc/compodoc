@@ -107,19 +107,18 @@ describe('CLI simple flags', () => {
         let componentFile;
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/sample-files/tsconfig.entry.json',
-                '-d',
-                distFolder
-            ]);
+            tmp.copy('./test/fixtures/sample-files/', distFolder);
+            let ls = shell(
+                'node',
+                ['../bin/index-cli.js', '-p', 'tsconfig.entry.json', '-d', 'documentation'],
+                { cwd: distFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
                 done('error');
             }
-            componentFile = read(`${distFolder}/components/FooComponent.html`);
+            componentFile = read(`${distFolder}/documentation/components/FooComponent.html`);
             done();
         });
         after(() => tmp.clean(distFolder));
