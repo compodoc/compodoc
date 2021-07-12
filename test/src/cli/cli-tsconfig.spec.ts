@@ -4,19 +4,20 @@ const expect = chai.expect,
     tmp = temporaryDir();
 
 describe('CLI simple flags', () => {
-    const distFolder = tmp.name + '-tsconfig';
+    const tmpFolder = tmp.name + '-tsconfig';
+    const distFolder = tmpFolder + '/documentation';
 
     describe('when specific files are included in tsconfig', () => {
         let moduleFile = undefined;
-        before(function(done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/sample-files/tsconfig.entry.json',
-                '-d',
-                distFolder
-            ]);
+        before(function (done) {
+            tmp.create(tmpFolder);
+            tmp.copy('./test/fixtures/sample-files/', tmpFolder);
+
+            const ls = shell(
+                'node',
+                ['../bin/index-cli.js', '-p', './tsconfig.entry.json', '-d', 'documentation'],
+                { cwd: tmpFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -38,15 +39,18 @@ describe('CLI simple flags', () => {
 
     describe('when specific files are included in tsconfig + others', () => {
         let moduleFile = undefined;
-        before(function(done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/sample-files/tsconfig.entry-and-include.json',
-                '-d',
-                distFolder
-            ]);
+        before(function (done) {
+            const ls = shell(
+                'node',
+                [
+                    '../bin/index-cli.js',
+                    '-p',
+                    './tsconfig.entry-and-include.json',
+                    '-d',
+                    'documentation'
+                ],
+                { cwd: tmpFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
