@@ -354,6 +354,13 @@ export class ClassHelper {
                 return true;
             }
         }
+        // Check for ECMAScript Private Fields
+        if (member.name && member.name.escapedText) {
+            const isPrivate: boolean = member.name.escapedText.indexOf('#') === 0;
+            if (isPrivate) {
+                return true;
+            }
+        }
         return this.isHiddenMember(member);
     }
 
@@ -485,8 +492,8 @@ export class ClassHelper {
         let implementsElements = [];
         let extendsElement;
 
-        if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
-            let implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
+        if (typeof ts.getEffectiveImplementsTypeNodes !== 'undefined') {
+            let implementedTypes = ts.getEffectiveImplementsTypeNodes(classDeclaration);
             if (implementedTypes) {
                 let i = 0;
                 let len = implementedTypes.length;
@@ -498,8 +505,8 @@ export class ClassHelper {
             }
         }
 
-        if (typeof ts.getClassExtendsHeritageClauseElement !== 'undefined') {
-            let extendsTypes = ts.getClassExtendsHeritageClauseElement(classDeclaration);
+        if (typeof ts.getClassExtendsHeritageElement !== 'undefined') {
+            let extendsTypes = ts.getClassExtendsHeritageElement(classDeclaration);
             if (extendsTypes) {
                 if (extendsTypes.expression) {
                     extendsElement = extendsTypes.expression.text;
@@ -874,6 +881,9 @@ export class ClassHelper {
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
                         }
+                        if (type.kind === SyntaxKind.RestType && type.type) {
+                            _return += '...' + this.visitType(type.type);
+                        }
 
                         if (
                             type.kind === SyntaxKind.TypeReference &&
@@ -1106,6 +1116,21 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
+        // Check for ECMAScript Private Fields
+        if (this.isPrivate(property)) {
+            if (!result.modifierKind) {
+                result.modifierKind = [];
+            }
+            let hasAlreadyPrivateLeyword = false;
+            result.modifierKind.forEach(modifierKind => {
+                if (modifierKind === SyntaxKind.PrivateKeyword) {
+                    hasAlreadyPrivateLeyword = true;
+                }
+            });
+            if (!hasAlreadyPrivateLeyword) {
+                result.modifierKind.push(SyntaxKind.PrivateKeyword);
+            }
+        }
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
             if (property.jsDoc) {
@@ -1222,6 +1247,21 @@ export class ClassHelper {
                     kinds = kinds.filter(kind => kind !== SyntaxKind.PublicKeyword);
                 }
                 result.modifierKind = kinds;
+            }
+        }
+        // Check for ECMAScript Private Fields
+        if (this.isPrivate(method)) {
+            if (!result.modifierKind) {
+                result.modifierKind = [];
+            }
+            let hasAlreadyPrivateLeyword = false;
+            result.modifierKind.forEach(modifierKind => {
+                if (modifierKind === SyntaxKind.PrivateKeyword) {
+                    hasAlreadyPrivateLeyword = true;
+                }
+            });
+            if (!hasAlreadyPrivateLeyword) {
+                result.modifierKind.push(SyntaxKind.PrivateKeyword);
             }
         }
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
