@@ -1,15 +1,24 @@
+.nav-tabs > li > a {
+    text-decoration: none;
+}
+
 .navbar-default .navbar-brand {
     color: #f4645f;
     text-decoration: none;
     font-size: 16px;
 }
 
-.menu ul.list li a[data-type="chapter-link"], .menu ul.list li.chapter .simple {
+.menu ul.list li a[data-type='chapter-link'],
+.menu ul.list li.chapter .simple {
     color: #525252;
-    border-bottom: 1px dashed rgba(0,0,0,.1);
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-.content h1, .content h2, .content h3, .content h4, .content h5 {
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5 {
     color: #292e31;
     font-weight: normal;
 }
@@ -54,16 +63,53 @@ code {
     color: #b93d6a;
     font-size: 13px;
     line-height: 20px;
-    box-shadow: 0 1px 1px rgba(0,0,0,.125);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 }
 
 pre {
     margin: 0;
     padding: 12px 12px;
-    background: rgba(238,238,238,.35);
+    background: rgba(238, 238, 238, 0.35);
     border-radius: 3px;
     font-size: 13px;
     line-height: 1.5em;
     font-weight: 500;
-    box-shadow: 0 1px 1px rgba(0,0,0,.125);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: #fafafa;
+    }
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4,
+    .content h5 {
+        color: #fafafa;
+    }
+
+    code {
+        background: none;
+    }
+
+    .content {
+        color: #fafafa;
+    }
+
+    .menu ul.list li a[data-type='chapter-link'],
+    .menu ul.list li.chapter .simple {
+        color: #fafafa;
+    }
+
+    .menu ul.list li.title a {
+        color: #fafafa;
+    }
+
+    .menu ul.list li a {
+        color: #fafafa;
+    }
+    .menu ul.list li a.active {
+        color: #7fc9ff;
+    }
 }
