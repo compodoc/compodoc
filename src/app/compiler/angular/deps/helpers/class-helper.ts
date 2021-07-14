@@ -840,9 +840,14 @@ export class ClassHelper {
                             _return += _firstPart + kindToType(type.kind);
                         }
                     } else {
-                        _return += kindToType(type.kind);
                         if (ts.isLiteralTypeNode(type) && type.literal) {
-                            _return += '"' + type.literal.text + '"';
+                            if (type.literal.text) {
+                                _return += '"' + type.literal.text + '"';
+                            } else {
+                                _return += kindToType(type.literal.kind);
+                            }
+                        } else {
+                            _return += kindToType(type.kind);
                         }
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
@@ -878,7 +883,11 @@ export class ClassHelper {
                             _return += kindToType(type.kind);
                         }
                         if (ts.isLiteralTypeNode(type) && type.literal) {
-                            _return += '"' + type.literal.text + '"';
+                            if (type.literal.text) {
+                                _return += '"' + type.literal.text + '"';
+                            } else {
+                                _return += kindToType(type.literal.kind);
+                            }
                         }
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
