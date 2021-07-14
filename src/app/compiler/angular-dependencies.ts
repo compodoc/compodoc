@@ -756,7 +756,29 @@ export class AngularDependencies extends FrameworkDependencies {
                             deps.initializer = infos.initializer;
                         }
                         if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
-                            const rawDescription = node.jsDoc[0].comment;
+                            const len = node.jsDoc[0].comment.length;
+                            let rawDescription = '';
+
+                            for (let i = 0; i < len; i++) {
+                                const JSDocNode = node.jsDoc[0].comment[i];
+                                switch (JSDocNode.kind) {
+                                    case SyntaxKind.JSDocText:
+                                        rawDescription += JSDocNode.text;
+                                        break;
+                                    case SyntaxKind.JSDocLink:
+                                        if (JSDocNode.name) {
+                                            rawDescription +=
+                                                JSDocNode.text +
+                                                '{@link ' +
+                                                JSDocNode.name.escapedText +
+                                                '}';
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
                             deps.rawdescription = rawDescription;
                             deps.description = marked(rawDescription);
                         }
