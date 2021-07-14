@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import * as _ from 'lodash';
-import Ast, { ts, SyntaxKind } from 'ts-simple-ast';
+import { Project, ts, SyntaxKind } from 'ts-morph';
 
 import { kindToType } from '../../utils/kind-to-type';
 import { logger } from '../../utils/logger';
@@ -48,7 +48,7 @@ import {
 
 const crypto = require('crypto');
 const marked = require('marked');
-const ast = new Ast();
+const ast = new Project();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -288,7 +288,7 @@ export class AngularDependencies extends FrameworkDependencies {
         const astFile =
             typeof ast.getSourceFile(initialSrcFile.fileName) !== 'undefined'
                 ? ast.getSourceFile(initialSrcFile.fileName)
-                : ast.addExistingSourceFile(initialSrcFile.fileName);
+                : ast.addSourceFileAtPath(initialSrcFile.fileName);
 
         const variableRoutesStatements = astFile.getVariableStatements();
         let hasRoutesStatements = false;

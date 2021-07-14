@@ -1,4 +1,4 @@
-import { SyntaxKind } from 'ts-simple-ast';
+import { SyntaxKind } from 'ts-morph';
 
 export function hasSpreadElementInArray(arr): boolean {
     let result = false;

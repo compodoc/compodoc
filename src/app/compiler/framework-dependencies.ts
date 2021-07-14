@@ -1,4 +1,4 @@
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 import { ClassHelper } from './angular/deps/helpers/class-helper';
 import { ComponentHelper } from './angular/deps/helpers/component-helper';

@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as util from 'util';
 import * as path from 'path';
 
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
 import { kindToType } from '../../../../../utils/kind-to-type';

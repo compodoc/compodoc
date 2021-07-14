@@ -115,7 +115,6 @@
         "semver": "^7.3.5",
         "traverse": "^0.6.6",
         "ts-morph": "^11.0.3",
-        "ts-simple-ast": "21.0.4",
         "uuid": "^8.3.2"
     },
     "devDependencies": {

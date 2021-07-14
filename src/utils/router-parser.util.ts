@@ -2,7 +2,7 @@ import * as Handlebars from 'handlebars';
 import * as JSON5 from 'json5';
 import * as _ from 'lodash';
 import * as path from 'path';
-import Ast, { ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-simple-ast';
+import { Project, ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-morph';
 
 import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -12,7 +12,7 @@ import { logger } from './logger';
 
 const traverse = require('traverse');
 
-const ast = new Ast();
+const ast = new Project();
 
 export class RouterParserUtil {
     private routes: any[] = [];
@@ -591,7 +591,7 @@ export class RouterParserUtil {
                     const sourceFileImport =
                         typeof ast.getSourceFile(importPath) !== 'undefined'
                             ? ast.getSourceFile(importPath)
-                            : ast.addExistingSourceFile(importPath);
+                            : ast.addSourceFileAtPath(importPath);
                     if (sourceFileImport) {
                         let variableName = foundWithAlias
                             ? aliasOriginalName

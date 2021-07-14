@@ -1,6 +1,6 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 export class ModifIconHelper implements IHtmlEngineHelper {
     public helperFunc(context: any, kind: SyntaxKind): string {

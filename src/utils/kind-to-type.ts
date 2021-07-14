@@ -1,4 +1,4 @@
-import { SyntaxKind } from 'ts-simple-ast';
+import { SyntaxKind } from 'ts-morph';
 
 export function kindToType(kind: number): string {
     let _type = '';

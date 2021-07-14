@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 import { Application } from './app/application';
 import Configuration from './app/configuration';

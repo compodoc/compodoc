@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 import * as _ts from './ts-internal';
 

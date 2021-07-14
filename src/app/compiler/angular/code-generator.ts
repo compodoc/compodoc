@@ -1,4 +1,4 @@
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 export class CodeGenerator {
     public generate(node: ts.Node): string {
@@ -38,10 +38,10 @@ class TsKindsToText {
 }
 
 const TsKindConversion: Array<TsKindsToText> = [
-    new TsKindsToText(node => ['"', node.text, '"'], [
-        SyntaxKind.FirstLiteralToken,
-        SyntaxKind.Identifier
-    ]),
+    new TsKindsToText(
+        node => ['"', node.text, '"'],
+        [SyntaxKind.FirstLiteralToken, SyntaxKind.Identifier]
+    ),
     new TsKindsToText(node => ['"', node.text, '"'], [SyntaxKind.StringLiteral]),
     new TsKindsToText(node => [], [SyntaxKind.ArrayLiteralExpression]),
     new TsKindsToText(node => ['import', ' '], [SyntaxKind.ImportKeyword]),
@@ -57,10 +57,10 @@ const TsKindConversion: Array<TsKindsToText> = [
     new TsKindsToText(node => ['+'], [SyntaxKind.PlusToken]),
     new TsKindsToText(node => [' => '], [SyntaxKind.EqualsGreaterThanToken]),
     new TsKindsToText(node => ['('], [SyntaxKind.OpenParenToken]),
-    new TsKindsToText(node => ['{', ' '], [
-        SyntaxKind.ImportClause,
-        SyntaxKind.ObjectLiteralExpression
-    ]),
+    new TsKindsToText(
+        node => ['{', ' '],
+        [SyntaxKind.ImportClause, SyntaxKind.ObjectLiteralExpression]
+    ),
     new TsKindsToText(node => ['{', '\n'], [SyntaxKind.Block]),
     new TsKindsToText(node => ['}'], [SyntaxKind.CloseBraceToken]),
     new TsKindsToText(node => [')'], [SyntaxKind.CloseParenToken]),
