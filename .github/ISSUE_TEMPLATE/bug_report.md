@@ -1,6 +1,7 @@
 ---
 name: Bug report
 description: Create a report to help us improve Compodoc
+about: Create a report to help us improve Compodoc
 title: '[BUG] '
 labels: [Bug]
 assignees:
