@@ -246,25 +246,34 @@ export class JsdocParserUtil {
     }
 
     public parseJSDocNode(node): string {
-        const len = node.jsDoc[0].comment.length;
         let rawDescription = '';
 
-        for (let i = 0; i < len; i++) {
-            const JSDocNode = node.jsDoc[0].comment[i];
-            switch (JSDocNode.kind) {
-                case SyntaxKind.JSDocText:
-                    rawDescription += JSDocNode.text;
-                    break;
-                case SyntaxKind.JSDocLink:
-                    if (JSDocNode.name) {
-                        rawDescription +=
-                            JSDocNode.text + '{@link ' + JSDocNode.name.escapedText + '}';
-                    }
-                    break;
-                default:
-                    break;
+        if (typeof node.jsDoc[0].comment === 'string') {
+            rawDescription += node.jsDoc[0].comment;
+        } else {
+            const len = node.jsDoc[0].comment.length;
+
+            for (let i = 0; i < len; i++) {
+                const JSDocNode = node.jsDoc[0].comment[i];
+                switch (JSDocNode.kind) {
+                    case SyntaxKind.JSDocComment:
+                        rawDescription += JSDocNode.comment;
+                        break;
+                    case SyntaxKind.JSDocText:
+                        rawDescription += JSDocNode.text;
+                        break;
+                    case SyntaxKind.JSDocLink:
+                        if (JSDocNode.name) {
+                            rawDescription +=
+                                JSDocNode.text + '{@link ' + JSDocNode.name.escapedText + '}';
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+
         return rawDescription;
     }
 }
