@@ -915,7 +915,11 @@ export class ClassHelper {
                 let type = node.types[i];
                 _return += kindToType(type.kind);
                 if (ts.isLiteralTypeNode(type) && type.literal) {
-                    _return += '"' + type.literal.text + '"';
+                    if (type.literal.text) {
+                        _return += '"' + type.literal.text + '"';
+                    } else {
+                        _return += kindToType(type.literal.kind);
+                    }
                 }
                 if (type.typeName) {
                     _return += this.visitTypeName(type.typeName);
