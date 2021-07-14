@@ -826,7 +826,7 @@ export class ClassHelper {
                 }
             }
 
-            const parseTypesOrElements = arr => {
+            const parseTypesOrElements = (arr, separator) => {
                 let i = 0;
                 let len = arr.length;
                 for (i; i < len; i++) {
@@ -861,23 +861,23 @@ export class ClassHelper {
                             for (const argument of type.typeArguments) {
                                 typeArguments.push(this.visitType(argument));
                             }
-                            _return += typeArguments.join(' | ');
+                            _return += typeArguments.join(separator);
                             _return += '>';
                         }
                     }
                     if (i < len - 1) {
-                        _return += ' | ';
+                        _return += separator;
                     }
                 }
             };
 
             if (node.type.elements && ts.isTupleTypeNode(node.type)) {
                 _return += '[';
-                parseTypesOrElements(node.type.elements);
+                parseTypesOrElements(node.type.elements, ', ');
                 _return += ']';
             }
             if (node.type.types && ts.isUnionTypeNode(node.type)) {
-                parseTypesOrElements(node.type.types);
+                parseTypesOrElements(node.type.types, ' | ');
             }
             if (node.type.elementTypes) {
                 let elementTypes = node.type.elementTypes;
