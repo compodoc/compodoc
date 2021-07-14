@@ -1,6 +1,22 @@
+<a name="1.1.14"></a>
+
+## [1.1.14](https://github.com/compodoc/compodoc/compare/1.1.13...1.1.14) (2021-07-14)
+
+Use now TypeScript 4.3.5
+
+### Bug fixes
+
+-   fix(app): support for Type Reference and template literal ([c1282d2](https://github.com/compodoc/compodoc/commit/c1282d2)), closes [#1053](https://github.com/compodoc/compodoc/issues/1053)
+-   fix(app): @input/@ouput not duplicated with properties ([f42fc69](https://github.com/compodoc/compodoc/commit/f42fc69)), closes [#1095](https://github.com/compodoc/compodoc/issues/1095)
+-   fix(routing): Angular Import does not support return type ([f324108](https://github.com/compodoc/compodoc/commit/f324108)), closes [#1097](https://github.com/compodoc/compodoc/issues/1097)
+-   fix(routing): async lazy -load should not fail ([0cc736b](https://github.com/compodoc/compodoc/commit/0cc736b)), closes [#1096](https://github.com/compodoc/compodoc/issues/1096)
+-   fix(app): TypeScript private APIs mapping + ECMAScript Private Fields and methods ([8b71b59](https://github.com/compodoc/compodoc/commit/8b71b59)), closes [#1094](https://github.com/compodoc/compodoc/issues/1094)
+-   fix(app): drop usage of ts-simple-ast for ts-morph [7bb9a40](https://github.com/compodoc/compodoc/commit/7bb9a409ad4e7a30226656198fd38c6028662020)
+-   fix(theme): dark mode support [0c7a052](https://github.com/compodoc/compodoc/commit/0c7a0522b91d6837888cedf46a5b3af51561b192)
+
 <a name="1.1.13"></a>
 
-## [1.1.13](https://github.com/compodoc/compodoc/compare/1.1.12...1.1.13) (2021-06-09)
+## [1.1.13](https://github.com/compodoc/compodoc/compare/1.1.12...1.1.13) (2021-07-09)
 
 ### Features
 
@@ -13,7 +29,7 @@
 
 <a name="1.1.12"></a>
 
-## [1.1.12](https://github.com/compodoc/compodoc/compare/1.1.11...1.1.12) (2021-06-07)
+## [1.1.12](https://github.com/compodoc/compodoc/compare/1.1.11...1.1.12) (2021-07-07)
 
 Thanks to all contributors ! 👏
 
