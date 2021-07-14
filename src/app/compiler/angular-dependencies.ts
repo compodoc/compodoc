@@ -625,7 +625,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (node.type) {
                             typeAliasDeps.kind = node.type.kind;
                             if (typeAliasDeps.rawtype === '') {
-                                typeAliasDeps.rawtype = kindToType(node.type.kind);
+                                typeAliasDeps.rawtype = this.classHelper.visitType(node);
                             }
                         }
 

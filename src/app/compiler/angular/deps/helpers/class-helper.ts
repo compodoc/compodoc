@@ -825,12 +825,12 @@ export class ClassHelper {
                     _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
                 }
             }
-            if (node.type.types && ts.isUnionTypeNode(node.type)) {
-                _return = '';
+
+            const parseTypesOrElements = arr => {
                 let i = 0;
-                let len = node.type.types.length;
+                let len = arr.length;
                 for (i; i < len; i++) {
-                    let type = node.type.types[i];
+                    let type = arr[i];
 
                     if (type.elementType) {
                         const _firstPart = this.visitType(type.elementType);
@@ -866,6 +866,15 @@ export class ClassHelper {
                         _return += ' | ';
                     }
                 }
+            };
+
+            if (node.type.elements && ts.isTupleTypeNode(node.type)) {
+                _return += '[';
+                parseTypesOrElements(node.type.elements);
+                _return += ']';
+            }
+            if (node.type.types && ts.isUnionTypeNode(node.type)) {
+                parseTypesOrElements(node.type.types);
             }
             if (node.type.elementTypes) {
                 let elementTypes = node.type.elementTypes;
