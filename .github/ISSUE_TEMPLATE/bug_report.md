@@ -1,65 +1,51 @@
 ---
-name: Bug Report
-about: File a bug report
-description: File a bug report
-title: '[Bug]: '
-labels: [bug, triage]
-assignees:
-    - octocat
-body:
-    - type: markdown
-      attributes:
-          value: |
-              Thanks for taking the time to fill out this bug report!
-    - type: input
-      id: contact
-      attributes:
-          label: Contact Details
-          description: How can we get in touch with you if we need more info?
-          placeholder: ex. email@example.com
-      validations:
-          required: false
-    - type: textarea
-      id: what-happened
-      attributes:
-          label: What happened?
-          description: Also tell us, what did you expect to happen?
-          placeholder: Tell us what you see!
-          value: 'A bug happened!'
-      validations:
-          required: true
-    - type: dropdown
-      id: version
-      attributes:
-          label: Version
-          description: What version of our software are you running?
-          options:
-              - 1.0.2 (Default)
-              - 1.0.3 (Edge)
-      validations:
-          required: true
-    - type: dropdown
-      id: browsers
-      attributes:
-          label: What browsers are you seeing the problem on?
-          multiple: true
-          options:
-              - Firefox
-              - Chrome
-              - Safari
-              - Microsoft Edge
-    - type: textarea
-      id: logs
-      attributes:
-          label: Relevant log output
-          description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-          render: shell
-    - type: checkboxes
-      id: terms
-      attributes:
-          label: Code of Conduct
-          description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-          options:
-              - label: I agree to follow this project's Code of Conduct
-                required: true
+name: Bug report
+about: Create a report to help us improve
+title: '[BUG]'
+labels: 'Type: Bug'
+assignees: vogloblinsky
 ---
+
+<!-- Please follow the issue template below for bug reports. -->
+
+##### **Overview of the issue**
+
+<!-- explain the issue, if an error is being thrown a stack trace helps -->
+
+##### **Operating System, Node.js, npm, compodoc version(s)**
+
+<!-- provide all information we need -->
+
+##### **Angular configuration, a `package.json` file in the root folder**
+
+<!-- This is mandatory for bug reports. This will help us to replicate the scenario. -->
+
+##### **Compodoc installed globally or locally ?**
+
+<!-- provide all information we need -->
+
+##### **If possible sourcecode of the file where it breaks**
+
+<!-- provide all information we need -->
+
+##### **If possible your terminal logs before the error**
+
+<!-- provide all information we need -->
+
+##### **Motivation for or Use Case**
+
+<!-- explain why this is a bug for you -->
+
+##### **Reproduce the error**
+
+<!-- an unambiguous set of steps to reproduce the error. -->
+
+##### **Related issues**
+
+<!-- has a similar issue been reported before? -->
+
+##### **Suggest a Fix**
+
+<!-- if you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit) -->
+
+<!-- Love compodoc? Please consider supporting our collective: 👉  https://opencollective.com/compodoc/donate -->
