@@ -852,6 +852,9 @@ export class ClassHelper {
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
                         }
+                        if (type.kind === SyntaxKind.RestType && type.type) {
+                            _return += '...' + this.visitType(type.type);
+                        }
                         if (type.typeArguments) {
                             _return += '<';
                             const typeArguments = [];
