@@ -820,4 +820,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('b>#newprivateproperty</b');
         expect(file).to.contain('p>Another private property</p');
     });
+
+    it('should support type alias and template literal', () => {
+        const file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('(min-width: ${Foo}px)&#x60;</a');
+    });
 });

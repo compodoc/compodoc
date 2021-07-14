@@ -87,10 +87,10 @@ export class AngularDependencies extends FrameworkDependencies {
             routesTree: undefined
         };
 
-        let sourceFiles = this.program.getSourceFiles() || [];
+        const sourceFiles = this.program.getSourceFiles() || [];
 
         sourceFiles.map((file: ts.SourceFile) => {
-            let filePath = file.fileName;
+            const filePath = file.fileName;
 
             if (path.extname(filePath) === '.ts' || path.extname(filePath) === '.tsx') {
                 if (!Configuration.mainData.angularJSProject && path.extname(filePath) === '.js') {
@@ -134,11 +134,11 @@ export class AngularDependencies extends FrameworkDependencies {
                     }
                 })(_variable, newVar);
 
-                let onLink = mod => {
-                    let process = (initialArray, _var) => {
+                const onLink = mod => {
+                    const process = (initialArray, _var) => {
                         let indexToClean = 0;
                         let found = false;
-                        let findVariableInArray = (el, index, theArray) => {
+                        const findVariableInArray = (el, index) => {
                             if (el.name === _var.name) {
                                 indexToClean = index;
                                 found = true;
@@ -199,11 +199,11 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private processClass(node, file, srcFile, outputSymbols, fileBody) {
-        let name = this.getSymboleName(node);
-        let IO = this.getClassIO(file, srcFile, node, fileBody);
-        let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
-        let deps: any = {
+        const name = this.getSymboleName(node);
+        const IO = this.getClassIO(file, srcFile, node, fileBody);
+        const sourceCode = srcFile.getText();
+        const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        const deps: any = {
             name,
             id: 'class-' + name + '-' + hash,
             file: file,
@@ -279,8 +279,8 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private getSourceFileDecorators(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
-        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
-        let fileName = initialSrcFile.fileName.replace(cleaner, '');
+        const cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+        const fileName = initialSrcFile.fileName.replace(cleaner, '');
         let scannedFile = initialSrcFile;
 
         // Search in file for variable statement as routes definitions
@@ -332,18 +332,23 @@ export class AngularDependencies extends FrameworkDependencies {
             ) {
                 return;
             }
-            let parseNode = (file, srcFile, node, fileBody) => {
-                let sourceCode = srcFile.getText();
-                let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+            const parseNode = (file, srcFile, node, fileBody) => {
+                const sourceCode = srcFile.getText();
+                const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
 
                 if (node.decorators) {
                     let classWithCustomDecorator = false;
-                    let visitDecorator = (visitedDecorator, index) => {
+                    const visitDecorator = (visitedDecorator, index) => {
                         let deps: IDep;
 
-                        let name = this.getSymboleName(node);
-                        let props = this.findProperties(visitedDecorator, srcFile);
-                        let IO = this.componentHelper.getComponentIO(file, srcFile, node, fileBody);
+                        const name = this.getSymboleName(node);
+                        const props = this.findProperties(visitedDecorator, srcFile);
+                        const IO = this.componentHelper.getComponentIO(
+                            file,
+                            srcFile,
+                            node,
+                            fileBody
+                        );
 
                         if (this.isModule(visitedDecorator)) {
                             const moduleDep = new ModuleDepFactory(this.moduleHelper).create(
@@ -391,7 +396,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.controllers.push(controllerDep);
                             }
                         } else if (this.isInjectable(visitedDecorator)) {
-                            let injectableDeps: IInjectableDep = {
+                            const injectableDeps: IInjectableDep = {
                                 name,
                                 id: 'injectable-' + name + '-' + hash,
                                 file: file,
@@ -435,7 +440,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 }
                             }
                         } else if (this.isPipe(visitedDecorator)) {
-                            let pipeDeps: IPipeDep = {
+                            const pipeDeps: IPipeDep = {
                                 name,
                                 id: 'pipe-' + name + '-' + hash,
                                 file: file,
@@ -461,7 +466,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.pipes.push(pipeDeps);
                             }
                         } else if (this.isDirective(visitedDecorator)) {
-                            let directiveDeps = new DirectiveDepFactory(
+                            const directiveDeps = new DirectiveDepFactory(
                                 this.componentHelper
                             ).create(file, srcFile, name, props, IO);
                             deps = directiveDeps;
@@ -469,7 +474,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.directives.push(directiveDeps);
                             }
                         } else {
-                            let hasMultipleDecoratorsWithInternalOne = this.hasInternalDecorator(
+                            const hasMultipleDecoratorsWithInternalOne = this.hasInternalDecorator(
                                 node.decorators
                             );
                             // Just a class
@@ -490,7 +495,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     };
 
-                    let filterByDecorators = filteredNode => {
+                    const filterByDecorators = filteredNode => {
                         if (filteredNode.expression && filteredNode.expression.expression) {
                             let _test = /(NgModule|Component|Injectable|Pipe|Directive)/.test(
                                 filteredNode.expression.expression.text
@@ -511,9 +516,9 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (node.symbol.flags === ts.SymbolFlags.Class) {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody);
                     } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
-                        let name = this.getSymboleName(node);
-                        let IO = this.getInterfaceIO(file, srcFile, node, fileBody);
-                        let interfaceDeps: IInterfaceDep = {
+                        const name = this.getSymboleName(node);
+                        const IO = this.getInterfaceIO(file, srcFile, node, fileBody);
+                        const interfaceDeps: IInterfaceDep = {
                             name,
                             id: 'interface-' + name + '-' + hash,
                             file: file,
@@ -548,12 +553,12 @@ export class AngularDependencies extends FrameworkDependencies {
                             this.ignore(interfaceDeps);
                         }
                     } else if (ts.isFunctionDeclaration(node)) {
-                        let infos = this.visitFunctionDeclaration(node);
+                        const infos = this.visitFunctionDeclaration(node);
                         // let tags = this.visitFunctionDeclarationJSDocTags(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let functionDep: IFunctionDecDep = {
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const functionDep: IFunctionDecDep = {
                             name,
                             file: file,
                             ctype: 'miscellaneous',
@@ -582,11 +587,11 @@ export class AngularDependencies extends FrameworkDependencies {
                             }
                         }
                     } else if (ts.isEnumDeclaration(node)) {
-                        let infos = this.visitEnumDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let enumDeps: IEnumDecDep = {
+                        const infos = this.visitEnumDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const enumDeps: IEnumDecDep = {
                             name,
                             childs: infos.members,
                             ctype: 'miscellaneous',
@@ -601,11 +606,11 @@ export class AngularDependencies extends FrameworkDependencies {
                             outputSymbols.miscellaneous.enumerations.push(enumDeps);
                         }
                     } else if (ts.isTypeAliasDeclaration(node)) {
-                        let infos = this.visitTypeDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let typeAliasDeps: ITypeAliasDecDep = {
+                        const infos = this.visitTypeDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const typeAliasDeps: ITypeAliasDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'typealias',
@@ -621,6 +626,18 @@ export class AngularDependencies extends FrameworkDependencies {
                                 typeAliasDeps.rawtype = kindToType(node.type.kind);
                             }
                         }
+
+                        if (
+                            typeAliasDeps.kind &&
+                            typeAliasDeps.kind === SyntaxKind.TemplateLiteralType &&
+                            node.type
+                        ) {
+                            typeAliasDeps.rawtype = srcFile.text.substring(
+                                node.type.pos,
+                                node.type.end
+                            );
+                        }
+
                         if (!isIgnore(node)) {
                             outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
                         }
@@ -638,7 +655,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                 } else {
-                    let IO = this.getRouteIO(file, srcFile, node);
+                    const IO = this.getRouteIO(file, srcFile, node);
                     if (IO.routes) {
                         let newRoutes;
                         try {
@@ -661,7 +678,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody);
                     }
                     if (ts.isExpressionStatement(node) || ts.isIfStatement(node)) {
-                        let bootstrapModuleReference = 'bootstrapModule';
+                        const bootstrapModuleReference = 'bootstrapModule';
                         // Find the root module with bootstrapModule call
                         // 1. find a simple call : platformBrowserDynamic().bootstrapModule(AppModule);
                         // 2. or inside a call :
@@ -719,11 +736,11 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                     if (ts.isVariableStatement(node) && !RouterParserUtil.isVariableRoutes(node)) {
-                        let infos: any = this.visitVariableDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let deps: any = {
+                        const infos: any = this.visitVariableDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const deps: any = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'variable',
@@ -744,7 +761,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             deps.description = marked(rawDescription);
                         }
                         if (isModuleWithProviders(node)) {
-                            let routingInitializer = getModuleWithProviders(node);
+                            const routingInitializer = getModuleWithProviders(node);
                             RouterParserUtil.addModuleWithRoutes(name, [routingInitializer], file);
                             RouterParserUtil.addModule(name, [routingInitializer]);
                         }
@@ -753,11 +770,11 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
-                        let infos = this.visitTypeDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let deps: ITypeAliasDecDep = {
+                        const infos = this.visitTypeDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const deps: ITypeAliasDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'typealias',
@@ -770,16 +787,23 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (node.type) {
                             deps.kind = node.type.kind;
                         }
+                        if (
+                            deps.kind &&
+                            deps.kind === SyntaxKind.TemplateLiteralType &&
+                            node.type
+                        ) {
+                            deps.rawtype = srcFile.text.substring(node.type.pos, node.type.end);
+                        }
                         if (!isIgnore(node)) {
                             outputSymbols.miscellaneous.typealiases.push(deps);
                         }
                     }
                     if (ts.isFunctionDeclaration(node)) {
-                        let infos = this.visitFunctionDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let functionDep: IFunctionDecDep = {
+                        const infos = this.visitFunctionDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const functionDep: IFunctionDecDep = {
                             name,
                             ctype: 'miscellaneous',
                             subtype: 'function',
@@ -809,11 +833,11 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                     if (ts.isEnumDeclaration(node)) {
-                        let infos = this.visitEnumDeclaration(node);
-                        let name = infos.name;
-                        let deprecated = infos.deprecated;
-                        let deprecationMessage = infos.deprecationMessage;
-                        let enumDeps: IEnumDecDep = {
+                        const infos = this.visitEnumDeclaration(node);
+                        const name = infos.name;
+                        const deprecated = infos.deprecated;
+                        const deprecationMessage = infos.deprecationMessage;
+                        const enumDeps: IEnumDecDep = {
                             name,
                             childs: infos.members,
                             ctype: 'miscellaneous',
@@ -842,7 +866,7 @@ export class AngularDependencies extends FrameworkDependencies {
      * @param store Store
      */
     private addNewEntityInStore(entity, store) {
-        let findSameEntityInStore = _.filter(store, {
+        const findSameEntityInStore = _.filter(store, {
             name: entity.name,
             id: entity.id,
             file: entity.file
@@ -889,7 +913,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private findExpressionByNameInExpressions(entryNode, name) {
         let result;
-        let loop = function (node, z) {
+        const loop = function (node, z) {
             if (node) {
                 if (node.expression && !node.expression.name) {
                     loop(node.expression, z);
@@ -909,14 +933,14 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private findExpressionByNameInExpressionArguments(arg, name) {
         let result;
-        let that = this;
+        const that = this;
         let i = 0;
         let len = arg.length;
-        let loop = function (node, z) {
+        const loop = function (node, z) {
             if (node.body) {
                 if (node.body.statements && node.body.statements.length > 0) {
                     let j = 0;
-                    let leng = node.body.statements.length;
+                    const leng = node.body.statements.length;
                     for (j; j < leng; j++) {
                         result = that.findExpressionByNameInExpressions(node.body.statements[j], z);
                     }
@@ -1018,7 +1042,7 @@ export class AngularDependencies extends FrameworkDependencies {
             visitedNode.expression.arguments &&
             visitedNode.expression.arguments.length > 0
         ) {
-            let pop = visitedNode.expression.arguments[0];
+            const pop = visitedNode.expression.arguments[0];
 
             if (pop && pop.properties && pop.properties.length >= 0) {
                 return pop.properties;
@@ -1055,13 +1079,13 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitTypeDeclaration(node: ts.TypeAliasDeclaration) {
-        let result: any = {
+        const result: any = {
             deprecated: false,
             deprecationMessage: '',
             name: node.name.text,
             kind: node.kind
         };
-        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
 
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
@@ -1071,7 +1095,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitArgument(arg) {
-        let result: any = {
+        const result: any = {
             name: arg.name.text,
             type: this.classHelper.visitType(arg),
             deprecated: false,
@@ -1092,7 +1116,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
         }
-        let jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
 
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
@@ -1134,14 +1158,14 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
-        let methodName = method.name ? method.name.text : 'Unnamed function';
-        let result: any = {
+        const methodName = method.name ? method.name.text : 'Unnamed function';
+        const result: any = {
             deprecated: false,
             deprecationMessage: '',
             name: methodName,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
         };
-        let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (typeof method.type !== 'undefined') {
             result.returnType = this.classHelper.visitType(method.type);
@@ -1186,9 +1210,9 @@ export class AngularDependencies extends FrameworkDependencies {
     private visitVariableDeclaration(node) {
         if (node.declarationList.declarations) {
             let i = 0;
-            let len = node.declarationList.declarations.length;
+            const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
-                let result: any = {
+                const result: any = {
                     name: node.declarationList.declarations[i].name.text,
                     defaultValue: node.declarationList.declarations[i].initializer
                         ? this.classHelper.stringifyDefaultValue(
@@ -1209,7 +1233,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 if (typeof result.type === 'undefined' && result.initializer) {
                     result.type = kindToType(result.initializer.kind);
                 }
-                let jsdoctags = this.jsdocParserUtil.getJSDocs(
+                const jsdoctags = this.jsdocParserUtil.getJSDocs(
                     node.declarationList.declarations[i]
                 );
                 if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
@@ -1221,7 +1245,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitFunctionDeclarationJSDocTags(node: ts.FunctionDeclaration): string {
-        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
         let result;
         if (jsdoctags && jsdoctags.length >= 1) {
             if (jsdoctags[0].tags) {
@@ -1244,7 +1268,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitEnumDeclaration(node: ts.EnumDeclaration) {
-        let result: any = {
+        const result: any = {
             deprecated: false,
             deprecationMessage: '',
             name: node.name.text,
@@ -1255,7 +1279,7 @@ export class AngularDependencies extends FrameworkDependencies {
             let len = node.members.length;
             let memberjsdoctags = [];
             for (i; i < len; i++) {
-                let member: any = {
+                const member: any = {
                     name: node.members[i].name.text,
                     deprecated: false,
                     deprecationMessage: ''
@@ -1270,7 +1294,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 result.members.push(member);
             }
         }
-        let jsdoctags = this.jsdocParserUtil.getJSDocs(node);
+        const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
         }
@@ -1282,8 +1306,8 @@ export class AngularDependencies extends FrameworkDependencies {
             let i = 0;
             let len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
-                let routesInitializer = node.declarationList.declarations[i].initializer;
-                let data = new CodeGenerator().generate(routesInitializer);
+                const routesInitializer = node.declarationList.declarations[i].initializer;
+                const data = new CodeGenerator().generate(routesInitializer);
                 RouterParserUtil.addRoute({
                     name: node.declarationList.declarations[i].name.text,
                     data: RouterParserUtil.cleanRawRoute(data),
@@ -1323,8 +1347,8 @@ export class AngularDependencies extends FrameworkDependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let reducedSource = fileBody ? fileBody.statements : sourceFile.statements;
-        let res = reducedSource.reduce((directive, statement) => {
+        const reducedSource = fileBody ? fileBody.statements : sourceFile.statements;
+        const res = reducedSource.reduce((directive, statement) => {
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
@@ -1343,8 +1367,8 @@ export class AngularDependencies extends FrameworkDependencies {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let reducedSource = fileBody ? fileBody.statements : sourceFile.statements;
-        let res = reducedSource.reduce((directive, statement) => {
+        const reducedSource = fileBody ? fileBody.statements : sourceFile.statements;
+        const res = reducedSource.reduce((directive, statement) => {
             if (ts.isInterfaceDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
