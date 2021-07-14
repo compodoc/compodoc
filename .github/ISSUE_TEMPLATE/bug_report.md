@@ -1,60 +1,64 @@
 ---
-name: Bug report
-description: Create a report to help us improve Compodoc
-about: Create a report to help us improve Compodoc
-title: '[BUG] '
-labels: [Bug]
+name: Bug Report
+description: File a bug report
+title: '[Bug]: '
+labels: [bug, triage]
 assignees:
-    - vogloblinsky
+    - octocat
 body:
     - type: markdown
       attributes:
           value: |
               Thanks for taking the time to fill out this bug report!
+    - type: input
+      id: contact
+      attributes:
+          label: Contact Details
+          description: How can we get in touch with you if we need more info?
+          placeholder: ex. email@example.com
+      validations:
+          required: false
     - type: textarea
       id: what-happened
       attributes:
-          label: Overview of the issue
-          description: explain the issue, if an error is being thrown a stack trace helps
+          label: What happened?
+          description: Also tell us, what did you expect to happen?
+          placeholder: Tell us what you see!
+          value: 'A bug happened!'
       validations:
           required: true
-    - type: textarea
-      id: global-informations
+    - type: dropdown
+      id: version
       attributes:
-          label: Global informations
-          description: Operating System, Node.js, npm, Angular, Compodoc version(s)
+          label: Version
+          description: What version of our software are you running?
+          options:
+              - 1.0.2 (Default)
+              - 1.0.3 (Edge)
       validations:
           required: true
-    - type: textarea
-      id: sourcecode
+    - type: dropdown
+      id: browsers
       attributes:
-          label: Sourcecode
-          description: If possible sourcecode of the file where it breaks
-      validations:
-          required: false
+          label: What browsers are you seeing the problem on?
+          multiple: true
+          options:
+              - Firefox
+              - Chrome
+              - Safari
+              - Microsoft Edge
     - type: textarea
       id: logs
       attributes:
-          label: Terminal logs
-          description: If possible your terminal logs before the error
-      validations:
-          required: false
-    - type: textarea
-      id: reproduce
+          label: Relevant log output
+          description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+          render: shell
+    - type: checkboxes
+      id: terms
       attributes:
-          label: Reproduce the error
-          description: an unambiguous set of steps to reproduce the error, or link to a github repository
-      validations:
-          required: false
-    - type: textarea
-      id: suggest
-      attributes:
-          label: Suggest a Fix
-          description: if you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit)
-      validations:
-          required: false
-    - type: markdown
-      attributes:
-          value: |
-              Love compodoc? Please consider supporting our collective : 👉  https://opencollective.com/compodoc/donate
+          label: Code of Conduct
+          description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+          options:
+              - label: I agree to follow this project's Code of Conduct
+                required: true
 ---
