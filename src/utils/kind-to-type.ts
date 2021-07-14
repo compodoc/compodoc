@@ -21,6 +21,9 @@ export function kindToType(kind: number): string {
         case SyntaxKind.FunctionType:
             _type = 'function';
             break;
+        case SyntaxKind.TypeReference:
+            _type = 'type reference';
+            break;
         case SyntaxKind.TypeLiteral:
             _type = 'literal type';
             break;
