@@ -20,6 +20,11 @@ export class Todo extends Tada {
 
     pos?: PopupPosition;
 
+    /**
+     * Another private property
+     */
+    #newprivateproperty: boolean = false;
+
     private optionalProperty?: boolean;
 
     [index: number]: string;
@@ -98,6 +103,10 @@ export class Todo extends Tada {
             )
             /** cast observable to promise */
             .toPromise();
+
+    #clicked() {
+        this.editing = true;
+    }
 }
 
 export type PopupPosition = ElementRef | HTMLElement;

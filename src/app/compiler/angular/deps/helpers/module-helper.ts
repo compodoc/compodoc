@@ -1,7 +1,7 @@
 import { SymbolHelper, IParseDeepIdentifierResult } from './symbol-helper';
 import { ComponentCache } from './component-helper';
 import { Deps } from '../../dependencies.interfaces';
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 export class ModuleHelper {
     constructor(

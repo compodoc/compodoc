@@ -106,9 +106,6 @@ describe('CLI duplicates support', () => {
     it('should support component inside module with duplicate', () => {
         const file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.contain(
-            `<a href="components/FooterComponent-1.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >FooterComponent</a>`
-        );
-        expect(file).to.contain(
             `<a href="components/FooterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >FooterComponent</a>`
         );
     });

@@ -1,4 +1,4 @@
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 export function isModuleWithProviders(node: ts.VariableStatement): boolean {
     let result = false;

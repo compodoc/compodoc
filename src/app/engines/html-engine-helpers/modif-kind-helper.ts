@@ -1,7 +1,7 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
 import * as Handlebars from 'handlebars';
 
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 export class ModifKindHelper implements IHtmlEngineHelper {
     /**

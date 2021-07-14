@@ -1,16 +1,12 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG]"
+title: '[BUG]'
 labels: 'Type: Bug'
 assignees: vogloblinsky
-
 ---
 
-<!--
-> Please follow the issue template below for bug reports.
-> For issue, start the label of the title with [BUG]
--->
+<!-- Please follow the issue template below for bug reports. -->
 
 ##### **Overview of the issue**
 
@@ -50,8 +46,6 @@ assignees: vogloblinsky
 
 ##### **Suggest a Fix**
 
-<!-- if you can't fix the bug yourself, perhaps you can point to what might be
-  causing the problem (line of code or commit) -->
+<!-- if you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit) -->
 
-<!-- Love compodoc? Please consider supporting our collective:
-👉  https://opencollective.com/compodoc/donate -->
+<!-- Love compodoc? Please consider supporting our collective: 👉  https://opencollective.com/compodoc/donate -->

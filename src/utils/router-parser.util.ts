@@ -2,7 +2,7 @@ import * as Handlebars from 'handlebars';
 import * as JSON5 from 'json5';
 import * as _ from 'lodash';
 import * as path from 'path';
-import Ast, { ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-simple-ast';
+import { Project, ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-morph';
 
 import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -12,7 +12,7 @@ import { logger } from './logger';
 
 const traverse = require('traverse');
 
-const ast = new Ast();
+const ast = new Project();
 
 export class RouterParserUtil {
     private routes: any[] = [];
@@ -22,7 +22,8 @@ export class RouterParserUtil {
     private rootModule: string;
     private cleanModulesTree;
     private modulesWithRoutes = [];
-    private transformAngular8ImportSyntax = /(['"]loadChildren['"]:)\(\)=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\w+?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
+    private transformAngular8ImportSyntax =
+        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -62,14 +63,14 @@ export class RouterParserUtil {
 
     public cleanRawRouteParsed(route: string): object {
         let routesWithoutSpaces = route.replace(/ /gm, '');
-        let testTrailingComma = routesWithoutSpaces.indexOf('},]');
+        const testTrailingComma = routesWithoutSpaces.indexOf('},]');
         if (testTrailingComma !== -1) {
             routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
         }
 
         routesWithoutSpaces = routesWithoutSpaces.replace(
             this.transformAngular8ImportSyntax,
-            '$1"$3#$5"'
+            '$1"$4#$6"'
         );
 
         return JSON5.parse(routesWithoutSpaces);
@@ -84,7 +85,7 @@ export class RouterParserUtil {
 
         routesWithoutSpaces = routesWithoutSpaces.replace(
             this.transformAngular8ImportSyntax,
-            '$1"$3#$5"'
+            '$1"$4#$6"'
         );
 
         return routesWithoutSpaces;
@@ -150,10 +151,11 @@ export class RouterParserUtil {
                                             route.name === argument.text &&
                                             route.filename !== this.modulesWithRoutes[i].filename
                                         ) {
-                                            let argumentImportPath = ImportsUtil.findFilePathOfImportedVariable(
-                                                argument.text,
-                                                this.modulesWithRoutes[i].filename
-                                            );
+                                            let argumentImportPath =
+                                                ImportsUtil.findFilePathOfImportedVariable(
+                                                    argument.text,
+                                                    this.modulesWithRoutes[i].filename
+                                                );
 
                                             argumentImportPath = argumentImportPath
                                                 .replace(process.cwd() + path.sep, '')
@@ -212,7 +214,7 @@ export class RouterParserUtil {
         // routes[] contains routes with module link
         // modulesTree contains modules tree
         // make a final routes tree with that
-        traverse(this.modulesTree).forEach(function(node) {
+        traverse(this.modulesTree).forEach(function (node) {
             if (node) {
                 if (node.parent) {
                     delete node.parent;
@@ -496,8 +498,8 @@ export class RouterParserUtil {
             if (
                 !TypeGuards.isPropertyAssignment(identifierDeclaration) &&
                 TypeGuards.isVariableDeclaration(identifierDeclaration) &&
-                (TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                    !TypeGuards.isVariableDeclaration(identifierDeclaration))
+                TypeGuards.isPropertyAssignment(identifierDeclaration) &&
+                !TypeGuards.isVariableDeclaration(identifierDeclaration)
             ) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`
@@ -556,8 +558,8 @@ export class RouterParserUtil {
                         let importName = namedImports[j].getNameNode().getText() as string,
                             importAlias;
 
-                        if (namedImports[j].getAliasIdentifier()) {
-                            importAlias = namedImports[j].getAliasIdentifier().getText();
+                        if (namedImports[j].getAliasNode()) {
+                            importAlias = namedImports[j].getAliasNode().getText();
                         }
 
                         if (importName === spreadElementIdentifier) {
@@ -589,14 +591,13 @@ export class RouterParserUtil {
                     const sourceFileImport =
                         typeof ast.getSourceFile(importPath) !== 'undefined'
                             ? ast.getSourceFile(importPath)
-                            : ast.addExistingSourceFile(importPath);
+                            : ast.addSourceFileAtPath(importPath);
                     if (sourceFileImport) {
                         let variableName = foundWithAlias
                             ? aliasOriginalName
                             : spreadElementIdentifier;
-                        referencedDeclaration = sourceFileImport.getVariableDeclaration(
-                            variableName
-                        );
+                        referencedDeclaration =
+                            sourceFileImport.getVariableDeclaration(variableName);
                     }
                 }
             } else {
@@ -656,24 +657,31 @@ export class RouterParserUtil {
 
         // inline the property access expressions
         for (const propertyAccessExpression of propertyAccessExpressionsInRoutesVariableStatement) {
-            const referencedDeclaration = propertyAccessExpression
-                .getNameNode()
-                .getSymbolOrThrow()
-                .getValueDeclarationOrThrow();
-            if (
-                !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                TypeGuards.isEnumMember(referencedDeclaration) &&
-                (TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                    !TypeGuards.isEnumMember(referencedDeclaration))
-            ) {
-                throw new Error(
-                    `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
-                );
-            }
-            if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
-                propertyAccessExpression.replaceWithText(
-                    referencedDeclaration.getInitializerOrThrow().getText()
-                );
+            const propertyAccessExpressionNodeName = propertyAccessExpression.getNameNode();
+            if (propertyAccessExpressionNodeName) {
+                try {
+                    const propertyAccessExpressionNodeNameSymbol =
+                        propertyAccessExpressionNodeName.getSymbolOrThrow();
+                    if (propertyAccessExpressionNodeNameSymbol) {
+                        const referencedDeclaration =
+                            propertyAccessExpressionNodeNameSymbol.getValueDeclarationOrThrow();
+                        if (
+                            !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
+                            TypeGuards.isEnumMember(referencedDeclaration) &&
+                            TypeGuards.isPropertyAssignment(referencedDeclaration) &&
+                            !TypeGuards.isEnumMember(referencedDeclaration)
+                        ) {
+                            throw new Error(
+                                `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
+                            );
+                        }
+                        if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
+                            propertyAccessExpression.replaceWithText(
+                                referencedDeclaration.getInitializerOrThrow().getText()
+                            );
+                        }
+                    }
+                } catch (e) {}
             }
         }
 
@@ -756,16 +764,19 @@ export class RouterParserUtil {
                                 if (
                                     propertyInitializer.kind === SyntaxKind.PropertyAccessExpression
                                 ) {
-                                    let lastObjectLiteralAttributeName = propertyInitializer.name.getText(),
+                                    let lastObjectLiteralAttributeName =
+                                            propertyInitializer.name.getText(),
                                         firstObjectLiteralAttributeName;
                                     if (propertyInitializer.expression) {
-                                        firstObjectLiteralAttributeName = propertyInitializer.expression.getText();
-                                        let result = ImportsUtil.findPropertyValueInImportOrLocalVariables(
-                                            firstObjectLiteralAttributeName +
-                                                '.' +
-                                                lastObjectLiteralAttributeName,
-                                            sourceFile
-                                        ); // tslint:disable-line
+                                        firstObjectLiteralAttributeName =
+                                            propertyInitializer.expression.getText();
+                                        let result =
+                                            ImportsUtil.findPropertyValueInImportOrLocalVariables(
+                                                firstObjectLiteralAttributeName +
+                                                    '.' +
+                                                    lastObjectLiteralAttributeName,
+                                                sourceFile
+                                            ); // tslint:disable-line
                                         if (result !== '') {
                                             propertyInitializer.kind = 9;
                                             propertyInitializer.text = result;

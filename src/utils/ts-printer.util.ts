@@ -1,4 +1,4 @@
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 export class TsPrinterUtil {
     private printer: ts.Printer;

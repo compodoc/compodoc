@@ -1,4 +1,4 @@
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 import { ClassHelper } from './angular/deps/helpers/class-helper';
 import { ComponentHelper } from './angular/deps/helpers/component-helper';
@@ -6,10 +6,10 @@ import { ComponentHelper } from './angular/deps/helpers/component-helper';
 import { compilerHost } from '../../utils';
 
 export class FrameworkDependencies {
-    private files: string[];
-    private program: ts.Program;
-    private typeChecker: ts.TypeChecker;
-    private classHelper: ClassHelper;
+    public files: string[];
+    public program: ts.Program;
+    public typeChecker: ts.TypeChecker;
+    public classHelper: ClassHelper;
     public componentHelper: ComponentHelper;
     public routerParser;
 

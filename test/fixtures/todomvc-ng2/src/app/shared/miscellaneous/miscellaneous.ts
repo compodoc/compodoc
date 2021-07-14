@@ -60,3 +60,7 @@ export type LinearTodo = [Todo, Todo];
 export type TypeOrTypeArray = string | symbol | Array<string | symbol>;
 
 export type RouterAdapterOptions = Pick<NavigationExtras, 'replaceUrl'>;
+
+type Foo = '320' | '360' | '1440';
+
+type Bar = `(min-width: ${Foo}px)`;

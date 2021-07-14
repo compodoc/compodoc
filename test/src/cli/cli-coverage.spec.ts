@@ -372,7 +372,7 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('img src="./images/coverage-badge-documentation.svg"');
         });
         it('it should have coverage page - score', () => {
-            expect(coverageFile).to.contain('7/7');
+            expect(coverageFile).to.contain('5/5');
         });
     });
 

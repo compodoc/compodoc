@@ -1,4 +1,4 @@
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 import { detectIndent } from '../../../../../utils';
 import { ClassHelper } from './class-helper';
 import { IParseDeepIdentifierResult, SymbolHelper } from './symbol-helper';
@@ -177,7 +177,7 @@ export class ComponentHelper {
         let exampleUrlsMatches = text.match(/<example-url>(.*?)<\/example-url>/g);
         let exampleUrls = undefined;
         if (exampleUrlsMatches && exampleUrlsMatches.length) {
-            exampleUrls = exampleUrlsMatches.map(function(val) {
+            exampleUrls = exampleUrlsMatches.map(function (val) {
                 return val.replace(/<\/?example-url>/g, '');
             });
         }

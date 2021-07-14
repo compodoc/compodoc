@@ -11,13 +11,18 @@
     padding: 0 20px;
 }
 
-.menu ul.list li a[data-type="chapter-link"], .menu ul.list li.chapter .simple {
+.menu ul.list li a[data-type='chapter-link'],
+.menu ul.list li.chapter .simple {
     color: white;
     text-transform: uppercase;
-    border-bottom: 1px solid rgba(255,255,255,0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.content h1, .content h2, .content h3, .content h4, .content h5 {
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5 {
     color: #292e31;
     font-weight: normal;
 }
@@ -51,7 +56,8 @@ a:hover {
     padding: 10px 15px;
 }
 
-.menu ul.list li.title a, .navbar a {
+.menu ul.list li.title a,
+.navbar a {
     color: #8d9ba8;
     text-decoration: none;
     font-size: 16px;
@@ -78,7 +84,7 @@ code {
     box-sizing: border-box;
     display: inline-block;
     padding: 0 5px;
-    background: rgba(0,148,191,0.1);
+    background: rgba(0, 148, 191, 0.1);
     border-radius: 3px;
     color: #0094bf;
     font-size: 13px;
@@ -88,9 +94,39 @@ code {
 pre {
     margin: 0;
     padding: 12px 12px;
-    background: rgba(238,238,238,.35);
+    background: rgba(238, 238, 238, 0.35);
     border-radius: 3px;
     font-size: 13px;
     line-height: 1.5em;
     font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: #fafafa;
+    }
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4,
+    .content h5 {
+        color: #fafafa;
+    }
+
+    code {
+        background: none;
+    }
+
+    .content {
+        color: #fafafa;
+    }
+
+    .menu ul.list li.title a,
+    .navbar a {
+        color: #8d9ba8;
+    }
+
+    .menu ul.list li a {
+        color: #fafafa;
+    }
 }

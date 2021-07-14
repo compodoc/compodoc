@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as util from 'util';
 import * as path from 'path';
 
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
 import { kindToType } from '../../../../../utils/kind-to-type';
@@ -354,6 +354,13 @@ export class ClassHelper {
                 return true;
             }
         }
+        // Check for ECMAScript Private Fields
+        if (member.name && member.name.escapedText) {
+            const isPrivate: boolean = member.name.escapedText.indexOf('#') === 0;
+            if (isPrivate) {
+                return true;
+            }
+        }
         return this.isHiddenMember(member);
     }
 
@@ -485,8 +492,8 @@ export class ClassHelper {
         let implementsElements = [];
         let extendsElement;
 
-        if (typeof ts.getClassImplementsHeritageClauseElements !== 'undefined') {
-            let implementedTypes = ts.getClassImplementsHeritageClauseElements(classDeclaration);
+        if (typeof ts.getEffectiveImplementsTypeNodes !== 'undefined') {
+            let implementedTypes = ts.getEffectiveImplementsTypeNodes(classDeclaration);
             if (implementedTypes) {
                 let i = 0;
                 let len = implementedTypes.length;
@@ -498,8 +505,8 @@ export class ClassHelper {
             }
         }
 
-        if (typeof ts.getClassExtendsHeritageClauseElement !== 'undefined') {
-            let extendsTypes = ts.getClassExtendsHeritageClauseElement(classDeclaration);
+        if (typeof ts.getClassExtendsHeritageElement !== 'undefined') {
+            let extendsTypes = ts.getClassExtendsHeritageElement(classDeclaration);
             if (extendsTypes) {
                 if (extendsTypes.expression) {
                     extendsElement = extendsTypes.expression.text;
@@ -714,7 +721,9 @@ export class ClassHelper {
                                 ts.isPropertyDeclaration(member) ||
                                 ts.isPropertySignature(member)
                             ) {
-                                properties.push(this.visitProperty(member, sourceFile));
+                                if (!inputDecorator && !outputDecorator) {
+                                    properties.push(this.visitProperty(member, sourceFile));
+                                }
                             } else if (ts.isCallSignatureDeclaration(member)) {
                                 properties.push(this.visitCallDeclaration(member, sourceFile));
                             } else if (
@@ -816,12 +825,12 @@ export class ClassHelper {
                     _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
                 }
             }
-            if (node.type.types && ts.isUnionTypeNode(node.type)) {
-                _return = '';
+
+            const parseTypesOrElements = (arr, separator) => {
                 let i = 0;
-                let len = node.type.types.length;
+                let len = arr.length;
                 for (i; i < len; i++) {
-                    let type = node.type.types[i];
+                    let type = arr[i];
 
                     if (type.elementType) {
                         const _firstPart = this.visitType(type.elementType);
@@ -831,12 +840,20 @@ export class ClassHelper {
                             _return += _firstPart + kindToType(type.kind);
                         }
                     } else {
-                        _return += kindToType(type.kind);
                         if (ts.isLiteralTypeNode(type) && type.literal) {
-                            _return += '"' + type.literal.text + '"';
+                            if (type.literal.text) {
+                                _return += '"' + type.literal.text + '"';
+                            } else {
+                                _return += kindToType(type.literal.kind);
+                            }
+                        } else {
+                            _return += kindToType(type.kind);
                         }
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
+                        }
+                        if (type.kind === SyntaxKind.RestType && type.type) {
+                            _return += '...' + this.visitType(type.type);
                         }
                         if (type.typeArguments) {
                             _return += '<';
@@ -844,14 +861,23 @@ export class ClassHelper {
                             for (const argument of type.typeArguments) {
                                 typeArguments.push(this.visitType(argument));
                             }
-                            _return += typeArguments.join(' | ');
+                            _return += typeArguments.join(separator);
                             _return += '>';
                         }
                     }
                     if (i < len - 1) {
-                        _return += ' | ';
+                        _return += separator;
                     }
                 }
+            };
+
+            if (node.type.elements && ts.isTupleTypeNode(node.type)) {
+                _return += '[';
+                parseTypesOrElements(node.type.elements, ', ');
+                _return += ']';
+            }
+            if (node.type.types && ts.isUnionTypeNode(node.type)) {
+                parseTypesOrElements(node.type.types, ' | ');
             }
             if (node.type.elementTypes) {
                 let elementTypes = node.type.elementTypes;
@@ -869,10 +895,17 @@ export class ClassHelper {
                             _return += kindToType(type.kind);
                         }
                         if (ts.isLiteralTypeNode(type) && type.literal) {
-                            _return += '"' + type.literal.text + '"';
+                            if (type.literal.text) {
+                                _return += '"' + type.literal.text + '"';
+                            } else {
+                                _return += kindToType(type.literal.kind);
+                            }
                         }
                         if (type.typeName) {
                             _return += this.visitTypeName(type.typeName);
+                        }
+                        if (type.kind === SyntaxKind.RestType && type.type) {
+                            _return += '...' + this.visitType(type.type);
                         }
 
                         if (
@@ -903,7 +936,11 @@ export class ClassHelper {
                 let type = node.types[i];
                 _return += kindToType(type.kind);
                 if (ts.isLiteralTypeNode(type) && type.literal) {
-                    _return += '"' + type.literal.text + '"';
+                    if (type.literal.text) {
+                        _return += '"' + type.literal.text + '"';
+                    } else {
+                        _return += kindToType(type.literal.kind);
+                    }
                 }
                 if (type.typeName) {
                     _return += this.visitTypeName(type.typeName);
@@ -1106,6 +1143,21 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
+        // Check for ECMAScript Private Fields
+        if (this.isPrivate(property)) {
+            if (!result.modifierKind) {
+                result.modifierKind = [];
+            }
+            let hasAlreadyPrivateLeyword = false;
+            result.modifierKind.forEach(modifierKind => {
+                if (modifierKind === SyntaxKind.PrivateKeyword) {
+                    hasAlreadyPrivateLeyword = true;
+                }
+            });
+            if (!hasAlreadyPrivateLeyword) {
+                result.modifierKind.push(SyntaxKind.PrivateKeyword);
+            }
+        }
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
             if (property.jsDoc) {
@@ -1224,6 +1276,21 @@ export class ClassHelper {
                 result.modifierKind = kinds;
             }
         }
+        // Check for ECMAScript Private Fields
+        if (this.isPrivate(method)) {
+            if (!result.modifierKind) {
+                result.modifierKind = [];
+            }
+            let hasAlreadyPrivateLeyword = false;
+            result.modifierKind.forEach(modifierKind => {
+                if (modifierKind === SyntaxKind.PrivateKeyword) {
+                    hasAlreadyPrivateLeyword = true;
+                }
+            });
+            if (!hasAlreadyPrivateLeyword) {
+                result.modifierKind.push(SyntaxKind.PrivateKeyword);
+            }
+        }
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
             this.checkForDeprecation(jsdoctags[0].tags, result);
             result.jsdoctags = markedtags(jsdoctags[0].tags);
@@ -1339,7 +1406,7 @@ export class ClassHelper {
                         _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        const rawDescription = property.jsDoc[0].comment;
+                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(property);
                         _return.rawdescription = rawDescription;
                         _return.description = marked(rawDescription);
                     }

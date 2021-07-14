@@ -1,4 +1,4 @@
-import { SyntaxKind } from 'ts-simple-ast';
+import { SyntaxKind } from 'ts-morph';
 
 export function kindToType(kind: number): string {
     let _type = '';
@@ -20,6 +20,9 @@ export function kindToType(kind: number): string {
             break;
         case SyntaxKind.FunctionType:
             _type = 'function';
+            break;
+        case SyntaxKind.TemplateLiteralType:
+            _type = 'template literal type';
             break;
         case SyntaxKind.TypeLiteral:
             _type = 'literal type';

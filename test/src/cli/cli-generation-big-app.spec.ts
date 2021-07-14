@@ -202,25 +202,21 @@ describe('CLI simple generation - big app', () => {
 
     it('should have generated the not-injectable guards', () => {
         const file = exists(`${distFolder}/guards/AuthGuard.html`);
-
         expect(file).to.be.true;
     });
 
     it('should have generated the injectable guards', () => {
         const file = exists(`${distFolder}/guards/NotAuthGuard.html`);
-
         expect(file).to.be.true;
     });
 
     it(`shouldn't have generated classes for the corresponding guards`, () => {
         const file = exists(`${distFolder}/classes/AuthGuard.html`);
-
         expect(file).to.be.false;
     });
 
     it(`shouldn't have generated injectables for the corresponding guards`, () => {
         const file = exists(`${distFolder}/injectables/NotAuthGuard.html`);
-
         expect(file).to.be.false;
     });
 
@@ -583,12 +579,12 @@ describe('CLI simple generation - big app', () => {
         expect(stdoutString).to.contain('TypeScript version of current project');
     });
 
-    /*it('should display project peerDependencies', () => {
-        const file = exists(distFolder + '/dependencies.html');
-        expect(file).to.be.true;
-        let dependencies = read(distFolder + '/dependencies.html');
-        expect(dependencies).to.contain('angular/forms');
-    });*/
+    //it('should display project peerDependencies', () => {
+    //  const file = exists(distFolder + '/dependencies.html');
+    //  expect(file).to.be.true;
+    //  let dependencies = read(distFolder + '/dependencies.html');
+    //  expect(dependencies).to.contain('angular/forms');
+    //});
 
     it('should support optional for classes', () => {
         expect(todoClassFile).to.contain('Optional');
@@ -790,7 +786,7 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('correct supports ArrayType with spread', () => {
-        expect(interfaceIDATAFile).to.contain('<code>[string, string, boolean[]]</code>');
+        expect(interfaceIDATAFile).to.contain('<code>[string, string, ...boolean[]]</code>');
     });
 
     it('should support inheritance with abstract class', () => {
@@ -817,5 +813,16 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/components/InheritDirComponent.html');
         expect(file).to.contain('BaseDirective.html" target="_self" >BaseDirective');
         expect(file).to.contain('b>testPropertyInBase</b');
+    });
+
+    it('should support ECMAScript Private Fields and methods', () => {
+        const file = read(distFolder + '/classes/Todo.html');
+        expect(file).to.contain('b>#newprivateproperty</b');
+        expect(file).to.contain('p>Another private property</p');
+    });
+
+    it('should support type alias and template literal', () => {
+        const file = read(distFolder + '/miscellaneous/typealiases.html');
+        expect(file).to.contain('(min-width: ${Foo}px)&#x60;</a');
     });
 });

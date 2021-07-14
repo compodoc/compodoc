@@ -1,8 +1,8 @@
 import * as path from 'path';
 
-import Ast, { ts, PropertyDeclaration, SyntaxKind } from 'ts-simple-ast';
+import { Project, ts, PropertyDeclaration, SyntaxKind } from 'ts-morph';
 
-const ast = new Ast();
+const ast = new Project();
 
 export class ImportsUtil {
     private static instance: ImportsUtil;
@@ -109,7 +109,7 @@ export class ImportsUtil {
         const file =
             typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
                 ? ast.getSourceFile(sourceFile.fileName)
-                : ast.addExistingSourceFileIfExists(sourceFile.fileName); // tslint:disable-line
+                : ast.addSourceFileAtPathIfExists(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
@@ -125,8 +125,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === metadataVariableName) {
                         searchedImport = i;
@@ -166,7 +166,7 @@ export class ImportsUtil {
                 const sourceFileImport =
                     typeof ast.getSourceFile(importPath) !== 'undefined'
                         ? ast.getSourceFile(importPath)
-                        : ast.addExistingSourceFileIfExists(importPath); // tslint:disable-line
+                        : ast.addSourceFileAtPathIfExists(importPath); // tslint:disable-line
 
                 if (sourceFileImport) {
                     let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;
@@ -182,23 +182,24 @@ export class ImportsUtil {
                                 len = exportDeclarations.length;
                             for (i; i < len; i++) {
                                 let exportDeclaration = exportDeclarations[i];
-                                let sourceFileExportedReference = exportDeclaration.getModuleSpecifierSourceFile();
+                                let sourceFileExportedReference =
+                                    exportDeclaration.getModuleSpecifierSourceFile();
                                 if (sourceFileExportedReference) {
-                                    let sourceFileExportedReferencePath = sourceFileExportedReference.getFilePath();
+                                    let sourceFileExportedReferencePath =
+                                        sourceFileExportedReference.getFilePath();
 
                                     const sourceFileExported =
                                         typeof ast.getSourceFile(
                                             sourceFileExportedReferencePath
                                         ) !== 'undefined'
                                             ? ast.getSourceFile(sourceFileExportedReferencePath)
-                                            : ast.addExistingSourceFileIfExists(
+                                            : ast.addSourceFileAtPathIfExists(
                                                   sourceFileExportedReferencePath
                                               );
 
                                     if (sourceFileExported) {
-                                        variableDeclaration = sourceFileExported.getVariableDeclaration(
-                                            variableName
-                                        );
+                                        variableDeclaration =
+                                            sourceFileExported.getVariableDeclaration(variableName);
                                         if (variableDeclaration) {
                                             return hasFoundValues(variableDeclaration);
                                         }
@@ -223,7 +224,8 @@ export class ImportsUtil {
                             initializerKind &&
                             initializerKind === SyntaxKind.ObjectLiteralExpression
                         ) {
-                            let compilerNode = initializer.compilerNode as ts.ObjectLiteralExpression;
+                            let compilerNode =
+                                initializer.compilerNode as ts.ObjectLiteralExpression;
                             return compilerNode.properties;
                         } else if (initializerKind) {
                             return variableDeclaration.compilerNode;
@@ -240,7 +242,7 @@ export class ImportsUtil {
         const file =
             typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
                 ? ast.getSourceFile(sourceFile.fileName)
-                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
+                : ast.addSourceFileAtPath(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
         let searchedImport,
             aliasOriginalName = '',
@@ -256,8 +258,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === variableName) {
                         searchedImport = i;
@@ -298,7 +300,7 @@ export class ImportsUtil {
         const file =
             typeof ast.getSourceFile(sourceFilePath) !== 'undefined'
                 ? ast.getSourceFile(sourceFilePath)
-                : ast.addExistingSourceFile(sourceFilePath); // tslint:disable-line
+                : ast.addSourceFileAtPath(sourceFilePath); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
@@ -314,8 +316,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === inputVariableName) {
                         searchedImport = i;
@@ -356,7 +358,7 @@ export class ImportsUtil {
         const file =
             typeof ast.getSourceFile(sourceFile.fileName) !== 'undefined'
                 ? ast.getSourceFile(sourceFile.fileName)
-                : ast.addExistingSourceFile(sourceFile.fileName); // tslint:disable-line
+                : ast.addSourceFileAtPath(sourceFile.fileName); // tslint:disable-line
         const imports = file.getImportDeclarations();
 
         /**
@@ -372,8 +374,8 @@ export class ImportsUtil {
                     let importName = namedImports[j].getNameNode().getText() as string,
                         importAlias;
 
-                    if (namedImports[j].getAliasIdentifier()) {
-                        importAlias = namedImports[j].getAliasIdentifier().getText();
+                    if (namedImports[j].getAliasNode()) {
+                        importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === metadataVariableName) {
                         searchedImport = i;
@@ -400,7 +402,7 @@ export class ImportsUtil {
             const sourceFileImport =
                 typeof ast.getSourceFile(importPath) !== 'undefined'
                     ? ast.getSourceFile(importPath)
-                    : ast.addExistingSourceFile(importPath); // tslint:disable-line
+                    : ast.addSourceFileAtPath(importPath); // tslint:disable-line
             if (sourceFileImport) {
                 fileToSearchIn = sourceFileImport;
                 let variableName = foundWithAlias ? aliasOriginalName : metadataVariableName;

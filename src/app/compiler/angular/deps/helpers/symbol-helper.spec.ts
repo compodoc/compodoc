@@ -1,5 +1,5 @@
 import { SymbolHelper } from './symbol-helper';
-import { ts, SyntaxKind } from 'ts-simple-ast';
+import { ts, SyntaxKind } from 'ts-morph';
 import { expect } from 'chai';
 
 describe(SymbolHelper.name, () => {

@@ -1,5 +1,5 @@
 .navbar-default {
-    background: #FFDE00;
+    background: #ffde00;
     border: none;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .menu ul.list li.title {
-    background: #FFDE00;
+    background: #ffde00;
     color: #333;
     padding-bottom: 5px;
 }
@@ -41,7 +41,7 @@
 
 .menu ul.list li.chapter ul.links a:hover,
 .menu ul.list li.chapter ul.links a.active {
-    color: #FFDE00;
+    color: #ffde00;
 }
 
 .menu ul.list li.chapter ul.links {
@@ -68,7 +68,7 @@
 }
 
 .content a {
-    color: #007DCC;
+    color: #007dcc;
 }
 
 .content a:visited {
@@ -93,8 +93,8 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-.breadcrumb>li+li:before {
-    content: "»\00a0"
+.breadcrumb > li + li:before {
+    content: '»\00a0';
 }
 
 .breadcrumb {
@@ -105,7 +105,7 @@
 code {
     white-space: nowrap;
     max-width: 100%;
-    background: #F5F5F5;
+    background: #f5f5f5;
     padding: 2px 5px;
     color: #666666;
     overflow-x: auto;
@@ -221,4 +221,20 @@ hue-6-2: #c18401
 
 .hljs-link {
     text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+    .content {
+        background: none;
+    }
+    code {
+        background: none;
+        color: #e09393;
+    }
+    .menu ul.list li.chapter a.active {
+        color: #ffde00;
+    }
+    .menu {
+        background: #272525;
+    }
 }

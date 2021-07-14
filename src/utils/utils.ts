@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { ts } from 'ts-simple-ast';
+import { ts } from 'ts-morph';
 
 import { LinkParser } from './link-parser';
 
@@ -177,7 +177,7 @@ export function isIgnore(member): boolean {
 // https://tc39.github.io/ecma262/#sec-array.prototype.includes
 if (!Array.prototype.includes) {
     Object.defineProperty(Array.prototype, 'includes', {
-        value: function(searchElement, fromIndex) {
+        value: function (searchElement, fromIndex) {
             if (this == null) {
                 throw new TypeError('"this" is null or not defined');
             }
@@ -319,7 +319,10 @@ export function detectIndent(str, count): string {
         }
 
         // TODO: use spread operator when targeting Node.js 6
-        const indent = Math.min.apply(Math, match.map(x => x.length)); // eslint-disable-line
+        const indent = Math.min.apply(
+            Math,
+            match.map(x => x.length)
+        ); // eslint-disable-line
         const re = new RegExp(`^[ \\t]{${indent}}`, 'gm');
 
         return indent > 0 ? stripedString.replace(re, '') : stripedString;

@@ -7,7 +7,7 @@ describe('CLI Routes graph', () => {
     const distFolder = tmp.name + '-routes-graph';
 
     describe('disable it', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -33,7 +33,7 @@ describe('CLI Routes graph', () => {
     });
 
     describe('should support forRoot/forChild', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -58,7 +58,7 @@ describe('CLI Routes graph', () => {
     });
 
     describe('should support routing without routing module', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -85,7 +85,7 @@ describe('CLI Routes graph', () => {
     });
 
     describe('should support lazy loading modules with new loadChildren syntax', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -111,8 +111,34 @@ describe('CLI Routes graph', () => {
         });
     });
 
+    describe('should support lazy loading modules with new loadChildren syntax / async', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/todomvc-ng2-simple-routing-standard-async/src/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should have a clean graph', () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.true;
+            let file = read(`${distFolder}/js/routes/routes_index.js`);
+        });
+    });
+
     describe('should support if statement for bootstrapModule', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

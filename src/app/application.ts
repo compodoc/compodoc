@@ -3,7 +3,7 @@ import * as LiveServer from '@compodoc/live-server';
 import * as _ from 'lodash';
 import * as path from 'path';
 
-import { SyntaxKind } from 'ts-simple-ast';
+import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
 const marked = require('marked');
