@@ -1260,7 +1260,8 @@ export class AngularDependencies extends FrameworkDependencies {
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
                 if (typeof node.jsDoc[0].comment !== 'undefined') {
-                    description = marked(node.jsDoc[0].comment);
+                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node);
+                    description = marked(rawDescription);
                 }
             }
         }
