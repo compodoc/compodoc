@@ -134,6 +134,7 @@ describe('CLI Routes graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
             let file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('AboutComponent');
         });
     });
 
