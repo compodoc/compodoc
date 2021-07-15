@@ -2408,6 +2408,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     private transpileMenuWCToES5(es6Code) {
         return babel.transformAsync(es6Code, {
+            filename: 'menu-wc_es5.js',
             presets: [
                 [
                     '@babel/preset-env',
@@ -2425,8 +2426,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Process menu...');
 
         return new Promise((resolveProcessMenu, rejectProcessMenu) => {
-            const finalPathES6 = `${mainData.output}/js/menu-wc.js`;
-            const finalPathES5 = `${mainData.output}/js/menu-wc_es5.js`;
+            let output = mainData.output.slice();
+            const outputLastCharacter = output.lastIndexOf('/');
+            if (outputLastCharacter !== -1) {
+                output = output.slice(0, -1);
+            }
+            const finalPathES6 = `${output}/js/menu-wc.js`;
+            const finalPathES5 = `${output}/js/menu-wc_es5.js`;
+
             HtmlEngine.renderMenu(Configuration.mainData.templates, mainData)
                 .then(htmlData => {
                     FileEngine.write(finalPathES6, htmlData)
@@ -2455,11 +2462,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         })
                         .catch(err => {
                             logger.error('Error during ' + finalPathES6 + ' page generation');
+                            logger.error(err);
                             return rejectProcessMenu('');
                         });
                 })
                 .catch(err => {
                     logger.error('Error during ' + finalPathES6 + ' page generation');
+                    logger.error(err);
                     return rejectProcessMenu('');
                 });
         });
