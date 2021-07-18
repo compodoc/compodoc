@@ -3,6 +3,7 @@
 ## Dependencies
 
 -   pdfjs : move to modern version if Node.js > 14 | Optional chaining support
+-   remove lodash, imported in 17 files : forEach, sortBy, cloneDeep, find, findIndex, map, filter, clone, includes, indexOf, groupBy, slice, flatMap, concat, uniq,
 
 ## TypeScript errors to fix
 
