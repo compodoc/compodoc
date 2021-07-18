@@ -43,11 +43,11 @@ import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
 import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
 
-let cwd = process.cwd();
+const cwd = process.cwd();
 let startTime = new Date();
 let generationPromiseResolve;
 let generationPromiseReject;
-let generationPromise = new Promise((resolve, reject) => {
+const generationPromise = new Promise((resolve, reject) => {
     generationPromiseResolve = resolve;
     generationPromiseReject = reject;
 });

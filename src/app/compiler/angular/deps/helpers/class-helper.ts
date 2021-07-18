@@ -1,6 +1,4 @@
 import * as _ from 'lodash';
-import * as util from 'util';
-import * as path from 'path';
 
 import { ts, SyntaxKind } from 'ts-morph';
 
