@@ -828,7 +828,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support destructuring for functions', () => {
         const file = read(distFolder + '/miscellaneous/functions.html');
-        expect(file).to.contain('<code>sumFunction(__namedParameters: {a');
+        expect(file).to.contain('<code>sumFunction(trackId, __namedParameters: {a');
         expect(file).to.contain('<code>2</code>');
     });
 

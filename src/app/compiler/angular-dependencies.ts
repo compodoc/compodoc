@@ -46,6 +46,8 @@ import {
     ITypeAliasDecDep
 } from './angular/dependencies.interfaces';
 
+import { v4 as uuidv4 } from 'uuid';
+
 const crypto = require('crypto');
 const marked = require('marked');
 const ast = new Project();
@@ -557,7 +559,6 @@ export class AngularDependencies extends FrameworkDependencies {
                         const name = infos.name;
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
-                        const destructuredParameters = infos.destructuredParameters;
                         const functionDep: IFunctionDecDep = {
                             name,
                             file: file,
@@ -565,7 +566,6 @@ export class AngularDependencies extends FrameworkDependencies {
                             subtype: 'function',
                             deprecated,
                             deprecationMessage,
-                            destructuredParameters,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -809,7 +809,6 @@ export class AngularDependencies extends FrameworkDependencies {
                         const name = infos.name;
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
-                        const destructuredParameters = infos.destructuredParameters;
                         const functionDep: IFunctionDecDep = {
                             name,
                             ctype: 'miscellaneous',
@@ -817,7 +816,6 @@ export class AngularDependencies extends FrameworkDependencies {
                             file: file,
                             deprecated,
                             deprecationMessage,
-                            destructuredParameters,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -1108,12 +1106,25 @@ export class AngularDependencies extends FrameworkDependencies {
         if (arg.name && arg.name.kind == SyntaxKind.ObjectBindingPattern) {
             let results = [];
 
+            const destrucuredGroupId = uuidv4();
+
             results = arg.name.elements.map(element => this.visitArgument(element));
 
-            if (arg.name.elements.length === arg.type.members.length) {
-                for (let i = 0; i < arg.name.elements.length; i++) {
-                    results[i].type = this.classHelper.visitType(arg.type.members[i]);
+            results = results.map(result => {
+                result.destrucuredGroupId = destrucuredGroupId;
+                return result;
+            });
+
+            if (arg.name.elements && arg.type && arg.type.members) {
+                if (arg.name.elements.length === arg.type.members.length) {
+                    for (let i = 0; i < arg.name.elements.length; i++) {
+                        results[i].type = this.classHelper.visitType(arg.type.members[i]);
+                    }
                 }
+            }
+
+            if (arg.name.elements && arg.type && arg.type.typeName) {
+                results[0].type = this.classHelper.visitType(arg.type);
             }
 
             return results;
@@ -1193,18 +1204,18 @@ export class AngularDependencies extends FrameworkDependencies {
         const result: any = {
             deprecated: false,
             deprecationMessage: '',
-            name: methodName,
-            destructuredParameters: false
+            name: methodName
         };
 
         for (let i = 0; i < method.parameters.length; i++) {
             const argument = method.parameters[i];
             if (argument) {
                 const argumentParsed = this.visitArgument(argument);
-                if (argumentParsed.length > 1) {
-                    result.destructuredParameters = true;
+                if (argumentParsed.length > 0) {
                     for (let j = 0; j < argumentParsed.length; j++) {
-                        resultArguments.push(argumentParsed[j]);
+                        const argumentParsedInside = argumentParsed[j];
+                        argumentParsedInside.destructuredParameter = true;
+                        resultArguments.push(argumentParsedInside);
                     }
                 } else {
                     resultArguments.push(argumentParsed);

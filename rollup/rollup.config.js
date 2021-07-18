@@ -33,6 +33,7 @@ export default {
         'loglevel',
         'ts-morph',
         'cosmiconfig',
-        'html-entities'
+        'html-entities',
+        'uuid'
     ]
 };

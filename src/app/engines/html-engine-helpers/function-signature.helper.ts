@@ -61,58 +61,71 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
     public helperFunc(context: any, method) {
         let args = '';
 
-        if (method.destructuredParameters) {
-            args += '__namedParameters: {';
-        }
+        let argDestructuredCounterInitial = 0;
+        let argDestructuredCounterReal = 0;
+
         if (method.args) {
-            args += method.args
-                .map(arg => {
-                    const _result = DependenciesEngine.find(arg.type);
-                    if (_result) {
-                        if (_result.source === 'internal') {
-                            let path = _result.data.type;
-                            if (_result.data.type === 'class') {
-                                path = 'classe';
-                            }
-                            return `${arg.name}${this.getOptionalString(
-                                arg
-                            )}: <a href="../${path}s/${
-                                _result.data.name
-                            }.html" target="_self">${Handlebars.escapeExpression(arg.type)}</a>`;
-                        } else {
-                            let path = AngularVersionUtil.getApiLink(
-                                _result.data,
-                                Configuration.mainData.angularVersion
-                            );
-                            return `${arg.name}${this.getOptionalString(
-                                arg
-                            )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
-                                arg.type
-                            )}</a>`;
+            method.args.forEach(arg => {
+                if (arg.destructuredParameter) {
+                    argDestructuredCounterInitial += 1;
+                }
+            });
+
+            method.args.forEach((arg, index) => {
+                const _result = DependenciesEngine.find(arg.type);
+                if (arg.destructuredParameter) {
+                    if (argDestructuredCounterReal === 0) {
+                        args += '__namedParameters: {';
+                    }
+                    argDestructuredCounterReal += 1;
+                }
+                if (_result) {
+                    if (_result.source === 'internal') {
+                        let path = _result.data.type;
+                        if (_result.data.type === 'class') {
+                            path = 'classe';
                         }
-                    } else if (arg.dotDotDotToken) {
-                        return `...${arg.name}: ${arg.type}`;
-                    } else if (arg.function) {
-                        return this.handleFunction(arg);
-                    } else if (BasicTypeUtil.isKnownType(arg.type)) {
-                        const path = BasicTypeUtil.getTypeUrl(arg.type);
-                        return `${arg.name}${this.getOptionalString(
+                        args += `${arg.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
+                            _result.data.name
+                        }.html" target="_self">${Handlebars.escapeExpression(arg.type)}</a>`;
+                    } else {
+                        let path = AngularVersionUtil.getApiLink(
+                            _result.data,
+                            Configuration.mainData.angularVersion
+                        );
+                        args += `${arg.name}${this.getOptionalString(
                             arg
                         )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
                             arg.type
                         )}</a>`;
-                    } else {
-                        if (arg.type) {
-                            return `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
-                        } else {
-                            return `${arg.name}${this.getOptionalString(arg)}`;
-                        }
                     }
-                })
-                .join(', ');
-        }
-        if (method.destructuredParameters) {
-            args += '}';
+                } else if (arg.dotDotDotToken) {
+                    args += `...${arg.name}: ${arg.type}`;
+                } else if (arg.function) {
+                    args += this.handleFunction(arg);
+                } else if (BasicTypeUtil.isKnownType(arg.type)) {
+                    const path = BasicTypeUtil.getTypeUrl(arg.type);
+                    args += `${arg.name}${this.getOptionalString(
+                        arg
+                    )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
+                        arg.type
+                    )}</a>`;
+                } else {
+                    if (arg.type) {
+                        args += `${arg.name}${this.getOptionalString(arg)}: ${arg.type}`;
+                    } else {
+                        args += `${arg.name}${this.getOptionalString(arg)}`;
+                    }
+                }
+                if (arg.destructuredParameter) {
+                    if (argDestructuredCounterReal === argDestructuredCounterInitial) {
+                        args += '}';
+                    }
+                }
+                if (index < method.args.length - 1) {
+                    args += ', ';
+                }
+            });
         }
 
         if (method.name) {
