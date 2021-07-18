@@ -825,4 +825,15 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/miscellaneous/typealiases.html');
         expect(file).to.contain('(min-width: ${Foo}px)&#x60;</a');
     });
+
+    it('should support destructuring for functions', () => {
+        const file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<code>sumFunction(__namedParameters: {a');
+        expect(file).to.contain('<code>2</code>');
+    });
+
+    it('should support default value for functions parameters', () => {
+        const file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<code>&#x27;toto&#x27;</code>');
+    });
 });

@@ -554,10 +554,10 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     } else if (ts.isFunctionDeclaration(node)) {
                         const infos = this.visitFunctionDeclaration(node);
-                        // let tags = this.visitFunctionDeclarationJSDocTags(node);
                         const name = infos.name;
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
+                        const destructuredParameters = infos.destructuredParameters;
                         const functionDep: IFunctionDecDep = {
                             name,
                             file: file,
@@ -565,6 +565,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             subtype: 'function',
                             deprecated,
                             deprecationMessage,
+                            destructuredParameters,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -583,6 +584,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     Configuration.mainData.disablePrivate
                                 )
                             ) {
+                                this.debug(functionDep);
                                 outputSymbols.miscellaneous.functions.push(functionDep);
                             }
                         }
@@ -807,6 +809,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         const name = infos.name;
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
+                        const destructuredParameters = infos.destructuredParameters;
                         const functionDep: IFunctionDecDep = {
                             name,
                             ctype: 'miscellaneous',
@@ -814,6 +817,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             file: file,
                             deprecated,
                             deprecationMessage,
+                            destructuredParameters,
                             description: this.visitEnumTypeAliasFunctionDeclarationDescription(node)
                         };
                         if (infos.args) {
@@ -1101,52 +1105,72 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitArgument(arg) {
-        const result: any = {
-            name: arg.name.text,
-            type: this.classHelper.visitType(arg),
-            deprecated: false,
-            deprecationMessage: ''
-        };
-        if (arg.dotDotDotToken) {
-            result.dotDotDotToken = true;
-        }
-        if (arg.questionToken) {
-            result.optional = true;
-        }
-        if (arg.type) {
-            result.type = this.mapType(arg.type.kind);
-            if (arg.type.kind === 157) {
-                // try replace TypeReference with typeName
-                if (arg.type.typeName) {
-                    result.type = arg.type.typeName.text;
+        if (arg.name && arg.name.kind == SyntaxKind.ObjectBindingPattern) {
+            let results = [];
+
+            results = arg.name.elements.map(element => this.visitArgument(element));
+
+            if (arg.name.elements.length === arg.type.members.length) {
+                for (let i = 0; i < arg.name.elements.length; i++) {
+                    results[i].type = this.classHelper.visitType(arg.type.members[i]);
                 }
             }
-        }
-        const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
 
-        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-            this.checkForDeprecation(jsdoctags[0].tags, result);
+            return results;
+        } else {
+            const result: any = {
+                name: arg.name.text,
+                type: this.classHelper.visitType(arg),
+                deprecated: false,
+                deprecationMessage: ''
+            };
+
+            if (arg.dotDotDotToken) {
+                result.dotDotDotToken = true;
+            }
+            if (arg.questionToken) {
+                result.optional = true;
+            }
+            if (arg.initializer) {
+                result.defaultValue = arg.initializer
+                    ? this.classHelper.stringifyDefaultValue(arg.initializer)
+                    : undefined;
+            }
+            if (arg.type) {
+                result.type = this.mapType(arg.type.kind);
+                if (arg.type.kind === SyntaxKind.TypeReference) {
+                    // try replace TypeReference with typeName
+                    if (arg.type.typeName) {
+                        result.type = arg.type.typeName.text;
+                    }
+                }
+            }
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, result);
+            }
+            return result;
         }
-        return result;
     }
 
     private mapType(type): string | undefined {
         switch (type) {
-            case 95:
+            case SyntaxKind.NullKeyword:
                 return 'null';
-            case 119:
+            case SyntaxKind.AnyKeyword:
                 return 'any';
-            case 122:
+            case SyntaxKind.BooleanKeyword:
                 return 'boolean';
-            case 130:
+            case SyntaxKind.NeverKeyword:
                 return 'never';
-            case 133:
+            case SyntaxKind.NumberKeyword:
                 return 'number';
-            case 136:
+            case SyntaxKind.StringKeyword:
                 return 'string';
-            case 139:
+            case SyntaxKind.UndefinedKeyword:
                 return 'undefined';
-            case 159:
+            case SyntaxKind.TypeReference:
                 return 'typeReference';
         }
     }
@@ -1165,12 +1189,31 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
         const methodName = method.name ? method.name.text : 'Unnamed function';
+        const resultArguments = [];
         const result: any = {
             deprecated: false,
             deprecationMessage: '',
             name: methodName,
-            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
+            destructuredParameters: false
         };
+
+        for (let i = 0; i < method.parameters.length; i++) {
+            const argument = method.parameters[i];
+            if (argument) {
+                const argumentParsed = this.visitArgument(argument);
+                if (argumentParsed.length > 1) {
+                    result.destructuredParameters = true;
+                    for (let j = 0; j < argumentParsed.length; j++) {
+                        resultArguments.push(argumentParsed[j]);
+                    }
+                } else {
+                    resultArguments.push(argumentParsed);
+                }
+            }
+        }
+
+        result.args = resultArguments;
+
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (typeof method.type !== 'undefined') {
@@ -1248,17 +1291,6 @@ export class AngularDependencies extends FrameworkDependencies {
                 return result;
             }
         }
-    }
-
-    private visitFunctionDeclarationJSDocTags(node: ts.FunctionDeclaration): string {
-        const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
-        let result;
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result = markedtags(jsdoctags[0].tags);
-            }
-        }
-        return result;
     }
 
     private visitEnumTypeAliasFunctionDeclarationDescription(node): string {

@@ -88,6 +88,7 @@ export interface IFunctionDecDep extends IDep {
     deprecated: boolean;
     deprecationMessage: string;
     description: string;
+    destructuredParameters: boolean;
 
     returnType?: string;
     args?: Array<any>;

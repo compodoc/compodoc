@@ -59,12 +59,15 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
     }
 
     public helperFunc(context: any, method) {
-        let args = [];
+        let args = '';
 
+        if (method.destructuredParameters) {
+            args += '__namedParameters: {';
+        }
         if (method.args) {
-            args = method.args
+            args += method.args
                 .map(arg => {
-                    let _result = DependenciesEngine.find(arg.type);
+                    const _result = DependenciesEngine.find(arg.type);
                     if (_result) {
                         if (_result.source === 'internal') {
                             let path = _result.data.type;
@@ -92,7 +95,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                     } else if (arg.function) {
                         return this.handleFunction(arg);
                     } else if (BasicTypeUtil.isKnownType(arg.type)) {
-                        let path = BasicTypeUtil.getTypeUrl(arg.type);
+                        const path = BasicTypeUtil.getTypeUrl(arg.type);
                         return `${arg.name}${this.getOptionalString(
                             arg
                         )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
@@ -108,6 +111,10 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                 })
                 .join(', ');
         }
+        if (method.destructuredParameters) {
+            args += '}';
+        }
+
         if (method.name) {
             return `${method.name}(${args})`;
         } else {

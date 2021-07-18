@@ -110,6 +110,12 @@
                     <div class="io-description">
                         {{#jsdoc-params jsdoctags}}
                         <b>{{t "parameters" }} :</b>
+                        {{#if destructuredParameters}}
+                        <p>
+                            __namedParameters :
+                        </p>
+                        {{/if}}
+                        
                         <table class="params">
                             <thead>
                                 <tr>
