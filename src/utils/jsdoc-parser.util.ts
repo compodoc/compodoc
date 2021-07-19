@@ -248,28 +248,30 @@ export class JsdocParserUtil {
     public parseJSDocNode(node): string {
         let rawDescription = '';
 
-        if (typeof node.jsDoc[0].comment === 'string') {
-            rawDescription += node.jsDoc[0].comment;
+        if (typeof node.comment === 'string') {
+            rawDescription += node.comment;
         } else {
-            const len = node.jsDoc[0].comment.length;
+            if (node.comment) {
+                const len = node.comment.length;
 
-            for (let i = 0; i < len; i++) {
-                const JSDocNode = node.jsDoc[0].comment[i];
-                switch (JSDocNode.kind) {
-                    case SyntaxKind.JSDocComment:
-                        rawDescription += JSDocNode.comment;
-                        break;
-                    case SyntaxKind.JSDocText:
-                        rawDescription += JSDocNode.text;
-                        break;
-                    case SyntaxKind.JSDocLink:
-                        if (JSDocNode.name) {
-                            rawDescription +=
-                                JSDocNode.text + '{@link ' + JSDocNode.name.escapedText + '}';
-                        }
-                        break;
-                    default:
-                        break;
+                for (let i = 0; i < len; i++) {
+                    const JSDocNode = node.comment[i];
+                    switch (JSDocNode.kind) {
+                        case SyntaxKind.JSDocComment:
+                            rawDescription += JSDocNode.comment;
+                            break;
+                        case SyntaxKind.JSDocText:
+                            rawDescription += JSDocNode.text;
+                            break;
+                        case SyntaxKind.JSDocLink:
+                            if (JSDocNode.name) {
+                                rawDescription +=
+                                    JSDocNode.text + '{@link ' + JSDocNode.name.escapedText + '}';
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

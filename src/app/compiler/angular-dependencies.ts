@@ -781,8 +781,9 @@ export class AngularDependencies extends FrameworkDependencies {
                                     variableNode.jsDoc.length > 0 &&
                                     variableNode.jsDoc[0].comment
                                 ) {
-                                    const rawDescription =
-                                        this.jsdocParserUtil.parseJSDocNode(variableNode);
+                                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(
+                                        variableNode.jsDoc[0]
+                                    );
                                     deps.rawdescription = rawDescription;
                                     deps.description = marked(rawDescription);
                                 }
@@ -1373,7 +1374,7 @@ export class AngularDependencies extends FrameworkDependencies {
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
                 if (typeof node.jsDoc[0].comment !== 'undefined') {
-                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node);
+                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node.jsDoc[0]);
                     description = marked(rawDescription);
                 }
             }

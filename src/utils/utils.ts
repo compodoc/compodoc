@@ -9,6 +9,7 @@ import { logger } from './logger';
 
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 import { kindToType } from './kind-to-type';
+import { JsdocParserUtil } from './jsdoc-parser.util';
 
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
@@ -34,9 +35,11 @@ export const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
 };
 
 export function markedtags(tags: Array<any>) {
+    const jsdocParserUtil = new JsdocParserUtil();
     let mtags = tags;
     _.forEach(mtags, tag => {
-        tag.comment = marked(LinkParser.resolveLinks(tag.comment));
+        const rawComment = jsdocParserUtil.parseJSDocNode(tag);
+        tag.comment = marked(LinkParser.resolveLinks(rawComment));
     });
     return mtags;
 }
