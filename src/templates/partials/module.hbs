@@ -26,7 +26,7 @@
 <ul class="nav nav-tabs" role="tablist">
     {{#each navTabs}}
     <li {{#compare @index "===" 0}} class="active" {{/compare}}>
-        <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{this.label}}</a>
+        <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{t this.label}}</a>
     </li>
     {{/each}}
 </ul>
