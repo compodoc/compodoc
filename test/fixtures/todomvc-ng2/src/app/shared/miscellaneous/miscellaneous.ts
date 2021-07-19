@@ -72,3 +72,5 @@ function sumFunction0({ a = 0, b = 1, c = 2 }: { a: number; b: number; c: number
 function sumFunction(trackId, { a, b, c }: { a: number; b: number; c: number }, test: string) {
     return a + b + c;
 }
+
+var [first, second, third] = ['Laide', 'Gabriel', 'Jets'];

@@ -836,4 +836,9 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/miscellaneous/functions.html');
         expect(file).to.contain('<code>&#x27;toto&#x27;</code>');
     });
+
+    it('should support destructuring for variables / array', () => {
+        const file = read(distFolder + '/miscellaneous/variables.html');
+        expect(file).to.contain('<code>&#x27;Gabriel&#x27;</code>');
+    });
 });

@@ -740,38 +740,102 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                     if (ts.isVariableStatement(node) && !RouterParserUtil.isVariableRoutes(node)) {
-                        const infos: any = this.visitVariableDeclaration(node);
-                        const name = infos.name;
-                        const deprecated = infos.deprecated;
-                        const deprecationMessage = infos.deprecationMessage;
-                        const deps: any = {
-                            name,
-                            ctype: 'miscellaneous',
-                            subtype: 'variable',
-                            file: file,
-                            deprecated,
-                            deprecationMessage
+                        let isDestructured = false;
+                        // Check for destructuring array
+                        const nodeVariableDeclarations = node.declarationList.declarations;
+                        if (nodeVariableDeclarations) {
+                            if (nodeVariableDeclarations.length > 0) {
+                                if (
+                                    nodeVariableDeclarations[0].name &&
+                                    nodeVariableDeclarations[0].name.kind ===
+                                        SyntaxKind.ArrayBindingPattern
+                                ) {
+                                    isDestructured = true;
+                                }
+                            }
+                        }
+
+                        const visitVariableNode = variableNode => {
+                            const infos: any = this.visitVariableDeclaration(variableNode);
+                            if (infos) {
+                                const name = infos.name;
+                                const deprecated = infos.deprecated;
+                                const deprecationMessage = infos.deprecationMessage;
+                                const deps: any = {
+                                    name,
+                                    ctype: 'miscellaneous',
+                                    subtype: 'variable',
+                                    file: file,
+                                    deprecated,
+                                    deprecationMessage
+                                };
+                                deps.type = infos.type ? infos.type : '';
+                                if (infos.defaultValue) {
+                                    deps.defaultValue = infos.defaultValue;
+                                }
+                                if (infos.initializer) {
+                                    deps.initializer = infos.initializer;
+                                }
+                                if (
+                                    variableNode.jsDoc &&
+                                    variableNode.jsDoc.length > 0 &&
+                                    variableNode.jsDoc[0].comment
+                                ) {
+                                    const rawDescription =
+                                        this.jsdocParserUtil.parseJSDocNode(variableNode);
+                                    deps.rawdescription = rawDescription;
+                                    deps.description = marked(rawDescription);
+                                }
+                                if (isModuleWithProviders(variableNode)) {
+                                    const routingInitializer = getModuleWithProviders(variableNode);
+                                    RouterParserUtil.addModuleWithRoutes(
+                                        name,
+                                        [routingInitializer],
+                                        file
+                                    );
+                                    RouterParserUtil.addModule(name, [routingInitializer]);
+                                }
+                                if (!isIgnore(variableNode)) {
+                                    this.debug(deps);
+                                    outputSymbols.miscellaneous.variables.push(deps);
+                                }
+                            }
                         };
-                        deps.type = infos.type ? infos.type : '';
-                        if (infos.defaultValue) {
-                            deps.defaultValue = infos.defaultValue;
-                        }
-                        if (infos.initializer) {
-                            deps.initializer = infos.initializer;
-                        }
-                        if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
-                            const rawDescription = this.jsdocParserUtil.parseJSDocNode(node);
-                            deps.rawdescription = rawDescription;
-                            deps.description = marked(rawDescription);
-                        }
-                        if (isModuleWithProviders(node)) {
-                            const routingInitializer = getModuleWithProviders(node);
-                            RouterParserUtil.addModuleWithRoutes(name, [routingInitializer], file);
-                            RouterParserUtil.addModule(name, [routingInitializer]);
-                        }
-                        if (!isIgnore(node)) {
-                            this.debug(deps);
-                            outputSymbols.miscellaneous.variables.push(deps);
+
+                        if (isDestructured) {
+                            if (nodeVariableDeclarations[0].name.elements) {
+                                const destructuredVariables =
+                                    nodeVariableDeclarations[0].name.elements;
+
+                                for (let i = 0; i < destructuredVariables.length; i++) {
+                                    const destructuredVariable = destructuredVariables[i];
+                                    const name = destructuredVariable.name
+                                        ? destructuredVariable.name.escapedText
+                                        : '';
+                                    const deps: any = {
+                                        name,
+                                        ctype: 'miscellaneous',
+                                        subtype: 'variable',
+                                        file: file
+                                    };
+                                    if (nodeVariableDeclarations[0].initializer) {
+                                        deps.initializer =
+                                            nodeVariableDeclarations[0].initializer.elements[i];
+                                        deps.defaultValue = deps.initializer
+                                            ? this.classHelper.stringifyDefaultValue(
+                                                  deps.initializer
+                                              )
+                                            : undefined;
+                                    }
+
+                                    if (!isIgnore(destructuredVariables[i])) {
+                                        this.debug(deps);
+                                        outputSymbols.miscellaneous.variables.push(deps);
+                                    }
+                                }
+                            }
+                        } else {
+                            visitVariableNode(node);
                         }
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
@@ -1268,7 +1332,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitVariableDeclaration(node) {
-        if (node.declarationList.declarations) {
+        if (node.declarationList && node.declarationList.declarations) {
             let i = 0;
             const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
