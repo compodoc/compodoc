@@ -2237,7 +2237,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             } else {
                 covDat = {};
                 covFileNames = _.map(coverageData.files, el => {
-                    let fileName = el.filePath;
+                    let fileName = path.normalize(el.filePath);
                     covDat[fileName] = {
                         type: el.type,
                         linktype: el.linktype,
@@ -2277,8 +2277,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         // need a name to include in output but this isn't visible
                         out = { name: fileName, filePath: fileName };
                     } else {
-                        let findMatch = _.filter(covFileNames, el => {
-                            return el.includes(fileName) || fileName.includes(el);
+                        const findMatch = _.filter(covFileNames, el => {
+                            const normalizedFilename = path.normalize(fileName);
+                            return el.includes(fileName) || normalizedFilename.includes(el);
                         });
                         if (findMatch.length > 0) {
                             out = _.clone(covDat[findMatch[0]]);
