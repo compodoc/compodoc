@@ -849,7 +849,7 @@ describe('CLI simple generation - big app', () => {
         );
         file = read(distFolder + '/components/FooterComponent.html');
         expect(file).to.contain(
-            'A TodoStore -> see <a href="../injectables/TodoStore.html">TodoStore'
+            'A TodoStore -&gt; see <a href="../injectables/TodoStore.html">TodoStore'
         );
     });
 });
