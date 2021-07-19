@@ -53,7 +53,7 @@ export class TodoStore {
      * // set all at not completed
      * TodoStore.setAllTo(false);
      *
-     * @param {boolean} completed Status of all todos
+     * @param {boolean} completed Status of all todos -> see {@link FooterComponent}
      */
     setAllTo(completed: boolean) {
         this.todos.forEach((t: Todo) => (t.completed = completed));

@@ -841,4 +841,15 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/miscellaneous/variables.html');
         expect(file).to.contain('<code>&#x27;Gabriel&#x27;</code>');
     });
+
+    it('should support JSDoc @link in JSDoc @param tag', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain(
+            'all todos -&gt; see <a href="../components/FooterComponent.html">FooterComponent'
+        );
+        file = read(distFolder + '/components/FooterComponent.html');
+        expect(file).to.contain(
+            'A TodoStore -> see <a href="../injectables/TodoStore.html">TodoStore'
+        );
+    });
 });

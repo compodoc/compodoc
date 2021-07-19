@@ -160,7 +160,7 @@
                                     {{#one-parameter-has ../tags 'comment'}}
                                     <td>
                                         {{#if comment}}
-                                        {{{comment}}}
+                                        {{{parseDescription comment ../../depth}}}
                                         {{/if}}
                                     </td>
                                     {{/one-parameter-has}}
