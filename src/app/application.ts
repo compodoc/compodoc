@@ -2278,7 +2278,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         out = { name: fileName, filePath: fileName };
                     } else {
                         const findMatch = _.filter(covFileNames, el => {
-                            const normalizedFilename = path.normalize(fileName);
+                            const normalizedFilename = path.normalize(fileName).replace(/\\/g, '/');
                             return el.includes(fileName) || normalizedFilename.includes(el);
                         });
                         if (findMatch.length > 0) {
