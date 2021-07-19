@@ -820,8 +820,10 @@ export class AngularDependencies extends FrameworkDependencies {
                                         file: file
                                     };
                                     if (nodeVariableDeclarations[0].initializer) {
-                                        deps.initializer =
-                                            nodeVariableDeclarations[0].initializer.elements[i];
+                                        if (nodeVariableDeclarations[0].initializer.elements) {
+                                            deps.initializer =
+                                                nodeVariableDeclarations[0].initializer.elements[i];
+                                        }
                                         deps.defaultValue = deps.initializer
                                             ? this.classHelper.stringifyDefaultValue(
                                                   deps.initializer
