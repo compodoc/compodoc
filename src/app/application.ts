@@ -1328,6 +1328,7 @@ export class Application {
 
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = Configuration.mainData.navTabConfig;
+        const hasCustomNavTabConfig = navTabConfig.length !== 0;
         navTabConfig =
             navTabConfig.length === 0
                 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions)
@@ -1344,6 +1345,10 @@ export class Application {
             }
 
             navTab.label = customTab.label;
+
+            if (hasCustomNavTabConfig) {
+                navTab.custom = true;
+            }
 
             // is tab applicable to target dependency?
             if (-1 === _.findIndex(navTab.depTypes, matchDepType)) {

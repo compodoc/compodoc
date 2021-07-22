@@ -4,22 +4,28 @@ const expect = chai.expect,
     tmp = temporaryDir();
 
 describe('CLI Unit Test Report', () => {
-    const distFolder = tmp.name + '-unit-test';
+    const tmpFolder = tmp.name + '-unit-test';
+    const distFolder = tmpFolder + '/documentation';
 
     describe('full path in JSON', () => {
         let stdoutString = undefined,
             unitTestFile;
         before(function (done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '--unitTestCoverage',
-                './test/fixtures/todomvc-ng2/coverage-summary.json',
-                '-d',
-                distFolder
-            ]);
+            tmp.create(tmpFolder);
+            tmp.copy('./test/fixtures/todomvc-ng2/', tmpFolder);
+            const ls = shell(
+                'node',
+                [
+                    '../bin/index-cli.js',
+                    '-p',
+                    './src/tsconfig.json',
+                    '--unitTestCoverage',
+                    './coverage-summary.json',
+                    '-d',
+                    'documentation'
+                ],
+                { cwd: tmpFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -57,16 +63,21 @@ describe('CLI Unit Test Report', () => {
         let stdoutString = undefined,
             unitTestFile;
         before(function (done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '--unitTestCoverage',
-                './test/fixtures/todomvc-ng2/coverage-summary-alt.json',
-                '-d',
-                distFolder
-            ]);
+            tmp.create(tmpFolder);
+            tmp.copy('./test/fixtures/todomvc-ng2/', tmpFolder);
+            const ls = shell(
+                'node',
+                [
+                    '../bin/index-cli.js',
+                    '-p',
+                    './src/tsconfig.json',
+                    '--unitTestCoverage',
+                    './coverage-summary-alt.json',
+                    '-d',
+                    'documentation'
+                ],
+                { cwd: tmpFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -104,16 +115,21 @@ describe('CLI Unit Test Report', () => {
         let stdoutString = undefined,
             unitTestFile;
         before(function (done) {
-            tmp.create(distFolder);
-            let ls = shell('node', [
-                './bin/index-cli.js',
-                '-p',
-                './test/fixtures/todomvc-ng2/src/tsconfig.json',
-                '--unitTestCoverage',
-                './test/fixtures/todomvc-ng2/coverage-summary-win.json',
-                '-d',
-                distFolder
-            ]);
+            tmp.create(tmpFolder);
+            tmp.copy('./test/fixtures/todomvc-ng2/', tmpFolder);
+            let ls = shell(
+                'node',
+                [
+                    '../bin/index-cli.js',
+                    '-p',
+                    './src/tsconfig.json',
+                    '--unitTestCoverage',
+                    './coverage-summary-win.json',
+                    '-d',
+                    'documentation'
+                ],
+                { cwd: tmpFolder }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
