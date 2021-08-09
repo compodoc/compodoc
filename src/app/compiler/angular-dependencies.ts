@@ -100,7 +100,6 @@ export class AngularDependencies extends FrameworkDependencies {
                     this.getSourceFileDecorators(file, deps);
                 } else {
                     if (
-                        filePath.lastIndexOf('.d.ts') === -1 &&
                         filePath.lastIndexOf('spec.ts') === -1
                     ) {
                         logger.info('parsing', filePath);

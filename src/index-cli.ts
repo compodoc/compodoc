@@ -750,7 +750,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     });
 
                     finder.on('file', (file, stat) => {
-                        if (/(spec|\.d)\.ts/.test(file)) {
+                        if (/(spec)\.ts/.test(file)) {
                             logger.warn('Ignoring', file);
                         } else if (
                             excludeParser.testFile(file) &&
@@ -875,7 +875,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                         });
 
                         finder.on('file', (file, stat) => {
-                            if (/(spec|\.d)\.ts/.test(file)) {
+                            if (/(spec)\.ts/.test(file)) {
                                 logger.warn('Ignoring', file);
                             } else if (excludeParser.testFile(file)) {
                                 logger.warn('Excluding', file);
