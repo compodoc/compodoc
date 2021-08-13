@@ -96,7 +96,7 @@ export const TRANSLATION_PT_BR = {
     'type-parameters': 'Parâmetros de tipo',
     types: 'Tipos',
     'unamed-property': 'Propriedade não-nomeada',
-    'unit-test-coverage': 'Cobertua de teste unitário',
+    'unit-test-coverage': 'Cobertura de teste unitário',
     value: 'Valor',
     variables: 'Variáveis',
     yes: 'Sim',
