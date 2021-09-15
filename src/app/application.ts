@@ -2414,6 +2414,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     private transpileMenuWCToES5(es6Code) {
         return babel.transformAsync(es6Code, {
+            cwd: __dirname,
             filename: 'menu-wc_es5.js',
             presets: [
                 [
@@ -2422,6 +2423,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         targets: {
                             ie: '11'
                         }
+                    }
+                ]
+            ],
+            plugins: [
+                [
+                    '@babel/plugin-proposal-private-methods',
+                    {
+                        loose: false
                     }
                 ]
             ]
