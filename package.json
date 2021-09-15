@@ -107,7 +107,7 @@
         "loglevel": "^1.7.1",
         "loglevel-plugin-prefix": "^0.8.4",
         "lunr": "^2.3.9",
-        "marked": "^3.0.3",
+        "marked": "^3.0.4",
         "minimist": "^1.2.5",
         "opencollective-postinstall": "^2.0.3",
         "os-name": "4.0.1",
