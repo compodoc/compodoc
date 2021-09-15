@@ -18,7 +18,7 @@ import { readConfig, ignoreDirectory } from './utils/utils';
 import { cosmiconfigSync } from 'cosmiconfig';
 
 const os = require('os');
-import osName from 'os-name';
+const osName = require('os-name');
 const pkg = require('../package.json');
 const program = require('commander');
 
