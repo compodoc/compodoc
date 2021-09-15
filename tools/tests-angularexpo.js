@@ -179,7 +179,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'ng2-file-upload',
             maintainer: 'valor-software',
-            tsconfig_path: './src/'
+            tsconfig_path: './libs/ng2-file-upload/',
+            tsconfig_file: 'tsconfig.lib.json'
         },
         {
             name: 'todo-angular2-firebase',
