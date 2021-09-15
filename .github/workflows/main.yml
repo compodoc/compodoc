@@ -50,18 +50,18 @@ jobs:
               run: npm run test-refactoring
 
             - name: Merge lcov
-              if: ${{ matrix.node-version == '10.x' && matrix.os == 'ubuntu-latest' }}
+              if: ${{ matrix.node-version == '12.x' && matrix.os == 'ubuntu-latest' }}
               run: npm run merge-lcov
 
             - name: Sonarcloud
-              if: ${{ matrix.node-version == '10.x' && matrix.os == 'ubuntu-latest' }}
+              if: ${{ matrix.node-version == '12.x' && matrix.os == 'ubuntu-latest' }}
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
             - name: Angular expo test
-              if: ${{ matrix.node-version == '12.x' && matrix.os == 'ubuntu-latest' }}
+              if: ${{ matrix.node-version == '14.x' && matrix.os == 'ubuntu-latest' }}
               run: npm run angularexpo
 
     e2e:
@@ -72,7 +72,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node-version: [12.x]
+                node-version: [14.x]
                 os: [ubuntu-latest]
 
         steps:
