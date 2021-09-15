@@ -30,7 +30,7 @@ export function copy(source: string, dest: string): boolean {
 
 export function temporaryDir() {
     let name = '.tmp-compodoc-test';
-    let cleanUp = cleanUpName => {
+    const cleanUp = cleanUpName => {
         if (fs.existsSync(cleanUpName)) {
             fs.readdirSync(cleanUpName).forEach(file => {
                 const curdir = path.join(cleanUpName, file);
@@ -78,8 +78,6 @@ interface PdfResult {
  * Copyright https://gitlab.com/autokent/pdf-parse , converted to ES6 promise for Node.js 6 support
  */
 export function readPDF(dataBuffer, options?): Promise<PdfResult> {
-    let isDebugMode = false;
-
     let ret = {
         numpages: 0,
         numrender: 0,
@@ -90,7 +88,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
     };
 
     function render_page(pageData) {
-        let render_options = {
+        const render_options = {
             //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
             normalizeWhitespace: false,
             //do not attempt to combine same line TextItem's. The default value is `false`.
@@ -100,7 +98,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
         return pageData.getTextContent(render_options).then(function (textContent) {
             let lastY,
                 text = '';
-            for (let item of textContent.items) {
+            for (const item of textContent.items) {
                 if (lastY == item.transform[5] || !lastY) {
                     text += item.str;
                 } else {
@@ -163,7 +161,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
 
                         let i = 1;
 
-                        let loop = () => {
+                        const loop = () => {
                             return new Promise((resolveRead, rejectRead) => {
                                 if (i <= counter) {
                                     doc.getPage(i)
@@ -177,7 +175,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
                                             rejectRead(err);
                                         });
                                 } else {
-                                    resolveRead();
+                                    resolveRead(true);
                                 }
                             });
                         };

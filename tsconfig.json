@@ -1,8 +1,6 @@
 {
     "compilerOptions": {
-        "lib": [
-            "es6",
-            "es7"
-        ]
-    }
+        "lib": ["es6", "es7"]
+    },
+    "exclude": ["test"]
 }
