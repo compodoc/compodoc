@@ -124,6 +124,13 @@ describe('CLI simple generation - big app', () => {
     });
 
     /**
+     * Import for component template
+     */
+    it('should have metadatas - component', () => {
+        expect(aboutComponentFile).to.contain('example written using');
+    });
+
+    /**
      * Routing
      */
 

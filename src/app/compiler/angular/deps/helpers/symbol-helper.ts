@@ -185,29 +185,45 @@ export class SymbolHelper {
      */
     private parseSymbols(
         node: ts.ObjectLiteralElement,
-        srcFile: ts.SourceFile
+        srcFile: ts.SourceFile,
+        decoratorType: string
     ): Array<string | boolean> {
         let localNode = node;
 
-        if (ts.isShorthandPropertyAssignment(localNode)) {
-            localNode = ImportsUtil.findValueInImportOrLocalVariables(node.name.text, srcFile);
+        if (ts.isShorthandPropertyAssignment(localNode) && decoratorType !== 'template') {
+            localNode = ImportsUtil.findValueInImportOrLocalVariables(
+                node.name.text,
+                srcFile,
+                decoratorType
+            );
+        }
+        if (ts.isShorthandPropertyAssignment(localNode) && decoratorType === 'template') {
+            const data = ImportsUtil.findValueInImportOrLocalVariables(
+                node.name.text,
+                srcFile,
+                decoratorType
+            );
+            return [data];
         }
 
-        if (ts.isArrayLiteralExpression(localNode.initializer)) {
+        if (localNode.initializer && ts.isArrayLiteralExpression(localNode.initializer)) {
             return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         } else if (
-            ts.isStringLiteral(localNode.initializer) ||
-            ts.isTemplateLiteral(localNode.initializer) ||
-            (ts.isPropertyAssignment(localNode) && localNode.initializer.text)
+            (localNode.initializer && ts.isStringLiteral(localNode.initializer)) ||
+            (localNode.initializer && ts.isTemplateLiteral(localNode.initializer)) ||
+            (localNode.initializer &&
+                ts.isPropertyAssignment(localNode) &&
+                localNode.initializer.text)
         ) {
             return [localNode.initializer.text];
         } else if (
+            localNode.initializer &&
             localNode.initializer.kind &&
             (localNode.initializer.kind === SyntaxKind.TrueKeyword ||
                 localNode.initializer.kind === SyntaxKind.FalseKeyword)
         ) {
             return [localNode.initializer.kind === SyntaxKind.TrueKeyword ? true : false];
-        } else if (ts.isPropertyAccessExpression(localNode.initializer)) {
+        } else if (localNode.initializer && ts.isPropertyAccessExpression(localNode.initializer)) {
             let identifier = this.parseSymbolElements(localNode.initializer);
             return [identifier];
         } else if (
@@ -222,7 +238,7 @@ export class SymbolHelper {
 
     public getSymbolDeps(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
-        type: string,
+        decoratorType: string,
         srcFile: ts.SourceFile,
         multiLine?: boolean
     ): Array<string> {
@@ -235,12 +251,12 @@ export class SymbolHelper {
             filteredProps = [];
 
         for (i; i < len; i++) {
-            if (props[i].name && props[i].name.text === type) {
+            if (props[i].name && props[i].name.text === decoratorType) {
                 filteredProps.push(props[i]);
             }
         }
 
-        return filteredProps.map(x => this.parseSymbols(x, srcFile)).pop() || [];
+        return filteredProps.map(x => this.parseSymbols(x, srcFile, decoratorType)).pop() || [];
     }
 
     public getSymbolDepsRaw(

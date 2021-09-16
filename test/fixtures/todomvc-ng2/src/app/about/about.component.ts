@@ -1,5 +1,7 @@
 import { Component, HostListener, Input } from '@angular/core';
 
+import template from './about.component.html';
+
 import { Subscription } from 'rxjs/Subscription';
 
 /**
@@ -17,7 +19,7 @@ import { Subscription } from 'rxjs/Subscription';
  */
 @Component({
     selector: 'about',
-    templateUrl: './about.component.html',
+    template,
     providers: [EmitterService],
     entryComponents: [TodoComponent, ListComponent],
     preserveWhitespaces: false

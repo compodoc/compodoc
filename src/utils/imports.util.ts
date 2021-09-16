@@ -1,6 +1,7 @@
 import * as path from 'path';
 
-import { Project, ts, PropertyDeclaration, SyntaxKind } from 'ts-morph';
+import { Project, ts, PropertyDeclaration, SyntaxKind, VariableDeclaration } from 'ts-morph';
+import FileEngine from '../app/engines/file.engine';
 
 const ast = new Project();
 
@@ -100,10 +101,16 @@ export class ImportsUtil {
      * @param  {string} inputVariableName              like myvar
      * @return {[type]}                                myvar value
      */
-    public findValueInImportOrLocalVariables(inputVariableName: string, sourceFile: ts.SourceFile) {
+    public findValueInImportOrLocalVariables(
+        inputVariableName: string,
+        sourceFile: ts.SourceFile,
+        decoratorType?: string
+    ) {
         let metadataVariableName = inputVariableName,
             searchedImport,
             aliasOriginalName = '',
+            foundWithNamedImport = false,
+            foundWithDefaultImport = false,
             foundWithAlias = false;
 
         const file =
@@ -129,14 +136,34 @@ export class ImportsUtil {
                         importAlias = namedImports[j].getAliasNode().getText();
                     }
                     if (importName === metadataVariableName) {
+                        foundWithNamedImport = true;
                         searchedImport = i;
                         break;
                     }
                     if (importAlias === metadataVariableName) {
+                        foundWithNamedImport = true;
                         foundWithAlias = true;
                         aliasOriginalName = importName;
                         searchedImport = i;
                         break;
+                    }
+                }
+            }
+            const namespaceImport = i.getNamespaceImport();
+            if (namespaceImport) {
+                const namespaceImportLocalName = namespaceImport.getText();
+                if (namespaceImportLocalName === metadataVariableName) {
+                    searchedImport = i;
+                }
+            }
+
+            if (!foundWithNamedImport) {
+                const defaultImport = i.getDefaultImport();
+                if (defaultImport) {
+                    const defaultImportText = defaultImport.getText();
+                    if (defaultImportText === metadataVariableName) {
+                        foundWithDefaultImport = true;
+                        searchedImport = i;
                     }
                 }
             }
@@ -176,39 +203,40 @@ export class ImportsUtil {
                         return hasFoundValues(variableDeclaration);
                     } else {
                         // Try with exports
-                        const exportDeclarations = sourceFileImport.getExportDeclarations();
-                        if (exportDeclarations && exportDeclarations.length > 0) {
-                            let i = 0,
-                                len = exportDeclarations.length;
-                            for (i; i < len; i++) {
-                                let exportDeclaration = exportDeclarations[i];
-                                let sourceFileExportedReference =
-                                    exportDeclaration.getModuleSpecifierSourceFile();
-                                if (sourceFileExportedReference) {
-                                    let sourceFileExportedReferencePath =
-                                        sourceFileExportedReference.getFilePath();
+                        const exportDeclarations = sourceFileImport.getExportedDeclarations();
 
-                                    const sourceFileExported =
-                                        typeof ast.getSourceFile(
-                                            sourceFileExportedReferencePath
-                                        ) !== 'undefined'
-                                            ? ast.getSourceFile(sourceFileExportedReferencePath)
-                                            : ast.addSourceFileAtPathIfExists(
-                                                  sourceFileExportedReferencePath
-                                              );
-
-                                    if (sourceFileExported) {
-                                        variableDeclaration =
-                                            sourceFileExported.getVariableDeclaration(variableName);
-                                        if (variableDeclaration) {
-                                            return hasFoundValues(variableDeclaration);
-                                        }
+                        if (exportDeclarations && exportDeclarations.size > 0) {
+                            for (const [
+                                exportDeclarationKey,
+                                exportDeclarationValues
+                            ] of exportDeclarations) {
+                                exportDeclarationValues.forEach(exportDeclarationValue => {
+                                    if (
+                                        exportDeclarationValue instanceof VariableDeclaration &&
+                                        exportDeclarationValue.getName() === variableName
+                                    ) {
+                                        return hasFoundValues(exportDeclarationValue);
                                     }
-                                }
+                                });
                             }
                         }
                     }
                 }
+            }
+            if (
+                !importPathReference &&
+                decoratorType === 'template' &&
+                searchedImport.getModuleSpecifierValue().indexOf('.html') !== -1
+            ) {
+                const originalSourceFilePath = sourceFile.path;
+                const originalSourceFilePathFolder = originalSourceFilePath.substring(
+                    0,
+                    originalSourceFilePath.lastIndexOf('/')
+                );
+                const finalImportedPath =
+                    originalSourceFilePathFolder + '/' + searchedImport.getModuleSpecifierValue();
+                const finalImportedPathData = FileEngine.getSync(finalImportedPath);
+                return finalImportedPathData;
             }
         } else {
             // Find in local variables of the file
@@ -227,6 +255,16 @@ export class ImportsUtil {
                             let compilerNode =
                                 initializer.compilerNode as ts.ObjectLiteralExpression;
                             return compilerNode.properties;
+                        } else if (
+                            initializerKind &&
+                            (initializerKind === SyntaxKind.StringLiteral ||
+                                initializerKind === SyntaxKind.NoSubstitutionTemplateLiteral)
+                        ) {
+                            if (decoratorType === 'template') {
+                                return initializer.getText();
+                            } else {
+                                return variableDeclaration.compilerNode;
+                            }
                         } else if (initializerKind) {
                             return variableDeclaration.compilerNode;
                         }
