@@ -106,7 +106,13 @@ export class JsdocParserUtil {
 
             if (!inCode) {
                 const tag = /^@(\S+)/.exec(line);
-                if (tag) {
+                const SeeTag = /^@see/.exec(line);
+
+                if (SeeTag) {
+                    line = line.replace(/^@see/, 'See');
+                }
+
+                if (tag && !SeeTag) {
                     return;
                 }
             }

@@ -859,4 +859,9 @@ describe('CLI simple generation - big app', () => {
             'A TodoStore -&gt; see <a href="../injectables/TodoStore.html">TodoStore'
         );
     });
+
+    it('should support JSDoc @link in JSDoc @see tag', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain('See <a href="../classes/Todo.html">Todo</a> for details');
+    });
 });

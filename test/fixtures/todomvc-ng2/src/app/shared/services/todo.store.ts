@@ -104,7 +104,7 @@ export class TodoStore {
     /**
      * Remove todo
      *
-     * See {@link Todo}
+     * @see {@link Todo} for details
      *
      * @param {Todo} todo Todo to remove
      * @param {any[]} theArgs the rest of arguments
