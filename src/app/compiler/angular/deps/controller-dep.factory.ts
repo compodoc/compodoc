@@ -14,7 +14,7 @@ export class ControllerDepFactory {
         IO: any
     ): IControllerDep {
         const sourceCode = srcFile.getText();
-        const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let infos: IControllerDep = {
             name,
             id: 'controller-' + name + '-' + hash,

@@ -984,7 +984,7 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result: any = {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -1012,7 +1012,7 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result = {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],

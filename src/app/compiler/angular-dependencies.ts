@@ -204,7 +204,7 @@ export class AngularDependencies extends FrameworkDependencies {
         const name = this.getSymboleName(node);
         const IO = this.getClassIO(file, srcFile, node, fileBody);
         const sourceCode = srcFile.getText();
-        const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         const deps: any = {
             name,
             id: 'class-' + name + '-' + hash,
@@ -336,7 +336,7 @@ export class AngularDependencies extends FrameworkDependencies {
             }
             const parseNode = (file, srcFile, node, fileBody) => {
                 const sourceCode = srcFile.getText();
-                const hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+                const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
 
                 if (node.decorators) {
                     let classWithCustomDecorator = false;

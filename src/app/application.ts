@@ -816,7 +816,7 @@ export class Application {
                                  * Id created with title + file path hash, seems to be hypothetically unique here
                                  */
                                 const id = crypto
-                                    .createHash('md5')
+                                    .createHash('sha512')
                                     .update(title + file)
                                     .digest('hex');
 
