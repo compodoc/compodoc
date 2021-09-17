@@ -7,7 +7,7 @@ describe('CLI Uniq id for file', () => {
     const distFolder = tmp.name + '-uniqid';
 
     let indexFile;
-    before(function(done) {
+    before(function (done) {
         tmp.create(distFolder);
         let ls = shell('node', [
             './bin/index-cli.js',
@@ -31,7 +31,7 @@ describe('CLI Uniq id for file', () => {
         const expectedHash =
             process.platform === 'win32'
                 ? '275074cbab50c18beecd656b624c9356'
-                : 'e359b2a2e33e7b411a7b7e52efea7ba0';
+                : 'dc56f8262412f8df33eba175cdc6200ab5cce4608521dd0f6242b9de45c505d7725b7e4cf2e4631b42d759ae86a1aac7f44e1234c398a7c0aef94a1c45e15d29';
 
         expect(indexFile).to.contain(expectedHash);
     });
