@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var localContextInUrl = '';
 
     if (COMPODOC_CURRENT_PAGE_CONTEXT !== '') {
-        localContextInUrl = localContextInUrl;
         switch (COMPODOC_CURRENT_PAGE_CONTEXT) {
             case 'additional-page':
                 localContextInUrl = 'additional-documentation';
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var collapse = Collapses[o],
                 options = {};
             options.duration = collapse.getAttribute('data-duration');
-            new Collapse(collapse, options);
+            var c = new Collapse(collapse, options);
         }
 
         // collapse menu
