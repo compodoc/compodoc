@@ -30,7 +30,7 @@ describe('CLI Uniq id for file', () => {
     it('it should contain a uniqid', () => {
         const expectedHash =
             process.platform === 'win32'
-                ? '275074cbab50c18beecd656b624c9356'
+                ? 'c48fd8283c5f5660d3412254501696cd5080663b5835017bc1e9eed1c6dd2b39afde4a46ac75ae8a261853dd21272e87c9451f4226401741750ea62ce2d23172'
                 : 'dc56f8262412f8df33eba175cdc6200ab5cce4608521dd0f6242b9de45c505d7725b7e4cf2e4631b42d759ae86a1aac7f44e1234c398a7c0aef94a1c45e15d29';
 
         expect(indexFile).to.contain(expectedHash);
