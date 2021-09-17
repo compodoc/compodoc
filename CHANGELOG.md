@@ -1,3 +1,25 @@
+<a name="1.1.15"></a>
+
+## [1.1.15](https://github.com/compodoc/compodoc/compare/1.1.14...1.1.15) (2021-09_17)
+
+### Merged
+
+-   fix(app): fixes a bug in CORS that only allows specific content types, Fi… [#1120](https://github.com/compodoc/compodoc/pull/1120)
+-   fix(i18n): fix misspeling in pt-BR translation [#1107](https://github.com/compodoc/compodoc/pull/1107)
+-   fix(app): show custom logo even when in dark mode [#1103](https://github.com/compodoc/compodoc/pull/1103)
+
+### Bug fixes
+
+-   fix(app): @link in @see JSDoc tag ([ba13a85](https://github.com/compodoc/compodoc/commit/ba13a85)), closes [#1104](https://github.com/compodoc/compodoc/issues/1104)
+-   fix(app): component template import parsing ([b31604c](https://github.com/compodoc/compodoc/commit/b31604c)), closes [#1121](https://github.com/compodoc/compodoc/issues/1121)
+-   fix(app): Fixes a bug in CORS that only allows specific content types, Fixes #1109 ([71ab9d3](https://github.com/compodoc/compodoc/commit/71ab9d3)), closes [#1109](https://github.com/compodoc/compodoc/issues/1109)
+-   fix(app): last sentences, exporting html with locale option ([85d183e](https://github.com/compodoc/compodoc/commit/85d183e)), closes [#365](https://github.com/compodoc/compodoc/issues/365)
+-   fix(app): use normalized paths in unit test coverage ([43bbc3b](https://github.com/compodoc/compodoc/commit/43bbc3b)), closes [#664](https://github.com/compodoc/compodoc/issues/664)
+-   fix(app): JSDoc @param tag with @link ([55eb258](https://github.com/compodoc/compodoc/commit/55eb258)), closes [#294](https://github.com/compodoc/compodoc/issues/294)
+-   fix(app): ES6 destructuring assignment support ([254e8cd](https://github.com/compodoc/compodoc/commit/254e8cd)), closes [#502](https://github.com/compodoc/compodoc/issues/502)
+-   fix(app): webcomponent menu transpilation with Babel and missing filename config for @babel/preset-env ([10f73a5](https://github.com/compodoc/compodoc/commit/10f73a5)), closes [#1100](https://github.com/compodoc/compodoc/issues/1100)
+-   fix(app): lazy routing with async - await ([150d97a](https://github.com/compodoc/compodoc/commit/150d97a)), closes [#1042](https://github.com/compodoc/compodoc/issues/1042)
+
 <a name="1.1.14"></a>
 
 ## [1.1.14](https://github.com/compodoc/compodoc/compare/1.1.13...1.1.14) (2021-07-14)
