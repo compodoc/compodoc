@@ -53,7 +53,7 @@ export class TodoStore {
      * // set all at not completed
      * TodoStore.setAllTo(false);
      *
-     * @param {boolean} completed Status of all todos
+     * @param {boolean} completed Status of all todos -> see {@link FooterComponent}
      */
     setAllTo(completed: boolean) {
         this.todos.forEach((t: Todo) => (t.completed = completed));
@@ -104,7 +104,7 @@ export class TodoStore {
     /**
      * Remove todo
      *
-     * See {@link Todo}
+     * @see {@link Todo} for details
      *
      * @param {Todo} todo Todo to remove
      * @param {any[]} theArgs the rest of arguments

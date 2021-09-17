@@ -11,7 +11,7 @@ export let PIT = 4;
  *
  * @param {string} status A status
  */
-export function foo(status: string): string {
+export function foo(status: string = 'toto'): string {
     console.log('bar');
     return 'yo';
 }
@@ -64,3 +64,13 @@ export type RouterAdapterOptions = Pick<NavigationExtras, 'replaceUrl'>;
 type Foo = '320' | '360' | '1440';
 
 type Bar = `(min-width: ${Foo}px)`;
+
+function sumFunction0({ a = 0, b = 1, c = 2 }: { a: number; b: number; c: number }) {
+    return a + b + c;
+}
+
+function sumFunction(trackId, { a, b, c }: { a: number; b: number; c: number }, test: string) {
+    return a + b + c;
+}
+
+var [first, second, third] = ['Laide', 'Gabriel', 'Jets'];

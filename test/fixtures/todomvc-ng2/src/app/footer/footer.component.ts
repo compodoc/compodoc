@@ -39,7 +39,7 @@ export class FooterComponent {
     /**
      * The "constructor"
      *
-     * @param {TodoStore} todoStore A TodoStore
+     * @param {TodoStore} todoStore A TodoStore -> see {@link TodoStore}
      */
     constructor(todoStore: TodoStore) {
         this.todoStore = todoStore;

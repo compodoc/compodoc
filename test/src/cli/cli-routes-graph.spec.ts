@@ -9,7 +9,7 @@ describe('CLI Routes graph', () => {
     describe('disable it', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
@@ -35,7 +35,7 @@ describe('CLI Routes graph', () => {
     describe('should support forRoot/forChild', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
@@ -52,7 +52,7 @@ describe('CLI Routes graph', () => {
         after(() => tmp.clean(distFolder));
 
         it('should clean forRoot and forChild in modules imports', () => {
-            let file = read(distFolder + '/modules/AppModule.html');
+            const file = read(distFolder + '/modules/AppModule.html');
             expect(file).to.contain('<a href="../modules/HomeModule.html">HomeModule</a>');
         });
     });
@@ -60,7 +60,7 @@ describe('CLI Routes graph', () => {
     describe('should support routing without routing module', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/routing-without-module/src/tsconfig.app.json',
@@ -79,7 +79,7 @@ describe('CLI Routes graph', () => {
         it('should have a clean graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
             expect(file).to.contain('ExampleComponent');
         });
     });
@@ -87,7 +87,7 @@ describe('CLI Routes graph', () => {
     describe('should support lazy loading modules with new loadChildren syntax', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/todomvc-ng2-simple-routing-standard/src/tsconfig.json',
@@ -106,7 +106,7 @@ describe('CLI Routes graph', () => {
         it('should have a clean graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
             expect(file).to.contain('AboutComponent');
         });
     });
@@ -114,7 +114,7 @@ describe('CLI Routes graph', () => {
     describe('should support lazy loading modules with new loadChildren syntax / async', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/todomvc-ng2-simple-routing-standard-async/src/tsconfig.json',
@@ -133,14 +133,15 @@ describe('CLI Routes graph', () => {
         it('should have a clean graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('AboutComponent');
         });
     });
 
     describe('should support if statement for bootstrapModule', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/todomvc-ng2-simple-routing-with-if/src/tsconfig.json',
@@ -159,7 +160,7 @@ describe('CLI Routes graph', () => {
         it('should have a clean graph', () => {
             const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/js/routes/routes_index.js`);
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
             expect(file).to.contain('HomeComponent');
         });
     });

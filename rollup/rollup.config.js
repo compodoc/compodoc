@@ -1,5 +1,5 @@
 // rollup.config.js
-import typescript from 'rollup-plugin-typescript';
+import typescript from '@rollup/plugin-typescript';
 
 export default {
     input: {
@@ -33,6 +33,7 @@ export default {
         'loglevel',
         'ts-morph',
         'cosmiconfig',
-        'html-entities'
+        'html-entities',
+        'uuid'
     ]
 };

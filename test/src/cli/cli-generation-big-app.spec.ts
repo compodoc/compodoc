@@ -124,6 +124,13 @@ describe('CLI simple generation - big app', () => {
     });
 
     /**
+     * Import for component template
+     */
+    it('should have metadatas - component', () => {
+        expect(aboutComponentFile).to.contain('example written using');
+    });
+
+    /**
      * Routing
      */
 
@@ -824,5 +831,37 @@ describe('CLI simple generation - big app', () => {
     it('should support type alias and template literal', () => {
         const file = read(distFolder + '/miscellaneous/typealiases.html');
         expect(file).to.contain('(min-width: ${Foo}px)&#x60;</a');
+    });
+
+    it('should support destructuring for functions', () => {
+        const file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<code>sumFunction(trackId, __namedParameters: {a');
+        expect(file).to.contain('<code>2</code>');
+    });
+
+    it('should support default value for functions parameters', () => {
+        const file = read(distFolder + '/miscellaneous/functions.html');
+        expect(file).to.contain('<code>&#x27;toto&#x27;</code>');
+    });
+
+    it('should support destructuring for variables / array', () => {
+        const file = read(distFolder + '/miscellaneous/variables.html');
+        expect(file).to.contain('<code>&#x27;Gabriel&#x27;</code>');
+    });
+
+    it('should support JSDoc @link in JSDoc @param tag', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain(
+            'all todos -&gt; see <a href="../components/FooterComponent.html">FooterComponent'
+        );
+        file = read(distFolder + '/components/FooterComponent.html');
+        expect(file).to.contain(
+            'A TodoStore -&gt; see <a href="../injectables/TodoStore.html">TodoStore'
+        );
+    });
+
+    it('should support JSDoc @link in JSDoc @see tag', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain('See <a href="../classes/Todo.html">Todo</a> for details');
     });
 });

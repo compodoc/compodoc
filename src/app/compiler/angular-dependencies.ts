@@ -46,6 +46,8 @@ import {
     ITypeAliasDecDep
 } from './angular/dependencies.interfaces';
 
+import { v4 as uuidv4 } from 'uuid';
+
 const crypto = require('crypto');
 const marked = require('marked');
 const ast = new Project();
@@ -554,7 +556,6 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     } else if (ts.isFunctionDeclaration(node)) {
                         const infos = this.visitFunctionDeclaration(node);
-                        // let tags = this.visitFunctionDeclarationJSDocTags(node);
                         const name = infos.name;
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
@@ -583,6 +584,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     Configuration.mainData.disablePrivate
                                 )
                             ) {
+                                this.debug(functionDep);
                                 outputSymbols.miscellaneous.functions.push(functionDep);
                             }
                         }
@@ -738,38 +740,105 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                     if (ts.isVariableStatement(node) && !RouterParserUtil.isVariableRoutes(node)) {
-                        const infos: any = this.visitVariableDeclaration(node);
-                        const name = infos.name;
-                        const deprecated = infos.deprecated;
-                        const deprecationMessage = infos.deprecationMessage;
-                        const deps: any = {
-                            name,
-                            ctype: 'miscellaneous',
-                            subtype: 'variable',
-                            file: file,
-                            deprecated,
-                            deprecationMessage
+                        let isDestructured = false;
+                        // Check for destructuring array
+                        const nodeVariableDeclarations = node.declarationList.declarations;
+                        if (nodeVariableDeclarations) {
+                            if (nodeVariableDeclarations.length > 0) {
+                                if (
+                                    nodeVariableDeclarations[0].name &&
+                                    nodeVariableDeclarations[0].name.kind ===
+                                        SyntaxKind.ArrayBindingPattern
+                                ) {
+                                    isDestructured = true;
+                                }
+                            }
+                        }
+
+                        const visitVariableNode = variableNode => {
+                            const infos: any = this.visitVariableDeclaration(variableNode);
+                            if (infos) {
+                                const name = infos.name;
+                                const deprecated = infos.deprecated;
+                                const deprecationMessage = infos.deprecationMessage;
+                                const deps: any = {
+                                    name,
+                                    ctype: 'miscellaneous',
+                                    subtype: 'variable',
+                                    file: file,
+                                    deprecated,
+                                    deprecationMessage
+                                };
+                                deps.type = infos.type ? infos.type : '';
+                                if (infos.defaultValue) {
+                                    deps.defaultValue = infos.defaultValue;
+                                }
+                                if (infos.initializer) {
+                                    deps.initializer = infos.initializer;
+                                }
+                                if (
+                                    variableNode.jsDoc &&
+                                    variableNode.jsDoc.length > 0 &&
+                                    variableNode.jsDoc[0].comment
+                                ) {
+                                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(
+                                        variableNode.jsDoc[0]
+                                    );
+                                    deps.rawdescription = rawDescription;
+                                    deps.description = marked(rawDescription);
+                                }
+                                if (isModuleWithProviders(variableNode)) {
+                                    const routingInitializer = getModuleWithProviders(variableNode);
+                                    RouterParserUtil.addModuleWithRoutes(
+                                        name,
+                                        [routingInitializer],
+                                        file
+                                    );
+                                    RouterParserUtil.addModule(name, [routingInitializer]);
+                                }
+                                if (!isIgnore(variableNode)) {
+                                    this.debug(deps);
+                                    outputSymbols.miscellaneous.variables.push(deps);
+                                }
+                            }
                         };
-                        deps.type = infos.type ? infos.type : '';
-                        if (infos.defaultValue) {
-                            deps.defaultValue = infos.defaultValue;
-                        }
-                        if (infos.initializer) {
-                            deps.initializer = infos.initializer;
-                        }
-                        if (node.jsDoc && node.jsDoc.length > 0 && node.jsDoc[0].comment) {
-                            const rawDescription = this.jsdocParserUtil.parseJSDocNode(node);
-                            deps.rawdescription = rawDescription;
-                            deps.description = marked(rawDescription);
-                        }
-                        if (isModuleWithProviders(node)) {
-                            const routingInitializer = getModuleWithProviders(node);
-                            RouterParserUtil.addModuleWithRoutes(name, [routingInitializer], file);
-                            RouterParserUtil.addModule(name, [routingInitializer]);
-                        }
-                        if (!isIgnore(node)) {
-                            this.debug(deps);
-                            outputSymbols.miscellaneous.variables.push(deps);
+
+                        if (isDestructured) {
+                            if (nodeVariableDeclarations[0].name.elements) {
+                                const destructuredVariables =
+                                    nodeVariableDeclarations[0].name.elements;
+
+                                for (let i = 0; i < destructuredVariables.length; i++) {
+                                    const destructuredVariable = destructuredVariables[i];
+                                    const name = destructuredVariable.name
+                                        ? destructuredVariable.name.escapedText
+                                        : '';
+                                    const deps: any = {
+                                        name,
+                                        ctype: 'miscellaneous',
+                                        subtype: 'variable',
+                                        file: file
+                                    };
+                                    if (nodeVariableDeclarations[0].initializer) {
+                                        if (nodeVariableDeclarations[0].initializer.elements) {
+                                            deps.initializer =
+                                                nodeVariableDeclarations[0].initializer.elements[i];
+                                        }
+                                        deps.defaultValue = deps.initializer
+                                            ? this.classHelper.stringifyDefaultValue(
+                                                  deps.initializer
+                                              )
+                                            : undefined;
+                                    }
+
+                                    if (!isIgnore(destructuredVariables[i])) {
+                                        this.debug(deps);
+                                        outputSymbols.miscellaneous.variables.push(deps);
+                                    }
+                                }
+                            }
+                        } else {
+                            visitVariableNode(node);
                         }
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
@@ -1101,52 +1170,85 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitArgument(arg) {
-        const result: any = {
-            name: arg.name.text,
-            type: this.classHelper.visitType(arg),
-            deprecated: false,
-            deprecationMessage: ''
-        };
-        if (arg.dotDotDotToken) {
-            result.dotDotDotToken = true;
-        }
-        if (arg.questionToken) {
-            result.optional = true;
-        }
-        if (arg.type) {
-            result.type = this.mapType(arg.type.kind);
-            if (arg.type.kind === 157) {
-                // try replace TypeReference with typeName
-                if (arg.type.typeName) {
-                    result.type = arg.type.typeName.text;
+        if (arg.name && arg.name.kind == SyntaxKind.ObjectBindingPattern) {
+            let results = [];
+
+            const destrucuredGroupId = uuidv4();
+
+            results = arg.name.elements.map(element => this.visitArgument(element));
+
+            results = results.map(result => {
+                result.destrucuredGroupId = destrucuredGroupId;
+                return result;
+            });
+
+            if (arg.name.elements && arg.type && arg.type.members) {
+                if (arg.name.elements.length === arg.type.members.length) {
+                    for (let i = 0; i < arg.name.elements.length; i++) {
+                        results[i].type = this.classHelper.visitType(arg.type.members[i]);
+                    }
                 }
             }
-        }
-        const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
 
-        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-            this.checkForDeprecation(jsdoctags[0].tags, result);
+            if (arg.name.elements && arg.type && arg.type.typeName) {
+                results[0].type = this.classHelper.visitType(arg.type);
+            }
+
+            return results;
+        } else {
+            const result: any = {
+                name: arg.name.text,
+                type: this.classHelper.visitType(arg),
+                deprecated: false,
+                deprecationMessage: ''
+            };
+
+            if (arg.dotDotDotToken) {
+                result.dotDotDotToken = true;
+            }
+            if (arg.questionToken) {
+                result.optional = true;
+            }
+            if (arg.initializer) {
+                result.defaultValue = arg.initializer
+                    ? this.classHelper.stringifyDefaultValue(arg.initializer)
+                    : undefined;
+            }
+            if (arg.type) {
+                result.type = this.mapType(arg.type.kind);
+                if (arg.type.kind === SyntaxKind.TypeReference) {
+                    // try replace TypeReference with typeName
+                    if (arg.type.typeName) {
+                        result.type = arg.type.typeName.text;
+                    }
+                }
+            }
+            const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+
+            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
+                this.checkForDeprecation(jsdoctags[0].tags, result);
+            }
+            return result;
         }
-        return result;
     }
 
     private mapType(type): string | undefined {
         switch (type) {
-            case 95:
+            case SyntaxKind.NullKeyword:
                 return 'null';
-            case 119:
+            case SyntaxKind.AnyKeyword:
                 return 'any';
-            case 122:
+            case SyntaxKind.BooleanKeyword:
                 return 'boolean';
-            case 130:
+            case SyntaxKind.NeverKeyword:
                 return 'never';
-            case 133:
+            case SyntaxKind.NumberKeyword:
                 return 'number';
-            case 136:
+            case SyntaxKind.StringKeyword:
                 return 'string';
-            case 139:
+            case SyntaxKind.UndefinedKeyword:
                 return 'undefined';
-            case 159:
+            case SyntaxKind.TypeReference:
                 return 'typeReference';
         }
     }
@@ -1165,12 +1267,31 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
         const methodName = method.name ? method.name.text : 'Unnamed function';
+        const resultArguments = [];
         const result: any = {
             deprecated: false,
             deprecationMessage: '',
-            name: methodName,
-            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : []
+            name: methodName
         };
+
+        for (let i = 0; i < method.parameters.length; i++) {
+            const argument = method.parameters[i];
+            if (argument) {
+                const argumentParsed = this.visitArgument(argument);
+                if (argumentParsed.length > 0) {
+                    for (let j = 0; j < argumentParsed.length; j++) {
+                        const argumentParsedInside = argumentParsed[j];
+                        argumentParsedInside.destructuredParameter = true;
+                        resultArguments.push(argumentParsedInside);
+                    }
+                } else {
+                    resultArguments.push(argumentParsed);
+                }
+            }
+        }
+
+        result.args = resultArguments;
+
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
         if (typeof method.type !== 'undefined') {
@@ -1214,7 +1335,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private visitVariableDeclaration(node) {
-        if (node.declarationList.declarations) {
+        if (node.declarationList && node.declarationList.declarations) {
             let i = 0;
             const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
@@ -1250,23 +1371,12 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
-    private visitFunctionDeclarationJSDocTags(node: ts.FunctionDeclaration): string {
-        const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
-        let result;
-        if (jsdoctags && jsdoctags.length >= 1) {
-            if (jsdoctags[0].tags) {
-                result = markedtags(jsdoctags[0].tags);
-            }
-        }
-        return result;
-    }
-
     private visitEnumTypeAliasFunctionDeclarationDescription(node): string {
         let description: string = '';
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
                 if (typeof node.jsDoc[0].comment !== 'undefined') {
-                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node);
+                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node.jsDoc[0]);
                     description = marked(rawDescription);
                 }
             }

@@ -662,7 +662,7 @@ describe('CLI simple generation', () => {
         });
     });
 
-    describe('when generation of component dependecy doc with --navTabConfig option', () => {
+    describe('when generation of component dependency doc with --navTabConfig option', () => {
         let stdoutString = undefined,
             index = undefined;
         before(function (done) {
@@ -708,7 +708,7 @@ describe('CLI simple generation', () => {
         });
     });
 
-    describe('when generation of module dependecy doc with --navTabConfig option', () => {
+    describe('when generation of module dependency doc with --navTabConfig option', () => {
         let stdoutString = undefined,
             index = undefined;
         before(function (done) {

@@ -114,7 +114,7 @@
                               {{~> package-dependencies data ~}}
                          {{/compare}}
                     {{/unless}}
-                   
+
 
                    {{#compare data.context "===" 'miscellaneous-functions'}}
                         {{~> miscellaneous-functions data ~}}
@@ -162,8 +162,8 @@
 
        <script src="{{relativeURL data.depth }}js/libs/custom-elements.min.js"></script>
        <script src="{{relativeURL data.depth }}js/libs/lit-html.js"></script>
-       
-       <script type="module" src="{{relativeURL data.depth }}js/menu-wc.js" defer></script>
+
+       <script src="{{relativeURL data.depth }}js/menu-wc.js" defer></script>
        <script nomodule src="{{relativeURL data.depth }}js/menu-wc_es5.js" defer></script>
 
        <script src="{{relativeURL data.depth }}js/libs/bootstrap-native.js"></script>

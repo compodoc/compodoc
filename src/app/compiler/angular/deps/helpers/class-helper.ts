@@ -1,6 +1,4 @@
 import * as _ from 'lodash';
-import * as util from 'util';
-import * as path from 'path';
 
 import { ts, SyntaxKind } from 'ts-morph';
 
@@ -1406,7 +1404,9 @@ export class ClassHelper {
                         _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(property);
+                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(
+                            property.jsDoc[0]
+                        );
                         _return.rawdescription = rawDescription;
                         _return.description = marked(rawDescription);
                     }

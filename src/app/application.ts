@@ -43,11 +43,11 @@ import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
 import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
 
-let cwd = process.cwd();
+const cwd = process.cwd();
 let startTime = new Date();
 let generationPromiseResolve;
 let generationPromiseReject;
-let generationPromise = new Promise((resolve, reject) => {
+const generationPromise = new Promise((resolve, reject) => {
     generationPromiseResolve = resolve;
     generationPromiseReject = reject;
 });
@@ -1328,6 +1328,7 @@ export class Application {
 
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = Configuration.mainData.navTabConfig;
+        const hasCustomNavTabConfig = navTabConfig.length !== 0;
         navTabConfig =
             navTabConfig.length === 0
                 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions)
@@ -1344,6 +1345,10 @@ export class Application {
             }
 
             navTab.label = customTab.label;
+
+            if (hasCustomNavTabConfig) {
+                navTab.custom = true;
+            }
 
             // is tab applicable to target dependency?
             if (-1 === _.findIndex(navTab.depTypes, matchDepType)) {
@@ -2237,7 +2242,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             } else {
                 covDat = {};
                 covFileNames = _.map(coverageData.files, el => {
-                    let fileName = el.filePath;
+                    let fileName = path.normalize(el.filePath);
                     covDat[fileName] = {
                         type: el.type,
                         linktype: el.linktype,
@@ -2277,8 +2282,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         // need a name to include in output but this isn't visible
                         out = { name: fileName, filePath: fileName };
                     } else {
-                        let findMatch = _.filter(covFileNames, el => {
-                            return el.includes(fileName) || fileName.includes(el);
+                        const findMatch = _.filter(covFileNames, el => {
+                            const normalizedFilename = path.normalize(fileName).replace(/\\/g, '/');
+                            return el.includes(fileName) || normalizedFilename.includes(el);
                         });
                         if (findMatch.length > 0) {
                             out = _.clone(covDat[findMatch[0]]);
@@ -2408,6 +2414,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     private transpileMenuWCToES5(es6Code) {
         return babel.transformAsync(es6Code, {
+            cwd: __dirname,
+            filename: 'menu-wc_es5.js',
             presets: [
                 [
                     '@babel/preset-env',
@@ -2415,6 +2423,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         targets: {
                             ie: '11'
                         }
+                    }
+                ]
+            ],
+            plugins: [
+                [
+                    '@babel/plugin-proposal-private-methods',
+                    {
+                        loose: false
                     }
                 ]
             ]
@@ -2425,8 +2441,14 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info('Process menu...');
 
         return new Promise((resolveProcessMenu, rejectProcessMenu) => {
-            const finalPathES6 = `${mainData.output}/js/menu-wc.js`;
-            const finalPathES5 = `${mainData.output}/js/menu-wc_es5.js`;
+            let output = mainData.output.slice();
+            const outputLastCharacter = output.lastIndexOf('/');
+            if (outputLastCharacter !== -1) {
+                output = output.slice(0, -1);
+            }
+            const finalPathES6 = `${output}/js/menu-wc.js`;
+            const finalPathES5 = `${output}/js/menu-wc_es5.js`;
+
             HtmlEngine.renderMenu(Configuration.mainData.templates, mainData)
                 .then(htmlData => {
                     FileEngine.write(finalPathES6, htmlData)
@@ -2455,11 +2477,13 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         })
                         .catch(err => {
                             logger.error('Error during ' + finalPathES6 + ' page generation');
+                            logger.error(err);
                             return rejectProcessMenu('');
                         });
                 })
                 .catch(err => {
                     logger.error('Error during ' + finalPathES6 + ' page generation');
+                    logger.error(err);
                     return rejectProcessMenu('');
                 });
         });

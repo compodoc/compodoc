@@ -68,6 +68,10 @@ class I18nEngine {
         return i18next.t(key);
     }
 
+    public exists(key: string): boolean {
+        return i18next.exists(key);
+    }
+
     public supportLanguage(language: string): boolean {
         return typeof this.availablesLanguages[language] !== 'undefined';
     }
