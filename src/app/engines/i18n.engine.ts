@@ -47,7 +47,10 @@ class I18nEngine {
     public init(language: string) {
         i18next.init({
             lng: language,
-            fallbackLng: this.fallbackLanguage
+            fallbackLng: this.fallbackLanguage,
+            interpolation: {
+                skipOnVariables: false
+            }
         });
         i18next.addResources('de-DE', 'translation', TRANSLATION_DE_DE);
         i18next.addResources('en-US', 'translation', TRANSLATION_EN_US);
