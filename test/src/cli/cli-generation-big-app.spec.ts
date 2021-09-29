@@ -864,4 +864,10 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/injectables/TodoStore.html');
         expect(file).to.contain('See <a href="../classes/Todo.html">Todo</a> for details');
     });
+
+    it('should support JSDoc @link for setters and getters', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain('or link to <a href="../classes/Todo.html">Todo');
+        expect(file).to.contain('ore link to <a href="../classes/Todo.html">Todo');
+    });
 });

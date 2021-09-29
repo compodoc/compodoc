@@ -275,10 +275,14 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
+                    const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                        nodeAccessor,
+                        sourceFile
+                    );
                     if (typeof comment !== 'undefined') {
-                        setSignature.rawdescription = comment;
-                        setSignature.description = marked(comment);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        setSignature.rawdescription = cleanedDescription;
+                        setSignature.description = marked(cleanedDescription);
                     }
                 }
 
@@ -306,10 +310,14 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
+                    const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                        nodeAccessor,
+                        sourceFile
+                    );
                     if (typeof comment !== 'undefined') {
-                        getSignature.rawdescription = comment;
-                        getSignature.description = marked(comment);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        getSignature.rawdescription = cleanedDescription;
+                        getSignature.description = marked(cleanedDescription);
                     }
                 }
 
