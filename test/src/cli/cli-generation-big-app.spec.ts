@@ -870,4 +870,9 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('or link to <a href="../classes/Todo.html">Todo');
         expect(file).to.contain('ore link to <a href="../classes/Todo.html">Todo');
     });
+
+    it('should support JSDoc @link for inputs', () => {
+        let file = read(distFolder + '/components/HeaderComponent.html');
+        expect(file).to.contain('_fullName <a href="https://compodoc.app/">https://compodoc.app/');
+    });
 });

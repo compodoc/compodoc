@@ -1412,11 +1412,13 @@ export class ClassHelper {
                         _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(
-                            property.jsDoc[0]
+                        const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                            property,
+                            sourceFile
                         );
-                        _return.rawdescription = rawDescription;
-                        _return.description = marked(rawDescription);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        _return.rawdescription = cleanedDescription;
+                        _return.description = marked(cleanedDescription);
                     }
                 }
             }
