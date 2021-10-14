@@ -875,4 +875,9 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/HeaderComponent.html');
         expect(file).to.contain('_fullName <a href="https://compodoc.app/">https://compodoc.app/');
     });
+
+    it('should support multiple decorators for component for example', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<code>src/app/about/about.component.ts</code>');
+    });
 });

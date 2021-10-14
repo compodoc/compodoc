@@ -438,9 +438,16 @@ export class ClassHelper {
             : false;
     }
 
+    private isControllerDecorator(decorator) {
+        return decorator.expression.expression
+            ? decorator.expression.expression.text === 'Controller'
+            : false;
+    }
+
     private isModuleDecorator(decorator) {
         return decorator.expression.expression
-            ? decorator.expression.expression.text === 'NgModule'
+            ? decorator.expression.expression.text === 'NgModule' ||
+                  decorator.expression.expression.text === 'Module'
             : false;
     }
 
@@ -522,93 +529,110 @@ export class ClassHelper {
         members = this.visitMembers(classDeclaration.members, sourceFile);
 
         if (classDeclaration.decorators) {
-            for (let i = 0; i < classDeclaration.decorators.length; i++) {
-                if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    return {
+            // Loop and search for official decorators at top-level :
+            // Angular : @NgModule, @Component, @Directive, @Injectable, @Pipe
+            // Nestjs : @Controller, @Module, @Injectable
+            // Stencil : @Component
+            let isDirective = false;
+            let isService = false;
+            let isPipe = false;
+            let isModule = false;
+            let isController = false;
+            for (let a = 0; a < classDeclaration.decorators.length; a++) {
+                //console.log(classDeclaration.decorators[i].expression);
+
+                // RETURN TOO EARLY FOR MANY DECORATORS !!!!
+                isDirective = this.isDirectiveDecorator(classDeclaration.decorators[a]);
+                isService = this.isServiceDecorator(classDeclaration.decorators[a]);
+                isPipe = this.isPipeDecorator(classDeclaration.decorators[a]);
+                isModule = this.isModuleDecorator(classDeclaration.decorators[a]);
+                isController = this.isControllerDecorator(classDeclaration.decorators[a]);
+            }
+            if (isDirective) {
+                return {
+                    deprecated,
+                    deprecationMessage,
+                    description,
+                    rawdescription: rawdescription,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
+                    properties: members.properties,
+                    methods: members.methods,
+                    indexSignatures: members.indexSignatures,
+                    kind: members.kind,
+                    constructor: members.constructor,
+                    jsdoctags: jsdoctags,
+                    extends: extendsElement,
+                    implements: implementsElements,
+                    accessors: members.accessors
+                };
+            } else if (isService) {
+                return [
+                    {
+                        fileName,
+                        className,
                         deprecated,
                         deprecationMessage,
                         description,
                         rawdescription: rawdescription,
-                        inputs: members.inputs,
-                        outputs: members.outputs,
-                        hostBindings: members.hostBindings,
-                        hostListeners: members.hostListeners,
-                        properties: members.properties,
                         methods: members.methods,
                         indexSignatures: members.indexSignatures,
+                        properties: members.properties,
                         kind: members.kind,
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
                         extends: extendsElement,
                         implements: implementsElements,
                         accessors: members.accessors
-                    };
-                } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            methods: members.methods,
-                            indexSignatures: members.indexSignatures,
-                            properties: members.properties,
-                            kind: members.kind,
-                            constructor: members.constructor,
-                            jsdoctags: jsdoctags,
-                            extends: extendsElement,
-                            implements: implementsElements,
-                            accessors: members.accessors
-                        }
-                    ];
-                } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            jsdoctags: jsdoctags,
-                            properties: members.properties,
-                            methods: members.methods
-                        }
-                    ];
-                } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            jsdoctags: jsdoctags,
-                            methods: members.methods
-                        }
-                    ];
-                } else {
-                    return [
-                        {
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            methods: members.methods,
-                            indexSignatures: members.indexSignatures,
-                            properties: members.properties,
-                            kind: members.kind,
-                            constructor: members.constructor,
-                            jsdoctags: jsdoctags,
-                            extends: extendsElement,
-                            implements: implementsElements,
-                            accessors: members.accessors
-                        }
-                    ];
-                }
+                    }
+                ];
+            } else if (isPipe) {
+                return [
+                    {
+                        fileName,
+                        className,
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        jsdoctags: jsdoctags,
+                        properties: members.properties,
+                        methods: members.methods
+                    }
+                ];
+            } else if (isModule) {
+                return [
+                    {
+                        fileName,
+                        className,
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        jsdoctags: jsdoctags,
+                        methods: members.methods
+                    }
+                ];
+            } else {
+                return [
+                    {
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        methods: members.methods,
+                        indexSignatures: members.indexSignatures,
+                        properties: members.properties,
+                        kind: members.kind,
+                        constructor: members.constructor,
+                        jsdoctags: jsdoctags,
+                        extends: extendsElement,
+                        implements: implementsElements,
+                        accessors: members.accessors
+                    }
+                ];
             }
         } else if (description) {
             return [

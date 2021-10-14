@@ -17,6 +17,8 @@ import { Subscription } from 'rxjs/Subscription';
  *
  * Display some text with links for details about TodoMVC & Compodoc.
  */
+@testDecorator
+@UntilDestroy()
 @Component({
     selector: 'about',
     template,
