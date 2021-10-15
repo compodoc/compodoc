@@ -18,6 +18,7 @@ export interface ConfigurationFileInterface {
     watch: boolean;
     exportFormat: string;
     hideGenerator: boolean;
+    hideDarkModeToggle: boolean;
     coverageTest: number;
     coverageMinimumPerFile: number;
     coverageTestThresholdFail: string;

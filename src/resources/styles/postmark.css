@@ -223,18 +223,16 @@ hue-6-2: #c18401
     text-decoration: underline;
 }
 
-@media (prefers-color-scheme: dark) {
-    .content {
-        background: none;
-    }
-    code {
-        background: none;
-        color: #e09393;
-    }
-    .menu ul.list li.chapter a.active {
-        color: #ffde00;
-    }
-    .menu {
-        background: #272525;
-    }
+.dark .content {
+    background: none;
+}
+.dark code {
+    background: none;
+    color: #e09393;
+}
+.dark .menu ul.list li.chapter a.active {
+    color: #ffde00;
+}
+.dark .menu {
+    background: #272525;
 }

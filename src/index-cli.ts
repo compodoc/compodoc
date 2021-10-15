@@ -98,6 +98,11 @@ export class CliApplication extends Application {
                 false
             )
             .option(
+                '--hideDarkModeToggle',
+                'Do not show dark mode toggle button at the top right position of the page',
+                false
+            )
+            .option(
                 '--toggleMenuItems <items>',
                 "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','controllers','classes','injectables','guards','interfaces','interceptors','pipes','miscellaneous','additionalPages']",
                 list,
@@ -360,6 +365,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (programOptions.hideGenerator) {
             Configuration.mainData.hideGenerator = programOptions.hideGenerator;
+        }
+
+        if (configFile.hideDarkModeToggle) {
+            Configuration.mainData.hideDarkModeToggle = configFile.hideDarkModeToggle;
+        }
+        if (programOptions.hideDarkModeToggle) {
+            Configuration.mainData.hideDarkModeToggle = programOptions.hideDarkModeToggle;
         }
 
         if (configFile.coverageTest) {

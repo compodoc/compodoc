@@ -46,8 +46,6 @@
     margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .menu ul.list li.chapter ul.links {
-        background: none;
-    }
+.dark .menu ul.list li.chapter ul.links {
+    background: none;
 }
