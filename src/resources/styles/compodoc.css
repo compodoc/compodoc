@@ -132,7 +132,8 @@ a[href] {
 }
 
 .container-fluid.modules {
-    overflow-y: scroll;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .container-fluid.module {
