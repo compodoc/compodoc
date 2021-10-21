@@ -1481,6 +1481,11 @@ export class ClassHelper {
                 }
             }
         }
+        if (property.decorators) {
+            _return.decorators = this.formatDecorators(property.decorators).filter(
+                item => item.name !== 'Input' && item.name !== 'HostBinding'
+            );
+        }
         return _return;
     }
 

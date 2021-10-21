@@ -139,6 +139,15 @@ describe('CLI Export', () => {
             expect(file).to.contain('coveragePercent');
         });
 
+        it('should export custom input decorators for components', () => {
+            const file = read(`${distFolder}/documentation.json`);
+            const obj = JSON.parse(file);
+            const component = obj.components.find(comp => comp.name === 'AboutComponent');
+            const input = component.inputsClass.find(inp => inp.name === 'myInput');
+
+            expect(input.decorators.find(dec => dec.name === 'MyCustomInputDecorator')).to.be.ok;
+        });
+
         it('should get jsdoctags in component', () => {
             const file = read(`${distFolder}/documentation.json`);
 

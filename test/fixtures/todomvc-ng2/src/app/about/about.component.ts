@@ -40,6 +40,12 @@ export class AboutComponent {
      */
     @Input() public angularVersion = 'Angular 2';
 
+    /**
+     * Dummy input property with a custom decorator
+     */
+    @MyCustomInputDecorator()
+    @Input() public myInput: string;
+
     chartOptions: Highcharts.Options = {
         colors: [
             '#7cb5ec',
