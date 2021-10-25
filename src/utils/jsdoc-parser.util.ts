@@ -271,8 +271,11 @@ export class JsdocParserUtil {
                             break;
                         case SyntaxKind.JSDocLink:
                             if (JSDocNode.name) {
-                                rawDescription +=
-                                    JSDocNode.text + '{@link ' + JSDocNode.name.escapedText + '}';
+                                let text = JSDocNode.name.escapedText;
+                                if (text === undefined && JSDocNode.name.left && JSDocNode.name.right) {
+                                    text = JSDocNode.name.left.escapedText + '.' + JSDocNode.name.right.escapedText;
+                                }
+                                rawDescription += JSDocNode.text + '{@link ' + text + '}';
                             }
                             break;
                         default:

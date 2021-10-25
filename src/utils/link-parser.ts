@@ -64,6 +64,9 @@ export let LinkParser = (function() {
             stringtoReplace = tagInfo.completeTag;
             linkText = split.linkText;
         }
+        if (linkText === '' || linkText == null || target == null) {
+            return string;
+        }
 
         return string.replace(stringtoReplace, '[' + linkText + '](' + target + ')');
     };

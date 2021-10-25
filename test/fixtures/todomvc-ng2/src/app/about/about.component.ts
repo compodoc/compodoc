@@ -99,9 +99,17 @@ export class AboutComponent {
         return '';
     }
 
+     /**
+      * This is for testing
+      * @returns '', if this {@link AboutComponent.fullName} does not crash
+      */
     public publicMethod(): string {
         return '';
     }
 
+     /**
+      * This is for testing
+      * @returns a promise, if this {@link undefined} does not crash
+      */
     public async foo(): Promise<any> {}
 }
