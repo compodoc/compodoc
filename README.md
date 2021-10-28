@@ -120,5 +120,5 @@ Copyright (c) 2016 – 2019 [Vincent Ogloblinsky]
 [vincent ogloblinsky]: https://www.vincentogloblinsky.com
 [support-url]: https://opencollective.com/compodoc#support
 [backers-image]: https://opencollective.com/compodoc/backers.svg
-[sponsors-image]: https://opencollective.com/compodoc/sponsors.svg
+[sponsors-image]: https://opencollective.com/compodoc/sponsor.svg
 [github-action-badge]: https://github.com/compodoc/compodoc/workflows/CI/badge.svg
