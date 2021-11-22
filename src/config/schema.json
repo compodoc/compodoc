@@ -42,7 +42,7 @@
         "language": {
             "$id": "/properties/language",
             "type": "string",
-            "title": "Language used for the generated documentation (en-US, fr-FR, zh-CN)",
+            "title": "Language used for the generated documentation (en-US, fr-FR, zh-CN, zh-TW)",
             "default": "en-US",
             "examples": [""]
         },

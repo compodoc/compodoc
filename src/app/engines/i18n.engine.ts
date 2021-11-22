@@ -13,7 +13,8 @@ import {
     TRANSLATION_PL_PL,
     TRANSLATION_PT_BR,
     TRANSLATION_SK_SK,
-    TRANSLATION_ZH_CN
+    TRANSLATION_ZH_CN,
+    TRANSLATION_ZH_TW
 } from '../../locales';
 
 class I18nEngine {
@@ -39,7 +40,8 @@ class I18nEngine {
         'pl-PL': 'pl-PL',
         'pt-BR': 'pt-BR',
         'sk-SK': 'sk-SK',
-        'zh-CN': 'zh-CN'
+        'zh-CN': 'zh-CN',
+        'zh-TW': 'zh-TW'
     };
 
     public fallbackLanguage = 'en-US';
@@ -65,6 +67,7 @@ class I18nEngine {
         i18next.addResources('pt-BR', 'translation', TRANSLATION_PT_BR);
         i18next.addResources('sk-SK', 'translation', TRANSLATION_SK_SK);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
+        i18next.addResources('zh-TW', 'translation', TRANSLATION_ZH_TW);
     }
 
     public translate(key: string): string {

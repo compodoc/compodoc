@@ -11,7 +11,8 @@ import {
     TRANSLATION_NL_NL,
     TRANSLATION_PT_BR,
     TRANSLATION_SK_SK,
-    TRANSLATION_ZH_CN
+    TRANSLATION_ZH_CN,
+    TRANSLATION_ZH_TW
 } from './locales';
 
 class I18nEngine {
@@ -37,7 +38,8 @@ class I18nEngine {
         'nl-NL': 'nl-NL',
         'pt-BR': 'pt-BR',
         'sk-SK': 'sk-SK',
-        'zh-CN': 'zh-CN'
+        'zh-CN': 'zh-CN',
+        'zh-TW': 'zh-TW'
     };
 
     public fallbackLanguage = 'en-US';
@@ -79,6 +81,9 @@ class I18nEngine {
                 },
                 'zh-CN': {
                     translation: TRANSLATION_ZH_CN
+                },
+                'zh-TW': {
+                    translation: TRANSLATION_ZH_TW
                 }
             }
         });

@@ -10,4 +10,5 @@ export { TRANSLATION_PL_PL } from './pl-PL';
 export { TRANSLATION_PT_BR } from './pt-BR';
 export { TRANSLATION_SK_SK } from './sk-SK';
 export { TRANSLATION_ZH_CN } from './zh-CN';
+export { TRANSLATION_ZH_TW } from './zh-TW';
 export { TRANSLATION_KO_KR } from './ko-KR';
