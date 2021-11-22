@@ -11,7 +11,8 @@ export class MarkdownToPDFEngine {
 
     private constructor() {
         decache('marked');
-        this.markedInstance = require('marked');
+        const { marked } = require('marked');
+        this.markedInstance = marked;
 
         const renderer = new this.markedInstance.Renderer();
 

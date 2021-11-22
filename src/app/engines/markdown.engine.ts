@@ -22,7 +22,8 @@ export class MarkdownEngine {
     private static instance: MarkdownEngine;
     private constructor() {
         decache('marked');
-        this.markedInstance = require('marked');
+        const { marked } = require('marked');
+        this.markedInstance = marked;
 
         const renderer = new this.markedInstance.Renderer();
         renderer.code = (code, language) => {
@@ -48,7 +49,7 @@ export class MarkdownEngine {
             );
         };
 
-        renderer.image = function(href: string, title: string, text: string) {
+        renderer.image = function (href: string, title: string, text: string) {
             let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
             if (title) {
                 out += ' title="' + title + '"';
