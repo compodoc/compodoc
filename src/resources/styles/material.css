@@ -120,7 +120,7 @@ table.params thead td {
 .dark .menu ul.list li.chapter .simple:hover {
     background-color: #2d2d2d;
 }
-.dark .nav-tabs > li > a {
+.dark .nav-tabs > li:not(.active) > a {
     color: #fafafa;
 }
 .dark table.params thead {
