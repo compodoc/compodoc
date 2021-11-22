@@ -2,7 +2,7 @@ import * as Handlebars from 'handlebars';
 import * as JSON5 from 'json5';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { Project, ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-morph';
+import { Project, ts, SourceFile, SyntaxKind, Node } from 'ts-morph';
 
 import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -479,8 +479,8 @@ export class RouterParserUtil {
         let file = sourceFile;
         const identifiers = file.getDescendantsOfKind(SyntaxKind.Identifier).filter(p => {
             return (
-                TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()) ||
-                TypeGuards.isPropertyAssignment(p.getParentOrThrow())
+                Node.isArrayLiteralExpression(p.getParentOrThrow()) ||
+                Node.isPropertyAssignment(p.getParentOrThrow())
             );
         });
 
@@ -508,16 +508,16 @@ export class RouterParserUtil {
                 .getSymbolOrThrow()
                 .getValueDeclarationOrThrow();
             if (
-                !TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                TypeGuards.isVariableDeclaration(identifierDeclaration) &&
-                TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                !TypeGuards.isVariableDeclaration(identifierDeclaration)
+                !Node.isPropertyAssignment(identifierDeclaration) &&
+                Node.isVariableDeclaration(identifierDeclaration) &&
+                Node.isPropertyAssignment(identifierDeclaration) &&
+                !Node.isVariableDeclaration(identifierDeclaration)
             ) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`
                 );
             }
-            if (TypeGuards.isVariableDeclaration(identifierDeclaration)) {
+            if (Node.isVariableDeclaration(identifierDeclaration)) {
                 identifier.replaceWithText(identifierDeclaration.getInitializerOrThrow().getText());
             }
         }
@@ -529,7 +529,7 @@ export class RouterParserUtil {
         let file = sourceFile;
         const spreadElements = file
             .getDescendantsOfKind(SyntaxKind.SpreadElement)
-            .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
+            .filter(p => Node.isArrayLiteralExpression(p.getParentOrThrow()));
 
         let spreadElementsInRoutesVariableStatement = [];
 
@@ -620,7 +620,7 @@ export class RouterParserUtil {
                     .getValueDeclarationOrThrow();
             }
 
-            if (!TypeGuards.isVariableDeclaration(referencedDeclaration)) {
+            if (!Node.isVariableDeclaration(referencedDeclaration)) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
                 );
@@ -647,7 +647,7 @@ export class RouterParserUtil {
         let file = sourceFile;
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
-            .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
+            .filter(p => !Node.isPropertyAccessExpression(p.getParentOrThrow()));
 
         let propertyAccessExpressionsInRoutesVariableStatement = [];
 
@@ -678,10 +678,10 @@ export class RouterParserUtil {
                         const referencedDeclaration =
                             propertyAccessExpressionNodeNameSymbol.getValueDeclarationOrThrow();
                         if (
-                            !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                            TypeGuards.isEnumMember(referencedDeclaration) &&
-                            TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                            !TypeGuards.isEnumMember(referencedDeclaration)
+                            !Node.isPropertyAssignment(referencedDeclaration) &&
+                            Node.isEnumMember(referencedDeclaration) &&
+                            Node.isPropertyAssignment(referencedDeclaration) &&
+                            !Node.isEnumMember(referencedDeclaration)
                         ) {
                             throw new Error(
                                 `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
