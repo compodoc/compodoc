@@ -79,6 +79,10 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('zh-CN', '文档生成使用');
     });
 
+    describe('with supported language - zh-TW', () => {
+        return checkWcMenuFile('zh-TW', '產生文件使用');
+    });
+
     describe('with un-supported language', () => {
         let indexFile;
         before(function(done) {
