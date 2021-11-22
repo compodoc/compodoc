@@ -14,7 +14,7 @@ import { JsdocParserUtil } from './jsdoc-parser.util';
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
 const newLine = ts.sys.newLine;
-const marked = require('marked');
+const { marked } = require('marked');
 
 export function getNewLine(): string {
     return newLine;

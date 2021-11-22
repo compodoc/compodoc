@@ -49,7 +49,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 const crypto = require('crypto');
-const marked = require('marked');
+const { marked } = require('marked');
 const ast = new Project();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts

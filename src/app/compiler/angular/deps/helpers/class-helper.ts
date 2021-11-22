@@ -14,7 +14,7 @@ import DependenciesEngine from '../../../../engines/dependencies.engine';
 import Configuration from '../../../../configuration';
 
 const crypto = require('crypto');
-const marked = require('marked');
+const { marked } = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();

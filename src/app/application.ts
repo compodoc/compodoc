@@ -6,7 +6,7 @@ import * as path from 'path';
 import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
-const marked = require('marked');
+const { marked } = require('marked');
 const traverse = require('traverse');
 const crypto = require('crypto');
 const babel = require('@babel/core');
