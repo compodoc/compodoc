@@ -594,12 +594,44 @@ export class RouterParserUtil {
 
             if (foundWithAliasInImports) {
                 if (typeof searchedImport !== 'undefined') {
-                    let importPath = path.resolve(
-                        path.dirname(file.getFilePath()) +
-                            '/' +
-                            searchedImport.getModuleSpecifierValue() +
-                            '.ts'
-                    );
+
+                    const routePathIsBad = (path) => {
+                        return typeof ast.getSourceFile(path) == 'undefined';
+                    };
+
+                    const getIndicesOf = (searchStr, str, caseSensitive) => {
+                        var searchStrLen = searchStr.length;
+                        if (searchStrLen == 0) {
+                            return [];
+                        }
+                        var startIndex = 0, index, indices = [];
+                        if (!caseSensitive) {
+                            str = str.toLowerCase();
+                            searchStr = searchStr.toLowerCase();
+                        }
+                        while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+                            indices.push(index);
+                            startIndex = index + searchStrLen;
+                        }
+                        return indices;
+                    }
+
+                    const dirNamePath = path.dirname(file.getFilePath());
+                    const searchedImportPath = searchedImport.getModuleSpecifierValue();
+                    const leadingFilePath = searchedImportPath.split('/').shift();
+
+                    let importPath = path.resolve(dirNamePath + '/' + searchedImport.getModuleSpecifierValue() + '.ts');
+
+                    if (routePathIsBad(importPath)) {
+                        let leadingIndices = getIndicesOf(leadingFilePath, importPath, true);
+                        if (leadingIndices.length > 1) { // Nested route fixes
+                            let startIndex = leadingIndices[0];
+                            let endIndex = leadingIndices[leadingIndices.length -1];
+                            importPath = importPath.slice(0, startIndex) + importPath.slice(endIndex);
+                        } else { // Top level route fixes
+                            importPath = path.dirname(dirNamePath) + '/' + searchedImportPath + '.ts';
+                        }
+                    }
                     const sourceFileImport =
                         typeof ast.getSourceFile(importPath) !== 'undefined'
                             ? ast.getSourceFile(importPath)
