@@ -886,4 +886,11 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>src/app/about/about.component.ts</code>');
     });
+
+    it('should not have bootstraped component in components menu entry', () => {
+        let file = read(distFolder + '/js/menu-wc.js');
+        expect(file).to.not.contain(
+            '<a href="components/AppComponent.html" data-type="entity-link" >AppComponent</a>'
+        );
+    });
 });
