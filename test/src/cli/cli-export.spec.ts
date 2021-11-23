@@ -71,12 +71,20 @@ describe('CLI Export', () => {
             );
 
             // accessor (setter)
-            expect(file).to.contain('"rawdescription": "Setter of _fullName');
-            expect(file).to.contain('"description": "<p>Setter of _fullName</p>\\n');
+            expect(file).to.contain(
+                '"rawdescription": "\\n\\nSetter of _fullName ore link to {@link Todo}\\n'
+            );
+            expect(file).to.contain(
+                '"description": "<p>Setter of _fullName ore link to {@link Todo}</p>\\n'
+            );
 
             // accessor (getter)
-            expect(file).to.contain('"rawdescription": "Getter of _fullName');
-            expect(file).to.contain('"description": "<p>Getter of _fullName</p>\\n');
+            expect(file).to.contain(
+                '"rawdescription": "\\n\\nGetter of _fullName or link to {@link Todo}\\n'
+            );
+            expect(file).to.contain(
+                '"description": "<p>Getter of _fullName or link to {@link Todo}</p>\\n'
+            );
         });
 
         it('should display deprecated and deprecation messages', () => {
@@ -129,6 +137,15 @@ describe('CLI Export', () => {
             expect(file).to.contain('PIPES_AND_DIRECTIVES');
             expect(file).to.contain('APP_ROUTES');
             expect(file).to.contain('coveragePercent');
+        });
+
+        it('should export custom input decorators for components', () => {
+            const file = read(`${distFolder}/documentation.json`);
+            const obj = JSON.parse(file);
+            const component = obj.components.find(comp => comp.name === 'AboutComponent');
+            const input = component.inputsClass.find(inp => inp.name === 'myInput');
+
+            expect(input.decorators.find(dec => dec.name === 'MyCustomInputDecorator')).to.be.ok;
         });
 
         it('should get jsdoctags in component', () => {

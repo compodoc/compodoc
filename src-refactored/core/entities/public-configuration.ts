@@ -26,6 +26,7 @@ export class PublicConfiguration {
     public gaID: string;
     public gaSite: string;
     public hideGenerator: boolean;
+    public hideDarkModeToggle: boolean;
     public host: string;
     public includes;
     public includesName: string;

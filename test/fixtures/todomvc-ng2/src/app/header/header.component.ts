@@ -49,7 +49,7 @@ export class HeaderComponent {
     }
 
     /**
-     * Setter of _fullName
+     * Setter of _fullName {@link https://compodoc.app/}
      * @param  {string} newName The new name
      */
     @Input()

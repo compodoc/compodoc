@@ -70,39 +70,37 @@ pre {
     font-weight: 500;
 }
 
-@media (prefers-color-scheme: dark) {
-    body {
-        color: #fafafa;
-    }
-    .content h1,
-    .content h2,
-    .content h3,
-    .content h4,
-    .content h5 {
-        color: #fafafa;
-    }
+.dark body {
+    color: #fafafa;
+}
+.dark .content h1,
+.dark .content h2,
+.dark .content h3,
+.dark .content h4,
+.dark .content h5 {
+    color: #fafafa;
+}
 
-    code {
-        background: none;
-    }
+.dark code {
+    background: none;
+}
 
-    .content {
-        color: #fafafa;
-    }
+.dark .content {
+    color: #fafafa;
+}
 
-    .menu ul.list li a[data-type='chapter-link'],
-    .menu ul.list li.chapter .simple {
-        color: #fafafa;
-    }
+.dark .menu ul.list li a[data-type='chapter-link'],
+.dark .menu ul.list li.chapter .simple {
+    color: #fafafa;
+}
 
-    .menu ul.list li.title a {
-        color: #fafafa;
-    }
+.dark .menu ul.list li.title a {
+    color: #fafafa;
+}
 
-    .menu ul.list li a {
-        color: #fafafa;
-    }
-    .menu ul.list li a.active {
-        color: #7fc9ff;
-    }
+.dark .menu ul.list li a {
+    color: #fafafa;
+}
+.dark .menu ul.list li a.active {
+    color: #7fc9ff;
 }

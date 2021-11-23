@@ -6,7 +6,7 @@ import * as path from 'path';
 import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
-const marked = require('marked');
+const { marked } = require('marked');
 const traverse = require('traverse');
 const crypto = require('crypto');
 const babel = require('@babel/core');
@@ -816,7 +816,7 @@ export class Application {
                                  * Id created with title + file path hash, seems to be hypothetically unique here
                                  */
                                 const id = crypto
-                                    .createHash('md5')
+                                    .createHash('sha512')
                                     .update(title + file)
                                     .digest('hex');
 

@@ -97,6 +97,13 @@ describe('CLI Options', () => {
             );
         });
 
+        it(`--hideDarkModeToggle`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--hideDarkModeToggle');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show dark mode toggle button at the top right position of the page'
+            );
+        });
+
         it(`--navTabConfig`, () => {
             expect(runHelp.stdout.toString()).to.contain('--navTabConfig');
             expect(runHelp.stdout.toString()).to.contain(

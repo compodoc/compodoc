@@ -1,6 +1,27 @@
+<a name="1.1.16"></a>
+
+## [1.1.16](https://github.com/compodoc/compodoc/compare/1.1.15...1.1.16) (2021-11-23)
+
+### Features
+
+-   feat(app): dark mode toggle button ([97d2763](https://github.com/compodoc/compodoc/commit/97d2763)), closes [#1127](https://github.com/compodoc/compodoc/issues/1127)
+
+### Merged
+
+-   fix: Routing aliases [#1148](https://github.com/compodoc/compodoc/pull/1148), Thanks [Bengejd](https://github.com/Bengejd)
+-   feat(i18n): Traditional Chinese language [#1151](https://github.com/compodoc/compodoc/pull/1151), Thanks [doggy8088](https://github.com/doggy8088)
+-   fix(link-parser): avoid crashing with invalid links [#1136](https://github.com/compodoc/compodoc/pull/1136), Thanks [sandrafreihofer](https://github.com/sandrafreihofer)
+-   feat: add decorators to class inputs [#1135](https://github.com/compodoc/compodoc/pull/1135), Thanks [sandrafreihofer](https://github.com/sandrafreihofer)
+-   fix(app): change layout in modules template [#1132](https://github.com/compodoc/compodoc/pull/1132), Thanks [ddubrava](https://github.com/ddubrava)
+
+### Bug fixes
+
+-   fix(app): multi decorators support ([3814299](https://github.com/compodoc/compodoc/commit/3814299)), closes [#1128](https://github.com/compodoc/compodoc/issues/1128)
+-   fix(app): URL parsing when using @link for @inputs ([95e4945](https://github.com/compodoc/compodoc/commit/95e4945)), closes [#1125](https://github.com/compodoc/compodoc/issues/1125)
+
 <a name="1.1.15"></a>
 
-## [1.1.15](https://github.com/compodoc/compodoc/compare/1.1.14...1.1.15) (2021-09_17)
+## [1.1.15](https://github.com/compodoc/compodoc/compare/1.1.14...1.1.15) (2021-09-17)
 
 ### Merged
 

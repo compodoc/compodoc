@@ -108,12 +108,10 @@ pre {
     background: rgba(238, 238, 238, 0.35);
 }
 
-@media (prefers-color-scheme: dark) {
-    .content {
-        background: none;
-    }
-    code {
-        background: none;
-        color: #e09393;
-    }
+.dark .content {
+    background: none;
+}
+.dark code {
+    background: none;
+    color: #e09393;
 }

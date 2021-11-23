@@ -17,6 +17,8 @@ import { Subscription } from 'rxjs/Subscription';
  *
  * Display some text with links for details about TodoMVC & Compodoc.
  */
+@testDecorator
+@UntilDestroy()
 @Component({
     selector: 'about',
     template,
@@ -37,6 +39,12 @@ export class AboutComponent {
      * Inherited type of Angular Version
      */
     @Input() public angularVersion = 'Angular 2';
+
+    /**
+     * Dummy input property with a custom decorator
+     */
+    @MyCustomInputDecorator()
+    @Input() public myInput: string;
 
     chartOptions: Highcharts.Options = {
         colors: [
@@ -91,9 +99,17 @@ export class AboutComponent {
         return '';
     }
 
+     /**
+      * This is for testing
+      * @returns '', if this {@link AboutComponent.fullName} does not crash
+      */
     public publicMethod(): string {
         return '';
     }
 
+     /**
+      * This is for testing
+      * @returns a promise, if this {@link undefined} does not crash
+      */
     public async foo(): Promise<any> {}
 }

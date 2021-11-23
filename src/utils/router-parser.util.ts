@@ -2,7 +2,7 @@ import * as Handlebars from 'handlebars';
 import * as JSON5 from 'json5';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { Project, ts, SourceFile, SyntaxKind, TypeGuards } from 'ts-morph';
+import { Project, ts, SourceFile, SyntaxKind, Node } from 'ts-morph';
 
 import FileEngine from '../app/engines/file.engine';
 import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
@@ -479,8 +479,8 @@ export class RouterParserUtil {
         let file = sourceFile;
         const identifiers = file.getDescendantsOfKind(SyntaxKind.Identifier).filter(p => {
             return (
-                TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()) ||
-                TypeGuards.isPropertyAssignment(p.getParentOrThrow())
+                Node.isArrayLiteralExpression(p.getParentOrThrow()) ||
+                Node.isPropertyAssignment(p.getParentOrThrow())
             );
         });
 
@@ -508,16 +508,16 @@ export class RouterParserUtil {
                 .getSymbolOrThrow()
                 .getValueDeclarationOrThrow();
             if (
-                !TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                TypeGuards.isVariableDeclaration(identifierDeclaration) &&
-                TypeGuards.isPropertyAssignment(identifierDeclaration) &&
-                !TypeGuards.isVariableDeclaration(identifierDeclaration)
+                !Node.isPropertyAssignment(identifierDeclaration) &&
+                Node.isVariableDeclaration(identifierDeclaration) &&
+                Node.isPropertyAssignment(identifierDeclaration) &&
+                !Node.isVariableDeclaration(identifierDeclaration)
             ) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`
                 );
             }
-            if (TypeGuards.isVariableDeclaration(identifierDeclaration)) {
+            if (Node.isVariableDeclaration(identifierDeclaration)) {
                 identifier.replaceWithText(identifierDeclaration.getInitializerOrThrow().getText());
             }
         }
@@ -529,7 +529,7 @@ export class RouterParserUtil {
         let file = sourceFile;
         const spreadElements = file
             .getDescendantsOfKind(SyntaxKind.SpreadElement)
-            .filter(p => TypeGuards.isArrayLiteralExpression(p.getParentOrThrow()));
+            .filter(p => Node.isArrayLiteralExpression(p.getParentOrThrow()));
 
         let spreadElementsInRoutesVariableStatement = [];
 
@@ -594,12 +594,44 @@ export class RouterParserUtil {
 
             if (foundWithAliasInImports) {
                 if (typeof searchedImport !== 'undefined') {
-                    let importPath = path.resolve(
-                        path.dirname(file.getFilePath()) +
-                            '/' +
-                            searchedImport.getModuleSpecifierValue() +
-                            '.ts'
-                    );
+
+                    const routePathIsBad = (path) => {
+                        return typeof ast.getSourceFile(path) == 'undefined';
+                    };
+
+                    const getIndicesOf = (searchStr, str, caseSensitive) => {
+                        var searchStrLen = searchStr.length;
+                        if (searchStrLen == 0) {
+                            return [];
+                        }
+                        var startIndex = 0, index, indices = [];
+                        if (!caseSensitive) {
+                            str = str.toLowerCase();
+                            searchStr = searchStr.toLowerCase();
+                        }
+                        while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+                            indices.push(index);
+                            startIndex = index + searchStrLen;
+                        }
+                        return indices;
+                    }
+
+                    const dirNamePath = path.dirname(file.getFilePath());
+                    const searchedImportPath = searchedImport.getModuleSpecifierValue();
+                    const leadingFilePath = searchedImportPath.split('/').shift();
+
+                    let importPath = path.resolve(dirNamePath + '/' + searchedImport.getModuleSpecifierValue() + '.ts');
+
+                    if (routePathIsBad(importPath)) {
+                        let leadingIndices = getIndicesOf(leadingFilePath, importPath, true);
+                        if (leadingIndices.length > 1) { // Nested route fixes
+                            let startIndex = leadingIndices[0];
+                            let endIndex = leadingIndices[leadingIndices.length -1];
+                            importPath = importPath.slice(0, startIndex) + importPath.slice(endIndex);
+                        } else { // Top level route fixes
+                            importPath = path.dirname(dirNamePath) + '/' + searchedImportPath + '.ts';
+                        }
+                    }
                     const sourceFileImport =
                         typeof ast.getSourceFile(importPath) !== 'undefined'
                             ? ast.getSourceFile(importPath)
@@ -620,7 +652,7 @@ export class RouterParserUtil {
                     .getValueDeclarationOrThrow();
             }
 
-            if (!TypeGuards.isVariableDeclaration(referencedDeclaration)) {
+            if (!Node.isVariableDeclaration(referencedDeclaration)) {
                 throw new Error(
                     `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
                 );
@@ -647,7 +679,7 @@ export class RouterParserUtil {
         let file = sourceFile;
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
-            .filter(p => !TypeGuards.isPropertyAccessExpression(p.getParentOrThrow()));
+            .filter(p => !Node.isPropertyAccessExpression(p.getParentOrThrow()));
 
         let propertyAccessExpressionsInRoutesVariableStatement = [];
 
@@ -678,10 +710,10 @@ export class RouterParserUtil {
                         const referencedDeclaration =
                             propertyAccessExpressionNodeNameSymbol.getValueDeclarationOrThrow();
                         if (
-                            !TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                            TypeGuards.isEnumMember(referencedDeclaration) &&
-                            TypeGuards.isPropertyAssignment(referencedDeclaration) &&
-                            !TypeGuards.isEnumMember(referencedDeclaration)
+                            !Node.isPropertyAssignment(referencedDeclaration) &&
+                            Node.isEnumMember(referencedDeclaration) &&
+                            Node.isPropertyAssignment(referencedDeclaration) &&
+                            !Node.isEnumMember(referencedDeclaration)
                         ) {
                             throw new Error(
                                 `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`

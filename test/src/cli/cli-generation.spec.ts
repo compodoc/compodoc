@@ -604,6 +604,35 @@ describe('CLI simple generation', () => {
         });
     });
 
+    describe('when generation with --hideDarkModeToggle flag', () => {
+        let stdoutString = undefined,
+            index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '--hideDarkModeToggle',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not contain dark mode toggle', () => {
+            index = read(`${distFolder}/index.html`);
+            expect(index).to.not.contain('dark-mode-switch');
+        });
+    });
+
     describe('when generation with --disableSourceCode flag', () => {
         let stdoutString = undefined,
             index = undefined;

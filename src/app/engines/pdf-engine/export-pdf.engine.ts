@@ -56,6 +56,8 @@ export class ExportPdfEngine {
             margin: [10, 350, 10, 270]
         });
 
+        Configuration.mainData.hideDarkModeToggle = true;
+
         if (!Configuration.mainData.hideGenerator) {
             docDefinition.content.push({
                 text: I18nEngine.translate('generated-using'),

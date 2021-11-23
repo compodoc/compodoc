@@ -166,7 +166,7 @@ export class TodoStore {
     private _fullName: string;
 
     /**
-     * Getter of _fullName
+     * Getter of _fullName or link to {@link Todo}
      * @deprecated This getter is deprecated
      * @return {string} _fullName value
      */
@@ -175,7 +175,7 @@ export class TodoStore {
     }
 
     /**
-     * Setter of _fullName
+     * Setter of _fullName ore link to {@link Todo}
      * @deprecated This setter is deprecated
      * @param  {string} newName The new name
      */

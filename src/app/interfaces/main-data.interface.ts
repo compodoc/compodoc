@@ -14,6 +14,7 @@ export interface MainDataInterface {
     documentationMainDescription: string;
     base: string;
     hideGenerator: boolean;
+    hideDarkModeToggle: boolean;
     hasFilesToCoverage: boolean;
     modules: any;
     readme: boolean;

@@ -85,7 +85,7 @@ export class CliApplication extends Application {
             .option('--files [files]', 'Files provided by external tool, used for coverage test')
             .option(
                 '--language [language]',
-                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, sk-SK, zh-CN)',
+                'Language used for the generated documentation (de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, sk-SK, zh-CN, zh-TW)',
                 COMPODOC_DEFAULTS.language
             )
             .option(
@@ -95,6 +95,11 @@ export class CliApplication extends Application {
             .option(
                 '--hideGenerator',
                 'Do not print the Compodoc link at the bottom of the page',
+                false
+            )
+            .option(
+                '--hideDarkModeToggle',
+                'Do not show dark mode toggle button at the top right position of the page',
                 false
             )
             .option(
@@ -360,6 +365,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (programOptions.hideGenerator) {
             Configuration.mainData.hideGenerator = programOptions.hideGenerator;
+        }
+
+        if (configFile.hideDarkModeToggle) {
+            Configuration.mainData.hideDarkModeToggle = configFile.hideDarkModeToggle;
+        }
+        if (programOptions.hideDarkModeToggle) {
+            Configuration.mainData.hideDarkModeToggle = programOptions.hideDarkModeToggle;
         }
 
         if (configFile.coverageTest) {

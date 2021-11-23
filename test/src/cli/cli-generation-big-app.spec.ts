@@ -864,4 +864,33 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/injectables/TodoStore.html');
         expect(file).to.contain('See <a href="../classes/Todo.html">Todo</a> for details');
     });
+
+    it('should support JSDoc @link for setters and getters', () => {
+        let file = read(distFolder + '/injectables/TodoStore.html');
+        expect(file).to.contain('or link to <a href="../classes/Todo.html">Todo');
+        expect(file).to.contain('ore link to <a href="../classes/Todo.html">Todo');
+    });
+
+    it('should support JSDoc @link for inputs', () => {
+        let file = read(distFolder + '/components/HeaderComponent.html');
+        expect(file).to.contain('_fullName <a href="https://compodoc.app/">https://compodoc.app/');
+    });
+
+    it('should not crash with invalid JSDoc @link tags', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('if this {@link AboutComponent.fullName} does not crash');
+        expect(file).to.contain('if this {@link undefined} does not crash');
+    });
+
+    it('should support multiple decorators for component for example', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<code>src/app/about/about.component.ts</code>');
+    });
+
+    it('should not have bootstraped component in components menu entry', () => {
+        let file = read(distFolder + '/js/menu-wc.js');
+        expect(file).to.not.contain(
+            '<a href="components/AppComponent.html" data-type="entity-link" >AppComponent</a>'
+        );
+    });
 });

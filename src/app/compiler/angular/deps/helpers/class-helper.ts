@@ -14,7 +14,7 @@ import DependenciesEngine from '../../../../engines/dependencies.engine';
 import Configuration from '../../../../configuration';
 
 const crypto = require('crypto');
-const marked = require('marked');
+const { marked } = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
@@ -275,10 +275,14 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
+                    const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                        nodeAccessor,
+                        sourceFile
+                    );
                     if (typeof comment !== 'undefined') {
-                        setSignature.rawdescription = comment;
-                        setSignature.description = marked(comment);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        setSignature.rawdescription = cleanedDescription;
+                        setSignature.description = marked(cleanedDescription);
                     }
                 }
 
@@ -306,10 +310,14 @@ export class ClassHelper {
                 };
 
                 if (nodeAccessor.jsDoc && nodeAccessor.jsDoc.length >= 1) {
-                    let comment = nodeAccessor.jsDoc[0].comment;
+                    const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                        nodeAccessor,
+                        sourceFile
+                    );
                     if (typeof comment !== 'undefined') {
-                        getSignature.rawdescription = comment;
-                        getSignature.description = marked(comment);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        getSignature.rawdescription = cleanedDescription;
+                        getSignature.description = marked(cleanedDescription);
                     }
                 }
 
@@ -430,9 +438,16 @@ export class ClassHelper {
             : false;
     }
 
+    private isControllerDecorator(decorator) {
+        return decorator.expression.expression
+            ? decorator.expression.expression.text === 'Controller'
+            : false;
+    }
+
     private isModuleDecorator(decorator) {
         return decorator.expression.expression
-            ? decorator.expression.expression.text === 'NgModule'
+            ? decorator.expression.expression.text === 'NgModule' ||
+                  decorator.expression.expression.text === 'Module'
             : false;
     }
 
@@ -514,93 +529,110 @@ export class ClassHelper {
         members = this.visitMembers(classDeclaration.members, sourceFile);
 
         if (classDeclaration.decorators) {
-            for (let i = 0; i < classDeclaration.decorators.length; i++) {
-                if (this.isDirectiveDecorator(classDeclaration.decorators[i])) {
-                    return {
+            // Loop and search for official decorators at top-level :
+            // Angular : @NgModule, @Component, @Directive, @Injectable, @Pipe
+            // Nestjs : @Controller, @Module, @Injectable
+            // Stencil : @Component
+            let isDirective = false;
+            let isService = false;
+            let isPipe = false;
+            let isModule = false;
+            let isController = false;
+            for (let a = 0; a < classDeclaration.decorators.length; a++) {
+                //console.log(classDeclaration.decorators[i].expression);
+
+                // RETURN TOO EARLY FOR MANY DECORATORS !!!!
+                isDirective = this.isDirectiveDecorator(classDeclaration.decorators[a]);
+                isService = this.isServiceDecorator(classDeclaration.decorators[a]);
+                isPipe = this.isPipeDecorator(classDeclaration.decorators[a]);
+                isModule = this.isModuleDecorator(classDeclaration.decorators[a]);
+                isController = this.isControllerDecorator(classDeclaration.decorators[a]);
+            }
+            if (isDirective) {
+                return {
+                    deprecated,
+                    deprecationMessage,
+                    description,
+                    rawdescription: rawdescription,
+                    inputs: members.inputs,
+                    outputs: members.outputs,
+                    hostBindings: members.hostBindings,
+                    hostListeners: members.hostListeners,
+                    properties: members.properties,
+                    methods: members.methods,
+                    indexSignatures: members.indexSignatures,
+                    kind: members.kind,
+                    constructor: members.constructor,
+                    jsdoctags: jsdoctags,
+                    extends: extendsElement,
+                    implements: implementsElements,
+                    accessors: members.accessors
+                };
+            } else if (isService) {
+                return [
+                    {
+                        fileName,
+                        className,
                         deprecated,
                         deprecationMessage,
                         description,
                         rawdescription: rawdescription,
-                        inputs: members.inputs,
-                        outputs: members.outputs,
-                        hostBindings: members.hostBindings,
-                        hostListeners: members.hostListeners,
-                        properties: members.properties,
                         methods: members.methods,
                         indexSignatures: members.indexSignatures,
+                        properties: members.properties,
                         kind: members.kind,
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
                         extends: extendsElement,
                         implements: implementsElements,
                         accessors: members.accessors
-                    };
-                } else if (this.isServiceDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            methods: members.methods,
-                            indexSignatures: members.indexSignatures,
-                            properties: members.properties,
-                            kind: members.kind,
-                            constructor: members.constructor,
-                            jsdoctags: jsdoctags,
-                            extends: extendsElement,
-                            implements: implementsElements,
-                            accessors: members.accessors
-                        }
-                    ];
-                } else if (this.isPipeDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            jsdoctags: jsdoctags,
-                            properties: members.properties,
-                            methods: members.methods
-                        }
-                    ];
-                } else if (this.isModuleDecorator(classDeclaration.decorators[i])) {
-                    return [
-                        {
-                            fileName,
-                            className,
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            jsdoctags: jsdoctags,
-                            methods: members.methods
-                        }
-                    ];
-                } else {
-                    return [
-                        {
-                            deprecated,
-                            deprecationMessage,
-                            description,
-                            rawdescription: rawdescription,
-                            methods: members.methods,
-                            indexSignatures: members.indexSignatures,
-                            properties: members.properties,
-                            kind: members.kind,
-                            constructor: members.constructor,
-                            jsdoctags: jsdoctags,
-                            extends: extendsElement,
-                            implements: implementsElements,
-                            accessors: members.accessors
-                        }
-                    ];
-                }
+                    }
+                ];
+            } else if (isPipe) {
+                return [
+                    {
+                        fileName,
+                        className,
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        jsdoctags: jsdoctags,
+                        properties: members.properties,
+                        methods: members.methods
+                    }
+                ];
+            } else if (isModule) {
+                return [
+                    {
+                        fileName,
+                        className,
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        jsdoctags: jsdoctags,
+                        methods: members.methods
+                    }
+                ];
+            } else {
+                return [
+                    {
+                        deprecated,
+                        deprecationMessage,
+                        description,
+                        rawdescription: rawdescription,
+                        methods: members.methods,
+                        indexSignatures: members.indexSignatures,
+                        properties: members.properties,
+                        kind: members.kind,
+                        constructor: members.constructor,
+                        jsdoctags: jsdoctags,
+                        extends: extendsElement,
+                        implements: implementsElements,
+                        accessors: members.accessors
+                    }
+                ];
             }
         } else if (description) {
             return [
@@ -984,7 +1016,7 @@ export class ClassHelper {
 
     private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result: any = {
             id: 'call-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -1012,7 +1044,7 @@ export class ClassHelper {
         sourceFile?: ts.SourceFile
     ) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result = {
             id: 'index-declaration-' + hash,
             args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
@@ -1404,11 +1436,13 @@ export class ClassHelper {
                         _return.jsdoctags = markedtags(jsdoctags[0].tags);
                     }
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
-                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(
-                            property.jsDoc[0]
+                        const comment = this.jsdocParserUtil.getMainCommentOfNode(
+                            property,
+                            sourceFile
                         );
-                        _return.rawdescription = rawDescription;
-                        _return.description = marked(rawDescription);
+                        const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+                        _return.rawdescription = cleanedDescription;
+                        _return.description = marked(cleanedDescription);
                     }
                 }
             }
@@ -1446,6 +1480,11 @@ export class ClassHelper {
                     _return.type = kindToType(property.parameters[0].type.kind);
                 }
             }
+        }
+        if (property.decorators) {
+            _return.decorators = this.formatDecorators(property.decorators).filter(
+                item => item.name !== 'Input' && item.name !== 'HostBinding'
+            );
         }
         return _return;
     }

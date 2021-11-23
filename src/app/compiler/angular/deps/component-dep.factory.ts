@@ -11,7 +11,7 @@ export class ComponentDepFactory {
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
         let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('md5').update(sourceCode).digest('hex');
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let componentDep: IComponentDep = {
             name,
             id: 'component-' + name + '-' + hash,

@@ -113,21 +113,19 @@ table.params thead td {
     font-weight: bold;
 }
 
-@media (prefers-color-scheme: dark) {
-    .menu .title:hover {
-        background-color: #2d2d2d;
-    }
-    .menu ul.list li a:hover,
-    .menu ul.list li.chapter .simple:hover {
-        background-color: #2d2d2d;
-    }
-    .nav-tabs > li > a {
-        color: #fafafa;
-    }
-    table.params thead {
-        background: #484848;
-    }
-    table.params thead td {
-        color: #fafafa;
-    }
+.dark .menu .title:hover {
+    background-color: #2d2d2d;
+}
+.dark .menu ul.list li a:hover,
+.dark .menu ul.list li.chapter .simple:hover {
+    background-color: #2d2d2d;
+}
+.dark .nav-tabs > li:not(.active) > a {
+    color: #fafafa;
+}
+.dark table.params thead {
+    background: #484848;
+}
+.dark table.params thead td {
+    color: #fafafa;
 }

@@ -19,6 +19,14 @@ export class ElementAloneHelper implements IHtmlEngineHelper {
                         foundInOneModule = true;
                     }
                 });
+                module.bootstrap.forEach(boostrapedElement => {
+                    if (boostrapedElement.id === element.id) {
+                        foundInOneModule = true;
+                    }
+                    if (boostrapedElement.file === element.file) {
+                        foundInOneModule = true;
+                    }
+                });
                 module.controllers.forEach(controller => {
                     if (controller.id === element.id) {
                         foundInOneModule = true;

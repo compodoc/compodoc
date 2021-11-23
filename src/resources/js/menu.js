@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var localContextInUrl = '';
 
     if (COMPODOC_CURRENT_PAGE_CONTEXT !== '') {
-        localContextInUrl = localContextInUrl;
         switch (COMPODOC_CURRENT_PAGE_CONTEXT) {
             case 'additional-page':
                 localContextInUrl = 'additional-documentation';
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var collapse = Collapses[o],
                 options = {};
             options.duration = collapse.getAttribute('data-duration');
-            new Collapse(collapse, options);
+            var c = new Collapse(collapse, options);
         }
 
         // collapse menu
@@ -259,6 +258,53 @@ document.addEventListener('DOMContentLoaded', function () {
                         activeMenu.scrollTop = 0;
                     }
                 }, 300);
+            }
+        }
+        // Dark mode toggle button
+        var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+        var darkModeState = useDark.matches;
+        var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+        var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+
+        function checkToggle(check) {
+            for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                $darkModeToggleSwitchers[i].checked = check;
+            }
+        }
+
+        function toggleDarkMode(state) {
+            checkToggle(state);
+
+            const hasClass = document.body.classList.contains('dark');
+
+            if (state) {
+                for (var i = 0; i < $darkModeToggles.length; i++) {
+                    $darkModeToggles[i].classList.add('dark');
+                }
+                if (!hasClass) {
+                    document.body.classList.add('dark');
+                }
+            } else {
+                for (var i = 0; i < $darkModeToggles.length; i++) {
+                    $darkModeToggles[i].classList.remove('dark');
+                }
+                if (hasClass) {
+                    document.body.classList.remove('dark');
+                }
+            }
+        }
+
+        useDark.addEventListener('change', function (evt) {
+            toggleDarkMode(evt.matches);
+        });
+        toggleDarkMode(darkModeState);
+
+        if ($darkModeToggles.length > 0) {
+            for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                    darkModeState = !darkModeState;
+                    toggleDarkMode(darkModeState);
+                });
             }
         }
     }, 0);
