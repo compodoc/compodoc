@@ -11,7 +11,8 @@
         "postinstall": "opencollective-postinstall || exit 0",
         "*********BUILD********": "*******************",
         "prebuild": "rimraf dist/*",
-        "build": "rollup -c rollup/rollup.config.js",
+        "build": "rollup -c rollup/rollup.config.js && npm run build-schematics",
+        "build-schematics": "tsc --project schematics/tsconfig.json && cp schematics/collection.json dist",
         "*********UTILS********": "*******************",
         "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs -u",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
@@ -83,6 +84,7 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
+        "@angular-devkit/schematics": "^13.0.3",
         "@babel/core": "^7.16.0",
         "@babel/preset-env": "^7.16.4",
         "@compodoc/live-server": "^1.2.2",
@@ -172,5 +174,6 @@
         "hooks": {
             "pre-commit": "pretty-quick --staged --pattern \"**/*.ts\""
         }
-    }
+    },
+    "schematics": "./dist/collection.json"
 }

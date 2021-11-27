@@ -1,0 +1,9 @@
+{
+    "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+        "ng-add": {
+            "description": "Add Compodoc schematic",
+            "factory": "./schematics/ng-add/index#ngAdd"
+        }
+    }
+}
