@@ -542,11 +542,12 @@ export class ClassHelper {
                 //console.log(classDeclaration.decorators[i].expression);
 
                 // RETURN TOO EARLY FOR MANY DECORATORS !!!!
-                isDirective = this.isDirectiveDecorator(classDeclaration.decorators[a]);
-                isService = this.isServiceDecorator(classDeclaration.decorators[a]);
-                isPipe = this.isPipeDecorator(classDeclaration.decorators[a]);
-                isModule = this.isModuleDecorator(classDeclaration.decorators[a]);
-                isController = this.isControllerDecorator(classDeclaration.decorators[a]);
+                // iterating through the decorators array we have to keep the flags `true` values from the previous loop iteration
+                isDirective = isDirective || this.isDirectiveDecorator(classDeclaration.decorators[a]);
+                isService = isService || this.isServiceDecorator(classDeclaration.decorators[a]);
+                isPipe = isPipe || this.isPipeDecorator(classDeclaration.decorators[a]);
+                isModule = isModule || this.isModuleDecorator(classDeclaration.decorators[a]);
+                isController = isController || this.isControllerDecorator(classDeclaration.decorators[a]);
             }
             if (isDirective) {
                 return {
