@@ -25,9 +25,6 @@ class Logger {
     }
 
     public error(...args) {
-        if (!this.silent) {
-            return;
-        }
         this.logger(this.format(LEVEL.ERROR, ...args));
     }
 
