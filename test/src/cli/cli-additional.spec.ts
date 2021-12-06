@@ -90,7 +90,7 @@ describe('CLI Additional documentation', () => {
 });
 
 describe('CLI Additional documentation - wrong folder', () => {
-    let exitCode = 1;
+    let exitCode = 0;
 
     const distFolder = tmp.name + '-additional-wrong-folder';
 
@@ -120,8 +120,8 @@ describe('CLI Additional documentation - wrong folder', () => {
     });
     after(() => tmp.clean(distFolder));
 
-    it('should exit with code 0 if wrong folder provided', () => {
-        expect(exitCode).to.equal(0);
+    it('should exit with code 1 if wrong folder provided', () => {
+        expect(exitCode).to.equal(1);
         // expect(stderrString).to.contain('Error during Additional documentation generation');
     });
 });

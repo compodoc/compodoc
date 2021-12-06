@@ -34,7 +34,7 @@ describe('CLI silent flag', () => {
 });
 
 describe('CLI silent flag - error', () => {
-    let exitCode = 1;
+    let exitCode = 0;
     let stdoutString = '';
 
     const distFolder = tmp.name + '-silent-error';
@@ -65,8 +65,8 @@ describe('CLI silent flag - error', () => {
     });
     after(() => tmp.clean(distFolder));
 
-    it('should exit with code 0 and log error', () => {
-        expect(exitCode).to.equal(0);
+    it('should exit with code 1 and log error', () => {
+        expect(exitCode).to.equal(1);
         expect(stdoutString).to.contain('Error during Additional documentation generation');
     });
 });
