@@ -1,6 +1,6 @@
 const eol = require('os').EOL;
 import * as chai from 'chai';
-import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
+import { temporaryDir, shell, spawn, exists, read, exec } from '../helpers';
 
 const expect = chai.expect;
 const tmp = temporaryDir();
@@ -84,5 +84,44 @@ describe('CLI Additional documentation', () => {
         expect(fooMenuFile).to.contain(
             `<li class="link for-chapter3">${eol}                                                <a href="additional-documentation/edition/edition-of-a-todo/edit-level3.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">edit-level3</a>${eol}                                            </li>${eol}                                            <li class="link for-chapter4">${eol}                                                <a href="additional-documentation/edition/edition-of-a-todo/edit-level3/edit-level4.html" data-type="entity-link" data-context="sub-entity" data-context-id="additional">edit-level4</a>`
         );
+    });
+
+    it('should exit with code 0 if wrong folder provided', () => {});
+});
+
+describe('CLI Additional documentation - wrong folder', () => {
+    let exitCode = 1;
+
+    const distFolder = tmp.name + '-additional-wrong-folder';
+
+    before(done => {
+        tmp.create(distFolder);
+        const ls = exec(
+            'node' +
+                [
+                    '',
+                    './bin/index-cli.js',
+                    '-p',
+                    './test/fixtures/todomvc-ng2/src/tsconfig.json',
+                    '-d',
+                    distFolder,
+                    '-a',
+                    './test/fixtures/todomvc-ng2/screenshots',
+                    '--includes',
+                    './test/fixtures/todomvc-ng2/additional-doc-wrong',
+                    '--includesName',
+                    '"Additional documentation"'
+                ].join(' ')
+        );
+        ls.on('close', code => {
+            exitCode = code;
+            done();
+        });
+    });
+    after(() => tmp.clean(distFolder));
+
+    it('should exit with code 0 if wrong folder provided', () => {
+        expect(exitCode).to.equal(0);
+        // expect(stderrString).to.contain('Error during Additional documentation generation');
     });
 });

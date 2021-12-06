@@ -239,6 +239,7 @@ export class Application {
                     },
                     errorMessage => {
                         logger.error(errorMessage);
+                        process.exit(0);
                     }
                 );
             },
@@ -251,6 +252,7 @@ export class Application {
                     },
                     errorMessage1 => {
                         logger.error(errorMessage1);
+                        process.exit(0);
                     }
                 );
             }
