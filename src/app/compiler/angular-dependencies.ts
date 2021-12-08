@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { Project, ts, SyntaxKind } from 'ts-morph';
 
-import { kindToType } from '../../utils/kind-to-type';
+import { IsKindType, kindToType } from '../../utils/kind-to-type';
 import { logger } from '../../utils/logger';
 import { cleanLifecycleHooksFromMethods, markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import ComponentsTreeEngine from '../engines/components-tree.engine';
@@ -1402,7 +1402,10 @@ export class AngularDependencies extends FrameworkDependencies {
                     deprecationMessage: ''
                 };
                 if (node.members[i].initializer) {
-                    member.value = node.members[i].initializer.text;
+                    // if the initializer kind is a number do cast to the number type
+                    member.value = IsKindType.NUMBER(node.members[i].initializer.kind)
+                        ? Number(node.members[i].initializer.text)
+                        : node.members[i].initializer.text;
                 }
                 memberjsdoctags = this.jsdocParserUtil.getJSDocs(node.members[i]);
                 if (memberjsdoctags && memberjsdoctags.length >= 1 && memberjsdoctags[0].tags) {
