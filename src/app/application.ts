@@ -786,6 +786,7 @@ export class Application {
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
+                process.exit(1);
             });
     }
 
