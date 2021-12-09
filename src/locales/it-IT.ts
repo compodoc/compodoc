@@ -22,6 +22,8 @@ export const TRANSLATION_IT_IT = {
     directive: 'Direttiva',
     directives: 'Direttive',
     'dom tree': 'Albero DOM',
+    entities: 'Entità',
+    entity: 'Entità',
     entrycomponents: 'EntryComponents',
     enumerations: 'Enumerations',
     enums: 'Enums',

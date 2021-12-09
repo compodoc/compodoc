@@ -24,13 +24,14 @@ export class HtmlEngine {
     }
 
     public init(templatePath: string): Promise<void> {
-        let partials = [
+        const partials = [
             'overview',
             'markdown',
             'modules',
             'module',
             'component',
             'controller',
+            'entity',
             'component-detail',
             'directive',
             'injectable',

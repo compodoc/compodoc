@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
+import { temporaryDir, shell, exists, read } from '../helpers';
 const expect = chai.expect,
     tmp = temporaryDir();
 
@@ -7,10 +7,9 @@ describe('CLI nest projects support', () => {
     const distFolder = tmp.name + '-nest';
 
     describe('with simple app', () => {
-        let indexFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/nest-app/tsconfig.json',
@@ -27,12 +26,12 @@ describe('CLI nest projects support', () => {
         after(() => tmp.clean(distFolder));
 
         it('it should contain a controller page', () => {
-            let isFileExists = exists(`${distFolder}/controllers/AppController.html`);
+            const isFileExists = exists(`${distFolder}/controllers/AppController.html`);
             expect(isFileExists).to.be.true;
         });
 
         it('it should contain a controller page with prefix', () => {
-            let file = read(`${distFolder}/controllers/AppController.html`);
+            const file = read(`${distFolder}/controllers/AppController.html`);
             expect(file).to.contain('@Auth(Roles.User)<br');
             expect(file).to.contain('@Post()<br');
             expect(file).to.contain('@UsePipes(new ValidationPipe())<br');
@@ -44,17 +43,21 @@ describe('CLI nest projects support', () => {
         });
 
         it('it should contain a module page with controller referenced', () => {
-            let isFileExists = exists(`${distFolder}/modules/AppModule.html`);
+            const isFileExists = exists(`${distFolder}/modules/AppModule.html`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/modules/AppModule.html`);
+            const file = read(`${distFolder}/modules/AppModule.html`);
             expect(file).to.contain('AppController</a>');
         });
 
-        it('it should contain an entity', () => {
-            let isFileExists = exists(`${distFolder}/classes/UserEntity.html`);
+        it('it should contain an entity with all properties and decorators', () => {
+            const isFileExists = exists(`${distFolder}/entities/UserEntity.html`);
             expect(isFileExists).to.be.true;
-            let file = read(`${distFolder}/classes/UserEntity.html`);
+            const file = read(`${distFolder}/entities/UserEntity.html`);
             expect(file).to.contain('@Column({default: &#x27;&#x27;})<br');
+            expect(file).to.contain('@OneToMany(type &#x3D;&gt; ArticleEntity');
+            expect(file).to.contain(
+                '@OneToMany(type &#x3D;&gt; ArticleEntity, article &#x3D;&gt; article.author)'
+            );
         });
     });
 });

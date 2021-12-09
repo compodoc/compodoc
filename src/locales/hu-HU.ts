@@ -22,6 +22,8 @@ export const TRANSLATION_HU_HU = {
     directive: 'Direktíva',
     directives: 'Direktívák',
     'dom tree': 'DOM fa',
+    entities: 'Entitások',
+    entity: 'Entitás',
     entrycomponents: 'Entry komponensek',
     enumerations: 'Enumerációk',
     enums: 'Enumok',

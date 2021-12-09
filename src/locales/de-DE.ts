@@ -22,6 +22,8 @@ export const TRANSLATION_DE_DE = {
     directive: 'Direktive',
     directives: 'Direktiven',
     'dom tree': 'DOM baum',
+    entities: 'Entities',
+    entity: 'Entity',
     entrycomponents: 'EntryComponents',
     enumerations: 'Enumerations',
     enums: 'Enums',

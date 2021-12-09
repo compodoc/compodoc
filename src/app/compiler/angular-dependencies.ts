@@ -33,6 +33,7 @@ import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
 import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
 import { ModuleDepFactory } from './angular/deps/module-dep.factory';
+import { EntityDepFactory } from './angular/deps/entity-dep.factory';
 
 import Configuration from '../configuration';
 
@@ -72,6 +73,7 @@ export class AngularDependencies extends FrameworkDependencies {
             modulesForGraph: [],
             components: [],
             controllers: [],
+            entities: [],
             injectables: [],
             interceptors: [],
             guards: [],
@@ -396,6 +398,22 @@ export class AngularDependencies extends FrameworkDependencies {
                             deps = controllerDep;
                             if (typeof IO.ignore === 'undefined') {
                                 outputSymbols.controllers.push(controllerDep);
+                            }
+                        } else if (this.isEntity(visitedDecorator)) {
+                            const entityDep = new EntityDepFactory().create(
+                                file,
+                                srcFile,
+                                name,
+                                props,
+                                IO
+                            );
+                            deps = entityDep;
+                            if (deps.name === 'Comment') {
+                                console.log(deps.properties[0]);
+                            }
+
+                            if (typeof IO.ignore === 'undefined') {
+                                outputSymbols.entities.push(entityDep);
                             }
                         } else if (this.isInjectable(visitedDecorator)) {
                             const injectableDeps: IInjectableDep = {
@@ -1060,6 +1078,10 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private isController(metadata) {
         return this.parseDecorator(metadata, 'Controller');
+    }
+
+    private isEntity(metadata) {
+        return this.parseDecorator(metadata, 'Entity');
     }
 
     private isComponent(metadata) {

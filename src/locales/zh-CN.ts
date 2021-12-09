@@ -22,6 +22,8 @@ export const TRANSLATION_ZH_CN = {
     directive: '指令',
     directives: '指令列表',
     'dom tree': 'DOM 树',
+    entities: '实体',
+    entity: '实体',
     entrycomponents: '入口组件列表',
     enumerations: '列举',
     enums: '枚举列表',

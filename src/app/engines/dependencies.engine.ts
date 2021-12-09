@@ -33,6 +33,7 @@ export class DependenciesEngine {
     public rawModulesForOverview: Object[];
     public components: Object[];
     public controllers: Object[];
+    public entities: Object[];
     public directives: Object[];
     public injectables: Object[];
     public interceptors: Object[];
@@ -120,6 +121,7 @@ export class DependenciesEngine {
         this.rawModules = _.sortBy(data.modulesForGraph, [el => el.name.toLowerCase()]);
         this.components = _.sortBy(this.rawData.components, [el => el.name.toLowerCase()]);
         this.controllers = _.sortBy(this.rawData.controllers, [el => el.name.toLowerCase()]);
+        this.entities = _.sortBy(this.rawData.entities, [el => el.name.toLowerCase()]);
         this.directives = _.sortBy(this.rawData.directives, [el => el.name.toLowerCase()]);
         this.injectables = _.sortBy(this.rawData.injectables, [el => el.name.toLowerCase()]);
         this.interceptors = _.sortBy(this.rawData.interceptors, [el => el.name.toLowerCase()]);
@@ -227,11 +229,12 @@ export class DependenciesEngine {
         this.modules = this.modules.map(processDuplicates);
         this.components = this.components.map(processDuplicates);
         this.controllers = this.controllers.map(processDuplicates);
+        this.entities = this.entities.map(processDuplicates);
         this.directives = this.directives.map(processDuplicates);
     }
 
     public find(name: string): IApiSourceResult<any> | undefined {
-        let searchFunctions: Array<() => IApiSourceResult<any>> = [
+        const searchFunctions: Array<() => IApiSourceResult<any>> = [
             () => this.findInCompodocDependencies(name, this.injectables),
             () => this.findInCompodocDependencies(name, this.interceptors),
             () => this.findInCompodocDependencies(name, this.guards),
@@ -239,6 +242,7 @@ export class DependenciesEngine {
             () => this.findInCompodocDependencies(name, this.classes),
             () => this.findInCompodocDependencies(name, this.components),
             () => this.findInCompodocDependencies(name, this.controllers),
+            () => this.findInCompodocDependencies(name, this.entities),
             () => this.findInCompodocDependencies(name, this.directives),
             () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
             () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
@@ -261,61 +265,67 @@ export class DependenciesEngine {
     public update(updatedData): void {
         if (updatedData.modules.length > 0) {
             _.forEach(updatedData.modules, (module: IModuleDep) => {
-                let _index = _.findIndex(this.modules, { name: module.name });
+                const _index = _.findIndex(this.modules, { name: module.name });
                 this.modules[_index] = module;
             });
         }
         if (updatedData.components.length > 0) {
             _.forEach(updatedData.components, (component: IComponentDep) => {
-                let _index = _.findIndex(this.components, { name: component.name });
+                const _index = _.findIndex(this.components, { name: component.name });
                 this.components[_index] = component;
             });
         }
         if (updatedData.controllers.length > 0) {
             _.forEach(updatedData.controllers, (controller: IControllerDep) => {
-                let _index = _.findIndex(this.controllers, { name: controller.name });
+                const _index = _.findIndex(this.controllers, { name: controller.name });
                 this.controllers[_index] = controller;
+            });
+        }
+        if (updatedData.entities.length > 0) {
+            _.forEach(updatedData.entities, (entity: IControllerDep) => {
+                const _index = _.findIndex(this.entities, { name: entity.name });
+                this.entities[_index] = entity;
             });
         }
         if (updatedData.directives.length > 0) {
             _.forEach(updatedData.directives, (directive: IDirectiveDep) => {
-                let _index = _.findIndex(this.directives, { name: directive.name });
+                const _index = _.findIndex(this.directives, { name: directive.name });
                 this.directives[_index] = directive;
             });
         }
         if (updatedData.injectables.length > 0) {
             _.forEach(updatedData.injectables, (injectable: IInjectableDep) => {
-                let _index = _.findIndex(this.injectables, { name: injectable.name });
+                const _index = _.findIndex(this.injectables, { name: injectable.name });
                 this.injectables[_index] = injectable;
             });
         }
         if (updatedData.interceptors.length > 0) {
             _.forEach(updatedData.interceptors, (interceptor: IInterceptorDep) => {
-                let _index = _.findIndex(this.interceptors, { name: interceptor.name });
+                const _index = _.findIndex(this.interceptors, { name: interceptor.name });
                 this.interceptors[_index] = interceptor;
             });
         }
         if (updatedData.guards.length > 0) {
             _.forEach(updatedData.guards, (guard: IGuardDep) => {
-                let _index = _.findIndex(this.guards, { name: guard.name });
+                const _index = _.findIndex(this.guards, { name: guard.name });
                 this.guards[_index] = guard;
             });
         }
         if (updatedData.interfaces.length > 0) {
             _.forEach(updatedData.interfaces, (int: IInterfaceDep) => {
-                let _index = _.findIndex(this.interfaces, { name: int.name });
+                const _index = _.findIndex(this.interfaces, { name: int.name });
                 this.interfaces[_index] = int;
             });
         }
         if (updatedData.pipes.length > 0) {
             _.forEach(updatedData.pipes, (pipe: IPipeDep) => {
-                let _index = _.findIndex(this.pipes, { name: pipe.name });
+                const _index = _.findIndex(this.pipes, { name: pipe.name });
                 this.pipes[_index] = pipe;
             });
         }
         if (updatedData.classes.length > 0) {
             _.forEach(updatedData.classes, (classe: any) => {
-                let _index = _.findIndex(this.classes, { name: classe.name });
+                const _index = _.findIndex(this.classes, { name: classe.name });
                 this.classes[_index] = classe;
             });
         }
@@ -324,7 +334,7 @@ export class DependenciesEngine {
          */
         if (updatedData.miscellaneous.variables.length > 0) {
             _.forEach(updatedData.miscellaneous.variables, (variable: any) => {
-                let _index = _.findIndex(this.miscellaneous.variables, {
+                const _index = _.findIndex(this.miscellaneous.variables, {
                     name: variable.name,
                     file: variable.file
                 });
@@ -333,7 +343,7 @@ export class DependenciesEngine {
         }
         if (updatedData.miscellaneous.functions.length > 0) {
             _.forEach(updatedData.miscellaneous.functions, (func: IFunctionDecDep) => {
-                let _index = _.findIndex(this.miscellaneous.functions, {
+                const _index = _.findIndex(this.miscellaneous.functions, {
                     name: func.name,
                     file: func.file
                 });
@@ -342,7 +352,7 @@ export class DependenciesEngine {
         }
         if (updatedData.miscellaneous.typealiases.length > 0) {
             _.forEach(updatedData.miscellaneous.typealiases, (typealias: ITypeAliasDecDep) => {
-                let _index = _.findIndex(this.miscellaneous.typealiases, {
+                const _index = _.findIndex(this.miscellaneous.typealiases, {
                     name: typealias.name,
                     file: typealias.file
                 });
@@ -351,7 +361,7 @@ export class DependenciesEngine {
         }
         if (updatedData.miscellaneous.enumerations.length > 0) {
             _.forEach(updatedData.miscellaneous.enumerations, (enumeration: IEnumDecDep) => {
-                let _index = _.findIndex(this.miscellaneous.enumerations, {
+                const _index = _.findIndex(this.miscellaneous.enumerations, {
                     name: enumeration.name,
                     file: enumeration.file
                 });
@@ -367,6 +377,7 @@ export class DependenciesEngine {
             this.modules,
             this.components,
             this.controllers,
+            this.entities,
             this.directives,
             this.injectables,
             this.interceptors,
@@ -413,6 +424,10 @@ export class DependenciesEngine {
 
     public getControllers() {
         return this.controllers;
+    }
+
+    public getEntities() {
+        return this.entities;
     }
 
     public getDirectives() {

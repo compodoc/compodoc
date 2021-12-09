@@ -22,6 +22,8 @@ export const TRANSLATION_JA_JP = {
     directive: 'ディレクティブ',
     directives: 'ディレクティブ',
     'dom tree': 'DOM ツリー',
+    entities: 'エンティティ',
+    entity: '実在物',
     entrycomponents: 'エントリーコンポーネント',
     enumerations: '列挙型',
     enums: 'Enums',

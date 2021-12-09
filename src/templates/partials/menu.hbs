@@ -252,6 +252,25 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         </li>
                     {{/element-alone}}
                 {{/if}}
+                {{#if entities}}
+                    {{#element-alone entities 'entity'}}
+                        <li class="chapter">
+                            <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ? 'data-target="#entities-links"' :
+                                'data-target="#xs-entities-links"' }>
+                                <span class="icon ion-ios-apps"></span>
+                                <span>{{t "entities" }}</span>
+                                <span class="icon {{#isNotToggle 'entities'}}ion-ios-arrow-up{{else}}ion-ios-arrow-down{{/isNotToggle}}"></span>
+                            </div>
+                            <ul class="links collapse {{#isNotToggle 'entities'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="entities-links"' : 'id="xs-entities-links"' }>
+                                {{#each entities}}
+                                <li class="link">
+                                    <a href="entities/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/element-alone}}
+                {{/if}}
                 {{#if directives}}
                     {{#element-alone directives 'directive'}}
                         <li class="chapter">

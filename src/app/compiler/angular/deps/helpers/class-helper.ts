@@ -12,6 +12,7 @@ import { StringifyObjectLiteralExpression } from '../../../../../utils/object-li
 
 import DependenciesEngine from '../../../../engines/dependencies.engine';
 import Configuration from '../../../../configuration';
+import { StringifyArrowFunction } from '../../../../../utils/arrow-function.util';
 
 const crypto = require('crypto');
 const { marked } = require('marked');
@@ -152,7 +153,7 @@ export class ClassHelper {
 
         stringifyArgs = args
             .map(arg => {
-                let _result = DependenciesEngine.find(arg.type);
+                const _result = DependenciesEngine.find(arg.type);
                 if (_result) {
                     if (_result.source === 'internal') {
                         let path = _result.data.type;
@@ -198,10 +199,17 @@ export class ClassHelper {
                     }
                     result += ']';
                     return result;
+                } else if (
+                    arg.kind &&
+                    arg.kind === SyntaxKind.ArrowFunction &&
+                    arg.parameters &&
+                    arg.parameters.length > 0
+                ) {
+                    return StringifyArrowFunction(arg);
                 } else if (arg.kind && arg.kind === SyntaxKind.ObjectLiteralExpression) {
                     return StringifyObjectLiteralExpression(arg);
                 } else if (BasicTypeUtil.isKnownType(arg.type)) {
-                    let path = BasicTypeUtil.getTypeUrl(arg.type);
+                    const path = BasicTypeUtil.getTypeUrl(arg.type);
                     return `${arg.name}${this.getOptionalString(
                         arg
                     )}: <a href="${path}" target="_blank">${arg.type}</a>`;
@@ -543,11 +551,13 @@ export class ClassHelper {
 
                 // RETURN TOO EARLY FOR MANY DECORATORS !!!!
                 // iterating through the decorators array we have to keep the flags `true` values from the previous loop iteration
-                isDirective = isDirective || this.isDirectiveDecorator(classDeclaration.decorators[a]);
+                isDirective =
+                    isDirective || this.isDirectiveDecorator(classDeclaration.decorators[a]);
                 isService = isService || this.isServiceDecorator(classDeclaration.decorators[a]);
                 isPipe = isPipe || this.isPipeDecorator(classDeclaration.decorators[a]);
                 isModule = isModule || this.isModuleDecorator(classDeclaration.decorators[a]);
-                isController = isController || this.isControllerDecorator(classDeclaration.decorators[a]);
+                isController =
+                    isController || this.isControllerDecorator(classDeclaration.decorators[a]);
             }
             if (isDirective) {
                 return {

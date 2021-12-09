@@ -51,6 +51,17 @@
             </div>
         </div>
         {{/if}}
+        {{#if entities}}
+        <div class="col-sm-3">
+            <div class="card text-center">
+                <div class="card-block">
+                    <h4 class="card-title"><span class="icon ion-md-swap"></span></h4>
+                    <p class="card-text">{{ entities.length }} {{#compare entities.length "===" 1}}{{t "entities" }}{{/compare}}{{#compare
+                        entities.length ">" 1}}{{t "entities" }}{{/compare}}</p>
+                </div>
+            </div>
+        </div>
+        {{/if}}
         {{#if directives}}
         <div class="col-sm-3">
             <div class="card text-center">

@@ -22,6 +22,8 @@ export const TRANSLATION_FR_FR = {
     directive: 'Directive',
     directives: 'Directives',
     'dom tree': 'Arbre DOM',
+    entities: 'Entités',
+    entity: 'Entité',
     entrycomponents: "Composants d'entrée",
     enumerations: 'Enumérations',
     enums: 'Enumérations',
