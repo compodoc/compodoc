@@ -139,6 +139,14 @@ describe('CLI Export', () => {
             expect(file).to.contain('coveragePercent');
         });
 
+        it('should contain numerical enumerations with strict numerical values', () => {
+            const file = read(`${distFolder}/documentation.json`);
+            const obj = JSON.parse(file);
+            const pollingSpeedEnum = obj.miscellaneous.enumerations.find(enumeration => enumeration.name === 'PollingSpeed');
+            const valHigh = pollingSpeedEnum.childs.find(child => child.name === 'High');
+            expect(valHigh.value === 100).to.be.true;
+        });
+
         it('should export custom input decorators for components', () => {
             const file = read(`${distFolder}/documentation.json`);
             const obj = JSON.parse(file);
