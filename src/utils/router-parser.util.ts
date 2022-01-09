@@ -23,9 +23,9 @@ export class RouterParserUtil {
     private cleanModulesTree;
     private modulesWithRoutes = [];
     private transformAngular8ImportSyntax =
-        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|")([^'"]+?)(\\'|'|")\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
+        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
     private transformAngular8ImportSyntaxAsyncAwait =
-        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|")([^'"]+?)(\\'|'|")\)"\)\.['"]([^)]+?)['"]/g;
+        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -594,8 +594,7 @@ export class RouterParserUtil {
 
             if (foundWithAliasInImports) {
                 if (typeof searchedImport !== 'undefined') {
-
-                    const routePathIsBad = (path) => {
+                    const routePathIsBad = path => {
                         return typeof ast.getSourceFile(path) == 'undefined';
                     };
 
@@ -604,7 +603,9 @@ export class RouterParserUtil {
                         if (searchStrLen == 0) {
                             return [];
                         }
-                        var startIndex = 0, index, indices = [];
+                        var startIndex = 0,
+                            index,
+                            indices = [];
                         if (!caseSensitive) {
                             str = str.toLowerCase();
                             searchStr = searchStr.toLowerCase();
@@ -614,22 +615,28 @@ export class RouterParserUtil {
                             startIndex = index + searchStrLen;
                         }
                         return indices;
-                    }
+                    };
 
                     const dirNamePath = path.dirname(file.getFilePath());
                     const searchedImportPath = searchedImport.getModuleSpecifierValue();
                     const leadingFilePath = searchedImportPath.split('/').shift();
 
-                    let importPath = path.resolve(dirNamePath + '/' + searchedImport.getModuleSpecifierValue() + '.ts');
+                    let importPath = path.resolve(
+                        dirNamePath + '/' + searchedImport.getModuleSpecifierValue() + '.ts'
+                    );
 
                     if (routePathIsBad(importPath)) {
                         let leadingIndices = getIndicesOf(leadingFilePath, importPath, true);
-                        if (leadingIndices.length > 1) { // Nested route fixes
+                        if (leadingIndices.length > 1) {
+                            // Nested route fixes
                             let startIndex = leadingIndices[0];
-                            let endIndex = leadingIndices[leadingIndices.length -1];
-                            importPath = importPath.slice(0, startIndex) + importPath.slice(endIndex);
-                        } else { // Top level route fixes
-                            importPath = path.dirname(dirNamePath) + '/' + searchedImportPath + '.ts';
+                            let endIndex = leadingIndices[leadingIndices.length - 1];
+                            importPath =
+                                importPath.slice(0, startIndex) + importPath.slice(endIndex);
+                        } else {
+                            // Top level route fixes
+                            importPath =
+                                path.dirname(dirNamePath) + '/' + searchedImportPath + '.ts';
                         }
                     }
                     const sourceFileImport =

@@ -98,7 +98,10 @@ export class ParseDescriptionHelper implements IHtmlEngineHelper {
                     label = split.linkText;
                 }
 
-                if (resultInCompodoc.type === 'miscellaneous') {
+                if (
+                    resultInCompodoc.type === 'miscellaneous' ||
+                    resultInCompodoc.type === 'classes'
+                ) {
                     newLink = `<a href="${rootPath}${resultInCompodoc.type}/${pageName}.html${anchor}">${label}</a>`;
                 } else {
                     newLink = `<a href="${rootPath}${resultInCompodoc.type}s/${pageName}.html${anchor}">${label}</a>`;

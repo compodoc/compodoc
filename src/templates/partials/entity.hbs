@@ -1,0 +1,80 @@
+<ol class="breadcrumb">
+  <li>{{t "entities" }}</li>
+  <li {{#if entity.deprecated}}
+        class="deprecated-name"
+    {{/if}}>{{entity.name}}</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+    {{#each navTabs}}
+        <li {{#compare @index "===" 0}}class="active"{{/compare}}>
+            <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{t this.label}}</a>
+        </li>
+    {{/each}}
+</ul>
+
+<div class="tab-content">
+    {{#isTabEnabled navTabs "info"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
+        <p class="comment">
+            <h3>{{t "file" }}</h3>
+        </p>
+        <p class="comment">
+            <code>{{entity.file}}</code>
+        </p>
+
+        {{#if entity.deprecated}}
+            <p class="comment">
+                <h3 class="deprecated">{{t "deprecated" }}</h3>
+            </p>
+            <p class="comment">
+                {{{ entity.deprecationMessage }}}
+            </p>
+        {{/if}}
+
+        {{#if entity.description}}
+            <p class="comment">
+                <h3>{{t "description" }}</h3>
+            </p>
+            <p class="comment">
+                {{{parseDescription entity.description depth}}}
+            </p>
+        {{/if}}
+
+        {{#if entity.jsdoctags}}
+            <p class="comment">
+                <h3>{{t "example" }}</h3>
+            </p>
+            <div class="io-description">
+                {{#jsdoc-code-example entity.jsdoctags}}
+                    {{#each tags}}
+                        <div>
+                            {{{comment}}}
+                        </div>
+                    {{/each}}
+                {{/jsdoc-code-example}}
+            </div>
+        {{/if}}
+
+        {{#orLength entity.properties}}
+            {{> index properties=entity.properties}}
+        {{/orLength}}
+
+       {{#if entity.properties}}
+            {{> block-property properties=entity.properties file=entity.file }}
+        {{/if}}
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "readme"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="c-readme">
+        <p>{{{entity.readme}}}</p>
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "source"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "source"}}active in{{/isInitialTab}} tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">{{ entity.sourceCode}}</code></pre>
+    </div>
+    {{/isTabEnabled}}
+</div>

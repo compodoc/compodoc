@@ -22,6 +22,8 @@ export const TRANSLATION_PL_PL = {
     directive: 'Dyrektywa',
     directives: 'Dyrektywy',
     'dom tree': 'DOM drzewo',
+    entities: 'Podmioty',
+    entity: 'Podmiot',
     entrycomponents: 'EntryComponents',
     enumerations: 'Enumeracje',
     enums: 'Enumy',

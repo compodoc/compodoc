@@ -1,4 +1,5 @@
 import { SyntaxKind } from 'ts-morph';
+import { StringifyArrowFunction } from './arrow-function.util';
 
 export function StringifyObjectLiteralExpression(ole) {
     let returnedString = '{';
@@ -15,6 +16,8 @@ export function StringifyObjectLiteralExpression(ole) {
                     returnedString += `true`;
                 } else if (property.initializer.kind === SyntaxKind.FalseKeyword) {
                     returnedString += `false`;
+                } else if (property.initializer.kind === SyntaxKind.ArrowFunction) {
+                    returnedString += StringifyArrowFunction(property.initializer);
                 } else {
                     returnedString += property.initializer.text;
                 }

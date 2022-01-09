@@ -1,3 +1,25 @@
+<a name="1.1.17"></a>
+
+## [1.1.17](https://github.com/compodoc/compodoc/compare/1.1.16...1.1.17) (2022-01-09)
+
+### Features
+
+-   feat(app): Nest @entity support ([2dfe88a](https://github.com/compodoc/compodoc/commit/2dfe88a)), closes [#1131](https://github.com/compodoc/compodoc/issues/1131)
+-   feat(app): ng-add schematics ([7a414d4](https://github.com/compodoc/compodoc/commit/7a414d4)), closes [#1155](https://github.com/compodoc/compodoc/issues/1155)
+
+### Merged
+
+-   fix(app): Fix enum member types parsing [#1159](https://github.com/compodoc/compodoc/pull/1159)
+-   fix(app): Fix reading class decorators [#1158](https://github.com/compodoc/compodoc/pull/1158)
+
+### Bug fixes
+
+-   fix(UI): Dark mode toggle doesn't persist when switching pages ([1013cda](https://github.com/compodoc/compodoc/commit/1013cda)), closes [#1167](https://github.com/compodoc/compodoc/issues/1167)
+-   fix(app): custom-logo links are broken for child content ([db47436](https://github.com/compodoc/compodoc/commit/db47436)), closes [#1147](https://github.com/compodoc/compodoc/issues/1147)
+-   fix(app): support for backtick in Routing lazy-loading syntax ([cff2ca5](https://github.com/compodoc/compodoc/commit/cff2ca5)), closes [#1164](https://github.com/compodoc/compodoc/issues/1164)
+-   fix(app): wrong additional folder provided, exit with code 0 ([15fd3de](https://github.com/compodoc/compodoc/commit/15fd3de)), closes [#1146](https://github.com/compodoc/compodoc/issues/1146)
+-   fix(app): link in description to class ([2b6af73](https://github.com/compodoc/compodoc/commit/2b6af73)), closes [#1157](https://github.com/compodoc/compodoc/issues/1157)
+
 <a name="1.1.16"></a>
 
 ## [1.1.16](https://github.com/compodoc/compodoc/compare/1.1.15...1.1.16) (2021-11-23)

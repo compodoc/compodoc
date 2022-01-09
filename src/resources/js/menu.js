@@ -265,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var darkModeState = useDark.matches;
         var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
         var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+        var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
 
         function checkToggle(check) {
             for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
@@ -273,6 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function toggleDarkMode(state) {
+            if (window.localStorage) {
+                localStorage.setItem('compodoc_darkmode-state', state);
+            }
+
             checkToggle(state);
 
             const hasClass = document.body.classList.contains('dark');
@@ -297,6 +302,9 @@ document.addEventListener('DOMContentLoaded', function () {
         useDark.addEventListener('change', function (evt) {
             toggleDarkMode(evt.matches);
         });
+        if (darkModeStateLocal) {
+            darkModeState = darkModeStateLocal === 'true';
+        }
         toggleDarkMode(darkModeState);
 
         if ($darkModeToggles.length > 0) {

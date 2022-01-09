@@ -22,6 +22,8 @@ export const TRANSLATION_KO_KR = {
     directive: 'Directive',
     directives: 'Directives',
     'dom tree': '돔 트리',
+    entities: '엔티티',
+    entity: '실재',
     entrycomponents: 'EntryComponents',
     enumerations: '열거',
     enums: 'Enums',

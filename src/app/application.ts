@@ -239,6 +239,7 @@ export class Application {
                     },
                     errorMessage => {
                         logger.error(errorMessage);
+                        process.exit(1);
                     }
                 );
             },
@@ -251,6 +252,7 @@ export class Application {
                     },
                     errorMessage1 => {
                         logger.error(errorMessage1);
+                        process.exit(1);
                     }
                 );
             }
@@ -504,6 +506,9 @@ export class Application {
         if (diffCrawledData.controllers.length > 0) {
             actions.push(() => this.prepareControllers());
         }
+        if (diffCrawledData.entities.length > 0) {
+            actions.push(() => this.prepareEntities());
+        }
         if (diffCrawledData.modules.length > 0) {
             actions.push(() => this.prepareModules());
         }
@@ -608,6 +613,9 @@ export class Application {
         if (DependenciesEngine.controllers.length > 0) {
             logger.info(`- controller : ${DependenciesEngine.controllers.length}`);
         }
+        if (DependenciesEngine.entities.length > 0) {
+            logger.info(`- entity     : ${DependenciesEngine.entities.length}`);
+        }
         if (DependenciesEngine.directives.length > 0) {
             logger.info(`- directive  : ${DependenciesEngine.directives.length}`);
         }
@@ -654,6 +662,12 @@ export class Application {
         if (DependenciesEngine.controllers.length > 0) {
             actions.push(() => {
                 return this.prepareControllers();
+            });
+        }
+
+        if (DependenciesEngine.entities.length > 0) {
+            actions.push(() => {
+                return this.prepareEntities();
             });
         }
 
@@ -772,6 +786,7 @@ export class Application {
             })
             .catch(errorMessage => {
                 logger.error(errorMessage);
+                process.exit(1);
             });
     }
 
@@ -1437,6 +1452,42 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         });
     }
 
+    public prepareEntities(someEntities?) {
+        logger.info('Prepare entities');
+        Configuration.mainData.entities = someEntities
+            ? someEntities
+            : DependenciesEngine.getEntities();
+
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            const len = Configuration.mainData.entities.length;
+            const loop = () => {
+                if (i < len) {
+                    let entity = Configuration.mainData.entities[i];
+                    let page = {
+                        path: 'entities',
+                        name: entity.name,
+                        id: entity.id,
+                        navTabs: this.getNavTabs(entity),
+                        context: 'entity',
+                        entity: entity,
+                        depth: 1,
+                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                    };
+                    if (entity.isDuplicate) {
+                        page.name += '-' + entity.duplicateId;
+                    }
+                    Configuration.addPage(page);
+                    i++;
+                    loop();
+                } else {
+                    resolve(true);
+                }
+            };
+            loop();
+        });
+    }
+
     public prepareComponents(someComponents?) {
         logger.info('Prepare components');
         Configuration.mainData.components = someComponents
@@ -1745,7 +1796,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((resolve, reject) => {
             /*
-             * loop with components, directives, controllers, classes, injectables, interfaces, pipes, guards, misc functions variables
+             * loop with components, directives, controllers, entities, classes, injectables, interfaces, pipes, guards, misc functions variables
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
@@ -1762,9 +1813,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 }
                 return status;
             };
-            let processComponentsAndDirectivesAndControllers = list => {
+            const processComponentsAndDirectivesAndControllersAndEntities = list => {
                 _.forEach(list, (el: any) => {
-                    let element = (Object as any).assign({}, el);
+                    const element = (Object as any).assign({}, el);
                     if (!element.propertiesClass) {
                         element.propertiesClass = [];
                     }
@@ -2044,9 +2095,18 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 });
             };
 
-            processComponentsAndDirectivesAndControllers(Configuration.mainData.components);
-            processComponentsAndDirectivesAndControllers(Configuration.mainData.directives);
-            processComponentsAndDirectivesAndControllers(Configuration.mainData.controllers);
+            processComponentsAndDirectivesAndControllersAndEntities(
+                Configuration.mainData.components
+            );
+            processComponentsAndDirectivesAndControllersAndEntities(
+                Configuration.mainData.directives
+            );
+            processComponentsAndDirectivesAndControllersAndEntities(
+                Configuration.mainData.controllers
+            );
+            processComponentsAndDirectivesAndControllersAndEntities(
+                Configuration.mainData.entities
+            );
 
             processClasses(Configuration.mainData.classes, 'class', 'classe');
             processClasses(Configuration.mainData.injectables, 'injectable', 'injectable');

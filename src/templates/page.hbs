@@ -65,6 +65,10 @@
                         {{~> controller data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'entity'}}
+                        {{~> entity data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'directives'}}
                         {{~> directives data ~}}
                    {{/compare}}

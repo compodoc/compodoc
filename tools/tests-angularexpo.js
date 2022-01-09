@@ -81,8 +81,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'coreui-free-angular-admin-template',
             maintainer: 'coreui',
-            tsconfig_path: './src/',
-            tsconfig_file: 'tsconfig.app.json'
+            tsconfig_path: './',
+            tsconfig_file: 'tsconfig.json'
         },
         {
             name: 'ng2-arithmetis',
@@ -329,6 +329,11 @@ const TEST_FOLDER = 'angularexpo-tests',
             name: 'nestjs-realworld-example-app',
             maintainer: 'lujakob',
             tsconfig_path: './'
+        },
+        {
+            name: 'vendure',
+            maintainer: 'vendure-ecommerce',
+            tsconfig_path: './packages/core/'
         }
     ],
     len = GIT_REPOSITORIES.length;

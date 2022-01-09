@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { Project, ts, SyntaxKind } from 'ts-morph';
 
-import { kindToType } from '../../utils/kind-to-type';
+import { IsKindType, kindToType } from '../../utils/kind-to-type';
 import { logger } from '../../utils/logger';
 import { cleanLifecycleHooksFromMethods, markedtags, mergeTagsAndArgs } from '../../utils/utils';
 import ComponentsTreeEngine from '../engines/components-tree.engine';
@@ -33,6 +33,7 @@ import { JsDocHelper } from './angular/deps/helpers/js-doc-helper';
 import { ModuleHelper } from './angular/deps/helpers/module-helper';
 import { SymbolHelper } from './angular/deps/helpers/symbol-helper';
 import { ModuleDepFactory } from './angular/deps/module-dep.factory';
+import { EntityDepFactory } from './angular/deps/entity-dep.factory';
 
 import Configuration from '../configuration';
 
@@ -72,6 +73,7 @@ export class AngularDependencies extends FrameworkDependencies {
             modulesForGraph: [],
             components: [],
             controllers: [],
+            entities: [],
             injectables: [],
             interceptors: [],
             guards: [],
@@ -396,6 +398,22 @@ export class AngularDependencies extends FrameworkDependencies {
                             deps = controllerDep;
                             if (typeof IO.ignore === 'undefined') {
                                 outputSymbols.controllers.push(controllerDep);
+                            }
+                        } else if (this.isEntity(visitedDecorator)) {
+                            const entityDep = new EntityDepFactory().create(
+                                file,
+                                srcFile,
+                                name,
+                                props,
+                                IO
+                            );
+                            deps = entityDep;
+                            if (deps.name === 'Comment') {
+                                console.log(deps.properties[0]);
+                            }
+
+                            if (typeof IO.ignore === 'undefined') {
+                                outputSymbols.entities.push(entityDep);
                             }
                         } else if (this.isInjectable(visitedDecorator)) {
                             const injectableDeps: IInjectableDep = {
@@ -1062,6 +1080,10 @@ export class AngularDependencies extends FrameworkDependencies {
         return this.parseDecorator(metadata, 'Controller');
     }
 
+    private isEntity(metadata) {
+        return this.parseDecorator(metadata, 'Entity');
+    }
+
     private isComponent(metadata) {
         return this.parseDecorator(metadata, 'Component');
     }
@@ -1402,7 +1424,10 @@ export class AngularDependencies extends FrameworkDependencies {
                     deprecationMessage: ''
                 };
                 if (node.members[i].initializer) {
-                    member.value = node.members[i].initializer.text;
+                    // if the initializer kind is a number do cast to the number type
+                    member.value = IsKindType.NUMBER(node.members[i].initializer.kind)
+                        ? Number(node.members[i].initializer.text)
+                        : node.members[i].initializer.text;
                 }
                 memberjsdoctags = this.jsdocParserUtil.getJSDocs(node.members[i]);
                 if (memberjsdoctags && memberjsdoctags.length >= 1 && memberjsdoctags[0].tags) {

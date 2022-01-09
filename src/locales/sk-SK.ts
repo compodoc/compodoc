@@ -22,6 +22,8 @@ export const TRANSLATION_SK_SK = {
     directive: 'Direktíva',
     directives: 'Direktívy',
     'dom tree': 'DOM strom',
+    entities: 'Subjektov',
+    entity: 'Subjekt',
     entrycomponents: 'EntryComponents',
     enumerations: 'Enumerátory',
     enums: 'Enumerátory',
