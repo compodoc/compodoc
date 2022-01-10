@@ -1,6 +1,6 @@
 {
     "name": "@compodoc/compodoc",
-    "version": "1.1.17",
+    "version": "1.1.18",
     "description": "The missing documentation tool for your Angular application",
     "main": "dist/index.js",
     "bin": {
@@ -87,7 +87,7 @@
         "@angular-devkit/schematics": "^13.1.2",
         "@babel/core": "^7.16.7",
         "@babel/preset-env": "^7.16.7",
-        "@compodoc/live-server": "^1.2.2",
+        "@compodoc/live-server": "^1.2.3",
         "@compodoc/ngd-transformer": "^2.1.0",
         "chalk": "^4.1.2",
         "cheerio": "^1.0.0-rc.10",
