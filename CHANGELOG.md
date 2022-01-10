@@ -1,3 +1,9 @@
+<a name="1.1.18"></a>
+
+## [1.1.18](https://github.com/compodoc/compodoc/compare/1.1.17...1.1.18) (2022-01-10)
+
+Fix for colors dependency.
+
 <a name="1.1.17"></a>
 
 ## [1.1.17](https://github.com/compodoc/compodoc/compare/1.1.16...1.1.17) (2022-01-09)
