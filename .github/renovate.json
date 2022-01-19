@@ -1,4 +1,19 @@
 {
     "extends": ["config:base"],
-    "ignoreDeps": ["chalk", "os-name"]
+    "ignoreDeps": ["chalk", "os-name"],
+    "groupName": "all dependencies",
+    "separateMajorMinor": false,
+    "groupSlug": "all",
+    "packageRules": [
+      {
+        "matchPackagePatterns": [
+          "*"
+        ],
+        "groupName": "all dependencies",
+        "groupSlug": "all"
+      }
+    ],
+    "lockFileMaintenance": {
+      "enabled": false
+    }
 }
