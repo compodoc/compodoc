@@ -23,12 +23,12 @@ jobs:
                   fetch-depth: 0
 
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
 
             - name: Cache node modules
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
@@ -85,12 +85,12 @@ jobs:
                   tunnelIdentifier: github-action-tunnel
 
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
 
             - name: Cache node modules
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
