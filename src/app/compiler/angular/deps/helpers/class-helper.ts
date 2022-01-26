@@ -1488,7 +1488,7 @@ export class ClassHelper {
             // For setter accessor, find type in first parameter
             if (property.parameters && property.parameters.length === 1) {
                 if (property.parameters[0].type) {
-                    _return.type = kindToType(property.parameters[0].type.kind);
+                    _return.type = this.visitType(property.parameters[0].type);
                 }
             }
         }
