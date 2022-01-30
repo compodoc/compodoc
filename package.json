@@ -126,7 +126,7 @@
         "@types/chai": "4.3.0",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.178",
-        "@types/marked": "4.0.1",
+        "@types/marked": "4.0.2",
         "@types/mocha": "9.1.0",
         "@types/node": "17.0.8",
         "@types/semver": "7.3.9",
