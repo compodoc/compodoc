@@ -24,7 +24,7 @@ export class ExtendsMerger {
         this.injectables = deps.injectables;
         this.directives = deps.directives;
 
-        this.components.forEach(component => {
+        const mergeExtendedProperties = component => {
             let ext;
             if (typeof component.extends !== 'undefined') {
                 ext = this.findInDependencies(component.extends);
@@ -117,7 +117,10 @@ export class ExtendsMerger {
                     recursiveScanWithInheritance(ext);
                 }
             }
-        });
+        };
+
+        this.components.forEach(mergeExtendedProperties);
+        this.directives.forEach(mergeExtendedProperties);
 
         const mergeExtendedClasses = el => {
             let ext;
@@ -151,6 +154,7 @@ export class ExtendsMerger {
 
         this.classes.forEach(mergeExtendedClasses);
         this.injectables.forEach(mergeExtendedClasses);
+        this.directives.forEach(mergeExtendedClasses);
 
         return deps;
     }

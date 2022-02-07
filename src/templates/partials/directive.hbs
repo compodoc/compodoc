@@ -41,6 +41,15 @@
             </p>
         {{/if}}
 
+        {{#if directive.extends}}
+            <p class="comment">
+                <h3>{{t "extends" }}</h3>
+            </p>
+            <p class="comment">
+                {{> link-type type=directive.extends }}
+            </p>
+        {{/if}}
+
         {{#if directive.implements}}
             <p class="comment">
                 <h3>{{t "implements" }}</h3>
