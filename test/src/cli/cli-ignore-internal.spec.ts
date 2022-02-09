@@ -4,8 +4,8 @@ import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../hel
 const expect = chai.expect;
 const tmp = temporaryDir();
 
-describe('CLI ignore JSDoc tag support', () => {
-    const distFolder = tmp.name + '-ignore-jsdoc';
+describe('CLI ignore/internal JSDoc tag support', () => {
+    const distFolder = tmp.name + '-ignore-internal-jsdoc';
 
     describe('without --disableLifeCycleHooks', () => {
         before(done => {
@@ -44,6 +44,16 @@ describe('CLI ignore JSDoc tag support', () => {
         it('Component input ignored', () => {
             const file = read(distFolder + '/components/FooterComponent.html');
             expect(file).to.not.contain('<code>ignoredInput');
+        });
+
+        it('Component input @internal ignored', () => {
+            const file = read(distFolder + '/components/FooterComponent.html');
+            expect(file).to.not.contain('<code>internalInput');
+        });
+
+        it('Component internal constructor property ignored', () => {
+            const file = read(distFolder + '/components/FooterComponent.html');
+            expect(file).to.not.contain('<b>internalConstructorProp</b>');
         });
 
         it('Component output ignored', () => {

@@ -5,7 +5,7 @@ import { ts, SyntaxKind } from 'ts-morph';
 import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
 import { kindToType } from '../../../../../utils/kind-to-type';
 import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
-import { isIgnore } from '../../../../../utils';
+import { isIgnoreOrInternal } from '../../../../../utils';
 import AngularVersionUtil from '../../../../..//utils/angular-version.util';
 import BasicTypeUtil from '../../../../../utils/basic-type.util';
 import { StringifyObjectLiteralExpression } from '../../../../../utils/object-literal-expression.util';
@@ -478,7 +478,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration, sourceFile);
             rawdescription = this.jsdocParserUtil.parseComment(comment);
             description = marked(rawdescription);
-            if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
+            if (symbol.valueDeclaration && isIgnoreOrInternal(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
@@ -493,7 +493,7 @@ export class ClassHelper {
                     deprecated = deprecation.deprecated;
                     deprecationMessage = deprecation.deprecationMessage;
                 }
-                if (isIgnore(symbol.declarations[0])) {
+                if (isIgnoreOrInternal(symbol.declarations[0])) {
                     return [{ ignore: true }];
                 }
             }
@@ -721,7 +721,7 @@ export class ClassHelper {
 
             kind = member.kind;
 
-            if (isIgnore(member)) {
+            if (isIgnoreOrInternal(member)) {
                 continue;
             }
 
@@ -1215,7 +1215,11 @@ export class ClassHelper {
             let i = 0;
             let len = constr.parameters.length;
             for (i; i < len; i++) {
-                if (this.isPublic(constr.parameters[i])) {
+                const parameterOfConstructor = constr.parameters[i];
+                if (isIgnoreOrInternal(parameterOfConstructor)) {
+                    continue;
+                }
+                if (this.isPublic(parameterOfConstructor)) {
                     _parameters.push(this.visitProperty(constr.parameters[i], sourceFile));
                 }
             }
