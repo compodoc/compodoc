@@ -77,15 +77,16 @@ document.addEventListener('DOMContentLoaded', function () {
     processMenuLinks(entityLinks);
     var indexLinks = document.querySelectorAll('[data-type="index-link"]');
     processMenuLinks(indexLinks, true);
-    var entityLogos = document.querySelectorAll('[data-type="compodoc-logo"]');
-    var processLogos = function (entityLogo) {
+    var compodocLogos = document.querySelectorAll('[data-type="compodoc-logo"]');
+    var customLogo = document.querySelectorAll('[data-type="custom-logo"]');
+    var processLogos = function (entityLogos) {
         for (var i = 0; i < entityLogos.length; i++) {
             var entityLogo = entityLogos[i];
             if (entityLogo) {
                 var url = entityLogo.getAttribute('data-src');
                 // Dark mode + logo
                 let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (isDarkMode) {
+                if (isDarkMode && url.indexOf('compodoc') !== -1) {
                     url = 'images/compodoc-vectorise-inverted.png';
                 }
                 if (url.charAt(0) !== '.') {
@@ -115,7 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     };
-    processLogos(entityLogos);
+    processLogos(compodocLogos);
+    processLogos(customLogo);
 
     setTimeout(function () {
         document.getElementById('btn-menu').addEventListener('click', function () {
