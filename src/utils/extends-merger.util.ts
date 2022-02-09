@@ -8,6 +8,7 @@ export class ExtendsMerger {
     private classes;
     private injectables;
     private directives;
+    private controllers;
 
     private static instance: ExtendsMerger;
     private constructor() {}
@@ -23,6 +24,7 @@ export class ExtendsMerger {
         this.classes = deps.classes;
         this.injectables = deps.injectables;
         this.directives = deps.directives;
+        this.controllers = deps.controllers;
 
         const mergeExtendedProperties = component => {
             let ext;
@@ -121,6 +123,7 @@ export class ExtendsMerger {
 
         this.components.forEach(mergeExtendedProperties);
         this.directives.forEach(mergeExtendedProperties);
+        this.controllers.forEach(mergeExtendedProperties);
 
         const mergeExtendedClasses = el => {
             let ext;
@@ -155,6 +158,7 @@ export class ExtendsMerger {
         this.classes.forEach(mergeExtendedClasses);
         this.injectables.forEach(mergeExtendedClasses);
         this.directives.forEach(mergeExtendedClasses);
+        this.controllers.forEach(mergeExtendedClasses);
 
         return deps;
     }
@@ -189,7 +193,8 @@ export class ExtendsMerger {
             this.components,
             this.classes,
             this.injectables,
-            this.directives
+            this.directives,
+            this.controllers
         );
         const result = find(mergedData, { name: name } as any);
         return result || false;
