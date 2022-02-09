@@ -141,7 +141,7 @@
         "@wdio/sync": "7.16.14",
         "auto-changelog": "2.4.0",
         "chai": "4.3.6",
-        "chromedriver": "97.0.4",
+        "chromedriver": "98.0.0",
         "codecov": "3.8.3",
         "cross-env": "7.0.3",
         "eslint": "8.8.0",
