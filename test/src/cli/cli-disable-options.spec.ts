@@ -115,6 +115,14 @@ describe('CLI disable flags', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
         });
 
+        it('Component input @internal ignored', () => {
+            expect(componentFile).not.to.contain('<code>internalInput');
+        });
+
+        it('Component internal constructor property ignored', () => {
+            expect(componentFile).not.to.contain('<b>internalConstructorProp</b>');
+        });
+
         it('should include methods marked as private', () => {
             expect(componentFile).to.contain('<code>privateMethod');
         });

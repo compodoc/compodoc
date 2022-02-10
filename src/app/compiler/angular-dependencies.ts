@@ -14,7 +14,7 @@ import ImportsUtil from '../../utils/imports.util';
 
 import {
     getModuleWithProviders,
-    isIgnoreOrInternal,
+    isIgnore,
     isModuleWithProviders,
     JsdocParserUtil
 } from '../../utils';
@@ -623,7 +623,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             file: file
                         };
 
-                        if (!isIgnoreOrInternal(node)) {
+                        if (!isIgnore(node)) {
                             this.debug(enumDeps);
                             outputSymbols.miscellaneous.enumerations.push(enumDeps);
                         }
@@ -660,7 +660,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             );
                         }
 
-                        if (!isIgnoreOrInternal(node)) {
+                        if (!isIgnore(node)) {
                             outputSymbols.miscellaneous.typealiases.push(typeAliasDeps);
                         }
 
@@ -814,7 +814,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     );
                                     RouterParserUtil.addModule(name, [routingInitializer]);
                                 }
-                                if (!isIgnoreOrInternal(variableNode)) {
+                                if (!isIgnore(variableNode)) {
                                     this.debug(deps);
                                     outputSymbols.miscellaneous.variables.push(deps);
                                 }
@@ -849,7 +849,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                             : undefined;
                                     }
 
-                                    if (!isIgnoreOrInternal(destructuredVariables[i])) {
+                                    if (!isIgnore(destructuredVariables[i])) {
                                         this.debug(deps);
                                         outputSymbols.miscellaneous.variables.push(deps);
                                     }
@@ -884,7 +884,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         ) {
                             deps.rawtype = srcFile.text.substring(node.type.pos, node.type.end);
                         }
-                        if (!isIgnoreOrInternal(node)) {
+                        if (!isIgnore(node)) {
                             this.debug(deps);
                             outputSymbols.miscellaneous.typealiases.push(deps);
                         }
@@ -940,7 +940,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                             file: file
                         };
-                        if (!isIgnoreOrInternal(node)) {
+                        if (!isIgnore(node)) {
                             this.debug(enumDeps);
                             outputSymbols.miscellaneous.enumerations.push(enumDeps);
                         }

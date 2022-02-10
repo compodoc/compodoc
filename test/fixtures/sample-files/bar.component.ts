@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { BarService } from './bar.service';
 
 @Component({
@@ -25,6 +25,11 @@ export class BarComponent implements OnInit {
     hiddenMethod() {}
 
     /**
+     * @internal
+     */
+    @Input() internalInput: string;
+
+    /**
      * @private
      */
     privateCommentMethod() {}
@@ -32,6 +37,13 @@ export class BarComponent implements OnInit {
     private privateMethod() {}
 
     protected varprotected: string;
+
+    constructor(
+        /**
+         * @internal
+         */
+        public internalConstructorProp: string = ''
+    ) {}
 
     ngOnInit() {}
 
