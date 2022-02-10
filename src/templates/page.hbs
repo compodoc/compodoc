@@ -119,6 +119,12 @@
                          {{/compare}}
                     {{/unless}}
 
+                    {{#unless data.disableProperties}}
+                         {{#compare data.context "===" 'package-properties'}}
+                              {{~> package-properties data ~}}
+                         {{/compare}}
+                    {{/unless}}
+
 
                    {{#compare data.context "===" 'miscellaneous-functions'}}
                         {{~> miscellaneous-functions data ~}}

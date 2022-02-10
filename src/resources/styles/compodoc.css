@@ -1072,3 +1072,11 @@ ul.index-list {
         top: 15px;
     }
 }
+
+ul.properties-list {
+    list-style: none;
+    padding-left: 0;
+}
+.properties-list li {
+    margin-bottom: 10px;
+}

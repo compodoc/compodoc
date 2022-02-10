@@ -57,6 +57,7 @@ export interface MainDataInterface {
     disableRoutesGraph: boolean;
     disableSearch: boolean;
     disableDependencies: boolean;
+    disableProperties: boolean;
     watch: boolean;
     mainGraph: string;
     coverageTest: boolean;
@@ -75,6 +76,7 @@ export interface MainDataInterface {
     customLogo: string;
     packageDependencies: Object[];
     packagePeerDependencies: Object[];
+    packageProperties: any;
     gaID: string;
     gaSite: string;
     angularProject: boolean;

@@ -584,6 +584,15 @@ describe('CLI simple generation - big app', () => {
         expect(dependencies).to.contain('angular/forms');
     });
 
+    it('should display project properties', () => {
+        const file = exists(distFolder + '/properties.html');
+        expect(file).to.be.true;
+        const properties = read(distFolder + '/properties.html');
+        expect(properties).to.contain('Demo for project');
+        expect(properties).to.contain('The author');
+        expect(properties).to.contain('https://github.com/just-a-repo');
+    });
+
     it('should display project local TypeScript version', () => {
         expect(stdoutString).to.contain('TypeScript version of current project');
     });

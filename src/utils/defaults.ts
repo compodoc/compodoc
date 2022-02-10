@@ -27,6 +27,7 @@ export const COMPODOC_DEFAULTS = {
     disableLifeCycleHooks: false,
     disableRoutesGraph: false,
     disableDependencies: false,
+    disableProperties: false,
     PAGE_TYPES: {
         ROOT: 'root',
         INTERNAL: 'internal'

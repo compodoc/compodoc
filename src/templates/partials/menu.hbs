@@ -65,6 +65,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 </li>
                             {{/orLength}}
                         {{/unless}}
+                        {{#unless disableProperties}}
+                            {{#orLength packageProperties}}
+                                <li class="link">
+                                    <a href="properties.html" data-type="chapter-link">
+                                        <span class="icon ion-ios-apps"></span>{{t "properties" }}
+                                    </a>
+                                </li>
+                            {{/orLength}}
+                        {{/unless}}
                     </ul>
                 </li>
                 {{#if additionalPages}}
