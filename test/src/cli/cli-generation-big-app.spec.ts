@@ -12,6 +12,7 @@ describe('CLI simple generation - big app', () => {
     let searchFuncFile;
 
     let todoComponentFile,
+        todoMVCComponentFile,
         homeComponentFile,
         aboutComponentFile,
         appComponentFile,
@@ -50,6 +51,7 @@ describe('CLI simple generation - big app', () => {
 
         routesIndex = read(`${distFolder}/js/routes/routes_index.js`);
         todoComponentFile = read(`${distFolder}/components/TodoComponent.html`);
+        todoMVCComponentFile = read(`${distFolder}/components/TodoMVCComponent.html`);
         footerComponentFile = read(`${distFolder}/components/FooterComponent.html`);
         homeComponentFile = read(`${distFolder}/components/HomeComponent.html`);
         aboutComponentFile = read(`${distFolder}/components/AboutComponent.html`);
@@ -891,6 +893,12 @@ describe('CLI simple generation - big app', () => {
         let file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.not.contain(
             '<a href="components/AppComponent.html" data-type="entity-link" >AppComponent</a>'
+        );
+    });
+
+    it('should support @example', () => {
+        expect(todoMVCComponentFile).to.contain(
+            '">&lt;todomvc&gt;The example of the component&lt;'
         );
     });
 });

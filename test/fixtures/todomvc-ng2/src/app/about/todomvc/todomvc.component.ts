@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 
 /**
  * The todomvc component
+ *
+ * @example
+ * <todomvc>The example of the component</todomvc>
  */
 @Component({
     selector: 'todomvc',
