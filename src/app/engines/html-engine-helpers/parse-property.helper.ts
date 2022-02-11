@@ -3,16 +3,20 @@ import * as Handlebars from 'handlebars';
 
 export class ParsePropertyHelper implements IHtmlEngineHelper {
     public helperFunc(context: any, text: string) {
-        let url = text;
+        let prop = text;
 
         if (typeof text === 'object' && text['url'] !== undefined) {
-            url = text['url'];
+            prop = text['url'];
         }
 
-        if (url !== '' && url.indexOf('https') !== -1) {
-            return `<a href="${url}" target="_blank">${url}</a>`;
+        if (typeof text === 'object' && text['name'] !== undefined) {
+            prop = text['name'];
+        }
+
+        if (prop !== '' && prop.indexOf('https') !== -1) {
+            return `<a href="${prop}" target="_blank">${prop}</a>`;
         } else {
-            return text;
+            return prop;
         }
     }
 }
