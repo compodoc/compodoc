@@ -591,6 +591,7 @@ describe('CLI simple generation - big app', () => {
         expect(properties).to.contain('Demo for project');
         expect(properties).to.contain('The author');
         expect(properties).to.contain('https://github.com/just-a-repo');
+        expect(properties).to.contain('documentation, angular');
     });
 
     it('should display project local TypeScript version', () => {
