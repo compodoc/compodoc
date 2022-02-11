@@ -120,22 +120,46 @@ export class AngularDependencies extends FrameworkDependencies {
         if (deps.miscellaneous.variables.length > 0) {
             deps.miscellaneous.variables.forEach(_variable => {
                 let newVar = [];
+
+                // link ...VAR to VAR values, recursively
                 ((_var, _newVar) => {
                     // getType pr reconstruire....
-                    if (_var.initializer) {
-                        if (_var.initializer.elements) {
-                            if (_var.initializer.elements.length > 0) {
-                                _var.initializer.elements.forEach(element => {
-                                    if (element.text) {
-                                        newVar.push({
-                                            name: element.text,
-                                            type: this.symbolHelper.getType(element.text)
-                                        });
-                                    }
-                                });
+                    const elementsMatcher = variabelToReplace => {
+                        if (variabelToReplace.initializer) {
+                            if (variabelToReplace.initializer.elements) {
+                                if (variabelToReplace.initializer.elements.length > 0) {
+                                    variabelToReplace.initializer.elements.forEach(element => {
+                                        // Direct value -> Kind 79
+                                        if (
+                                            element.text &&
+                                            element.kind === SyntaxKind.Identifier
+                                        ) {
+                                            newVar.push({
+                                                name: element.text,
+                                                type: this.symbolHelper.getType(element.text)
+                                            });
+                                        }
+                                        // if _variable is ArrayLiteralExpression 203
+                                        // and has SpreadElements in his elements
+                                        // merge them
+                                        if (
+                                            element.kind === SyntaxKind.SpreadElement &&
+                                            element.expression
+                                        ) {
+                                            const el = deps.miscellaneous.variables.find(
+                                                variable =>
+                                                    variable.name === element.expression.text
+                                            );
+                                            if (el) {
+                                                elementsMatcher(el);
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         }
-                    }
+                    };
+                    elementsMatcher(_var);
                 })(_variable, newVar);
 
                 const onLink = mod => {
