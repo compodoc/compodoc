@@ -148,7 +148,7 @@
         "husky": "7.0.4",
         "lcov-result-merger": "3.1.0",
         "madge": "5.0.1",
-        "mocha": "9.2.0",
+        "mocha": "9.2.1",
         "nodemon": "2.0.15",
         "npm-watch": "0.11.0",
         "nyc": "15.1.0",
