@@ -1,3 +1,21 @@
+<a name="1.1.19"></a>
+
+## [1.1.19](https://github.com/compodoc/compodoc/compare/1.1.18...1.1.19) (2022-01-10)
+
+### Merged
+
+-   feat: fully parse set accessor type [#1194](https://github.com/compodoc/compodoc/pull/1194), thanks [Killusions](https://github.com/Killusions)
+
+### Bug fixes
+
+-   fix(menu): custom-logo links are broken for doc deployments with a path ([bd28dd0](https://github.com/compodoc/compodoc/commit/bd28dd0)), closes [#1203](https://github.com/compodoc/compodoc/issues/1203)
+-   feat(app): display project properties from package.json file ([b091e19](https://github.com/compodoc/compodoc/commit/b091e19)), closes [#1198](https://github.com/compodoc/compodoc/issues/1198)
+-   fix(app): Nestjs controllers class inheritance ([06dad8c](https://github.com/compodoc/compodoc/commit/06dad8c)), closes [#1140](https://github.com/compodoc/compodoc/issues/1140)
+-   fix(app): Directive class inheritance ([765f496](https://github.com/compodoc/compodoc/commit/765f496)), closes [#1140](https://github.com/compodoc/compodoc/issues/1140)
+-   feat(app): JSDoc tag @internal correct support ([18da1fe](https://github.com/compodoc/compodoc/commit/18da1fe)), closes [#1101](https://github.com/compodoc/compodoc/issues/1101)
+-   fix(app): @example correct support ([9a1a7e1](https://github.com/compodoc/compodoc/commit/9a1a7e1)), closes [#1099](https://github.com/compodoc/compodoc/issues/1099)
+-   fix(app): double layer spread support for modules ([e25a4ee](https://github.com/compodoc/compodoc/commit/e25a4ee)), closes [#979](https://github.com/compodoc/compodoc/issues/979)
+
 <a name="1.1.18"></a>
 
 ## [1.1.18](https://github.com/compodoc/compodoc/compare/1.1.17...1.1.18) (2022-01-10)
