@@ -7,11 +7,11 @@ const tmp = temporaryDir();
 
 describe('CLI simple generation - big app', () => {
     let stdoutString = undefined;
-    let clockInterfaceFile;
     let interfaceIDATAFile;
     let searchFuncFile;
 
     let todoComponentFile,
+        todoMVCComponentFile,
         homeComponentFile,
         aboutComponentFile,
         appComponentFile,
@@ -44,12 +44,12 @@ describe('CLI simple generation - big app', () => {
             done('error');
         }
         stdoutString = ls.stdout.toString();
-        clockInterfaceFile = read(`${distFolder}/interfaces/ClockInterface.html`);
         interfaceIDATAFile = read(`${distFolder}/interfaces/IDATA.html`);
         searchFuncFile = read(`${distFolder}/interfaces/SearchFunc.html`);
 
         routesIndex = read(`${distFolder}/js/routes/routes_index.js`);
         todoComponentFile = read(`${distFolder}/components/TodoComponent.html`);
+        todoMVCComponentFile = read(`${distFolder}/components/TodoMVCComponent.html`);
         footerComponentFile = read(`${distFolder}/components/FooterComponent.html`);
         homeComponentFile = read(`${distFolder}/components/HomeComponent.html`);
         aboutComponentFile = read(`${distFolder}/components/AboutComponent.html`);
@@ -582,6 +582,16 @@ describe('CLI simple generation - big app', () => {
         expect(dependencies).to.contain('angular/forms');
     });
 
+    it('should display project properties', () => {
+        const file = exists(distFolder + '/properties.html');
+        expect(file).to.be.true;
+        const properties = read(distFolder + '/properties.html');
+        expect(properties).to.contain('Demo for project');
+        expect(properties).to.contain('The author');
+        expect(properties).to.contain('https://github.com/just-a-repo');
+        expect(properties).to.contain('documentation, angular');
+    });
+
     it('should display project local TypeScript version', () => {
         expect(stdoutString).to.contain('TypeScript version of current project');
     });
@@ -861,36 +871,47 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support JSDoc @link in JSDoc @see tag', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
+        const file = read(distFolder + '/injectables/TodoStore.html');
         expect(file).to.contain('See <a href="../classes/Todo.html">Todo</a> for details');
     });
 
     it('should support JSDoc @link for setters and getters', () => {
-        let file = read(distFolder + '/injectables/TodoStore.html');
+        const file = read(distFolder + '/injectables/TodoStore.html');
         expect(file).to.contain('or link to <a href="../classes/Todo.html">Todo');
         expect(file).to.contain('ore link to <a href="../classes/Todo.html">Todo');
     });
 
     it('should support JSDoc @link for inputs', () => {
-        let file = read(distFolder + '/components/HeaderComponent.html');
+        const file = read(distFolder + '/components/HeaderComponent.html');
         expect(file).to.contain('_fullName <a href="https://compodoc.app/">https://compodoc.app/');
     });
 
     it('should not crash with invalid JSDoc @link tags', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
+        const file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('if this {@link AboutComponent.fullName} does not crash');
         expect(file).to.contain('if this {@link undefined} does not crash');
     });
 
     it('should support multiple decorators for component for example', () => {
-        let file = read(distFolder + '/components/AboutComponent.html');
+        const file = read(distFolder + '/components/AboutComponent.html');
         expect(file).to.contain('<code>src/app/about/about.component.ts</code>');
     });
 
     it('should not have bootstraped component in components menu entry', () => {
-        let file = read(distFolder + '/js/menu-wc.js');
+        const file = read(distFolder + '/js/menu-wc.js');
         expect(file).to.not.contain(
             '<a href="components/AppComponent.html" data-type="entity-link" >AppComponent</a>'
         );
+    });
+
+    it('should support @example', () => {
+        expect(todoMVCComponentFile).to.contain(
+            '">&lt;todomvc&gt;The example of the component&lt;'
+        );
+    });
+
+    it('should support double layer spread for modules', () => {
+        const file = read(distFolder + '/modules/HeaderModule.html');
+        expect(file).to.contain('href="../components/HeaderComponent.html">HeaderComponent');
     });
 });

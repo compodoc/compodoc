@@ -17,7 +17,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 <li class="title">
                     {{#if customLogo}}
                     <a href="index.html" data-type="index-link">
-                        <img alt="" class="img-responsive" data-type="custom-logo" src={{strip-url "/images/" customLogo}}>
+                        <img alt="" class="img-responsive" data-type="custom-logo" data-src="{{strip-url "images/" customLogo}}">
                     </a>
                     {{else}}
                     <a href="index.html" data-type="index-link">{{documentationMainName}}</a>
@@ -61,6 +61,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <li class="link">
                                     <a href="dependencies.html" data-type="chapter-link">
                                         <span class="icon ion-ios-list"></span>{{t "dependencies" }}
+                                    </a>
+                                </li>
+                            {{/orLength}}
+                        {{/unless}}
+                        {{#unless disableProperties}}
+                            {{#orLength packageProperties}}
+                                <li class="link">
+                                    <a href="properties.html" data-type="chapter-link">
+                                        <span class="icon ion-ios-apps"></span>{{t "properties" }}
                                     </a>
                                 </li>
                             {{/orLength}}

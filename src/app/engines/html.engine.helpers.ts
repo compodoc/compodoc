@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 
 import { BreakCommaHelper } from './html-engine-helpers/break-comma.helper';
 import { BreakLinesHelper } from './html-engine-helpers/break-lines.helper';
+import { CapitalizeHelper } from './html-engine-helpers/capitalize.helper';
 import { CleanParagraphHelper } from './html-engine-helpers/clean-paragraph.helper';
 import { CompareHelper } from './html-engine-helpers/compare.helper';
 import { DebugHelper } from './html-engine-helpers/debug.helper';
@@ -33,6 +34,7 @@ import { OneParameterHasHelper } from './html-engine-helpers/one-parameter-has.h
 import { OrLengthHelper } from './html-engine-helpers/or-length.helper';
 import { OrHelper } from './html-engine-helpers/or.helper';
 import { ParseDescriptionHelper } from './html-engine-helpers/parse-description.helper';
+import { ParsePropertyHelper } from './html-engine-helpers/parse-property.helper';
 import { RelativeURLHelper } from './html-engine-helpers/relative-url.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
 import { StripURLHelper } from './html-engine-helpers/strip-url.helper';
@@ -73,10 +75,12 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'short-url', new ShortURLHelper());
         this.registerHelper(bars, 'strip-url', new StripURLHelper());
         this.registerHelper(bars, 't', new I18nHelper());
+        this.registerHelper(bars, 'capitalize', new CapitalizeHelper());
+        this.registerHelper(bars, 'parse-property', new ParsePropertyHelper());
     }
 
     private registerHelper(bars, key: string, helper: IHtmlEngineHelper) {
-        Handlebars.registerHelper(key, function() {
+        Handlebars.registerHelper(key, function () {
             // tslint:disable-next-line:no-invalid-this
             return helper.helperFunc.apply(helper, [this, ..._.slice(arguments as any)]);
         });

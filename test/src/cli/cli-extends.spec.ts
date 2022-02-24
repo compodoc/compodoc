@@ -39,6 +39,14 @@ describe('CLI simple generation - extends app', () => {
         expect(appComponentFile).to.contain('itisme');
     });
 
+    it('DoNothingDirective extends ADirective', () => {
+        const file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('Extends');
+        expect(file).to.contain(
+            'code><a href="../directives/ADirective.html" target="_self" >ADirective'
+        );
+    });
+
     it('MyInitialClass extends SubClassA', () => {
         expect(myInitialClassFile).to.contain('meh');
         expect(myInitialClassFile).to.contain('myproperty');
@@ -51,7 +59,7 @@ describe('CLI simple generation - extends app', () => {
     });
 
     it('CharactersService extends AbstractService', () => {
-        let file = read(distFolder + '/injectables/CharactersService.html');
+        const file = read(distFolder + '/injectables/CharactersService.html');
         expect(file).to.contain(
             'code><a href="../injectables/AbstractService.html" target="_self" >AbstractService'
         );

@@ -12,5 +12,15 @@
     "devDependencies": {
         "@compodoc/compodoc": "https://github.com/compodoc/compodoc/tarball/develop",
         "typescript": "~3.1.1"
-    }
+    },
+    "description": "Demo for project",
+    "keywords": [
+        "documentation",
+        "angular"
+    ],
+    "homepage": "https://github.com/just-a-repo",
+    "bugs": "https://github.com/just-a-repo/issues",
+    "url": "https://github.com/just-a-repo",
+    "repository": "https://github.com/just-a-repo",
+    "author": "The author"
 }

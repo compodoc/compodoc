@@ -63,7 +63,8 @@ export class HtmlEngine {
             'miscellaneous-typealiases',
             'miscellaneous-enumerations',
             'additional-page',
-            'package-dependencies'
+            'package-dependencies',
+            'package-properties'
         ];
         if (templatePath) {
             if (

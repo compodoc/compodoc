@@ -3,12 +3,16 @@ import { FormsModule } from '@angular/forms';
 
 import { HeaderComponent } from './header.component';
 
+const COMPO = [HeaderComponent];
+
+const COMPOS = [...COMPO];
+
 /**
  * The header module
  */
 @NgModule({
     imports: [FormsModule],
-    declarations: [HeaderComponent],
+    declarations: [...COMPOS],
     exports: [HeaderComponent]
 })
 export class HeaderModule {}

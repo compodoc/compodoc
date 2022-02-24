@@ -59,5 +59,12 @@ describe('CLI nest projects support', () => {
                 '@OneToMany(type &#x3D;&gt; ArticleEntity, article &#x3D;&gt; article.author)'
             );
         });
+
+        it('it should contain a controller page with inheritance', () => {
+            const file = read(`${distFolder}/controllers/AppController.html`);
+            expect(file).to.contain(
+                'code><a href="../classes/ControllerBase.html" target="_self" >ControllerBase'
+            );
+        });
     });
 });

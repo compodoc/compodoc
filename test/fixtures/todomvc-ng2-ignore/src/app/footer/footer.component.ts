@@ -39,7 +39,13 @@ export class FooterComponent {
      *
      * @param {TodoStore} todoStore A TodoStore
      */
-    constructor(todoStore: TodoStore) {
+    constructor(
+        todoStore: TodoStore,
+        /**
+         * @internal
+         */
+        public internalConstructorProp: string = ''
+    ) {
         this.todoStore = todoStore;
     }
 
@@ -84,6 +90,11 @@ export class FooterComponent {
      * @ignore
      */
     @Input() ignoredInput: string;
+
+    /**
+     * @internal
+     */
+    @Input() internalInput: string;
 
     /**
      * @ignore

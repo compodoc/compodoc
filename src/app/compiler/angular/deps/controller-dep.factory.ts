@@ -15,7 +15,7 @@ export class ControllerDepFactory {
     ): IControllerDep {
         const sourceCode = srcFile.getText();
         const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
-        let infos: IControllerDep = {
+        const infos: IControllerDep = {
             name,
             id: 'controller-' + name + '-' + hash,
             file: file,
@@ -32,6 +32,9 @@ export class ControllerDepFactory {
                 infos.prefix = properties[0].text;
             }
         }
+        if (IO.extends) {
+            infos.extends = IO.extends;
+        }
         return infos;
     }
 }
@@ -45,4 +48,5 @@ export interface IControllerDep extends IDep {
     methodsClass: Array<any>;
     deprecated: boolean;
     deprecationMessage: string;
+    extends?: any;
 }

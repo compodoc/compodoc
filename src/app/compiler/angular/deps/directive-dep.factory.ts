@@ -9,9 +9,9 @@ export class DirectiveDepFactory {
     constructor(private helper: ComponentHelper) {}
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IDirectiveDep {
-        let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
-        let directiveDeps: IDirectiveDep = {
+        const sourceCode = srcFile.getText();
+        const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        const directiveDeps: IDirectiveDep = {
             name,
             id: 'directive-' + name + '-' + hash,
             file: file,
@@ -40,6 +40,9 @@ export class DirectiveDepFactory {
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
             directiveDeps.jsdoctags = IO.jsdoctags[0].tags;
+        }
+        if (IO.extends) {
+            directiveDeps.extends = IO.extends;
         }
         if (IO.implements && IO.implements.length > 0) {
             directiveDeps.implements = IO.implements;
@@ -80,4 +83,5 @@ export interface IDirectiveDep extends IDep {
     jsdoctags?: Array<string>;
     implements?: any;
     accessors?: Object;
+    extends?: any;
 }

@@ -37,6 +37,7 @@ export interface ConfigurationFileInterface {
     disableRoutesGraph: boolean;
     disableSearch: boolean;
     disableDependencies: boolean;
+    disableProperties: boolean;
     minimal: boolean;
     customFavicon: string;
     customLogo: string;

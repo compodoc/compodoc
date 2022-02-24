@@ -233,6 +233,35 @@ export class Application {
                     }
                 }
 
+                if (!Configuration.mainData.disableProperties) {
+                    const propertiesToCheck = [
+                        'version',
+                        'description',
+                        'keywords',
+                        'homepage',
+                        'bugs',
+                        'license',
+                        'repository',
+                        'author'
+                    ];
+                    let hasOneOfCheckedProperties = false;
+                    propertiesToCheck.forEach(prop => {
+                        if (prop in parsedData) {
+                            hasOneOfCheckedProperties = true;
+                            Configuration.mainData.packageProperties[prop] = parsedData[prop];
+                        }
+                    });
+                    if (hasOneOfCheckedProperties) {
+                        Configuration.addPage({
+                            name: 'properties',
+                            id: 'packageProperties',
+                            context: 'package-properties',
+                            depth: 0,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                        });
+                    }
+                }
+
                 this.processMarkdowns().then(
                     () => {
                         this.getDependenciesData();

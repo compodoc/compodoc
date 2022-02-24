@@ -96,12 +96,24 @@ export class JsdocParserUtil {
 
         const CODE_FENCE = /^\s*```(?!.*```)/;
         let inCode = false;
-        function readLine(line: string) {
+        let inExample = false; // first line with @example, end line with empty string or string or */
+        let nbLines = 0;
+        function readLine(line: string, index: number) {
             line = line.replace(/^\s*\*? ?/, '');
             line = line.replace(/\s*$/, '');
 
             if (CODE_FENCE.test(line)) {
                 inCode = !inCode;
+            }
+
+            if (line.indexOf('@example') !== -1) {
+                inExample = true;
+                line = '```html';
+            }
+
+            if (inExample && line === '') {
+                inExample = false;
+                line = '```';
             }
 
             if (!inCode) {
@@ -122,6 +134,8 @@ export class JsdocParserUtil {
 
         text = text.replace(/^\s*\/\*+/, '');
         text = text.replace(/\*+\/\s*$/, '');
+
+        nbLines = text.split(/\r\n?|\n/).length;
 
         text.split(/\r\n?|\n/).forEach(readLine);
 
@@ -272,8 +286,15 @@ export class JsdocParserUtil {
                         case SyntaxKind.JSDocLink:
                             if (JSDocNode.name) {
                                 let text = JSDocNode.name.escapedText;
-                                if (text === undefined && JSDocNode.name.left && JSDocNode.name.right) {
-                                    text = JSDocNode.name.left.escapedText + '.' + JSDocNode.name.right.escapedText;
+                                if (
+                                    text === undefined &&
+                                    JSDocNode.name.left &&
+                                    JSDocNode.name.right
+                                ) {
+                                    text =
+                                        JSDocNode.name.left.escapedText +
+                                        '.' +
+                                        JSDocNode.name.right.escapedText;
                                 }
                                 rawDescription += JSDocNode.text + '{@link ' + text + '}';
                             }

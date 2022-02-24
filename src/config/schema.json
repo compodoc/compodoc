@@ -284,6 +284,13 @@
             "default": false,
             "examples": [false]
         },
+        "disableProperties": {
+            "$id": "/properties/disableProperties",
+            "type": "boolean",
+            "title": "Do not add the properties list",
+            "default": false,
+            "examples": [false]
+        },
         "minimal": {
             "$id": "/properties/minimal",
             "type": "boolean",

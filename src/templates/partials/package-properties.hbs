@@ -1,0 +1,11 @@
+{{#if packageProperties}}
+    <ol class="breadcrumb">
+        <li>{{t "properties" }}</li>
+    </ol>
+    <ul class="properties-list">
+        {{#each packageProperties}}
+        <li>
+            <b>{{capitalize @key}}</b> : {{{parse-property this}}}</li>
+        {{/each}}
+    </ul>
+{{/if}}

@@ -725,6 +725,10 @@ export class ClassHelper {
                 continue;
             }
 
+            if (this.isInternal(member) && Configuration.mainData.disableInternal) {
+                continue;
+            }
+
             if (inputDecorator && inputDecorator.length > 0) {
                 inputs.push(this.visitInputAndHostBinding(member, inputDecorator[0], sourceFile));
                 if (ts.isSetAccessorDeclaration(member)) {
@@ -1215,7 +1219,17 @@ export class ClassHelper {
             let i = 0;
             let len = constr.parameters.length;
             for (i; i < len; i++) {
-                if (this.isPublic(constr.parameters[i])) {
+                const parameterOfConstructor = constr.parameters[i];
+                if (isIgnore(parameterOfConstructor)) {
+                    continue;
+                }
+                if (
+                    this.isInternal(parameterOfConstructor) &&
+                    Configuration.mainData.disableInternal
+                ) {
+                    continue;
+                }
+                if (this.isPublic(parameterOfConstructor)) {
                     _parameters.push(this.visitProperty(constr.parameters[i], sourceFile));
                 }
             }
@@ -1488,7 +1502,7 @@ export class ClassHelper {
             // For setter accessor, find type in first parameter
             if (property.parameters && property.parameters.length === 1) {
                 if (property.parameters[0].type) {
-                    _return.type = kindToType(property.parameters[0].type.kind);
+                    _return.type = this.visitType(property.parameters[0].type);
                 }
             }
         }

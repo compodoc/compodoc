@@ -115,6 +115,14 @@ describe('CLI disable flags', () => {
             expect(componentFile).not.to.contain('<code>internalMethod');
         });
 
+        it('Component input @internal ignored', () => {
+            expect(componentFile).not.to.contain('<code>internalInput');
+        });
+
+        it('Component internal constructor property ignored', () => {
+            expect(componentFile).not.to.contain('<b>internalConstructorProp</b>');
+        });
+
         it('should include methods marked as private', () => {
             expect(componentFile).to.contain('<code>privateMethod');
         });
@@ -279,7 +287,7 @@ describe('CLI disable flags', () => {
     describe('disabling dependencies with --disableDependencies', () => {
         before(function (done) {
             tmp.create(distFolder);
-            let ls = shell('node', [
+            const ls = shell('node', [
                 './bin/index-cli.js',
                 '-p',
                 './test/fixtures/sample-files/tsconfig.simple.json',
@@ -297,8 +305,34 @@ describe('CLI disable flags', () => {
         after(() => tmp.clean(distFolder));
 
         it('should not generate the dependencies list', () => {
-            let file = read(`${distFolder}/js/menu-wc.js`);
+            const file = read(`${distFolder}/js/menu-wc.js`);
             expect(file).not.to.contain('href="dependencies.html"');
+        });
+    });
+
+    describe('disabling properties with --disableProperties', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '--disableProperties',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should not generate the properties list', () => {
+            const file = read(`${distFolder}/js/menu-wc.js`);
+            expect(file).not.to.contain('href="properties.html"');
         });
     });
 

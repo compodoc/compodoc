@@ -195,7 +195,8 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'ng2-dragula',
             maintainer: 'valor-software',
-            tsconfig_path: './'
+            tsconfig_path: './libs/ng2-dragula/',
+            tsconfig_file: 'tsconfig.lib.json'
         },
         {
             name: 'angular2-tv-tracker',
