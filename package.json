@@ -1,6 +1,6 @@
 {
     "name": "@compodoc/compodoc",
-    "version": "1.1.18",
+    "version": "1.1.19",
     "description": "The missing documentation tool for your Angular application",
     "main": "dist/index.js",
     "bin": {
@@ -14,7 +14,7 @@
         "build": "rollup -c rollup/rollup.config.js && npm run build-schematics",
         "build-schematics": "tsc --project schematics/tsconfig.json && cp schematics/collection.json dist",
         "*********UTILS********": "*******************",
-        "changelog": " auto-changelog -o CH.md  --template tools/changelog-template.hbs -u",
+        "changelog": "auto-changelog -o CH.md  --template tools/changelog-template.hbs -u",
         "angularexpo": "npm run pretest && node tools/tests-angularexpo.js",
         "download-api-list": "node tools/download-api-list.js",
         "codecov": "codecov -f coverage/lcov_merged.info",
