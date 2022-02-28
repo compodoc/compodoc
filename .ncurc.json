@@ -1,4 +1,4 @@
 {
     "upgrade": true,
-    "reject": ["os-name", "chalk"]
+    "reject": ["os-name", "chalk", "pdfjs-dist"]
 }
