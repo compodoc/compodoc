@@ -596,13 +596,10 @@ export class RouterParserUtil {
             if (foundWithAliasInImports) {
                 if (typeof searchedImport !== 'undefined') {
                     const routePathIsBad = path => {
-                        let result = true;
-                        this.scannedFiles.forEach(scannedFile => {
-                            if (path === scannedFile.path) {
-                                result = false;
-                            }
-                        });
-                        return result;
+                        const result = this.scannedFiles.find(
+                            scannedFile => path === scannedFile.path
+                        );
+                        return !result;
                     };
 
                     const getIndicesOf = (searchStr, str, caseSensitive) => {
