@@ -164,4 +164,29 @@ describe('CLI Routes graph', () => {
             expect(file).to.contain('HomeComponent');
         });
     });
+
+    describe('should support route in external file', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/todomvc-ng2-simple-routing/src/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should correctly read external file', () => {
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('login');
+        });
+    });
 });

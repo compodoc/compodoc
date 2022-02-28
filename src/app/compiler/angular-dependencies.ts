@@ -93,6 +93,8 @@ export class AngularDependencies extends FrameworkDependencies {
 
         const sourceFiles = this.program.getSourceFiles() || [];
 
+        RouterParserUtil.scannedFiles = sourceFiles;
+
         sourceFiles.map((file: ts.SourceFile) => {
             const filePath = file.fileName;
 

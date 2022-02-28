@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LOGIN } from './login.routes';
 
 export const APP_ROUTES: Routes = [
+    ...LOGIN,
     { path: 'about', loadChildren: './about/about.module#AboutModule' },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }

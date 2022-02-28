@@ -15,6 +15,7 @@ const traverse = require('traverse');
 const ast = new Project();
 
 export class RouterParserUtil {
+    public scannedFiles: any[] = [];
     private routes: any[] = [];
     private incompleteRoutes = [];
     private modules = [];
@@ -595,15 +596,21 @@ export class RouterParserUtil {
             if (foundWithAliasInImports) {
                 if (typeof searchedImport !== 'undefined') {
                     const routePathIsBad = path => {
-                        return typeof ast.getSourceFile(path) == 'undefined';
+                        let result = true;
+                        this.scannedFiles.forEach(scannedFile => {
+                            if (path === scannedFile.path) {
+                                result = false;
+                            }
+                        });
+                        return result;
                     };
 
                     const getIndicesOf = (searchStr, str, caseSensitive) => {
-                        var searchStrLen = searchStr.length;
+                        const searchStrLen = searchStr.length;
                         if (searchStrLen == 0) {
                             return [];
                         }
-                        var startIndex = 0,
+                        let startIndex = 0,
                             index,
                             indices = [];
                         if (!caseSensitive) {
