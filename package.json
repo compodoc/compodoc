@@ -113,7 +113,7 @@
         "minimist": "^1.2.5",
         "opencollective-postinstall": "^2.0.3",
         "os-name": "4.0.1",
-        "pdfjs-dist": "2.13.216",
+        "pdfjs-dist": "2.12.313",
         "pdfmake": "^0.2.4",
         "semver": "^7.3.5",
         "traverse": "^0.6.6",
