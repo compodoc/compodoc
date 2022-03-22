@@ -672,7 +672,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support component metadata entryComponents', () => {
         expect(aboutComponentFile).to.contain(
-            '<code><a href="../classes/Todo.html" target="_self" >TodoComponent</a></code>'
+            '<code><a href="../components/TodoComponent.html" target="_self" >TodoComponent</a></code>'
         );
     });
 
@@ -913,5 +913,10 @@ describe('CLI simple generation - big app', () => {
     it('should support double layer spread for modules', () => {
         const file = read(distFolder + '/modules/HeaderModule.html');
         expect(file).to.contain('href="../components/HeaderComponent.html">HeaderComponent');
+    });
+
+    it('should support class name includes an interface name', () => {
+        const file = read(distFolder + '/classes/Container.html');
+        expect(file).to.contain('href="../classes/AaBb.html" target="_self" >AaBb');
     });
 });

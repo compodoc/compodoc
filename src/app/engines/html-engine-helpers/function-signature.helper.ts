@@ -14,8 +14,8 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
             return `${arg.name}${this.getOptionalString(arg)}: () => void`;
         }
 
-        let argums = arg.function.map(argu => {
-            let _result = DependenciesEngine.find(argu.type);
+        const argums = arg.function.map(argu => {
+            const _result = DependenciesEngine.find(argu.type);
             if (_result) {
                 if (_result.source === 'internal') {
                     let path = _result.data.type;
@@ -26,7 +26,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                         _result.data.name
                     }.html">${argu.type}</a>`;
                 } else {
-                    let path = AngularVersionUtil.getApiLink(
+                    const path = AngularVersionUtil.getApiLink(
                         _result.data,
                         Configuration.mainData.angularVersion
                     );
@@ -35,7 +35,7 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                     )}: <a href="${path}" target="_blank">${argu.type}</a>`;
                 }
             } else if (BasicTypeUtil.isKnownType(argu.type)) {
-                let path = BasicTypeUtil.getTypeUrl(argu.type);
+                const path = BasicTypeUtil.getTypeUrl(argu.type);
                 return `${argu.name}${this.getOptionalString(
                     arg
                 )}: <a href="${path}" target="_blank">${argu.type}</a>`;

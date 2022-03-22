@@ -63,8 +63,8 @@ export class DependenciesEngine {
     }
 
     private updateModulesDeclarationsExportsTypes() {
-        let mergeTypes = entry => {
-            let directive = this.findInCompodocDependencies(
+        const mergeTypes = entry => {
+            const directive = this.findInCompodocDependencies(
                 entry.name,
                 this.directives,
                 entry.file
@@ -74,7 +74,7 @@ export class DependenciesEngine {
                 entry.id = directive.data.id;
             }
 
-            let component = this.findInCompodocDependencies(
+            const component = this.findInCompodocDependencies(
                 entry.name,
                 this.components,
                 entry.file
@@ -84,7 +84,7 @@ export class DependenciesEngine {
                 entry.id = component.data.id;
             }
 
-            let pipe = this.findInCompodocDependencies(entry.name, this.pipes, entry.file);
+            const pipe = this.findInCompodocDependencies(entry.name, this.pipes, entry.file);
             if (typeof pipe.data !== 'undefined') {
                 entry.type = 'pipe';
                 entry.id = pipe.data.id;
@@ -147,7 +147,8 @@ export class DependenciesEngine {
     private findInCompodocDependencies(name, data, file?): IApiSourceResult<any> {
         let _result = {
             source: 'internal',
-            data: undefined
+            data: undefined,
+            score: 0
         };
         let nameFoundCounter = 0;
         if (data && data.length > 0) {
@@ -155,16 +156,29 @@ export class DependenciesEngine {
                 if (typeof name !== 'undefined') {
                     if (typeof file !== 'undefined') {
                         if (
+                            name === data[i].name &&
+                            file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
+                        ) {
+                            nameFoundCounter += 1;
+                            _result.data = data[i];
+                            _result.score = 2;
+                        } else if (
                             name.indexOf(data[i].name) !== -1 &&
                             file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
                         ) {
                             nameFoundCounter += 1;
                             _result.data = data[i];
+                            _result.score = 1;
                         }
                     } else {
-                        if (name.indexOf(data[i].name) !== -1) {
+                        if (name === data[i].name) {
                             nameFoundCounter += 1;
                             _result.data = data[i];
+                            _result.score = 2;
+                        } else if (name.indexOf(data[i].name) !== -1) {
+                            nameFoundCounter += 1;
+                            _result.data = data[i];
+                            _result.score = 1;
                         }
                     }
                 }
@@ -176,17 +190,16 @@ export class DependenciesEngine {
                 for (let i = 0; i < data.length; i++) {
                     if (typeof name !== 'undefined') {
                         if (typeof file !== 'undefined') {
-                            if (
-                                name === data[i].name &&
-                                file.replace(/\\/g, '/').indexOf(data[i].file) !== -1
-                            ) {
+                            if (name === data[i].name) {
                                 found = true;
                                 _result.data = data[i];
+                                _result.score = 2;
                             }
                         } else {
                             if (name === data[i].name) {
                                 found = true;
                                 _result.data = data[i];
+                                _result.score = 2;
                             }
                         }
                     }
@@ -194,7 +207,8 @@ export class DependenciesEngine {
                 if (!found) {
                     _result = {
                         source: 'internal',
-                        data: undefined
+                        data: undefined,
+                        score: 0
                     };
                 }
             }
@@ -203,8 +217,8 @@ export class DependenciesEngine {
     }
 
     private manageDuplicatesName() {
-        let processDuplicates = (element, index, array) => {
-            let elementsWithSameName = _.filter(array, { name: element.name });
+        const processDuplicates = (element, index, array) => {
+            const elementsWithSameName = _.filter(array, { name: element.name });
             if (elementsWithSameName.length > 1) {
                 // First element is the reference for duplicates
                 for (let i = 1; i < elementsWithSameName.length; i++) {
@@ -251,15 +265,19 @@ export class DependenciesEngine {
             () => AngularApiUtil.findApi(name)
         ];
 
-        for (let searchFunction of searchFunctions) {
-            let result = searchFunction();
+        let bestScore = 0;
+        let bestResult = undefined;
 
-            if (result.data) {
-                return result;
+        for (let searchFunction of searchFunctions) {
+            const result = searchFunction();
+
+            if (result.data && result.score > bestScore) {
+                bestScore = result.score;
+                bestResult = result;
             }
         }
 
-        return undefined;
+        return bestResult;
     }
 
     public update(updatedData): void {
@@ -372,7 +390,7 @@ export class DependenciesEngine {
     }
 
     public findInCompodoc(name: string) {
-        let mergedData = _.concat(
+        const mergedData = _.concat(
             [],
             this.modules,
             this.components,
@@ -390,7 +408,7 @@ export class DependenciesEngine {
             this.miscellaneous.variables,
             this.miscellaneous.functions
         );
-        let result = _.find(mergedData, { name: name } as any);
+        const result = _.find(mergedData, { name: name } as any);
         return result || false;
     }
 

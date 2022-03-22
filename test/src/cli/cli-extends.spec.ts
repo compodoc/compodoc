@@ -43,7 +43,7 @@ describe('CLI simple generation - extends app', () => {
         const file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('Extends');
         expect(file).to.contain(
-            'code><a href="../directives/ADirective.html" target="_self" >ADirective'
+            '<a href="../directives/ADirective.html" target="_self" >ADirective'
         );
     });
 
