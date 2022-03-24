@@ -133,12 +133,12 @@
         "@types/traverse": "0.6.32",
         "@typescript-eslint/eslint-plugin": "5.16.0",
         "@typescript-eslint/parser": "5.16.0",
-        "@wdio/cli": "7.19.0",
-        "@wdio/local-runner": "7.19.0",
-        "@wdio/mocha-framework": "7.19.0",
-        "@wdio/sauce-service": "7.19.0",
-        "@wdio/spec-reporter": "7.19.0",
-        "@wdio/sync": "7.19.0",
+        "@wdio/cli": "7.19.1",
+        "@wdio/local-runner": "7.19.1",
+        "@wdio/mocha-framework": "7.19.1",
+        "@wdio/sauce-service": "7.19.1",
+        "@wdio/spec-reporter": "7.19.1",
+        "@wdio/sync": "7.19.1",
         "auto-changelog": "2.4.0",
         "chai": "4.3.6",
         "chromedriver": "99.0.0",
@@ -163,7 +163,7 @@
         "supertest": "6.2.2",
         "ts-node": "10.7.0",
         "tslib": "2.3.1",
-        "wdio-chromedriver-service": "7.3.1"
+        "wdio-chromedriver-service": "7.3.2"
     },
     "collective": {
         "type": "opencollective",

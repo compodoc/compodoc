@@ -28,7 +28,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - name: Cache node modules
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
@@ -90,7 +90,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - name: Cache node modules
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
