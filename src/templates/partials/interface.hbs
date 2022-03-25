@@ -54,7 +54,7 @@
         {{/if}}
 
         {{#orLength interface.properties interface.methods}}
-        <section>
+        <section data-compodoc="block-index">
             <h3 id="index">{{t "index" }}</h3>
             <table class="table table-sm table-bordered index-table">
                 <tbody>
@@ -133,7 +133,7 @@
         {{/if}}
 
         {{#if interface.properties}}
-            <section>
+            <section data-compodoc="block-properties">
                 <h3 id="inputs">{{t "properties" }}</h3>
                 {{#each interface.properties}}
                     <table class="table table-sm table-bordered">
