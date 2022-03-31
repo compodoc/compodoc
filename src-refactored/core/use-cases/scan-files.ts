@@ -1,6 +1,12 @@
 import * as path from 'path';
+import * as fg from 'fast-glob';
 
-const DEFAULT_EXCLUDED_DIRECTORIES = ['.git', 'node_modules'];
+export const EXCLUDE_PATTERNS = [
+    '**/.git',
+    '**/node_modules',
+    '**/*.d.ts',
+    '**/*.spec.ts'
+];
 
 /**
  * Handle scan source code
@@ -20,27 +26,25 @@ export class ScanFile {
     }
 
     public async scan(folder: string): Promise<string[]> {
+        const pattern = `${path.resolve(folder)}/**/*.{ts,tsx}`;
+
         return new Promise<string[]>((resolve, reject) => {
-            const finder = require('findit2')(path.resolve(folder));
+            const stream = fg.stream(pattern, {
+                ignore: EXCLUDE_PATTERNS,
+                absolute: true
+            })
 
-            finder.on('directory', function(dir, stat, stop) {
-                let base = path.basename(dir);
-                if (DEFAULT_EXCLUDED_DIRECTORIES.includes(base)) {
-                    stop();
-                }
-            });
-
-            finder.on('error', error => {
+            stream.on('error', error => {
                 reject(error);
             });
 
-            finder.on('file', (file, stat) => {
-                if (path.extname(file) === '.ts') {
+            stream.on('data', (file) => {
+                if (path.extname(file) === '.ts' || path.extname(file) === '.tsx') {
                     this.scannedFiles.push(file);
                 }
             });
 
-            finder.on('end', () => {
+            stream.on('end', () => {
                 resolve(this.scannedFiles);
             });
         });

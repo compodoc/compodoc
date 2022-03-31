@@ -97,7 +97,7 @@
         "cosmiconfig": "^7.0.1",
         "decache": "^4.6.1",
         "fancy-log": "^2.0.0",
-        "findit2": "^2.2.3",
+        "fast-glob": "^3.2.11",
         "fs-extra": "^10.0.1",
         "glob": "^7.2.0",
         "handlebars": "^4.7.7",
