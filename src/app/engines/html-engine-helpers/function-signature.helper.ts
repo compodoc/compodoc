@@ -81,13 +81,32 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                 }
                 if (_result) {
                     if (_result.source === 'internal') {
-                        let path = _result.data.type;
-                        if (_result.data.type === 'class') {
-                            path = 'classe';
+                        let href;
+                        if  (
+                            _result.data.type === 'miscellaneous' ||
+                            (_result.data.ctype && _result.data.ctype === 'miscellaneous')) {
+
+                            let mainpage = '';
+                            switch (_result.data.subtype) {
+                                case 'enum':
+                                    mainpage = 'enumerations';
+                                    break;
+                                case 'function':
+                                    mainpage = 'functions';
+                                    break;
+                                case 'typealias':
+                                    mainpage = 'typealiases';
+                                    break;
+                                case 'variable':
+                                    mainpage = 'variables';
+                            }
+                            href = '../' + _result.data.ctype + '/' + mainpage + '.html#' + _result.data.name;
+                        } else {
+                            const path = _result.data.type === 'class' ?  'classe' : _result.data.type;
+                            href = '../' + path + 's/' + _result.data.name + '.html';
                         }
-                        args += `${arg.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
-                            _result.data.name
-                        }.html" target="_self">${Handlebars.escapeExpression(arg.type)}</a>`;
+
+                        args += `${arg.name}${this.getOptionalString(arg)}: <a href="${href}" target="_self">${Handlebars.escapeExpression(arg.type)}</a>`;
                     } else {
                         let path = AngularVersionUtil.getApiLink(
                             _result.data,
