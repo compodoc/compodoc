@@ -25,8 +25,12 @@ export class RouterParserUtil {
     private modulesWithRoutes = [];
     private transformAngular8ImportSyntax =
         /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
+    private transformAngular8ImportSyntaxComponent =
+        /(['"]loadComponent['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
     private transformAngular8ImportSyntaxAsyncAwait =
         /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
+    private transformAngular8ImportSyntaxComponentAsyncAwait =
+        /(['"]loadComponent['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -81,12 +85,22 @@ export class RouterParserUtil {
             '$1"$4#$6"'
         );
 
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntaxComponent,
+            '$1"$4#$6"'
+        );
+
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntaxComponentAsyncAwait,
+            '$1"$4#$6"'
+        );
+
         return JSON5.parse(routesWithoutSpaces);
     }
 
     public cleanRawRoute(route: string): string {
         let routesWithoutSpaces = route.replace(/ /gm, '');
-        let testTrailingComma = routesWithoutSpaces.indexOf('},]');
+        const testTrailingComma = routesWithoutSpaces.indexOf('},]');
         if (testTrailingComma !== -1) {
             routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
         }
@@ -98,6 +112,16 @@ export class RouterParserUtil {
 
         routesWithoutSpaces = routesWithoutSpaces.replace(
             this.transformAngular8ImportSyntaxAsyncAwait,
+            '$1"$4#$6"'
+        );
+
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntaxComponent,
+            '$1"$4#$6"'
+        );
+
+        routesWithoutSpaces = routesWithoutSpaces.replace(
+            this.transformAngular8ImportSyntaxComponentAsyncAwait,
             '$1"$4#$6"'
         );
 
@@ -217,10 +241,16 @@ export class RouterParserUtil {
 
     public foundLazyModuleWithPath(modulePath: string): string {
         // path is like app/customers/customers.module#CustomersModule
-        let split = modulePath.split('#');
-        let lazyModulePath = split[0];
-        let lazyModuleName = split[1];
+        const split = modulePath.split('#');
+        const lazyModuleName = split[1];
         return lazyModuleName;
+    }
+
+    public foundLazyComponentWithPath(componentPath: string): string {
+        // path is like app/customers/customers.component#CustomersComponent
+        const split = componentPath.split('#');
+        const lazyComponentName = split[1];
+        return lazyComponentName;
     }
 
     public constructRoutesTree() {
@@ -364,6 +394,14 @@ export class RouterParserUtil {
 
                             route.children[i].children = [];
                             route.children[i].children.push(_rawModule);
+                        }
+                    }
+                    if (route.children[i].loadComponent) {
+                        let child = this.foundLazyComponentWithPath(
+                            route.children[i].loadComponent
+                        );
+                        if (child) {
+                            route.children[i].component = child;
                         }
                     }
                     loopRoutesParser(route.children[i]);

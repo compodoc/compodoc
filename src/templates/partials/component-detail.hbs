@@ -159,6 +159,13 @@
             </tr>
             {{/if}}
 
+            {{#if component.standalone}}
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>{{component.standalone}}</code></td>
+            </tr>
+            {{/if}}
+
             {{#if component.styleUrls}}
             <tr>
                 <td class="col-md-3">styleUrls</td>

@@ -64,6 +64,19 @@ export class ComponentHelper {
         return this.symbolHelper.getSymbolDeps(props, 'inputs', srcFile);
     }
 
+    public getComponentStandalone(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>,
+        srcFile: ts.SourceFile
+    ): boolean {
+        let result = null;
+        const parsedData = this.symbolHelper.getSymbolDeps(props, 'standalone', srcFile);
+        if (parsedData.length === 1) {
+            result = JSON.parse(parsedData[0]);
+        }
+
+        return result;
+    }
+
     public getComponentTemplate(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile

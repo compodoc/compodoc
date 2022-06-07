@@ -10,9 +10,9 @@ export class ComponentDepFactory {
 
     public create(file: any, srcFile: any, name: any, props: any, IO: any): IComponentDep {
         // console.log(util.inspect(props, { showHidden: true, depth: 10 }));
-        let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
-        let componentDep: IComponentDep = {
+        const sourceCode = srcFile.getText();
+        const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        const componentDep: IComponentDep = {
             name,
             id: 'component-' + name + '-' + hash,
             file: file,
@@ -44,6 +44,8 @@ export class ComponentDepFactory {
 
             hostBindings: IO.hostBindings,
             hostListeners: IO.hostListeners,
+
+            standalone: this.helper.getComponentStandalone(props, srcFile),
 
             description: IO.description,
             rawdescription: IO.rawdescription,
@@ -114,6 +116,8 @@ export interface IComponentDep extends IDep {
 
     deprecated: boolean;
     deprecationMessage: string;
+
+    standalone: boolean;
 
     entryComponents: Array<any>;
 
