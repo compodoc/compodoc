@@ -311,7 +311,7 @@ const TEST_FOLDER = 'angularexpo-tests',
         {
             name: 'covalent',
             maintainer: 'Teradata',
-            tsconfig_path: './src/',
+            tsconfig_path: './apps/docs-app/',
             tsconfig_file: 'tsconfig.app.json'
         },
         {
