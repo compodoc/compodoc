@@ -28,6 +28,10 @@ export class MarkdownEngine {
         const renderer = new this.markedInstance.Renderer();
         renderer.code = (code, language) => {
             let highlighted = code;
+            if (language === 'mermaid') {
+                //  setting the `mermaid` css class will enable the diagram to be rendered
+                return '<div class="mermaid">'+code+'</div>';
+            }
             if (!language) {
                 language = 'none';
             }
