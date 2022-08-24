@@ -459,7 +459,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                 {{#unless hideGenerator}}
                     <li class="divider"></li>
                     <li class="copyright">
-                        {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank">
+                        {{t "generated-using" }} <a href="https://compodoc.app/" target="_blank" rel="noopener noreferrer">
                             {{#if theme }}
                             {{#compare theme "indexof" 'readthedocs,vagrant,postmark'}}
                             <img data-src="images/compodoc-vectorise-inverted.png" class="img-responsive" data-type="compodoc-logo">

@@ -74,7 +74,7 @@
             <div class="row">
                 {{#if module.declarations}}
                 <div class="col-sm-3">
-                    <h3>{{t "declarations" }}<a href="https://angular.io/api/core/NgModule#declarations" target="_blank"
+                    <h3>{{t "declarations" }}<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" rel="noopener noreferrer"
                             title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.declarations}}
@@ -87,7 +87,7 @@
                 {{/if}}
                 {{#if module.entryComponents}}
                 <div class="col-sm-3">
-                    <h3>{{t "entrycomponents" }}<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank"
+                    <h3>{{t "entrycomponents" }}<a href="https://angular.io/api/core/NgModule#entryComponents" target="_blank" rel="noopener noreferrer"
                             title="Official documentation about module entryComponents"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
                     <ul class="list-group">
                         {{#each module.entryComponents}}
@@ -100,7 +100,7 @@
                 {{/if}}
                 {{#if module.providers}}
                 <div class="col-sm-3">
-                    <h3>{{t "providers" }}<a href="https://angular.io/api/core/NgModule#providers" target="_blank"
+                    <h3>{{t "providers" }}<a href="https://angular.io/api/core/NgModule#providers" target="_blank" rel="noopener noreferrer"
                             title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.providers}}
@@ -118,7 +118,8 @@
                 {{/if}}
                 {{#if module.controllers}}
                 <div class="col-sm-3">
-                    <h3>{{t "controllers" }}<a href="https://docs.nestjs.com/controllers" target="_blank" title="Official documentation about module controllers"><span
+                    <h3>{{t "controllers" }}<a href="https://docs.nestjs.com/controllers" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module controllers"><span
                                 class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.controllers}}
@@ -131,7 +132,8 @@
                 {{/if}}
                 {{#if module.imports}}
                 <div class="col-sm-3">
-                    <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" title="Official documentation about module imports"><span
+                    <h3>{{t "imports" }}<a href="https://angular.io/api/core/NgModule#imports" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module imports"><span
                                 class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.imports}}
@@ -148,7 +150,8 @@
                 {{/if}}
                 {{#if module.exports}}
                 <div class="col-sm-3">
-                    <h3>{{t "exports" }}<a href="https://angular.io/api/core/NgModule#exports" target="_blank" title="Official documentation about module exports"><span
+                    <h3>{{t "exports" }}<a href="https://angular.io/api/core/NgModule#exports" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module exports"><span
                                 class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.exports}}
@@ -165,7 +168,7 @@
                 {{/if}}
                 {{#if module.bootstrap}}
                 <div class="col-sm-3">
-                    <h3>{{t "bootstrap" }}<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank"
+                    <h3>{{t "bootstrap" }}<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" rel="noopener noreferrer"
                             title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.bootstrap}}
@@ -178,12 +181,13 @@
                 {{/if}}
                 {{#if module.schemas}}
                 <div class="col-sm-3">
-                    <h3>{{t "schemas" }}<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" title="Official documentation about module schemas"><span
+                    <h3>{{t "schemas" }}<a href="https://angular.io/api/core/NgModule#schemas" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module schemas"><span
                                 class="icon ion-ios-information-circle-outline"></a></h3>
                     <ul class="list-group">
                         {{#each module.schemas}}
                         <li class="list-group-item">
-                            <a href="https://angular.io/api/core/{{this}}" target="_blank">{{this}}</a>
+                            <a href="https://angular.io/api/core/{{this}}" target="_blank" rel="noopener noreferrer">{{this}}</a>
                         </li>
                         {{/each}}
                     </ul>
