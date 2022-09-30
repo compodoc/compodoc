@@ -48,10 +48,11 @@ import {
 } from './angular/dependencies.interfaces';
 
 import { v4 as uuidv4 } from 'uuid';
+import { getNodeDecorators, nodeHasDecorator } from '../../utils/node.util';
 
 const crypto = require('crypto');
 const { marked } = require('marked');
-const ast = new Project();
+const project = new Project();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
@@ -316,9 +317,9 @@ export class AngularDependencies extends FrameworkDependencies {
         // Search in file for variable statement as routes definitions
 
         const astFile =
-            typeof ast.getSourceFile(initialSrcFile.fileName) !== 'undefined'
-                ? ast.getSourceFile(initialSrcFile.fileName)
-                : ast.addSourceFileAtPath(initialSrcFile.fileName);
+            typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
+                ? project.getSourceFile(initialSrcFile.fileName)
+                : project.addSourceFileAtPath(initialSrcFile.fileName);
 
         const variableRoutesStatements = astFile.getVariableStatements();
         let hasRoutesStatements = false;
@@ -366,8 +367,9 @@ export class AngularDependencies extends FrameworkDependencies {
                 const sourceCode = srcFile.getText();
                 const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
 
-                if (node.decorators) {
+                if (nodeHasDecorator(node)) {
                     let classWithCustomDecorator = false;
+                    const nodeDecorators = getNodeDecorators(node);
                     const visitDecorator = (visitedDecorator, index) => {
                         let deps: IDep;
 
@@ -520,9 +522,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                 outputSymbols.directives.push(directiveDeps);
                             }
                         } else {
-                            const hasMultipleDecoratorsWithInternalOne = this.hasInternalDecorator(
-                                node.decorators
-                            );
+                            const hasMultipleDecoratorsWithInternalOne =
+                                this.hasInternalDecorator(nodeDecorators);
                             // Just a class
                             if (
                                 !classWithCustomDecorator &&
@@ -557,7 +558,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         return false;
                     };
 
-                    node.decorators.filter(filterByDecorators).forEach(visitDecorator);
+                    nodeDecorators.filter(filterByDecorators).forEach(visitDecorator);
                 } else if (node.symbol) {
                     if (node.symbol.flags === ts.SymbolFlags.Class) {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody);

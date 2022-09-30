@@ -919,4 +919,9 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/classes/Container.html');
         expect(file).to.contain('href="../classes/AaBb.html" target="_self" >AaBb');
     });
+
+    it('should support service/injectable export in module providers', () => {
+        const file = read(distFolder + '/modules/FooterModule.html');
+        expect(file).to.contain('href="../injectables/EmitterService.html">EmitterService');
+    });
 });

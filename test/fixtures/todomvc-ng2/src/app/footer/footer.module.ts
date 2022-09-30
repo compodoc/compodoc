@@ -1,5 +1,6 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { EmitterService } from 'app/shared/services/emitter.service';
 
 import { footerModuleComponents } from './index';
 
@@ -9,7 +10,7 @@ import { footerModuleComponents } from './index';
 @NgModule({
     imports: [BrowserModule],
     declarations: [...footerModuleComponents],
-    exports: [FooterComponent],
+    exports: [FooterComponent, EmitterService],
     schemas: [NO_ERRORS_SCHEMA]
 })
 export class FooterModule {}

@@ -47,6 +47,11 @@ export class SymbolHelper {
             type = 'module';
         } else if (name.toLowerCase().indexOf('directive') !== -1) {
             type = 'directive';
+        } else if (
+            name.toLowerCase().indexOf('injectable') !== -1 ||
+            name.toLowerCase().indexOf('service') !== -1
+        ) {
+            type = 'injectable';
         }
         return type;
     }
