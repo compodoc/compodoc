@@ -13,6 +13,7 @@ import { StringifyObjectLiteralExpression } from '../../../../../utils/object-li
 import DependenciesEngine from '../../../../engines/dependencies.engine';
 import Configuration from '../../../../configuration';
 import { StringifyArrowFunction } from '../../../../../utils/arrow-function.util';
+import { getNodeDecorators, nodeHasDecorator } from '../../../../../utils/node.util';
 
 const crypto = require('crypto');
 const { marked } = require('marked');
@@ -49,7 +50,7 @@ export class ClassHelper {
     }
 
     private getDecoratorOfType(node, decoratorType) {
-        let decorators = node.decorators || [];
+        let decorators = getNodeDecorators(node) || [];
         let result = [];
         const len = decorators.length;
 
@@ -536,7 +537,8 @@ export class ClassHelper {
         }
         members = this.visitMembers(classDeclaration.members, sourceFile);
 
-        if (classDeclaration.decorators) {
+        if (nodeHasDecorator(classDeclaration)) {
+            const classDecorators = getNodeDecorators(classDeclaration);
             // Loop and search for official decorators at top-level :
             // Angular : @NgModule, @Component, @Directive, @Injectable, @Pipe
             // Nestjs : @Controller, @Module, @Injectable
@@ -546,18 +548,16 @@ export class ClassHelper {
             let isPipe = false;
             let isModule = false;
             let isController = false;
-            for (let a = 0; a < classDeclaration.decorators.length; a++) {
+            for (let a = 0; a < classDecorators.length; a++) {
                 //console.log(classDeclaration.decorators[i].expression);
 
                 // RETURN TOO EARLY FOR MANY DECORATORS !!!!
                 // iterating through the decorators array we have to keep the flags `true` values from the previous loop iteration
-                isDirective =
-                    isDirective || this.isDirectiveDecorator(classDeclaration.decorators[a]);
-                isService = isService || this.isServiceDecorator(classDeclaration.decorators[a]);
-                isPipe = isPipe || this.isPipeDecorator(classDeclaration.decorators[a]);
-                isModule = isModule || this.isModuleDecorator(classDeclaration.decorators[a]);
-                isController =
-                    isController || this.isControllerDecorator(classDeclaration.decorators[a]);
+                isDirective = isDirective || this.isDirectiveDecorator(classDecorators[a]);
+                isService = isService || this.isServiceDecorator(classDecorators[a]);
+                isPipe = isPipe || this.isPipeDecorator(classDecorators[a]);
+                isModule = isModule || this.isModuleDecorator(classDecorators[a]);
+                isController = isController || this.isControllerDecorator(classDecorators[a]);
             }
             if (isDirective) {
                 return {
@@ -1170,8 +1170,9 @@ export class ClassHelper {
             result.description = marked(cleanedDescription);
         }
 
-        if (property.decorators) {
-            result.decorators = this.formatDecorators(property.decorators);
+        if (nodeHasDecorator(property)) {
+            const propertyDecorators = getNodeDecorators(property);
+            result.decorators = this.formatDecorators(propertyDecorators);
         }
 
         if (property.modifiers) {
@@ -1313,8 +1314,9 @@ export class ClassHelper {
             result.description = marked(cleanedDescription);
         }
 
-        if (method.decorators) {
-            result.decorators = this.formatDecorators(method.decorators);
+        if (nodeHasDecorator(method)) {
+            const methodDecorators = getNodeDecorators(method);
+            result.decorators = this.formatDecorators(methodDecorators);
         }
 
         if (method.modifiers) {
@@ -1506,8 +1508,10 @@ export class ClassHelper {
                 }
             }
         }
-        if (property.decorators) {
-            _return.decorators = this.formatDecorators(property.decorators).filter(
+
+        if (nodeHasDecorator(property)) {
+            const propertyDecorators = getNodeDecorators(property);
+            _return.decorators = this.formatDecorators(propertyDecorators).filter(
                 item => item.name !== 'Input' && item.name !== 'HostBinding'
             );
         }
