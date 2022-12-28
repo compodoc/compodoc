@@ -342,6 +342,7 @@ export class Application {
                                     name: 'overview',
                                     id: 'overview',
                                     context: 'overview',
+                                    depth: 0,
                                     pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
                                 });
                             } else {
