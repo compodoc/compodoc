@@ -80,7 +80,7 @@
         "url": "https://github.com/compodoc/compodoc/issues"
     },
     "engines": {
-        "node": ">= 12.0.0"
+        "node": ">= 14.0.0"
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
