@@ -1,4 +1,4 @@
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 import * as path from 'path';
 
 import { decode } from 'html-entities';

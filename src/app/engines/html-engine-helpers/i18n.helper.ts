@@ -1,4 +1,4 @@
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
 

@@ -1,5 +1,5 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 
 import { ts, SyntaxKind } from 'ts-morph';
 

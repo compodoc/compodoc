@@ -1,5 +1,5 @@
 import { IHtmlEngineHelper } from './html-engine-helper.interface';
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 
 export class CleanParagraphHelper implements IHtmlEngineHelper {
     public helperFunc(context: any, text: string) {

@@ -1,4 +1,5 @@
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
+
 import * as _ from 'lodash';
 
 import { BreakCommaHelper } from './html-engine-helpers/break-comma.helper';

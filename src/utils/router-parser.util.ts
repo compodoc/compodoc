@@ -1,4 +1,4 @@
-import * as Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 import * as JSON5 from 'json5';
 import * as _ from 'lodash';
 import * as path from 'path';
