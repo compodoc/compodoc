@@ -11,7 +11,7 @@
         "postinstall": "opencollective-postinstall || exit 0",
         "*********BUILD********": "*******************",
         "prebuild": "rimraf dist/*",
-        "build": "rollup -c rollup/rollup.config.js && npm run build-schematics",
+        "build": "rollup -c rollup/rollup.config.mjs --bundleConfigAsCjs && npm run build-schematics",
         "build-schematics": "tsc --project schematics/tsconfig.json && cp schematics/collection.json dist",
         "*********UTILS********": "*******************",
         "changelog": "auto-changelog -o CH.md  --template tools/changelog-template.hbs -u",
@@ -41,7 +41,7 @@
         "format:write": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
         "*********REFACTORING********": "*******************",
         "test-refactoring": "cross-env nyc --nycrc-path=.nycrc-refactoring --reporter=lcov --report-dir=coverage-refactoring mocha --config src-refactored/.mocharc.json",
-        "build-refactoring": "rollup -c rollup/rollup.config-refactored.js",
+        "build-refactoring": "rollup -c rollup/rollup.config-refactored.mjs --bundleConfigAsCjs",
         "lint-refactoring": "eslint src-refactored/**/*.ts"
     },
     "watch": {
