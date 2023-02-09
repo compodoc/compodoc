@@ -12,3 +12,4 @@ export { TRANSLATION_SK_SK } from './sk-SK';
 export { TRANSLATION_ZH_CN } from './zh-CN';
 export { TRANSLATION_ZH_TW } from './zh-TW';
 export { TRANSLATION_KO_KR } from './ko-KR';
+export { TRANSLATION_BG_BG } from './bg-BG';
