@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 
 import {
+    TRANSLATION_BG_BG,
     TRANSLATION_DE_DE,
     TRANSLATION_EN_US,
     TRANSLATION_ES_ES,
@@ -28,6 +29,7 @@ class I18nEngine {
     }
 
     private availablesLanguages = {
+        'bg-BG': 'bg-BG',
         'de-DE': 'de-DE',
         'en-US': 'en-US',
         'es-ES': 'es-ES',
