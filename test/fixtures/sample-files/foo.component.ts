@@ -32,6 +32,26 @@ export class FooComponent {
     @Input() exampleInput: string = 'foo';
 
     /**
+     * An example required input
+     */
+    @Input({ required: true }) requiredInput: string;
+
+    /**
+     * An example aliased input
+     */
+    @Input('aliasedInput') aliasedInput: string;
+
+    /**
+     * An example aliased input using the object syntax
+     */
+    @Input({ alias: 'aliasedInput' }) objectAliasedInput: string;
+
+    /**
+     * An example aliased required input using the object syntax
+     */
+    @Input({ alias: 'aliasedInput', required: true }) aliasedAndRequired: string;
+
+    /**
      * An example output
      */
     @Output() exampleOutput: EventEmitter<{ foo: string }> = new EventEmitter();

@@ -1447,12 +1447,32 @@ export class ClassHelper {
     private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
         let inArgs = inDecorator.expression.arguments;
         let _return: any = {};
-        _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
+
+        let getRequiredField = () =>
+            inArgs[0].properties.find(property => property.name.escapedText === 'required');
+        let getAliasProperty = () =>
+            inArgs[0].properties.find(property => property.name.escapedText === 'alias');
+
+        let isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
+        let isInputConfigObjectLiteralExpression = inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
+        let hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
+        let hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
+
+        _return.name = isInputConfigStringLiteral
+            ? inArgs[0].text
+            : hasAlias
+            ? getAliasProperty().initializer.text
+            : property.name.text;
         _return.defaultValue = property.initializer
             ? this.stringifyDefaultValue(property.initializer)
             : undefined;
         _return.deprecated = false;
         _return.deprecationMessage = '';
+
+        if (hasRequiredField) {
+            _return.optional = getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
+        }
+        
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
