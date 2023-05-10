@@ -49,7 +49,7 @@ export class FooComponent {
     /**
      * An example aliased required input using the object syntax
      */
-    @Input({ alias: 'aliasedInput' }) aliasedAndRequired: string;
+    @Input({ alias: 'aliasedInput', required: true }) aliasedAndRequired: string;
 
     /**
      * An example output
