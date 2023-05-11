@@ -6,7 +6,7 @@ import * as path from 'path';
 import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
-const { marked } = require('marked');
+
 const traverse = require('traverse');
 const crypto = require('crypto');
 const babel = require('@babel/core');
@@ -42,6 +42,7 @@ import {
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
 import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
+import { markedAcl } from '../utils/marked.acl';
 
 const cwd = process.cwd();
 let startTime = new Date();
@@ -1115,7 +1116,7 @@ export class Application {
                         let readme = MarkdownEngine.readNeighbourReadmeFile(
                             Configuration.mainData.modules[i].file
                         );
-                        Configuration.mainData.modules[i].readme = marked(readme);
+                        Configuration.mainData.modules[i].readme = markedAcl(readme);
                     }
                     Configuration.addPage({
                         path: 'modules',
@@ -1150,7 +1151,7 @@ export class Application {
                     if (MarkdownEngine.hasNeighbourReadmeFile(pipe.file)) {
                         logger.info(` ${pipe.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(pipe.file);
-                        pipe.readme = marked(readme);
+                        pipe.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'pipes',
@@ -1191,7 +1192,7 @@ export class Application {
                     if (MarkdownEngine.hasNeighbourReadmeFile(classe.file)) {
                         logger.info(` ${classe.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(classe.file);
-                        classe.readme = marked(readme);
+                        classe.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'classes',
@@ -1232,7 +1233,7 @@ export class Application {
                     if (MarkdownEngine.hasNeighbourReadmeFile(interf.file)) {
                         logger.info(` ${interf.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(interf.file);
-                        interf.readme = marked(readme);
+                        interf.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'interfaces',
@@ -1533,7 +1534,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(component.file)) {
                         logger.info(` ${component.name} has a README file, include it`);
                         let readmeFile = MarkdownEngine.readNeighbourReadmeFile(component.file);
-                        component.readme = marked(readmeFile);
+                        component.readme = markedAcl(readmeFile);
                     }
                     let page = {
                         path: 'components',
@@ -1638,7 +1639,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(directive.file)) {
                         logger.info(` ${directive.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(directive.file);
-                        directive.readme = marked(readme);
+                        directive.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'directives',
@@ -1680,7 +1681,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(injec.file)) {
                         logger.info(` ${injec.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(injec.file);
-                        injec.readme = marked(readme);
+                        injec.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'injectables',
@@ -1722,7 +1723,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(interceptor.file)) {
                         logger.info(` ${interceptor.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(interceptor.file);
-                        interceptor.readme = marked(readme);
+                        interceptor.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'interceptors',
@@ -1762,7 +1763,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(guard.file)) {
                         logger.info(` ${guard.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(guard.file);
-                        guard.readme = marked(readme);
+                        guard.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'guards',

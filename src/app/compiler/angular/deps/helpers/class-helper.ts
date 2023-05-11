@@ -14,9 +14,9 @@ import DependenciesEngine from '../../../../engines/dependencies.engine';
 import Configuration from '../../../../configuration';
 import { StringifyArrowFunction } from '../../../../../utils/arrow-function.util';
 import { getNodeDecorators, nodeHasDecorator } from '../../../../../utils/node.util';
+import { markedAcl } from '../../../../../utils/marked.acl';
 
 const crypto = require('crypto');
-const { marked } = require('marked');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
@@ -291,7 +291,7 @@ export class ClassHelper {
                     if (typeof comment !== 'undefined') {
                         const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
                         setSignature.rawdescription = cleanedDescription;
-                        setSignature.description = marked(cleanedDescription);
+                        setSignature.description = markedAcl(cleanedDescription);
                     }
                 }
 
@@ -326,7 +326,7 @@ export class ClassHelper {
                     if (typeof comment !== 'undefined') {
                         const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
                         getSignature.rawdescription = cleanedDescription;
-                        getSignature.description = marked(cleanedDescription);
+                        getSignature.description = markedAcl(cleanedDescription);
                     }
                 }
 
@@ -478,7 +478,7 @@ export class ClassHelper {
         if (symbol) {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration, sourceFile);
             rawdescription = this.jsdocParserUtil.parseComment(comment);
-            description = marked(rawdescription);
+            description = markedAcl(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
@@ -1044,7 +1044,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             result.rawdescription = cleanedDescription;
-            result.description = marked(cleanedDescription);
+            result.description = markedAcl(cleanedDescription);
         }
         let jsdoctags = this.jsdocParserUtil.getJSDocs(method);
         if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
@@ -1073,7 +1073,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             result.rawdescription = cleanedDescription;
-            result.description = marked(cleanedDescription);
+            result.description = markedAcl(cleanedDescription);
         }
 
         if (jsdoctags && jsdoctags.length >= 1) {
@@ -1109,7 +1109,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             result.rawdescription = cleanedDescription;
-            result.description = marked(cleanedDescription);
+            result.description = markedAcl(cleanedDescription);
         }
 
         if (method.modifiers) {
@@ -1167,7 +1167,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(property, sourceFile);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             result.rawdescription = cleanedDescription;
-            result.description = marked(cleanedDescription);
+            result.description = markedAcl(cleanedDescription);
         }
 
         if (nodeHasDecorator(property)) {
@@ -1311,7 +1311,7 @@ export class ClassHelper {
             const comment = this.jsdocParserUtil.getMainCommentOfNode(method, sourceFile);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             result.rawdescription = cleanedDescription;
-            result.description = marked(cleanedDescription);
+            result.description = markedAcl(cleanedDescription);
         }
 
         if (nodeHasDecorator(method)) {
@@ -1379,7 +1379,7 @@ export class ClassHelper {
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             _return.rawdescription = cleanedDescription;
-            _return.description = marked(cleanedDescription);
+            _return.description = markedAcl(cleanedDescription);
 
             if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
                 this.checkForDeprecation(jsdoctags[0].tags, _return);
@@ -1391,7 +1391,7 @@ export class ClassHelper {
                 if (typeof property.jsDoc[0].comment !== 'undefined') {
                     const rawDescription = property.jsDoc[0].comment;
                     _return.rawdescription = rawDescription;
-                    _return.description = marked(rawDescription);
+                    _return.description = markedAcl(rawDescription);
                 }
             }
         }
@@ -1454,7 +1454,8 @@ export class ClassHelper {
             inArgs[0].properties.find(property => property.name.escapedText === 'alias');
 
         let isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
-        let isInputConfigObjectLiteralExpression = inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
+        let isInputConfigObjectLiteralExpression =
+            inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
         let hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
         let hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
 
@@ -1472,7 +1473,7 @@ export class ClassHelper {
         if (hasRequiredField) {
             _return.optional = getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
         }
-        
+
         if (!_return.description) {
             if (property.jsDoc) {
                 if (property.jsDoc.length > 0) {
@@ -1489,7 +1490,7 @@ export class ClassHelper {
                         );
                         const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
                         _return.rawdescription = cleanedDescription;
-                        _return.description = marked(cleanedDescription);
+                        _return.description = markedAcl(cleanedDescription);
                     }
                 }
             }
@@ -1558,7 +1559,7 @@ export class ClassHelper {
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
             _return.rawdescription = cleanedDescription;
-            _return.description = marked(cleanedDescription);
+            _return.description = markedAcl(cleanedDescription);
 
             if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
                 this.checkForDeprecation(jsdoctags[0].tags, _return);
@@ -1571,7 +1572,7 @@ export class ClassHelper {
                     if (typeof property.jsDoc[0].comment !== 'undefined') {
                         const rawDescription = property.jsDoc[0].comment;
                         _return.rawdescription = rawDescription;
-                        _return.description = marked(rawDescription);
+                        _return.description = markedAcl(rawDescription);
                     }
                 }
             }

@@ -10,11 +10,11 @@ import { logger } from './logger';
 import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 import { kindToType } from './kind-to-type';
 import { JsdocParserUtil } from './jsdoc-parser.util';
+import { markedAcl } from './marked.acl';
 
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
 const newLine = ts.sys.newLine;
-const { marked } = require('marked');
 
 export function getNewLine(): string {
     return newLine;
@@ -39,7 +39,7 @@ export function markedtags(tags: Array<any>) {
     let mtags = tags;
     _.forEach(mtags, tag => {
         const rawComment = jsdocParserUtil.parseJSDocNode(tag);
-        tag.comment = marked(LinkParser.resolveLinks(rawComment));
+        tag.comment = markedAcl(LinkParser.resolveLinks(rawComment));
     });
     return mtags;
 }

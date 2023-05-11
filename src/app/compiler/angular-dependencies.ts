@@ -49,9 +49,9 @@ import {
 
 import { v4 as uuidv4 } from 'uuid';
 import { getNodeDecorators, nodeHasDecorator } from '../../utils/node.util';
+import { markedAcl } from '../../utils/marked.acl';
 
 const crypto = require('crypto');
-const { marked } = require('marked');
 const project = new Project();
 
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
@@ -830,7 +830,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                         variableNode.jsDoc[0]
                                     );
                                     deps.rawdescription = rawDescription;
-                                    deps.description = marked(rawDescription);
+                                    deps.description = markedAcl(rawDescription);
                                 }
                                 if (isModuleWithProviders(variableNode)) {
                                     const routingInitializer = getModuleWithProviders(variableNode);
@@ -1426,7 +1426,7 @@ export class AngularDependencies extends FrameworkDependencies {
             if (node.jsDoc.length > 0) {
                 if (typeof node.jsDoc[0].comment !== 'undefined') {
                     const rawDescription = this.jsdocParserUtil.parseJSDocNode(node.jsDoc[0]);
-                    description = marked(rawDescription);
+                    description = markedAcl(rawDescription);
                 }
             }
         }
