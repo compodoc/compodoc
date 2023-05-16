@@ -115,3 +115,7 @@ body.dark {
     background: #484848;
     color: #fafafa;
 }
+
+.dark .content table {
+    --bs-table-color: #fafafa;
+}

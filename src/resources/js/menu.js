@@ -133,12 +133,16 @@ document.addEventListener('DOMContentLoaded', function () {
         /**
          * Native bootstrap doesn't wait DOMContentLoaded event to start his job, re do it here
          */
-        var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
+        var Collapses = document.querySelectorAll('[data-bs-toggle="collapse"]');
         for (var o = 0, cll = Collapses.length; o < cll; o++) {
             var collapse = Collapses[o],
                 options = {};
             options.duration = collapse.getAttribute('data-duration');
-            var c = new Collapse(collapse, options);
+            const targetId = collapse.getAttribute('data-bs-target');
+            if (targetId !== '') {
+                options.parent = collapse;
+                const c = new BSN.Collapse(targetId, options);
+            }
         }
 
         // collapse menu
