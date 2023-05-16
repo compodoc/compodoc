@@ -1,3 +1,4 @@
 export const DoNothingDirectiveSchema = {
-    selector: '[donothing]'
+    selector: '[donothing]',
+    exportAs: 'donothing'
 };

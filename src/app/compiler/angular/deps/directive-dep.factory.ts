@@ -21,6 +21,7 @@ export class DirectiveDepFactory {
             sourceCode: srcFile.getText(),
             selector: this.helper.getComponentSelector(props, srcFile),
             providers: this.helper.getComponentProviders(props, srcFile),
+            exportAs: this.helper.getComponentExportAs(props, srcFile),
 
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
@@ -65,6 +66,7 @@ export interface IDirectiveDep extends IDep {
 
     selector: string;
     providers: Array<any>;
+    exportAs: string;
 
     inputsClass: any;
     outputsClass: any;

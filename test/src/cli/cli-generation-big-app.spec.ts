@@ -924,4 +924,9 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/modules/FooterModule.html');
         expect(file).to.contain('href="../injectables/EmitterService.html">EmitterService');
     });
+
+    it('should support exportAs for directives', () => {
+        const file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('<code>donothing</code>');
+    });
 });
