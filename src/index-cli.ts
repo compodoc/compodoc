@@ -742,7 +742,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     );
                     process.exit(1);
                 } else {
-                    let _file = path.join(
+                    const _file = path.join(
                         path.join(process.cwd(), path.dirname(Configuration.mainData.tsconfig)),
                         path.basename(Configuration.mainData.tsconfig)
                     );
@@ -750,7 +750,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
                     logger.info('Using tsconfig file ', _file);
 
-                    let tsConfigFile = readConfig(_file);
+                    const tsConfigFile = readConfig(_file);
                     if (tsConfigFile.files) {
                         scannedFiles = tsConfigFile.files;
                         // Normalize path of these files
