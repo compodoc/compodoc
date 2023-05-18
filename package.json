@@ -175,5 +175,8 @@
             "pre-commit": "pretty-quick --staged --pattern \"**/*.ts\""
         }
     },
-    "schematics": "./dist/collection.json"
+    "schematics": "./dist/collection.json",
+    "ng-add": {
+        "save": "devDependencies"
+    }
 }
