@@ -221,6 +221,10 @@ a[href] {
     height: 100%;
 }
 
+.content-data .tab-pane.active {
+    opacity: 1;
+}
+
 .content-data .exampleContainer {
     height: 100%;
     width: 100%;
