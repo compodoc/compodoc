@@ -76,6 +76,12 @@
                         <td class="col-md-9">{{pipe.pure}}</td>
                     </tr>
                     {{/if}}
+                    {{#if pipe.standalone}}
+                    <tr>
+                        <td class="col-md-3">standalone</td>
+                        <td class="col-md-9"><code>{{pipe.standalone}}</code></td>
+                    </tr>
+                    {{/if}}
                 </tbody>
             </table>
         </section>

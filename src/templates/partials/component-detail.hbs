@@ -166,6 +166,17 @@
             </tr>
             {{/if}}
 
+            {{#if component.imports}}
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                    {{#each component.imports}}
+                        {{> link-type type=name }}
+                    {{/each}}
+                </td>
+            </tr>
+            {{/if}}
+
             {{#if component.styleUrls}}
             <tr>
                 <td class="col-md-3">styleUrls</td>

@@ -104,6 +104,13 @@
                     </tr>
                     {{/if}}
 
+                    {{#if directive.standalone}}
+                    <tr>
+                        <td class="col-md-3">standalone</td>
+                        <td class="col-md-9"><code>{{directive.standalone}}</code></td>
+                    </tr>
+                    {{/if}}
+
                     {{#if directive.exportAs}}
                     <tr>
                         <td class="col-md-3">{{t "exportAs" }}</td>

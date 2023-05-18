@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ListComponent } from './list.component';
 
 import { TodoModule } from './todo/';
+import { TodoComponent } from './todo/todo.component';
 
 const MODULES = [TodoModule, BrowserModule];
 
@@ -19,7 +20,7 @@ const MODULES = [TodoModule, BrowserModule];
  * | remaining | displayRemaining |
  */
 @NgModule({
-    imports: [MODULES],
+    imports: [MODULES, TodoComponent],
     declarations: [ListComponent],
     exports: [ListComponent]
 })

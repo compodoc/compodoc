@@ -499,6 +499,12 @@ export class AngularDependencies extends FrameworkDependencies {
                                 rawdescription: IO.rawdescription,
                                 properties: IO.properties,
                                 methods: IO.methods,
+                                standalone: this.componentHelper.getComponentStandalone(
+                                    props,
+                                    srcFile
+                                )
+                                    ? true
+                                    : false,
                                 pure: this.componentHelper.getComponentPure(props, srcFile),
                                 ngname: this.componentHelper.getComponentName(props, srcFile),
                                 sourceCode: srcFile.getText(),

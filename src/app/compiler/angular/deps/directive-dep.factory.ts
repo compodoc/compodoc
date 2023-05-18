@@ -23,6 +23,8 @@ export class DirectiveDepFactory {
             providers: this.helper.getComponentProviders(props, srcFile),
             exportAs: this.helper.getComponentExportAs(props, srcFile),
 
+            standalone: this.helper.getComponentStandalone(props, srcFile) ? true : false,
+
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
 
@@ -70,6 +72,8 @@ export interface IDirectiveDep extends IDep {
 
     inputsClass: any;
     outputsClass: any;
+
+    standalone: boolean;
 
     deprecated: boolean;
     deprecationMessage: string;

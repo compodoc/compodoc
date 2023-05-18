@@ -929,4 +929,23 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('<code>donothing</code>');
     });
+
+    it('should support standalone for components, directives and pipes', () => {
+        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<td class="col-md-3">standalone</td>');
+        expect(file).to.contain('<td class="col-md-3">imports</td>');
+        expect(file).to.contain(
+            '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
+        );
+        expect(file).to.contain(
+            '<code><a href="../modules/AboutModule.html" target="_self" >AboutModule</a></code>'
+        );
+
+        file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('<code>donothing</code>');
+        expect(file).to.contain('<td class="col-md-3">standalone</td>');
+
+        file = read(distFolder + '/pipes/StandAlonePipe.html');
+        expect(file).to.contain('<td class="col-md-3">standalone</td>');
+    });
 });
