@@ -389,19 +389,6 @@ export function detectIndent(str, count): string {
     return indentString(stripIndent(str), count || 0);
 }
 
-const IGNORED_DIRECTORIES = ['.git', 'node_modules'];
+export const INCLUDE_PATTERNS = ['**/*.ts', '**/*.tsx'];
 
-export function ignoreDirectory(dir: string): boolean {
-    let base = path.basename(dir);
-
-    if (IGNORED_DIRECTORIES.includes(base)) return true;
-
-    try {
-        fs.accessSync(dir, fs.constants.W_OK);
-    } catch (err) {
-        logger.warn('Ignoring inaccessible folder', dir);
-        return true;
-    }
-
-    return false;
-}
+export const EXCLUDE_PATTERNS = ['**/.git', '**/node_modules', '**/*.d.ts', '**/*.spec.ts'];
