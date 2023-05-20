@@ -436,9 +436,6 @@ export class AngularDependencies extends FrameworkDependencies {
                                 IO
                             );
                             deps = entityDep;
-                            if (deps.name === 'Comment') {
-                                console.log(deps.properties[0]);
-                            }
 
                             if (typeof IO.ignore === 'undefined') {
                                 outputSymbols.entities.push(entityDep);

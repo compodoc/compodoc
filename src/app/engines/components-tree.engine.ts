@@ -98,7 +98,7 @@ class ComponentsTreeEngine {
                 () => {
                     this.findChildrenAndParents().then(
                         () => {
-                            console.log('this.componentsForTree: ', this.componentsForTree);
+                            // console.log('this.componentsForTree: ', this.componentsForTree);
                             resolve();
                         },
                         e => {
