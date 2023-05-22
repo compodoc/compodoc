@@ -80,6 +80,7 @@ export const TRANSLATION_ZH_CN = {
     providers: '提供商列表',
     pure: 'Pure',
     readme: '手册',
+    required: '必需的',
     reset: '重置',
     'results-matching': '匹配的结果',
     returns: '返回',

@@ -948,4 +948,9 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/pipes/StandAlonePipe.html');
         expect(file).to.contain('<td class="col-md-3">standalone</td>');
     });
+
+    it('should support required for inputs', () => {
+        const file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<i>Required : </i>&nbsp;<b>true</b>');
+    });
 });

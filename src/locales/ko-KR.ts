@@ -80,6 +80,7 @@ export const TRANSLATION_KO_KR = {
     providers: '제공자',
     pure: 'Pure',
     readme: 'README',
+    required: '필수의',
     reset: '초기화',
     'results-matching': '개의 결과가 일치했습니다',
     returns: '반환',

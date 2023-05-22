@@ -80,6 +80,7 @@ export const TRANSLATION_NL_NL = {
     providers: 'Providers',
     pure: 'Puur',
     readme: 'README',
+    required: 'Vereist',
     reset: 'Reset',
     'results-matching': 'overeenkomende resultaten',
     returns: 'Returns',

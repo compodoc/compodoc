@@ -80,6 +80,7 @@ export const TRANSLATION_EN_US = {
     providers: 'Providers',
     pure: 'Pure',
     readme: 'README',
+    required: 'Required',
     reset: 'Reset',
     'results-matching': 'results matching',
     returns: 'Returns',

@@ -80,6 +80,7 @@ export const TRANSLATION_JA_JP = {
     providers: 'プロバイダー',
     pure: 'Pure',
     readme: 'README',
+    required: '必要',
     reset: 'リセット',
     'results-matching': '件の結果が一致しました',
     returns: '戻り値',

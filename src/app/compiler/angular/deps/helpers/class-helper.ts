@@ -1445,32 +1445,45 @@ export class ClassHelper {
     }
 
     private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
-        let inArgs = inDecorator.expression.arguments;
+        const inArgs = inDecorator.expression.arguments;
+
         let _return: any = {};
 
-        let getRequiredField = () =>
+        let isInputConfigStringLiteral = false;
+        let isInputConfigObjectLiteralExpression = false;
+        let hasRequiredField = false;
+        let hasAlias = false;
+
+        const getRequiredField = () =>
             inArgs[0].properties.find(property => property.name.escapedText === 'required');
-        let getAliasProperty = () =>
+        const getAliasProperty = () =>
             inArgs[0].properties.find(property => property.name.escapedText === 'alias');
 
-        let isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
-        let isInputConfigObjectLiteralExpression =
-            inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
-        let hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
-        let hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
+        if (inArgs.length > 0 && inArgs[0].properties) {
+            isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
+            isInputConfigObjectLiteralExpression =
+                inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
+            hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
+            hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
 
-        _return.name = isInputConfigStringLiteral
-            ? inArgs[0].text
-            : hasAlias
-            ? getAliasProperty().initializer.text
-            : property.name.text;
+            _return.name = isInputConfigStringLiteral
+                ? inArgs[0].text
+                : hasAlias
+                ? getAliasProperty().initializer.text
+                : property.name.text;
+
+            _return.required = !!getRequiredField();
+        } else {
+            _return.name = property.name.text;
+        }
+
         _return.defaultValue = property.initializer
             ? this.stringifyDefaultValue(property.initializer)
             : undefined;
         _return.deprecated = false;
         _return.deprecationMessage = '';
 
-        if (hasRequiredField) {
+        if (inArgs.length > 0 && inArgs[0].properties && hasRequiredField) {
             _return.optional = getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
         }
 
@@ -1509,9 +1522,9 @@ export class ClassHelper {
             }
             // Try to get inferred type
             if (property.symbol) {
-                let symbol: ts.Symbol = property.symbol;
+                const symbol: ts.Symbol = property.symbol;
                 if (symbol.valueDeclaration) {
-                    let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                    const symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
                         symbol,
                         symbol.valueDeclaration
                     );

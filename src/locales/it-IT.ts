@@ -80,6 +80,7 @@ export const TRANSLATION_IT_IT = {
     providers: 'Providers',
     pure: 'Pure',
     readme: 'README',
+    required: 'Necessario',
     reset: 'Reset',
     'results-matching': 'corrispondenza',
     returns: 'Returns',

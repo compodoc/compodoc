@@ -80,6 +80,7 @@ export const TRANSLATION_SK_SK = {
     providers: 'Providers',
     pure: 'Pure',
     readme: 'README',
+    required: 'Požadovaný',
     reset: 'Resetovať',
     'results-matching': 'výsledkov pre',
     returns: 'Návratová hodnota',

@@ -26,7 +26,10 @@ export class TodoComponent {
     /**
      * The entry todo from the parent list
      */
-    @Input() todo: Todo;
+    @Input({
+        required: true
+    })
+    todo: Todo;
 
     unionVariable: string[] | Todo;
 

@@ -80,6 +80,7 @@ export const TRANSLATION_PL_PL = {
     providers: 'Dostarczyciele',
     pure: 'Czysty',
     readme: 'README',
+    required: 'Wymagany',
     reset: 'Reset',
     'results-matching': 'pasujących wyników',
     returns: 'Zwraca',

@@ -80,6 +80,7 @@ export const TRANSLATION_BG_BG = {
     providers: 'Providers',
     pure: 'Pure',
     readme: 'README',
+    required: 'Задължително',
     reset: 'Нулиране',
     'results-matching': 'намерени резултати',
     returns: 'Returns',

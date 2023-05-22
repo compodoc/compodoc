@@ -80,6 +80,7 @@ export const TRANSLATION_HU_HU = {
     providers: 'Providerek',
     pure: 'Pure',
     readme: 'README',
+    required: 'Kívánt',
     reset: 'Visszaállít',
     'results-matching': 'találat',
     returns: 'Visszatérési érték',
