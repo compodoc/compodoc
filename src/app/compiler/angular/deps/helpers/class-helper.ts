@@ -1459,20 +1459,24 @@ export class ClassHelper {
         const getAliasProperty = () =>
             inArgs[0].properties.find(property => property.name.escapedText === 'alias');
 
-        if (inArgs.length > 0 && inArgs[0].properties) {
+        if (inArgs.length > 0) {
             isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
+
             isInputConfigObjectLiteralExpression =
                 inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
-            hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
-            hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
+
+            if (isInputConfigObjectLiteralExpression && inArgs[0].properties) {
+                hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
+                hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
+
+                _return.required = !!getRequiredField();
+            }
 
             _return.name = isInputConfigStringLiteral
                 ? inArgs[0].text
                 : hasAlias
                 ? getAliasProperty().initializer.text
                 : property.name.text;
-
-            _return.required = !!getRequiredField();
         } else {
             _return.name = property.name.text;
         }
