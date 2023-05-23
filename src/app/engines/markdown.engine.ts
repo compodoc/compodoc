@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 
 import FileEngine from './file.engine';
+import { markedAcl } from '../../utils/marked.acl';
 
 const decache = require('decache');
 
@@ -22,8 +23,7 @@ export class MarkdownEngine {
     private static instance: MarkdownEngine;
     private constructor() {
         decache('marked');
-        const { marked } = require('marked');
-        this.markedInstance = marked;
+        this.markedInstance = markedAcl;
 
         const renderer = new this.markedInstance.Renderer();
         renderer.code = (code, language) => {

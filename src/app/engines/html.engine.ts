@@ -79,7 +79,7 @@ export class HtmlEngine {
 
         return Promise.all(
             partials.map(partial => {
-                let partialPath = this.determineTemplatePath(
+                const partialPath = this.determineTemplatePath(
                     templatePath,
                     'partials/' + partial + '.hbs'
                 );
@@ -89,7 +89,7 @@ export class HtmlEngine {
             })
         )
             .then(() => {
-                let pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
+                const pagePath = this.determineTemplatePath(templatePath, 'page.hbs');
                 return FileEngine.get(pagePath).then(data => {
                     this.cache.page = data;
                     this.compiledPage = Handlebars.compile(this.cache.page, {
@@ -99,7 +99,7 @@ export class HtmlEngine {
                 });
             })
             .then(() => {
-                let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
+                const menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
                 return FileEngine.get(menuPath).then(menuTemplate => {
                     this.precompiledMenu = Handlebars.compile(menuTemplate, {
                         preventIndent: true,
@@ -110,7 +110,7 @@ export class HtmlEngine {
     }
 
     public renderMenu(templatePath, data) {
-        let menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
+        const menuPath = this.determineTemplatePath(templatePath, 'partials/menu.hbs');
         return FileEngine.get(menuPath).then(menuTemplate => {
             data.menu = 'normal';
             return Handlebars.compile(menuTemplate, {
@@ -121,7 +121,7 @@ export class HtmlEngine {
     }
 
     public render(mainData: any, page: any): string {
-        let o = mainData;
+        const o = mainData;
         (Object as any).assign(o, page);
 
         // let mem = process.memoryUsage();
@@ -134,7 +134,7 @@ export class HtmlEngine {
     private determineTemplatePath(templatePath: string, filePath: string): string {
         let outPath = path.resolve(__dirname + '/../src/templates/' + filePath);
         if (templatePath) {
-            let testPath = path.resolve(
+            const testPath = path.resolve(
                 process.cwd() + path.sep + templatePath + path.sep + filePath
             );
             outPath = FileEngine.existsSync(testPath) ? testPath : outPath;
@@ -147,12 +147,12 @@ export class HtmlEngine {
             path.resolve(__dirname + '/../src/templates/partials/coverage-badge.hbs')
         ).then(
             data => {
-                let template: any = Handlebars.compile(data);
+                const template: any = Handlebars.compile(data);
                 coverageData.label = label;
-                let result = template({
+                const result = template({
                     data: coverageData
                 });
-                let testOutputDir = outputFolder.match(process.cwd());
+                const testOutputDir = outputFolder.match(process.cwd());
                 if (testOutputDir && testOutputDir.length > 0) {
                     outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }

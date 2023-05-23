@@ -21,6 +21,10 @@ export class DirectiveDepFactory {
             sourceCode: srcFile.getText(),
             selector: this.helper.getComponentSelector(props, srcFile),
             providers: this.helper.getComponentProviders(props, srcFile),
+            exportAs: this.helper.getComponentExportAs(props, srcFile),
+            hostDirectives: [...this.helper.getComponentHostDirectives(props)],
+
+            standalone: this.helper.getComponentStandalone(props, srcFile) ? true : false,
 
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
@@ -35,6 +39,7 @@ export class DirectiveDepFactory {
             methodsClass: IO.methods,
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
+
         if (Configuration.mainData.disableLifeCycleHooks) {
             directiveDeps.methodsClass = cleanLifecycleHooksFromMethods(directiveDeps.methodsClass);
         }
@@ -65,14 +70,18 @@ export interface IDirectiveDep extends IDep {
 
     selector: string;
     providers: Array<any>;
+    exportAs: string;
 
     inputsClass: any;
     outputsClass: any;
+
+    standalone: boolean;
 
     deprecated: boolean;
     deprecationMessage: string;
 
     hostBindings: any;
+    hostDirectives: any;
     hostListeners: any;
 
     propertiesClass: any;

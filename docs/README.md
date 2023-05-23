@@ -2,20 +2,20 @@
 
 ## Libraries used inside generate static HTML pages
 
--   bootstrap native : 1.1.0
+-   bootstrap native : 5.0.0
 -   d3 from d3-flextree : 3.x.x
 -   deep-iterator : 2.4.0
 -   es6-shim : 0.35.1
 -   EventDispatcher
 -   htmlparser : 2.0.0
 -   innersvg : 2.x.x
--   prism : 1.9.0
+-   prism : 1.29.0
 -   promise
--   svg-pan-zoom : 3.5.2
--   tablesort : 5.0.2
--   vis : 4.20.1
+-   svg-pan-zoom : 3.6.1
+-   tablesort : 5.4.0
+-   vis : 4.21.0
 -   zepto : 1.2.0
--   lunr : 2.1.5
+-   lunr : 2.3.9
 
 ## Entry files
 

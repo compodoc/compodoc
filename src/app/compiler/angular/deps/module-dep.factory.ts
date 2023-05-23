@@ -15,8 +15,8 @@ export class ModuleDepFactory {
         properties: ReadonlyArray<ts.ObjectLiteralElementLike>,
         IO: any
     ): IModuleDep {
-        let sourceCode = srcFile.getText();
-        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
+        const sourceCode = srcFile.getText();
+        const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         return {
             name,
             id: 'module-' + name + '-' + hash,

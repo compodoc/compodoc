@@ -88,6 +88,27 @@
             </tr>
             {{/if}}
 
+            {{#if component.hostDirectives}}
+                <tr>
+                    <td class="col-md-3">{{t "hostdirectives" }}</td>
+                    <td class="col-md-9">
+                        {{#each component.hostDirectives}}
+                            {{> link-type type=name }}<br/>
+                            {{#if this.inputs}}
+                                {{#compare this.inputs.length ">" 0}}
+                                    <div><i>&nbsp;{{t "inputs" }}</i> : {{#each inputs}}{{this}}&nbsp;{{/each}}</div>
+                                {{/compare}}
+                            {{/if}}
+                            {{#if this.outputs}}
+                                {{#compare this.outputs.length ">" 0}}
+                                    <div><i>&nbsp;{{t "outputs" }}</i> : {{#each outputs}}{{this}}&nbsp;{{/each}}</div>
+                                {{/compare}}
+                            {{/if}}
+                        {{/each}}
+                    </td>
+                </tr>
+                {{/if}}
+
             {{#if component.entryComponents}}
             <tr>
                 <td class="col-md-3">entryComponents</td>
@@ -161,8 +182,19 @@
 
             {{#if component.standalone}}
             <tr>
-                <td class="col-md-3">standalone</td>
+                <td class="col-md-3">{{t "standalone" }}</td>
                 <td class="col-md-9"><code>{{component.standalone}}</code></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.imports}}
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                    {{#each component.imports}}
+                        {{> link-type type=name }}
+                    {{/each}}
+                </td>
             </tr>
             {{/if}}
 

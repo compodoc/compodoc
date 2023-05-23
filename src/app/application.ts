@@ -6,7 +6,7 @@ import * as path from 'path';
 import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
-const { marked } = require('marked');
+
 const traverse = require('traverse');
 const crypto = require('crypto');
 const babel = require('@babel/core');
@@ -42,6 +42,8 @@ import {
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
 import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
+import { markedAcl } from '../utils/marked.acl';
+import { IComponentDep } from './compiler/angular/deps/component-dep.factory';
 
 const cwd = process.cwd();
 let startTime = new Date();
@@ -321,9 +323,9 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'];
-            let numberOfMarkdowns = 5;
-            let loop = () => {
+            const markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'];
+            const numberOfMarkdowns = 5;
+            const loop = () => {
                 if (i < numberOfMarkdowns) {
                     MarkdownEngine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then(
                         (readmeData: markdownReadedDatas) => {
@@ -374,7 +376,7 @@ export class Application {
                         }
                     );
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -599,7 +601,7 @@ export class Application {
                             Configuration.mainData.output,
                             Configuration.mainData
                         ).then(() => {
-                            generationPromiseResolve();
+                            generationPromiseResolve(true);
                             this.endCallback();
                             logger.info(
                                 'Documentation generated in ' +
@@ -791,7 +793,7 @@ export class Application {
                             Configuration.mainData.output,
                             Configuration.mainData
                         ).then(() => {
-                            generationPromiseResolve();
+                            generationPromiseResolve(true);
                             this.endCallback();
                             logger.info(
                                 'Documentation generated in ' +
@@ -922,7 +924,7 @@ export class Application {
                         }
                     });
 
-                    resolve();
+                    resolve(true);
                 },
                 errorMessage => {
                     logger.error(errorMessage);
@@ -970,23 +972,31 @@ export class Application {
                                     });
 
                                 case 'component':
-                                    return DependenciesEngine.getComponents().some(component => {
-                                        let selectedComponent;
-                                        if (typeof metaDataItem.id !== 'undefined') {
-                                            selectedComponent =
-                                                (component as any).id === metaDataItem.id;
-                                        } else {
-                                            selectedComponent =
-                                                (component as any).name === metaDataItem.name;
+                                    return DependenciesEngine.getComponents().some(
+                                        (component: IComponentDep) => {
+                                            let selectedComponent;
+                                            if (typeof metaDataItem.id !== 'undefined') {
+                                                selectedComponent =
+                                                    (component as any).id === metaDataItem.id;
+                                            } else {
+                                                selectedComponent =
+                                                    (component as any).name === metaDataItem.name;
+                                            }
+                                            if (
+                                                selectedComponent &&
+                                                !ngModule.compodocLinks.components.includes(
+                                                    component
+                                                )
+                                            ) {
+                                                if (!component.standalone) {
+                                                    ngModule.compodocLinks.components.push(
+                                                        component
+                                                    );
+                                                }
+                                            }
+                                            return selectedComponent;
                                         }
-                                        if (
-                                            selectedComponent &&
-                                            !ngModule.compodocLinks.components.includes(component)
-                                        ) {
-                                            ngModule.compodocLinks.components.push(component);
-                                        }
-                                        return selectedComponent;
-                                    });
+                                    );
 
                                 case 'controller':
                                     return DependenciesEngine.getControllers().some(controller => {
@@ -1101,8 +1111,8 @@ export class Application {
                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
             });
 
-            let len = Configuration.mainData.modules.length;
-            let loop = () => {
+            const len = Configuration.mainData.modules.length;
+            const loop = () => {
                 if (i < len) {
                     if (
                         MarkdownEngine.hasNeighbourReadmeFile(
@@ -1112,10 +1122,10 @@ export class Application {
                         logger.info(
                             ` ${Configuration.mainData.modules[i].name} has a README file, include it`
                         );
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(
                             Configuration.mainData.modules[i].file
                         );
-                        Configuration.mainData.modules[i].readme = marked(readme);
+                        Configuration.mainData.modules[i].readme = markedAcl(readme);
                     }
                     Configuration.addPage({
                         path: 'modules',
@@ -1130,7 +1140,7 @@ export class Application {
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1143,16 +1153,16 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.pipes.length;
-            let loop = () => {
+            const len = Configuration.mainData.pipes.length;
+            const loop = () => {
                 if (i < len) {
-                    let pipe = Configuration.mainData.pipes[i];
+                    const pipe = Configuration.mainData.pipes[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(pipe.file)) {
                         logger.info(` ${pipe.name} has a README file, include it`);
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(pipe.file);
-                        pipe.readme = marked(readme);
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(pipe.file);
+                        pipe.readme = markedAcl(readme);
                     }
-                    let page = {
+                    const page = {
                         path: 'pipes',
                         name: pipe.name,
                         id: pipe.id,
@@ -1169,7 +1179,7 @@ export class Application {
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1184,16 +1194,16 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.classes.length;
-            let loop = () => {
+            const len = Configuration.mainData.classes.length;
+            const loop = () => {
                 if (i < len) {
-                    let classe = Configuration.mainData.classes[i];
+                    const classe = Configuration.mainData.classes[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(classe.file)) {
                         logger.info(` ${classe.name} has a README file, include it`);
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(classe.file);
-                        classe.readme = marked(readme);
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(classe.file);
+                        classe.readme = markedAcl(readme);
                     }
-                    let page = {
+                    const page = {
                         path: 'classes',
                         name: classe.name,
                         id: classe.id,
@@ -1210,7 +1220,7 @@ export class Application {
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1225,16 +1235,16 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.interfaces.length;
-            let loop = () => {
+            const len = Configuration.mainData.interfaces.length;
+            const loop = () => {
                 if (i < len) {
-                    let interf = Configuration.mainData.interfaces[i];
+                    const interf = Configuration.mainData.interfaces[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(interf.file)) {
                         logger.info(` ${interf.name} has a README file, include it`);
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(interf.file);
-                        interf.readme = marked(readme);
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(interf.file);
+                        interf.readme = markedAcl(readme);
                     }
-                    let page = {
+                    const page = {
                         path: 'interfaces',
                         name: interf.name,
                         id: interf.id,
@@ -1251,7 +1261,7 @@ export class Application {
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1306,16 +1316,16 @@ export class Application {
                 });
             }
 
-            resolve();
+            resolve(true);
         });
     }
 
     private handleTemplateurl(component): Promise<any> {
-        let dirname = path.dirname(component.file);
-        let templatePath = path.resolve(dirname + path.sep + component.templateUrl);
+        const dirname = path.dirname(component.file);
+        const templatePath = path.resolve(dirname + path.sep + component.templateUrl);
 
         if (!FileEngine.existsSync(templatePath)) {
-            let err = `Cannot read template for ${component.name}`;
+            const err = `Cannot read template for ${component.name}`;
             logger.error(err);
             return new Promise((resolve, reject) => {});
         }
@@ -1330,24 +1340,24 @@ export class Application {
     }
 
     private handleStyles(component): Promise<any> {
-        let styles = component.styles;
+        const styles = component.styles;
         component.stylesData = '';
         return new Promise((resolveStyles, rejectStyles) => {
             styles.forEach(style => {
                 component.stylesData = component.stylesData + style + '\n';
             });
-            resolveStyles();
+            resolveStyles(true);
         });
     }
 
     private handleStyleurls(component): Promise<any> {
-        let dirname = path.dirname(component.file);
+        const dirname = path.dirname(component.file);
 
-        let styleDataPromise = component.styleUrls.map(styleUrl => {
-            let stylePath = path.resolve(dirname + path.sep + styleUrl);
+        const styleDataPromise = component.styleUrls.map(styleUrl => {
+            const stylePath = path.resolve(dirname + path.sep + styleUrl);
 
             if (!FileEngine.existsSync(stylePath)) {
-                let err = `Cannot read style url ${stylePath} for ${component.name}`;
+                const err = `Cannot read style url ${stylePath} for ${component.name}`;
                 logger.error(err);
                 return new Promise((resolve, reject) => {});
             }
@@ -1378,13 +1388,13 @@ export class Application {
             navTabConfig.length === 0
                 ? _.cloneDeep(COMPODOC_CONSTANTS.navTabDefinitions)
                 : navTabConfig;
-        let matchDepType = (depType: string) => {
+        const matchDepType = (depType: string) => {
             return depType === 'all' || depType === dependency.type;
         };
 
         let navTabs = [];
         _.forEach(navTabConfig, customTab => {
-            let navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { id: customTab.id });
+            const navTab = _.find(COMPODOC_CONSTANTS.navTabDefinitions, { id: customTab.id });
             if (!navTab) {
                 throw new Error(`Invalid tab ID '${customTab.id}' specified in tab configuration`);
             }
@@ -1454,11 +1464,11 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.controllers.length;
-            let loop = () => {
+            const len = Configuration.mainData.controllers.length;
+            const loop = () => {
                 if (i < len) {
-                    let controller = Configuration.mainData.controllers[i];
-                    let page = {
+                    const controller = Configuration.mainData.controllers[i];
+                    const page = {
                         path: 'controllers',
                         name: controller.name,
                         id: controller.id,
@@ -1475,7 +1485,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1526,16 +1536,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((mainPrepareComponentResolve, mainPrepareComponentReject) => {
             let i = 0;
-            let len = Configuration.mainData.components.length;
-            let loop = () => {
+            const len = Configuration.mainData.components.length;
+            const loop = () => {
                 if (i <= len - 1) {
-                    let component = Configuration.mainData.components[i];
+                    const component = Configuration.mainData.components[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(component.file)) {
                         logger.info(` ${component.name} has a README file, include it`);
-                        let readmeFile = MarkdownEngine.readNeighbourReadmeFile(component.file);
-                        component.readme = marked(readmeFile);
+                        const readmeFile = MarkdownEngine.readNeighbourReadmeFile(component.file);
+                        component.readme = markedAcl(readmeFile);
                     }
-                    let page = {
+                    const page = {
                         path: 'components',
                         name: component.name,
                         id: component.id,
@@ -1557,7 +1567,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                 logger.info(` ${component.name} has a templateUrl, include it`);
                                 this.handleTemplateurl(component).then(
                                     () => {
-                                        componentTemplateUrlResolve();
+                                        componentTemplateUrlResolve(true);
                                     },
                                     e => {
                                         logger.error(e);
@@ -1565,7 +1575,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     }
                                 );
                             } else {
-                                componentTemplateUrlResolve();
+                                componentTemplateUrlResolve(true);
                             }
                         }
                     );
@@ -1575,7 +1585,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                 logger.info(` ${component.name} has styleUrls, include them`);
                                 this.handleStyleurls(component).then(
                                     () => {
-                                        componentStyleUrlsResolve();
+                                        componentStyleUrlsResolve(true);
                                     },
                                     e => {
                                         logger.error(e);
@@ -1583,7 +1593,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     }
                                 );
                             } else {
-                                componentStyleUrlsResolve();
+                                componentStyleUrlsResolve(true);
                             }
                         }
                     );
@@ -1593,7 +1603,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                 logger.info(` ${component.name} has styles, include them`);
                                 this.handleStyles(component).then(
                                     () => {
-                                        componentStylesResolve();
+                                        componentStylesResolve(true);
                                     },
                                     e => {
                                         logger.error(e);
@@ -1601,7 +1611,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                     }
                                 );
                             } else {
-                                componentStylesResolve();
+                                componentStylesResolve(true);
                             }
                         }
                     );
@@ -1615,7 +1625,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         loop();
                     });
                 } else {
-                    mainPrepareComponentResolve();
+                    mainPrepareComponentResolve(true);
                 }
             };
             loop();
@@ -1638,7 +1648,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(directive.file)) {
                         logger.info(` ${directive.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(directive.file);
-                        directive.readme = marked(readme);
+                        directive.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'directives',
@@ -1657,7 +1667,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     i++;
                     loop();
                 } else {
-                    resolve();
+                    resolve(true);
                 }
             };
             loop();
@@ -1680,7 +1690,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (MarkdownEngine.hasNeighbourReadmeFile(injec.file)) {
                         logger.info(` ${injec.name} has a README file, include it`);
                         let readme = MarkdownEngine.readNeighbourReadmeFile(injec.file);
-                        injec.readme = marked(readme);
+                        injec.readme = markedAcl(readme);
                     }
                     let page = {
                         path: 'injectables',
@@ -1715,16 +1725,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.interceptors.length;
-            let loop = () => {
+            const len = Configuration.mainData.interceptors.length;
+            const loop = () => {
                 if (i < len) {
-                    let interceptor = Configuration.mainData.interceptors[i];
+                    const interceptor = Configuration.mainData.interceptors[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(interceptor.file)) {
                         logger.info(` ${interceptor.name} has a README file, include it`);
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(interceptor.file);
-                        interceptor.readme = marked(readme);
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(interceptor.file);
+                        interceptor.readme = markedAcl(readme);
                     }
-                    let page = {
+                    const page = {
                         path: 'interceptors',
                         name: interceptor.name,
                         id: interceptor.id,
@@ -1755,16 +1765,16 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
         return new Promise((resolve, reject) => {
             let i = 0;
-            let len = Configuration.mainData.guards.length;
-            let loop = () => {
+            const len = Configuration.mainData.guards.length;
+            const loop = () => {
                 if (i < len) {
-                    let guard = Configuration.mainData.guards[i];
+                    const guard = Configuration.mainData.guards[i];
                     if (MarkdownEngine.hasNeighbourReadmeFile(guard.file)) {
                         logger.info(` ${guard.name} has a README file, include it`);
-                        let readme = MarkdownEngine.readNeighbourReadmeFile(guard.file);
-                        guard.readme = marked(readme);
+                        const readme = MarkdownEngine.readNeighbourReadmeFile(guard.file);
+                        guard.readme = markedAcl(readme);
                     }
-                    let page = {
+                    const page = {
                         path: 'guards',
                         name: guard.name,
                         id: guard.id,
@@ -1830,7 +1840,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
-            let getStatus = function (percent) {
+            const getStatus = function (percent) {
                 let status;
                 if (percent <= 25) {
                     status = 'low';
@@ -1864,7 +1874,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     if (!element.outputsClass) {
                         element.outputsClass = [];
                     }
-                    let cl: any = {
+                    const cl: any = {
                         filePath: element.file,
                         type: element.type,
                         linktype: element.type,
@@ -2214,7 +2224,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     logger.info(
                         `Documentation coverage (${coverageData.count}%) is over threshold (${Configuration.mainData.coverageTestThreshold}%)`
                     );
-                    generationPromiseResolve();
+                    generationPromiseResolve(true);
                     process.exit(0);
                 } else {
                     let message = `Documentation coverage (${coverageData.count}%) is not over threshold (${Configuration.mainData.coverageTestThreshold}%)`;
@@ -2247,7 +2257,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     logger.info(
                         `Documentation coverage per file is over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`
                     );
-                    generationPromiseResolve();
+                    generationPromiseResolve(true);
                     process.exit(0);
                 }
             } else if (
@@ -2266,7 +2276,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     logger.info(
                         `Documentation coverage per file is over threshold (${Configuration.mainData.coverageMinimumPerFile}%)`
                     );
-                    generationPromiseResolve();
+                    generationPromiseResolve(true);
                     process.exit(0);
                 } else if (
                     coverageData.count >= Configuration.mainData.coverageTestThreshold &&
@@ -2315,7 +2325,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 }
             } else {
-                resolve();
+                resolve(true);
             }
         });
     }
@@ -2430,7 +2440,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
                 });
             }
-            resolve();
+            resolve(true);
         });
     }
 
@@ -2462,7 +2472,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         }
 
         FileEngine.writeSync(finalPath, htmlData);
-        return Promise.resolve();
+        return Promise.resolve(true);
     }
 
     public processPages() {
@@ -2659,7 +2669,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 );
                 this.runWebServer(Configuration.mainData.output);
             } else {
-                generationPromiseResolve();
+                generationPromiseResolve(true);
                 this.endCallback();
             }
         };
@@ -2693,12 +2703,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                         extThemeReject();
                                     } else {
                                         logger.info('External styling theme copy succeeded');
-                                        extThemeResolve();
+                                        extThemeResolve(true);
                                     }
                                 }
                             );
                         } else {
-                            extThemeResolve();
+                            extThemeResolve(true);
                         }
                     });
 
@@ -2721,12 +2731,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                             customFaviconReject();
                                         } else {
                                             logger.info('External custom favicon copy succeeded');
-                                            customFaviconResolve();
+                                            customFaviconResolve(true);
                                         }
                                     }
                                 );
                             } else {
-                                customFaviconResolve();
+                                customFaviconResolve(true);
                             }
                         }
                     );
@@ -2751,12 +2761,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                         customLogoReject();
                                     } else {
                                         logger.info('External custom logo copy succeeded');
-                                        customLogoResolve();
+                                        customLogoResolve(true);
                                     }
                                 }
                             );
                         } else {
-                            customLogoResolve();
+                            customLogoResolve(true);
                         }
                     });
 

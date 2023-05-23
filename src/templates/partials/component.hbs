@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
-  <li>{{t "components" }}</li>
-  <li
+  <li class="breadcrumb-item">{{t "components" }}</li>
+  <li class="breadcrumb-item"
     {{#if component.deprecated}}
-        class="deprecated-name"
+        class="breadcrumb-item deprecated-name"
     {{/if}}
   >
   {{component.name}}</li>
@@ -10,39 +10,40 @@
 
 <ul class="nav nav-tabs" role="tablist">
     {{#each navTabs}}
-        <li {{#compare @index "===" 0}}class="active"{{/compare}}>
-            <a href="{{this.href}}" role="tab" id="{{this.id}}-tab" data-toggle="tab" data-link="{{this.data-link}}">{{t this.label}}</a>
+        <li class="nav-item">
+            <a href="{{this.href}}" {{#compare @index "===" 0}}class="nav-link active"{{else}}class="nav-link"{{/compare}}
+                role="tab" id="{{this.id}}-tab" data-bs-toggle="tab" data-link="{{this.data-link}}">{{t this.label}}</a>
         </li>
     {{/each}}
 </ul>
 
 <div class="tab-content">
     {{#isTabEnabled navTabs "info"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="c-info">
+    <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="info">
         {{~> component-detail component=component ~}}
     </div>
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "readme"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="c-readme">
+    <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="readme">
         <p>{{{component.readme}}}</p>
     </div>
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "source"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "source"}}active in{{/isInitialTab}} tab-source-code" id="c-source">
+    <div class="tab-pane fade {{#isInitialTab navTabs "source"}}active in{{/isInitialTab}} tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">{{ component.sourceCode}}</code></pre>
     </div>
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "templateData"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "templateData"}}active in{{/isInitialTab}}" id="c-templateData">
+    <div class="tab-pane fade {{#isInitialTab navTabs "templateData"}}active in{{/isInitialTab}}" id="templateData">
         <pre class="line-numbers"><code class="language-html">{{ component.templateData }}</code></pre>
     </div>
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "styleData"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "styleData"}}active in{{/isInitialTab}}" id="c-styleData">
+    <div class="tab-pane fade {{#isInitialTab navTabs "styleData"}}active in{{/isInitialTab}}" id="styleData">
         {{#compare component.styleUrlsData.length ">" 0}}
             {{#each component.styleUrlsData}}
                 <p class="comment">
@@ -58,7 +59,7 @@
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "tree"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "tree"}}active in{{/isInitialTab}}" id="c-tree">
+    <div class="tab-pane fade {{#isInitialTab navTabs "tree"}}active in{{/isInitialTab}}" id="tree">
         <div id="tree-container"></div>
         <div class="tree-legend">
             <div class="title">
@@ -78,7 +79,7 @@
     {{/isTabEnabled}}
 
     {{#isTabEnabled navTabs "example"}}
-    <div class="tab-pane fade {{#isInitialTab navTabs "example"}}active in{{/isInitialTab}}" id="c-example">
+    <div class="tab-pane fade {{#isInitialTab navTabs "example"}}active in{{/isInitialTab}}" id="example">
         {{#each component.exampleUrls}}
             <iframe class="exampleContainer" src="{{this}}">
                 <p>{{t "no-iframes" }}</p>

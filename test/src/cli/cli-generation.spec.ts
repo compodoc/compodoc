@@ -727,7 +727,7 @@ describe('CLI simple generation', () => {
             expect(index).to.not.contain('id="templateData-tab"');
         });
         it('should set source as the active tab', () => {
-            expect(index).to.contain('<li class="active">            <a href="#source"');
+            expect(index).to.contain('<a href="#source" class="nav-link active"');
         });
         it('should set the source tab label', () => {
             expect(index).to.contain('data-link="source">Test Label 1');

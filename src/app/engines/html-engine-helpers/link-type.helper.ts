@@ -8,8 +8,8 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
     constructor() {}
 
     public helperFunc(context: any, name: string, options: IHandlebarsOptions) {
-        let _result = DependenciesEngine.find(name);
-        let angularDocPrefix = AngularVersionUtil.prefixOfficialDoc(
+        const _result = DependenciesEngine.find(name);
+        const angularDocPrefix = AngularVersionUtil.prefixOfficialDoc(
             Configuration.mainData.angularVersion
         );
         if (_result) {

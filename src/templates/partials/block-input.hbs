@@ -16,6 +16,13 @@
                     </td>
                 </tr>
                 {{/if}}
+                {{#if required}}
+                <tr>
+                    <td class="col-md-4">
+                        <i>{{t "required" }} : </i>&nbsp;<b>{{ required }}</b>
+                    </td>
+                </tr>
+                {{/if}}
                 {{#if defaultValue}}
                 <tr>
                     <td class="col-md-4">

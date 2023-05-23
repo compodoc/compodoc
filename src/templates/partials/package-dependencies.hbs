@@ -1,6 +1,6 @@
 {{#if packageDependencies}}
     <ol class="breadcrumb">
-        <li>{{t "dependencies" }}</li>
+        <li class="breadcrumb-item">{{t "dependencies" }}</li>
     </ol>
     <ul class="dependencies-list">
         {{#each packageDependencies}}
@@ -16,7 +16,7 @@
     <br/>
     {{/if}}
     <ol class="breadcrumb">
-        <li>{{t "peer-dependencies" }}</li>
+        <li class="breadcrumb-item">{{t "peer-dependencies" }}</li>
     </ol>
     <ul class="dependencies-list">
         {{#each packagePeerDependencies}}

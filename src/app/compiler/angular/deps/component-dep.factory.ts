@@ -34,6 +34,7 @@ export class ComponentDepFactory {
             template: this.helper.getComponentTemplate(props, srcFile),
             templateUrl: this.helper.getComponentTemplateUrl(props, srcFile),
             viewProviders: this.helper.getComponentViewProviders(props, srcFile),
+            hostDirectives: [...this.helper.getComponentHostDirectives(props)],
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
             propertiesClass: IO.properties,
@@ -45,7 +46,8 @@ export class ComponentDepFactory {
             hostBindings: IO.hostBindings,
             hostListeners: IO.hostListeners,
 
-            standalone: this.helper.getComponentStandalone(props, srcFile),
+            standalone: this.helper.getComponentStandalone(props, srcFile) ? true : false,
+            imports: this.helper.getComponentImports(props, srcFile),
 
             description: IO.description,
             rawdescription: IO.rawdescription,
@@ -118,10 +120,12 @@ export interface IComponentDep extends IDep {
     deprecationMessage: string;
 
     standalone: boolean;
+    imports: Array<any>;
 
     entryComponents: Array<any>;
 
     hostBindings: Array<any>;
+    hostDirectives: Array<any>;
     hostListeners: Array<any>;
 
     description: string;

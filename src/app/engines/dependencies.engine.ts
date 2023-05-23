@@ -249,6 +249,7 @@ export class DependenciesEngine {
 
     public find(name: string): IApiSourceResult<any> | undefined {
         const searchFunctions: Array<() => IApiSourceResult<any>> = [
+            () => this.findInCompodocDependencies(name, this.modules),
             () => this.findInCompodocDependencies(name, this.injectables),
             () => this.findInCompodocDependencies(name, this.interceptors),
             () => this.findInCompodocDependencies(name, this.guards),

@@ -48,8 +48,8 @@ describe('CLI Additional documentation', () => {
         expect(isFileExists).to.be.true;
         isFileExists = exists(`${distFolder}/additional-documentation/big-introduction.html`);
         expect(isFileExists).to.be.true;
-        let file = read(`${distFolder}/additional-documentation/big-introduction.html`);
-        expect(file).to.contain('<h1 id="introduction">Introduction</h1>');
+        const file = read(`${distFolder}/additional-documentation/big-introduction.html`);
+        expect(file).to.contain('<h1>Introduction</h1>');
     });
 
     it('should have generated README file in index.html', () => {

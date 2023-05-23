@@ -59,6 +59,8 @@ export interface IPipeDep extends IDep {
     sourceCode: string;
     exampleUrls?;
 
+    standalone: boolean;
+
     methods: Array<any>;
     properties: Array<any>;
     pure: string;

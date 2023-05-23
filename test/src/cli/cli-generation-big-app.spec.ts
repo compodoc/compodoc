@@ -924,4 +924,54 @@ describe('CLI simple generation - big app', () => {
         const file = read(distFolder + '/modules/FooterModule.html');
         expect(file).to.contain('href="../injectables/EmitterService.html">EmitterService');
     });
+
+    it('should support exportAs for directives', () => {
+        const file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('<code>donothing</code>');
+    });
+
+    it('should support standalone for components, directives and pipes', () => {
+        let file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<td class="col-md-3">Standalone</td>');
+        expect(file).to.contain('<td class="col-md-3">imports</td>');
+        expect(file).to.contain(
+            '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
+        );
+        expect(file).to.contain(
+            '<code><a href="../modules/AboutModule.html" target="_self" >AboutModule</a></code>'
+        );
+
+        file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('<code>donothing</code>');
+        expect(file).to.contain('<td class="col-md-3">Standalone</td>');
+
+        file = read(distFolder + '/pipes/StandAlonePipe.html');
+        expect(file).to.contain('<td class="col-md-3">Standalone</td>');
+    });
+
+    it('should support required for inputs', () => {
+        const file = read(distFolder + '/components/TodoComponent.html');
+        expect(file).to.contain('<i>Required : </i>&nbsp;<b>true</b>');
+    });
+
+    it('should support Host Directives for directives and components', () => {
+        let file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain('<td class="col-md-3">HostDirectives</td>');
+        expect(file).to.contain(
+            '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
+        );
+
+        file = read(distFolder + '/directives/DoNothingDirective.html');
+        expect(file).to.contain('<td class="col-md-3">HostDirectives</td>');
+        expect(file).to.contain(
+            '<code><a href="../directives/BorderDirective.html" target="_self" >BorderDirective</a></code>'
+        );
+
+        file = read(distFolder + '/directives/HighlightAndBorderDirective.html');
+        expect(file).to.contain('<td class="col-md-3">HostDirectives</td>');
+        expect(file).to.contain(
+            '<code><a href="../directives/HighlightDirective.html" target="_self" >HighlightDirective</a></code>'
+        );
+        expect(file).to.contain('<div><i>&nbsp;Inputs</i> : color&nbsp;</div>');
+    });
 });
