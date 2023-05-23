@@ -964,7 +964,7 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/directives/DoNothingDirective.html');
         expect(file).to.contain('<td class="col-md-3">HostDirectives</td>');
         expect(file).to.contain(
-            '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
+            '<code><a href="../directives/BorderDirective.html" target="_self" >BorderDirective</a></code>'
         );
 
         file = read(distFolder + '/directives/HighlightAndBorderDirective.html');
