@@ -1,3 +1,26 @@
+<a name="1.1.20"></a>
+
+## [1.1.20](https://github.com/compodoc/compodoc/compare/1.1.19...1.1.20) - 2023-05-23
+
+### Merged
+
+-   fix(Input): Add support for Object Expressions in Input decorators [#1326](https://github.com/compodoc/compodoc/pull/1326), Thanks [valentinpalkovic](https://github.com/valentinpalkovic)
+-   fix(app): overview depth [#1310](https://github.com/compodoc/compodoc/pull/1310), Thanks [albeniraouf](https://github.com/albeniraouf)
+-   Translates to Bulgarian [#1312](https://github.com/compodoc/compodoc/pull/1312), Thanks [3phase](https://github.com/3phase)
+
+### Bug fixes
+
+-   feat(app): Directive composition API for directives and components ([127076a](https://github.com/compodoc/compodoc/commit/127076a)), closes [#1340](https://github.com/compodoc/compodoc/issues/1340)
+-   feat(app): Required Inputs ([e1a5396](https://github.com/compodoc/compodoc/commit/e1a5396)), closes [#1340](https://github.com/compodoc/compodoc/issues/1340)
+-   feat(app): Standalone components, directives and pipes support ([cb02ca0](https://github.com/compodoc/compodoc/commit/cb02ca0)), closes [#1323](https://github.com/compodoc/compodoc/issues/1323)
+-   fix(app): support exportAs for directives ([76a8f34](https://github.com/compodoc/compodoc/commit/76a8f34)), closes [#1328](https://github.com/compodoc/compodoc/issues/1328)
+-   feat(app): bump @compodoc/ngd-transformer ([ef9bd94](https://github.com/compodoc/compodoc/commit/ef9bd94)), closes [#1311](https://github.com/compodoc/compodoc/issues/1311)
+-   fix(app): service/injectable export in module providers ([34967a9](https://github.com/compodoc/compodoc/commit/34967a9)), closes [#1290](https://github.com/compodoc/compodoc/issues/1290)
+-   fix(app): missing rel attribute with \_blank links ([c8379e0](https://github.com/compodoc/compodoc/commit/c8379e0)), closes [#1282](https://github.com/compodoc/compodoc/issues/1282)
+-   feat(app): Add specific id in each html section ([03ac1ad](https://github.com/compodoc/compodoc/commit/03ac1ad)), closes [#1241](https://github.com/compodoc/compodoc/issues/1241)
+-   fix(app): Invalid links to a class when the class name includes an interface name ([047cedb](https://github.com/compodoc/compodoc/commit/047cedb)), closes [#1239](https://github.com/compodoc/compodoc/issues/1239)
+-   fix(routing): path wrongly resolved during routing analysis ([1722ca3](https://github.com/compodoc/compodoc/commit/1722ca3)), closes [#1170](https://github.com/compodoc/compodoc/issues/1170)
+
 <a name="1.1.19"></a>
 
 ## [1.1.19](https://github.com/compodoc/compodoc/compare/1.1.18...1.1.19) (2022-01-10)
