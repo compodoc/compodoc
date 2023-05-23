@@ -38,6 +38,7 @@ export const TRANSLATION_JA_JP = {
     guard: 'ガード',
     guards: 'ガード',
     hostbindings: 'ホストバインディング',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'ホストリスナー',
     'html-element': 'Html要素',
     'html-element-with-directive': 'ディレクティブHtml要素',

@@ -38,6 +38,7 @@ export const TRANSLATION_HU_HU = {
     guard: 'Guard',
     guards: 'Guardok',
     hostbindings: 'HostBindingok',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListenerek',
     'html-element': 'Html elem',
     'html-element-with-directive': 'Html elem direktívával',

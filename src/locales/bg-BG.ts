@@ -38,6 +38,7 @@ export const TRANSLATION_BG_BG = {
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListeners',
     'html-element': 'HTML-елемент',
     'html-element-with-directive': 'HTML-елемент с директива',

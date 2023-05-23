@@ -38,6 +38,7 @@ export const TRANSLATION_ZH_CN = {
     guard: '路由守卫',
     guards: '路由守卫列表',
     hostbindings: '宿主绑定',
+    hostdirectives: 'Host Directives',
     hostlisteners: '宿主监听',
     'html-element': 'Html 元素',
     'html-element-with-directive': '带指令的Html元素',

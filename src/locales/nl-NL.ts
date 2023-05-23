@@ -38,6 +38,7 @@ export const TRANSLATION_NL_NL = {
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListeners',
     'html-element': 'Html element',
     'html-element-with-directive': 'Html element met directive',

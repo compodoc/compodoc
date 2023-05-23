@@ -38,6 +38,7 @@ export const TRANSLATION_ZH_TW = {
     guard: '路由守衛',
     guards: '路由守衛列表',
     hostbindings: 'Host Bindings',
+    hostdirectives: 'Host Directives',
     hostlisteners: 'Host Listeners',
     'html-element': 'HTML 元素',
     'html-element-with-directive': '帶指令的 HTML 元素',

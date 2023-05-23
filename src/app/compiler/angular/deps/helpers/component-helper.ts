@@ -1,4 +1,4 @@
-import { ts } from 'ts-morph';
+import { SyntaxKind, ts } from 'ts-morph';
 import { detectIndent } from '../../../../../utils';
 import { ClassHelper } from './class-helper';
 import { IParseDeepIdentifierResult, SymbolHelper } from './symbol-helper';
@@ -42,6 +42,77 @@ export class ComponentHelper {
         srcFile: ts.SourceFile
     ): string {
         return this.symbolHelper.getSymbolDeps(props, 'exportAs', srcFile).pop();
+    }
+
+    public getComponentHostDirectives(
+        props: ReadonlyArray<ts.ObjectLiteralElementLike>
+    ): Array<any> {
+        const hostDirectiveSymbolParsed = this.symbolHelper.getSymbolDepsRaw(
+            props,
+            'hostDirectives'
+        );
+        let hostDirectiveSymbol = null;
+
+        if (hostDirectiveSymbolParsed.length > 0) {
+            hostDirectiveSymbol = hostDirectiveSymbolParsed.pop();
+        }
+
+        const result = [];
+
+        if (
+            hostDirectiveSymbol &&
+            hostDirectiveSymbol.initializer &&
+            hostDirectiveSymbol.initializer.elements &&
+            hostDirectiveSymbol.initializer.elements.length > 0
+        ) {
+            hostDirectiveSymbol.initializer.elements.forEach(element => {
+                if (element.kind === SyntaxKind.Identifier) {
+                    result.push({
+                        name: element.escapedText
+                    });
+                } else if (
+                    element.kind === SyntaxKind.ObjectLiteralExpression &&
+                    element.properties &&
+                    element.properties.length > 0
+                ) {
+                    const parsedDirective: any = {
+                        name: '',
+                        inputs: [],
+                        outputs: []
+                    };
+
+                    element.properties.forEach(property => {
+                        if (property.name.escapedText === 'directive') {
+                            parsedDirective.name = property.initializer.escapedText;
+                        } else if (property.name.escapedText === 'inputs') {
+                            if (
+                                property.initializer &&
+                                property.initializer.elements &&
+                                property.initializer.elements.length > 0
+                            ) {
+                                property.initializer.elements.forEach(propertyElement => {
+                                    parsedDirective.inputs.push(propertyElement.text);
+                                });
+                            }
+                        } else if (property.name.escapedText === 'outputs') {
+                            if (
+                                property.initializer &&
+                                property.initializer.elements &&
+                                property.initializer.elements.length > 0
+                            ) {
+                                property.initializer.elements.forEach(propertyElement => {
+                                    parsedDirective.outputs.push(propertyElement.text);
+                                });
+                            }
+                        }
+                    });
+
+                    result.push(parsedDirective);
+                }
+            });
+        }
+
+        return result;
     }
 
     public getComponentHost(

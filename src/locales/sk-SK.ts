@@ -38,6 +38,7 @@ export const TRANSLATION_SK_SK = {
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListeners',
     'html-element': 'HTML element',
     'html-element-with-directive': 'HTML element s direktívou',

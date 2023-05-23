@@ -1,5 +1,6 @@
 export const DoNothingDirectiveSchema = {
     selector: '[donothing]',
     exportAs: 'donothing',
-    standalone: true
+    standalone: true,
+    hostDirectives: [BorderDirective]
 };

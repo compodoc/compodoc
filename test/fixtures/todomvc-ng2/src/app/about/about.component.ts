@@ -24,7 +24,8 @@ import { Subscription } from 'rxjs/Subscription';
     template,
     providers: [EmitterService],
     entryComponents: [TodoComponent, ListComponent],
-    preserveWhitespaces: false
+    preserveWhitespaces: false,
+    hostDirectives: [DoNothingDirective]
 })
 export class AboutComponent {
     public subscriptions: Subscription[];
@@ -44,7 +45,8 @@ export class AboutComponent {
      * Dummy input property with a custom decorator
      */
     @MyCustomInputDecorator()
-    @Input() public myInput: string;
+    @Input()
+    public myInput: string;
 
     chartOptions: Highcharts.Options = {
         colors: [
@@ -99,17 +101,17 @@ export class AboutComponent {
         return '';
     }
 
-     /**
-      * This is for testing
-      * @returns '', if this {@link AboutComponent.fullName} does not crash
-      */
+    /**
+     * This is for testing
+     * @returns '', if this {@link AboutComponent.fullName} does not crash
+     */
     public publicMethod(): string {
         return '';
     }
 
-     /**
-      * This is for testing
-      * @returns a promise, if this {@link undefined} does not crash
-      */
+    /**
+     * This is for testing
+     * @returns a promise, if this {@link undefined} does not crash
+     */
     public async foo(): Promise<any> {}
 }

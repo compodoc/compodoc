@@ -38,6 +38,7 @@ export const TRANSLATION_KO_KR = {
     guard: '가드',
     guards: '가드',
     hostbindings: 'HostBindings',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListeners',
     'html-element': 'HTML 요소',
     'html-element-with-directive': '지시어가 있는 HTML 요소',

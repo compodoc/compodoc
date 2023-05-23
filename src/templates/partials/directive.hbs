@@ -79,7 +79,7 @@
             </div>
         {{/if}}
 
-        {{#orLength directive.selector directive.providers}}
+        {{#orLength directive.selector directive.providers directive.standalone directive.hostDirectives}}
         <section data-compodoc="block-metadata">
             <h3>{{t "metadata" }}</h3>
             <table class="table table-sm table-hover metadata">
@@ -106,8 +106,29 @@
 
                     {{#if directive.standalone}}
                     <tr>
-                        <td class="col-md-3">standalone</td>
+                        <td class="col-md-3">{{t "standalone" }}</td>
                         <td class="col-md-9"><code>{{directive.standalone}}</code></td>
+                    </tr>
+                    {{/if}}
+
+                    {{#if directive.hostDirectives}}
+                    <tr>
+                        <td class="col-md-3">{{t "hostdirectives" }}</td>
+                        <td class="col-md-9">
+                            {{#each directive.hostDirectives}}
+                                {{> link-type type=name }}<br/>
+                                {{#if this.inputs}}
+                                    {{#compare this.inputs.length ">" 0}}
+                                        <div><i>&nbsp;{{t "inputs" }}</i> : {{#each inputs}}{{this}}&nbsp;{{/each}}</div>
+                                    {{/compare}}
+                                {{/if}}
+                                {{#if this.outputs}}
+                                    {{#compare this.outputs.length ">" 0}}
+                                        <div><i>&nbsp;{{t "outputs" }}</i> : {{#each outputs}}{{this}}&nbsp;{{/each}}</div>
+                                    {{/compare}}
+                                {{/if}}
+                            {{/each}}
+                        </td>
                     </tr>
                     {{/if}}
 

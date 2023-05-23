@@ -38,6 +38,7 @@ export const TRANSLATION_DE_DE = {
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',
+    hostdirectives: 'HostDirectives',
     hostlisteners: 'HostListeners',
     'html-element': 'Html Element',
     'html-element-with-directive': 'Html-Element mit Direktive',

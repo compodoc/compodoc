@@ -737,16 +737,16 @@ export class ClassHelper {
             } else if (outputDecorator && outputDecorator.length > 0) {
                 outputs.push(this.visitOutput(member, outputDecorator[0], sourceFile));
             } else if (parsedHostBindings && parsedHostBindings.length > 0) {
-                let k = 0,
-                    lenHB = parsedHostBindings.length;
+                let k = 0;
+                const lenHB = parsedHostBindings.length;
                 for (k; k < lenHB; k++) {
                     hostBindings.push(
                         this.visitInputAndHostBinding(member, parsedHostBindings[k], sourceFile)
                     );
                 }
             } else if (parsedHostListeners && parsedHostListeners.length > 0) {
-                let l = 0,
-                    lenHL = parsedHostListeners.length;
+                let l = 0;
+                const lenHL = parsedHostListeners.length;
                 for (l; l < lenHL; l++) {
                     hostListeners.push(
                         this.visitHostListener(member, parsedHostListeners[l], sourceFile)

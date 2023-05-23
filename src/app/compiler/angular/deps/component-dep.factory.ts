@@ -34,6 +34,7 @@ export class ComponentDepFactory {
             template: this.helper.getComponentTemplate(props, srcFile),
             templateUrl: this.helper.getComponentTemplateUrl(props, srcFile),
             viewProviders: this.helper.getComponentViewProviders(props, srcFile),
+            hostDirectives: [...this.helper.getComponentHostDirectives(props)],
             inputsClass: IO.inputs,
             outputsClass: IO.outputs,
             propertiesClass: IO.properties,
@@ -124,6 +125,7 @@ export interface IComponentDep extends IDep {
     entryComponents: Array<any>;
 
     hostBindings: Array<any>;
+    hostDirectives: Array<any>;
     hostListeners: Array<any>;
 
     description: string;
