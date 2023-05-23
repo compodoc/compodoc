@@ -91,6 +91,7 @@ export const TRANSLATION_SK_SK = {
     selector: 'Selektor',
     signature: 'Podpis',
     source: 'Zdroj',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Štýly',
     template: 'Šablóna',

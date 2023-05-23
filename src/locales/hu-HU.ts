@@ -91,6 +91,7 @@ export const TRANSLATION_HU_HU = {
     selector: 'Szelektor',
     signature: 'Aláírás',
     source: 'Forrás',
+    standalone: 'Standalone',
     statements: 'Utasítások',
     styles: 'Stílusok',
     template: 'Sablon',

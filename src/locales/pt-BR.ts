@@ -91,6 +91,7 @@ export const TRANSLATION_PT_BR = {
     selector: 'Seletor',
     signature: 'Assinatura',
     source: 'Fonte',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Estilos',
     template: 'Modelo',

@@ -91,6 +91,7 @@ export const TRANSLATION_ES_ES = {
     selector: 'Selector',
     signature: 'Firma',
     source: 'Fuente',
+    standalone: 'Standalone',
     statements: 'Declaraciones',
     styles: 'Estilos',
     template: 'Plantilla',

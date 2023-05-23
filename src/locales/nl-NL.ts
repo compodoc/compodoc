@@ -91,6 +91,7 @@ export const TRANSLATION_NL_NL = {
     selector: 'Selector',
     signature: 'Handtekening',
     source: 'Bron',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Stijlen',
     template: 'Sjabloon',

@@ -91,6 +91,7 @@ export const TRANSLATION_DE_DE = {
     selector: 'Selektor',
     signature: 'Unterschrift',
     source: 'Quelle',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Stile',
     template: 'Vorlage',

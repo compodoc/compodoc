@@ -91,6 +91,7 @@ export const TRANSLATION_ZH_TW = {
     selector: '選擇器',
     signature: '簽名',
     source: '來源',
+    standalone: 'Standalone',
     statements: '陳述式',
     styles: '樣式',
     template: '範本',

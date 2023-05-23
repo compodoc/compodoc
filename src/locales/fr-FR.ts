@@ -91,6 +91,7 @@ export const TRANSLATION_FR_FR = {
     selector: 'Sélecteur',
     signature: 'Signature',
     source: 'Source',
+    standalone: 'Standalone',
     statements: 'Déclarations',
     styles: 'Styles',
     template: 'Template',

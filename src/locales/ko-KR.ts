@@ -91,6 +91,7 @@ export const TRANSLATION_KO_KR = {
     selector: '선택자',
     signature: 'Signature',
     source: '출처',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: '스타일',
     template: '주형',

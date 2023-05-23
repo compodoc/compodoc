@@ -91,6 +91,7 @@ export const TRANSLATION_IT_IT = {
     selector: 'Selector',
     signature: 'Signature',
     source: 'Fonte',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Stili',
     template: 'Modello',

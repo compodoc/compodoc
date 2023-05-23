@@ -90,6 +90,8 @@ export const TRANSLATION_PL_PL = {
     'search-placeholder': 'Wprowadź tekst wyszukiwania',
     selector: 'Selektor',
     signature: 'Podpis',
+    source: 'Source',
+    standalone: 'Standalone',
     statements: 'Instrukcje',
     styles: 'Estilos',
     template: 'Modelo',

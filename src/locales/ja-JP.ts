@@ -91,6 +91,7 @@ export const TRANSLATION_JA_JP = {
     selector: 'セレクタ',
     signature: 'シグネチャ',
     source: 'ソース',
+    standalone: 'Standalone',
     statements: '文',
     styles: 'スタイル',
     template: 'テンプレート',

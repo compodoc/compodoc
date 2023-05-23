@@ -91,6 +91,7 @@ export const TRANSLATION_BG_BG = {
     selector: 'Селектор',
     signature: 'Подпис',
     source: 'Източник',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Стилове',
     template: 'Шаблон',

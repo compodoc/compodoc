@@ -91,6 +91,7 @@ export const TRANSLATION_EN_US = {
     selector: 'Selector',
     signature: 'Signature',
     source: 'Source',
+    standalone: 'Standalone',
     statements: 'Statements',
     styles: 'Styles',
     template: 'Template',
