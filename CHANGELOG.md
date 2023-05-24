@@ -1,3 +1,11 @@
+<a name="1.1.21"></a>
+
+## [1.1.21](https://github.com/compodoc/compodoc/compare/1.1.20...1.1.21)
+
+### Bug fixes
+
+-   feat(app): downgrade Marked version ([e0a4b78](https://github.com/compodoc/compodoc/commit/e0a4b78)), closes [#1349](https://github.com/compodoc/compodoc/issues/1349)
+
 <a name="1.1.20"></a>
 
 ## [1.1.20](https://github.com/compodoc/compodoc/compare/1.1.19...1.1.20) - 2023-05-23
