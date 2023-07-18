@@ -9,7 +9,7 @@
   <a href="https://npmcharts.com/compare/@compodoc/compodoc?minimal=true"><img src="https://img.shields.io/npm/dm/@compodoc/compodoc.svg?style=flat" alt="NPM Downloads"/></a>
   <a href="https://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT badge"/></a>
   <br/>
-  <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/compodoc/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" /></a>
+  <a href="#backers"><img src="https://opencollective.com/compodoc/backers/badge.svg" alt="sponsors on Open Collective" /></a> <a href="#sponsors"><img src="https://opencollective.com/compodoc/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
 </p>
 <p align="center">
     <img src="https://saucelabs.com/browser-matrix/compodoc.svg" alt="saucelabs badge"/>
