@@ -142,7 +142,9 @@ describe('CLI Export', () => {
         it('should contain numerical enumerations with strict numerical values', () => {
             const file = read(`${distFolder}/documentation.json`);
             const obj = JSON.parse(file);
-            const pollingSpeedEnum = obj.miscellaneous.enumerations.find(enumeration => enumeration.name === 'PollingSpeed');
+            const pollingSpeedEnum = obj.miscellaneous.enumerations.find(
+                enumeration => enumeration.name === 'PollingSpeed'
+            );
             const valHigh = pollingSpeedEnum.childs.find(child => child.name === 'High');
             expect(valHigh.value === 100).to.be.true;
         });
@@ -317,6 +319,9 @@ describe('CLI Export', () => {
             expect(file).to.contain('APP_ROUTES');
             expect(file).not.to.contain('coveragePercent');
             expect(file).not.to.contain('sourceCode');
+            expect(file).not.to.contain('templateData');
+            expect(file).not.to.contain('styleUrlsData');
+            expect(file).not.to.contain('stylesData');
         });
     });
 
