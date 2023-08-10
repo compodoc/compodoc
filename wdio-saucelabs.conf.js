@@ -114,16 +114,6 @@ exports.config = {
             }
         },
         {
-            browserName: 'internet explorer',
-            platformName: 'Windows 10',
-            browserVersion: 'latest',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
             browserName: 'firefox',
             platformName: 'Windows 10',
             browserVersion: '65.0',
