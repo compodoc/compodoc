@@ -133,7 +133,7 @@
         "@types/traverse": "0.6.32",
         "@typescript-eslint/eslint-plugin": "6.4.0",
         "@typescript-eslint/parser": "6.4.0",
-        "@wdio/cli": "8.15.4",
+        "@wdio/cli": "8.15.5",
         "@wdio/local-runner": "8.15.4",
         "@wdio/mocha-framework": "8.15.4",
         "@wdio/sauce-service": "8.15.4",
