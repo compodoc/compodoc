@@ -1,4 +1,4 @@
 {
     "upgrade": true,
-    "reject": ["os-name", "chalk", "pdfjs-dist", "marked"]
+    "reject": ["os-name", "chalk", "pdfjs-dist", "marked", "@angular-devkit/schematics"]
 }
