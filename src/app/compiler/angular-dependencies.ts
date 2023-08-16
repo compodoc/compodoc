@@ -468,6 +468,11 @@ export class AngularDependencies extends FrameworkDependencies {
                             if (IO.extends) {
                                 injectableDeps.extends = IO.extends;
                             }
+                            if (Configuration.mainData.disableLifeCycleHooks) {
+                                injectableDeps.methods = cleanLifecycleHooksFromMethods(
+                                    injectableDeps.methods
+                                );
+                            }
                             deps = injectableDeps;
                             if (typeof IO.ignore === 'undefined') {
                                 if (_.includes(IO.implements, 'HttpInterceptor')) {
@@ -509,6 +514,9 @@ export class AngularDependencies extends FrameworkDependencies {
                                     srcFile.getText()
                                 )
                             };
+                            if (Configuration.mainData.disableLifeCycleHooks) {
+                                pipeDeps.methods = cleanLifecycleHooksFromMethods(pipeDeps.methods);
+                            }
                             if (IO.jsdoctags && IO.jsdoctags.length > 0) {
                                 pipeDeps.jsdoctags = IO.jsdoctags[0].tags;
                             }
