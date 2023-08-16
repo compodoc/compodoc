@@ -321,7 +321,8 @@ export class ComponentHelper {
         filename: string,
         sourceFile: ts.SourceFile,
         node: ts.Node,
-        fileBody
+        fileBody,
+        astFile: ts.SourceFile
     ): any {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -331,7 +332,12 @@ export class ComponentHelper {
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
-                        this.classHelper.visitClassDeclaration(filename, statement, sourceFile)
+                        this.classHelper.visitClassDeclaration(
+                            filename,
+                            statement,
+                            sourceFile,
+                            astFile
+                        )
                     );
                 }
             }

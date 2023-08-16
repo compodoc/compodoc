@@ -229,9 +229,9 @@ export class AngularDependencies extends FrameworkDependencies {
         return deps;
     }
 
-    private processClass(node, file, srcFile, outputSymbols, fileBody) {
+    private processClass(node, file, srcFile, outputSymbols, fileBody, astFile) {
         const name = this.getSymboleName(node);
-        const IO = this.getClassIO(file, srcFile, node, fileBody);
+        const IO = this.getClassIO(file, srcFile, node, fileBody, astFile);
         const sourceCode = srcFile.getText();
         const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         const deps: any = {
@@ -363,7 +363,7 @@ export class AngularDependencies extends FrameworkDependencies {
             ) {
                 return;
             }
-            const parseNode = (file, srcFile, node, fileBody) => {
+            const parseNode = (file, srcFile, node, fileBody, astFile) => {
                 const sourceCode = srcFile.getText();
                 const hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
 
@@ -379,7 +379,8 @@ export class AngularDependencies extends FrameworkDependencies {
                             file,
                             srcFile,
                             node,
-                            fileBody
+                            fileBody,
+                            astFile
                         );
 
                         if (this.isModule(visitedDecorator)) {
@@ -572,10 +573,10 @@ export class AngularDependencies extends FrameworkDependencies {
                     nodeDecorators.filter(filterByDecorators).forEach(visitDecorator);
                 } else if (node.symbol) {
                     if (node.symbol.flags === ts.SymbolFlags.Class) {
-                        this.processClass(node, file, srcFile, outputSymbols, fileBody);
+                        this.processClass(node, file, srcFile, outputSymbols, fileBody, astFile);
                     } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
                         const name = this.getSymboleName(node);
-                        const IO = this.getInterfaceIO(file, srcFile, node, fileBody);
+                        const IO = this.getInterfaceIO(file, srcFile, node, fileBody, astFile);
                         const interfaceDeps: IInterfaceDep = {
                             name,
                             id: 'interface-' + name + '-' + hash,
@@ -709,7 +710,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (node.body) {
                             if (node.body.statements && node.body.statements.length > 0) {
                                 node.body.statements.forEach(statement =>
-                                    parseNode(file, srcFile, statement, node.body)
+                                    parseNode(file, srcFile, statement, node.body, astFile)
                                 );
                             }
                         }
@@ -986,7 +987,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             };
 
-            parseNode(fileName, scannedFile, initialNode);
+            parseNode(fileName, scannedFile, initialNode, null, astFile);
         });
     }
 
@@ -1523,7 +1524,13 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
-    private getClassIO(filename: string, sourceFile: ts.SourceFile, node: ts.Node, fileBody) {
+    private getClassIO(
+        filename: string,
+        sourceFile: ts.SourceFile,
+        node: ts.Node,
+        fileBody,
+        astFile
+    ) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -1532,7 +1539,12 @@ export class AngularDependencies extends FrameworkDependencies {
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
-                        this.classHelper.visitClassDeclaration(filename, statement, sourceFile)
+                        this.classHelper.visitClassDeclaration(
+                            filename,
+                            statement,
+                            sourceFile,
+                            astFile
+                        )
                     );
                 }
             }
@@ -1543,7 +1555,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return res[0] || {};
     }
 
-    private getInterfaceIO(filename: string, sourceFile, node, fileBody) {
+    private getInterfaceIO(filename: string, sourceFile, node, fileBody, astFile) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -1552,7 +1564,12 @@ export class AngularDependencies extends FrameworkDependencies {
             if (ts.isInterfaceDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
-                        this.classHelper.visitClassDeclaration(filename, statement, sourceFile)
+                        this.classHelper.visitClassDeclaration(
+                            filename,
+                            statement,
+                            sourceFile,
+                            astFile
+                        )
                     );
                 }
             }
