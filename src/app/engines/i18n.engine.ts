@@ -13,6 +13,7 @@ import {
     TRANSLATION_NL_NL,
     TRANSLATION_PL_PL,
     TRANSLATION_PT_BR,
+    TRANSLATION_RU_RU,
     TRANSLATION_SK_SK,
     TRANSLATION_ZH_CN,
     TRANSLATION_ZH_TW
@@ -43,7 +44,8 @@ class I18nEngine {
         'pt-BR': 'pt-BR',
         'sk-SK': 'sk-SK',
         'zh-CN': 'zh-CN',
-        'zh-TW': 'zh-TW'
+        'zh-TW': 'zh-TW',
+        'ru-RU': 'ru-RU'
     };
 
     public fallbackLanguage = 'en-US';
@@ -70,6 +72,7 @@ class I18nEngine {
         i18next.addResources('sk-SK', 'translation', TRANSLATION_SK_SK);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
         i18next.addResources('zh-TW', 'translation', TRANSLATION_ZH_TW);
+        i18next.addResources('ru-RU', 'translation', TRANSLATION_RU_RU);
     }
 
     public translate(key: string): string {

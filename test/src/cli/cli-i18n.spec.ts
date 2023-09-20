@@ -83,6 +83,10 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('zh-TW', '產生文件使用');
     });
 
+    describe('with supported language - ru-RU', () => {
+        return checkWcMenuFile('ru-RU', 'Документация создана с помощью');
+    });
+
     describe('with un-supported language', () => {
         let indexFile;
         before(function(done) {
