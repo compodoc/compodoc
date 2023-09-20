@@ -72,7 +72,7 @@ class I18nEngine {
         i18next.addResources('sk-SK', 'translation', TRANSLATION_SK_SK);
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
         i18next.addResources('zh-TW', 'translation', TRANSLATION_ZH_TW);
-        i18next.addResources('zh-TW', 'translation', TRANSLATION_RU_RU);
+        i18next.addResources('ru-RU', 'translation', TRANSLATION_RU_RU);
     }
 
     public translate(key: string): string {
