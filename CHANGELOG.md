@@ -1,3 +1,21 @@
+<a name="1.1.22"></a>
+
+## [1.1.22](https://github.com/compodoc/compodoc/compare/1.1.21...1.1.22)
+
+### Merged
+
+-   Added Russian translation [#1386](https://github.com/compodoc/compodoc/pull/1386), Thanks [RusFjord](https://github.com/RusFjord)
+-   docs: updated the tags in the readme file [#1365](https://github.com/compodoc/compodoc/pull/1365), Thanks [alkavats1](https://github.com/alkavats1)
+
+### Bug fixes
+
+-   fix(app): @example render twice for methods ([f5d6f97](https://github.com/compodoc/compodoc/commit/f5d6f97)), closes [#1385](https://github.com/compodoc/compodoc/issues/1385)
+-   fix(app): interfaces multiple extends support ([229f407](https://github.com/compodoc/compodoc/commit/229f407)), closes [#1364](https://github.com/compodoc/compodoc/issues/1364)
+-   fix(app): relax @angular-devkit/schematics version for Angular v14.x support ([51fe4b9](https://github.com/compodoc/compodoc/commit/51fe4b9)), closes [#1362](https://github.com/compodoc/compodoc/issues/1362)
+-   fix(app): disableLifeCycleHooks for pipes and services ([753b74d](https://github.com/compodoc/compodoc/commit/753b74d)), closes [#1369](https://github.com/compodoc/compodoc/issues/1369)
+-   fix(app): json export and disableSourceCode - template and style sources should not be added ([6a85f1b](https://github.com/compodoc/compodoc/commit/6a85f1b)), closes [#1370](https://github.com/compodoc/compodoc/issues/1370)
+-   fix(app): remove inside dependency no longer used, bump dev/Dependencies ([91865b7](https://github.com/compodoc/compodoc/commit/91865b7)), closes [#1355](https://github.com/compodoc/compodoc/issues/1355)
+
 <a name="1.1.21"></a>
 
 ## [1.1.21](https://github.com/compodoc/compodoc/compare/1.1.20...1.1.21)
