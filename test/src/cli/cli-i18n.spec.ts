@@ -87,6 +87,10 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('ru-RU', 'Документация создана с помощью');
     });
 
+    describe('with supported language - ka-GE', () => {
+        return checkWcMenuFile('ka-GE', 'დოკუმენტაცია დაგენერირდა გამოყენებით');
+    });
+
     describe('with un-supported language', () => {
         let indexFile;
         before(function(done) {

@@ -14,3 +14,4 @@ export { TRANSLATION_ZH_TW } from './zh-TW';
 export { TRANSLATION_KO_KR } from './ko-KR';
 export { TRANSLATION_BG_BG } from './bg-BG';
 export { TRANSLATION_RU_RU } from './ru-RU';
+export { TRANSLATION_KA_GE } from './ka-GE';
