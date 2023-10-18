@@ -720,9 +720,8 @@ describe('CLI simple generation - big app', () => {
     });
 
     it('should support Type parameters', () => {
-        expect(appComponentFile).to.contain(
-            `<ul class="type-parameters">${eol}                        <li>T</li>${eol}                        <li>K</li>${eol}                    </ul>`
-        );
+        expect(appComponentFile).to.contain(`<li>T</li>`);
+        expect(appComponentFile).to.contain(`<li>K</li>`);
     });
 
     it('should support spread elements with external variables', () => {

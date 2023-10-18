@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 
 import FileEngine from './file.engine';
+import I18nEngine from './i18n.engine';
 import { markedAcl } from '../../utils/marked.acl';
 
 const decache = require('decache');
@@ -33,7 +34,9 @@ export class MarkdownEngine {
             }
 
             highlighted = this.escape(code);
-            return `<div><pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre></div>`;
+            return `<b>${I18nEngine.translate(
+                'example'
+            )} :</b><div><pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre></div>`;
         };
 
         renderer.table = (header, body) => {

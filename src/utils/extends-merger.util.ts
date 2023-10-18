@@ -29,7 +29,7 @@ export class ExtendsMerger {
         const mergeExtendedProperties = component => {
             let ext;
             if (typeof component.extends !== 'undefined') {
-                ext = this.findInDependencies(component.extends);
+                ext = this.findInDependencies(component.extends[0]);
 
                 if (ext) {
                     const recursiveScanWithInheritance = cls => {
@@ -112,7 +112,7 @@ export class ExtendsMerger {
                             );
                         }
                         if (cls.extends) {
-                            recursiveScanWithInheritance(this.findInDependencies(cls.extends));
+                            recursiveScanWithInheritance(this.findInDependencies(cls.extends[0]));
                         }
                     };
                     // From class to class
@@ -128,7 +128,7 @@ export class ExtendsMerger {
         const mergeExtendedClasses = el => {
             let ext;
             if (typeof el.extends !== 'undefined') {
-                ext = this.findInDependencies(el.extends);
+                ext = this.findInDependencies(el.extends[0]);
                 if (ext) {
                     const recursiveScanWithInheritance = cls => {
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
@@ -146,7 +146,7 @@ export class ExtendsMerger {
                             }
                         }
                         if (cls.extends) {
-                            recursiveScanWithInheritance(this.findInDependencies(cls.extends));
+                            recursiveScanWithInheritance(this.findInDependencies(cls.extends[0]));
                         }
                     };
                     // From elss to elss

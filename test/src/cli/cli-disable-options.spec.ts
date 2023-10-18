@@ -167,6 +167,10 @@ describe('CLI disable flags', () => {
             expect(componentFile).not.to.contain('<code>ngOnInit');
             const directiveFile = read(`${distFolder}/directives/BarDirective.html`);
             expect(directiveFile).not.to.contain('<code>ngOnInit');
+            const pipeFile = read(`${distFolder}/pipes/BarPipe.html`);
+            expect(pipeFile).not.to.contain('<code>ngOnDestroy');
+            const serviceFile = read(`${distFolder}/injectables/BarService.html`);
+            expect(serviceFile).not.to.contain('<code>ngOnDestroy');
         });
 
         it('should include methods marked as private', () => {

@@ -49,7 +49,9 @@
                 <h3>{{t "extends" }}</h3>
             </p>
             <p class="comment">
-                {{> link-type type=class.extends }}
+                {{#each class.extends}}
+                    {{> link-type type=this }}
+                {{/each}}
             </p>
         {{/if}}
 

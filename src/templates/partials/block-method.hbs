@@ -12,10 +12,10 @@
                     <a name="{{name}}"></a>
                     <span class="name">
                         {{#each modifierKind}}
-                        <span class="modifier">{{modifKind this}}</span>
+                            <span class="modifier">{{modifKind this}}</span>
                         {{/each}}
                         {{#if optional}}
-                        <span class="modifier">{{t "optional" }}</span>
+                            <span class="modifier">{{t "optional" }}</span>
                         {{/if}}
                         <span {{#if deprecated}}class="deprecated-name"{{/if}}><b>{{name}}</b></span>
                         <a href="#{{name}}"><span class="icon ion-ios-link"></span></a>
@@ -46,7 +46,7 @@
             <tr>
                 <td class="col-md-4">
                     {{#if modifierKind}}
-                    <span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>
+                        <span class="modifier-icon icon ion-ios-{{modifIcon modifierKind}}"></span>
                     {{/if}}<code>{{{functionSignature this}}}</code>
                 </td>
             </tr>
@@ -62,135 +62,125 @@
             {{/if}}
 
             {{#if line}}
-            {{#isTabEnabled ../navTabs "source"}}
-            {{#if inheritance}}
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">{{t "inherited-from" }} {{> link-type type=inheritance.file }}</div>
-                </td>
-            </tr>
-            {{/if}}
-            <tr>
-                <td class="col-md-4">
+                {{#isTabEnabled ../navTabs "source"}}
                     {{#if inheritance}}
-                        <div class="io-line">{{t "defined-in" }} {{> link-type type=inheritance.file withline=true }}</div>
-                    {{else}}
-                    <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}"
-                            class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">{{t "inherited-from" }} {{> link-type type=inheritance.file }}</div>
+                        </td>
+                    </tr>
                     {{/if}}
-                </td>
-            </tr>
-            {{/isTabEnabled}}
+                    <tr>
+                        <td class="col-md-4">
+                            {{#if inheritance}}
+                                <div class="io-line">{{t "defined-in" }} {{> link-type type=inheritance.file withline=true }}</div>
+                            {{else}}
+                            <div class="io-line">{{t "defined-in" }} <a href="" data-line="{{{line}}}"
+                                    class="link-to-prism">{{../file}}:{{{line}}}</a></div>
+                            {{/if}}
+                        </td>
+                    </tr>
+                {{/isTabEnabled}}
             {{/if}}
 
             {{#if typeParameters}}
-            {{#compare typeParameters.length ">" 0}}
-            <tr>
-                <td class="col-md-4">
-                    <b>{{t "type-parameters" }} :</b>
-                    <ul class="type-parameters">
-                        {{#each typeParameters}}
-                        <li>{{this}}</li>
-                        {{/each}}
-                    </ul>
-                </td>
-            </tr>
-            {{/compare}}
+                {{#compare typeParameters.length ">" 0}}
+                    <tr>
+                        <td class="col-md-4">
+                            <b>{{t "type-parameters" }} :</b>
+                            <ul class="type-parameters">
+                                {{#each typeParameters}}
+                                    <li>{{this}}</li>
+                                {{/each}}
+                            </ul>
+                        </td>
+                    </tr>
+                {{/compare}}
             {{/if}}
 
             {{#or jsdoctags returnType description}}
             <tr>
                 <td class="col-md-4">
                     {{#if description}}
-                    <div class="io-description">{{{parseDescription description ../depth}}}</div>
+                        <div class="io-description">{{{parseDescription description ../depth}}}</div>
                     {{/if}}
 
                     {{#if jsdoctags}}
-                    {{#jsdoc-params-valid jsdoctags}}
-                    <div class="io-description">
-                        {{#jsdoc-params jsdoctags}}
-                        <b>{{t "parameters" }} :</b>
-                        
-                        <table class="params">
-                            <thead>
-                                <tr>
-                                    <td>{{t "name" }}</td>
-                                    {{#one-parameter-has tags 'type'}}
-                                    <td>{{t "type" }}</td>
-                                    {{/one-parameter-has}}
-                                    <td>{{t "optional" }}</td>
-                                    {{#one-parameter-has tags 'defaultValue'}}
-                                    <td>{{t "default-value" }}</td>
-                                    {{/one-parameter-has}}
-                                    {{#one-parameter-has tags 'comment'}}
-                                    <td>{{t "description" }}</td>
-                                    {{/one-parameter-has}}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each tags}}
-                                <tr>
-                                    {{#if name}}
-                                    <td>{{name}}</td>
-                                    {{/if}}
-                                    {{#one-parameter-has ../tags 'type'}}
-                                    <td>
-                                        {{#if type}}
-                                        {{> link-type type=type }}
-                                        {{/if}}
-                                    </td>
-                                    {{/one-parameter-has}}
+                        {{#jsdoc-params-valid jsdoctags}}
+                            <div class="io-description">
+                                {{#jsdoc-params jsdoctags}}
+                                <b>{{t "parameters" }} :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>{{t "name" }}</td>
+                                            {{#one-parameter-has tags 'type'}}
+                                                <td>{{t "type" }}</td>
+                                            {{/one-parameter-has}}
+                                            <td>{{t "optional" }}</td>
+                                            {{#one-parameter-has tags 'defaultValue'}}
+                                                <td>{{t "default-value" }}</td>
+                                            {{/one-parameter-has}}
+                                            {{#one-parameter-has tags 'comment'}}
+                                                <td>{{t "description" }}</td>
+                                            {{/one-parameter-has}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each tags}}
+                                        <tr>
+                                            {{#if name}}
+                                                <td>{{name}}</td>
+                                            {{/if}}
+                                            {{#one-parameter-has ../tags 'type'}}
+                                            <td>
+                                                {{#if type}}
+                                                    {{> link-type type=type }}
+                                                {{/if}}
+                                            </td>
+                                            {{/one-parameter-has}}
 
-                                    <td>
-                                        {{#if optional}}
-                                        {{t "yes" }}
-                                        {{else}}
-                                        {{t "no" }}
-                                        {{/if}}
-                                    </td>
+                                            <td>
+                                                {{#if optional}}
+                                                    {{t "yes" }}
+                                                {{else}}
+                                                    {{t "no" }}
+                                                {{/if}}
+                                            </td>
 
-                                    {{#one-parameter-has ../tags 'defaultValue'}}
-                                    <td>
-                                        {{#if defaultValue}}
-                                        <code>{{defaultValue}}</code>
-                                        {{/if}}
-                                    </td>
-                                    {{/one-parameter-has}}
+                                            {{#one-parameter-has ../tags 'defaultValue'}}
+                                            <td>
+                                                {{#if defaultValue}}
+                                                    <code>{{defaultValue}}</code>
+                                                {{/if}}
+                                            </td>
+                                            {{/one-parameter-has}}
 
-                                    {{#one-parameter-has ../tags 'comment'}}
-                                    <td>
-                                        {{#if comment}}
-                                        {{{parseDescription comment ../../depth}}}
-                                        {{/if}}
-                                    </td>
-                                    {{/one-parameter-has}}
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                        {{/jsdoc-params}}
-                    </div>
-                    {{/jsdoc-params-valid}}
-                    <div>
-                        {{#jsdoc-code-example jsdoctags}}
-                        <b>{{t "example" }} :</b>
-                        {{#each tags}}
-                        <div>
-                            {{{comment}}}
-                        </div>
-                        {{/each}}
-                        {{/jsdoc-code-example}}
-                    </div>
+                                            {{#one-parameter-has ../tags 'comment'}}
+                                            <td>
+                                                {{#if comment}}
+                                                    {{{parseDescription comment ../../depth}}}
+                                                {{/if}}
+                                            </td>
+                                            {{/one-parameter-has}}
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                                {{/jsdoc-params}}
+                            </div>
+                        {{/jsdoc-params-valid}}
                     {{/if}}
                     {{#if returnType}}
-                    <div class="io-description">
-                        <b>{{t "returns" }} : </b>{{> link-type type=returnType }}
-                    </div>
-                    {{#if jsdoctags}}
-                    <div class="io-description">
-                        {{{jsdoc-returns-comment jsdoctags}}}
-                    </div>
-                    {{/if}}
+                        <div class="io-description">
+                            <b>{{t "returns" }} : </b>{{> link-type type=returnType }}
+                        </div>
+                        {{#if jsdoctags}}
+                            <div class="io-description">
+                                {{{jsdoc-returns-comment jsdoctags}}}
+                            </div>
+                        {{/if}}
                     {{/if}}
                 </td>
             </tr>

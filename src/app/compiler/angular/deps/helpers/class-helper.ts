@@ -467,7 +467,8 @@ export class ClassHelper {
     public visitClassDeclaration(
         fileName: string,
         classDeclaration: ts.ClassDeclaration | ts.InterfaceDeclaration,
-        sourceFile?: ts.SourceFile
+        sourceFile?: ts.SourceFile,
+        astFile?: ts.SourceFile
     ): any {
         let symbol = this.typeChecker.getSymbolAtLocation(classDeclaration.name);
         let rawdescription = '';
@@ -512,7 +513,7 @@ export class ClassHelper {
         let className = classDeclaration.name.text;
         let members;
         let implementsElements = [];
-        let extendsElement;
+        let extendsElements = [];
 
         if (typeof ts.getEffectiveImplementsTypeNodes !== 'undefined') {
             let implementedTypes = ts.getEffectiveImplementsTypeNodes(classDeclaration);
@@ -528,10 +529,38 @@ export class ClassHelper {
         }
 
         if (typeof ts.getClassExtendsHeritageElement !== 'undefined') {
-            let extendsTypes = ts.getClassExtendsHeritageElement(classDeclaration);
-            if (extendsTypes) {
-                if (extendsTypes.expression) {
-                    extendsElement = extendsTypes.expression.text;
+            if (astFile) {
+                let interfaceOrClassNode = astFile.getInterface(className);
+                if (!interfaceOrClassNode) {
+                    interfaceOrClassNode = astFile.getClass(className);
+                }
+                if (interfaceOrClassNode) {
+                    const extendsListRaw = interfaceOrClassNode.getExtends();
+                    let extendsList = [];
+                    if (extendsListRaw) {
+                        if (Array.isArray(extendsListRaw)) {
+                            if (extendsListRaw.length > 0) {
+                                extendsListRaw.forEach(extendElement => {
+                                    const extendElementExpression = extendElement.getExpression();
+                                    if (extendElementExpression) {
+                                        const text = extendElementExpression.getText();
+                                        if (text) {
+                                            extendsList.push(text);
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            const extendElementExpression = extendsListRaw.getExpression();
+                            if (extendElementExpression) {
+                                const text = extendElementExpression.getText();
+                                if (text) {
+                                    extendsList.push(text);
+                                }
+                            }
+                        }
+                    }
+                    extendsElements = extendsList;
                 }
             }
         }
@@ -575,7 +604,7 @@ export class ClassHelper {
                     kind: members.kind,
                     constructor: members.constructor,
                     jsdoctags: jsdoctags,
-                    extends: extendsElement,
+                    extends: extendsElements,
                     implements: implementsElements,
                     accessors: members.accessors
                 };
@@ -594,7 +623,7 @@ export class ClassHelper {
                         kind: members.kind,
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
-                        extends: extendsElement,
+                        extends: extendsElements,
                         implements: implementsElements,
                         accessors: members.accessors
                     }
@@ -639,7 +668,7 @@ export class ClassHelper {
                         kind: members.kind,
                         constructor: members.constructor,
                         jsdoctags: jsdoctags,
-                        extends: extendsElement,
+                        extends: extendsElements,
                         implements: implementsElements,
                         accessors: members.accessors
                     }
@@ -662,7 +691,7 @@ export class ClassHelper {
                     kind: members.kind,
                     constructor: members.constructor,
                     jsdoctags: jsdoctags,
-                    extends: extendsElement,
+                    extends: extendsElements,
                     implements: implementsElements,
                     accessors: members.accessors
                 }
@@ -682,7 +711,7 @@ export class ClassHelper {
                     kind: members.kind,
                     constructor: members.constructor,
                     jsdoctags: jsdoctags,
-                    extends: extendsElement,
+                    extends: extendsElements,
                     implements: implementsElements,
                     accessors: members.accessors
                 }

@@ -25,7 +25,7 @@ export class ExportJsonEngine {
     public export(outputFolder, data) {
         let exportData: ExportData = {};
 
-        traverse(data).forEach(function(node) {
+        traverse(data).forEach(function (node) {
             if (node) {
                 if (node.parent) {
                     delete node.parent;
@@ -35,6 +35,9 @@ export class ExportJsonEngine {
                 }
                 if (Configuration.mainData.disableSourceCode) {
                     delete node.sourceCode;
+                    delete node.templateData;
+                    delete node.styleUrlsData;
+                    delete node.stylesData;
                 }
             }
         });

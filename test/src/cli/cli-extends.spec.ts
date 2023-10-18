@@ -64,4 +64,14 @@ describe('CLI simple generation - extends app', () => {
             'code><a href="../injectables/AbstractService.html" target="_self" >AbstractService'
         );
     });
+
+    it('ClockInterface multiple extends', () => {
+        const file = read(distFolder + '/interfaces/ClockInterface.html');
+        expect(file).to.contain(
+            'code><a href="../interfaces/TimeInterface.html" target="_self" >TimeInterface'
+        );
+        expect(file).to.contain(
+            'code><a href="../interfaces/BooInterface.html" target="_self" >BooInterface'
+        );
+    });
 });
