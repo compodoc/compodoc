@@ -81,11 +81,19 @@ Thank you to all our backers ! Support us with a monthly donation and help us co
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor][support-url]
 
-[<img alt="Cyclone" src="./sponsors/cyclone.png" width="117"/>](https://usecyclone.dev/?utm_source=Compodoc)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="sponsors/cyclone_dark.png">
+  <img alt="Cyclone" src="./sponsors/cyclone.png">
+</picture>
 
 Cyclone is an instant coding playground embedded in your docs. Check them out at [Cyclone](https://usecyclone.dev/?utm_source=Compodoc)
 
 [<img alt="Flight Control" src="./sponsors/flightcontrol.svg" width="117"/>](https://www.flightcontrol.dev/?utm_source=Compodoc)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="sponsors/flightcontrol_dark.png">
+  <img alt="Cyclone" src="./sponsors/flightcontrol.png">
+</picture>
 
 AWS Infrastructure made easy - get the benefits of AWS without hiring devops at [Flight Control](https://www.flightcontrol.dev/?utm_source=Compodoc)
 
