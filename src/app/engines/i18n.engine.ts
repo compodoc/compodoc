@@ -16,7 +16,8 @@ import {
     TRANSLATION_RU_RU,
     TRANSLATION_SK_SK,
     TRANSLATION_ZH_CN,
-    TRANSLATION_ZH_TW
+    TRANSLATION_ZH_TW,
+    TRANSLATION_KA_GE
 } from '../../locales';
 
 class I18nEngine {
@@ -45,7 +46,8 @@ class I18nEngine {
         'sk-SK': 'sk-SK',
         'zh-CN': 'zh-CN',
         'zh-TW': 'zh-TW',
-        'ru-RU': 'ru-RU'
+        'ru-RU': 'ru-RU',
+        'ka-GE': 'ka-GE'
     };
 
     public fallbackLanguage = 'en-US';
@@ -73,6 +75,7 @@ class I18nEngine {
         i18next.addResources('zh-CN', 'translation', TRANSLATION_ZH_CN);
         i18next.addResources('zh-TW', 'translation', TRANSLATION_ZH_TW);
         i18next.addResources('ru-RU', 'translation', TRANSLATION_RU_RU);
+        i18next.addResources('ka-GE', 'translation', TRANSLATION_KA_GE);
     }
 
     public translate(key: string): string {
