@@ -63,12 +63,20 @@ describe('CLI i18n', () => {
         return checkWcMenuFile('ja-JP', 'このドキュメントは以下を使用して生成されています');
     });
 
+    describe('with supported language - ka-GE', () => {
+        return checkWcMenuFile('ka-GE', 'დოკუმენტაცია დაგენერირდა გამოყენებით');
+    });
+
     describe('with supported language - nl-NL', () => {
         return checkWcMenuFile('nl-NL', 'Documentatie gegenereed met');
     });
 
     describe('with supported language - pt-BR', () => {
         return checkWcMenuFile('pt-BR', 'Documentação gerada usando');
+    });
+
+    describe('with supported language - ru-RU', () => {
+        return checkWcMenuFile('ru-RU', 'Документация создана с помощью');
     });
 
     describe('with supported language - sk-SK', () => {
@@ -81,14 +89,6 @@ describe('CLI i18n', () => {
 
     describe('with supported language - zh-TW', () => {
         return checkWcMenuFile('zh-TW', '產生文件使用');
-    });
-
-    describe('with supported language - ru-RU', () => {
-        return checkWcMenuFile('ru-RU', 'Документация создана с помощью');
-    });
-
-    describe('with supported language - ka-GE', () => {
-        return checkWcMenuFile('ka-GE', 'დოკუმენტაცია დაგენერირდა გამოყენებით');
     });
 
     describe('with un-supported language', () => {
