@@ -2,7 +2,7 @@ export const TRANSLATION_RU_RU = {
     accessors: 'Аксессор',
     arguments: 'Аргументы',
     bootstrap: 'Загрузчик',
-    branches: 'Ветви',
+    branches: 'Ветки',
     browse: 'Обзор',
     classe: 'Класс',
     classes: 'Классы',
@@ -106,5 +106,5 @@ export const TRANSLATION_RU_RU = {
     variables: 'Переменные',
     yes: 'Да',
     zoomin: 'Приблизить',
-    zoomout: 'Удалить'
+    zoomout: 'Отдалить'
 };
