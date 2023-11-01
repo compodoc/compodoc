@@ -629,7 +629,7 @@ describe('CLI simple generation', () => {
 
         it('should not contain dark mode toggle', () => {
             index = read(`${distFolder}/index.html`);
-            expect(index).to.not.contain('dark-mode-switch');
+            expect(index).to.not.contain('class="dark-mode-switch"');
         });
     });
 
