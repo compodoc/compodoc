@@ -84,7 +84,7 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
-        "@angular-devkit/schematics": "14.2.12",
+        "@angular-devkit/schematics": "17.0.3",
         "@babel/core": "^7.23.3",
         "@babel/plugin-proposal-private-methods": "^7.18.6",
         "@babel/preset-env": "^7.23.3",
@@ -109,7 +109,7 @@
         "loglevel": "^1.8.1",
         "loglevel-plugin-prefix": "^0.8.4",
         "lunr": "^2.3.9",
-        "marked": "7.0.3",
+        "marked": "10.0.0",
         "minimist": "^1.2.8",
         "opencollective-postinstall": "^2.0.3",
         "os-name": "4.0.1",
