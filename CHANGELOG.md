@@ -12,31 +12,6 @@
 
 -   fix(dark-mode): avoid flickering when navigating between pages ([0ff45cd](https://github.com/compodoc/compodoc/commit/0ff45cd)), closes [#1397](https://github.com/compodoc/compodoc/issues/1397)
 
-## [1.1.22](https://github.com/compodoc/compodoc/compare/1.1.21...1.1.22) - 2023-10-18
-
-### Merged
-
--   Added Russian translation [#1386](https://github.com/compodoc/compodoc/pull/1386)
--   chore(deps): update dependency @wdio/cli to v8.15.5 [#1373](https://github.com/compodoc/compodoc/pull/1373)
--   chore(deps): update all dependencies [#1372](https://github.com/compodoc/compodoc/pull/1372)
--   docs: updated the tags in the readme file [#1365](https://github.com/compodoc/compodoc/pull/1365)
--   fix(deps): update all dependencies [#1352](https://github.com/compodoc/compodoc/pull/1352)
-
-### Bug fixes
-
--   fix(app): @example render twice for methods ([f5d6f97](https://github.com/compodoc/compodoc/commit/f5d6f97)), closes [#1385](https://github.com/compodoc/compodoc/issues/1385)
--   fix(app): interfaces multiple extends support ([229f407](https://github.com/compodoc/compodoc/commit/229f407)), closes [#1364](https://github.com/compodoc/compodoc/issues/1364)
--   fix(app): relax @angular-devkit/schematics version for Angular v14.x support ([51fe4b9](https://github.com/compodoc/compodoc/commit/51fe4b9)), closes [#1362](https://github.com/compodoc/compodoc/issues/1362)
--   fix(app): disableLifeCycleHooks for pipes and services ([753b74d](https://github.com/compodoc/compodoc/commit/753b74d)), closes [#1369](https://github.com/compodoc/compodoc/issues/1369)
--   fix(app): json export and disableSourceCode - template and style sources should not be added ([6a85f1b](https://github.com/compodoc/compodoc/commit/6a85f1b)), closes [#1370](https://github.com/compodoc/compodoc/issues/1370)
--   fix(app): remove inside dependency no longer used, bump dev/Dependencies ([91865b7](https://github.com/compodoc/compodoc/commit/91865b7)), closes [#1355](https://github.com/compodoc/compodoc/issues/1355)
-
-### Commits
-
--   feat(chore): Sponsors [ca2e5d1](https://github.com/compodoc/compodoc/commit/ca2e5d1c8267f9ae5ed42cb5f19d1677bbde2cdf)
--   feat(chore): Sponsors logos with dark mode [2308e86](https://github.com/compodoc/compodoc/commit/2308e869f0695b68ff346e1ffe3c26d8592aca0f)
--   fix(CI): Node.js 16 tsc error [8f051e2](https://github.com/compodoc/compodoc/commit/8f051e2a3d09d46a7130995f4b9b9bb9739bfe9e)
-
 <a name="1.1.22"></a>
 
 ## [1.1.22](https://github.com/compodoc/compodoc/compare/1.1.21...1.1.22)
