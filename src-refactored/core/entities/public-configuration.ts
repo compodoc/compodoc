@@ -13,6 +13,7 @@ export class PublicConfiguration {
     public disableGraph: boolean;
     public disableInternal: boolean;
     public disableLifeCycleHooks: boolean;
+    public disableConstructors: boolean;
     public disablePrivate: boolean;
     public disableProtected: boolean;
     public disableRoutesGraph: boolean;

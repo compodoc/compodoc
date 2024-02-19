@@ -165,6 +165,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 false
             )
             .option(
+                '--disableConstructors',
+                'Do not show constructors in generated documentation',
+                false
+            )
+            .option(
                 '--disableRoutesGraph',
                 'Do not add the routes graph',
                 COMPODOC_DEFAULTS.disableRoutesGraph
@@ -503,6 +508,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (programOptions.disableLifeCycleHooks) {
             Configuration.mainData.disableLifeCycleHooks = programOptions.disableLifeCycleHooks;
+        }
+
+        if (configFile.disableConstructors) {
+            Configuration.mainData.disableConstructors = configFile.disableConstructors;
+        }
+        if (programOptions.disableConstructors) {
+            Configuration.mainData.disableConstructors = programOptions.disableConstructors;
         }
 
         if (configFile.disableRoutesGraph) {

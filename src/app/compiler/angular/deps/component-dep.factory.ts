@@ -76,7 +76,7 @@ export class ComponentDepFactory {
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
             componentDep.jsdoctags = IO.jsdoctags[0].tags;
         }
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             componentDep.constructorObj = IO.constructor;
         }
         if (IO.extends) {

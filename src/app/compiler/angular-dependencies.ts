@@ -245,7 +245,7 @@ export class AngularDependencies extends FrameworkDependencies {
         };
         let excludeFromClassArray = false;
 
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             deps.constructorObj = IO.constructor;
         }
         if (IO.properties) {
@@ -457,7 +457,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     srcFile.getText()
                                 )
                             };
-                            if (IO.constructor) {
+                            if (IO.constructor && !Configuration.mainData.disableConstructors) {
                                 injectableDeps.constructorObj = IO.constructor;
                             }
                             if (IO.jsdoctags && IO.jsdoctags.length > 0) {

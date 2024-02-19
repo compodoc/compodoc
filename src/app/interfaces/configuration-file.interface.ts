@@ -34,6 +34,7 @@ export interface ConfigurationFileInterface {
     disableProtected: boolean;
     disableInternal: boolean;
     disableLifeCycleHooks: boolean;
+    disableConstructors: boolean;
     disableRoutesGraph: boolean;
     disableSearch: boolean;
     disableDependencies: boolean;
