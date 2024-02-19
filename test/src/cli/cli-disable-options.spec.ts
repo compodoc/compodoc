@@ -255,6 +255,66 @@ describe('CLI disable flags', () => {
         });
     });
 
+    describe('disabling excluding methods with --disableConstructors', () => {
+        let componentFile;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '--disableConstructors',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            componentFile = read(`${distFolder}/components/BarComponent.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should exclude constructors', () => {
+            expect(componentFile).not.to.contain('<code>constructor');
+            const directiveFile = read(`${distFolder}/directives/BarDirective.html`);
+            expect(directiveFile).not.to.contain('<code>constructor');
+            const pipeFile = read(`${distFolder}/pipes/BarPipe.html`);
+            expect(pipeFile).not.to.contain('<code>constructor');
+            const serviceFile = read(`${distFolder}/injectables/BarService.html`);
+            expect(serviceFile).not.to.contain('<code>constructor');
+        });
+    });
+
+    describe('disabling excluding methods with --disableConstructors for component inheritance', () => {
+        let componentFile;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files-extends/src/tsconfig.json',
+                '--disableConstructors',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            componentFile = read(`${distFolder}/components/AppComponent.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should exclude constructors', () => {
+            expect(componentFile).not.to.contain('<code>constructor');
+        });
+    });
+
     describe('disabling search with --disableSearch', () => {
         before(function (done) {
             tmp.create(distFolder);

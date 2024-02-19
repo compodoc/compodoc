@@ -52,7 +52,7 @@ export class DirectiveDepFactory {
         if (IO.implements && IO.implements.length > 0) {
             directiveDeps.implements = IO.implements;
         }
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             directiveDeps.constructorObj = IO.constructor;
         }
         if (IO.accessors) {

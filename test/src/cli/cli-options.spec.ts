@@ -206,6 +206,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`
             );
         });
 
+        it(`--disableConstructors`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableConstructors');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show constructors in generated documentation'
+            );
+        });
+
         it(`--customFavicon`, () => {
             expect(runHelp.stdout.toString()).to.contain('--customFavicon [path]');
             expect(runHelp.stdout.toString()).to.contain('Use a custom favicon');
