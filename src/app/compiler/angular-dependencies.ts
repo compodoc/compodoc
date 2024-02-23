@@ -272,8 +272,8 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.accessors) {
             deps.accessors = IO.accessors;
         }
-        if (IO.inputs) {
-            deps.inputsClass = IO.inputs;
+        if (IO.inputs || IO.properties) {
+            deps.inputsClass = this.componentHelper.getInputSignals(IO.properties).concat(IO.inputs);
         }
         if (IO.outputs) {
             deps.outputsClass = IO.outputs;
