@@ -26,7 +26,7 @@ export class DirectiveDepFactory {
 
             standalone: this.helper.getComponentStandalone(props, srcFile) ? true : false,
 
-            inputsClass: IO.inputs,
+            inputsClass: this.helper.getInputSignals(IO.properties).concat(IO.inputs),
             outputsClass: IO.outputs,
 
             deprecated: IO.deprecated,

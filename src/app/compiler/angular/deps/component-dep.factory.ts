@@ -88,6 +88,9 @@ export class ComponentDepFactory {
         if (IO.accessors) {
             componentDep.accessors = IO.accessors;
         }
+        if (IO.properties) {
+            componentDep.inputsClass = componentDep.inputsClass.concat(this.helper.getInputSignals(IO.properties));
+        }
 
         return componentDep;
     }

@@ -135,6 +135,21 @@ export class ComponentHelper {
         return this.symbolHelper.getSymbolDeps(props, 'inputs', srcFile);
     }
 
+    public getInputSignals(props) {
+        let inputSignals = [];
+        props?.forEach((prop, i) => {
+            const regexp = /input(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
+            const res = regexp.exec(prop.defaultValue);
+            if (res) {
+                const newInput = prop;
+                newInput.defaultValue = res[res.length - 1];
+                newInput.required = res[0]?.includes('.required') ?? false;
+                inputSignals.push(newInput);
+            }
+        });
+        return inputSignals;
+    }
+
     public getComponentStandalone(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
