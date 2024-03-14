@@ -1,13 +1,13 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+
+const tmp = temporaryDir();
 
 describe('CLI exclude from tsconfig', () => {
     const distFolder = tmp.name + '-exclude';
 
     describe('when specific files are excluded in tsconfig', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [

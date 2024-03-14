@@ -148,7 +148,7 @@
         "@wdio/spec-reporter": "8.32.4",
         "@wdio/sync": "7.27.0",
         "auto-changelog": "2.4.0",
-        "chai": "5.1.0",
+        "chai": "4.4.1",
         "chromedriver": "122.0.6",
         "codecov": "3.8.3",
         "cpx": "^1.5.0",

@@ -21,7 +21,7 @@ const fg = require('fast-glob');
 const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
-const program = require('commander');
+const { program } = require('commander');
 
 const cosmiconfigModuleName = 'compodoc';
 

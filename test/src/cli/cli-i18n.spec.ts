@@ -1,14 +1,13 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 const vm = require('vm');
 
 describe('CLI i18n', () => {
     const distFolder = tmp.name + '-i18n';
 
     const checkWcMenuFile = (lang, message) => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -93,7 +92,7 @@ describe('CLI i18n', () => {
 
     describe('with un-supported language', () => {
         let indexFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

@@ -1,6 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect;
+
 const tmp = temporaryDir();
 
 describe('CLI generation - TypeDoc examples', () => {

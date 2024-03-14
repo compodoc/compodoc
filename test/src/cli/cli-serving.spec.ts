@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI serving', () => {
     const distFolder = tmp.name + '-serving',
@@ -10,7 +9,7 @@ describe('CLI serving', () => {
     describe('when serving with -s flag in another directory', () => {
         let stdoutString = '',
             child;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', ['./bin/index-cli.js', '-s', '-d', distFolder], {
                 timeout: TIMEOUT
@@ -35,7 +34,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory', () => {
         let stdoutString = '',
             child;
-        before(function(done) {
+        before(function (done) {
             tmp.create('documentation');
             let ls = shell(
                 'node',
@@ -66,7 +65,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory and different host', () => {
         let stdoutString = '',
             child;
-        before(function(done) {
+        before(function (done) {
             tmp.create('documentation');
             let ls = shell(
                 'node',
@@ -99,7 +98,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory and without doc generation', () => {
         let stdoutString = '',
             child;
-        before(function(done) {
+        before(function (done) {
             let ls = shell('node', ['./bin/index-cli.js', '-s', '-d', './documentation/'], {
                 timeout: TIMEOUT
             });
@@ -122,7 +121,7 @@ describe('CLI serving', () => {
     describe('when serving with default directory, without -d and without doc generation', () => {
         let stdoutString = '',
             child;
-        before(function(done) {
+        before(function (done) {
             let ls = shell('node', ['./bin/index-cli.js', '-s'], { timeout: TIMEOUT });
 
             if (ls.stderr.toString() !== '') {

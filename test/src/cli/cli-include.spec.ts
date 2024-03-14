@@ -1,13 +1,12 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI include with tsconfig', () => {
     const distFolder = tmp.name + '-include';
 
     describe('when specific files (glob) are included in tsconfig', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -36,7 +35,7 @@ describe('CLI include with tsconfig', () => {
     });
 
     describe('when specific file is included in tsconfig', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -63,7 +62,7 @@ describe('CLI include with tsconfig', () => {
     });
 
     describe('when specific file is included in tsconfig with one level / cwd', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

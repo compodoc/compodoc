@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync, stats } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 interface Image {
     size: number;
@@ -11,7 +10,7 @@ describe('CLI custom logo', () => {
     const distFolder = tmp.name + '-logo';
 
     describe('when specifying a custom logo png image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -42,7 +41,7 @@ describe('CLI custom logo', () => {
     });
 
     describe('when specifying a custom logo svg image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -73,7 +72,7 @@ describe('CLI custom logo', () => {
     });
 
     describe('when not specifying a custom logo svg image', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

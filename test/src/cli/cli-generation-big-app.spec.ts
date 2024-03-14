@@ -1,8 +1,8 @@
 const eol = require('os').EOL;
-import * as chai from 'chai';
+
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 
-const expect = chai.expect;
 const tmp = temporaryDir();
 
 describe('CLI simple generation - big app', () => {

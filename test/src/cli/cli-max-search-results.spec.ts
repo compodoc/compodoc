@@ -1,14 +1,13 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI max search results', () => {
     const distFolder = tmp.name + '-maxSearchResults';
 
     describe('custom maxSearchResults', () => {
         let coverageFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
@@ -36,7 +35,7 @@ describe('CLI max search results', () => {
 
     describe('default maxSearchResult', () => {
         let coverageFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',
