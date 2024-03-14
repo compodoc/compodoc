@@ -1,5 +1,6 @@
-const expect = require('chai').expect;
 const sinon = require('sinon');
+
+import { expect } from 'chai';
 
 import { CLIProgram } from '../../core/entities/cli-program';
 import ConfigurationRepository from '../../core/repositories/config.repository';
