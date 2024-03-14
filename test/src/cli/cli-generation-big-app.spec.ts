@@ -931,7 +931,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support standalone for components, directives and pipes', () => {
         let file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('<td class="col-md-3">Standalone</td>');
+        expect(file).to.contain('<td class="col-md-3">standalone</td>');
         expect(file).to.contain('<td class="col-md-3">imports</td>');
         expect(file).to.contain(
             '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
