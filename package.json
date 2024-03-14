@@ -146,7 +146,6 @@
         "@wdio/mocha-framework": "8.33.1",
         "@wdio/sauce-service": "8.33.1",
         "@wdio/spec-reporter": "8.32.4",
-        "@wdio/sync": "7.27.0",
         "auto-changelog": "2.4.0",
         "chai": "4.4.1",
         "chromedriver": "122.0.6",
