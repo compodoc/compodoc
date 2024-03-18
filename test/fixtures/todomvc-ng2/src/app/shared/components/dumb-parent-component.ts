@@ -1,4 +1,4 @@
-import { Input, Output, HostBinding, HostListener } from '@angular/core';
+import { Input, Output, output, input } from '@angular/core';
 
 /**
  * Empty parent component for inheritance demo
@@ -6,7 +6,11 @@ import { Input, Output, HostBinding, HostListener } from '@angular/core';
 export class DumbParentComponent {
     @Input() public parentInput: string;
 
+    label = input.required<string>();
+
     @Output() public parentoutput;
+
+    currentChange = output<number>();
 
     public parentProperty;
 

@@ -973,4 +973,10 @@ describe('CLI simple generation - big app', () => {
         );
         expect(file).to.contain('<div><i>&nbsp;Inputs</i> : color&nbsp;</div>');
     });
+
+    it('should support inputs and outputs signals', () => {
+        const file = read(distFolder + '/classes/DumbParentComponent.html');
+        expect(file).to.contain('<a href="#label" >label</a>');
+        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+    });
 });

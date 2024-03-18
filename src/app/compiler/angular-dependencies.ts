@@ -248,12 +248,20 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.constructor && !Configuration.mainData.disableConstructors) {
             deps.constructorObj = IO.constructor;
         }
-       if (IO.inputs) {
+        if (IO.inputs) {
             deps.inputsClass = IO.inputs;
+        }
+        if (IO.outputs) {
+            deps.outputsClass = IO.outputs;
         }
         if (IO.properties) {
             deps.properties = IO.properties;
-            deps.inputsClass = deps.inputsClass ? deps.inputsClass.concat(this.componentHelper.getInputSignals(IO.properties)) : this.componentHelper.getInputSignals(IO.properties);
+            deps.inputsClass = deps.inputsClass
+                ? deps.inputsClass.concat(this.componentHelper.getInputSignals(IO.properties))
+                : this.componentHelper.getInputSignals(IO.properties);
+            deps.outputsClass = deps.outputsClass
+                ? deps.outputsClass.concat(this.componentHelper.getOutputSignals(IO.properties))
+                : this.componentHelper.getOutputSignals(IO.properties);
         }
         if (IO.description) {
             deps.description = IO.description;
@@ -276,9 +284,7 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.accessors) {
             deps.accessors = IO.accessors;
         }
-        if (IO.outputs) {
-            deps.outputsClass = IO.outputs;
-        }
+
         if (IO.hostBindings) {
             deps.hostBindings = IO.hostBindings;
         }
