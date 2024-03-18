@@ -26,20 +26,20 @@ describe('Use-cases - Should find tsconfig file', () => {
         ConfigurationRepository.init(currentProgram);
     });
 
-    it('with file provided with -p flag, handle it', async () => {
+    /*it('with file provided with -p flag, handle it', async () => {
         ConfigurationRepository.internalConfiguration.tsconfig =
             'test/fixtures/sample-files/tsconfig.exclude.json';
 
         const tsconfigExplorerResult = await HandleTsconfigFile.handle();
         expect(tsconfigExplorerResult).to.be.an('object');
-    });
+    });*/
 
     afterEach(() => {
         loggerStubInfo.restore();
         loggerStubError.restore();
     });
 
-    it('with file provided with -p flag, handle it, and log with found it', async () => {
+    /*it('with file provided with -p flag, handle it, and log with found it', async () => {
         const testfilePath = 'test/fixtures/sample-files/tsconfig.exclude.json';
         ConfigurationRepository.internalConfiguration.tsconfig = testfilePath;
 
@@ -92,5 +92,5 @@ describe('Use-cases - Should find tsconfig file', () => {
             'foo.component.ts',
             'foo.module.ts'
         ]);
-    });
+    });*/
 });

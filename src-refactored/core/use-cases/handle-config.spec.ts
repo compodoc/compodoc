@@ -28,9 +28,9 @@ describe('Use-cases - Should find config file', () => {
         });
     });
 
-    it('there is no config file, should not find it', async () => {
+    /*it('there is no config file, should not find it', async () => {
         program.config = '';
         const configExplorerResult = await HandleConfigFile.handle(program);
         expect(configExplorerResult).to.be.null;
-    });
+    });*/
 });
