@@ -25,7 +25,12 @@ import { Subscription } from 'rxjs/Subscription';
     providers: [EmitterService],
     entryComponents: [TodoComponent, ListComponent],
     preserveWhitespaces: false,
-    hostDirectives: [DoNothingDirective]
+    hostDirectives: [DoNothingDirective],
+    styles: `
+        a {
+            color: #03a9f4;
+        }
+    `
 })
 export class AboutComponent {
     public subscriptions: Subscription[];

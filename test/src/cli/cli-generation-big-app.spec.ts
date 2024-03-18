@@ -979,4 +979,15 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<a href="#label" >label</a>');
         expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
     });
+
+    it('should support component styles url/urls', () => {
+        let file = read(distFolder + '/components/CompodocComponent.html');
+        expect(file).to.contain('<code>./compodoc.component.css</code>');
+        file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain(`<code>
+        a {
+            color: #03a9f4;
+        }
+    </code>`);
+    });
 });
