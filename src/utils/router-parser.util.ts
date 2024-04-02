@@ -31,6 +31,7 @@ export class RouterParserUtil {
         /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
     private transformAngular8ImportSyntaxComponentAsyncAwait =
         /(['"]loadComponent['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
+    private trailingComma = /,\s*([\]})])/g;
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -69,63 +70,17 @@ export class RouterParserUtil {
     }
 
     public cleanRawRouteParsed(route: string): object {
-        let routesWithoutSpaces = route.replace(/ /gm, '');
-        const testTrailingComma = routesWithoutSpaces.indexOf('},]');
-        if (testTrailingComma !== -1) {
-            routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
-        }
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntax,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxAsyncAwait,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxComponent,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxComponentAsyncAwait,
-            '$1"$4#$6"'
-        );
-
-        return JSON5.parse(routesWithoutSpaces);
+        return JSON5.parse(this.cleanRawRoute(route));
     }
 
     public cleanRawRoute(route: string): string {
-        let routesWithoutSpaces = route.replace(/ /gm, '');
-        const testTrailingComma = routesWithoutSpaces.indexOf('},]');
-        if (testTrailingComma !== -1) {
-            routesWithoutSpaces = routesWithoutSpaces.replace('},]', '}]');
-        }
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntax,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxAsyncAwait,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxComponent,
-            '$1"$4#$6"'
-        );
-
-        routesWithoutSpaces = routesWithoutSpaces.replace(
-            this.transformAngular8ImportSyntaxComponentAsyncAwait,
-            '$1"$4#$6"'
-        );
-
-        return routesWithoutSpaces;
+        return route
+            .replace(/\s/g, '')
+            .replace(this.trailingComma, '$1')
+            .replace(this.transformAngular8ImportSyntax, '$1"$4#$6"')
+            .replace(this.transformAngular8ImportSyntaxAsyncAwait, '$1"$4#$6"')
+            .replace(this.transformAngular8ImportSyntaxComponent, '$1"$4#$6"')
+            .replace(this.transformAngular8ImportSyntaxComponentAsyncAwait, '$1"$4#$6"');
     }
 
     public setRootModule(module: string): void {
@@ -147,7 +102,7 @@ export class RouterParserUtil {
     }
 
     public fixIncompleteRoutes(miscellaneousVariables: Array<any>): void {
-        let matchingVariables = [];
+        const matchingVariables = [];
         // For each incompleteRoute, scan if one misc variable is in code
         // if ok, try recreating complete route
         for (let i = 0; i < this.incompleteRoutes.length; i++) {
@@ -166,10 +121,10 @@ export class RouterParserUtil {
 
     public linkModulesAndRoutes(): void {
         let i = 0;
-        let len = this.modulesWithRoutes.length;
+        const len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
             _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.PropertyDeclaration) => {
-                let initializer = node.initializer as ts.ArrayLiteralExpression;
+                const initializer = node.initializer as ts.ArrayLiteralExpression;
                 if (initializer) {
                     if (initializer.elements) {
                         _.forEach(initializer.elements, (element: ts.CallExpression) => {
@@ -273,18 +228,18 @@ export class RouterParserUtil {
 
         this.cleanModulesTree = _.cloneDeep(this.modulesTree);
 
-        let routesTree = {
+        const routesTree = {
             name: '<root>',
             kind: 'module',
             className: this.rootModule,
             children: []
         };
 
-        let loopModulesParser = node => {
+        const loopModulesParser = node => {
             if (node.children && node.children.length > 0) {
                 // If module has child modules
-                for (let i in node.children) {
-                    let route = this.foundRouteWithModuleName(node.children[i].name);
+                for (const i in node.children) {
+                    const route = this.foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
                         try {
                             route.children = JSON5.parse(route.data);
@@ -303,16 +258,16 @@ export class RouterParserUtil {
                 }
             } else {
                 // else routes are directly inside the module
-                let rawRoutes = this.foundRouteWithModuleName(node.name);
+                const rawRoutes = this.foundRouteWithModuleName(node.name);
 
                 if (rawRoutes) {
-                    let routes = JSON5.parse(rawRoutes.data);
+                    const routes = JSON5.parse(rawRoutes.data);
                     if (routes) {
                         let i = 0;
-                        let len = routes.length;
+                        const len = routes.length;
                         let routeAddedOnce = false;
                         for (i; i < len; i++) {
-                            let route = routes[i];
+                            const route = routes[i];
                             if (routes[i].component) {
                                 routeAddedOnce = true;
                                 routesTree.children.push({
@@ -330,7 +285,7 @@ export class RouterParserUtil {
             }
         };
 
-        let startModule = _.find(this.cleanModulesTree, { name: this.rootModule });
+        const startModule = _.find(this.cleanModulesTree, { name: this.rootModule });
 
         if (startModule) {
             loopModulesParser(startModule);
@@ -340,9 +295,9 @@ export class RouterParserUtil {
 
         let cleanedRoutesTree = undefined;
 
-        let cleanRoutesTree = route => {
-            for (let i in route.children) {
-                let routes = route.children[i].routes;
+        const cleanRoutesTree = route => {
+            for (const i in route.children) {
+                const routes = route.children[i].routes;
             }
             return route;
         };
@@ -351,10 +306,10 @@ export class RouterParserUtil {
 
         // Try updating routes with lazy loading
 
-        let loopInsideModule = (mod, _rawModule) => {
+        const loopInsideModule = (mod, _rawModule) => {
             if (mod.children) {
-                for (let z in mod.children) {
-                    let route = this.foundRouteWithModuleName(mod.children[z].name);
+                for (const z in mod.children) {
+                    const route = this.foundRouteWithModuleName(mod.children[z].name);
                     if (typeof route !== 'undefined') {
                         if (route.data) {
                             route.children = JSON5.parse(route.data);
@@ -365,7 +320,7 @@ export class RouterParserUtil {
                     }
                 }
             } else {
-                let route = this.foundRouteWithModuleName(mod.name);
+                const route = this.foundRouteWithModuleName(mod.name);
                 if (typeof route !== 'undefined') {
                     if (route.data) {
                         route.children = JSON5.parse(route.data);
@@ -377,16 +332,16 @@ export class RouterParserUtil {
             }
         };
 
-        let loopRoutesParser = route => {
+        const loopRoutesParser = route => {
             if (route.children) {
-                for (let i in route.children) {
+                for (const i in route.children) {
                     if (route.children[i].loadChildren) {
-                        let child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
-                        let module: RoutingGraphNode = _.find(this.cleanModulesTree, {
+                        const child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
+                        const module: RoutingGraphNode = _.find(this.cleanModulesTree, {
                             name: child
                         });
                         if (module) {
-                            let _rawModule: RoutingGraphNode = {};
+                            const _rawModule: RoutingGraphNode = {};
                             _rawModule.kind = 'module';
                             _rawModule.children = [];
                             _rawModule.module = module.name;
@@ -397,7 +352,7 @@ export class RouterParserUtil {
                         }
                     }
                     if (route.children[i].loadComponent) {
-                        let child = this.foundLazyComponentWithPath(
+                        const child = this.foundLazyComponentWithPath(
                             route.children[i].loadComponent
                         );
                         if (child) {
@@ -414,11 +369,11 @@ export class RouterParserUtil {
     }
 
     public constructModulesTree(): void {
-        let getNestedChildren = (arr, parent?) => {
-            let out = [];
-            for (let i in arr) {
+        const getNestedChildren = (arr, parent?) => {
+            const out = [];
+            for (const i in arr) {
                 if (arr[i].parent === parent) {
-                    let children = getNestedChildren(arr, arr[i].name);
+                    const children = getNestedChildren(arr, arr[i].name);
                     if (children.length) {
                         arr[i].children = children;
                     }
@@ -444,11 +399,11 @@ export class RouterParserUtil {
     public generateRoutesIndex(outputFolder: string, routes: Array<any>): Promise<void> {
         return FileEngine.get(__dirname + '/../src/templates/partials/routes-index.hbs').then(
             data => {
-                let template: any = Handlebars.compile(data);
-                let result = template({
+                const template: any = Handlebars.compile(data);
+                const result = template({
                     routes: JSON.stringify(routes)
                 });
-                let testOutputDir = outputFolder.match(process.cwd());
+                const testOutputDir = outputFolder.match(process.cwd());
 
                 if (testOutputDir && testOutputDir.length > 0) {
                     outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
@@ -465,18 +420,18 @@ export class RouterParserUtil {
 
     public routesLength(): number {
         let _n = 0;
-        let routesParser = route => {
+        const routesParser = route => {
             if (typeof route.path !== 'undefined') {
                 _n += 1;
             }
             if (route.children) {
-                for (let j in route.children) {
+                for (const j in route.children) {
                     routesParser(route.children[j]);
                 }
             }
         };
 
-        for (let i in this.routes) {
+        for (const i in this.routes) {
             routesParser(this.routes[i]);
         }
 
@@ -499,7 +454,7 @@ export class RouterParserUtil {
         let result = false;
         if (node.declarationList && node.declarationList.declarations) {
             let i = 0;
-            let len = node.declarationList.declarations.length;
+            const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
                 if (node.declarationList.declarations[i].type) {
                     if (
@@ -515,7 +470,7 @@ export class RouterParserUtil {
     }
 
     public cleanFileIdentifiers(sourceFile: SourceFile): SourceFile {
-        let file = sourceFile;
+        const file = sourceFile;
         const identifiers = file.getDescendantsOfKind(SyntaxKind.Identifier).filter(p => {
             return (
                 Node.isArrayLiteralExpression(p.getParentOrThrow()) ||
@@ -523,12 +478,12 @@ export class RouterParserUtil {
             );
         });
 
-        let identifiersInRoutesVariableStatement = [];
+        const identifiersInRoutesVariableStatement = [];
 
         for (const identifier of identifiers) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            let parent = identifier.getParentWhile(n => {
+            const parent = identifier.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -565,17 +520,17 @@ export class RouterParserUtil {
     }
 
     public cleanFileSpreads(sourceFile: SourceFile): SourceFile {
-        let file = sourceFile;
+        const file = sourceFile;
         const spreadElements = file
             .getDescendantsOfKind(SyntaxKind.SpreadElement)
             .filter(p => Node.isArrayLiteralExpression(p.getParentOrThrow()));
 
-        let spreadElementsInRoutesVariableStatement = [];
+        const spreadElementsInRoutesVariableStatement = [];
 
         for (const spreadElement of spreadElements) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            let parent = spreadElement.getParentWhile(n => {
+            const parent = spreadElement.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -668,11 +623,11 @@ export class RouterParserUtil {
                     );
 
                     if (routePathIsBad(importPath)) {
-                        let leadingIndices = getIndicesOf(leadingFilePath, importPath, true);
+                        const leadingIndices = getIndicesOf(leadingFilePath, importPath, true);
                         if (leadingIndices.length > 1) {
                             // Nested route fixes
-                            let startIndex = leadingIndices[0];
-                            let endIndex = leadingIndices[leadingIndices.length - 1];
+                            const startIndex = leadingIndices[0];
+                            const endIndex = leadingIndices[leadingIndices.length - 1];
                             importPath =
                                 importPath.slice(0, startIndex) + importPath.slice(endIndex);
                         } else {
@@ -686,7 +641,7 @@ export class RouterParserUtil {
                             ? ast.getSourceFile(importPath)
                             : ast.addSourceFileAtPath(importPath);
                     if (sourceFileImport) {
-                        let variableName = foundWithAlias
+                        const variableName = foundWithAlias
                             ? aliasOriginalName
                             : spreadElementIdentifier;
                         referencedDeclaration =
@@ -725,17 +680,17 @@ export class RouterParserUtil {
     }
 
     public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
-        let file = sourceFile;
+        const file = sourceFile;
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
             .filter(p => !Node.isPropertyAccessExpression(p.getParentOrThrow()));
 
-        let propertyAccessExpressionsInRoutesVariableStatement = [];
+        const propertyAccessExpressionsInRoutesVariableStatement = [];
 
         for (const propertyAccessExpression of propertyAccessExpressions) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            let parent = propertyAccessExpression.getParentWhile(n => {
+            const parent = propertyAccessExpression.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -786,7 +741,7 @@ export class RouterParserUtil {
      * @param sourceFile ts.SourceFile
      */
     public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
-        let file = sourceFile;
+        const file = sourceFile;
 
         const variableStatements = sourceFile.getVariableDeclaration(v => {
             let result = false;
@@ -843,7 +798,7 @@ export class RouterParserUtil {
     ): ts.Node {
         initializer.elements.forEach((element: ts.ObjectLiteralExpression) => {
             element.properties.forEach((property: ts.PropertyAssignment) => {
-                let propertyName = property.name.getText(),
+                const propertyName = property.name.getText(),
                     propertyInitializer = property.initializer;
                 switch (propertyName) {
                     case 'path':
@@ -863,7 +818,7 @@ export class RouterParserUtil {
                                     if (propertyInitializer.expression) {
                                         firstObjectLiteralAttributeName =
                                             propertyInitializer.expression.getText();
-                                        let result =
+                                        const result =
                                             ImportsUtil.findPropertyValueInImportOrLocalVariables(
                                                 firstObjectLiteralAttributeName +
                                                     '.' +

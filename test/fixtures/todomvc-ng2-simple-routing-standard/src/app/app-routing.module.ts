@@ -6,7 +6,9 @@ export const APP_ROUTES: Routes = [
     {
         path: 'about',
         loadChildren: (): Promise<AboutModule> =>
-            import('./about/about.module').then(m => m.AboutModule)
+            // Trailing comma is added intentionally to test
+            // module parsing specifically for this case.
+            import('./about/about.module').then(m => m.AboutModule,)
     },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
