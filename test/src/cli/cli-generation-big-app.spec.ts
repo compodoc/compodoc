@@ -71,7 +71,7 @@ describe('CLI simple generation - big app', () => {
         done();
     });
     after(() => {
-        tmp.clean(distFolder);
+        //tmp.clean(distFolder);
     });
 
     it('should display generated message', () => {
@@ -993,10 +993,12 @@ describe('CLI simple generation - big app', () => {
 
     it('should support aliases', () => {
         let file = read(distFolder + '/components/DumbImportComponent.html');
-        expect(file).to.contain('<a href="#label" >label</a>');
-        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+        expect(file).to.contain(
+            '<a href="../classes/DumbParentComponent.html" target="_self" >PapaComponent</a>'
+        );
         file = read(distFolder + '/components/DumbWithExportComponent.html');
-        expect(file).to.contain('<a href="#label" >label</a>');
-        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+        expect(file).to.contain(
+            '<a href="../classes/DumbParentComponent.html" target="_self" >LegacyPapaComponent</a>'
+        );
     });
 });

@@ -219,7 +219,7 @@ export class ExtendsMerger {
     public findInAliases(name: string) {
         let finalOriginalName = null;
         for (const originalName in this.aliases) {
-            if (this.aliases[originalName] === name) {
+            if (this.aliases[originalName].includes(name)) {
                 finalOriginalName = originalName;
             }
         }

@@ -111,7 +111,8 @@ export class AngularDependencies extends FrameworkDependencies {
                         filePath.lastIndexOf('spec.ts') === -1
                     ) {
                         logger.info('parsing', filePath);
-                        this.getTypescriptExports(file, deps);
+                        this.getTypescriptExportsAliases(file, deps);
+                        this.getTypescriptImportsAliases(file, deps);
                         this.getSourceFileDecorators(file, deps);
                     }
                 }
@@ -319,7 +320,38 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
-    private getTypescriptExports(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
+    private getTypescriptImportsAliases(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
+        const astFile =
+            typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
+                ? project.getSourceFile(initialSrcFile.fileName)
+                : project.addSourceFileAtPath(initialSrcFile.fileName);
+
+        if (astFile) {
+            const importDeclarations = astFile.getImportDeclarations();
+            if (importDeclarations && importDeclarations.length > 0) {
+                importDeclarations.forEach(importDeclaration => {
+                    const namedImports = importDeclaration.getNamedImports();
+                    if (namedImports && namedImports.length > 0) {
+                        namedImports.forEach(namedImport => {
+                            if (namedImport.getAliasNode()) {
+                                if (outputSymbols.aliases.hasOwnProperty(namedImport.getName())) {
+                                    outputSymbols.aliases[namedImport.getName()].push(
+                                        namedImport.getAliasNode().getText()
+                                    );
+                                } else {
+                                    outputSymbols.aliases[namedImport.getName()] = [
+                                        namedImport.getAliasNode().getText()
+                                    ];
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }
+
+    private getTypescriptExportsAliases(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
         const astFile =
             typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
                 ? project.getSourceFile(initialSrcFile.fileName)
@@ -335,9 +367,17 @@ export class AngularDependencies extends FrameworkDependencies {
                         if (namedExports && namedExports.length > 0) {
                             namedExports.forEach(namedExport => {
                                 if (namedExport.getAliasNode()) {
-                                    outputSymbols.aliases[namedExport.getName()] = namedExport
-                                        .getAliasNode()
-                                        .getText();
+                                    if (
+                                        outputSymbols.aliases.hasOwnProperty(namedExport.getName())
+                                    ) {
+                                        outputSymbols.aliases[namedExport.getName()].push(
+                                            namedExport.getAliasNode().getText()
+                                        );
+                                    } else {
+                                        outputSymbols.aliases[namedExport.getName()] = [
+                                            namedExport.getAliasNode().getText()
+                                        ];
+                                    }
                                 }
                             });
                         }
