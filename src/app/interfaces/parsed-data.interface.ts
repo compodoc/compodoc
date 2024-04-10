@@ -13,4 +13,5 @@ export interface ParsedData {
     classes;
     miscellaneous;
     routesTree;
+    aliases;
 }

@@ -990,4 +990,13 @@ describe('CLI simple generation - big app', () => {
         }
     </code>`);
     });
+
+    it('should support aliases', () => {
+        let file = read(distFolder + '/classes/DumbImportComponent.html');
+        expect(file).to.contain('<a href="#label" >label</a>');
+        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+        file = read(distFolder + '/classes/DumbWithExportComponent.html');
+        expect(file).to.contain('<a href="#label" >label</a>');
+        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+    });
 });

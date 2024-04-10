@@ -70,6 +70,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
     public getDependencies() {
         let deps = {
+            aliases: {},
             modules: [],
             modulesForGraph: [],
             components: [],
@@ -83,6 +84,7 @@ export class AngularDependencies extends FrameworkDependencies {
             routes: [],
             classes: [],
             interfaces: [],
+            typescriptImports: [],
             miscellaneous: {
                 variables: [],
                 functions: [],
@@ -109,6 +111,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         filePath.lastIndexOf('spec.ts') === -1
                     ) {
                         logger.info('parsing', filePath);
+                        this.getTypescriptExports(file, deps);
                         this.getSourceFileDecorators(file, deps);
                     }
                 }
@@ -313,6 +316,34 @@ export class AngularDependencies extends FrameworkDependencies {
             }
         } else {
             this.ignore(deps);
+        }
+    }
+
+    private getTypescriptExports(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
+        const astFile =
+            typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
+                ? project.getSourceFile(initialSrcFile.fileName)
+                : project.addSourceFileAtPath(initialSrcFile.fileName);
+
+        if (astFile) {
+            const exportDeclarations = astFile.getExportDeclarations();
+            if (exportDeclarations && exportDeclarations.length > 0) {
+                exportDeclarations.forEach(exportDeclaration => {
+                    const hasNamedExports = exportDeclaration.hasNamedExports();
+                    if (hasNamedExports) {
+                        const namedExports = exportDeclaration.getNamedExports();
+                        if (namedExports && namedExports.length > 0) {
+                            namedExports.forEach(namedExport => {
+                                if (namedExport.getAliasNode()) {
+                                    outputSymbols.aliases[namedExport.getName()] = namedExport
+                                        .getAliasNode()
+                                        .getText();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
     }
 

@@ -9,6 +9,7 @@ export class ExtendsMerger {
     private injectables;
     private directives;
     private controllers;
+    private aliases;
 
     private static instance: ExtendsMerger;
     private constructor() {}
@@ -25,6 +26,7 @@ export class ExtendsMerger {
         this.injectables = deps.injectables;
         this.directives = deps.directives;
         this.controllers = deps.controllers;
+        this.aliases = deps.aliases;
 
         const mergeExtendedProperties = component => {
             let ext;
@@ -196,8 +198,32 @@ export class ExtendsMerger {
             this.directives,
             this.controllers
         );
-        const result = find(mergedData, { name: name } as any);
+
+        let result = find(mergedData, { name: name } as any);
+
+        // Find in aliases ?
+        if (!result) {
+            const aliases = Object.values(this.aliases);
+            const isInAlias = aliases.includes(name);
+            if (isInAlias) {
+                const finalOriginalName = this.findInAliases(name);
+                if (finalOriginalName) {
+                    result = find(mergedData, { name: finalOriginalName } as any);
+                }
+            }
+        }
+
         return result || false;
+    }
+
+    public findInAliases(name: string) {
+        let finalOriginalName = null;
+        for (const originalName in this.aliases) {
+            if (this.aliases[originalName] === name) {
+                finalOriginalName = originalName;
+            }
+        }
+        return finalOriginalName;
     }
 }
 
