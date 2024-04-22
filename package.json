@@ -81,7 +81,7 @@
         "url": "https://github.com/compodoc/compodoc/issues"
     },
     "engines": {
-        "node": ">= 14.0.0"
+        "node": ">= 16.0.0"
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
@@ -139,8 +139,8 @@
         "@types/node": "20.12.7",
         "@types/semver": "7.5.8",
         "@types/traverse": "0.6.36",
-        "@typescript-eslint/eslint-plugin": "7.7.0",
-        "@typescript-eslint/parser": "7.7.0",
+        "@typescript-eslint/eslint-plugin": "7.7.1",
+        "@typescript-eslint/parser": "7.7.1",
         "@wdio/cli": "8.36.1",
         "@wdio/local-runner": "8.36.1",
         "@wdio/mocha-framework": "8.36.1",
@@ -163,7 +163,7 @@
         "prettier": "3.2.5",
         "pretty-quick": "4.0.0",
         "rimraf": "5.0.5",
-        "rollup": "4.16.1",
+        "rollup": "4.16.2",
         "rollup-plugin-typescript2": "0.36.0",
         "sinon": "17.0.1",
         "sonar-scanner": "3.1.0",
