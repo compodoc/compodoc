@@ -202,7 +202,7 @@ In your cloned `compodoc` project, type `npm link`.
 
 This will do a symbolic link from the global `node_modules` version to point to this folder, so when we run `compodoc`, you will now use the development version of Compodoc.
 
-For testing, you will want to generate an application with angular-cli, and run `compodoc` instaled globally.
+For testing, you will want to generate an application with angular-cli, and run `compodoc` installed globally.
 
 ```shell
 compodoc ...
@@ -243,7 +243,7 @@ to read on GitHub as well as in various git tools.
 
 ### Revert
 
-If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body, it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
 
 ### Type
 
