@@ -1,4 +1,22 @@
-<a name="1.1.23"></a>
+<a name="1.1.24"></a>
+
+## [1.1.24](https://github.com/compodoc/compodoc/compare/1.1.23...1.1.24)
+
+### Merged
+
+-   docs: fixed typos [#1470](https://github.com/compodoc/compodoc/pull/1470), Thanks [grjan7](https://github.com/grjan7)
+-   docs: update readability [#1467](https://github.com/compodoc/compodoc/pull/1467), Thanks [grjan7](https://github.com/grjan7)
+-   fix(app): remove trailing commas from routes [#1451](https://github.com/compodoc/compodoc/pull/1451), Thanks [raizorlol](https://github.com/raizorlol)
+-   feat(app): display inputsignals as inputs rather than properties [#1439](https://github.com/compodoc/compodoc/pull/1439), Thanks [astrutz](https://github.com/astrutz)
+-   feat(app): disableConstructors for components, directives, services and pipes [#1437](https://github.com/compodoc/compodoc/pull/1437), Thanks [astrutz](https://github.com/astrutz)
+
+### Bug fixes
+
+-   fix(app): toggle dark mode on page loading ([256430d](https://github.com/compodoc/compodoc/commit/256430d)), closes [#1456](https://github.com/compodoc/compodoc/issues/1456)
+-   feat(app): bump dev/dependencies ([09b0e88](https://github.com/compodoc/compodoc/commit/09b0e88)), closes [#1362](https://github.com/compodoc/compodoc/issues/1362)
+-   fix(app): support TypeScript aliases for extends ([a0840ff](https://github.com/compodoc/compodoc/commit/a0840ff)), closes [#1427](https://github.com/compodoc/compodoc/issues/1427)
+-   fix(app): correct test for styles, styleUrls, styleUrl ([bfbc48f](https://github.com/compodoc/compodoc/commit/bfbc48f)), closes [#1444](https://github.com/compodoc/compodoc/issues/1444)
+-   feat(app): outputs signal supports ([2e36d95](https://github.com/compodoc/compodoc/commit/2e36d95)), closes [#1443](https://github.com/compodoc/compodoc/issues/1443) ([2e36d95](https://github.com/compodoc/compodoc/commit/2e36d95)), closes [#1439](https://github.com/compodoc/compodoc/issues/1439)
 
 ## [1.1.23](https://github.com/compodoc/compodoc/compare/1.1.22...1.1.23)
 
