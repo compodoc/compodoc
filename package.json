@@ -163,7 +163,7 @@
         "prettier": "3.2.5",
         "pretty-quick": "4.0.0",
         "rimraf": "5.0.5",
-        "rollup": "4.16.2",
+        "rollup": "4.16.4",
         "rollup-plugin-typescript2": "0.36.0",
         "sinon": "17.0.1",
         "sonar-scanner": "3.1.0",
