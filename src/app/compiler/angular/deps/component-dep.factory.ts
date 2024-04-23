@@ -76,7 +76,7 @@ export class ComponentDepFactory {
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
             componentDep.jsdoctags = IO.jsdoctags[0].tags;
         }
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             componentDep.constructorObj = IO.constructor;
         }
         if (IO.extends) {
@@ -87,6 +87,14 @@ export class ComponentDepFactory {
         }
         if (IO.accessors) {
             componentDep.accessors = IO.accessors;
+        }
+        if (IO.properties) {
+            componentDep.inputsClass = componentDep.inputsClass.concat(
+                this.helper.getInputSignals(IO.properties)
+            );
+            componentDep.outputsClass = componentDep.outputsClass.concat(
+                this.helper.getOutputSignals(IO.properties)
+            );
         }
 
         return componentDep;

@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync, stats } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 interface Image {
     size: number;
@@ -11,7 +10,7 @@ describe('CLI custom favicon', () => {
     const distFolder = tmp.name + '-favicon';
 
     describe('when specifying a custom favicon', () => {
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, exists } from '../helpers';
 
-const expect = chai.expect;
 const tmp = temporaryDir();
 
 describe('CLI option file', () => {

@@ -1,14 +1,13 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI handlebars templates', () => {
     const distFolder = tmp.name + '-templates';
 
     describe('with alternative handlebar template files', () => {
         let indexFile, barComponentFile, fooComponentFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
 
             let ls = shell('node', [

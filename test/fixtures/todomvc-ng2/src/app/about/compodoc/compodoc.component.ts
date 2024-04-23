@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
  */
 @Component({
     selector: 'compodoc',
-    templateUrl: './compodoc.component.html'
+    templateUrl: './compodoc.component.html',
+    styleUrl: './compodoc.component.css'
 })
 export class CompodocComponent {}

@@ -21,7 +21,7 @@ const fg = require('fast-glob');
 const os = require('os');
 const osName = require('os-name');
 const pkg = require('../package.json');
-const program = require('commander');
+const { program } = require('commander');
 
 const cosmiconfigModuleName = 'compodoc';
 
@@ -162,6 +162,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             .option(
                 '--disableLifeCycleHooks',
                 'Do not show Angular lifecycle hooks in generated documentation',
+                false
+            )
+            .option(
+                '--disableConstructors',
+                'Do not show constructors in generated documentation',
                 false
             )
             .option(
@@ -503,6 +508,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (programOptions.disableLifeCycleHooks) {
             Configuration.mainData.disableLifeCycleHooks = programOptions.disableLifeCycleHooks;
+        }
+
+        if (configFile.disableConstructors) {
+            Configuration.mainData.disableConstructors = configFile.disableConstructors;
+        }
+        if (programOptions.disableConstructors) {
+            Configuration.mainData.disableConstructors = programOptions.disableConstructors;
         }
 
         if (configFile.disableRoutesGraph) {

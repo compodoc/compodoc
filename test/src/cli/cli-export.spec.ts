@@ -1,8 +1,7 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { exists, read, readPDF, shell, temporaryDir } from '../helpers';
 const fs = require('fs-extra');
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI Export', () => {
     const distFolder = tmp.name + '-export';

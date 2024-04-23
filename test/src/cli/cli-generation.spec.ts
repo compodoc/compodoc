@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    path = require('path'),
+const path = require('path'),
     tmp = temporaryDir();
 
 describe('CLI simple generation', () => {

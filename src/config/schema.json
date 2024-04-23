@@ -263,6 +263,13 @@
             "default": false,
             "examples": [false]
         },
+        "disableConstructors": {
+            "$id": "/properties/disableConstructors",
+            "type": "boolean",
+            "title": "Do not show constructors in generated documentation",
+            "default": false,
+            "examples": [false]
+        },
         "disableRoutesGraph": {
             "$id": "/properties/disableRoutesGraph",
             "type": "boolean",

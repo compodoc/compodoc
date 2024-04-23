@@ -70,6 +70,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
     public getDependencies() {
         let deps = {
+            aliases: {},
             modules: [],
             modulesForGraph: [],
             components: [],
@@ -83,6 +84,7 @@ export class AngularDependencies extends FrameworkDependencies {
             routes: [],
             classes: [],
             interfaces: [],
+            typescriptImports: [],
             miscellaneous: {
                 variables: [],
                 functions: [],
@@ -109,6 +111,8 @@ export class AngularDependencies extends FrameworkDependencies {
                         filePath.lastIndexOf('spec.ts') === -1
                     ) {
                         logger.info('parsing', filePath);
+                        this.getTypescriptExportsAliases(file, deps);
+                        this.getTypescriptImportsAliases(file, deps);
                         this.getSourceFileDecorators(file, deps);
                     }
                 }
@@ -245,11 +249,23 @@ export class AngularDependencies extends FrameworkDependencies {
         };
         let excludeFromClassArray = false;
 
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             deps.constructorObj = IO.constructor;
+        }
+        if (IO.inputs) {
+            deps.inputsClass = IO.inputs;
+        }
+        if (IO.outputs) {
+            deps.outputsClass = IO.outputs;
         }
         if (IO.properties) {
             deps.properties = IO.properties;
+            deps.inputsClass = deps.inputsClass
+                ? deps.inputsClass.concat(this.componentHelper.getInputSignals(IO.properties))
+                : this.componentHelper.getInputSignals(IO.properties);
+            deps.outputsClass = deps.outputsClass
+                ? deps.outputsClass.concat(this.componentHelper.getOutputSignals(IO.properties))
+                : this.componentHelper.getOutputSignals(IO.properties);
         }
         if (IO.description) {
             deps.description = IO.description;
@@ -272,12 +288,7 @@ export class AngularDependencies extends FrameworkDependencies {
         if (IO.accessors) {
             deps.accessors = IO.accessors;
         }
-        if (IO.inputs) {
-            deps.inputsClass = IO.inputs;
-        }
-        if (IO.outputs) {
-            deps.outputsClass = IO.outputs;
-        }
+
         if (IO.hostBindings) {
             deps.hostBindings = IO.hostBindings;
         }
@@ -306,6 +317,73 @@ export class AngularDependencies extends FrameworkDependencies {
             }
         } else {
             this.ignore(deps);
+        }
+    }
+
+    private getTypescriptImportsAliases(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
+        const astFile =
+            typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
+                ? project.getSourceFile(initialSrcFile.fileName)
+                : project.addSourceFileAtPath(initialSrcFile.fileName);
+
+        if (astFile) {
+            const importDeclarations = astFile.getImportDeclarations();
+            if (importDeclarations && importDeclarations.length > 0) {
+                importDeclarations.forEach(importDeclaration => {
+                    const namedImports = importDeclaration.getNamedImports();
+                    if (namedImports && namedImports.length > 0) {
+                        namedImports.forEach(namedImport => {
+                            if (namedImport.getAliasNode()) {
+                                if (outputSymbols.aliases.hasOwnProperty(namedImport.getName())) {
+                                    outputSymbols.aliases[namedImport.getName()].push(
+                                        namedImport.getAliasNode().getText()
+                                    );
+                                } else {
+                                    outputSymbols.aliases[namedImport.getName()] = [
+                                        namedImport.getAliasNode().getText()
+                                    ];
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }
+
+    private getTypescriptExportsAliases(initialSrcFile: ts.SourceFile, outputSymbols: any): void {
+        const astFile =
+            typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
+                ? project.getSourceFile(initialSrcFile.fileName)
+                : project.addSourceFileAtPath(initialSrcFile.fileName);
+
+        if (astFile) {
+            const exportDeclarations = astFile.getExportDeclarations();
+            if (exportDeclarations && exportDeclarations.length > 0) {
+                exportDeclarations.forEach(exportDeclaration => {
+                    const hasNamedExports = exportDeclaration.hasNamedExports();
+                    if (hasNamedExports) {
+                        const namedExports = exportDeclaration.getNamedExports();
+                        if (namedExports && namedExports.length > 0) {
+                            namedExports.forEach(namedExport => {
+                                if (namedExport.getAliasNode()) {
+                                    if (
+                                        outputSymbols.aliases.hasOwnProperty(namedExport.getName())
+                                    ) {
+                                        outputSymbols.aliases[namedExport.getName()].push(
+                                            namedExport.getAliasNode().getText()
+                                        );
+                                    } else {
+                                        outputSymbols.aliases[namedExport.getName()] = [
+                                            namedExport.getAliasNode().getText()
+                                        ];
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -457,7 +535,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     srcFile.getText()
                                 )
                             };
-                            if (IO.constructor) {
+                            if (IO.constructor && !Configuration.mainData.disableConstructors) {
                                 injectableDeps.constructorObj = IO.constructor;
                             }
                             if (IO.jsdoctags && IO.jsdoctags.length > 0) {

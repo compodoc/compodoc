@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI toggle menu items', () => {
     describe('with a list', () => {
@@ -9,7 +8,7 @@ describe('CLI toggle menu items', () => {
         let stdoutString = undefined,
             fooIndexFile,
             fooServiceFile;
-        before(function(done) {
+        before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
                 './bin/index-cli.js',

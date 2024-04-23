@@ -16,37 +16,61 @@ to follow:
 
 ## Stack
 
-Compodoc is written in TypeScript. The compiling process use Rollup.js
+Compodoc is written in TypeScript. The compiling process use `Rollup.js`.
 
 ## Architecture and operating
 
-See this folder for more details : [DOCS](./docs/README.md)
+See this folder for more details: [DOCS](./docs/README.md).
 
 ### Development process
 
--   open one terminal and run inside compodoc folder : `npm run start`
--   open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s`
+1. Open one terminal and run inside `compodoc` folder:
+
+    ```shell
+    npm run start
+    ```
+
+1. Open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run: 
+
+    ```shell
+    node ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s
+    ```
 
 ### Debugging process
 
--   install sleep package `npm i sleep`
--   add these lines in index-cli.ts, atfer --files check
+1. Install sleep package:
 
-```
-const sleep = require('sleep');
-const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
-if (isInInspectMode) {
-    // wait 10 seconds for debugger to connect in Chrome devtools
-    sleep.sleep(10);
-}
-```
+    ```shell
+    npm i sleep
+    ```
 
--   open one terminal and run inside compodoc folder : `npm run start`
--   add `debugger`statement where you want to debug your code
--   open Chrome and this url : chrome://inspect
--   open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run `node --inspect ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s`
--   Compodoc will wait 10s before starting when it detects --inspect flag
--   open the debug window in Chrome, and click `inspect`
+1. Add these lines in `index-cli.ts`, after `--files` check:
+
+    ```JavaScript
+    const sleep = require('sleep');
+    const isInInspectMode = /--inspect/.test(process.execArgv.join(' '));
+    if (isInInspectMode) {
+        // wait 10 seconds for debugger to connect in Chrome devtools
+        sleep.sleep(10);
+    }
+    ```
+
+1. Open one terminal and run inside compodoc folder:
+
+    ```shell
+    npm run start
+    ```
+
+1. Add `debugger` statement where you want to debug your code.
+1. Open Chrome and this url: `chrome://inspect`.
+1. Open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run:
+
+    ```shell
+    node --inspect ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s
+    ```
+
+1. Compodoc will wait 10s before starting when it detects `--inspect` flag.
+1. Open the debug window in Chrome, and click `inspect`.
 
 ## <a name="issue"></a> Found an Issue?
 
@@ -56,7 +80,7 @@ If you find a bug in the source code or a mistake in the documentation, you can 
 
 You can _request_ a new feature by [submitting an issue](#submit-issue) to our [GitHub
 Repository][github]. If you would like to _implement_ a new feature, please submit an issue with a proposal for your work first, to be sure that we can use it.
-First open an issue and outline your proposal so that it can be discussed. This will also allow us to better coordinate our efforts, prevent duplication of work, and help you to craft the change so that it is successfully accepted into the project.
+First, open an issue and outline your proposal so that it can be discussed. This will also allow us to better coordinate our efforts, prevent duplication of work, and help you to craft the change so that it is successfully accepted into the project.
 
 ## <a name="submit"></a> Submission Guidelines
 
@@ -64,7 +88,7 @@ First open an issue and outline your proposal so that it can be discussed. This 
 
 Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion might inform you of workarounds readily available.
 
-We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs we will systematically ask you to provide a minimal reproduction scenario. Having a reproducible scenario gives us wealth of important information without going back & forth to you with additional questions like:
+We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs, we will systematically ask you to provide a minimal reproduction scenario. Having a reproducible scenario gives us wealth of important information without going back & forth to you with additional questions like:
 
 -   version of compodoc, Node.js used
 -   `.tsconfig.json` configuration
@@ -72,9 +96,9 @@ We want to fix all the issues as soon as possible, but before fixing a bug we ne
 
 A minimal reproduce scenario using allows us to quickly confirm a bug (or point out coding problem) as well as confirm that we are fixing the right problem.
 
-We will be insisting on a minimal reproduce scenario in order to save maintainers time and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal repository. We understand that sometimes it might be hard to extract essentials bits of code from a larger code-base but we really need to isolate the problem before we can fix it.
+We will be insisting on a minimal reproduce scenario in order to save maintainers time, and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal repository. We understand that sometimes it might be hard to extract essential bits of code from a larger code-base, but we really need to isolate the problem before we can fix it.
 
-Unfortunately we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that don't have enough info to be reproduced.
+Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you, we are going to close an issue that don't have enough info to be reproduced.
 
 You can file new issues by filling out our [new issue form](https://github.com/compodoc/compodoc/issues/new).
 
@@ -82,7 +106,7 @@ You can file new issues by filling out our [new issue form](https://github.com/c
 
 Before you submit your Pull Request (PR) consider the following guidelines:
 
--   I use [Git flow](http://danielkummer.github.io/git-flow-cheatsheet/) for the development
+-   I use [Git flow](http://danielkummer.github.io/git-flow-cheatsheet/) for the development.
 -   Search [GitHub](https://github.com/compodoc/compodoc/pulls) for an open or closed Pull Request
     that relates to your submission.
 -   Make your changes in a new git branch
@@ -124,7 +148,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     ```
 
 -   In GitHub, send a pull request to `compodoc/compodoc:develop`.
--   If i suggest changes then
+-   If I suggest changes then
 
     -   Make the required updates.
     -   Re-run the tests and retest your sample generated project to ensure tests are still passing.
@@ -140,7 +164,7 @@ That's it! Thank you for your contribution!
 #### After your pull request is merged
 
 After your pull request is merged, you can safely delete your branch and pull the changes
-from the main (upstream) repository:
+from the `main (upstream)` repository:
 
 -   Delete the remote branch on GitHub either through the GitHub web UI or your local shell as follows:
 
@@ -148,7 +172,7 @@ from the main (upstream) repository:
     git push origin --delete my-fix-branch
     ```
 
--   Check out the develop branch:
+-   Check out the `develop` branch:
 
     ```shell
     git checkout develop -f
@@ -160,7 +184,7 @@ from the main (upstream) repository:
     git branch -D my-fix-branch
     ```
 
--   Update your develop with the latest upstream version:
+-   Update your `develop` with the latest upstream version:
 
     ```shell
     git pull --ff upstream develop
@@ -178,7 +202,7 @@ In your cloned `compodoc` project, type `npm link`.
 
 This will do a symbolic link from the global `node_modules` version to point to this folder, so when we run `compodoc`, you will now use the development version of Compodoc.
 
-For testing, you will want to generate an application with angular-cli, and run compodoc instaled globally.
+For testing, you will want to generate an application with angular-cli, and run `compodoc` installed globally.
 
 ```shell
 compodoc ...
@@ -219,7 +243,7 @@ to read on GitHub as well as in various git tools.
 
 ### Revert
 
-If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body, it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
 
 ### Type
 
@@ -252,8 +276,8 @@ The subject contains succinct description of the change:
 
 Just as in the **subject**, use the imperative, present tense: "change" not There are currently a few exceptions to the "use package name" rule:
 
--   **packaging**: used for changes that change the npm package layout in all of our packages, e.g. public path changes, package.json changes done to all packages, d.ts file/format changes, changes to bundles, etc.
--   **changelog**: used for updating the release notes in CHANGELOG.md
+-   **packaging**: used for changes that change the npm package layout in all of our packages, e.g. public path changes, `package.json` changes done to all packages, `d.ts` file/format changes, changes to bundles, etc.
+-   **changelog**: used for updating the release notes in `CHANGELOG.md`.
 -   none/empty string: useful for `style`, `test` and `refactor` changes that are done across all packages (e.g. `style: add missing semicolons`)
 
 **Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.

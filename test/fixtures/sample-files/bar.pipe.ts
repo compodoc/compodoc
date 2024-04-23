@@ -5,6 +5,8 @@ import { PipeTransform, Pipe, OnDestroy } from '@angular/core';
     standalone: true
 })
 export class BarPipe implements PipeTransform, OnDestroy {
+    constructor() {}
+
     transform(value, args) {
         return 'StandAlone Pipe ;)';
     }

@@ -94,6 +94,12 @@ export const PUBLIC_FLAGS: Flag[] = [
         defaultValue: false
     },
     {
+        label: 'disableConstructors',
+        flag: '--disableConstructors',
+        description: 'Do not show constructors in generated documentation',
+        defaultValue: false
+    },
+    {
         label: 'disablePrivate',
         flag: '--disablePrivate',
         description: 'Do not show private in generated documentation',

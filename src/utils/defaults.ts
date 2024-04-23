@@ -25,6 +25,7 @@ export const COMPODOC_DEFAULTS = {
     disableProtected: false,
     disableInternal: false,
     disableLifeCycleHooks: false,
+    disableConstructors: false,
     disableRoutesGraph: false,
     disableDependencies: false,
     disableProperties: false,

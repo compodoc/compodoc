@@ -1,14 +1,26 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
+
 import DependenciesEngine from '../dependencies.engine';
+
 import AngularVersionUtil from '../../../utils/angular-version.util';
+import ExtendsMerger from '../../../utils/extends-merger.util';
 import BasicTypeUtil from '../../../utils/basic-type.util';
+
 import Configuration from '../../configuration';
 
 export class LinkTypeHelper implements IHtmlEngineHelper {
     constructor() {}
 
     public helperFunc(context: any, name: string, options: IHandlebarsOptions) {
-        const _result = DependenciesEngine.find(name);
+        let _result = DependenciesEngine.find(name);
+        // Find in aliases ?
+        if (!_result) {
+            const potentialAlias = ExtendsMerger.findInAliases(name);
+            if (potentialAlias) {
+                _result = DependenciesEngine.find(potentialAlias);
+            }
+        }
+
         const angularDocPrefix = AngularVersionUtil.prefixOfficialDoc(
             Configuration.mainData.angularVersion
         );

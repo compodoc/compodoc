@@ -1,8 +1,8 @@
 const eol = require('os').EOL;
-import * as chai from 'chai';
+
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
 
-const expect = chai.expect;
 const tmp = temporaryDir();
 
 describe('CLI simple generation - big app', () => {
@@ -931,7 +931,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support standalone for components, directives and pipes', () => {
         let file = read(distFolder + '/components/TodoComponent.html');
-        expect(file).to.contain('<td class="col-md-3">Standalone</td>');
+        expect(file).to.contain('<td class="col-md-3">standalone</td>');
         expect(file).to.contain('<td class="col-md-3">imports</td>');
         expect(file).to.contain(
             '<code><a href="../directives/DoNothingDirective.html" target="_self" >DoNothingDirective</a></code>'
@@ -972,5 +972,33 @@ describe('CLI simple generation - big app', () => {
             '<code><a href="../directives/HighlightDirective.html" target="_self" >HighlightDirective</a></code>'
         );
         expect(file).to.contain('<div><i>&nbsp;Inputs</i> : color&nbsp;</div>');
+    });
+
+    it('should support inputs and outputs signals', () => {
+        const file = read(distFolder + '/classes/DumbParentComponent.html');
+        expect(file).to.contain('<a href="#label" >label</a>');
+        expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+    });
+
+    it('should support component styles url/urls', () => {
+        let file = read(distFolder + '/components/CompodocComponent.html');
+        expect(file).to.contain('<code>./compodoc.component.css</code>');
+        file = read(distFolder + '/components/AboutComponent.html');
+        expect(file).to.contain(`<code>
+        a {
+            color: #03a9f4;
+        }
+    </code>`);
+    });
+
+    it('should support aliases', () => {
+        let file = read(distFolder + '/components/DumbImportComponent.html');
+        expect(file).to.contain(
+            '<a href="../classes/DumbParentComponent.html" target="_self" >PapaComponent</a>'
+        );
+        file = read(distFolder + '/components/DumbWithExportComponent.html');
+        expect(file).to.contain(
+            '<a href="../classes/DumbParentComponent.html" target="_self" >LegacyPapaComponent</a>'
+        );
     });
 });

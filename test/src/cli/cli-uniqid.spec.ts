@@ -1,7 +1,7 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+
+const tmp = temporaryDir();
 
 describe('CLI Uniq id for file', () => {
     const distFolder = tmp.name + '-uniqid';

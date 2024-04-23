@@ -1,7 +1,7 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+
+const tmp = temporaryDir();
 
 describe('CLI simple flags', () => {
     const distFolder = tmp.name + '-simple-flags';

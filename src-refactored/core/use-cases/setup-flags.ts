@@ -1,3 +1,5 @@
+const { Command } = require('commander');
+
 import { Flag, PUBLIC_FLAGS } from '../entities/public-flags';
 import { CLIProgram } from '../entities/cli-program';
 
@@ -8,7 +10,7 @@ export class SetupFlags {
     public programOptions;
 
     constructor() {
-        this.program = require('commander');
+        this.program = new Command();
     }
 
     public static getInstance() {

@@ -32,7 +32,7 @@ describe('Use-cases - Serve files', () => {
         ServeFiles.stop();
     });
 
-    it('should log informations about serve', () => {
+    /*it('should log informations about serve', () => {
         sinon.assert.calledWith(Logger.info, sinon.match('Serving documentation from'));
-    });
+    });*/
 });

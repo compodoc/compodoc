@@ -26,8 +26,8 @@ export class DirectiveDepFactory {
 
             standalone: this.helper.getComponentStandalone(props, srcFile) ? true : false,
 
-            inputsClass: IO.inputs,
-            outputsClass: IO.outputs,
+            inputsClass: this.helper.getInputSignals(IO.properties).concat(IO.inputs),
+            outputsClass: this.helper.getInputSignals(IO.properties).concat(IO.outputs),
 
             deprecated: IO.deprecated,
             deprecationMessage: IO.deprecationMessage,
@@ -52,7 +52,7 @@ export class DirectiveDepFactory {
         if (IO.implements && IO.implements.length > 0) {
             directiveDeps.implements = IO.implements;
         }
-        if (IO.constructor) {
+        if (IO.constructor && !Configuration.mainData.disableConstructors) {
             directiveDeps.constructorObj = IO.constructor;
         }
         if (IO.accessors) {

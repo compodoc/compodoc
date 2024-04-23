@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, pkg, exists, exec, read, shellAsync } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI Routes graph', () => {
     const distFolder = tmp.name + '-routes-graph';
@@ -84,7 +83,7 @@ describe('CLI Routes graph', () => {
         });
     });
 
-    describe('should support lazy loading modules with new loadChildren syntax', () => {
+    describe('should support lazy-loaded modules with loadChildren syntax (containing possible trailing commas)', () => {
         before(function (done) {
             tmp.create(distFolder);
             const ls = shell('node', [
@@ -111,7 +110,7 @@ describe('CLI Routes graph', () => {
         });
     });
 
-    describe('should support lazy loading modules with new loadChildren syntax / async', () => {
+    describe('should support lazy-loaded modules with new loadChildren syntax / async', () => {
         before(function (done) {
             tmp.create(distFolder);
             const ls = shell('node', [

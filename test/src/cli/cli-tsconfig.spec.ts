@@ -1,7 +1,6 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { temporaryDir, shell, read } from '../helpers';
-const expect = chai.expect,
-    tmp = temporaryDir();
+const tmp = temporaryDir();
 
 describe('CLI simple flags', () => {
     const tmpFolder = tmp.name + '-tsconfig';

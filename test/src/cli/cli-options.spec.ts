@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-const expect = chai.expect;
+import { expect } from 'chai';
 
 import { shell, pkg } from '../helpers';
 
@@ -203,6 +202,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`
             expect(runHelp.stdout.toString()).to.contain('--disableLifeCycleHooks');
             expect(runHelp.stdout.toString()).to.contain(
                 'Do not show Angular lifecycle hooks in generated documentation'
+            );
+        });
+
+        it(`--disableConstructors`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--disableConstructors');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Do not show constructors in generated documentation'
             );
         });
 
