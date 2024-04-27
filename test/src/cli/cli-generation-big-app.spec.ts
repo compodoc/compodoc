@@ -974,10 +974,18 @@ describe('CLI simple generation - big app', () => {
         expect(file).to.contain('<div><i>&nbsp;Inputs</i> : color&nbsp;</div>');
     });
 
-    it('should support inputs and outputs signals', () => {
-        const file = read(distFolder + '/classes/DumbParentComponent.html');
+    it('should support inputs and outputs signals and model', () => {
+        let file = read(distFolder + '/classes/DumbParentComponent.html');
         expect(file).to.contain('<a href="#label" >label</a>');
         expect(file).to.contain('<a href="#currentChange" >currentChange</a>');
+        file = read(distFolder + '/components/CompodocComponent.html');
+        expect(file).to.contain(`<h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="checked"></a>
+                        <b>checked</b>`);
     });
 
     it('should support component styles url/urls', () => {
