@@ -67,9 +67,11 @@
                toggleDarkMode(darkModeState);
           </script>
 
-        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
-            <a href="{{relativeURL data.depth }}" class="navbar-brand">{{data.documentationMainName}}</a>
-            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        <div class="navbar navbar-default navbar-fixed-top d-none d-sm-block d-md-none p-0">
+               <div class="d-flex">
+                    <a href="{{relativeURL data.depth }}" class="navbar-brand">{{data.documentationMainName}}</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
         </div>
 
         <div class="xs-menu menu" id="mobile-menu">
@@ -81,7 +83,7 @@
 
         <div class="container-fluid main">
            <div class="row main">
-               <div class="hidden-xs menu">
+               <div class="d-sm-none d-md-block menu">
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
