@@ -87,7 +87,7 @@
     "dependencies": {
         "@angular-devkit/schematics": "17.3.5",
         "@babel/core": "^7.24.4",
-        "@babel/plugin-proposal-private-methods": "^7.18.6",
+        "@babel/plugin-transform-private-methods": "^7.24.1",
         "@babel/preset-env": "^7.24.4",
         "@compodoc/live-server": "^1.2.3",
         "@compodoc/ngd-transformer": "^2.1.3",
