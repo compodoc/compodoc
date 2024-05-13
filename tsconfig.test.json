@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "moduleResolution": "nodenext",
+        "module": "nodenext",
         "target": "es2015",
         "outDir": "./test/dist",
         "sourceMap": false,
         "typeRoots": ["./node_modules/@types"],
         "types": ["mocha", "chai", "node"]
     },
-    "include": ["./test/src/cli-clean-root-folder.ts", "./test/src/cli-revert-root-folder.ts"]
+    "include": ["./test/src/cli-clean-root-folder.mts", "./test/src/cli-revert-root-folder.mts"]
 }
