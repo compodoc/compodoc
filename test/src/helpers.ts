@@ -1,21 +1,12 @@
 //import * as PDFJS from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-import { spawnSync, spawn as spawnRaw, exec as execRaw } from 'node:child_process';
-
-import * as fsRaw from 'fs-extra';
-import * as pathRaw from 'path';
-
-export const shell = spawnSync;
-export const spawn = spawnRaw;
-export const exec = execRaw;
-export const shellAsync = spawnRaw;
-
-export const fs = fsRaw.default;
-export const path = pathRaw;
-
-import pkgRaw from '../../package.json' assert { type: 'json' };
-
-export const pkg = pkgRaw;
+export const shell = require('child_process').spawnSync;
+export const spawn = require('child_process').spawn;
+export const exec = require('child_process').exec;
+export const shellAsync = require('child_process').spawn;
+export const fs = require('fs-extra');
+export const path = require('path');
+export const pkg = require('../../package.json');
 
 export function read(file: string, encoding = null): string {
     return fs.readFileSync(file, encoding).toString();
