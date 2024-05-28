@@ -1,4 +1,4 @@
-import * as PDFJS from 'pdfjs-dist/legacy/build/pdf.mjs';
+//import * as PDFJS from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 import { spawnSync, spawn as spawnRaw, exec as execRaw } from 'node:child_process';
 
@@ -74,6 +74,7 @@ export function temporaryDir() {
     };
 }
 
+/*
 interface PdfResult {
     numpages: number;
     numrender: number;
@@ -81,12 +82,12 @@ interface PdfResult {
     metadata: any;
     text: string;
     version: any;
-}
+}*/
 
 /**
  * Copyright https://gitlab.com/autokent/pdf-parse , converted to ES6 promise for Node.js 6 support
  */
-export function readPDF(dataBuffer, options?): Promise<PdfResult> {
+/*export function readPDF(dataBuffer, options?): Promise<PdfResult> {
     let ret = {
         numpages: 0,
         numrender: 0,
@@ -206,4 +207,4 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
                 reject(err);
             });
     });
-}
+}*/
