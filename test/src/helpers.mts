@@ -10,7 +10,7 @@ export const spawn = spawnRaw;
 export const exec = execRaw;
 export const shellAsync = spawnRaw;
 
-export const fs = fsRaw;
+export const fs = fsRaw.default;
 export const path = pathRaw;
 
 import pkgRaw from '../../package.json' assert { type: 'json' };
