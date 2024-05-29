@@ -1,3 +1,18 @@
+<a name="1.1.25"></a>
+
+## [1.1.25](https://github.com/compodoc/compodoc/compare/1.1.24...1.1.25)
+
+### Merged
+
+-   style(templates): Fix typo in dark mode comments [#1476](https://github.com/compodoc/compodoc/pull/1476), Thanks [Keiishu](https://github.com/Keiishu)
+
+### Bug fixes
+
+-   fix(app): PDF.js vulnerability CVE-2024-4367 ([ca5089b](https://github.com/compodoc/compodoc/commit/ca5089b)), closes [#1478](https://github.com/compodoc/compodoc/issues/1478)
+-   fix(app): remove deprecated @babel/plugin-proposal-private-methods ([b651a63](https://github.com/compodoc/compodoc/commit/b651a63)), closes [#1475](https://github.com/compodoc/compodoc/issues/1475)
+-   fix(app): mobile display ([d4e8878](https://github.com/compodoc/compodoc/commit/d4e8878)), closes [#1473](https://github.com/compodoc/compodoc/issues/1473)
+-   fix(app): support input models | first level of syntax support ([3b41147](https://github.com/compodoc/compodoc/commit/3b41147)), closes [#1474](https://github.com/compodoc/compodoc/issues/1474)
+
 <a name="1.1.24"></a>
 
 ## [1.1.24](https://github.com/compodoc/compodoc/compare/1.1.23...1.1.24)
