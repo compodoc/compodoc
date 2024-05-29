@@ -2528,7 +2528,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             ],
             plugins: [
                 [
-                    '@babel/plugin-proposal-private-methods',
+                    '@babel/plugin-transform-private-methods',
                     {
                         loose: false
                     }

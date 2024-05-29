@@ -138,13 +138,22 @@ export class ComponentHelper {
     public getInputSignals(props) {
         let inputSignals = [];
         props?.forEach((prop, i) => {
-            const regexp = /input(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
-            const res = regexp.exec(prop.defaultValue);
-            if (res) {
+            const regexpInput = /input(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
+            const resInput = regexpInput.exec(prop.defaultValue);
+            if (resInput) {
                 const newInput = prop;
-                newInput.defaultValue = res[res.length - 1];
-                newInput.required = res[0]?.includes('.required') ?? false;
+                newInput.defaultValue = resInput[resInput.length - 1];
+                newInput.required = resInput[0]?.includes('.required') ?? false;
                 inputSignals.push(newInput);
+            } else {
+                const regexpModel = /model(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
+                const resModel = regexpModel.exec(prop.defaultValue);
+                if (resModel) {
+                    const newInput = prop;
+                    newInput.defaultValue = resModel[resModel.length - 1];
+                    newInput.required = resModel[0]?.includes('.required') ?? false;
+                    inputSignals.push(newInput);
+                }
             }
         });
         return inputSignals;

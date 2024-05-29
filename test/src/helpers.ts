@@ -1,4 +1,4 @@
-const PDFJS = require('pdfjs-dist/legacy/build/pdf.js');
+//import * as PDFJS from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export const shell = require('child_process').spawnSync;
 export const spawn = require('child_process').spawn;
@@ -20,11 +20,11 @@ export function stats(file: string): object {
     return fs.statSync(file);
 }
 
-export function remove(file: string): boolean {
+export function remove(file: string): any {
     return fs.removeSync(file);
 }
 
-export function copy(source: string, dest: string): boolean {
+export function copy(source: string, dest: string): any {
     return fs.copySync(source, dest);
 }
 
@@ -65,6 +65,7 @@ export function temporaryDir() {
     };
 }
 
+/*
 interface PdfResult {
     numpages: number;
     numrender: number;
@@ -72,12 +73,12 @@ interface PdfResult {
     metadata: any;
     text: string;
     version: any;
-}
+}*/
 
 /**
  * Copyright https://gitlab.com/autokent/pdf-parse , converted to ES6 promise for Node.js 6 support
  */
-export function readPDF(dataBuffer, options?): Promise<PdfResult> {
+/*export function readPDF(dataBuffer, options?): Promise<PdfResult> {
     let ret = {
         numpages: 0,
         numrender: 0,
@@ -137,7 +138,7 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
     // Disable workers to avoid yet another cross-origin issue (workers need
     // the URL of the script to be loaded, and dynamically loading a cross-origin
     // script does not work).
-    PDFJS.disableWorker = true;
+    // PDFJS.disableWorker = true;
     let doc;
 
     return new Promise((resolve, reject) => {
@@ -197,4 +198,4 @@ export function readPDF(dataBuffer, options?): Promise<PdfResult> {
                 reject(err);
             });
     });
-}
+}*/

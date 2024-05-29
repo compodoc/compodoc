@@ -1,0 +1,3 @@
+{
+    "ignoreDeps": ["os-name", "chalk", "pdfjs-dist", "marked", "chai", "eslint"]
+}

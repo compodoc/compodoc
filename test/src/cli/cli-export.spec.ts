@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { exists, read, readPDF, shell, temporaryDir } from '../helpers';
+import { exists, read, shell, temporaryDir } from '../helpers';
 const fs = require('fs-extra');
 const tmp = temporaryDir();
 
@@ -324,7 +324,7 @@ describe('CLI Export', () => {
         });
     });
 
-    describe('when specified PDF', () => {
+    /*describe('when specified PDF', () => {
         let stdoutString = undefined;
 
         const title = 'Documentation in pdf';
@@ -370,7 +370,7 @@ describe('CLI Export', () => {
                 );
             });
         });
-    });
+    });*/
 
     describe('when specified not supported format', () => {
         let stdoutString = undefined;
