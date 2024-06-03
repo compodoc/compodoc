@@ -1,5 +1,6 @@
+import { parseExpression } from '@babel/parser';
 import { SyntaxKind, ts } from 'ts-morph';
-import { detectIndent } from '../../../../../utils';
+import { detectIndent, getSubstringFromMultilineString } from '../../../../../utils';
 import { ClassHelper } from './class-helper';
 import { IParseDeepIdentifierResult, SymbolHelper } from './symbol-helper';
 
@@ -138,23 +139,27 @@ export class ComponentHelper {
     public getInputSignals(props) {
         let inputSignals = [];
         props?.forEach((prop, i) => {
-            const regexpInput = /input(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
-            const resInput = regexpInput.exec(prop.defaultValue);
-            if (resInput) {
-                const newInput = prop;
-                newInput.defaultValue = resInput[resInput.length - 1];
-                newInput.required = resInput[0]?.includes('.required') ?? false;
-                inputSignals.push(newInput);
-            } else {
-                const regexpModel = /model(?:\.(required))?(?:<([\w-]+)>)?\(([\w-]+)?\)/;
-                const resModel = regexpModel.exec(prop.defaultValue);
-                if (resModel) {
-                    const newInput = prop;
-                    newInput.defaultValue = resModel[resModel.length - 1];
-                    newInput.required = resModel[0]?.includes('.required') ?? false;
-                    inputSignals.push(newInput);
-                }
+            const expression = prop.defaultValue;
+            const ast = parseExpression(expression, {
+                plugins: ['typescript']
+            });
+            const methodName: string = ast?.callee?.name;
+            if (methodName !== 'input' && methodName !== 'model') {
+                return;
             }
+            const newInput = prop;
+            newInput.defaultValue = ast?.arguments[0]?.value;
+            newInput.required = ast?.callee?.property?.name === 'required';
+            const inputTypeParams = ast?.typeParameters ?? ast?.callee?.typeParameters;
+            if (inputTypeParams?.type === 'TSTypeParameterInstantiation') {
+                const start = inputTypeParams?.loc?.start;
+                const end = inputTypeParams?.loc?.end;
+                newInput.type = getSubstringFromMultilineString(expression, start?.line, start?.column, end?.line, end?.column);
+            } else {
+                // Otherwise, use typeof to get the type from defaultValue
+                newInput.type = newInput.defaultValue === undefined ? undefined : typeof newInput.defaultValue;
+            }
+            inputSignals.push(newInput);
         });
         return inputSignals;
     }
@@ -305,6 +310,7 @@ export class ComponentHelper {
     ): Array<string> {
         return this.symbolHelper.getSymbolDeps(props, 'templateUrl', srcFile);
     }
+
     public getComponentExampleUrls(text: string): Array<string> | undefined {
         let exampleUrlsMatches = text.match(/<example-url>(.*?)<\/example-url>/g);
         let exampleUrls = undefined;

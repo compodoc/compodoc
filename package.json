@@ -87,6 +87,7 @@
     "dependencies": {
         "@angular-devkit/schematics": "18.0.1",
         "@babel/core": "^7.24.6",
+        "@babel/parser": "^7.24.6",
         "@babel/plugin-transform-private-methods": "^7.24.6",
         "@babel/preset-env": "^7.24.6",
         "@compodoc/live-server": "^1.2.3",
