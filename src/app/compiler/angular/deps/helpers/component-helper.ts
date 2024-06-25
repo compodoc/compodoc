@@ -143,7 +143,7 @@ export class ComponentHelper {
             const ast = parseExpression(expression, {
                 plugins: ['typescript']
             });
-            const methodName: string = ast?.callee?.name;
+            const methodName: string = ast?.callee?.name ?? ast?.callee?.object?.name;
             if (methodName !== 'input' && methodName !== 'model') {
                 return;
             }
