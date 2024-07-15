@@ -11,6 +11,7 @@ import { AngularLifecycleHooks } from './angular-lifecycles-hooks';
 import { kindToType } from './kind-to-type';
 import { JsdocParserUtil } from './jsdoc-parser.util';
 import { markedAcl } from './marked.acl';
+import exp = require('node:constants');
 
 const getCurrentDirectory = ts.sys.getCurrentDirectory;
 const useCaseSensitiveFileNames = ts.sys.useCaseSensitiveFileNames;
@@ -387,6 +388,28 @@ export function detectIndent(str, count): string {
     };
 
     return indentString(stripIndent(str), count || 0);
+}
+
+export function getSubstringFromMultilineString(multilineString: string, startLine: number, startColumn: number, endLine: number, endColumn: number) {
+    // Split the string into lines
+    const lines = multilineString.split('\n');
+
+    // Slice the lines from startLine to endLine
+    const selectedLines = lines.slice(startLine - 1, endLine);
+
+    // If startLine and endLine are the same, slice the line from startColumn to endColumn
+    if (startLine === endLine) {
+        selectedLines[0] = selectedLines[0].slice(startColumn + 1, endColumn - 1);
+    } else {
+        // Otherwise, slice the start line from startColumn to the end
+        selectedLines[0] = selectedLines[0].slice(startColumn + 1);
+
+        // And slice the end line from the start to endColumn
+        selectedLines[selectedLines.length - 1] = selectedLines[selectedLines.length - 1].slice(0, endColumn - 1);
+    }
+
+    // Join the lines back together into a single string
+    return selectedLines.join('\n');
 }
 
 export const INCLUDE_PATTERNS = ['**/*.ts', '**/*.tsx'];
