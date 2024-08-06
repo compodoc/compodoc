@@ -1,19 +1,12 @@
 {
-    "extends": [
-        "config:base"
-    ],
-    "ignoreDeps": [
-        "os-name",
-        "pdfjs-dist"
-    ],
+    "extends": ["config:base"],
+    "ignoreDeps": ["os-name", "pdfjs-dist"],
     "groupName": "all dependencies",
     "separateMajorMinor": false,
     "groupSlug": "all",
     "packageRules": [
         {
-            "matchPackagePatterns": [
-                "*"
-            ],
+            "matchPackagePatterns": ["*"],
             "groupName": "all dependencies",
             "groupSlug": "all"
         }

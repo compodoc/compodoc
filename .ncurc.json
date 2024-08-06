@@ -1,10 +1,4 @@
 {
     "upgrade": true,
-    "reject": [
-        "os-name",
-        "pdfjs-dist",
-        "marked",
-        "chai",
-        "eslint"
-    ]
+    "reject": ["os-name", "pdfjs-dist", "marked", "chai", "eslint"]
 }
