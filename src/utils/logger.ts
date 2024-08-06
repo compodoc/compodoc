@@ -1,5 +1,5 @@
 let log = require('fancy-log');
-let c = require('chalk');
+let pico = require('picocolors');
 
 enum LEVEL {
     INFO,
@@ -54,19 +54,19 @@ class Logger {
 
         switch (level) {
             case LEVEL.INFO:
-                msg = c.green(msg);
+                msg = pico.green(msg);
                 break;
 
             case LEVEL.DEBUG:
-                msg = c.cyan(msg);
+                msg = pico.cyan(msg);
                 break;
 
             case LEVEL.WARN:
-                msg = c.yellow(msg);
+                msg = pico.yellow(msg);
                 break;
 
             case LEVEL.ERROR:
-                msg = c.red(msg);
+                msg = pico.red(msg);
                 break;
         }
 

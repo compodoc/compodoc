@@ -1,14 +1,14 @@
 const log = require('loglevel');
 
-const chalk = require('chalk');
+const pico = require('picocolors');
 const loglevelpluginPrefix = require('loglevel-plugin-prefix');
 
 const LEVEL = {
-    LOG: chalk.green,
-    DEBUG: chalk.cyan,
-    INFO: chalk.green,
-    WARN: chalk.yellow,
-    ERROR: chalk.red,
+    LOG: pico.green,
+    DEBUG: pico.cyan,
+    INFO: pico.green,
+    WARN: pico.yellow,
+    ERROR: pico.red,
 };
 
 export class Logger {
@@ -72,19 +72,19 @@ export class Logger {
         switch (level) {
             case LEVEL.INFO:
             case LEVEL.LOG:
-                msg = chalk.green(msg);
+                msg = pico.green(msg);
                 break;
 
             case LEVEL.DEBUG:
-                msg = chalk.cyan(msg);
+                msg = pico.cyan(msg);
                 break;
 
             case LEVEL.WARN:
-                msg = chalk.yellow(msg);
+                msg = pico.yellow(msg);
                 break;
 
             case LEVEL.ERROR:
-                msg = chalk.red(msg);
+                msg = pico.red(msg);
                 break;
         }
 
