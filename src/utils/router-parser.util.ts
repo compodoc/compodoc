@@ -10,7 +10,7 @@ import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
 import ImportsUtil from './imports.util';
 import { logger } from './logger';
 
-const traverse = require('traverse');
+const traverse = require('neotraverse/legacy');
 
 const ast = new Project();
 

@@ -24,7 +24,7 @@ import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory'
 import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
 
-const traverse = require('traverse');
+const traverse = require('neotraverse/legacy');
 
 export class DependenciesEngine {
     public rawData: ParsedData;

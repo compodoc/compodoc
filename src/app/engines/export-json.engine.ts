@@ -10,7 +10,7 @@ import { ExportData } from '../interfaces/export-data.interface';
 import { AngularNgModuleNode } from '../nodes/angular-ngmodule-node';
 import FileEngine from './file.engine';
 
-const traverse = require('traverse');
+const traverse = require('neotraverse/legacy');
 
 export class ExportJsonEngine {
     private static instance: ExportJsonEngine;
