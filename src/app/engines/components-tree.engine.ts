@@ -4,7 +4,7 @@ import * as path from 'path';
 import { logger } from '../../utils/logger';
 import FileEngine from './file.engine';
 
-const $: any = require('cheerio');
+import * as cheerio from 'cheerio';
 
 class ComponentsTreeEngine {
     private components: any[] = [];
@@ -63,7 +63,7 @@ class ComponentsTreeEngine {
     private findChildrenAndParents() {
         return new Promise((resolve, reject) => {
             _.forEach(this.componentsForTree, component => {
-                let $component = $(component.templateData);
+                let $component = cheerio(component.templateData);
                 _.forEach(this.componentsForTree, componentToFind => {
                     if ($component.find(componentToFind.selector).length > 0) {
                         console.log(componentToFind.name + ' found in ' + component.name);

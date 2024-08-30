@@ -9,8 +9,9 @@ import { logger } from '../../utils/logger';
 import Configuration from '../configuration';
 import FileEngine from './file.engine';
 
+import * as cheerio from 'cheerio';
+
 const lunr: any = require('lunr');
-const cheerio: any = require('cheerio');
 
 export class SearchEngine {
     public searchIndex: any;
@@ -59,7 +60,7 @@ export class SearchEngine {
         }
     }
 
-    public generateSearchIndexJson(outputFolder: string): Promise<void> {
+    public generateSearchIndexJson(outputFolder: string): Promise {
         let that = this;
         let searchIndex = lunr(function () {
             /* tslint:disable:no-invalid-this */
