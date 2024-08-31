@@ -1,4 +1,4 @@
 {
-    "upgrade": true,
-    "reject": ["os-name", "chalk", "pdfjs-dist", "marked", "chai", "eslint"]
+    "upgrade": false,
+    "reject": ["os-name", "chalk", "pdfjs-dist", "marked", "chai", "eslint", "cheerio"]
 }
