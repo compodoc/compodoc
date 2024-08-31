@@ -140,7 +140,9 @@ export class ComponentHelper {
         let inputSignals = [];
         props?.forEach((prop, i) => {
             const expression = prop.defaultValue;
-            console.log('getInputSignals: ', expression);
+            if (!expression) {
+                return;
+            }
             const ast = parseExpression(expression, {
                 plugins: ['typescript']
             });
