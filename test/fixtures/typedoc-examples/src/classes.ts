@@ -119,15 +119,6 @@ export class BaseClass implements INameInterface {
     }
 
     /**
-     * This is a simple fat arrow function.
-     *
-     * @param param1 The first parameter needed by this function.
-     * @param param2 The second parameter needed by this function.
-     * @see https://github.com/sebastian-lenz/typedoc/issues/37
-     */
-    public arrowFunction = (param2: string, param1: number): void => {};
-
-    /**
      * This is a private function.
      */
     private checkName() {
@@ -260,7 +251,12 @@ export class GenericClass<T extends BaseClass> {
      * @param p3 Public number property
      * @param p4 Public implicit any property
      */
-    constructor(p1, protected p2: T, public p3: number, private p4: number) {}
+    constructor(
+        p1,
+        protected p2: T,
+        public p3: number,
+        private p4: number
+    ) {}
 
     /**
      * @param value [[getValue]] is the counterpart.
