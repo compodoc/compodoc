@@ -140,6 +140,7 @@ export class ComponentHelper {
         let inputSignals = [];
         props?.forEach((prop, i) => {
             const expression = prop.defaultValue;
+            console.log('getInputSignals: ', expression);
             const ast = parseExpression(expression, {
                 plugins: ['typescript']
             });
@@ -154,10 +155,17 @@ export class ComponentHelper {
             if (inputTypeParams?.type === 'TSTypeParameterInstantiation') {
                 const start = inputTypeParams?.loc?.start;
                 const end = inputTypeParams?.loc?.end;
-                newInput.type = getSubstringFromMultilineString(expression, start?.line, start?.column, end?.line, end?.column);
+                newInput.type = getSubstringFromMultilineString(
+                    expression,
+                    start?.line,
+                    start?.column,
+                    end?.line,
+                    end?.column
+                );
             } else {
                 // Otherwise, use typeof to get the type from defaultValue
-                newInput.type = newInput.defaultValue === undefined ? undefined : typeof newInput.defaultValue;
+                newInput.type =
+                    newInput.defaultValue === undefined ? undefined : typeof newInput.defaultValue;
             }
             inputSignals.push(newInput);
         });
