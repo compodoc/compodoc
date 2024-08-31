@@ -1,4 +1,14 @@
 {
     "upgrade": false,
-    "reject": ["os-name", "chalk", "pdfjs-dist", "marked", "chai", "eslint", "cheerio"]
+    "reject": [
+        "os-name",
+        "chalk",
+        "pdfjs-dist",
+        "marked",
+        "chai",
+        "eslint",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "cheerio"
+    ]
 }

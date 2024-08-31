@@ -93,17 +93,6 @@ export class Todo extends Tada {
 
     async asyncMethod() {}
 
-    url2state = async <T>(defaults: Partial<T>) =>
-        await this.route.queryParamMap
-            .pipe(
-                /** use first to make sure this only runs at component init time */
-                first(),
-                map(r => {}),
-                catchError(e => {})
-            )
-            /** cast observable to promise */
-            .toPromise();
-
     #clicked() {
         this.editing = true;
     }
