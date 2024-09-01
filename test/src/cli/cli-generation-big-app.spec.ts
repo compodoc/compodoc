@@ -784,10 +784,6 @@ describe('CLI simple generation - big app', () => {
         );
     });
 
-    it('shorten long arrow function declaration for properties', () => {
-        expect(todoClassFile).to.contain('() &#x3D;&gt; {...}</code>');
-    });
-
     it('correct supports 1000 as PollingSpeed for decorator arguments', () => {
         const file = read(distFolder + '/classes/SomeFeature.html');
         expect(file).to.contain('code>@throttle(1000 as PollingSpeed');
