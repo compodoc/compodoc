@@ -96,6 +96,17 @@ export class Todo extends Tada {
     #clicked() {
         this.editing = true;
     }
+
+    url2state = async <T>(defaults: Partial<T>) =>
+        await this.route.queryParamMap
+            .pipe(
+                /** use first to make sure this only runs at component init time */
+                first(),
+                map(r => {}),
+                catchError(e => {})
+            )
+            /** cast observable to promise */
+            .toPromise();
 }
 
 export type PopupPosition = ElementRef | HTMLElement;
