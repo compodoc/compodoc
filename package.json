@@ -9,7 +9,7 @@
     "scripts": {
         "start": "npm run test:watch",
         "copy-libs": "node tools/copy-libs.js",
-        "postinstall": "npm run copy-libs && opencollective-postinstall || exit 0",
+        "postinstall": "opencollective-postinstall || exit 0",
         "*********BUILD********": "*******************",
         "prebuild": "rimraf dist/*",
         "build": "rollup -c rollup/rollup.config.mjs --bundleConfigAsCjs && npm run build-schematics",
@@ -34,7 +34,7 @@
         "premerge-lcov": "mv coverage-refactoring/lcov.info coverage/lcov-refactoring.info",
         "merge-lcov": "./node_modules/.bin/lcov-result-merger 'coverage/lcov-*.info' 'coverage/lcov_merged.info'",
         "*********PUBLISH********": "*******************",
-        "prepublishOnly": "npm run build && npm run backup-package-json",
+        "prepublishOnly": "npm run build && npm run backup-package-json && npm run copy-libs",
         "postpublish": "npm run restore-package-json",
         "*********QUALITY********": "*******************",
         "lint": "eslint src/**/*.ts",
