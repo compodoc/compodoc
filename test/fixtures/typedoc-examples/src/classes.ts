@@ -119,6 +119,15 @@ export class BaseClass implements INameInterface {
     }
 
     /**
+     * This is a simple fat arrow function.
+     *
+     * @param param1 The first parameter needed by this function.
+     * @param param2 The second parameter needed by this function.
+     * @see https://github.com/sebastian-lenz/typedoc/issues/37
+     */
+    public arrowFunction = (param2: string, param1: number): void => {};
+
+    /**
      * This is a private function.
      */
     private checkName() {
