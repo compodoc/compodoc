@@ -116,17 +116,7 @@ exports.config = {
         {
             browserName: 'firefox',
             platformName: 'Windows 10',
-            browserVersion: '65.0',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
-            browserName: 'firefox',
-            platformName: 'Windows 10',
-            browserVersion: '62.0',
+            browserVersion: '66.0',
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
