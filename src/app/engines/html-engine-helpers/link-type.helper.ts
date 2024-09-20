@@ -34,7 +34,7 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                     _result.data.type = 'classe';
                 }
                 context.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
-                if (context.indexKey !== '') {
+                if (context.indexKey !== '' && context.indexKey !== undefined) {
                     context.type.href += '#' + context.indexKey;
                     context.type.indexKey = context.indexKey;
                 }
@@ -56,8 +56,10 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                         case 'variable':
                             mainpage = 'variables';
                     }
-                    context.type.href =
-                        '../' + _result.data.ctype + '/' + mainpage + '.html#' + _result.data.name;
+                    context.type.href = '../' + _result.data.ctype + '/' + mainpage + '.html';
+                    if (_result.data && _result.data.name) {
+                        context.type.href += '#' + _result.data.name;
+                    }
                 }
                 if (!context.type.indexKey) {
                     context.type.indexKey = '';
