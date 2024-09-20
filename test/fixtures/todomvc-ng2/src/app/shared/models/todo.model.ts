@@ -2,6 +2,18 @@ import { ElementRef } from '@angular/core';
 
 import { Direction } from '../miscellaneous/miscellaneous';
 
+interface Person {
+    name: string;
+    age: number;
+    phone: number | string;
+    email: string;
+}
+
+interface ContactInfo {
+    phone: Person['phone'];
+    years: Person['age'];
+}
+
 export class Tada {}
 
 /**

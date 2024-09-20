@@ -26,13 +26,18 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
         );
         if (_result) {
             context.type = {
-                raw: name
+                raw: name,
+                indexKey: ''
             };
             if (_result.source === 'internal') {
                 if (_result.data.type === 'class') {
                     _result.data.type = 'classe';
                 }
                 context.type.href = '../' + _result.data.type + 's/' + _result.data.name + '.html';
+                if (context.indexKey !== '') {
+                    context.type.href += '#' + context.indexKey;
+                    context.type.indexKey = context.indexKey;
+                }
                 if (
                     _result.data.type === 'miscellaneous' ||
                     (_result.data.ctype && _result.data.ctype === 'miscellaneous')
@@ -63,7 +68,8 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
             return options.fn(context);
         } else if (BasicTypeUtil.isKnownType(name)) {
             context.type = {
-                raw: name
+                raw: name,
+                indexKey: ''
             };
             context.type.target = '_blank';
             context.type.href = BasicTypeUtil.getTypeUrl(name);

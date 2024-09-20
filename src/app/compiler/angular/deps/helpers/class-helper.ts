@@ -867,6 +867,25 @@ export class ClassHelper {
         return '';
     }
 
+    public visitTypeIndex(node): string {
+        let _return = '';
+
+        if (!node) {
+            return _return;
+        }
+
+        if (
+            node.type &&
+            node.type.kind === SyntaxKind.IndexedAccessType &&
+            node.type.indexType &&
+            node.type.indexType.literal
+        ) {
+            return this.visitTypeName(node.type.indexType.literal);
+        }
+
+        return _return;
+    }
+
     public visitType(node): string {
         let _return = 'void';
 
@@ -996,6 +1015,14 @@ export class ClassHelper {
                     }
                     _return += ']';
                 }
+            }
+            if (
+                node.type &&
+                node.type.kind === SyntaxKind.IndexedAccessType &&
+                node.type.objectType &&
+                node.type.objectType.typeName
+            ) {
+                _return = this.visitTypeName(node.type.objectType.typeName);
             }
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
@@ -1168,7 +1195,7 @@ export class ClassHelper {
     }
 
     private visitProperty(property: ts.PropertyDeclaration, sourceFile) {
-        let result: any = {
+        const result: any = {
             name: property.name.text,
             defaultValue: property.initializer
                 ? this.stringifyDefaultValue(property.initializer)
@@ -1176,6 +1203,7 @@ export class ClassHelper {
             deprecated: false,
             deprecationMessage: '',
             type: this.visitType(property),
+            indexKey: this.visitTypeIndex(property),
             optional: typeof property.questionToken !== 'undefined',
             description: '',
             line: this.getPosition(property, sourceFile).line + 1
@@ -1504,8 +1532,8 @@ export class ClassHelper {
             _return.name = isInputConfigStringLiteral
                 ? inArgs[0].text
                 : hasAlias
-                ? getAliasProperty().initializer.text
-                : property.name.text;
+                  ? getAliasProperty().initializer.text
+                  : property.name.text;
         } else {
             _return.name = property.name.text;
         }
