@@ -1015,7 +1015,7 @@ describe('CLI simple generation - big app', () => {
 
     it('should support string Indexed Access Types', () => {
         expect(contactInfoInterfaceFile).to.contain(
-            `<a href="../interfaces/Person.html#age" target="_self">Person['age']</a>`
+            `<a href="../interfaces/Person.html#age" target="_self" >Person['age']</a>`
         );
     });
 });
