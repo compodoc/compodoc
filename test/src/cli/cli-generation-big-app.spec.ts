@@ -23,7 +23,8 @@ describe('CLI simple generation - big app', () => {
         aboutModuleFile,
         todoStoreFile,
         typeAliasesFile,
-        functionsFile;
+        functionsFile,
+        contactInfoInterfaceFile;
 
     let routesIndex;
 
@@ -67,6 +68,8 @@ describe('CLI simple generation - big app', () => {
 
         typeAliasesFile = read(`${distFolder}/miscellaneous/typealiases.html`);
         functionsFile = read(`${distFolder}/miscellaneous/functions.html`);
+
+        contactInfoInterfaceFile = read(`${distFolder}/interfaces/ContactInfo.html`);
 
         done();
     });
@@ -1007,6 +1010,12 @@ describe('CLI simple generation - big app', () => {
         file = read(distFolder + '/components/DumbWithExportComponent.html');
         expect(file).to.contain(
             '<a href="../classes/DumbParentComponent.html" target="_self" >LegacyPapaComponent</a>'
+        );
+    });
+
+    it('should support string Indexed Access Types', () => {
+        expect(contactInfoInterfaceFile).to.contain(
+            `<a href="../interfaces/Person.html#age" target="_self">Person['age']</a>`
         );
     });
 });
