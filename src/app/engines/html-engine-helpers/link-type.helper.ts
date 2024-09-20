@@ -59,6 +59,9 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                     context.type.href =
                         '../' + _result.data.ctype + '/' + mainpage + '.html#' + _result.data.name;
                 }
+                if (!context.type.indexKey) {
+                    context.type.indexKey = '';
+                }
                 context.type.target = '_self';
             } else {
                 context.type.href = `https://${angularDocPrefix}angular.io/${_result.data.path}`;
