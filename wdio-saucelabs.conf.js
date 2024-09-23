@@ -76,47 +76,7 @@ exports.config = {
         {
             browserName: 'MicrosoftEdge',
             platformName: 'Windows 10',
-            browserVersion: '18.17763',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: '17.17134',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
-            browserVersion: '16.16299',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
-            browserName: 'MicrosoftEdge',
-            platformName: 'Windows 10',
             browserVersion: 'latest',
-            maxInstances: 1,
-            'sauce:options': {
-                build: `Build ${Math.ceil(Date.now() / 1000)}`,
-                public: 'public'
-            }
-        },
-        {
-            browserName: 'firefox',
-            platformName: 'Windows 10',
-            browserVersion: '66.0',
             maxInstances: 1,
             'sauce:options': {
                 build: `Build ${Math.ceil(Date.now() / 1000)}`,
