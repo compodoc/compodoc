@@ -1,6 +1,6 @@
 {
     "extends": ["config:base"],
-    "ignoreDeps": ["chalk", "os-name", "pdfjs-dist"],
+    "ignoreDeps": ["os-name", "pdfjs-dist", "eslint", "marked"],
     "groupName": "all dependencies",
     "separateMajorMinor": false,
     "groupSlug": "all",

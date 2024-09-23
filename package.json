@@ -118,6 +118,7 @@
         "opencollective-postinstall": "^2.0.3",
         "os-name": "4.0.1",
         "pdfmake": "^0.2.12",
+        "picocolors": "^1.1.0",
         "prismjs": "^1.29.0",
         "semver": "^7.6.3",
         "svg-pan-zoom": "^3.6.1",

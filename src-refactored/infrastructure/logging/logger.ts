@@ -1,6 +1,6 @@
 const log = require('loglevel');
 
-const chalk = require('chalk');
+const chalk = require('picocolors');
 const loglevelpluginPrefix = require('loglevel-plugin-prefix');
 
 const LEVEL = {
@@ -8,7 +8,7 @@ const LEVEL = {
     DEBUG: chalk.cyan,
     INFO: chalk.green,
     WARN: chalk.yellow,
-    ERROR: chalk.red,
+    ERROR: chalk.red
 };
 
 export class Logger {
@@ -20,7 +20,7 @@ export class Logger {
         log.setLevel(0);
         loglevelpluginPrefix.reg(log);
         loglevelpluginPrefix.apply(log, {
-            template: '[%t]',
+            template: '[%t]'
         });
     }
 
