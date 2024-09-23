@@ -1,6 +1,14 @@
 {
     "extends": ["config:base"],
-    "ignoreDeps": ["os-name", "pdfjs-dist", "eslint", "marked"],
+    "ignoreDeps": [
+        "os-name",
+        "marked",
+        "chai",
+        "eslint",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "cheerio"
+    ],
     "groupName": "all dependencies",
     "separateMajorMinor": false,
     "groupSlug": "all",

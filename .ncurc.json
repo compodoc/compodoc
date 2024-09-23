@@ -2,7 +2,6 @@
     "upgrade": false,
     "reject": [
         "os-name",
-        "pdfjs-dist",
         "marked",
         "chai",
         "eslint",
