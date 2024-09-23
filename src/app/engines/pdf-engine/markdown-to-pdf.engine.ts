@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 const decache = require('decache');
 
 export class MarkdownToPDFEngine {
@@ -52,7 +50,7 @@ export class MarkdownToPDFEngine {
         // console.log('MarkdownToPDFEngine convert: ', stringToConvert);
         const tokens = this.markedInstance.lexer(stringToConvert);
         // console.log(tokens);
-        const pdfmakeData = this.markedInstance.Parser.parse(tokens);
+        // const pdfmakeData = this.markedInstance.Parser.parse(tokens);
         // console.log(this.convertedTokens);
         const result = {
             text: this.convertedTokens
