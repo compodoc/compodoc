@@ -7,7 +7,7 @@ import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
 
-const traverse = require('traverse');
+const traverse = require('neotraverse/legacy');
 const crypto = require('crypto');
 const babel = require('@babel/core');
 

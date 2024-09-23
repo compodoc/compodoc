@@ -114,6 +114,7 @@
         "lunr": "^2.3.9",
         "marked": "7.0.3",
         "minimist": "^1.2.8",
+        "neotraverse": "^0.6.18",
         "opencollective-postinstall": "^2.0.3",
         "os-name": "4.0.1",
         "pdfmake": "^0.2.12",
