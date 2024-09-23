@@ -150,17 +150,17 @@ document.addEventListener('DOMContentLoaded', function () {
             faAngleUpClass = 'ion-ios-arrow-up',
             faAngleDownClass = 'ion-ios-arrow-down',
             toggleItemMenu = function (e) {
-                var element = $(e.target),
-                    parent = element[0].parentNode,
+                var element = e.target,
+                    parent = element.parentNode,
                     parentLink,
                     elementIconChild;
                 if (parent) {
-                    if (!$(parent).hasClass('linked')) {
+                    if (!parent.classList.contains('linked')) {
                         e.preventDefault();
                     } else {
                         parentLink = parent.parentNode;
-                        if (parentLink && element.hasClass('link-name')) {
-                            $(parentLink).trigger('click');
+                        if (parentLink && element.classList.contains('link-name')) {
+                            parentLink.trigger('click');
                         }
                     }
                     elementIconChild = parent.getElementsByClassName(faAngleUpClass)[0];
@@ -168,13 +168,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         elementIconChild = parent.getElementsByClassName(faAngleDownClass)[0];
                     }
                     if (elementIconChild) {
-                        elementIconChild = $(elementIconChild);
-                        if (elementIconChild.hasClass(faAngleUpClass)) {
-                            elementIconChild.addClass(faAngleDownClass);
-                            elementIconChild.removeClass(faAngleUpClass);
+                        if (elementIconChild.classList.contains(faAngleUpClass)) {
+                            elementIconChild.classList.add(faAngleDownClass);
+                            elementIconChild.classList.remove(faAngleUpClass);
                         } else {
-                            elementIconChild.addClass(faAngleUpClass);
-                            elementIconChild.removeClass(faAngleDownClass);
+                            elementIconChild.classList.add(faAngleUpClass);
+                            elementIconChild.classList.remove(faAngleDownClass);
                         }
                     }
                 }

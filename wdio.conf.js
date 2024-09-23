@@ -60,7 +60,7 @@ exports.config = {
         {
             browserName: 'firefox',
             'moz:firefoxOptions': {
-                binary: `/Applications/FirefoxNightly.app/Contents/MacOS/firefox`
+                binary: `/Applications/Firefox.app/Contents/MacOS/firefox`
             }
         }
     ],

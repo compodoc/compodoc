@@ -19,7 +19,6 @@
 -   svg-pan-zoom: 3.6.1
 -   tablesort: 5.4.0
 -   vis: 4.21.0
--   zepto: 1.2.0
 -   lunr: 2.3.9
 
 ## Entry files
@@ -59,26 +58,26 @@ npm run test
     npm install selenium-standalone@latest -g
     ```
 
-1. Configure `selenium-standalone`:
-    
+2. Configure `selenium-standalone`:
+
     ```shell
     selenium-standalone install
     ```
 
-1. Start `selenium-standalone`:
+3. Start `selenium-standalone`:
 
     ```shell
     selenium-standalone start
     ```
 
-1. Start local documentation generation in another terminal tab:
+4. Start local documentation generation in another terminal tab:
 
     ```shell
     npm run test:simple-doc
     ```
 
-1. Start local E2E testing:
-    
+5. Start local E2E testing:
+
     ```shell
     npm run local-test-e2e-mocha
     ```
@@ -91,24 +90,26 @@ npm run test
     npm i
     ```
 
-1. Init
+2. Init
 
     ```shell
     npm run build
     ```
 
-1. Link
+3. Link
 
     ```shell
     npm link
     ```
+
     This will make `compodoc` command available everywhere.
 
-1. Start
+4. Start
 
     ```shell
     npm start
     ```
+
     Launch watch process for source files and rollup build.
 
 ## Node.js inspecting
@@ -119,7 +120,7 @@ npm run test
     npm i sleep
     ```
 
-1. Add these lines in `index-cli.ts`, after `--files` check:
+2. Add these lines in `index-cli.ts`, after `--files` check:
 
     ```JavaScript
     const sleep = require('sleep');
@@ -130,18 +131,19 @@ npm run test
     }
     ```
 
-1. Open one terminal and run inside `compodoc` folder:
+3. Open one terminal and run inside `compodoc` folder:
 
     ```shell
     npm run start
     ```
 
-1. Add `debugger` statement where you want to debug your code.
-1. Open Chrome and this url: `chrome://inspect`.
-1. Open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run:
+4. Add `debugger` statement where you want to debug your code.
+5. Open Chrome and this url: `chrome://inspect`.
+6. Open another terminal with the source code of the [demo project](https://github.com/compodoc/compodoc-demo-todomvc-angular), and run:
 
     ```shell
     node --inspect ../compodoc/bin/index-cli.js -p tsconfig.json -a screenshots -n 'TodoMVC Angular documentation' --includes additional-doc --toggleMenuItems "'all'" -s
     ```
-1. Compodoc will wait 10s before starting when it detects `--inspect` flag.
-1. Open the debug window in Chrome, and click `inspect`.
+
+7. Compodoc will wait 10s before starting when it detects `--inspect` flag.
+8. Open the debug window in Chrome, and click `inspect`.

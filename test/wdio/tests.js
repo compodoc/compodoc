@@ -23,4 +23,11 @@ describe('Compodoc page', () => {
             await expect(color.value).toEqual('rgba(33,33,33,1)');
         }
     });
+
+    it('should open menu for specific page', async () => {
+        await browser.url('http://localhost:4000/modules.html');
+        await browser.pause(3000);
+        const menuModulesItem = await $('.d-md-block.menu .menu-toggler');
+        await expect(menuModulesItem).toHaveElementClass('linked');
+    });
 });

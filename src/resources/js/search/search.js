@@ -95,7 +95,7 @@
             $li.appendChild($groupTitle);
 
             var $ulResults = document.createElement('ul');
-            $ulResults.classList.add('search-results-lit');
+            $ulResults.classList.add('search-results-list');
 
             groups[property].results.forEach(function (res) {
                 var link = '';
