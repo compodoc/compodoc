@@ -1,4 +1,4 @@
-const cpx = require('cpx');
+const cpx = require('cpx2');
 
 const NODE_MODULES = './node_modules';
 
