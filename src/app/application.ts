@@ -634,43 +634,46 @@ export class Application {
         logger.info('-------------------');
         logger.info('Project statistics ');
         if (DependenciesEngine.modules.length > 0) {
-            logger.info(`- files      : ${this.files.length}`);
+            logger.info(`- files        : ${this.files.length}`);
         }
         if (DependenciesEngine.modules.length > 0) {
-            logger.info(`- module     : ${DependenciesEngine.modules.length}`);
+            logger.info(`- module       : ${DependenciesEngine.modules.length}`);
         }
         if (DependenciesEngine.components.length > 0) {
-            logger.info(`- component  : ${DependenciesEngine.components.length}`);
+            logger.info(`- component    : ${DependenciesEngine.components.length}`);
         }
         if (DependenciesEngine.controllers.length > 0) {
-            logger.info(`- controller : ${DependenciesEngine.controllers.length}`);
+            logger.info(`- controller   : ${DependenciesEngine.controllers.length}`);
         }
         if (DependenciesEngine.entities.length > 0) {
-            logger.info(`- entity     : ${DependenciesEngine.entities.length}`);
+            logger.info(`- entity       : ${DependenciesEngine.entities.length}`);
         }
         if (DependenciesEngine.directives.length > 0) {
-            logger.info(`- directive  : ${DependenciesEngine.directives.length}`);
+            logger.info(`- directive    : ${DependenciesEngine.directives.length}`);
         }
         if (DependenciesEngine.injectables.length > 0) {
-            logger.info(`- injectable : ${DependenciesEngine.injectables.length}`);
+            logger.info(`- injectable   : ${DependenciesEngine.injectables.length}`);
         }
         if (DependenciesEngine.interceptors.length > 0) {
-            logger.info(`- injector   : ${DependenciesEngine.interceptors.length}`);
+            logger.info(`- injector     : ${DependenciesEngine.interceptors.length}`);
         }
         if (DependenciesEngine.guards.length > 0) {
-            logger.info(`- guard      : ${DependenciesEngine.guards.length}`);
+            logger.info(`- guard        : ${DependenciesEngine.guards.length}`);
         }
         if (DependenciesEngine.pipes.length > 0) {
-            logger.info(`- pipe       : ${DependenciesEngine.pipes.length}`);
+            logger.info(`- pipe         : ${DependenciesEngine.pipes.length}`);
         }
         if (DependenciesEngine.classes.length > 0) {
-            logger.info(`- class      : ${DependenciesEngine.classes.length}`);
+            logger.info(`- class        : ${DependenciesEngine.classes.length}`);
         }
         if (DependenciesEngine.interfaces.length > 0) {
-            logger.info(`- interface  : ${DependenciesEngine.interfaces.length}`);
+            logger.info(`- interface    : ${DependenciesEngine.interfaces.length}`);
         }
         if (Configuration.mainData.routesLength > 0) {
-            logger.info(`- route      : ${Configuration.mainData.routesLength}`);
+            logger.info(`- route        : ${Configuration.mainData.routesLength}`);
+        }
+        if (DependenciesEngine.miscellaneous.typealiases.length > 0) {
+            logger.info(`- type aliases : ${DependenciesEngine.miscellaneous.typealiases.length}`);
         }
         logger.info('-------------------');
     }
