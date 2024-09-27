@@ -413,6 +413,7 @@ describe('CLI coverage report', () => {
             expect(coverageFile).to.contain('components/CompodocComponent.html');
             expect(coverageFile).to.contain('interfaces/ClockInterface.html');
             expect(coverageFile).to.contain('miscellaneous/functions.html#foo');
+            expect(coverageFile).to.contain('miscellaneous/typealiases.html#ChartChange');
             expect(coverageFile).to.contain('variables.html#PI');
             expect(coverageFile).to.contain('pipes/FirstUpperPipe.html');
             expect(coverageFile).to.contain('directives/DoNothingDirective2.html');

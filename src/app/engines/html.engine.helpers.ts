@@ -39,6 +39,7 @@ import { ParsePropertyHelper } from './html-engine-helpers/parse-property.helper
 import { RelativeURLHelper } from './html-engine-helpers/relative-url.helper';
 import { ShortURLHelper } from './html-engine-helpers/short-url.helper';
 import { StripURLHelper } from './html-engine-helpers/strip-url.helper';
+import { IfEqualStringHelper } from './html-engine-helpers/if-equal-string.helper';
 
 export class HtmlEngineHelpers {
     public registerHelpers(bars): void {
@@ -49,6 +50,7 @@ export class HtmlEngineHelpers {
         this.registerHelper(bars, 'isInitialTab', new IsInitialTabHelper());
         this.registerHelper(bars, 'isTabEnabled', new IsTabEnabledHelper());
         this.registerHelper(bars, 'ifString', new IfStringHelper());
+        this.registerHelper(bars, 'ifEqualString', new IfEqualStringHelper());
         this.registerHelper(bars, 'orLength', new OrLengthHelper());
         this.registerHelper(bars, 'filterAngular2Modules', new FilterAngular2ModulesHelper());
         this.registerHelper(bars, 'debug', new DebugHelper());

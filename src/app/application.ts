@@ -2038,7 +2038,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         linksubtype: el.subtype,
                         name: el.name
                     };
-                    if (type === 'variable' || type === 'function') {
+                    if (type === 'variable' || type === 'function' || type === 'type alias') {
                         cl.linktype = 'miscellaneous';
                     }
                     let totalStatementDocumented = 0;
@@ -2184,6 +2184,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             processFunctionsAndVariables(
                 Configuration.mainData.miscellaneous.variables,
                 'variable'
+            );
+            processFunctionsAndVariables(
+                Configuration.mainData.miscellaneous.typealiases,
+                'type alias'
             );
 
             files = _.sortBy(files, ['filePath']);
