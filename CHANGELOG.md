@@ -2,10 +2,6 @@
 
 ## [1.1.26](https://github.com/compodoc/compodoc/compare/1.1.25...1.1.26)
 
-### Merged
-
--   fix: fix detection of signals default value and type [#1491](https://github.com/compodoc/compodoc/pull/1491), Thanks [massi08](https://github.com/massi08)
-
 ### Bug fixes
 
 -   fix(app): typealiases coverage ([86655ee](https://github.com/compodoc/compodoc/commit/86655ee)), closes [#1517](https://github.com/compodoc/compodoc/issues/1517)
