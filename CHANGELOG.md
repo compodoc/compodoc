@@ -1,4 +1,23 @@
-<a name="1.1.25"></a>
+<a name="1.1.26"></a>
+
+## [1.1.26](https://github.com/compodoc/compodoc/compare/1.1.25...1.1.26)
+
+### Merged
+
+-   fix: fix detection of signals default value and type [#1491](https://github.com/compodoc/compodoc/pull/1491), Thanks [massi08](https://github.com/massi08)
+
+### Bug fixes
+
+-   fix(app): typealiases coverage ([86655ee](https://github.com/compodoc/compodoc/commit/86655ee)), closes [#1517](https://github.com/compodoc/compodoc/issues/1517)
+-   fix(app): remove Zepto.js dependency ([95195ec](https://github.com/compodoc/compodoc/commit/95195ec)), closes [#1416](https://github.com/compodoc/compodoc/issues/1416)
+-   feat(app): migrate chalk to picocolors ([4ae4745](https://github.com/compodoc/compodoc/commit/4ae4745)), closes [#1501](https://github.com/compodoc/compodoc/issues/1501)
+-   feat(app): migrate traverse to neotraverse ([0c7833f](https://github.com/compodoc/compodoc/commit/0c7833f)), closes [#1500](https://github.com/compodoc/compodoc/issues/1500)
+-   fix(app): copy-libs just before publish ([5c2ef83](https://github.com/compodoc/compodoc/commit/5c2ef83)), closes [#1422](https://github.com/compodoc/compodoc/issues/1422)
+-   fix(app): revert bump dev/dependencies - pin cheerio & @babel [0325f96](https://github.com/compodoc/compodoc/commit/0325f962c2ef8014dab766c8687e1cc5a447b370)
+
+### Commits
+
+-   feat(app): support for Indexed Access Types ([31d4f23](https://github.com/compodoc/compodoc/commit/31d4f23)), closes [#1507](https://github.com/compodoc/compodoc/issues/1507)
 
 ## [1.1.25](https://github.com/compodoc/compodoc/compare/1.1.24...1.1.25)
 

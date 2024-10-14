@@ -152,5 +152,6 @@ npm run test
 
 -   gitflow start new release
 -   in git release branhc, bump package.json and packe-lock.json version number
+-   update changelog : npm run changelog, and copy-paste data in CHANGELOG.md
 -   close release branch
 -   npm publish --access public
