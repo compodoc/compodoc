@@ -147,3 +147,10 @@ npm run test
 
 7. Compodoc will wait 10s before starting when it detects `--inspect` flag.
 8. Open the debug window in Chrome, and click `inspect`.
+
+## Release
+
+-   gitflow start new release
+-   in git release branhc, bump package.json and packe-lock.json version number
+-   close release branch
+-   npm publish --access public
