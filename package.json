@@ -85,7 +85,7 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
-        "@angular-devkit/schematics": "19.0.2",
+        "@angular-devkit/schematics": "19.0.6",
         "@babel/core": "7.26.0",
         "@babel/plugin-transform-private-methods": "7.25.9",
         "@babel/preset-env": "7.26.0",
@@ -95,7 +95,7 @@
         "cheerio": "1.0.0-rc.12",
         "chokidar": "^4.0.1",
         "colors": "1.4.0",
-        "commander": "^12.1.0",
+        "commander": "^13.0.0",
         "cosmiconfig": "^9.0.0",
         "decache": "^4.6.2",
         "es6-shim": "^0.35.8",
@@ -121,7 +121,7 @@
         "semver": "^7.6.3",
         "svg-pan-zoom": "^3.6.2",
         "tablesort": "^5.3.0",
-        "ts-morph": "^24.0.0",
+        "ts-morph": "^25.0.0",
         "uuid": "^11.0.3",
         "vis": "^4.21.0-EOL"
     },
