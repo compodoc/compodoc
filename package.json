@@ -99,7 +99,7 @@
         "decache": "^4.6.2",
         "es6-shim": "^0.35.8",
         "fancy-log": "^2.0.0",
-        "fast-glob": "^3.3.2",
+        "fast-glob": "^3.3.3",
         "fs-extra": "^11.2.0",
         "glob": "^11.0.0",
         "handlebars": "^4.7.8",
