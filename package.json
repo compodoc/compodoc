@@ -84,7 +84,7 @@
     },
     "homepage": "https://github.com/compodoc/compodoc#readme",
     "dependencies": {
-        "@angular-devkit/schematics": "19.1.4",
+        "@angular-devkit/schematics": "19.2.3",
         "@babel/core": "7.26.10",
         "@babel/plugin-transform-private-methods": "7.25.9",
         "@babel/preset-env": "7.26.9",
