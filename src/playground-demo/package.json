@@ -28,10 +28,10 @@
     "zone.js": "^0.14.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.20",
-    "@angular/cli": "^18.2.20",
-    "@angular/compiler-cli": "^18.2.13",
-    "@types/node": "^20.19.11",
+    "@angular-devkit/build-angular": "^20.2.1",
+    "@angular/cli": "^20.2.1",
+    "@angular/compiler-cli": "^20.2.3",
+    "@types/node": "^22.18.0",
     "typescript": "~5.9.2"
   }
 }
