@@ -104,7 +104,7 @@
         "cosmiconfig": "^9.0.0",
         "decache": "^4.6.2",
         "es6-shim": "^0.35.8",
-        "express": "^4.19.2",
+        "express": "^5.1.0",
         "fancy-log": "^2.0.0",
         "fast-glob": "^3.3.3",
         "fs-extra": "^11.3.1",
@@ -127,7 +127,7 @@
         "semver": "^7.7.2",
         "svg-pan-zoom": "^3.6.2",
         "tablesort": "^5.6.0",
-        "ts-morph": "^25.0.1",
+        "ts-morph": "^26.0.0",
         "uuid": "^11.1.0",
         "vis": "^4.21.0-EOL"
     },
