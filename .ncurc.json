@@ -1,13 +1,4 @@
 {
     "upgrade": false,
-    "reject": [
-        "os-name",
-        "marked",
-        "chai",
-        "eslint",
-        "@typescript-eslint/eslint-plugin",
-        "@typescript-eslint/parser",
-        "cheerio",
-        "uuid"
-    ]
+    "reject": ["os-name", "marked", "chai", "cheerio", "uuid"]
 }
