@@ -102,6 +102,19 @@ describe('ComponentHelper', () => {
             );
             expect(result).to.equal('<div>Hello</div>');
         });
+
+        it('should not crash when template is a variable reference (non-string)', () => {
+            const props = createMockProps({ template: 'myTemplate' });
+            // When template is a const variable reference, getSymbolDeps returns
+            // the identifier name (not a string literal), so the value is not a string.
+            symbolHelperStub.getSymbolDeps.returns([undefined]);
+
+            let result: any;
+            expect(() => {
+                result = componentHelper.getComponentTemplate(props, sourceFile);
+            }).to.not.throw();
+            expect(result).to.be.undefined;
+        });
     });
 
     describe('getComponentStandalone', () => {

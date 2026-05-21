@@ -297,7 +297,7 @@ export class ComponentHelper {
         srcFile: ts.SourceFile
     ): string {
         let t = this.symbolHelper.getSymbolDeps(props, 'template', srcFile, true).pop();
-        if (t) {
+        if (t && typeof t === 'string') {
             t = detectIndent(t, 0);
             t = t.replace(/\n/, '');
             t = t.replace(/ +$/gm, '');
