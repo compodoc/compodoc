@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "module": "commonjs"
+    },
+    "include": [
+        "foo-with-license-header.function.ts"
+    ]
+}

@@ -1630,8 +1630,9 @@ export class AngularDependencies extends FrameworkDependencies {
         let description: string = '';
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
-                if (typeof node.jsDoc[0].comment !== 'undefined') {
-                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(node.jsDoc[0]);
+                const lastJsDoc = node.jsDoc[node.jsDoc.length - 1];
+                if (typeof lastJsDoc.comment !== 'undefined') {
+                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(lastJsDoc);
                     description = markedAcl(rawDescription);
                 }
             }

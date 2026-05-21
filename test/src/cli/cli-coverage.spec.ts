@@ -460,4 +460,33 @@ describe('CLI coverage report', () => {
             );
         });
     });
+
+    describe('coverage regression - @license/@copyright header should not shadow function JSDoc', () => {
+        let stdoutString = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.license-header.json',
+                '--coverageMinimumPerFile',
+                '100',
+                '--coverageTestShowOnlyFailed',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should report 100% coverage for a documented function preceded by a @license/@copyright header', () => {
+            expect(stdoutString).to.not.contain('under minimum per file');
+        });
+    });
 });
