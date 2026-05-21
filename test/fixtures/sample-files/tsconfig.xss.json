@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "module": "commonjs"
+  },
+  "include": ["xss-script-tag.component.ts"]
+}

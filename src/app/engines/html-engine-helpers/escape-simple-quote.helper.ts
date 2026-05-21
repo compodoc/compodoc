@@ -7,6 +7,7 @@ export class EscapeSimpleQuoteHelper implements IHtmlEngineHelper {
         }
         text = text.replace(/'/g, "\\'");
         text = text.replace(/(\r\n|\n|\r)/gm, '');
+        text = text.replace(/<\/script/gi, '<\\/script');
         return text;
     }
 }
