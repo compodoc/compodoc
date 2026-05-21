@@ -311,7 +311,7 @@ describe('CLI simple generation', () => {
                 </tr>
                 <tr>
                     <td class="col-md-4">
-                        <i>Default value : </i><code>null, { alias: &#x27;aliasedInSignal&#x27; }</code>
+                        <i>Default value : </i><code>null</code>
                     </td>
                 </tr>
                         <tr>

@@ -218,15 +218,54 @@ export class ComponentHelper {
         const argsEnd = this.findMatchingBracket(normalized, pos, '(', ')');
         if (argsEnd === -1) return undefined;
 
-        // Return the raw args string as defaultValue (preserving the full content
-        // including any options object, e.g. "0, { alias: 'aliasedSignal' }")
-        const argsStr = normalized.slice(pos + 1, argsEnd).trim() || undefined;
+        // Extract only the first argument as defaultValue, ignoring the options
+        // object (second argument). For example, given:
+        //   input(false, { transform: booleanAttribute })
+        // argsStr would be "false, { transform: booleanAttribute }" and we only
+        // want "false" as the default value.
+        const fullArgs = normalized.slice(pos + 1, argsEnd).trim();
+        const signalDefaultValue = this.extractFirstSignalArg(fullArgs) || undefined;
 
         return {
             required,
             type: this.parseSignalType(signalType),
-            defaultValue: argsStr
+            defaultValue: signalDefaultValue
         };
+    }
+
+    /**
+     * Extracts the first argument from a comma-separated argument string,
+     * correctly handling nested brackets, braces, parens, and string literals.
+     * For example:
+     *   "false, { transform: booleanAttribute }" → "false"
+     *   "0, { alias: 'x' }"                     → "0"
+     *   "[1, 2], { alias: 'x' }"                → "[1, 2]"
+     *   "'hello'"                                → "'hello'"
+     */
+    private extractFirstSignalArg(argsStr: string): string {
+        if (!argsStr) return '';
+
+        let depth = 0;
+        for (let i = 0; i < argsStr.length; i++) {
+            const ch = argsStr[i];
+            if (ch === '"' || ch === "'" || ch === '`') {
+                // Skip over string literals to avoid treating commas inside them as separators
+                const quote = ch;
+                i++;
+                while (i < argsStr.length && argsStr[i] !== quote) {
+                    if (argsStr[i] === '\\') i++; // skip escaped character
+                    i++;
+                }
+            } else if (ch === '(' || ch === '[' || ch === '{') {
+                depth++;
+            } else if (ch === ')' || ch === ']' || ch === '}') {
+                depth--;
+            } else if (ch === ',' && depth === 0) {
+                return argsStr.slice(0, i).trim();
+            }
+        }
+
+        return argsStr.trim();
     }
 
     /**

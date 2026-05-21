@@ -308,16 +308,26 @@ describe('ComponentHelper', () => {
             });
         });
 
-        it('should preserve full args string including options as defaultValue (issue #1654)', () => {
-            // The full arg string (including any trailing options object) is
-            // preserved as defaultValue, matching the original behaviour
+        it('should extract only the first argument as defaultValue, ignoring the options object', () => {
+            // The options object (second argument) must not leak into defaultValue
             const defaultValue = `input(null, { alias: 'aliasedInSignal' })`;
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
                 required: false,
                 type: undefined,
-                defaultValue: `null, { alias: 'aliasedInSignal' }`
+                defaultValue: 'null'
+            });
+        });
+
+        it('should extract only the first argument when transform option is present (booleanAttribute)', () => {
+            const defaultValue = `input(false, { transform: booleanAttribute })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: undefined,
+                defaultValue: 'false'
             });
         });
     });
