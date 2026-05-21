@@ -143,20 +143,20 @@ export class ComponentHelper {
         props.forEach(prop => {
             const inputSignal = this.getInputSignal(prop);
             if (inputSignal) {
-                inputSignals.push(inputSignal)
+                inputSignals.push(inputSignal);
             }
 
             const outputSignal = this.getOutputSignal(prop);
             if (outputSignal) {
-                outputSignals.push(outputSignal)
+                outputSignals.push(outputSignal);
             }
 
             if (!inputSignal && !outputSignal) {
-                properties.push(prop)
+                properties.push(prop);
             }
         });
 
-        return {inputSignals, outputSignals, properties}
+        return { inputSignals, outputSignals, properties };
     }
 
     public getInputSignal(prop) {
@@ -165,7 +165,7 @@ export class ComponentHelper {
             this.getSignalConfig('model', prop.defaultValue);
 
         if (config) {
-            return  {
+            return {
                 ...prop,
                 ...config
             };
@@ -180,7 +180,7 @@ export class ComponentHelper {
             this.getSignalConfig('model', prop.defaultValue);
 
         if (config) {
-            return  {
+            return {
                 ...prop,
                 ...config
             };
@@ -190,49 +190,67 @@ export class ComponentHelper {
     }
 
     private getSignalConfig(type: 'input' | 'output' | 'model', defaultValue: string) {
-        // Matches a quote mark
-        const quotePattern = `['"\`]`;
+        if (!defaultValue) return undefined;
 
-        // Matches a value for the input
-        const valuePattern = (capture = true) =>
-            `(${capture ? '' : '?:'}[^()]*(?:\\([^()]*\\)[^()]*)*)`;
+        const normalized = defaultValue.replace(/\n/g, '');
 
-        // Matches an optional space
-        const spacePattern = `(?: )*`;
+        // Check the signal type prefix (e.g. "input", "input.required")
+        const prefixRegExp = new RegExp(`^${type}(\\.required)?`);
+        const prefixMatch = prefixRegExp.exec(normalized);
+        if (!prefixMatch) return undefined;
 
-        // Matches the input's type
-        const typesPattern = `(?:<((?:${valuePattern(false)}(?:${spacePattern}\\|${spacePattern})?)+)>)?`;
+        const required = !!prefixMatch[1];
+        let pos = prefixMatch[0].length;
 
-        // Matches the alias provided in the options
-        const aliasRegExp = new RegExp(`alias:${spacePattern}${quotePattern}(\\w+)${quotePattern}`);
-
-        // Matches a signal of the provided type
-        const signalRegExp = new RegExp(
-            `${type}(.required)?${typesPattern}\\(${valuePattern()}?(?:,${spacePattern}({.+}))?\\)`
-        );
-
-        const matches = signalRegExp.exec(defaultValue?.replace(/\n/g, ''));
-
-        if (matches) {
-            const [_match, required, type, defaultValue, options] = matches;
-
-            const name = options?.match(aliasRegExp)?.[1];
-
-            const result = {
-                required: !!required,
-                type: this.parseSignalType(type),
-                defaultValue
-            };
-
-            if (name) {
-                return {
-                    ...result,
-                    name
-                };
-            }
-
-            return result;
+        // Extract generic type parameters <...> using bracket matching to avoid
+        // catastrophic backtracking on complex types like
+        // input.required<string[], string | string[]>(...)  (issue #1654)
+        let signalType: string | undefined;
+        if (normalized[pos] === '<') {
+            const typeEnd = this.findMatchingBracket(normalized, pos, '<', '>');
+            if (typeEnd === -1) return undefined;
+            signalType = normalized.slice(pos + 1, typeEnd);
+            pos = typeEnd + 1;
         }
+
+        // Expect opening paren for the arguments
+        if (normalized[pos] !== '(') return undefined;
+        const argsEnd = this.findMatchingBracket(normalized, pos, '(', ')');
+        if (argsEnd === -1) return undefined;
+
+        // Return the raw args string as defaultValue (preserving the full content
+        // including any options object, e.g. "0, { alias: 'aliasedSignal' }")
+        const argsStr = normalized.slice(pos + 1, argsEnd).trim() || undefined;
+
+        return {
+            required,
+            type: this.parseSignalType(signalType),
+            defaultValue: argsStr
+        };
+    }
+
+    /**
+     * Finds the position of the matching closing bracket for the opening bracket
+     * at startPos. Handles nested brackets of the same type.
+     * For angle brackets, skips '>' that is part of '=>' (arrow function syntax).
+     */
+    private findMatchingBracket(
+        str: string,
+        startPos: number,
+        open: string,
+        close: string
+    ): number {
+        let depth = 0;
+        for (let i = startPos; i < str.length; i++) {
+            if (str[i] === open) depth++;
+            else if (str[i] === close) {
+                // For angle brackets, skip '>' that is part of '=>' (arrow functions)
+                if (close === '>' && i > 0 && str[i - 1] === '=') continue;
+                depth--;
+                if (depth === 0) return i;
+            }
+        }
+        return -1;
     }
 
     public parseSignalType(type: string) {
@@ -243,9 +261,9 @@ export class ComponentHelper {
         // adjust union string expression like: 'foo' | 'bar' | 'test'
         // which should be outputed as: "foo" | "bar" | "test"
 
-        const unionTypeRegex = /^'([\w-]+)'\s?\|\s?('([\w-]+)'|.*)$/
+        const unionTypeRegex = /^'([\w-]+)'\s?\|\s?('([\w-]+)'|.*)$/;
         let typeRest = type;
-        let newType = "";
+        let newType = '';
         let typeMatch: RegExpMatchArray;
         while ((typeMatch = typeRest.match(unionTypeRegex))) {
             const [, first, rest, second] = typeMatch;

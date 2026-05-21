@@ -1,7 +1,10 @@
 import { expect } from 'chai';
 import { Project, SyntaxKind, ts } from 'ts-morph';
 import * as sinon from 'sinon';
-import { ComponentHelper, ComponentCache } from '../../../../../../../src/app/compiler/angular/deps/helpers/component-helper';
+import {
+    ComponentHelper,
+    ComponentCache
+} from '../../../../../../../src/app/compiler/angular/deps/helpers/component-helper';
 import { ClassHelper } from '../../../../../../../src/app/compiler/angular/deps/helpers/class-helper';
 import { SymbolHelper } from '../../../../../../../src/app/compiler/angular/deps/helpers/symbol-helper';
 
@@ -44,7 +47,9 @@ describe('ComponentHelper', () => {
         } as any;
     }
 
-    function createMockProps(props: { [key: string]: any }): ReadonlyArray<ts.ObjectLiteralElementLike> {
+    function createMockProps(props: {
+        [key: string]: any;
+    }): ReadonlyArray<ts.ObjectLiteralElementLike> {
         return Object.entries(props).map(([name, value]) => createMockProp(name, value));
     }
 
@@ -88,7 +93,13 @@ describe('ComponentHelper', () => {
 
             const result = componentHelper.getComponentTemplate(props, sourceFile);
 
-            sinon.assert.calledWith(symbolHelperStub.getSymbolDeps, props, 'template', sourceFile, true);
+            sinon.assert.calledWith(
+                symbolHelperStub.getSymbolDeps,
+                props,
+                'template',
+                sourceFile,
+                true
+            );
             expect(result).to.equal('<div>Hello</div>');
         });
     });
@@ -177,7 +188,12 @@ describe('ComponentHelper', () => {
 
             const result = componentHelper.getComponentTemplateUrl(props, sourceFile);
 
-            sinon.assert.calledWith(symbolHelperStub.getSymbolDeps, props, 'templateUrl', sourceFile);
+            sinon.assert.calledWith(
+                symbolHelperStub.getSymbolDeps,
+                props,
+                'templateUrl',
+                sourceFile
+            );
             expect(result).to.deep.equal(['template.html']);
         });
     });
@@ -206,7 +222,7 @@ describe('ComponentHelper', () => {
 
     describe('getSignalConfig', () => {
         it('should parse input signal configuration', () => {
-            const defaultValue = "input<string>()";
+            const defaultValue = 'input<string>()';
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
@@ -217,7 +233,7 @@ describe('ComponentHelper', () => {
         });
 
         it('should parse required input signal', () => {
-            const defaultValue = "input.required<string>()";
+            const defaultValue = 'input.required<string>()';
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
@@ -238,9 +254,8 @@ describe('ComponentHelper', () => {
             });
         });
 
-
         it('should parse output signal configuration', () => {
-            const defaultValue = "output<string>()";
+            const defaultValue = 'output<string>()';
             const result = componentHelper['getSignalConfig']('output', defaultValue);
 
             expect(result).to.deep.equal({
@@ -251,16 +266,52 @@ describe('ComponentHelper', () => {
         });
 
         it('should return undefined for non-matching signal', () => {
-            const defaultValue = "someOtherFunction()";
+            const defaultValue = 'someOtherFunction()';
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.be.undefined;
+        });
+
+        it('should parse InputOptionsWithTransform with union types without hanging (issue #1654)', () => {
+            // This case caused catastrophic backtracking in the old regex
+            const defaultValue = `input.required<string[], string | string[]>({ transform: v => (Array.isArray(v) ? v : [v]) })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: true,
+                type: 'string[], string | string[]',
+                defaultValue: '{ transform: v => (Array.isArray(v) ? v : [v]) }'
+            });
+        });
+
+        it('should parse input signal with arrow function types containing => without hanging (issue #1654)', () => {
+            const defaultValue = `input<() => string[], () => string[]>(() => [])`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: '() => string[], () => string[]',
+                defaultValue: '() => []'
+            });
+        });
+
+        it('should preserve full args string including options as defaultValue (issue #1654)', () => {
+            // The full arg string (including any trailing options object) is
+            // preserved as defaultValue, matching the original behaviour
+            const defaultValue = `input(null, { alias: 'aliasedInSignal' })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: undefined,
+                defaultValue: `null, { alias: 'aliasedInSignal' }`
+            });
         });
     });
 
     describe('getInputSignal', () => {
         it('should extract input signal from property', () => {
-            const prop = { defaultValue: "input<string>()" };
+            const prop = { defaultValue: 'input<string>()' };
             const result = componentHelper.getInputSignal(prop);
 
             expect(result).to.deep.equal({
@@ -272,7 +323,7 @@ describe('ComponentHelper', () => {
         });
 
         it('should return undefined when no input signal found', () => {
-            const prop = { defaultValue: "someOtherValue" };
+            const prop = { defaultValue: 'someOtherValue' };
             const result = componentHelper.getInputSignal(prop);
 
             expect(result).to.be.undefined;
@@ -281,7 +332,7 @@ describe('ComponentHelper', () => {
 
     describe('getOutputSignal', () => {
         it('should extract output signal from property', () => {
-            const prop = { defaultValue: "output<string>()" };
+            const prop = { defaultValue: 'output<string>()' };
             const result = componentHelper.getOutputSignal(prop);
 
             expect(result).to.deep.equal({
@@ -293,7 +344,7 @@ describe('ComponentHelper', () => {
         });
 
         it('should return undefined when no output signal found', () => {
-            const prop = { defaultValue: "someOtherValue" };
+            const prop = { defaultValue: 'someOtherValue' };
             const result = componentHelper.getOutputSignal(prop);
 
             expect(result).to.be.undefined;
@@ -303,9 +354,9 @@ describe('ComponentHelper', () => {
     describe('getInputOutputSignals', () => {
         it('should separate signals from regular properties', () => {
             const props = [
-                { defaultValue: "input<string>()", name: 'inputProp' },
-                { defaultValue: "output<number>()", name: 'outputProp' },
-                { defaultValue: "regularValue", name: 'regularProp' }
+                { defaultValue: 'input<string>()', name: 'inputProp' },
+                { defaultValue: 'output<number>()', name: 'outputProp' },
+                { defaultValue: 'regularValue', name: 'regularProp' }
             ];
 
             const result = componentHelper.getInputOutputSignals(props);
@@ -323,7 +374,7 @@ describe('ComponentHelper', () => {
         it('should extract and parse providers from props', () => {
             const props = createMockProps({ providers: ['Service1', 'Service2'] });
             symbolHelperStub.getSymbolDeps.returns(['Service1', 'Service2']);
-            symbolHelperStub.parseDeepIndentifier.callsFake((name) => ({ name, type: 'injectable' }));
+            symbolHelperStub.parseDeepIndentifier.callsFake(name => ({ name, type: 'injectable' }));
 
             const result = componentHelper.getComponentProviders(props, sourceFile);
 
@@ -338,7 +389,7 @@ describe('ComponentHelper', () => {
         it('should extract and parse imports from props', () => {
             const props = createMockProps({ imports: ['Module1', 'Module2'] });
             symbolHelperStub.getSymbolDeps.returns(['Module1', 'Module2']);
-            symbolHelperStub.parseDeepIndentifier.callsFake((name) => ({ name, type: 'module' }));
+            symbolHelperStub.parseDeepIndentifier.callsFake(name => ({ name, type: 'module' }));
 
             const result = componentHelper.getComponentImports(props, sourceFile);
 
@@ -353,11 +404,16 @@ describe('ComponentHelper', () => {
         it('should extract and parse entryComponents from props', () => {
             const props = createMockProps({ entryComponents: ['Component1', 'Component2'] });
             symbolHelperStub.getSymbolDeps.returns(['Component1', 'Component2']);
-            symbolHelperStub.parseDeepIndentifier.callsFake((name) => ({ name, type: 'component' }));
+            symbolHelperStub.parseDeepIndentifier.callsFake(name => ({ name, type: 'component' }));
 
             const result = componentHelper.getComponentEntryComponents(props, sourceFile);
 
-            sinon.assert.calledWith(symbolHelperStub.getSymbolDeps, props, 'entryComponents', sourceFile);
+            sinon.assert.calledWith(
+                symbolHelperStub.getSymbolDeps,
+                props,
+                'entryComponents',
+                sourceFile
+            );
             sinon.assert.calledTwice(symbolHelperStub.parseDeepIndentifier);
             expect(result).to.have.lengthOf(2);
             expect(result[0]).to.deep.equal({ name: 'Component1', type: 'component' });
@@ -368,11 +424,16 @@ describe('ComponentHelper', () => {
         it('should extract and parse viewProviders from props', () => {
             const props = createMockProps({ viewProviders: ['Service1', 'Service2'] });
             symbolHelperStub.getSymbolDeps.returns(['Service1', 'Service2']);
-            symbolHelperStub.parseDeepIndentifier.callsFake((name) => ({ name, type: 'injectable' }));
+            symbolHelperStub.parseDeepIndentifier.callsFake(name => ({ name, type: 'injectable' }));
 
             const result = componentHelper.getComponentViewProviders(props, sourceFile);
 
-            sinon.assert.calledWith(symbolHelperStub.getSymbolDeps, props, 'viewProviders', sourceFile);
+            sinon.assert.calledWith(
+                symbolHelperStub.getSymbolDeps,
+                props,
+                'viewProviders',
+                sourceFile
+            );
             sinon.assert.calledTwice(symbolHelperStub.parseDeepIndentifier);
             expect(result).to.have.lengthOf(2);
             expect(result[0]).to.deep.equal({ name: 'Service1', type: 'injectable' });
@@ -381,7 +442,8 @@ describe('ComponentHelper', () => {
 
     describe('getComponentExampleUrls', () => {
         it('should extract example URLs from text', () => {
-            const text = 'Some text <example-url>url1</example-url> more text <example-url>url2</example-url>';
+            const text =
+                'Some text <example-url>url1</example-url> more text <example-url>url2</example-url>';
             const result = componentHelper.getComponentExampleUrls(text);
 
             expect(result).to.deep.equal(['url1', 'url2']);
@@ -448,15 +510,19 @@ describe('ComponentHelper', () => {
                 elements: [mockElement]
             };
 
-            symbolHelperStub.getSymbolDepsRaw.returns([{
-                initializer: mockInitializer
-            }]);
+            symbolHelperStub.getSymbolDepsRaw.returns([
+                {
+                    initializer: mockInitializer
+                }
+            ]);
 
             const result = componentHelper.getComponentHostDirectives([]);
 
-            expect(result).to.deep.equal([{
-                name: 'MyDirective'
-            }]);
+            expect(result).to.deep.equal([
+                {
+                    name: 'MyDirective'
+                }
+            ]);
         });
 
         it('should parse object literal host directives', () => {
@@ -468,20 +534,14 @@ describe('ComponentHelper', () => {
             const mockProperty2 = {
                 name: { escapedText: 'inputs' },
                 initializer: {
-                    elements: [
-                        { text: 'input1' },
-                        { text: 'input2' }
-                    ]
+                    elements: [{ text: 'input1' }, { text: 'input2' }]
                 }
             };
 
             const mockProperty3 = {
                 name: { escapedText: 'outputs' },
                 initializer: {
-                    elements: [
-                        { text: 'output1' },
-                        { text: 'output2' }
-                    ]
+                    elements: [{ text: 'output1' }, { text: 'output2' }]
                 }
             };
 
@@ -494,17 +554,21 @@ describe('ComponentHelper', () => {
                 elements: [mockElement]
             };
 
-            symbolHelperStub.getSymbolDepsRaw.returns([{
-                initializer: mockInitializer
-            }]);
+            symbolHelperStub.getSymbolDepsRaw.returns([
+                {
+                    initializer: mockInitializer
+                }
+            ]);
 
             const result = componentHelper.getComponentHostDirectives([]);
 
-            expect(result).to.deep.equal([{
-                name: 'MyDirective',
-                inputs: ['input1', 'input2'],
-                outputs: ['output1', 'output2']
-            }]);
+            expect(result).to.deep.equal([
+                {
+                    name: 'MyDirective',
+                    inputs: ['input1', 'input2'],
+                    outputs: ['output1', 'output2']
+                }
+            ]);
         });
 
         it('should handle multiple host directives', () => {
@@ -522,16 +586,15 @@ describe('ComponentHelper', () => {
                 elements: [mockElement1, mockElement2]
             };
 
-            symbolHelperStub.getSymbolDepsRaw.returns([{
-                initializer: mockInitializer
-            }]);
+            symbolHelperStub.getSymbolDepsRaw.returns([
+                {
+                    initializer: mockInitializer
+                }
+            ]);
 
             const result = componentHelper.getComponentHostDirectives([]);
 
-            expect(result).to.deep.equal([
-                { name: 'Directive1' },
-                { name: 'Directive2' }
-            ]);
+            expect(result).to.deep.equal([{ name: 'Directive1' }, { name: 'Directive2' }]);
         });
     });
 
