@@ -43,7 +43,7 @@ describe('CLI serving', () => {
         before(function (done) {
             this.timeout(10000);
             tmp.create('documentation');
-            
+
             const child = shellAsync('node', [
                 './bin/index-cli.js',
                 '-p',
@@ -53,24 +53,31 @@ describe('CLI serving', () => {
 
             let output = '';
             let errorOutput = '';
+            let doneCalled = false;
+            const callDone = (err?: Error) => {
+                if (!doneCalled) {
+                    doneCalled = true;
+                    done(err);
+                }
+            };
 
-            child.stdout.on('data', (data) => {
+            child.stdout.on('data', data => {
                 output += data.toString();
                 // Look for the serving message
                 if (output.includes('Serving documentation from')) {
                     stdoutString = output;
                     child.kill('SIGTERM');
-                    done();
+                    callDone();
                 }
             });
 
-            child.stderr.on('data', (data) => {
+            child.stderr.on('data', data => {
                 errorOutput += data.toString();
             });
 
-            child.on('error', (err) => {
+            child.on('error', err => {
                 console.error(`Process error: ${err}`);
-                done(err);
+                callDone(err);
             });
 
             child.on('exit', (code, signal) => {
@@ -80,20 +87,20 @@ describe('CLI serving', () => {
                 }
                 if (code !== 0 && errorOutput) {
                     console.error(`Shell error: ${errorOutput}`);
-                    done(new Error(`Process exited with code ${code}`));
+                    callDone(new Error(`Process exited with code ${code}`));
                 } else if (!stdoutString) {
                     // If we haven't captured output yet, use what we have
                     stdoutString = output;
-                    done();
+                    callDone();
                 }
             });
 
             // Fallback timeout
             setTimeout(() => {
-                if (child.killed === false) {
+                if (!doneCalled) {
                     stdoutString = output;
                     child.kill('SIGTERM');
-                    done();
+                    callDone();
                 }
             }, 8000);
         });
@@ -122,24 +129,31 @@ describe('CLI serving', () => {
 
             let output = '';
             let errorOutput = '';
+            let doneCalled = false;
+            const callDone = (err?: Error) => {
+                if (!doneCalled) {
+                    doneCalled = true;
+                    done(err);
+                }
+            };
 
-            child.stdout.on('data', (data) => {
+            child.stdout.on('data', data => {
                 output += data.toString();
                 // Look for the serving message with 127.0.0.1 host
                 if (output.includes('Serving documentation from') && output.includes('127.0.0.1')) {
                     stdoutString = output;
                     child.kill('SIGTERM');
-                    done();
+                    callDone();
                 }
             });
 
-            child.stderr.on('data', (data) => {
+            child.stderr.on('data', data => {
                 errorOutput += data.toString();
             });
 
-            child.on('error', (err) => {
+            child.on('error', err => {
                 console.error(`Process error: ${err}`);
-                done(err);
+                callDone(err);
             });
 
             child.on('exit', (code, signal) => {
@@ -149,25 +163,25 @@ describe('CLI serving', () => {
                 }
                 if (code !== 0 && errorOutput) {
                     console.error(`Shell error: ${errorOutput}`);
-                    done(new Error(`Process exited with code ${code}`));
+                    callDone(new Error(`Process exited with code ${code}`));
                 } else if (!stdoutString) {
                     // If we haven't captured output yet, use what we have
                     stdoutString = output;
-                    done();
+                    callDone();
                 }
             });
 
             // Fallback timeout
             setTimeout(() => {
-                if (child.killed === false) {
+                if (!doneCalled) {
                     stdoutString = output;
                     child.kill('SIGTERM');
-                    done();
+                    callDone();
                 }
             }, 8000);
         });
 
-        it('should display message', function() {
+        it('should display message', function () {
             if (stdoutString === '') {
                 // Skip this test if there were network issues
                 this.skip();
