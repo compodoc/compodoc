@@ -201,9 +201,13 @@ describe('CLI serving', () => {
         let stdoutString = '',
             child;
         before(function (done) {
-            let ls = shell('node', ['./bin/index-cli.js', '-s', '-d', './documentation/', '-r', '6703'], {
-                timeout: TIMEOUT
-            });
+            let ls = shell(
+                'node',
+                ['./bin/index-cli.js', '-s', '-d', './documentation/', '-r', '6703'],
+                {
+                    timeout: TIMEOUT
+                }
+            );
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -225,7 +229,9 @@ describe('CLI serving', () => {
         let stdoutString = '',
             child;
         before(function (done) {
-            let ls = shell('node', ['./bin/index-cli.js', '-s', '-r', '6704'], { timeout: TIMEOUT });
+            let ls = shell('node', ['./bin/index-cli.js', '-s', '-r', '6704'], {
+                timeout: TIMEOUT
+            });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
