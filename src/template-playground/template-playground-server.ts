@@ -140,10 +140,12 @@ export class TemplatePlaygroundServer {
 
         // Handle CTRL+C (SIGINT) and other termination signals
         const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
-        
+
         signals.forEach(signal => {
             const handler = async () => {
-                logger.info(`Received ${signal}, shutting down Template Playground server gracefully...`);
+                logger.info(
+                    `Received ${signal}, shutting down Template Playground server gracefully...`
+                );
                 try {
                     await this.stop();
                     logger.info('Server shutdown complete');
@@ -153,14 +155,14 @@ export class TemplatePlaygroundServer {
                     process.exit(1);
                 }
             };
-            
+
             this.signalHandlers.set(signal, handler);
             process.on(signal, handler);
         });
 
         // Handle uncaught exceptions (only if not already handled)
         if (process.listenerCount('uncaughtException') === 0) {
-            const uncaughtHandler = async (error) => {
+            const uncaughtHandler = async error => {
                 logger.error('Uncaught exception:', error);
                 try {
                     await this.stop();
@@ -169,7 +171,7 @@ export class TemplatePlaygroundServer {
                 }
                 process.exit(1);
             };
-            
+
             this.signalHandlers.set('uncaughtException', uncaughtHandler);
             process.on('uncaughtException', uncaughtHandler);
         }
@@ -185,7 +187,7 @@ export class TemplatePlaygroundServer {
                 }
                 process.exit(1);
             };
-            
+
             this.signalHandlers.set('unhandledRejection', rejectionHandler);
             process.on('unhandledRejection', rejectionHandler);
         }
@@ -207,7 +209,7 @@ export class TemplatePlaygroundServer {
         }
 
         // For templates: check if we're running from dist (distributed) or development
-        const distributedTemplatesPath = path.join(__dirname, 'templates');  // When running from dist/, this is dist/templates
+        const distributedTemplatesPath = path.join(__dirname, 'templates'); // When running from dist/, this is dist/templates
         const devTemplatesPath = path.join(process.cwd(), 'src', 'templates');
         const legacyTemplatesPath = path.join(process.cwd(), 'hbs-templates-copy');
 
@@ -219,7 +221,9 @@ export class TemplatePlaygroundServer {
             // Keep legacy support for existing hbs-templates-copy
             this.originalTemplatesPath = legacyTemplatesPath;
         } else {
-            throw new Error('Templates directory not found. Please ensure src/templates or dist/templates exists.');
+            throw new Error(
+                'Templates directory not found. Please ensure src/templates or dist/templates exists.'
+            );
         }
     }
 
@@ -227,7 +231,9 @@ export class TemplatePlaygroundServer {
         // Get IP address from various headers (handles proxies, load balancers, etc.)
         const forwarded = req.headers['x-forwarded-for'] as string;
         const realIP = req.headers['x-real-ip'] as string;
-        const remoteAddr = (req as IncomingMessage & { socket?: { remoteAddress?: string } }).socket?.remoteAddress || 'unknown';
+        const remoteAddr =
+            (req as IncomingMessage & { socket?: { remoteAddress?: string } }).socket
+                ?.remoteAddress || 'unknown';
 
         let ip = forwarded?.split(',')[0] || realIP || remoteAddr || 'unknown';
 
@@ -241,7 +247,10 @@ export class TemplatePlaygroundServer {
 
     private generateSessionIdFromIP(ip: string): string {
         // Create a consistent hash from IP address
-        return crypto.createHash('md5').update(ip + 'template-playground-salt').digest('hex');
+        return crypto
+            .createHash('md5')
+            .update(ip + 'template-playground-salt')
+            .digest('hex');
     }
 
     private createOrGetSessionByIP(ip: string): PlaygroundSession {
@@ -390,16 +399,19 @@ export class TemplatePlaygroundServer {
             // Use the configured fake project path with tsconfig.json
             const fakeProjectTsConfigPath = path.join(this.fakeProjectPath, 'tsconfig.json');
 
-            // Use absolute path to the CLI script
-            const cliPath = path.resolve(process.cwd(), 'bin', 'index-cli.js');
-            
+            // Use absolute path to the CLI script, resolved relative to this module
+            // to avoid being affected by process.chdir() calls (e.g. in tests)
+            const cliPath = path.resolve(__dirname, '../../bin', 'index-cli.js');
+
             // In test mode, check if CLI exists before proceeding
             if (process.env.NODE_ENV === 'test' && !fs.existsSync(cliPath)) {
-                logger.warn(`CLI not found in test environment: ${cliPath}. Skipping documentation generation.`);
+                logger.warn(
+                    `CLI not found in test environment: ${cliPath}. Skipping documentation generation.`
+                );
                 session.documentationGenerated = true; // Mark as generated to avoid retries
                 return;
             }
-            
+
             const cmd = [
                 `node "${cliPath}"`,
                 `-p "${fakeProjectTsConfigPath}"`,
@@ -410,14 +422,57 @@ export class TemplatePlaygroundServer {
             // Dynamically add all config options as CLI flags
             const config = session.config || {};
             const booleanFlags = [
-                'hideGenerator', 'disableSourceCode', 'disableGraph', 'disableCoverage', 'disablePrivate', 'disableProtected', 'disableInternal',
-                'disableLifeCycleHooks', 'disableConstructors', 'disableRoutesGraph', 'disableSearch', 'disableDependencies', 'disableProperties',
-                'disableDomTree', 'disableTemplateTab', 'disableStyleTab', 'disableMainGraph', 'disableFilePath', 'disableOverview', 'hideDarkModeToggle', 'minimal', 'serve', 'open', 'watch', 'silent',
-                'coverageTest', 'coverageTestThresholdFail', 'coverageTestShowOnlyFailed'
+                'hideGenerator',
+                'disableSourceCode',
+                'disableGraph',
+                'disableCoverage',
+                'disablePrivate',
+                'disableProtected',
+                'disableInternal',
+                'disableLifeCycleHooks',
+                'disableConstructors',
+                'disableRoutesGraph',
+                'disableSearch',
+                'disableDependencies',
+                'disableProperties',
+                'disableDomTree',
+                'disableTemplateTab',
+                'disableStyleTab',
+                'disableMainGraph',
+                'disableFilePath',
+                'disableOverview',
+                'hideDarkModeToggle',
+                'minimal',
+                'serve',
+                'open',
+                'watch',
+                'silent',
+                'coverageTest',
+                'coverageTestThresholdFail',
+                'coverageTestShowOnlyFailed'
             ];
             const valueFlags = [
-                'theme', 'language', 'base', 'customFavicon', 'customLogo', 'assetsFolder', 'extTheme', 'includes', 'includesName', 'output', 'port', 'hostname',
-                'exportFormat', 'coverageTestThreshold', 'coverageMinimumPerFile', 'unitTestCoverage', 'gaID', 'gaSite', 'maxSearchResults', 'toggleMenuItems', 'navTabConfig'
+                'theme',
+                'language',
+                'base',
+                'customFavicon',
+                'customLogo',
+                'assetsFolder',
+                'extTheme',
+                'includes',
+                'includesName',
+                'output',
+                'port',
+                'hostname',
+                'exportFormat',
+                'coverageTestThreshold',
+                'coverageMinimumPerFile',
+                'unitTestCoverage',
+                'gaID',
+                'gaSite',
+                'maxSearchResults',
+                'toggleMenuItems',
+                'navTabConfig'
             ];
             for (const flag of booleanFlags) {
                 if (config[flag] === true) {
@@ -425,7 +480,7 @@ export class TemplatePlaygroundServer {
                 }
             }
             for (const flag of valueFlags) {
-                if (config[flag] !== undefined && config[flag] !== "") {
+                if (config[flag] !== undefined && config[flag] !== '') {
                     let value = config[flag];
                     // For arrays/objects, stringify
                     if (Array.isArray(value) || typeof value === 'object') {
@@ -439,7 +494,10 @@ export class TemplatePlaygroundServer {
             logger.info(`🚀 Executing CompoDoc command: ${fullCmd}`);
 
             // Log the command to a file for debugging
-            require('fs').appendFileSync('server-commands.log', `${new Date().toISOString()} - ${fullCmd}\n`);
+            require('fs').appendFileSync(
+                'server-commands.log',
+                `${new Date().toISOString()} - ${fullCmd}\n`
+            );
 
             // Execute with proper error handling (inherit stdio to see errors)
             execSync(fullCmd, {
@@ -449,7 +507,6 @@ export class TemplatePlaygroundServer {
 
             this.updateSessionActivity(sessionId);
             logger.info(`✅ Documentation generated successfully for session ${sessionId}`);
-
         } catch (error) {
             logger.error(`❌ Error generating documentation for session ${sessionId}:`, error);
         }
@@ -457,15 +514,18 @@ export class TemplatePlaygroundServer {
 
     private startSessionCleanup(): void {
         // Clean up sessions older than 1 hour every 10 minutes
-        this.cleanupInterval = setInterval(() => {
-            const cutoffTime = Date.now() - (60 * 60 * 1000); // 1 hour ago
+        this.cleanupInterval = setInterval(
+            () => {
+                const cutoffTime = Date.now() - 60 * 60 * 1000; // 1 hour ago
 
-            for (const [sessionId, session] of this.sessions.entries()) {
-                if (session.lastActivity < cutoffTime) {
-                    this.cleanupSession(sessionId);
+                for (const [sessionId, session] of this.sessions.entries()) {
+                    if (session.lastActivity < cutoffTime) {
+                        this.cleanupSession(sessionId);
+                    }
                 }
-            }
-        }, 10 * 60 * 1000); // Every 10 minutes
+            },
+            10 * 60 * 1000
+        ); // Every 10 minutes
     }
 
     private cleanupSession(sessionId: string): void {
@@ -515,8 +575,12 @@ export class TemplatePlaygroundServer {
             logger.info(`🔍 Partials directory exists: ${fs.existsSync(partialsDir)}`);
 
             if (fs.existsSync(partialsDir)) {
-                const partialFiles = fs.readdirSync(partialsDir).filter(file => file.endsWith('.hbs'));
-                logger.info(`📁 Found ${partialFiles.length} partial files: ${JSON.stringify(partialFiles)}`);
+                const partialFiles = fs
+                    .readdirSync(partialsDir)
+                    .filter(file => file.endsWith('.hbs'));
+                logger.info(
+                    `📁 Found ${partialFiles.length} partial files: ${JSON.stringify(partialFiles)}`
+                );
 
                 for (const file of partialFiles) {
                     const partialName = file.replace('.hbs', '');
@@ -539,7 +603,9 @@ export class TemplatePlaygroundServer {
         // Add request logging for debugging
         this.app.use((req: IncomingMessage, res: ServerResponse, next: () => void) => {
             const headers = req.headers;
-            logger.info(`🔍 REQUEST: ${req.method} ${req.url} - User-Agent: ${headers['user-agent'] || 'unknown'}`);
+            logger.info(
+                `🔍 REQUEST: ${req.method} ${req.url} - User-Agent: ${headers['user-agent'] || 'unknown'}`
+            );
             next();
         });
 
@@ -547,7 +613,10 @@ export class TemplatePlaygroundServer {
         this.app.use((req: IncomingMessage, res: ServerResponse, next: () => void) => {
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+            res.setHeader(
+                'Access-Control-Allow-Headers',
+                'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+            );
             if (req.method === 'OPTIONS') {
                 res.statusCode = 200;
                 res.end();
@@ -560,8 +629,10 @@ export class TemplatePlaygroundServer {
         // Try dist/resources first (production), then src/resources (development/testing)
         const compodocResourcesPathDist = path.join(process.cwd(), 'dist/resources');
         const compodocResourcesPathSrc = path.join(process.cwd(), 'src/resources');
-        
-        const compodocResourcesPath = fs.existsSync(compodocResourcesPathDist) ? compodocResourcesPathDist : compodocResourcesPathSrc;
+
+        const compodocResourcesPath = fs.existsSync(compodocResourcesPathDist)
+            ? compodocResourcesPathDist
+            : compodocResourcesPathSrc;
         logger.info(`📁 Setting up root-level static files from: ${compodocResourcesPath}`);
         logger.info(`📁 Compodoc resources path exists: ${fs.existsSync(compodocResourcesPath)}`);
 
@@ -576,10 +647,18 @@ export class TemplatePlaygroundServer {
 
         // Serve static files from template playground directory (index.html, app.js)
         // Try dist/resources first (production), then src/resources (development/testing)
-        const playgroundStaticPathDist = path.join(process.cwd(), 'dist/resources/template-playground-app');
-        const playgroundStaticPathSrc = path.join(process.cwd(), 'src/resources/template-playground-app');
-        
-        const playgroundStaticPath = fs.existsSync(playgroundStaticPathDist) ? playgroundStaticPathDist : playgroundStaticPathSrc;
+        const playgroundStaticPathDist = path.join(
+            process.cwd(),
+            'dist/resources/template-playground-app'
+        );
+        const playgroundStaticPathSrc = path.join(
+            process.cwd(),
+            'src/resources/template-playground-app'
+        );
+
+        const playgroundStaticPath = fs.existsSync(playgroundStaticPathDist)
+            ? playgroundStaticPathDist
+            : playgroundStaticPathSrc;
         logger.info(`📁 Setting up playground static files from: ${playgroundStaticPath}`);
         logger.info(`📁 Playground static path exists: ${fs.existsSync(playgroundStaticPath)}`);
         this.app.use(sirv(playgroundStaticPath, { dev: true }));
@@ -612,9 +691,18 @@ export class TemplatePlaygroundServer {
         this.app.post('/api/download-template', this.downloadTemplatePackage.bind(this));
 
         // API route to download template ZIP (server-side creation)
-        this.app.post('/api/session/:sessionId/download-zip', this.downloadSessionTemplateZip.bind(this));
-        this.app.post('/api/session/:sessionId/download-all-templates', this.downloadAllSessionTemplates.bind(this));
-        this.app.get('/api/session/:sessionId/download/all', this.downloadAllSessionTemplates.bind(this)); // Alias for compatibility
+        this.app.post(
+            '/api/session/:sessionId/download-zip',
+            this.downloadSessionTemplateZip.bind(this)
+        );
+        this.app.post(
+            '/api/session/:sessionId/download-all-templates',
+            this.downloadAllSessionTemplates.bind(this)
+        );
+        this.app.get(
+            '/api/session/:sessionId/download/all',
+            this.downloadAllSessionTemplates.bind(this)
+        ); // Alias for compatibility
 
         // Session management API routes
         this.app.post('/api/session', this.createSessionAPI.bind(this));
@@ -622,7 +710,10 @@ export class TemplatePlaygroundServer {
         this.app.get('/api/session/:sessionId/templates', this.getSessionTemplates.bind(this));
         this.app.get('/api/session/:sessionId/template/*', this.getSessionTemplate.bind(this));
         this.app.post('/api/session/:sessionId/template/*', this.saveSessionTemplate.bind(this));
-        this.app.get('/api/session/:sessionId/template-data/*', this.getSessionTemplateData.bind(this));
+        this.app.get(
+            '/api/session/:sessionId/template-data/*',
+            this.getSessionTemplateData.bind(this)
+        );
         this.app.post('/api/session/:sessionId/generate-docs', this.generateSessionDocs.bind(this));
         this.app.post('/api/session/:sessionId/generate', this.generateSessionDocs.bind(this)); // Alias for compatibility
         this.app.get('/api/session/:sessionId/config', this.getSessionConfig.bind(this));
@@ -675,7 +766,7 @@ export class TemplatePlaygroundServer {
             this.updateSessionActivity(sessionId);
 
             // Use sirv to serve files from the session documentation directory
-            const sessionSirv = sirv(session.documentationDir, { 
+            const sessionSirv = sirv(session.documentationDir, {
                 dev: true,
                 single: false,
                 setHeaders: (res, pathname) => {
@@ -736,9 +827,15 @@ export class TemplatePlaygroundServer {
         // Serve the main playground app for root path only
         this.app.get('/', (req, res) => {
             // Try dist/resources first (production), then src/resources (development/testing)
-            const indexPathDist = path.join(process.cwd(), 'dist/resources/template-playground-app/index.html');
-            const indexPathSrc = path.join(process.cwd(), 'src/resources/template-playground-app/index.html');
-            
+            const indexPathDist = path.join(
+                process.cwd(),
+                'dist/resources/template-playground-app/index.html'
+            );
+            const indexPathSrc = path.join(
+                process.cwd(),
+                'src/resources/template-playground-app/index.html'
+            );
+
             const indexPath = fs.existsSync(indexPathDist) ? indexPathDist : indexPathSrc;
             if (fs.existsSync(indexPath)) {
                 const content = fs.readFileSync(indexPath);
@@ -754,16 +851,26 @@ export class TemplatePlaygroundServer {
         // Note: This catch-all route should be last and will handle all unmatched routes
         this.app.get('*', (req, res) => {
             // Skip API, resources, and docs routes as they are handled above
-            if (req.url.startsWith('/api') || req.url.startsWith('/resources') || req.url.startsWith('/docs')) {
+            if (
+                req.url.startsWith('/api') ||
+                req.url.startsWith('/resources') ||
+                req.url.startsWith('/docs')
+            ) {
                 res.statusCode = 404;
                 res.end('Not Found');
                 return;
             }
             logger.warn(`⚠️ CATCH-ALL ROUTE HIT: ${req.method} ${req.url}`);
             // Try dist/resources first (production), then src/resources (development/testing)
-            const indexPathDist = path.join(process.cwd(), 'dist/resources/template-playground-app/index.html');
-            const indexPathSrc = path.join(process.cwd(), 'src/resources/template-playground-app/index.html');
-            
+            const indexPathDist = path.join(
+                process.cwd(),
+                'dist/resources/template-playground-app/index.html'
+            );
+            const indexPathSrc = path.join(
+                process.cwd(),
+                'src/resources/template-playground-app/index.html'
+            );
+
             const indexPath = fs.existsSync(indexPathDist) ? indexPathDist : indexPathSrc;
             if (fs.existsSync(indexPath)) {
                 const content = fs.readFileSync(indexPath);
@@ -798,9 +905,13 @@ export class TemplatePlaygroundServer {
     private async getTemplate(req: any, res: ServerResponse): Promise<void> {
         try {
             const templateName = req.params.templateName;
-            const templatePath = path.join(process.cwd(), 'dist/templates/partials', `${templateName}.hbs`);
+            const templatePath = path.join(
+                process.cwd(),
+                'dist/templates/partials',
+                `${templateName}.hbs`
+            );
 
-            if (!await fs.pathExists(templatePath)) {
+            if (!(await fs.pathExists(templatePath))) {
                 send(res, 404, { error: 'Template not found' });
                 return;
             }
@@ -830,11 +941,18 @@ export class TemplatePlaygroundServer {
             }
 
             // Wrap data for template compatibility
-            const wrappedData = dataType === 'component' || dataType === 'directive' || dataType === 'pipe' ||
-                               dataType === 'guard' || dataType === 'interceptor' || dataType === 'injectable' ||
-                               dataType === 'class' || dataType === 'interface' || dataType === 'entity' ?
-                { [dataType]: EXAMPLE_DATA[dataType], ...EXAMPLE_DATA[dataType] } :
-                EXAMPLE_DATA[dataType];
+            const wrappedData =
+                dataType === 'component' ||
+                dataType === 'directive' ||
+                dataType === 'pipe' ||
+                dataType === 'guard' ||
+                dataType === 'interceptor' ||
+                dataType === 'injectable' ||
+                dataType === 'class' ||
+                dataType === 'interface' ||
+                dataType === 'entity'
+                    ? { [dataType]: EXAMPLE_DATA[dataType], ...EXAMPLE_DATA[dataType] }
+                    : EXAMPLE_DATA[dataType];
 
             send(res, 200, {
                 data: wrappedData,
@@ -972,7 +1090,9 @@ export class TemplatePlaygroundServer {
             if (mockData) {
                 // This part of the logic needs to be adapted to work with the new session-based system
                 // For now, we'll just log that it's not directly applicable here
-                logger.warn('mockData parameter is not directly applicable in this session-based system. It will be ignored.');
+                logger.warn(
+                    'mockData parameter is not directly applicable in this session-based system. It will be ignored.'
+                );
             }
 
             // Create or get session for the documentation generation based on client IP
@@ -989,7 +1109,11 @@ export class TemplatePlaygroundServer {
             // Generate documentation for the new session
             this.generateDocumentation(sessionId, true); // Use debounce
 
-            send(res, 200, { success: true, message: 'Documentation generation initiated for a new session', sessionId: sessionId });
+            send(res, 200, {
+                success: true,
+                message: 'Documentation generation initiated for a new session',
+                sessionId: sessionId
+            });
         } catch (error) {
             logger.error('Error generating documentation:', error);
             send(res, 500, {
@@ -1001,49 +1125,49 @@ export class TemplatePlaygroundServer {
 
     private registerHandlebarsHelpers(Handlebars: any, context: any): void {
         // Register translation helper (matches Compodoc's i18n helper pattern)
-        Handlebars.registerHelper('t', function() {
+        Handlebars.registerHelper('t', function () {
             console.log('T HELPER CALLED');
             const context = this;
             const key = arguments[0];
             const translations: { [key: string]: string } = {
-                'components': 'Components',
-                'modules': 'Modules',
-                'interfaces': 'Interfaces',
-                'classes': 'Classes',
-                'injectables': 'Injectables',
-                'pipes': 'Pipes',
-                'directives': 'Directives',
-                'guards': 'Guards',
-                'interceptors': 'Interceptors',
-                'entities': 'Entities',
-                'controllers': 'Controllers',
-                'info': 'Info',
-                'readme': 'Readme',
-                'source': 'Source',
-                'template': 'Template',
-                'styles': 'Styles',
+                components: 'Components',
+                modules: 'Modules',
+                interfaces: 'Interfaces',
+                classes: 'Classes',
+                injectables: 'Injectables',
+                pipes: 'Pipes',
+                directives: 'Directives',
+                guards: 'Guards',
+                interceptors: 'Interceptors',
+                entities: 'Entities',
+                controllers: 'Controllers',
+                info: 'Info',
+                readme: 'Readme',
+                source: 'Source',
+                template: 'Template',
+                styles: 'Styles',
                 'dom-tree': 'DOM Tree',
-                'file': 'File',
-                'description': 'Description',
-                'implements': 'Implements',
-                'metadata': 'Metadata',
-                'index': 'Index',
-                'methods': 'Methods',
-                'properties': 'Properties'
+                file: 'File',
+                description: 'Description',
+                implements: 'Implements',
+                metadata: 'Metadata',
+                index: 'Index',
+                methods: 'Methods',
+                properties: 'Properties'
             };
             return translations[key] || key;
         });
 
         // Register relative URL helper
         Handlebars.registerHelper('relativeURL', (depth: any, ...args: any[]) => {
-            const depthValue = typeof depth === 'number' ? depth : (context.depth || 0);
+            const depthValue = typeof depth === 'number' ? depth : context.depth || 0;
             const baseUrl = '../'.repeat(depthValue);
             const pathArgs = args.slice(0, -1); // Remove Handlebars options object
             return baseUrl + pathArgs.join('/');
         });
 
-                        // Register comparison helper (matches Compodoc's CompareHelper implementation)
-        Handlebars.registerHelper('compare', function() {
+        // Register comparison helper (matches Compodoc's CompareHelper implementation)
+        Handlebars.registerHelper('compare', function () {
             const context = this;
             const a = arguments[0];
             const operator = arguments[1];
@@ -1094,7 +1218,7 @@ export class TemplatePlaygroundServer {
         });
 
         // Register tab helpers (matches Compodoc's IsTabEnabledHelper and IsInitialTabHelper)
-        Handlebars.registerHelper('isTabEnabled', function() {
+        Handlebars.registerHelper('isTabEnabled', function () {
             const context = this;
             const navTabs = arguments[0];
             const tabId = arguments[1];
@@ -1108,7 +1232,7 @@ export class TemplatePlaygroundServer {
             }
         });
 
-        Handlebars.registerHelper('isInitialTab', function() {
+        Handlebars.registerHelper('isInitialTab', function () {
             const context = this;
             const navTabs = arguments[0];
             const tabId = arguments[1];
@@ -1121,7 +1245,7 @@ export class TemplatePlaygroundServer {
         });
 
         // Register utility helpers
-        Handlebars.registerHelper('orLength', function(...args: any[]) {
+        Handlebars.registerHelper('orLength', function (...args: any[]) {
             const options = args.pop();
             const hasLength = args.some(arg => arg && (Array.isArray(arg) ? arg.length > 0 : arg));
             if (hasLength) {
@@ -1131,19 +1255,22 @@ export class TemplatePlaygroundServer {
             }
         });
 
-        Handlebars.registerHelper('breakComma', function(array: any[]) {
+        Handlebars.registerHelper('breakComma', function (array: any[]) {
             if (Array.isArray(array)) {
                 return array.join(', ');
             }
             return array;
         });
 
-        Handlebars.registerHelper('parseDescription', function(description: string, depth: number) {
-            // Simple markdown parsing - just return as HTML for now
-            return new Handlebars.SafeString(description || '');
-        });
+        Handlebars.registerHelper(
+            'parseDescription',
+            function (description: string, depth: number) {
+                // Simple markdown parsing - just return as HTML for now
+                return new Handlebars.SafeString(description || '');
+            }
+        );
 
-        Handlebars.registerHelper('escapeSimpleQuote', function(text: string) {
+        Handlebars.registerHelper('escapeSimpleQuote', function (text: string) {
             if (typeof text === 'string') {
                 return text.replace(/'/g, "\\'");
             }
@@ -1151,14 +1278,16 @@ export class TemplatePlaygroundServer {
         });
 
         // Register JSDoc helper
-        Handlebars.registerHelper('jsdoc-code-example', function(jsdoctags: any[], options: any) {
+        Handlebars.registerHelper('jsdoc-code-example', function (jsdoctags: any[], options: any) {
             return options.fn({ tags: jsdoctags || [] });
         });
 
         // Register link-type helper as a simple partial
-        Handlebars.registerHelper('link-type', function(type: any, options: any) {
+        Handlebars.registerHelper('link-type', function (type: any, options: any) {
             if (type && type.href) {
-                return new Handlebars.SafeString(`<a href="${type.href}" target="${type.target || '_self'}">${type.raw || type}</a>`);
+                return new Handlebars.SafeString(
+                    `<a href="${type.href}" target="${type.target || '_self'}">${type.raw || type}</a>`
+                );
             }
             return type;
         });
@@ -1170,7 +1299,9 @@ export class TemplatePlaygroundServer {
         Handlebars.registerHelper('with', Handlebars.helpers.with);
 
         // Register common partials used in templates
-        Handlebars.registerPartial('component-detail', `
+        Handlebars.registerPartial(
+            'component-detail',
+            `
             <p class="comment">
                 <h3>{{t "file"}}</h3>
             </p>
@@ -1301,7 +1432,8 @@ export class TemplatePlaygroundServer {
                     {{/each}}
                 </section>
             {{/if}}
-        `);
+        `
+        );
 
         Handlebars.registerPartial('index', '<!-- Index partial placeholder -->');
         Handlebars.registerPartial('link-type', '<code>{{type}}</code>');
@@ -1312,23 +1444,25 @@ export class TemplatePlaygroundServer {
         const navTabs = data.navTabs || [];
 
         // Generate navigation tabs
-        const tabsHtml = navTabs.map((tab, index) => {
-            const isActive = index === 0;
-            const activeClass = isActive ? 'nav-link active' : 'nav-link';
-            const labelMap = {
-                'info': 'Info',
-                'readme': 'Readme',
-                'source': 'Source',
-                'template': 'Template',
-                'styles': 'Styles',
-                'dom-tree': 'DOM Tree'
-            };
-            const label = labelMap[tab.label] || tab.label;
+        const tabsHtml = navTabs
+            .map((tab, index) => {
+                const isActive = index === 0;
+                const activeClass = isActive ? 'nav-link active' : 'nav-link';
+                const labelMap = {
+                    info: 'Info',
+                    readme: 'Readme',
+                    source: 'Source',
+                    template: 'Template',
+                    styles: 'Styles',
+                    'dom-tree': 'DOM Tree'
+                };
+                const label = labelMap[tab.label] || tab.label;
 
-            return `        <li class="nav-item">
+                return `        <li class="nav-item">
             <a href="${tab.href}" class="${activeClass}" role="tab" id="${tab.id}-tab" data-bs-toggle="tab" data-link="${tab['data-link']}">${label}</a>
         </li>`;
-        }).join('\n');
+            })
+            .join('\n');
 
         // Generate tab content
         let tabContentHtml = '';
@@ -1346,48 +1480,70 @@ export class TemplatePlaygroundServer {
             <code>${component.file || ''}</code>
         </p>
 
-        ${component.description ? `
+        ${
+            component.description
+                ? `
         <p class="comment">
             <h3>Description</h3>
         </p>
         <p class="comment">
             <p>${component.description.replace(/\n/g, '</p>\n<p>')}</p>
         </p>
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${component.implements && component.implements.length > 0 ? `
+        ${
+            component.implements && component.implements.length > 0
+                ? `
         <p class="comment">
             <h3>Implements</h3>
         </p>
         <p class="comment">
             ${component.implements.map(impl => `<code>${impl}</code>`).join(', ')}
         </p>
-        ` : ''}
+        `
+                : ''
+        }
 
         <section data-compodoc="block-metadata">
             <h3>Metadata</h3>
             <table class="table table-sm table-hover metadata">
                 <tbody>
-                    ${component.selector ? `
+                    ${
+                        component.selector
+                            ? `
                     <tr>
                         <td class="col-md-3">selector</td>
                         <td class="col-md-9"><code>${component.selector}</code></td>
-                    </tr>` : ''}
-                    ${component.templateUrl ? `
+                    </tr>`
+                            : ''
+                    }
+                    ${
+                        component.templateUrl
+                            ? `
                     <tr>
                         <td class="col-md-3">templateUrl</td>
                         <td class="col-md-9"><code>${component.templateUrl}</code></td>
-                    </tr>` : ''}
-                    ${component.styleUrls && component.styleUrls.length > 0 ? `
+                    </tr>`
+                            : ''
+                    }
+                    ${
+                        component.styleUrls && component.styleUrls.length > 0
+                            ? `
                     <tr>
                         <td class="col-md-3">styleUrls</td>
                         <td class="col-md-9"><code>${component.styleUrls.join(', ')}</code></td>
-                    </tr>` : ''}
+                    </tr>`
+                            : ''
+                    }
                 </tbody>
             </table>
         </section>
 
-        ${component.methods && component.methods.length > 0 ? `
+        ${
+            component.methods && component.methods.length > 0
+                ? `
         <section data-compodoc="block-index">
             <h3 id="index">Index</h3>
             <table class="table table-sm table-bordered index-table">
@@ -1410,7 +1566,9 @@ export class TemplatePlaygroundServer {
 
         <section data-compodoc="block-methods">
             <h3 id="methods">Methods</h3>
-            ${component.methods.map(method => `
+            ${component.methods
+                .map(
+                    method => `
             <table class="table table-sm table-bordered">
                 <tbody>
                     <tr>
@@ -1427,7 +1585,9 @@ export class TemplatePlaygroundServer {
                             <code>${method.name}()</code>
                         </td>
                     </tr>
-                    ${method.description ? `
+                    ${
+                        method.description
+                            ? `
                     <tr>
                         <td class="col-md-4">
                             <div class="io-description">${method.description}</div>
@@ -1435,10 +1595,16 @@ export class TemplatePlaygroundServer {
                                 <b>Returns : </b><code>${method.type || 'void'}</code>
                             </div>
                         </td>
-                    </tr>` : ''}
+                    </tr>`
+                            : ''
+                    }
                 </tbody>
-            </table>`).join('\n            ')}
-        </section>` : ''}
+            </table>`
+                )
+                .join('\n            ')}
+        </section>`
+                : ''
+        }
     </div>
 `;
         }
@@ -1535,7 +1701,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
             // Create example data
             const exampleData = {
                 template: templateType,
-                description: 'This is sample data that matches the structure used in Compodoc templates',
+                description:
+                    'This is sample data that matches the structure used in Compodoc templates',
                 data: templateData || {}
             };
 
@@ -1551,7 +1718,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 filename: `compodoc-${templateType}-template.zip`,
                 files: zipStructure
             });
-
         } catch (error) {
             logger.error('Error creating template package:', error);
             send(res, 500, {
@@ -1587,20 +1753,22 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
             res.setHeader('Content-Type', 'application/zip');
             res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
 
-                        // Create ZIP archive and handle it with proper promise
+            // Create ZIP archive and handle it with proper promise
             await new Promise<void>((resolve, reject) => {
                 const archive = new ZipArchive({
                     zlib: { level: 9 } // Maximum compression
                 });
 
                 // Handle archive events
-                archive.on('error', (err) => {
+                archive.on('error', err => {
                     logger.error('Archive error:', err);
                     reject(new Error(`Failed to create ZIP file: ${err.message}`));
                 });
 
                 archive.on('end', () => {
-                    logger.info(`✅ Template ZIP created successfully for session ${sessionId}: ${fileName}`);
+                    logger.info(
+                        `✅ Template ZIP created successfully for session ${sessionId}: ${fileName}`
+                    );
                     resolve();
                 });
 
@@ -1673,26 +1841,34 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                     .then(templateDataResponse => {
                         const exampleData = {
                             template: templateName,
-                            description: 'This is sample data that matches the structure used in Compodoc templates',
+                            description:
+                                'This is sample data that matches the structure used in Compodoc templates',
                             data: templateDataResponse || {}
                         };
-                        archive.append(JSON.stringify(exampleData, null, 2), { name: 'example-data.json' });
+                        archive.append(JSON.stringify(exampleData, null, 2), {
+                            name: 'example-data.json'
+                        });
                     })
                     .catch(dataError => {
-                        logger.warn('Could not get template data, using basic structure:', dataError);
+                        logger.warn(
+                            'Could not get template data, using basic structure:',
+                            dataError
+                        );
                         const basicData = {
                             template: templateName,
-                            description: 'This is sample data that matches the structure used in Compodoc templates',
+                            description:
+                                'This is sample data that matches the structure used in Compodoc templates',
                             data: { note: 'Template data could not be loaded' }
                         };
-                        archive.append(JSON.stringify(basicData, null, 2), { name: 'example-data.json' });
+                        archive.append(JSON.stringify(basicData, null, 2), {
+                            name: 'example-data.json'
+                        });
                     })
                     .finally(() => {
                         // Finalize the archive after adding all files
                         archive.finalize();
                     });
             });
-
         } catch (error) {
             logger.error('Error creating session template ZIP:', error);
             if (!res.headersSent) {
@@ -1727,17 +1903,19 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 const chunks: Buffer[] = [];
 
                 // Handle archive events
-                archive.on('error', (err) => {
+                archive.on('error', err => {
                     logger.error('Archive error:', err);
                     reject(new Error(`Failed to create ZIP file: ${err.message}`));
                 });
 
-                archive.on('data', (chunk) => {
+                archive.on('data', chunk => {
                     chunks.push(chunk);
                 });
 
                 archive.on('end', () => {
-                    logger.info(`✅ All templates ZIP created successfully for session ${sessionId}: ${fileName}`);
+                    logger.info(
+                        `✅ All templates ZIP created successfully for session ${sessionId}: ${fileName}`
+                    );
                     const buffer = Buffer.concat(chunks);
                     resolve(buffer);
                 });
@@ -1814,12 +1992,11 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
             res.setHeader('Content-Type', 'application/zip');
             res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
             res.setHeader('Content-Length', zipBuffer.length.toString());
-            
+
             // For testing, also add a custom header with the size
             res.setHeader('X-Content-Size', zipBuffer.length.toString());
-            
-            res.end(zipBuffer, 'binary');
 
+            res.end(zipBuffer, 'binary');
         } catch (error) {
             logger.error('Error creating all templates ZIP:', error);
             if (!res.headersSent) {
@@ -1831,7 +2008,10 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
         }
     }
 
-    private async getSessionTemplateDataInternal(sessionId: string, templatePath: string): Promise<any> {
+    private async getSessionTemplateDataInternal(
+        sessionId: string,
+        templatePath: string
+    ): Promise<any> {
         // Internal method to get template data without HTTP request/response
         if (!this.sessions.has(sessionId)) {
             throw new Error('Session not found');
@@ -1852,10 +2032,18 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 styleUrls: ['./example.component.scss'],
                 inputs: [
                     { name: 'title', type: 'string', description: 'Component title' },
-                    { name: 'enabled', type: 'boolean', description: 'Whether component is enabled' }
+                    {
+                        name: 'enabled',
+                        type: 'boolean',
+                        description: 'Whether component is enabled'
+                    }
                 ],
                 outputs: [
-                    { name: 'clicked', type: 'EventEmitter<void>', description: 'Emitted when clicked' }
+                    {
+                        name: 'clicked',
+                        type: 'EventEmitter<void>',
+                        description: 'Emitted when clicked'
+                    }
                 ]
             };
         } else if (templateName.includes('service') || templateName.includes('injectable')) {
@@ -1864,7 +2052,11 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 description: 'A sample Angular service for demonstration',
                 file: 'src/app/example.service.ts',
                 methods: [
-                    { name: 'getData', returnType: 'Observable<any>', description: 'Gets data from API' },
+                    {
+                        name: 'getData',
+                        returnType: 'Observable<any>',
+                        description: 'Gets data from API'
+                    },
                     { name: 'saveData', returnType: 'void', description: 'Saves data to storage' }
                 ]
             };
@@ -1883,12 +2075,14 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     private async createSessionAPI(req: any, res: ServerResponse): Promise<void> {
         try {
             const clientIP = this.getClientIP(req);
-            
+
             // In test environment or if forceNew query param is set, always create new session
             // Otherwise reuse session by IP for normal usage
             const forceNew = process.env.NODE_ENV === 'test' || req.query.forceNew === 'true';
-            const session = forceNew ? this.createNewSession(clientIP) : this.createOrGetSessionByIP(clientIP);
-            
+            const session = forceNew
+                ? this.createNewSession(clientIP)
+                : this.createOrGetSessionByIP(clientIP);
+
             send(res, 200, {
                 sessionId: session.id,
                 success: true,
@@ -1932,7 +2126,9 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
 
             // Read partials
             if (fs.existsSync(partialsDir)) {
-                const partialFiles = fs.readdirSync(partialsDir).filter(file => file.endsWith('.hbs'));
+                const partialFiles = fs
+                    .readdirSync(partialsDir)
+                    .filter(file => file.endsWith('.hbs'));
                 partialFiles.forEach(file => {
                     templates.push({
                         name: file,
@@ -1956,20 +2152,20 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     private async getSessionTemplate(req: any, res: ServerResponse): Promise<void> {
         try {
             const { sessionId } = req.params;
-            
+
             // Extract template name from URL (more reliable than Polka's wildcard parameter handling)
-            let templateName = req.params["*"];
+            let templateName = req.params['*'];
             const urlParts = req.url.split('/');
             const templateIndex = urlParts.findIndex(part => part === 'template');
             if (templateIndex !== -1 && templateIndex < urlParts.length - 1) {
                 // Get everything after 'template/' in the URL and decode it
                 templateName = decodeURIComponent(urlParts.slice(templateIndex + 1).join('/'));
             }
-            
+
             // Template name extracted from URL for reliable path handling
-            
+
             const session = this.sessions.get(sessionId);
-            
+
             // Removed debug logging - path extraction now working correctly
 
             if (!session) {
@@ -2006,35 +2202,35 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     private async saveSessionTemplate(req: any, res: ServerResponse): Promise<void> {
         try {
             const { sessionId } = req.params;
-            
+
             // Extract template name from URL (more reliable than Polka's wildcard parameter handling)
-            let templateName = req.params["*"];
+            let templateName = req.params['*'];
             const urlParts = req.url.split('/');
             const templateIndex = urlParts.findIndex(part => part === 'template');
             if (templateIndex !== -1 && templateIndex < urlParts.length - 1) {
                 // Get everything after 'template/' in the URL and decode it
                 templateName = decodeURIComponent(urlParts.slice(templateIndex + 1).join('/'));
             }
-            
+
             // Template name extracted from URL for reliable path handling
-            
+
             const { content } = req.body;
-            
+
             const session = this.sessions.get(sessionId);
 
             // Validate required parameters
             if (!content || typeof content !== 'string') {
-                send(res, 400, { 
-                    success: false, 
-                    message: 'Content is required and must be a string' 
+                send(res, 400, {
+                    success: false,
+                    message: 'Content is required and must be a string'
                 });
                 return;
             }
 
             if (!templateName) {
-                send(res, 400, { 
-                    success: false, 
-                    message: 'Template name is required' 
+                send(res, 400, {
+                    success: false,
+                    message: 'Template name is required'
                 });
                 return;
             }
@@ -2075,8 +2271,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     private async getSessionTemplateData(req: any, res: ServerResponse): Promise<void> {
         try {
             const { sessionId } = req.params;
-            let templatePath = req.params["*"];
-            
+            let templatePath = req.params['*'];
+
             // FALLBACK: If Polka doesn't capture the full path, extract it from the URL
             if (!templatePath || !templatePath.includes('/')) {
                 const urlParts = req.url.split('/');
@@ -2189,7 +2385,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 templateVariables = {
                     // Core component data
                     name: 'UserProfileComponent',
-                    description: 'A comprehensive user profile management component that handles user information display and editing capabilities.',
+                    description:
+                        'A comprehensive user profile management component that handles user information display and editing capabilities.',
                     file: 'src/app/components/user-profile/user-profile.component.ts',
                     selector: 'app-user-profile',
                     templateUrl: './user-profile.component.html',
@@ -2199,17 +2396,17 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
 
                     // Component metadata
                     type: 'component',
-                    sourceCode: 'export class UserProfileComponent implements OnInit, OnDestroy { ... }',
+                    sourceCode:
+                        'export class UserProfileComponent implements OnInit, OnDestroy { ... }',
                     rawFile: 'user-profile.component.ts',
 
                     // Template and styles
-                    templateData: '<div class="user-profile">\\n  <h2>{{user.name}}</h2>\\n  <p>{{user.email}}</p>\\n</div>',
+                    templateData:
+                        '<div class="user-profile">\\n  <h2>{{user.name}}</h2>\\n  <p>{{user.email}}</p>\\n</div>',
                     styleUrlsData: [
                         '.user-profile { padding: 20px; }\\n.user-profile h2 { color: #333; }'
                     ],
-                    stylesData: [
-                        ':host { display: block; margin: 10px; }'
-                    ],
+                    stylesData: [':host { display: block; margin: 10px; }'],
 
                     // Inputs and Outputs
                     inputs: [
@@ -2267,9 +2464,7 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                             name: 'updateProfile',
                             type: 'Promise<void>',
                             description: 'Updates the user profile with new information',
-                            args: [
-                                { name: 'userData', type: 'Partial<User>' }
-                            ],
+                            args: [{ name: 'userData', type: 'Partial<User>' }],
                             returnType: 'Promise<void>',
                             modifierKind: 'public'
                         },
@@ -2339,7 +2534,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                     jsdoctags: [
                         {
                             tagName: { text: 'example' },
-                            comment: '<app-user-profile [user]="currentUser" [editable]="true"></app-user-profile>'
+                            comment:
+                                '<app-user-profile [user]="currentUser" [editable]="true"></app-user-profile>'
                         }
                     ],
 
@@ -2356,11 +2552,11 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                         { name: 'UserProfileComponent', url: '#' }
                     ]
                 };
-
             } else if (templateName.includes('service') || templateName.includes('injectable')) {
                 templateVariables = {
                     name: 'UserService',
-                    description: 'Service responsible for managing user data and authentication operations',
+                    description:
+                        'Service responsible for managing user data and authentication operations',
                     file: 'src/app/services/user.service.ts',
                     type: 'injectable',
 
@@ -2430,7 +2626,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                     coveragePercent: 92,
                     coverageCount: '23/25'
                 };
-
             } else if (templateName.includes('module')) {
                 templateVariables = {
                     name: 'UserModule',
@@ -2460,7 +2655,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                     bootstrap: [],
                     schemas: []
                 };
-
             } else if (templateName.includes('interface')) {
                 templateVariables = {
                     name: 'User',
@@ -2508,7 +2702,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                     // Index signatures
                     indexSignatures: []
                 };
-
             } else {
                 // Generic data for other templates (directive, pipe, guard, etc.)
                 templateVariables = {
@@ -2550,8 +2743,13 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 relativeURL: (url: string) => url, // URL helper
 
                 // Project information
-                projectTitle: (compodocConfig as any).documentationMainName || compodocConfig.name || 'Documentation',
-                projectDescription: (compodocConfig as any).documentationMainDescription || 'Documentation description',
+                projectTitle:
+                    (compodocConfig as any).documentationMainName ||
+                    compodocConfig.name ||
+                    'Documentation',
+                projectDescription:
+                    (compodocConfig as any).documentationMainDescription ||
+                    'Documentation description',
 
                 // Current page context
                 pageType: templateName,
@@ -2572,7 +2770,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 categories: {
                     compodocConfig: {
                         title: 'Compodoc Configuration Options',
-                        description: 'Edit these configuration options to customize the generated documentation. Changes will automatically regenerate the documentation.',
+                        description:
+                            'Edit these configuration options to customize the generated documentation. Changes will automatically regenerate the documentation.',
                         data: compodocConfig
                     }
                 },
@@ -2581,7 +2780,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 data: compodocConfig,
                 context: { config: compodocConfig }
             });
-
         } catch (error) {
             logger.error('Error getting session template data:', error);
             send(res, 500, {
@@ -2595,7 +2793,7 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     private async generateSessionDocs(req: any, res: ServerResponse): Promise<void> {
         try {
             const { sessionId } = req.params;
-            
+
             // Safely destructure from req.body, handling cases where it might be undefined (Polka behavior)
             const { customTemplateContent, mockData } = req.body || {};
 
@@ -2624,7 +2822,6 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 message: 'Documentation generation started',
                 sessionId: sessionId
             });
-
         } catch (error) {
             logger.error('Error generating session documentation:', error);
             send(res, 500, {
@@ -2791,11 +2988,16 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
             if (fs.existsSync(fullPath)) {
                 const content = fs.readFileSync(fullPath);
                 const ext = path.extname(fullPath).toLowerCase();
-                const contentType = ext === '.html' ? 'text/html' : 
-                                  ext === '.css' ? 'text/css' :
-                                  ext === '.js' ? 'application/javascript' :
-                                  ext === '.json' ? 'application/json' :
-                                  'text/plain';
+                const contentType =
+                    ext === '.html'
+                        ? 'text/html'
+                        : ext === '.css'
+                          ? 'text/css'
+                          : ext === '.js'
+                            ? 'application/javascript'
+                            : ext === '.json'
+                              ? 'application/json'
+                              : 'text/plain';
                 res.setHeader('Content-Type', contentType);
                 res.end(content);
             } else {
@@ -2810,7 +3012,7 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     }
 
     private async isPortAvailable(port: number): Promise<boolean> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const server = http.createServer();
             server.listen(port, () => {
                 server.close(() => resolve(true));
@@ -2821,7 +3023,8 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
 
     private async findAvailablePort(startPort: number): Promise<number> {
         let port = startPort;
-        while (port < startPort + 100) { // Try up to 100 ports above the requested port
+        while (port < startPort + 100) {
+            // Try up to 100 ports above the requested port
             if (await this.isPortAvailable(port)) {
                 return port;
             }
@@ -2837,16 +3040,22 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                 const originalPort = this.port;
                 try {
                     this.port = await this.findAvailablePort(this.port + 1);
-                    logger.warn(`⚠️  Port ${originalPort} is in use. Using port ${this.port} instead.`);
+                    logger.warn(
+                        `⚠️  Port ${originalPort} is in use. Using port ${this.port} instead.`
+                    );
                 } catch (error) {
-                    throw new Error(`Port ${originalPort} is in use and no alternative port could be found. Please stop the process using port ${originalPort} or specify a different port.`);
+                    throw new Error(
+                        `Port ${originalPort} is in use and no alternative port could be found. Please stop the process using port ${originalPort} or specify a different port.`
+                    );
                 }
             }
 
             this.server = this.app.listen(this.port, () => {
                 logger.info(`🎨 Template Playground is running at: http://localhost:${this.port}`);
                 logger.info('📝 Use this tool to customize and preview Compodoc templates');
-                logger.info('🔧 Edit templates in the left panel and see live preview on the right');
+                logger.info(
+                    '🔧 Edit templates in the left panel and see live preview on the right'
+                );
                 logger.info('💾 Export your customized templates when ready');
                 logger.info('');
                 logger.info('Press Ctrl+C to stop the server');
@@ -2862,7 +3071,7 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
     }
 
     public stop(): Promise<void> {
-        return new Promise<void>((resolve) => {
+        return new Promise<void>(resolve => {
             // Remove signal handlers to prevent memory leaks
             for (const [signal, handler] of this.signalHandlers.entries()) {
                 process.removeListener(signal, handler);
@@ -2888,11 +3097,11 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
 
             // Get the actual HTTP server from Polka instance
             const httpServer = this.server?.server;
-            
+
             if (httpServer && typeof httpServer.close === 'function') {
                 let resolved = false;
-                
-                httpServer.close((error) => {
+
+                httpServer.close(error => {
                     if (!resolved) {
                         resolved = true;
                         if (error) {
@@ -2903,7 +3112,7 @@ Generated by Compodoc Template Playground on ${new Date().toLocaleString()}
                         resolve();
                     }
                 });
-                
+
                 // Force close after 1 second if it hasn't closed naturally
                 setTimeout(() => {
                     if (!resolved) {
