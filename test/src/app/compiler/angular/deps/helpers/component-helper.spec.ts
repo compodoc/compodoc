@@ -309,14 +309,16 @@ describe('ComponentHelper', () => {
         });
 
         it('should parse InputOptionsWithTransform with union types without hanging (issue #1654)', () => {
-            // This case caused catastrophic backtracking in the old regex
+            // This case caused catastrophic backtracking in the old regex.
+            // The options object { transform: ... } is the sole argument and must not
+            // leak into defaultValue — it should be treated as the options object.
             const defaultValue = `input.required<string[], string | string[]>({ transform: v => (Array.isArray(v) ? v : [v]) })`;
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
                 required: true,
                 type: 'string[], string | string[]',
-                defaultValue: '{ transform: v => (Array.isArray(v) ? v : [v]) }'
+                defaultValue: undefined
             });
         });
 
@@ -339,7 +341,8 @@ describe('ComponentHelper', () => {
             expect(result).to.deep.equal({
                 required: false,
                 type: undefined,
-                defaultValue: 'null'
+                defaultValue: 'null',
+                name: 'aliasedInSignal'
             });
         });
 
@@ -353,6 +356,98 @@ describe('ComponentHelper', () => {
                 defaultValue: 'false'
             });
         });
+
+        // Alias regression tests (issue: signal aliases not detected)
+        it('should extract alphanumeric alias from input signal options', () => {
+            const defaultValue = `input<string>('Lorem ipsum', { alias: 'myUnhyphenatedInput' })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: "'Lorem ipsum'",
+                name: 'myUnhyphenatedInput'
+            });
+        });
+
+        it('should extract hyphenated alias from input signal options', () => {
+            const defaultValue = `input<string>('sit amet', { alias: 'my-hyphenated-input' })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: "'sit amet'",
+                name: 'my-hyphenated-input'
+            });
+        });
+
+        it('should extract alias from required input signal options', () => {
+            const defaultValue = `input.required<string>({ alias: 'requiredAlias' })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: true,
+                type: 'string',
+                defaultValue: undefined,
+                name: 'requiredAlias'
+            });
+        });
+
+        it('should extract alphanumeric alias from output signal options', () => {
+            const defaultValue = `output<string>({ alias: 'myUnhyphenatedOutput' })`;
+            const result = componentHelper['getSignalConfig']('output', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: undefined,
+                name: 'myUnhyphenatedOutput'
+            });
+        });
+
+        it('should extract hyphenated alias from output signal options', () => {
+            const defaultValue = `output<string>({ alias: 'my-hyphenated-output' })`;
+            const result = componentHelper['getSignalConfig']('output', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: undefined,
+                name: 'my-hyphenated-output'
+            });
+        });
+
+        it('should extract alias from model signal options', () => {
+            const defaultValue = `model<string>('Lorem ipsum', { alias: 'myUnhyphenatedModel' })`;
+            const result = componentHelper['getSignalConfig']('model', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: "'Lorem ipsum'",
+                name: 'myUnhyphenatedModel'
+            });
+        });
+
+        it('should extract hyphenated alias from model signal options', () => {
+            const defaultValue = `model<string>('sit amet', { alias: 'my-hyphenated-Model' })`;
+            const result = componentHelper['getSignalConfig']('model', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: "'sit amet'",
+                name: 'my-hyphenated-Model'
+            });
+        });
+
+        it('should not set name when options object has no alias', () => {
+            const defaultValue = `input<boolean>(false, { transform: booleanAttribute })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.not.have.property('name');
+        });
     });
 
     describe('getInputSignal', () => {
@@ -365,6 +460,18 @@ describe('ComponentHelper', () => {
                 required: false,
                 type: 'string',
                 defaultValue: undefined
+            });
+        });
+
+        it('should override prop name with alias from signal options', () => {
+            const prop = { name: 'myInput', defaultValue: `input<string>('hello', { alias: 'my-aliased-input' })` };
+            const result = componentHelper.getInputSignal(prop);
+
+            expect(result).to.deep.equal({
+                name: 'my-aliased-input',
+                defaultValue: "'hello'",
+                required: false,
+                type: 'string'
             });
         });
 
@@ -386,6 +493,18 @@ describe('ComponentHelper', () => {
                 required: false,
                 type: 'string',
                 defaultValue: undefined
+            });
+        });
+
+        it('should override prop name with alias from output signal options', () => {
+            const prop = { name: 'myOutput', defaultValue: `output<string>({ alias: 'my-aliased-output' })` };
+            const result = componentHelper.getOutputSignal(prop);
+
+            expect(result).to.deep.equal({
+                name: 'my-aliased-output',
+                defaultValue: undefined,
+                required: false,
+                type: 'string'
             });
         });
 

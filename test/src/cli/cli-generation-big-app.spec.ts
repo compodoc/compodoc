@@ -1102,8 +1102,8 @@ describe('CLI simple generation - big app', () => {
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="inputSignalWithAlias"></a>
-                        <b>inputSignalWithAlias</b>
+                        <a name="aliasedSignal"></a>
+                        <b>aliasedSignal</b>
                     </td>
                 </tr>
                 <tr>
@@ -1351,8 +1351,8 @@ describe('CLI simple generation - big app', () => {
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="outputSignalWithAlias"></a>
-                        <b>outputSignalWithAlias</b>
+                        <a name="aliasedSignal"></a>
+                        <b>aliasedSignal</b>
                     </td>
                 </tr>
                         <tr>
@@ -1569,8 +1569,8 @@ describe('CLI simple generation - big app', () => {
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="modelSignalWithAlias"></a>
-                        <b>modelSignalWithAlias</b>
+                        <a name="aliasedSignal"></a>
+                        <b>aliasedSignal</b>
                     </td>
                 </tr>
                 <tr>

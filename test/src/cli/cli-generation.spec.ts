@@ -305,8 +305,8 @@ describe('CLI simple generation', () => {
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="aliasedInputSignal"></a>
-                        <b>aliasedInputSignal</b>
+                        <a name="aliasedInSignal"></a>
+                        <b>aliasedInSignal</b>
                     </td>
                 </tr>
                 <tr>
@@ -457,8 +457,8 @@ describe('CLI simple generation', () => {
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="aliasedOutputSignal"></a>
-                        <b>aliasedOutputSignal</b>
+                        <a name="aliasedOutSignal"></a>
+                        <b>aliasedOutSignal</b>
                     </td>
                 </tr>
                         <tr>
