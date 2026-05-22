@@ -369,6 +369,12 @@ describe('CLI simple generation', () => {
                 </tr>
                 <tr>
                     <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
                         <i>Default value : </i><code>0</code>
                     </td>
                 </tr>
@@ -480,6 +486,12 @@ describe('CLI simple generation', () => {
                     <td class="col-md-4">
                         <a name="modelInputSignal"></a>
                         <b>modelInputSignal</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
                     </td>
                 </tr>
                         <tr>

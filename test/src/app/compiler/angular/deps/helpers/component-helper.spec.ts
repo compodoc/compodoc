@@ -380,7 +380,7 @@ describe('ComponentHelper', () => {
 
             expect(result).to.deep.equal({
                 required: false,
-                type: undefined,
+                type: 'boolean',
                 defaultValue: 'false'
             });
         });

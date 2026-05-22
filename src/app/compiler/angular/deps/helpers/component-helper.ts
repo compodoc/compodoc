@@ -251,7 +251,7 @@ export class ComponentHelper {
 
         const result = {
             required,
-            type: this.parseSignalType(signalType),
+            type: this.parseSignalType(signalType) ?? this.inferTypeFromValue(signalDefaultValue),
             defaultValue: signalDefaultValue
         };
 
@@ -347,6 +347,19 @@ export class ComponentHelper {
             }
         }
         return -1;
+    }
+
+    /**
+     * Infers a primitive TypeScript type from a literal default value string.
+     * Used as a fallback when no explicit type parameter is provided (e.g. `input(4)`).
+     */
+    private inferTypeFromValue(value: string | undefined): string | undefined {
+        if (!value) return undefined;
+        const trimmed = value.trim();
+        if (trimmed === 'true' || trimmed === 'false') return 'boolean';
+        if (/^-?\d+(\.\d+)?$/.test(trimmed)) return 'number';
+        if (/^(['"\`]).*\1$/.test(trimmed)) return 'string';
+        return undefined;
     }
 
     public parseSignalType(type: string) {

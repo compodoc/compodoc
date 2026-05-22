@@ -1081,6 +1081,12 @@ describe('CLI simple generation - big app', () => {
                 </tr>
                 <tr>
                     <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
                         <i>Default value : </i><code>&#x27;value&#x27;</code>
                     </td>
                 </tr>
@@ -1104,6 +1110,12 @@ describe('CLI simple generation - big app', () => {
                     <td class="col-md-4">
                         <a name="aliasedSignal"></a>
                         <b>aliasedSignal</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
                     </td>
                 </tr>
                 <tr>
@@ -1548,6 +1560,12 @@ describe('CLI simple generation - big app', () => {
                 </tr>
                 <tr>
                     <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
                         <i>Default value : </i><code>&#x27;value&#x27;</code>
                     </td>
                 </tr>
@@ -1571,6 +1589,12 @@ describe('CLI simple generation - big app', () => {
                     <td class="col-md-4">
                         <a name="aliasedSignal"></a>
                         <b>aliasedSignal</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
                     </td>
                 </tr>
                 <tr>
