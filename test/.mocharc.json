@@ -3,5 +3,7 @@
     "extension": ["js"],
     "ui": "bdd",
     "timeout": 120000,
+    "parallel": true,
+    "jobs": 4,
     "spec": "test/dist/**/*.spec.js"
 }

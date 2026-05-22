@@ -6,5 +6,6 @@
     "all": false,
     "sourceMap": true,
     "instrument": true,
-    "produceSourceMap": true
+    "produceSourceMap": true,
+    "parallel": true
 }

@@ -29,7 +29,8 @@ export function copy(source: string, dest: string): any {
 }
 
 export function temporaryDir() {
-    let name = '.tmp-compodoc-test';
+    const workerId = process.env.MOCHA_WORKER_ID ?? '0';
+    let name = `.tmp-compodoc-test-w${workerId}`;
     const cleanUp = cleanUpName => {
         if (fs.existsSync(cleanUpName)) {
             fs.readdirSync(cleanUpName).forEach(file => {
