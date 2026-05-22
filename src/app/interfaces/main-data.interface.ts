@@ -1,4 +1,4 @@
-import { CoverageData } from './coverageData.interface';
+import { CoverageData } from "./coverageData.interface";
 
 export interface MainDataInterface {
     output: string;
@@ -89,4 +89,5 @@ export interface MainDataInterface {
     maxSearchResults: number;
     publicApiOnly: string;
     publicApiExports: Map<string, Set<string>>;
+    outputProvided: boolean;
 }

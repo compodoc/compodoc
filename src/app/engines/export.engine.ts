@@ -1,7 +1,8 @@
-import Configuration from '../configuration';
+import Configuration from "../configuration";
 
-import ExportJsonEngine from './export-json.engine';
-import ExportPdfEngine from './pdf-engine/export-pdf.engine';
+import ExportJsonEngine from "./export-json.engine";
+import ExportLlmMdEngine from "./export-llm-md.engine";
+import ExportPdfEngine from "./pdf-engine/export-pdf.engine";
 
 export class ExportEngine {
     private static instance: ExportEngine;
@@ -15,8 +16,10 @@ export class ExportEngine {
 
     public export(outputFolder, data) {
         switch (Configuration.mainData.exportFormat) {
-            case 'json':
+            case "json":
                 return ExportJsonEngine.export(outputFolder, data);
+            case "llm-md":
+                return ExportLlmMdEngine.export(outputFolder, data);
             /*case 'pdf':
                 return ExportPdfEngine.export(outputFolder);*/
         }

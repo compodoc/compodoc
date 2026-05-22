@@ -1,37 +1,37 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
-import { COMPODOC_DEFAULTS } from '../utils/defaults';
+import { COMPODOC_DEFAULTS } from "../utils/defaults";
 
-import { ConfigurationInterface } from './interfaces/configuration.interface';
-import { CoverageData } from './interfaces/coverageData.interface';
-import { MainDataInterface } from './interfaces/main-data.interface';
-import { PageInterface } from './interfaces/page.interface';
+import { ConfigurationInterface } from "./interfaces/configuration.interface";
+import { CoverageData } from "./interfaces/coverageData.interface";
+import { MainDataInterface } from "./interfaces/main-data.interface";
+import { PageInterface } from "./interfaces/page.interface";
 
 export class Configuration implements ConfigurationInterface {
     private _pages: PageInterface[] = [];
     private _mainData: MainDataInterface = {
         output: COMPODOC_DEFAULTS.folder,
         theme: COMPODOC_DEFAULTS.theme,
-        extTheme: '',
+        extTheme: "",
         serve: false,
         templatePlayground: false,
         hostname: COMPODOC_DEFAULTS.hostname,
-        host: '',
+        host: "",
         port: COMPODOC_DEFAULTS.port,
         open: false,
-        assetsFolder: '',
+        assetsFolder: "",
         documentationMainName: COMPODOC_DEFAULTS.title,
-        documentationMainDescription: '',
+        documentationMainDescription: "",
         base: COMPODOC_DEFAULTS.base,
         hideGenerator: false,
         hideDarkModeToggle: false,
         hasFilesToCoverage: false,
         modules: [],
         readme: false,
-        changelog: '',
-        contributing: '',
-        license: '',
-        todo: '',
+        changelog: "",
+        contributing: "",
+        license: "",
+        todo: "",
         markdowns: [],
         additionalPages: [],
         pipes: [],
@@ -46,11 +46,11 @@ export class Configuration implements ConfigurationInterface {
         guards: [],
         miscellaneous: [],
         routes: [],
-        tsconfig: '',
+        tsconfig: "",
         toggleMenuItems: COMPODOC_DEFAULTS.toggleMenuItems,
         navTabConfig: [],
-        templates: '',
-        includes: '',
+        templates: "",
+        includes: "",
         includesName: COMPODOC_DEFAULTS.additionalEntryName,
         includesFolder: COMPODOC_DEFAULTS.additionalEntryPath,
         disableSourceCode: COMPODOC_DEFAULTS.disableSourceCode,
@@ -72,32 +72,34 @@ export class Configuration implements ConfigurationInterface {
         disableFilePath: COMPODOC_DEFAULTS.disableFilePath,
         disableOverview: COMPODOC_DEFAULTS.disableOverview,
         watch: false,
-        mainGraph: '',
+        mainGraph: "",
         coverageTest: false,
         coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold,
         coverageTestThresholdFail: COMPODOC_DEFAULTS.coverageTestThresholdFail,
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
-        unitTestCoverage: '',
+        unitTestCoverage: "",
         unitTestData: undefined,
-        coverageTestShowOnlyFailed: COMPODOC_DEFAULTS.coverageTestShowOnlyFailed,
+        coverageTestShowOnlyFailed:
+            COMPODOC_DEFAULTS.coverageTestShowOnlyFailed,
         routesLength: 0,
-        angularVersion: '',
+        angularVersion: "",
         exportFormat: COMPODOC_DEFAULTS.exportFormat,
         coverageData: {} as CoverageData,
-        customFavicon: '',
-        customLogo: '',
+        customFavicon: "",
+        customLogo: "",
         packageDependencies: [],
         packagePeerDependencies: [],
         packageProperties: {},
-        gaID: '',
-        gaSite: '',
+        gaID: "",
+        gaSite: "",
         angularProject: false,
         angularJSProject: false,
         language: COMPODOC_DEFAULTS.language,
         maxSearchResults: 15,
-        publicApiOnly: '',
-        publicApiExports: new Map<string, Set<string>>()
+        publicApiOnly: "",
+        publicApiExports: new Map<string, Set<string>>(),
+        outputProvided: false,
     };
 
     private static instance: Configuration;
@@ -126,7 +128,7 @@ export class Configuration implements ConfigurationInterface {
     }
 
     public getAdditionalPageById(id): PageInterface {
-        return this._mainData.additionalPages.find(page => page.id === id);
+        return this._mainData.additionalPages.find((page) => page.id === id);
     }
 
     public resetPages() {
@@ -138,15 +140,15 @@ export class Configuration implements ConfigurationInterface {
     }
 
     public resetRootMarkdownPages() {
-        let indexPage = _.findIndex(this._pages, { name: 'index' });
+        let indexPage = _.findIndex(this._pages, { name: "index" });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { name: 'changelog' });
+        indexPage = _.findIndex(this._pages, { name: "changelog" });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { name: 'contributing' });
+        indexPage = _.findIndex(this._pages, { name: "contributing" });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { name: 'license' });
+        indexPage = _.findIndex(this._pages, { name: "license" });
         this._pages.splice(indexPage, 1);
-        indexPage = _.findIndex(this._pages, { name: 'todo' });
+        indexPage = _.findIndex(this._pages, { name: "todo" });
         this._pages.splice(indexPage, 1);
         this._mainData.markdowns = [];
     }
@@ -159,7 +161,7 @@ export class Configuration implements ConfigurationInterface {
     }
 
     get markDownPages() {
-        return this._pages.filter(page => page.markdown);
+        return this._pages.filter((page) => page.markdown);
     }
 
     get mainData(): MainDataInterface {

@@ -91,7 +91,7 @@
         "exportFormat": {
             "$id": "/properties/exportFormat",
             "type": "string",
-            "title": "Export in specified format (json, html)",
+            "title": "Export in specified format (json, html, llm-md)",
             "default": "",
             "examples": ["html"]
         },

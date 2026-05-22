@@ -1,32 +1,32 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as fs from "fs-extra";
+import * as path from "path";
 
-import { ts } from 'ts-morph';
+import { ts } from "ts-morph";
 
-import { Application } from './app/application';
-import Configuration from './app/configuration';
-import FileEngine from './app/engines/file.engine';
-import I18nEngine from './app/engines/i18n.engine';
+import { Application } from "./app/application";
+import Configuration from "./app/configuration";
+import FileEngine from "./app/engines/file.engine";
+import I18nEngine from "./app/engines/i18n.engine";
 
-import { ConfigurationFileInterface } from './app/interfaces/configuration-file.interface';
-import AngularVersionUtil from './utils/angular-version.util';
-import { COMPODOC_DEFAULTS } from './utils/defaults';
-import { logger } from './utils/logger';
+import { ConfigurationFileInterface } from "./app/interfaces/configuration-file.interface";
+import AngularVersionUtil from "./utils/angular-version.util";
+import { COMPODOC_DEFAULTS } from "./utils/defaults";
+import { logger } from "./utils/logger";
 
-import { readConfig, EXCLUDE_PATTERNS, INCLUDE_PATTERNS } from './utils/utils';
-import { parsePublicApi } from './utils/public-api-parser.util';
-import { parseApiMarkdownExports } from './utils/api-markdown-parser.util';
-import { createSourcePathMapper } from './utils/source-path-mapper.util';
+import { readConfig, EXCLUDE_PATTERNS, INCLUDE_PATTERNS } from "./utils/utils";
+import { parsePublicApi } from "./utils/public-api-parser.util";
+import { parseApiMarkdownExports } from "./utils/api-markdown-parser.util";
+import { createSourcePathMapper } from "./utils/source-path-mapper.util";
 
-import { cosmiconfigSync } from 'cosmiconfig';
+import { cosmiconfigSync } from "cosmiconfig";
 
-const fg = require('fast-glob');
-const os = require('os');
-const pkg = require('../package.json');
-import { osName } from './utils/os-name.util';
-const { program } = require('commander');
+const fg = require("fast-glob");
+const os = require("os");
+const pkg = require("../package.json");
+import { osName } from "./utils/os-name.util";
+const { program } = require("commander");
 
-const cosmiconfigModuleName = 'compodoc';
+const cosmiconfigModuleName = "compodoc";
 
 let scannedFiles = [];
 let excludeFiles = EXCLUDE_PATTERNS;
@@ -41,170 +41,242 @@ export class CliApplication extends Application {
      */
     protected async start(): Promise<any> {
         function list(val) {
-            return val.split(',');
+            return val.split(",");
         }
 
         program
             .version(pkg.version)
-            .usage('<src> [options]')
+            .usage("<src> [options]")
             .option(
-                '-c, --config [config]',
-                'A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json'
+                "-c, --config [config]",
+                "A configuration file : .compodocrc, .compodocrc.json, .compodocrc.yaml or compodoc property in package.json",
             )
-            .option('-p, --tsconfig [config]', 'A tsconfig.json file')
+            .option("-p, --tsconfig [config]", "A tsconfig.json file")
             .option(
-                '-d, --output [folder]',
-                'Where to store the generated documentation',
-                COMPODOC_DEFAULTS.folder
+                "-d, --output [folder]",
+                "Where to store the generated documentation",
+                COMPODOC_DEFAULTS.folder,
             )
-            .option('-y, --extTheme [file]', 'External styling theme file')
-            .option('-n, --name [name]', 'Title documentation', COMPODOC_DEFAULTS.title)
+            .option("-y, --extTheme [file]", "External styling theme file")
             .option(
-                '-a, --assetsFolder [folder]',
-                'External assets folder to copy in generated documentation folder'
+                "-n, --name [name]",
+                "Title documentation",
+                COMPODOC_DEFAULTS.title,
             )
-            .option('-o, --open [value]', 'Open the generated documentation')
             .option(
-                '-t, --silent',
+                "-a, --assetsFolder [folder]",
+                "External assets folder to copy in generated documentation folder",
+            )
+            .option("-o, --open [value]", "Open the generated documentation")
+            .option(
+                "-t, --silent",
                 "In silent mode, log messages aren't logged in the console",
-                COMPODOC_DEFAULTS.silent
+                COMPODOC_DEFAULTS.silent,
             )
             .option(
-                '-s, --serve',
-                'Serve generated documentation (default http://localhost:8080/)',
-                COMPODOC_DEFAULTS.serve
+                "-s, --serve",
+                "Serve generated documentation (default http://localhost:8080/)",
+                COMPODOC_DEFAULTS.serve,
             )
-            .option('--host [host]', 'Change default host address')
-            .option('-r, --port [port]', 'Change default serving port', COMPODOC_DEFAULTS.port)
+            .option("--host [host]", "Change default host address")
             .option(
-                '-w, --watch',
-                'Watch source files after serve and force documentation rebuild',
-                COMPODOC_DEFAULTS.watch
-            )
-            .option(
-                '-e, --exportFormat [format]',
-                'Export in specified format (json, html)',
-                COMPODOC_DEFAULTS.exportFormat
-            )
-            .option('--files [files]', 'Files provided by external tool, used for coverage test')
-            .option(
-                '--language [language]',
-                'Language used for the generated documentation (bg-BG, de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ka-GE, ko-KR, nl-NL, pl-PL, pt-BR, ru-RU, sk-SK, zh-CN, zh-TW)',
-                COMPODOC_DEFAULTS.language
+                "-r, --port [port]",
+                "Change default serving port",
+                COMPODOC_DEFAULTS.port,
             )
             .option(
-                '--theme [theme]',
-                "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)"
+                "-w, --watch",
+                "Watch source files after serve and force documentation rebuild",
+                COMPODOC_DEFAULTS.watch,
             )
             .option(
-                '--hideGenerator',
-                'Do not print the Compodoc link at the bottom of the page',
-                COMPODOC_DEFAULTS.hideGenerator
+                "-e, --exportFormat [format]",
+                "Export in specified format (json, html)",
+                COMPODOC_DEFAULTS.exportFormat,
             )
             .option(
-                '--hideDarkModeToggle',
-                'Do not show dark mode toggle button at the top right position of the page',
-                COMPODOC_DEFAULTS.hideDarkModeToggle
+                "--files [files]",
+                "Files provided by external tool, used for coverage test",
             )
             .option(
-                '--toggleMenuItems <items>',
+                "--language [language]",
+                "Language used for the generated documentation (bg-BG, de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ka-GE, ko-KR, nl-NL, pl-PL, pt-BR, ru-RU, sk-SK, zh-CN, zh-TW)",
+                COMPODOC_DEFAULTS.language,
+            )
+            .option(
+                "--theme [theme]",
+                "Choose one of available themes, default is 'gitbook' (laravel, original, material, postmark, readthedocs, stripe, vagrant)",
+            )
+            .option(
+                "--hideGenerator",
+                "Do not print the Compodoc link at the bottom of the page",
+                COMPODOC_DEFAULTS.hideGenerator,
+            )
+            .option(
+                "--hideDarkModeToggle",
+                "Do not show dark mode toggle button at the top right position of the page",
+                COMPODOC_DEFAULTS.hideDarkModeToggle,
+            )
+            .option(
+                "--toggleMenuItems <items>",
                 "Close by default items in the menu values : ['all'] or one of these ['modules','components','directives','controllers','entities','classes','injectables','guards','interfaces','interceptors','pipes','miscellaneous','additionalPages']",
                 list,
-                COMPODOC_DEFAULTS.toggleMenuItems
+                COMPODOC_DEFAULTS.toggleMenuItems,
             )
             .option(
-                '--navTabConfig <tab configs>',
+                "--navTabConfig <tab configs>",
                 `List navigation tab objects in the desired order with two string properties ("id" and "label"). \
 Double-quotes must be escaped with '\\'. \
 Available tab IDs are "info", "readme", "source", "templateData", "styleData", "tree", and "example". \
 Note: Certain tabs will only be shown if applicable to a given dependency`,
                 list,
-                JSON.stringify(COMPODOC_DEFAULTS.navTabConfig)
+                JSON.stringify(COMPODOC_DEFAULTS.navTabConfig),
             )
             .option(
-                '--templates [folder]',
-                'Path to directory of Handlebars templates to override built-in templates'
-            )
-            .option('--includes [path]', 'Path of external markdown files to include')
-            .option(
-                '--includesName [name]',
-                'Name of item menu of externals markdown files',
-                COMPODOC_DEFAULTS.additionalEntryName
+                "--templates [folder]",
+                "Path to directory of Handlebars templates to override built-in templates",
             )
             .option(
-                '--coverageTest [threshold]',
-                'Test command of documentation coverage with a threshold (default 70)'
+                "--includes [path]",
+                "Path of external markdown files to include",
             )
             .option(
-                '--coverageMinimumPerFile [minimum]',
-                'Test command of documentation coverage per file with a minimum (default 0)'
+                "--includesName [name]",
+                "Name of item menu of externals markdown files",
+                COMPODOC_DEFAULTS.additionalEntryName,
             )
             .option(
-                '--coverageTestThresholdFail [true|false]',
-                'Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)',
-                COMPODOC_DEFAULTS.coverageTestThresholdFail
-            )
-            .option('--coverageTestShowOnlyFailed', 'Display only failed files for a coverage test')
-            .option(
-                '--unitTestCoverage [json-summary]',
-                'To include unit test coverage, specify istanbul JSON coverage summary file'
+                "--coverageTest [threshold]",
+                "Test command of documentation coverage with a threshold (default 70)",
             )
             .option(
-                '--disableSourceCode',
-                'Do not add source code tab and links to source code',
-                COMPODOC_DEFAULTS.disableSourceCode
-            )
-            .option('--disableDomTree', 'Do not add dom tree tab', COMPODOC_DEFAULTS.disableDomTree)
-            .option('--disableTemplateTab', 'Do not add template tab', COMPODOC_DEFAULTS.disableTemplateTab)
-            .option('--disableStyleTab', 'Do not add style tab', COMPODOC_DEFAULTS.disableStyleTab)
-            .option('--disableGraph', 'Do not add the dependency graph', COMPODOC_DEFAULTS.disableGraph)
-            .option('--disableCoverage', 'Do not add the documentation coverage report', COMPODOC_DEFAULTS.disableCoverage)
-            .option('--disablePrivate', 'Do not show private in generated documentation', COMPODOC_DEFAULTS.disablePrivate)
-            .option('--disableProtected', 'Do not show protected in generated documentation', COMPODOC_DEFAULTS.disableProtected)
-            .option('--disableInternal', 'Do not show @internal in generated documentation', COMPODOC_DEFAULTS.disableInternal)
-            .option(
-                '--disableLifeCycleHooks',
-                'Do not show Angular lifecycle hooks in generated documentation',
-                COMPODOC_DEFAULTS.disableLifeCycleHooks
+                "--coverageMinimumPerFile [minimum]",
+                "Test command of documentation coverage per file with a minimum (default 0)",
             )
             .option(
-                '--disableConstructors',
-                'Do not show constructors in generated documentation',
-                COMPODOC_DEFAULTS.disableConstructors
+                "--coverageTestThresholdFail [true|false]",
+                "Test command of documentation coverage (global or per file) will fail with error or just warn user (true: error, false: warn)",
+                COMPODOC_DEFAULTS.coverageTestThresholdFail,
             )
             .option(
-                '--disableRoutesGraph',
-                'Do not add the routes graph',
-                COMPODOC_DEFAULTS.disableRoutesGraph
-            )
-            .option('--disableSearch', 'Do not add the search input', COMPODOC_DEFAULTS.disableSearch)
-            .option(
-                '--disableDependencies',
-                'Do not add the dependencies list',
-                COMPODOC_DEFAULTS.disableDependencies
+                "--coverageTestShowOnlyFailed",
+                "Display only failed files for a coverage test",
             )
             .option(
-                '--disableProperties',
-                'Do not add the properties list',
-                COMPODOC_DEFAULTS.disableProperties
+                "--unitTestCoverage [json-summary]",
+                "To include unit test coverage, specify istanbul JSON coverage summary file",
             )
-            .option('--disableFilePath', 'Do not add the file path', COMPODOC_DEFAULTS.disableFilePath)
-            .option('--disableOverview', 'Do not add the overview page', COMPODOC_DEFAULTS.disableOverview)
-            .option('--templatePlayground', 'Generate template playground page for customizing templates', false)
             .option(
-                '--minimal',
-                'Minimal mode with only documentation. No search, no graph, no coverage.',
-                COMPODOC_DEFAULTS.minimal
+                "--disableSourceCode",
+                "Do not add source code tab and links to source code",
+                COMPODOC_DEFAULTS.disableSourceCode,
             )
-            .option('--customFavicon [path]', 'Use a custom favicon')
-            .option('--customLogo [path]', 'Use a custom logo')
-            .option('--gaID [id]', 'Google Analytics tracking ID')
-            .option('--gaSite [site]', 'Google Analytics site name', COMPODOC_DEFAULTS.gaSite)
-            .option('--publicApiOnly [path]', 'Document only symbols exported from index.d.ts files in the specified dist folder')
             .option(
-                '--maxSearchResults [maxSearchResults]',
-                'Max search results on the results page. To show all results, set to 0',
-                COMPODOC_DEFAULTS.maxSearchResults
+                "--disableDomTree",
+                "Do not add dom tree tab",
+                COMPODOC_DEFAULTS.disableDomTree,
+            )
+            .option(
+                "--disableTemplateTab",
+                "Do not add template tab",
+                COMPODOC_DEFAULTS.disableTemplateTab,
+            )
+            .option(
+                "--disableStyleTab",
+                "Do not add style tab",
+                COMPODOC_DEFAULTS.disableStyleTab,
+            )
+            .option(
+                "--disableGraph",
+                "Do not add the dependency graph",
+                COMPODOC_DEFAULTS.disableGraph,
+            )
+            .option(
+                "--disableCoverage",
+                "Do not add the documentation coverage report",
+                COMPODOC_DEFAULTS.disableCoverage,
+            )
+            .option(
+                "--disablePrivate",
+                "Do not show private in generated documentation",
+                COMPODOC_DEFAULTS.disablePrivate,
+            )
+            .option(
+                "--disableProtected",
+                "Do not show protected in generated documentation",
+                COMPODOC_DEFAULTS.disableProtected,
+            )
+            .option(
+                "--disableInternal",
+                "Do not show @internal in generated documentation",
+                COMPODOC_DEFAULTS.disableInternal,
+            )
+            .option(
+                "--disableLifeCycleHooks",
+                "Do not show Angular lifecycle hooks in generated documentation",
+                COMPODOC_DEFAULTS.disableLifeCycleHooks,
+            )
+            .option(
+                "--disableConstructors",
+                "Do not show constructors in generated documentation",
+                COMPODOC_DEFAULTS.disableConstructors,
+            )
+            .option(
+                "--disableRoutesGraph",
+                "Do not add the routes graph",
+                COMPODOC_DEFAULTS.disableRoutesGraph,
+            )
+            .option(
+                "--disableSearch",
+                "Do not add the search input",
+                COMPODOC_DEFAULTS.disableSearch,
+            )
+            .option(
+                "--disableDependencies",
+                "Do not add the dependencies list",
+                COMPODOC_DEFAULTS.disableDependencies,
+            )
+            .option(
+                "--disableProperties",
+                "Do not add the properties list",
+                COMPODOC_DEFAULTS.disableProperties,
+            )
+            .option(
+                "--disableFilePath",
+                "Do not add the file path",
+                COMPODOC_DEFAULTS.disableFilePath,
+            )
+            .option(
+                "--disableOverview",
+                "Do not add the overview page",
+                COMPODOC_DEFAULTS.disableOverview,
+            )
+            .option(
+                "--templatePlayground",
+                "Generate template playground page for customizing templates",
+                false,
+            )
+            .option(
+                "--minimal",
+                "Minimal mode with only documentation. No search, no graph, no coverage.",
+                COMPODOC_DEFAULTS.minimal,
+            )
+            .option("--customFavicon [path]", "Use a custom favicon")
+            .option("--customLogo [path]", "Use a custom logo")
+            .option("--gaID [id]", "Google Analytics tracking ID")
+            .option(
+                "--gaSite [site]",
+                "Google Analytics site name",
+                COMPODOC_DEFAULTS.gaSite,
+            )
+            .option(
+                "--publicApiOnly [path]",
+                "Document only symbols exported from index.d.ts files in the specified dist folder",
+            )
+            .option(
+                "--maxSearchResults [maxSearchResults]",
+                "Max search results on the results page. To show all results, set to 0",
+                COMPODOC_DEFAULTS.maxSearchResults,
             )
             .allowExcessArguments()
             .parse(process.argv);
@@ -226,24 +298,34 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             let configFilePath = programOptions.config;
             let testConfigFilePath = configFilePath.match(process.cwd());
             if (testConfigFilePath && testConfigFilePath.length > 0) {
-                configFilePath = configFilePath.replace(process.cwd() + path.sep, '');
+                configFilePath = configFilePath.replace(
+                    process.cwd() + path.sep,
+                    "",
+                );
             }
-            configExplorerResult = configExplorer.load(path.resolve(configFilePath));
+            configExplorerResult = configExplorer.load(
+                path.resolve(configFilePath),
+            );
         } else {
             configExplorerResult = configExplorer.search();
         }
 
         if (configExplorerResult) {
-            if (typeof configExplorerResult.config !== 'undefined') {
+            if (typeof configExplorerResult.config !== "undefined") {
                 configFile = configExplorerResult.config;
             }
         }
 
         if (configFile.output) {
             Configuration.mainData.output = configFile.output;
+            Configuration.mainData.outputProvided = true;
         }
-        if (programOptions.output && programOptions.output !== COMPODOC_DEFAULTS.folder) {
+        if (
+            programOptions.output &&
+            programOptions.output !== COMPODOC_DEFAULTS.folder
+        ) {
             Configuration.mainData.output = programOptions.output;
+            Configuration.mainData.outputProvided = true;
         }
 
         if (configFile.extTheme) {
@@ -270,7 +352,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.name) {
             Configuration.mainData.documentationMainName = configFile.name;
         }
-        if (programOptions.name && programOptions.name !== COMPODOC_DEFAULTS.title) {
+        if (
+            programOptions.name &&
+            programOptions.name !== COMPODOC_DEFAULTS.title
+        ) {
             Configuration.mainData.documentationMainName = programOptions.name;
         }
 
@@ -295,7 +380,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             programOptions.toggleMenuItems &&
             programOptions.toggleMenuItems !== COMPODOC_DEFAULTS.toggleMenuItems
         ) {
-            Configuration.mainData.toggleMenuItems = programOptions.toggleMenuItems;
+            Configuration.mainData.toggleMenuItems =
+                programOptions.toggleMenuItems;
         }
 
         if (configFile.templates) {
@@ -310,9 +396,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (
             programOptions.navTabConfig &&
-            JSON.parse(programOptions.navTabConfig).length !== COMPODOC_DEFAULTS.navTabConfig.length
+            JSON.parse(programOptions.navTabConfig).length !==
+                COMPODOC_DEFAULTS.navTabConfig.length
         ) {
-            Configuration.mainData.navTabConfig = JSON.parse(programOptions.navTabConfig);
+            Configuration.mainData.navTabConfig = JSON.parse(
+                programOptions.navTabConfig,
+            );
         }
 
         if (configFile.includes) {
@@ -327,7 +416,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
         if (
             programOptions.includesName &&
-            programOptions.includesName !== COMPODOC_DEFAULTS.additionalEntryName
+            programOptions.includesName !==
+                COMPODOC_DEFAULTS.additionalEntryName
         ) {
             Configuration.mainData.includesName = programOptions.includesName;
         }
@@ -347,10 +437,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.templatePlayground) {
-            Configuration.mainData.templatePlayground = configFile.templatePlayground;
+            Configuration.mainData.templatePlayground =
+                configFile.templatePlayground;
         }
         if (programOptions.templatePlayground) {
-            Configuration.mainData.templatePlayground = programOptions.templatePlayground;
+            Configuration.mainData.templatePlayground =
+                programOptions.templatePlayground;
         }
 
         if (configFile.host) {
@@ -365,7 +457,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.port) {
             Configuration.mainData.port = configFile.port;
         }
-        if (programOptions.port && programOptions.port !== COMPODOC_DEFAULTS.port) {
+        if (
+            programOptions.port &&
+            programOptions.port !== COMPODOC_DEFAULTS.port
+        ) {
             Configuration.mainData.port = programOptions.port;
         }
 
@@ -394,23 +489,25 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.hideDarkModeToggle) {
-            Configuration.mainData.hideDarkModeToggle = configFile.hideDarkModeToggle;
+            Configuration.mainData.hideDarkModeToggle =
+                configFile.hideDarkModeToggle;
         }
         if (programOptions.hideDarkModeToggle) {
-            Configuration.mainData.hideDarkModeToggle = programOptions.hideDarkModeToggle;
+            Configuration.mainData.hideDarkModeToggle =
+                programOptions.hideDarkModeToggle;
         }
 
         if (configFile.coverageTest) {
             Configuration.mainData.coverageTest = true;
             Configuration.mainData.coverageTestThreshold =
-                typeof configFile.coverageTest === 'string'
+                typeof configFile.coverageTest === "string"
                     ? parseInt(configFile.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
         if (programOptions.coverageTest) {
             Configuration.mainData.coverageTest = true;
             Configuration.mainData.coverageTestThreshold =
-                typeof programOptions.coverageTest === 'string'
+                typeof programOptions.coverageTest === "string"
                     ? parseInt(programOptions.coverageTest, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageThreshold;
         }
@@ -418,25 +515,27 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.coverageMinimumPerFile) {
             Configuration.mainData.coverageTestPerFile = true;
             Configuration.mainData.coverageMinimumPerFile =
-                typeof configFile.coverageMinimumPerFile === 'string'
+                typeof configFile.coverageMinimumPerFile === "string"
                     ? parseInt(configFile.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
         if (programOptions.coverageMinimumPerFile) {
             Configuration.mainData.coverageTestPerFile = true;
             Configuration.mainData.coverageMinimumPerFile =
-                typeof programOptions.coverageMinimumPerFile === 'string'
+                typeof programOptions.coverageMinimumPerFile === "string"
                     ? parseInt(programOptions.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
         }
 
         if (configFile.coverageTestThresholdFail) {
             Configuration.mainData.coverageTestThresholdFail =
-                configFile.coverageTestThresholdFail === 'false' ? false : true;
+                configFile.coverageTestThresholdFail === "false" ? false : true;
         }
         if (programOptions.coverageTestThresholdFail) {
             Configuration.mainData.coverageTestThresholdFail =
-                programOptions.coverageTestThresholdFail === 'false' ? false : true;
+                programOptions.coverageTestThresholdFail === "false"
+                    ? false
+                    : true;
         }
 
         if (configFile.coverageTestShowOnlyFailed) {
@@ -449,38 +548,46 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.unitTestCoverage) {
-            Configuration.mainData.unitTestCoverage = configFile.unitTestCoverage;
+            Configuration.mainData.unitTestCoverage =
+                configFile.unitTestCoverage;
         }
         if (programOptions.unitTestCoverage) {
-            Configuration.mainData.unitTestCoverage = programOptions.unitTestCoverage;
+            Configuration.mainData.unitTestCoverage =
+                programOptions.unitTestCoverage;
         }
 
         if (configFile.disableSourceCode) {
-            Configuration.mainData.disableSourceCode = configFile.disableSourceCode;
+            Configuration.mainData.disableSourceCode =
+                configFile.disableSourceCode;
         }
         if (programOptions.disableSourceCode) {
-            Configuration.mainData.disableSourceCode = programOptions.disableSourceCode;
+            Configuration.mainData.disableSourceCode =
+                programOptions.disableSourceCode;
         }
 
         if (configFile.disableDomTree) {
             Configuration.mainData.disableDomTree = configFile.disableDomTree;
         }
         if (programOptions.disableDomTree) {
-            Configuration.mainData.disableDomTree = programOptions.disableDomTree;
+            Configuration.mainData.disableDomTree =
+                programOptions.disableDomTree;
         }
 
         if (configFile.disableTemplateTab) {
-            Configuration.mainData.disableTemplateTab = configFile.disableTemplateTab;
+            Configuration.mainData.disableTemplateTab =
+                configFile.disableTemplateTab;
         }
         if (programOptions.disableTemplateTab) {
-            Configuration.mainData.disableTemplateTab = programOptions.disableTemplateTab;
+            Configuration.mainData.disableTemplateTab =
+                programOptions.disableTemplateTab;
         }
 
         if (configFile.disableStyleTab) {
             Configuration.mainData.disableStyleTab = configFile.disableStyleTab;
         }
         if (programOptions.disableStyleTab) {
-            Configuration.mainData.disableStyleTab = programOptions.disableStyleTab;
+            Configuration.mainData.disableStyleTab =
+                programOptions.disableStyleTab;
         }
 
         if (configFile.disableGraph) {
@@ -494,49 +601,60 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.disableCoverage = configFile.disableCoverage;
         }
         if (programOptions.disableCoverage) {
-            Configuration.mainData.disableCoverage = programOptions.disableCoverage;
+            Configuration.mainData.disableCoverage =
+                programOptions.disableCoverage;
         }
 
         if (configFile.disablePrivate) {
             Configuration.mainData.disablePrivate = configFile.disablePrivate;
         }
         if (programOptions.disablePrivate) {
-            Configuration.mainData.disablePrivate = programOptions.disablePrivate;
+            Configuration.mainData.disablePrivate =
+                programOptions.disablePrivate;
         }
 
         if (configFile.disableProtected) {
-            Configuration.mainData.disableProtected = configFile.disableProtected;
+            Configuration.mainData.disableProtected =
+                configFile.disableProtected;
         }
         if (programOptions.disableProtected) {
-            Configuration.mainData.disableProtected = programOptions.disableProtected;
+            Configuration.mainData.disableProtected =
+                programOptions.disableProtected;
         }
 
         if (configFile.disableInternal) {
             Configuration.mainData.disableInternal = configFile.disableInternal;
         }
         if (programOptions.disableInternal) {
-            Configuration.mainData.disableInternal = programOptions.disableInternal;
+            Configuration.mainData.disableInternal =
+                programOptions.disableInternal;
         }
 
         if (configFile.disableLifeCycleHooks) {
-            Configuration.mainData.disableLifeCycleHooks = configFile.disableLifeCycleHooks;
+            Configuration.mainData.disableLifeCycleHooks =
+                configFile.disableLifeCycleHooks;
         }
         if (programOptions.disableLifeCycleHooks) {
-            Configuration.mainData.disableLifeCycleHooks = programOptions.disableLifeCycleHooks;
+            Configuration.mainData.disableLifeCycleHooks =
+                programOptions.disableLifeCycleHooks;
         }
 
         if (configFile.disableConstructors) {
-            Configuration.mainData.disableConstructors = configFile.disableConstructors;
+            Configuration.mainData.disableConstructors =
+                configFile.disableConstructors;
         }
         if (programOptions.disableConstructors) {
-            Configuration.mainData.disableConstructors = programOptions.disableConstructors;
+            Configuration.mainData.disableConstructors =
+                programOptions.disableConstructors;
         }
 
         if (configFile.disableRoutesGraph) {
-            Configuration.mainData.disableRoutesGraph = configFile.disableRoutesGraph;
+            Configuration.mainData.disableRoutesGraph =
+                configFile.disableRoutesGraph;
         }
         if (programOptions.disableRoutesGraph) {
-            Configuration.mainData.disableRoutesGraph = programOptions.disableRoutesGraph;
+            Configuration.mainData.disableRoutesGraph =
+                programOptions.disableRoutesGraph;
         }
 
         if (configFile.disableSearch) {
@@ -547,31 +665,37 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (configFile.disableDependencies) {
-            Configuration.mainData.disableDependencies = configFile.disableDependencies;
+            Configuration.mainData.disableDependencies =
+                configFile.disableDependencies;
         }
         if (programOptions.disableDependencies) {
-            Configuration.mainData.disableDependencies = programOptions.disableDependencies;
+            Configuration.mainData.disableDependencies =
+                programOptions.disableDependencies;
         }
 
         if (configFile.disableProperties) {
-            Configuration.mainData.disableProperties = configFile.disableProperties;
+            Configuration.mainData.disableProperties =
+                configFile.disableProperties;
         }
         if (programOptions.disableProperties) {
-            Configuration.mainData.disableProperties = programOptions.disableProperties;
+            Configuration.mainData.disableProperties =
+                programOptions.disableProperties;
         }
 
         if (configFile.disableFilePath) {
             Configuration.mainData.disableFilePath = configFile.disableFilePath;
         }
         if (programOptions.disableFilePath) {
-            Configuration.mainData.disableFilePath = programOptions.disableFilePath;
+            Configuration.mainData.disableFilePath =
+                programOptions.disableFilePath;
         }
-      
+
         if (configFile.disableOverview) {
             Configuration.mainData.disableOverview = configFile.disableOverview;
         }
         if (programOptions.disableOverview) {
-            Configuration.mainData.disableOverview = programOptions.disableOverview;
+            Configuration.mainData.disableOverview =
+                programOptions.disableOverview;
         }
 
         if (configFile.minimal) {
@@ -611,7 +735,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         if (configFile.gaSite) {
             Configuration.mainData.gaSite = configFile.gaSite;
         }
-        if (programOptions.gaSite && programOptions.gaSite !== COMPODOC_DEFAULTS.gaSite) {
+        if (
+            programOptions.gaSite &&
+            programOptions.gaSite !== COMPODOC_DEFAULTS.gaSite
+        ) {
             Configuration.mainData.gaSite = programOptions.gaSite;
         }
 
@@ -623,41 +750,65 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (!this.isWatching) {
-            if (!logger.silent) {
+            const isLlmMdStdoutMode =
+                Configuration.mainData.exportFormat === "llm-md" &&
+                !Configuration.mainData.outputProvided;
+            if (isLlmMdStdoutMode) {
+                logger.silent = false;
+                logger.logger = (msg: string) =>
+                    process.stderr.write(msg + "\n");
+            } else if (!logger.silent) {
                 console.log(`Compodoc v${pkg.version}`);
             } else {
-                console.log(fs.readFileSync(path.join(__dirname, '../src/banner')).toString());
+                console.log(
+                    fs
+                        .readFileSync(path.join(__dirname, "../src/banner"))
+                        .toString(),
+                );
                 console.log(pkg.version);
-                console.log('');
-                console.log(`TypeScript version used by Compodoc : ${ts.version}`);
-                console.log('');
+                console.log("");
+                console.log(
+                    `TypeScript version used by Compodoc : ${ts.version}`,
+                );
+                console.log("");
 
-                if (FileEngine.existsSync(cwd + path.sep + 'package.json')) {
-                    const packageData = FileEngine.getSync(cwd + path.sep + 'package.json');
+                if (FileEngine.existsSync(cwd + path.sep + "package.json")) {
+                    const packageData = FileEngine.getSync(
+                        cwd + path.sep + "package.json",
+                    );
                     if (packageData) {
                         const parsedData = JSON.parse(packageData);
-                        const projectDevDependencies = parsedData.devDependencies;
-                        if (projectDevDependencies && projectDevDependencies.typescript) {
-                            const tsProjectVersion = AngularVersionUtil.cleanVersion(
-                                projectDevDependencies.typescript
-                            );
+                        const projectDevDependencies =
+                            parsedData.devDependencies;
+                        if (
+                            projectDevDependencies &&
+                            projectDevDependencies.typescript
+                        ) {
+                            const tsProjectVersion =
+                                AngularVersionUtil.cleanVersion(
+                                    projectDevDependencies.typescript,
+                                );
                             console.log(
-                                `TypeScript version of current project : ${tsProjectVersion}`
+                                `TypeScript version of current project : ${tsProjectVersion}`,
                             );
-                            console.log('');
+                            console.log("");
                         }
                     }
                 }
                 console.log(`Node.js version : ${process.version}`);
-                console.log('');
-                console.log(`Operating system : ${osName(os.platform(), os.release())}`);
-                console.log('');
+                console.log("");
+                console.log(
+                    `Operating system : ${osName(os.platform(), os.release())}`,
+                );
+                console.log("");
             }
         }
 
         if (configExplorerResult) {
-            if (typeof configExplorerResult.config !== 'undefined') {
-                logger.info(`Using configuration file : ${configExplorerResult.filepath}`);
+            if (typeof configExplorerResult.config !== "undefined") {
+                logger.info(
+                    `Using configuration file : ${configExplorerResult.filepath}`,
+                );
             }
         }
 
@@ -665,13 +816,19 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             logger.warn(`No configuration file found, switching to CLI flags.`);
         }
 
-        if (programOptions.language && !I18nEngine.supportLanguage(programOptions.language)) {
+        if (
+            programOptions.language &&
+            !I18nEngine.supportLanguage(programOptions.language)
+        ) {
             logger.warn(
-                `The language ${programOptions.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`
+                `The language ${programOptions.language} is not available, falling back to ${I18nEngine.fallbackLanguage}`,
             );
         }
 
-        if (programOptions.tsconfig && typeof programOptions.tsconfig === 'boolean') {
+        if (
+            programOptions.tsconfig &&
+            typeof programOptions.tsconfig === "boolean"
+        ) {
             logger.error(`Please provide a tsconfig file.`);
             process.exit(1);
         }
@@ -684,7 +841,8 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         }
 
         if (programOptions.maxSearchResults) {
-            Configuration.mainData.maxSearchResults = programOptions.maxSearchResults;
+            Configuration.mainData.maxSearchResults =
+                programOptions.maxSearchResults;
         }
 
         if (configFile.files) {
@@ -700,24 +858,30 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         /**
          * Check --files argument call
          */
-        const argv = require('minimist')(process.argv.slice(2));
+        const argv = require("minimist")(process.argv.slice(2));
         if (argv && argv.files) {
             Configuration.mainData.hasFilesToCoverage = true;
-            if (typeof argv.files === 'string') {
+            if (typeof argv.files === "string") {
                 super.setFiles([argv.files]);
             } else {
                 super.setFiles(argv.files);
             }
         }
 
-        if (programOptions.serve && !Configuration.mainData.tsconfig && programOptions.output) {
+        if (
+            programOptions.serve &&
+            !Configuration.mainData.tsconfig &&
+            programOptions.output
+        ) {
             // if -s & -d, serve it
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
-                logger.error(`${Configuration.mainData.output} folder doesn't exist`);
+                logger.error(
+                    `${Configuration.mainData.output} folder doesn't exist`,
+                );
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`,
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
@@ -728,20 +892,20 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
         ) {
             // if only -s find ./documentation, if ok serve, else error provide -d
             if (!FileEngine.existsSync(Configuration.mainData.output)) {
-                logger.error('Provide output generated folder with -d flag');
+                logger.error("Provide output generated folder with -d flag");
                 process.exit(1);
             } else {
                 logger.info(
-                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`
+                    `Serving documentation from ${Configuration.mainData.output} at http://${Configuration.mainData.hostname}:${programOptions.port}`,
                 );
                 super.runWebServer(Configuration.mainData.output);
             }
         } else if (Configuration.mainData.hasFilesToCoverage) {
             if (programOptions.coverageMinimumPerFile) {
-                logger.info('Run documentation coverage test for files');
+                logger.info("Run documentation coverage test for files");
                 super.testCoverage();
             } else {
-                logger.error('Missing coverage configuration');
+                logger.error("Missing coverage configuration");
             }
         } else {
             if (programOptions.hideGenerator) {
@@ -752,12 +916,14 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 /**
                  * tsconfig file provided only
                  */
-                const testTsConfigPath = Configuration.mainData.tsconfig.indexOf(process.cwd());
+                const testTsConfigPath =
+                    Configuration.mainData.tsconfig.indexOf(process.cwd());
                 if (testTsConfigPath !== -1) {
-                    Configuration.mainData.tsconfig = Configuration.mainData.tsconfig.replace(
-                        process.cwd() + path.sep,
-                        ''
-                    );
+                    Configuration.mainData.tsconfig =
+                        Configuration.mainData.tsconfig.replace(
+                            process.cwd() + path.sep,
+                            "",
+                        );
                 }
 
                 let sourceFolder;
@@ -765,51 +931,62 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     /**
                      * tsconfig file provided with source folder in arg
                      */
-                    const testTsConfigPath = Configuration.mainData.tsconfig.indexOf(process.cwd());
+                    const testTsConfigPath =
+                        Configuration.mainData.tsconfig.indexOf(process.cwd());
                     if (testTsConfigPath !== -1) {
-                        Configuration.mainData.tsconfig = Configuration.mainData.tsconfig.replace(
-                            process.cwd() + path.sep,
-                            ''
-                        );
+                        Configuration.mainData.tsconfig =
+                            Configuration.mainData.tsconfig.replace(
+                                process.cwd() + path.sep,
+                                "",
+                            );
                     }
 
                     sourceFolder = program.args[0];
                     if (!FileEngine.existsSync(sourceFolder)) {
                         logger.error(
-                            `Provided source folder ${sourceFolder} was not found in the current directory`
+                            `Provided source folder ${sourceFolder} was not found in the current directory`,
                         );
                         process.exit(1);
                     } else {
-                        logger.info('Using provided source folder');
+                        logger.info("Using provided source folder");
                     }
                 }
 
                 if (!FileEngine.existsSync(Configuration.mainData.tsconfig)) {
                     logger.error(
-                        `"${Configuration.mainData.tsconfig}" file was not found in the current directory`
+                        `"${Configuration.mainData.tsconfig}" file was not found in the current directory`,
                     );
                     process.exit(1);
                 } else {
                     const _file = path.join(
-                        path.join(process.cwd(), path.dirname(Configuration.mainData.tsconfig)),
-                        path.basename(Configuration.mainData.tsconfig)
+                        path.join(
+                            process.cwd(),
+                            path.dirname(Configuration.mainData.tsconfig),
+                        ),
+                        path.basename(Configuration.mainData.tsconfig),
                     );
                     // use the current directory of tsconfig.json as a working directory
                     cwd = _file.split(path.sep).slice(0, -1).join(path.sep);
-                    logger.info('Using tsconfig file ', _file);
+                    logger.info("Using tsconfig file ", _file);
 
                     const tsConfigFile = readConfig(_file);
                     if (tsConfigFile.files) {
                         scannedFiles = tsConfigFile.files;
                         // Normalize path of these files
-                        scannedFiles = scannedFiles.map(scannedFile => {
+                        scannedFiles = scannedFiles.map((scannedFile) => {
                             return cwd + path.sep + scannedFile;
                         });
                     }
 
                     // even if files are supplied with "files" attributes, enhance the array with includes
-                    excludeFiles = [...excludeFiles, ...(tsConfigFile.exclude || [])];
-                    includeFiles = [...includeFiles, ...(tsConfigFile.include || [])];
+                    excludeFiles = [
+                        ...excludeFiles,
+                        ...(tsConfigFile.exclude || []),
+                    ];
+                    includeFiles = [
+                        ...includeFiles,
+                        ...(tsConfigFile.include || []),
+                    ];
 
                     if (scannedFiles.length > 0) {
                         includeFiles = [...includeFiles, ...scannedFiles];
@@ -821,28 +998,37 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     // If publicApiOnly is set, parse the public API exports first
                     if (Configuration.mainData.publicApiOnly) {
-                        await this.processPublicApi(Configuration.mainData.publicApiOnly, cwd);
+                        await this.processPublicApi(
+                            Configuration.mainData.publicApiOnly,
+                            cwd,
+                        );
                     }
 
                     const stream = fg.stream(includeFiles, {
                         cwd: sourceFolder || cwd,
                         ignore: excludeFiles,
-                        absolute: true
+                        absolute: true,
                     });
 
-                    stream.on('data', file => {
-                        if (path.extname(file) === '.ts' || path.extname(file) === '.tsx') {
-                            logger.debug('Including', file);
+                    stream.on("data", (file) => {
+                        if (
+                            path.extname(file) === ".ts" ||
+                            path.extname(file) === ".tsx"
+                        ) {
+                            logger.debug("Including", file);
                             scannedFiles.push(file);
                         } else {
-                            logger.warn('Excluding', file);
+                            logger.warn("Excluding", file);
                         }
                     });
 
-                    stream.on('end', () => {
+                    stream.on("end", () => {
                         super.setFiles(scannedFiles);
-                        if (programOptions.coverageTest || programOptions.coverageTestPerFile) {
-                            logger.info('Run documentation coverage test');
+                        if (
+                            programOptions.coverageTest ||
+                            programOptions.coverageTestPerFile
+                        ) {
+                            logger.info("Run documentation coverage test");
                             super.testCoverage();
                         } else {
                             super.generate();
@@ -850,7 +1036,9 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     });
                 }
             } else {
-                logger.error('tsconfig.json file was not found, please use -p flag');
+                logger.error(
+                    "tsconfig.json file was not found, please use -p flag",
+                );
                 outputHelp();
             }
         }
@@ -859,17 +1047,26 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
     /**
      * Process public API exports from dist folder or API markdown files
      */
-    private async processPublicApi(distPath: string, sourceRoot: string): Promise<void> {
-        logger.info('Processing public API exports');
+    private async processPublicApi(
+        distPath: string,
+        sourceRoot: string,
+    ): Promise<void> {
+        logger.info("Processing public API exports");
 
         try {
             // First, try to parse API markdown files from the source root
-            logger.info('Checking for *.api.md files in source root');
-            const apiMarkdownExports = await parseApiMarkdownExports(sourceRoot);
+            logger.info("Checking for *.api.md files in source root");
+            const apiMarkdownExports =
+                await parseApiMarkdownExports(sourceRoot);
 
-            if (apiMarkdownExports.apiMdFiles.size > 0 && apiMarkdownExports.symbolToFiles.size > 0) {
-                logger.info(`Found ${apiMarkdownExports.apiMdFiles.size} relevant *.api.md file(s) with ${apiMarkdownExports.symbolToFiles.size} symbol(s)`);
-                
+            if (
+                apiMarkdownExports.apiMdFiles.size > 0 &&
+                apiMarkdownExports.symbolToFiles.size > 0
+            ) {
+                logger.info(
+                    `Found ${apiMarkdownExports.apiMdFiles.size} relevant *.api.md file(s) with ${apiMarkdownExports.symbolToFiles.size} symbol(s)`,
+                );
+
                 // Map symbols from API markdown files directly to source files
                 const symbolToSourceFiles = new Map<string, Set<string>>();
 
@@ -877,7 +1074,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     const sourceFiles = new Set<string>();
 
                     // Find the corresponding source file for this symbol
-                    const sourceFile = this.findSourceFileForSymbol(symbolName, sourceRoot);
+                    const sourceFile = this.findSourceFileForSymbol(
+                        symbolName,
+                        sourceRoot,
+                    );
                     if (sourceFile) {
                         sourceFiles.add(sourceFile);
                     }
@@ -885,7 +1085,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     if (sourceFiles.size > 0) {
                         symbolToSourceFiles.set(symbolName, sourceFiles);
                         logger.debug(
-                            `Public API symbol: ${symbolName} -> ${Array.from(sourceFiles).join(', ')}`
+                            `Public API symbol: ${symbolName} -> ${Array.from(sourceFiles).join(", ")}`,
                         );
                     }
                 }
@@ -894,16 +1094,20 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 Configuration.mainData.publicApiExports = symbolToSourceFiles;
 
                 logger.info(
-                    `Loaded ${symbolToSourceFiles.size} public API symbol(s) from ${apiMarkdownExports.apiMdFiles.size} *.api.md file(s) (using API Markdown parser)`
+                    `Loaded ${symbolToSourceFiles.size} public API symbol(s) from ${apiMarkdownExports.apiMdFiles.size} *.api.md file(s) (using API Markdown parser)`,
                 );
             } else {
                 // Fall back to index.d.ts parsing
-                logger.info('No relevant *.api.md files found, falling back to index.d.ts parsing');
-                
+                logger.info(
+                    "No relevant *.api.md files found, falling back to index.d.ts parsing",
+                );
+
                 const publicApiExports = await parsePublicApi(distPath);
 
                 if (publicApiExports.symbolToFiles.size === 0) {
-                    logger.warn('No public API exports found in dist folder. Documentation will be empty.');
+                    logger.warn(
+                        "No public API exports found in dist folder. Documentation will be empty.",
+                    );
                     return;
                 }
 
@@ -913,7 +1117,10 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 // Map symbols to source files and build the allowed exports map
                 const symbolToSourceFiles = new Map<string, Set<string>>();
 
-                for (const [symbolName, declFiles] of publicApiExports.symbolToFiles) {
+                for (const [
+                    symbolName,
+                    declFiles,
+                ] of publicApiExports.symbolToFiles) {
                     const sourceFiles = new Set<string>();
 
                     for (const declFile of declFiles) {
@@ -926,7 +1133,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     if (sourceFiles.size > 0) {
                         symbolToSourceFiles.set(symbolName, sourceFiles);
                         logger.debug(
-                            `Public API symbol: ${symbolName} -> ${Array.from(sourceFiles).join(', ')}`
+                            `Public API symbol: ${symbolName} -> ${Array.from(sourceFiles).join(", ")}`,
                         );
                     }
                 }
@@ -935,11 +1142,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 Configuration.mainData.publicApiExports = symbolToSourceFiles;
 
                 logger.info(
-                    `Loaded ${symbolToSourceFiles.size} public API symbol(s) from ${publicApiExports.indexFiles.size} index.d.ts file(s) (using index.d.ts parser)`
+                    `Loaded ${symbolToSourceFiles.size} public API symbol(s) from ${publicApiExports.indexFiles.size} index.d.ts file(s) (using index.d.ts parser)`,
                 );
             }
         } catch (error) {
-            logger.error('Error processing public API:', error);
+            logger.error("Error processing public API:", error);
             throw error;
         }
     }
@@ -947,18 +1154,21 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
     /**
      * Find the source file for a given symbol by searching through the source files
      */
-    private findSourceFileForSymbol(symbolName: string, sourceRoot: string): string | null {
+    private findSourceFileForSymbol(
+        symbolName: string,
+        sourceRoot: string,
+    ): string | null {
         // Try to find the symbol in source files
         // This is a simplified approach - look for files that contain the symbol export
         const sourceFolder = sourceRoot;
-        
+
         try {
-            const files = fg.sync(path.join(sourceFolder, '**/*.ts'), {
-                ignore: ['**/node_modules/**', '**/*.spec.ts', '**/*.d.ts']
+            const files = fg.sync(path.join(sourceFolder, "**/*.ts"), {
+                ignore: ["**/node_modules/**", "**/*.spec.ts", "**/*.d.ts"],
             });
 
             for (const file of files) {
-                const content = fs.readFileSync(file, 'utf-8');
+                const content = fs.readFileSync(file, "utf-8");
                 // Look for export patterns that match the symbol name
                 const patterns = [
                     `export class ${symbolName}`,
@@ -968,7 +1178,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                     `export type ${symbolName}`,
                     `export enum ${symbolName}`,
                     `export { ${symbolName}`,
-                    `export default ${symbolName}`
+                    `export default ${symbolName}`,
                 ];
 
                 for (const pattern of patterns) {
