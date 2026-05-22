@@ -772,4 +772,88 @@ describe('ClassHelper', () => {
             expect(result.argsDecorator).to.deep.equal(['$event']);
         });
     });
+
+    describe('visitConstructorDeclaration — @param description threading', () => {
+        let mockSourceFile: ts.SourceFile;
+
+        beforeEach(() => {
+            mockSourceFile = project.createSourceFile('test-ctor.ts', '').compilerNode;
+        });
+
+        it('should thread @param descriptions into result.args', () => {
+            const ctor = {
+                parameters: [
+                    {
+                        name: { text: 'name', kind: SyntaxKind.Identifier },
+                        type: { kind: SyntaxKind.StringKeyword },
+                        dotDotDotToken: undefined,
+                        questionToken: undefined,
+                        initializer: undefined
+                    }
+                ],
+                modifiers: [],
+                jsDoc: [],
+                kind: SyntaxKind.Constructor,
+                pos: 0,
+                end: 50,
+                getStart: () => 0,
+                getSourceFile: () => mockSourceFile
+            } as any;
+
+            // Simulate a @param JSDoc tag with a description
+            jsdocParserStub.getJSDocs.returns([
+                {
+                    tags: [
+                        {
+                            tagName: { text: 'param' },
+                            name: { text: 'name' },
+                            comment: "The person's name"
+                        }
+                    ]
+                }
+            ]);
+            jsdocParserStub.getMainCommentOfNode.returns('');
+            jsdocParserStub.parseComment.returns('');
+            jsdocParserStub.parseJSDocNode.callsFake((v: any) =>
+                typeof v === 'string' ? v : ''
+            );
+
+            const result = (classHelper as any).visitConstructorDeclaration(ctor, mockSourceFile);
+
+            expect(result.args).to.be.an('array').with.length(1);
+            expect(result.args[0]).to.have.property('name', 'name');
+            // description is populated from the @param comment (may be Markdown-rendered)
+            expect(result.args[0]).to.have.property('description').that.includes('name');
+        });
+
+        it('should leave args.description unset when there are no @param tags', () => {
+            const ctor = {
+                parameters: [
+                    {
+                        name: { text: 'count', kind: SyntaxKind.Identifier },
+                        type: { kind: SyntaxKind.NumberKeyword },
+                        dotDotDotToken: undefined,
+                        questionToken: undefined,
+                        initializer: undefined
+                    }
+                ],
+                modifiers: [],
+                jsDoc: [],
+                kind: SyntaxKind.Constructor,
+                pos: 0,
+                end: 30,
+                getStart: () => 0,
+                getSourceFile: () => mockSourceFile
+            } as any;
+
+            jsdocParserStub.getJSDocs.returns([]);
+            jsdocParserStub.getMainCommentOfNode.returns('');
+            jsdocParserStub.parseComment.returns('');
+
+            const result = (classHelper as any).visitConstructorDeclaration(ctor, mockSourceFile);
+
+            expect(result.args).to.be.an('array').with.length(1);
+            expect(result.args[0]).to.not.have.property('description');
+        });
+    });
 });
