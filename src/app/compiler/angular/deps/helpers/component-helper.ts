@@ -233,7 +233,14 @@ export class ComponentHelper {
         // it is the options object — not a default value.
         // e.g. output({ alias: 'x' }) or input.required<T>({ alias: 'x' })
         const isSoleArgOptions = !secondArg && !!firstArg?.trimStart().startsWith('{');
-        const signalDefaultValue = isSoleArgOptions ? undefined : firstArg;
+        let signalDefaultValue = isSoleArgOptions ? undefined : firstArg;
+
+        // Normalize arrow function defaults with block bodies to '() => {...}' (issue #1652).
+        // This is consistent with how class-helper.ts handles ArrowFunction initializers directly,
+        // and avoids exposing implementation details in the generated documentation.
+        if (signalDefaultValue && /\)\s*=>\s*\{/.test(signalDefaultValue)) {
+            signalDefaultValue = '() => {...}';
+        }
 
         // Extract the alias from the options object (second argument), if present.
         // Valid HTML attribute names allow any characters except ASCII control chars,

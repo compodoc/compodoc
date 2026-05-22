@@ -333,6 +333,34 @@ describe('ComponentHelper', () => {
             });
         });
 
+        it('should normalize arrow function with block body default to "() => {...}" without hanging (issue #1652)', () => {
+            // This case caused a freeze with the old regex: an inline arrow function with a
+            // complex block body as the default value of input().
+            const defaultValue =
+                `input<() => string[]>(() => {\n` +
+                `    const result = ['a', 'b'];\n` +
+                `    return result;\n` +
+                `})`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: '() => string[]',
+                defaultValue: '() => {...}'
+            });
+        });
+
+        it('should not normalize simple (non-block) arrow function defaults (issue #1652)', () => {
+            const defaultValue = `input<() => string[]>(() => ['a', 'b'])`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: '() => string[]',
+                defaultValue: `() => ['a', 'b']`
+            });
+        });
+
         it('should extract only the first argument as defaultValue, ignoring the options object', () => {
             // The options object (second argument) must not leak into defaultValue
             const defaultValue = `input(null, { alias: 'aliasedInSignal' })`;
@@ -464,7 +492,10 @@ describe('ComponentHelper', () => {
         });
 
         it('should override prop name with alias from signal options', () => {
-            const prop = { name: 'myInput', defaultValue: `input<string>('hello', { alias: 'my-aliased-input' })` };
+            const prop = {
+                name: 'myInput',
+                defaultValue: `input<string>('hello', { alias: 'my-aliased-input' })`
+            };
             const result = componentHelper.getInputSignal(prop);
 
             expect(result).to.deep.equal({
@@ -497,7 +528,10 @@ describe('ComponentHelper', () => {
         });
 
         it('should override prop name with alias from output signal options', () => {
-            const prop = { name: 'myOutput', defaultValue: `output<string>({ alias: 'my-aliased-output' })` };
+            const prop = {
+                name: 'myOutput',
+                defaultValue: `output<string>({ alias: 'my-aliased-output' })`
+            };
             const result = componentHelper.getOutputSignal(prop);
 
             expect(result).to.deep.equal({
