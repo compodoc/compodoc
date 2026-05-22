@@ -167,7 +167,8 @@
         "supertest": "7.2.2",
         "ts-node": "10.9.2",
         "tsdown": "^0.22.0",
-        "tslib": "2.8.1"
+        "tslib": "2.8.1",
+        "unrun": "^0.3.0"
     },
     "collective": {
         "type": "opencollective",
