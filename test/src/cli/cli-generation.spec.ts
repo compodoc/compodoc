@@ -149,7 +149,7 @@ describe('CLI simple generation', () => {
          * inputs outputs
          */
         it('should generate inputs', () => {
-           expect(fooComponentFile).to.contain(`<h3 id="inputs">Inputs</h3>
+            expect(fooComponentFile).to.contain(`<h3 id="inputs">Inputs</h3>
         <table class="table table-sm table-bordered">
             <tbody>
                 <tr>
@@ -421,7 +421,7 @@ describe('CLI simple generation', () => {
                     </td>
                 </tr>
             </tbody>
-        </table>`)
+        </table>`);
         });
 
         it('should generate outputs', () => {
@@ -548,7 +548,7 @@ describe('CLI simple generation', () => {
                     </td>
                 </tr>
             </tbody>
-        </table>`)
+        </table>`);
         });
 
         /**
@@ -1428,7 +1428,9 @@ describe('CLI simple generation', () => {
         });
 
         it('should analyze routes definitions for spread elements (cleanFileSpreads)', () => {
-            expect(stdoutString).to.contain('Analysing routes definitions and clean them if necessary');
+            expect(stdoutString).to.contain(
+                'Analysing routes definitions and clean them if necessary'
+            );
         });
 
         it('should process property access expressions and call expressions', () => {
