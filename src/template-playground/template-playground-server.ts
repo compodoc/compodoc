@@ -386,6 +386,12 @@ export class TemplatePlaygroundServer {
     }
 
     private async runCompoDocForSession(sessionId: string): Promise<void> {
+        // Skip actual CLI execution in test mode to avoid slow/destructive side effects
+        if (process.env.NODE_ENV === 'test') {
+            logger.info(`[test mode] Skipping compodoc generation for session ${sessionId}`);
+            return;
+        }
+
         const session = this.sessions.get(sessionId);
         if (!session) {
             logger.error(`Session ${sessionId} not found`);
@@ -399,9 +405,24 @@ export class TemplatePlaygroundServer {
             // Use the configured fake project path with tsconfig.json
             const fakeProjectTsConfigPath = path.join(this.fakeProjectPath, 'tsconfig.json');
 
-            // Use absolute path to the CLI script, resolved relative to this module
-            // to avoid being affected by process.chdir() calls (e.g. in tests)
-            const cliPath = path.resolve(__dirname, '../../bin', 'index-cli.js');
+            // Resolve CLI path by walking up from __dirname until bin/index-cli.js is found.
+            // This works in production (__dirname = dist/), in tests (__dirname = test/dist/…),
+            // and survives process.chdir() calls made by test suites.
+            const findCli = (startDir: string): string | undefined => {
+                let dir = startDir;
+                for (let i = 0; i < 8; i++) {
+                    const candidate = path.join(dir, 'bin', 'index-cli.js');
+                    if (fs.existsSync(candidate)) return candidate;
+                    const parent = path.dirname(dir);
+                    if (parent === dir) break;
+                    dir = parent;
+                }
+                return undefined;
+            };
+            const cliPath =
+                process.env.COMPODOC_CLI_PATH ??
+                findCli(__dirname) ??
+                path.resolve(__dirname, '../bin', 'index-cli.js');
 
             // In test mode, check if CLI exists before proceeding
             if (process.env.NODE_ENV === 'test' && !fs.existsSync(cliPath)) {
