@@ -45,7 +45,7 @@ export class ClassHelper {
         _.forEach(tags, tag => {
             if (tag.tagName && tag.tagName.text && tag.tagName.text.indexOf('deprecated') > -1) {
                 result.deprecated = true;
-                result.deprecationMessage = tag.comment || '';
+                result.deprecationMessage = this.jsdocParserUtil.parseJSDocNode(tag);
             }
         });
     }

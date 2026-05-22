@@ -74,6 +74,11 @@ describe('CLI Deprecated', () => {
             expect(menuFile).to.contain('data-type="entity-link" class="deprecated-name">Tidi');
         });
 
+        it('it should not crash when @deprecated message contains an inline {@link}', () => {
+            const file = read(`${distFolder}/classes/Tidi.html`);
+            expect(file).to.contain('{@link Direction}');
+        });
+
         it('it should contain interceptor deprecated and APIs inside', () => {
             const file = read(`${distFolder}/interceptors/NoopInterceptor.html`);
             expect(file).to.contain('<h3 class="deprecated">Deprecated');

@@ -5,7 +5,7 @@ import { LogMethod, LogProperty, LogPropertyWithArgs, LogClass } from '../decora
 /**
  * The tidi class
  *
- * @deprecated This class is deprecated
+ * @deprecated Use {@link Direction} instead
  */
 @LogClass
 export class Tidi {
