@@ -7,6 +7,7 @@ import {
 } from '../../../../../../../src/app/compiler/angular/deps/helpers/component-helper';
 import { ClassHelper } from '../../../../../../../src/app/compiler/angular/deps/helpers/class-helper';
 import { SymbolHelper } from '../../../../../../../src/app/compiler/angular/deps/helpers/symbol-helper';
+import Configuration from '../../../../../../../src/app/configuration';
 
 describe('ComponentHelper', () => {
     let componentHelper: ComponentHelper;
@@ -136,11 +137,33 @@ describe('ComponentHelper', () => {
             expect(result).to.be.false;
         });
 
-        it('should return null when no standalone property found', () => {
+        it('should return null when no standalone property found and no Angular version set', () => {
             const props = createMockProps({});
             symbolHelperStub.getSymbolDeps.returns([]);
 
             const result = componentHelper.getComponentStandalone(props, sourceFile);
+
+            expect(result).to.be.null;
+        });
+
+        it('should return true when no standalone property found and Angular version is >= 19', () => {
+            const props = createMockProps({});
+            symbolHelperStub.getSymbolDeps.returns([]);
+
+            Configuration.mainData.angularVersion = '19.0.0';
+            const result = componentHelper.getComponentStandalone(props, sourceFile);
+            Configuration.mainData.angularVersion = '';
+
+            expect(result).to.be.true;
+        });
+
+        it('should return null when no standalone property found and Angular version is < 19', () => {
+            const props = createMockProps({});
+            symbolHelperStub.getSymbolDeps.returns([]);
+
+            Configuration.mainData.angularVersion = '18.2.0';
+            const result = componentHelper.getComponentStandalone(props, sourceFile);
+            Configuration.mainData.angularVersion = '';
 
             expect(result).to.be.null;
         });

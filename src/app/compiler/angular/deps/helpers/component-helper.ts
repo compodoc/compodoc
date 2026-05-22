@@ -1,4 +1,6 @@
+import * as semver from 'semver';
 import { SyntaxKind, ts } from 'ts-morph';
+import Configuration from '../../../../configuration';
 import { detectIndent } from '../../../../../utils';
 import { ClassHelper } from './class-helper';
 import { IParseDeepIdentifierResult, SymbolHelper } from './symbol-helper';
@@ -326,6 +328,14 @@ export class ComponentHelper {
         const parsedData = this.symbolHelper.getSymbolDeps(props, 'standalone', srcFile);
         if (parsedData.length === 1) {
             result = JSON.parse(parsedData[0]);
+        }
+
+        if (result === null) {
+            const angularVersion = Configuration.mainData.angularVersion;
+            const coerced = angularVersion ? semver.coerce(angularVersion) : null;
+            if (coerced && semver.valid(coerced) && semver.gte(coerced.version, '19.0.0')) {
+                result = true;
+            }
         }
 
         return result;
