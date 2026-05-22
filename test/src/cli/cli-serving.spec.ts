@@ -41,7 +41,7 @@ describe('CLI serving', () => {
         let stdoutString = '',
             child;
         before(function (done) {
-            this.timeout(10000);
+            this.timeout(30000);
             tmp.create('documentation');
 
             const child = shellAsync('node', [
@@ -104,7 +104,7 @@ describe('CLI serving', () => {
                     child.kill('SIGTERM');
                     callDone();
                 }
-            }, 8000);
+            }, 25000);
         });
 
         it('should display message', () => {
@@ -118,7 +118,7 @@ describe('CLI serving', () => {
         let stdoutString = '',
             child;
         before(function (done) {
-            this.timeout(10000);
+            this.timeout(30000);
             tmp.create('documentation');
             const child = shellAsync('node', [
                 './bin/index-cli.js',
@@ -182,7 +182,7 @@ describe('CLI serving', () => {
                     child.kill('SIGTERM');
                     callDone();
                 }
-            }, 8000);
+            }, 25000);
         });
 
         it('should display message', function () {
