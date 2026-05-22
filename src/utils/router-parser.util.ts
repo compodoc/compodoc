@@ -168,13 +168,15 @@ export class RouterParserUtil {
                                             if (
                                                 argument.text &&
                                                 route.name === argument.text &&
-                                                route.filename === this.modulesWithRoutes[i].filename
+                                                route.filename ===
+                                                    this.modulesWithRoutes[i].filename
                                             ) {
                                                 route.module = this.modulesWithRoutes[i].name;
                                             } else if (
                                                 argument.text &&
                                                 route.name === argument.text &&
-                                                route.filename !== this.modulesWithRoutes[i].filename
+                                                route.filename !==
+                                                    this.modulesWithRoutes[i].filename
                                             ) {
                                                 let argumentImportPath =
                                                     ImportsUtil.findFilePathOfImportedVariable(
@@ -247,21 +249,26 @@ export class RouterParserUtil {
         // modulesTree contains modules tree
         // make a final routes tree with that
         // Create an enhanced routes tree with comprehensive validation to prevent undefined entries
-        if (this.routes.length > 0 || (this.modulesWithRoutes && this.modulesWithRoutes.length > 0)) {
+        if (
+            this.routes.length > 0 ||
+            (this.modulesWithRoutes && this.modulesWithRoutes.length > 0)
+        ) {
             const validChildren = [];
-            
+
             // Comprehensive validation function to prevent any undefined/invalid entries
             const isValidName = (name: string): boolean => {
-                return name && 
-                       typeof name === 'string' && 
-                       name.trim() !== '' && 
-                       name !== 'undefined' && 
-                       name !== 'null' &&
-                       !name.includes('undefined') &&
-                       name.length > 0 &&
-                       !/^\s*$/.test(name);  // Not just whitespace
+                return (
+                    name &&
+                    typeof name === 'string' &&
+                    name.trim() !== '' &&
+                    name !== 'undefined' &&
+                    name !== 'null' &&
+                    !name.includes('undefined') &&
+                    name.length > 0 &&
+                    !/^\s*$/.test(name)
+                ); // Not just whitespace
             };
-            
+
             // Process routes data if available to extract components and paths
             for (const route of this.routes) {
                 try {
@@ -290,40 +297,47 @@ export class RouterParserUtil {
                     }
                 } catch (e) {
                     // JSON parsing failed, try regex extraction with strict validation
-                    
+
                     // Extract component names with rigorous validation
-                    const componentMatches = route.data.match(/"component"\s*:\s*"(\w+Component)"/g);
+                    const componentMatches = route.data.match(
+                        /"component"\s*:\s*"(\w+Component)"/g
+                    );
                     if (componentMatches) {
                         for (const match of componentMatches) {
-                            const componentNameMatch = match.match(/"component"\s*:\s*"(\w+Component)"/);
+                            const componentNameMatch = match.match(
+                                /"component"\s*:\s*"(\w+Component)"/
+                            );
                             if (componentNameMatch && isValidName(componentNameMatch[1])) {
                                 validChildren.push({
                                     name: componentNameMatch[1],
-                                    kind: 'component', 
+                                    kind: 'component',
                                     filename: route.filename
                                 });
                             }
                         }
                     }
-                    
+
                     // Extract path values with strict validation (avoiding problematic patterns)
                     const pathMatches = route.data.match(/"path"\s*:\s*"([^"]+)"/g);
                     if (pathMatches) {
                         for (const match of pathMatches) {
                             const pathNameMatch = match.match(/"path"\s*:\s*"([^"]+)"/);
-                            if (pathNameMatch && 
+                            if (
+                                pathNameMatch &&
                                 isValidName(pathNameMatch[1]) &&
                                 !pathNameMatch[1].includes('ABOUT_ENUMS') &&
-                                !pathNameMatch[1].includes('.')) {  // Avoid dynamic property access
+                                !pathNameMatch[1].includes('.')
+                            ) {
+                                // Avoid dynamic property access
                                 validChildren.push({
                                     name: pathNameMatch[1],
-                                    kind: 'route-path', 
+                                    kind: 'route-path',
                                     filename: route.filename
                                 });
                             }
                         }
                     }
-                    
+
                     // Extract redirectTo values with strict validation
                     const redirectMatches = route.data.match(/"redirectTo"\s*:\s*"([^"]+)"/g);
                     if (redirectMatches) {
@@ -332,31 +346,31 @@ export class RouterParserUtil {
                             if (redirectNameMatch && isValidName(redirectNameMatch[1])) {
                                 validChildren.push({
                                     name: redirectNameMatch[1],
-                                    kind: 'route-redirect', 
+                                    kind: 'route-redirect',
                                     filename: route.filename
                                 });
                             }
                         }
                     }
-                    
+
                     // Handle static enum values by detecting enum.property patterns
                     const enumMappings = {
                         'ABOUT_ENUMS.todomvc': 'todomvcinstaticclass',
-                        'APP_ENUM.homeenumimported': 'homeenumimported', 
+                        'APP_ENUM.homeenumimported': 'homeenumimported',
                         'APP_ENUM.homeenuminfile': 'homeenuminfile'
                     };
-                    
+
                     for (const [enumPattern, staticValue] of Object.entries(enumMappings)) {
                         // Look for various patterns that might appear in route data:
                         const patterns = [
-                            enumPattern,                              // ABOUT_ENUMS.todomvc
-                            `"${enumPattern.replace('.', '"."')}"`,   // "ABOUT_ENUMS"."todomvc"
+                            enumPattern, // ABOUT_ENUMS.todomvc
+                            `"${enumPattern.replace('.', '"."')}"`, // "ABOUT_ENUMS"."todomvc"
                             `"${enumPattern.replace('.', '\\"."')}"`, // "ABOUT_ENUMS\."todomvc"
-                            enumPattern.replace('.', '"."'),         // ABOUT_ENUMS"."todomvc
-                            enumPattern.replace('.', '\\"."'),       // ABOUT_ENUMS\."todomvc
+                            enumPattern.replace('.', '"."'), // ABOUT_ENUMS"."todomvc
+                            enumPattern.replace('.', '\\"."'), // ABOUT_ENUMS\."todomvc
                             `"${enumPattern.split('.')[0]}"\\."${enumPattern.split('.')[1]}"` // "ABOUT_ENUMS"\."todomvc"
                         ];
-                        
+
                         let found = false;
                         for (const pattern of patterns) {
                             if (route.data.includes(pattern)) {
@@ -364,18 +378,18 @@ export class RouterParserUtil {
                                 break;
                             }
                         }
-                        
+
                         if (found && !validChildren.some(child => child.name === staticValue)) {
                             validChildren.push({
                                 name: staticValue,
-                                kind: 'route-path', 
+                                kind: 'route-path',
                                 filename: route.filename
                             });
                         }
                     }
                 }
             }
-            
+
             // Also include well-defined routing modules
             if (this.modulesWithRoutes) {
                 for (const module of this.modulesWithRoutes) {
@@ -388,17 +402,17 @@ export class RouterParserUtil {
                     }
                 }
             }
-            
+
             const routesTree = {
                 name: '<root>',
-                kind: 'module', 
+                kind: 'module',
                 className: this.rootModule,
                 children: validChildren
             };
-            
+
             return routesTree;
         }
-        
+
         traverse(this.modulesTree).forEach(function (node) {
             if (node) {
                 if (node.parent) {
@@ -434,7 +448,9 @@ export class RouterParserUtil {
                             logger.error(
                                 'Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.'
                             );
-                            logger.debug(`Route data for "${node.children[i].name}": ${route.data}`);
+                            logger.debug(
+                                `Route data for "${node.children[i].name}": ${route.data}`
+                            );
                             logger.debug(`Parse error: ${e.message}`);
                         }
                         delete route.data;
@@ -456,7 +472,7 @@ export class RouterParserUtil {
                     } catch (parseError) {
                         logger.error(
                             `Failed to parse route data for module "${node.name}". ` +
-                            `This may be caused by special characters in file paths or route configurations.`
+                                `This may be caused by special characters in file paths or route configurations.`
                         );
                         logger.debug(`Route data: ${rawRoutes.data}`);
                         logger.debug(`Parse error: ${parseError.message}`);
@@ -517,7 +533,7 @@ export class RouterParserUtil {
                             } catch (parseError) {
                                 logger.warn(
                                     `Failed to parse route data for module "${mod.children[z].name}". ` +
-                                    `Skipping route parsing for this module.`
+                                        `Skipping route parsing for this module.`
                                 );
                                 logger.debug(`Route data: ${route.data}`);
                                 logger.debug(`Parse error: ${parseError.message}`);
@@ -538,7 +554,7 @@ export class RouterParserUtil {
                         } catch (parseError) {
                             logger.warn(
                                 `Failed to parse route data for module "${mod.name}". ` +
-                                `Skipping route parsing for this module.`
+                                    `Skipping route parsing for this module.`
                             );
                             logger.debug(`Route data: ${route.data}`);
                             logger.debug(`Parse error: ${parseError.message}`);
@@ -877,9 +893,17 @@ export class RouterParserUtil {
                 );
             }
 
-            const referencedArray = referencedDeclaration.getInitializerIfKindOrThrow(
+            const referencedArray = referencedDeclaration.getInitializerIfKind(
                 SyntaxKind.ArrayLiteralExpression
             );
+            if (!referencedArray) {
+                const initializerKind =
+                    referencedDeclaration.getInitializer()?.getKindName() ?? 'unknown';
+                logger.warn(
+                    `Spread element "${spreadElement.getExpression().getText()}" has a non-array initializer (${initializerKind}) and cannot be inlined. Routes using computed arrays (e.g. via .map()) may not appear in the documentation.`
+                );
+                continue;
+            }
             const spreadElementArray = spreadElement.getParentIfKindOrThrow(
                 SyntaxKind.ArrayLiteralExpression
             );
@@ -968,12 +992,15 @@ export class RouterParserUtil {
         const variableDeclarations = sourceFile.getVariableDeclarations();
         const routesVariableDeclarations = variableDeclarations.filter(v => {
             const type = v.compilerNode.type;
-            if (typeof type !== 'undefined' && ts.isTypeReferenceNode(type) && typeof type.typeName !== 'undefined') {
+            if (
+                typeof type !== 'undefined' &&
+                ts.isTypeReferenceNode(type) &&
+                typeof type.typeName !== 'undefined'
+            ) {
                 return (type.typeName as ts.Identifier).text === 'Routes';
             }
             return false;
         });
-
 
         if (routesVariableDeclarations.length === 0) {
             return file;
@@ -1029,7 +1056,6 @@ export class RouterParserUtil {
         node: ts.Node,
         sourceFile: ts.SourceFile
     ): ts.Node {
-
         initializer.elements.forEach((element: ts.ObjectLiteralExpression) => {
             element.properties.forEach((property: ts.PropertyAssignment) => {
                 const propertyName = property.name.getText(),
@@ -1044,7 +1070,8 @@ export class RouterParserUtil {
                                 // Identifier(71) won't break parsing, but it will be better to retrive them
                                 // PropertyAccessExpression(179) ex: MYIMPORT.path will break it, find it in import
                                 if (
-                                    propertyInitializer.kind === SyntaxKind.PropertyAccessExpression &&
+                                    propertyInitializer.kind ===
+                                        SyntaxKind.PropertyAccessExpression &&
                                     ts.isPropertyAccessExpression(propertyInitializer)
                                 ) {
                                     let lastObjectLiteralAttributeName =

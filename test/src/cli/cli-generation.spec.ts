@@ -1442,4 +1442,39 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.contain('found          : AppRoutingModule');
         });
     });
+
+    describe('spread of computed array (routes via .map()) should not crash', () => {
+        const distFolder = tmp.name + '-router-spread-map';
+        let stdoutString = undefined;
+        let stderrString = undefined;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/router-spread-map/tsconfig.json',
+                '-d',
+                distFolder
+            ]);
+
+            stderrString = ls.stderr.toString();
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should complete without an unhandled rejection', () => {
+            expect(stderrString).to.not.contain('Unhandled Rejection');
+            expect(stderrString).to.not.contain('InvalidOperationError');
+        });
+
+        it('should generate documentation successfully', () => {
+            expect(stdoutString).to.contain('Documentation generated');
+        });
+
+        it('should emit a warning for the non-inlineable spread instead of throwing', () => {
+            expect(stdoutString).to.contain('allPartRoutes');
+        });
+    });
 });
