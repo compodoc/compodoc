@@ -118,7 +118,7 @@
         "loglevel": "^1.9.2",
         "loglevel-plugin-prefix": "^0.8.4",
         "lunr": "^2.3.9",
-        "marked": "7.0.3",
+        "marked": "18.0.4",
         "minimist": "^1.2.8",
         "neotraverse": "^0.6.18",
         "opencollective-postinstall": "^2.0.3",

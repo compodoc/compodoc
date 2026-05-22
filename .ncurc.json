@@ -1,4 +1,4 @@
 {
     "upgrade": false,
-    "reject": ["os-name", "marked", "chai", "cheerio", "uuid"]
+    "reject": ["os-name", "chai", "cheerio", "uuid"]
 }

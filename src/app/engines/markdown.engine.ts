@@ -26,45 +26,61 @@ export class MarkdownEngine {
         decache('marked');
         this.markedInstance = markedAcl;
 
-        const renderer = new this.markedInstance.Renderer();
-        renderer.code = (code, language) => {
-            let highlighted = code;
-            if (!language) {
-                language = 'none';
-            }
-
-            highlighted = this.escape(code);
-            return `<b>${I18nEngine.translate(
-                'example'
-            )} :</b><div><pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre></div>`;
-        };
-
-        renderer.table = (header, body) => {
-            return (
-                '<table class="table table-bordered compodoc-table">\n' +
-                '<thead>\n' +
-                header +
-                '</thead>\n' +
-                '<tbody>\n' +
-                body +
-                '</tbody>\n' +
-                '</table>\n'
-            );
-        };
-
-        renderer.image = function (href: string, title: string, text: string) {
-            let out = '<img src="' + href + '" alt="' + text + '" class="img-responsive"';
-            if (title) {
-                out += ' title="' + title + '"';
-            }
-            out += '>';
-            return out;
-        };
-
-        this.markedInstance.setOptions({
-            renderer: renderer,
+        const self = this;
+        this.markedInstance.use({
             gfm: true,
-            breaks: false
+            breaks: false,
+            renderer: {
+                code(token) {
+                    const language = token.lang || 'none';
+                    const highlighted = self.escape(token.text);
+                    return `<b>${I18nEngine.translate(
+                        'example'
+                    )} :</b><div><pre class="line-numbers"><code class="language-${language}">${highlighted}</code></pre></div>`;
+                },
+                table(token) {
+                    let header = '';
+                    for (const cell of token.header) {
+                        const align = cell.align ? ` style="text-align: ${cell.align}"` : '';
+                        header += `<th${align}>${this.parser.parseInline(cell.tokens)}</th>`;
+                    }
+                    header = `<tr>${header}</tr>\n`;
+
+                    let body = '';
+                    for (const row of token.rows) {
+                        let cells = '';
+                        for (const cell of row) {
+                            const align = cell.align ? ` style="text-align: ${cell.align}"` : '';
+                            cells += `<td${align}>${this.parser.parseInline(cell.tokens)}</td>`;
+                        }
+                        body += `<tr>${cells}</tr>\n`;
+                    }
+
+                    return (
+                        '<table class="table table-bordered compodoc-table">\n' +
+                        '<thead>\n' +
+                        header +
+                        '</thead>\n' +
+                        '<tbody>\n' +
+                        body +
+                        '</tbody>\n' +
+                        '</table>\n'
+                    );
+                },
+                image(token) {
+                    let out =
+                        '<img src="' +
+                        token.href +
+                        '" alt="' +
+                        token.text +
+                        '" class="img-responsive"';
+                    if (token.title) {
+                        out += ' title="' + token.title + '"';
+                    }
+                    out += '>';
+                    return out;
+                }
+            }
         });
     }
     public static getInstance() {

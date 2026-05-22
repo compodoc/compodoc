@@ -12,30 +12,22 @@ export class MarkdownToPDFEngine {
         const { marked } = require('marked');
         this.markedInstance = marked;
 
-        const renderer = new this.markedInstance.Renderer();
-
-        renderer.strong = text => {
-            // console.log('MarkdownToPDFEngine strong: ', text);
-            return { text: text, bold: true };
-        };
-
-        renderer.em = text => {
-            // console.log('MarkdownToPDFEngine em: ', text);
-            this.convertedTokens.push({ text: text, italics: true });
-            return text;
-        };
-
-        renderer.paragraph = text => {
-            // console.log('MarkdownToPDFEngine paragraph: ', text);
-            return text;
-        };
-
-        // TODO Add custom parser... -> https://github.com/markedjs/marked/issues/504
-
-        this.markedInstance.setOptions({
-            renderer: renderer,
+        const self = this;
+        this.markedInstance.use({
             gfm: true,
-            breaks: false
+            breaks: false,
+            renderer: {
+                strong(token) {
+                    return { text: token.text, bold: true };
+                },
+                em(token) {
+                    self.convertedTokens.push({ text: token.text, italics: true });
+                    return token.text;
+                },
+                paragraph(token) {
+                    return token.text;
+                }
+            }
         });
     }
     public static getInstance() {
