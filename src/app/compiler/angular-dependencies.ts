@@ -479,7 +479,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
         // Search in file for variable statement as routes definitions
 
-        const astFile =
+        let astFile =
             typeof project.getSourceFile(initialSrcFile.fileName) !== 'undefined'
                 ? project.getSourceFile(initialSrcFile.fileName)
                 : project.addSourceFileAtPath(initialSrcFile.fileName);
