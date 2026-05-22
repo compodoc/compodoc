@@ -31,7 +31,7 @@ describe('CLI Uniq id for file', () => {
         const expectedHash =
             process.platform === 'win32'
                 ? 'c48fd8283c5f5660d3412254501696cd5080663b5835017bc1e9eed1c6dd2b39afde4a46ac75ae8a261853dd21272e87c9451f4226401741750ea62ce2d23172'
-                : 'dc56f8262412f8df33eba175cdc6200ab5cce4608521dd0f6242b9de45c505d7725b7e4cf2e4631b42d759ae86a1aac7f44e1234c398a7c0aef94a1c45e15d29';
+                : '158bf392c406e8ef3801e83e8e0ffdb9b45d7482b0f3b6b12a7d29b1832e7161ee3e8fb870fea3332b07339e909f3aaa30c2a017cc2ed966c9a0b542ef2c1705';
 
         expect(indexFile).to.contain(expectedHash);
     });

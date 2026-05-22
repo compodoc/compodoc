@@ -14,7 +14,8 @@ describe('CLI simple generation', () => {
             moduleFile,
             emptyModuleFile,
             barModuleFile,
-            emptyModuleRawFile;
+            emptyModuleRawFile,
+            exampleTagComponentFile;
         before(function (done) {
             tmp.create(distFolder);
             let ls = shell('node', [
@@ -37,6 +38,7 @@ describe('CLI simple generation', () => {
             emptyModuleFile = read(`${distFolder}/modules/EmptyModule.html`);
             emptyModuleRawFile = read(`${distFolder}/modules/EmptyRawModule.html`);
             barModuleFile = read(`${distFolder}/modules/BarModule.html`);
+            exampleTagComponentFile = read(`${distFolder}/components/ExampleTagComponent.html`);
             done();
         });
         after(() => tmp.clean(distFolder));
@@ -114,6 +116,11 @@ describe('CLI simple generation', () => {
         it('it should have infos about FooService open function example', () => {
             expect(fooServiceFile).to.contain('<b>Example :</b>');
             expect(fooServiceFile).to.contain('FooService.open(');
+        });
+
+        it('it should render class-level @example on a component', () => {
+            expect(exampleTagComponentFile).to.contain('<b>Example :</b>');
+            expect(exampleTagComponentFile).to.contain('app-example-tag');
         });
 
         it('it should have link to TypeScript doc', () => {

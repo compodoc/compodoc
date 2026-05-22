@@ -6,6 +6,7 @@ import { BarComponent } from './bar.component';
 import { FooService } from './foo.service';
 import { BarModule } from './bar.module';
 import { FooModule } from './foo.module';
+import { ExampleTagComponent } from './example-tag.component';
 
 /**
  * AppModule description
@@ -13,7 +14,7 @@ import { FooModule } from './foo.module';
  * See {@link BarComponent}
  */
 @NgModule({
-    declarations: [FooDirective, FooComponent, BarComponent],
+    declarations: [FooDirective, FooComponent, BarComponent, ExampleTagComponent],
     providers: [FooService],
     imports: [BarModule, FooModule],
     bootstrap: [FooComponent]

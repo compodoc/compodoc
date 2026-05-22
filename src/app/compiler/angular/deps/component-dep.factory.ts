@@ -74,7 +74,9 @@ export class ComponentDepFactory {
             componentDep.methodsClass = cleanLifecycleHooksFromMethods(componentDep.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-            componentDep.jsdoctags = IO.jsdoctags[0].tags;
+            // IO.jsdoctags is already the flat array of marked tag objects produced
+            // by visitClassDeclaration — do not unwrap via [0].tags.
+            componentDep.jsdoctags = IO.jsdoctags;
         }
         if (IO.constructor && !Configuration.mainData.disableConstructors) {
             componentDep.constructorObj = IO.constructor;
@@ -89,10 +91,12 @@ export class ComponentDepFactory {
             componentDep.accessors = IO.accessors;
         }
         if (IO.properties) {
-            const {inputSignals, outputSignals, properties} = this.helper.getInputOutputSignals(IO.properties);
+            const { inputSignals, outputSignals, properties } = this.helper.getInputOutputSignals(
+                IO.properties
+            );
 
-            componentDep.inputsClass = componentDep.inputsClass.concat(inputSignals)
-            componentDep.outputsClass = componentDep.outputsClass.concat(outputSignals)
+            componentDep.inputsClass = componentDep.inputsClass.concat(inputSignals);
+            componentDep.outputsClass = componentDep.outputsClass.concat(outputSignals);
             componentDep.propertiesClass = properties;
         }
 

@@ -44,7 +44,9 @@ export class DirectiveDepFactory {
             directiveDeps.methodsClass = cleanLifecycleHooksFromMethods(directiveDeps.methodsClass);
         }
         if (IO.jsdoctags && IO.jsdoctags.length > 0) {
-            directiveDeps.jsdoctags = IO.jsdoctags[0].tags;
+            // IO.jsdoctags is already the flat array of marked tag objects produced
+            // by visitClassDeclaration — do not unwrap via [0].tags.
+            directiveDeps.jsdoctags = IO.jsdoctags;
         }
         if (IO.extends) {
             directiveDeps.extends = IO.extends;
@@ -59,10 +61,12 @@ export class DirectiveDepFactory {
             directiveDeps.accessors = IO.accessors;
         }
         if (IO.properties) {
-            const {inputSignals, outputSignals, properties} = this.helper.getInputOutputSignals(IO.properties);
+            const { inputSignals, outputSignals, properties } = this.helper.getInputOutputSignals(
+                IO.properties
+            );
 
-            directiveDeps.inputsClass = directiveDeps.inputsClass.concat(inputSignals)
-            directiveDeps.outputsClass = directiveDeps.outputsClass.concat(outputSignals)
+            directiveDeps.inputsClass = directiveDeps.inputsClass.concat(inputSignals);
+            directiveDeps.outputsClass = directiveDeps.outputsClass.concat(outputSignals);
             directiveDeps.propertiesClass = properties;
         }
         return directiveDeps;
