@@ -58,7 +58,7 @@ export class JsdocParserUtil {
             }
         }
 
-        const comments = _ts.getJSDocCommentRanges(node, sourceFile.text);
+        const comments = _ts.getJSDocCommentRanges(node as any, sourceFile.text);
         if (comments && comments.length) {
             let comment: ts.CommentRange;
             if (node.kind === ts.SyntaxKind.SourceFile) {
