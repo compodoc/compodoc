@@ -75,9 +75,12 @@ export class AngularDependencies extends FrameworkDependencies {
      * Initialize public API filtering if enabled
      */
     private initializePublicApiFiltering(): void {
-        if (Configuration.mainData.publicApiOnly && Configuration.mainData.publicApiExports.size > 0) {
+        if (
+            Configuration.mainData.publicApiOnly &&
+            Configuration.mainData.publicApiExports.size > 0
+        ) {
             logger.info('Public API filtering enabled');
-            
+
             // Build set of allowed symbols and files
             for (const [symbolName, sourceFiles] of Configuration.mainData.publicApiExports) {
                 this.allowedSymbols.add(symbolName);
@@ -86,7 +89,9 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
 
-            logger.info(`Allowed ${this.allowedSymbols.size} public API symbol(s) from ${this.allowedFiles.size} file(s)`);
+            logger.info(
+                `Allowed ${this.allowedSymbols.size} public API symbol(s) from ${this.allowedFiles.size} file(s)`
+            );
         }
     }
 
@@ -189,6 +194,17 @@ export class AngularDependencies extends FrameworkDependencies {
         // Try merging inside the same file declarated variables & modules with imports | exports | declarations | providers
 
         if (deps.miscellaneous.variables.length > 0) {
+            // Detect variable names that appear in more than one source file.
+            // When a collision exists we must scope the substitution to the declaring file
+            // to avoid replacing a same-named variable in an unrelated module.
+            const variableFilesByName = new Map<string, Set<string>>();
+            deps.miscellaneous.variables.forEach(v => {
+                if (!variableFilesByName.has(v.name)) {
+                    variableFilesByName.set(v.name, new Set());
+                }
+                variableFilesByName.get(v.name).add(v.file);
+            });
+
             deps.miscellaneous.variables.forEach(_variable => {
                 let newVar = [];
 
@@ -219,7 +235,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                         ) {
                                             const el = deps.miscellaneous.variables.find(
                                                 variable =>
-                                                    variable.name === element.expression.text
+                                                    variable.name === element.expression.text &&
+                                                    variable.file === _variable.file
                                             );
                                             if (el) {
                                                 elementsMatcher(el);
@@ -234,6 +251,15 @@ export class AngularDependencies extends FrameworkDependencies {
                 })(_variable, newVar);
 
                 const onLink = mod => {
+                    // When the same variable name is declared in multiple source files,
+                    // restrict substitution to the module that lives in the same file.
+                    // This prevents cross-file contamination while still allowing the
+                    // common pattern of importing an array from a separate barrel file.
+                    const nameHasCollision =
+                        (variableFilesByName.get(_variable.name)?.size ?? 0) > 1;
+                    if (nameHasCollision && mod.file !== _variable.file) {
+                        return;
+                    }
                     const process = (initialArray, _var) => {
                         let indexToClean = 0;
                         let found = false;
@@ -292,7 +318,6 @@ export class AngularDependencies extends FrameworkDependencies {
             RouterParserUtil.constructModulesTree();
 
             deps.routesTree = RouterParserUtil.constructRoutesTree();
-
         }
 
         return deps;
@@ -320,10 +345,11 @@ export class AngularDependencies extends FrameworkDependencies {
         deps.inputsClass = IO.inputs ?? [];
         deps.outputsClass = IO.outputs ?? [];
         if (IO.properties) {
-            const {inputSignals, outputSignals, properties} = this.componentHelper.getInputOutputSignals(IO.properties);
+            const { inputSignals, outputSignals, properties } =
+                this.componentHelper.getInputOutputSignals(IO.properties);
 
-            deps.inputsClass = deps.inputsClass.concat(inputSignals)
-            deps.outputsClass = deps.outputsClass.concat(outputSignals)
+            deps.inputsClass = deps.inputsClass.concat(inputSignals);
+            deps.outputsClass = deps.outputsClass.concat(outputSignals);
             deps.properties = properties;
         }
         if (IO.description) {
@@ -474,8 +500,6 @@ export class AngularDependencies extends FrameworkDependencies {
                             variableDeclarations[i].compilerNode.type.typeName.text === 'Routes'
                         ) {
                             hasRoutesStatements = true;
-                            
-
                         }
                     }
                 }
@@ -513,13 +537,13 @@ export class AngularDependencies extends FrameworkDependencies {
                         let deps: IDep;
 
                         const name = this.getSymboleName(node);
-                        
+
                         // Check if this decorated class is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
                             logger.debug(`Skipping decorated class ${name} (not in public API)`);
                             return;
                         }
-                        
+
                         const props = this.findProperties(visitedDecorator, srcFile);
                         const IO = this.componentHelper.getComponentIO(
                             file,
@@ -728,13 +752,13 @@ export class AngularDependencies extends FrameworkDependencies {
                         this.processClass(node, file, srcFile, outputSymbols, fileBody, astFile);
                     } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
                         const name = this.getSymboleName(node);
-                        
+
                         // Check if interface is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
                             logger.debug(`Skipping interface ${name} (not in public API)`);
                             return;
                         }
-                        
+
                         const IO = this.getInterfaceIO(file, srcFile, node, fileBody, astFile);
                         const interfaceDeps: IInterfaceDep = {
                             name,
@@ -773,13 +797,13 @@ export class AngularDependencies extends FrameworkDependencies {
                     } else if (ts.isFunctionDeclaration(node)) {
                         const infos = this.visitFunctionDeclaration(node);
                         const name = infos.name;
-                        
+
                         // Check if function is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
                             logger.debug(`Skipping function ${name} (not in public API)`);
                             return;
                         }
-                        
+
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
                         const functionDep: IFunctionDecDep = {
@@ -814,13 +838,13 @@ export class AngularDependencies extends FrameworkDependencies {
                     } else if (ts.isEnumDeclaration(node)) {
                         const infos = this.visitEnumDeclaration(node);
                         const name = infos.name;
-                        
+
                         // Check if enum is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
                             logger.debug(`Skipping enum ${name} (not in public API)`);
                             return;
                         }
-                        
+
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
                         const enumDeps: IEnumDecDep = {
@@ -842,13 +866,13 @@ export class AngularDependencies extends FrameworkDependencies {
                     } else if (ts.isTypeAliasDeclaration(node)) {
                         const infos = this.visitTypeDeclaration(node);
                         const name = infos.name;
-                        
+
                         // Check if type alias is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
                             logger.debug(`Skipping type alias ${name} (not in public API)`);
                             return;
                         }
-                        
+
                         const deprecated = infos.deprecated;
                         const deprecationMessage = infos.deprecationMessage;
                         const typeAliasDeps: ITypeAliasDecDep = {
@@ -981,115 +1005,122 @@ export class AngularDependencies extends FrameworkDependencies {
                         // Process all variables, including exported routes variables for miscellaneous
                         if (!isRoutesVariable || this.isExportedVariable(node)) {
                             let isDestructured = false;
-                        // Check for destructuring array
-                        const nodeVariableDeclarations = node.declarationList.declarations;
-                        if (nodeVariableDeclarations) {
-                            if (nodeVariableDeclarations.length > 0) {
-                                if (
-                                    nodeVariableDeclarations[0].name &&
-                                    nodeVariableDeclarations[0].name.kind ===
-                                        SyntaxKind.ArrayBindingPattern
-                                ) {
-                                    isDestructured = true;
-                                }
-                            }
-                        }
-
-                        const visitVariableNode = variableNode => {
-                            const infos: any = this.visitVariableDeclaration(variableNode);
-                            if (infos) {
-                                const name = infos.name;
-                                const deprecated = infos.deprecated;
-                                const deprecationMessage = infos.deprecationMessage;
-                                const deps: any = {
-                                    name,
-                                    ctype: 'miscellaneous',
-                                    subtype: 'variable',
-                                    file: file,
-                                    deprecated,
-                                    deprecationMessage
-                                };
-                                deps.type = infos.type ? infos.type : '';
-                                if (infos.defaultValue) {
-                                    deps.defaultValue = infos.defaultValue;
-                                }
-                                if (infos.initializer) {
-                                    deps.initializer = infos.initializer;
-                                }
-                                if (
-                                    variableNode.jsDoc &&
-                                    variableNode.jsDoc.length > 0 &&
-                                    variableNode.jsDoc[0].comment
-                                ) {
-                                    const rawDescription = this.jsdocParserUtil.parseJSDocNode(
-                                        variableNode.jsDoc[0]
-                                    );
-                                    deps.rawdescription = rawDescription;
-                                    deps.description = markedAcl(rawDescription);
-                                }
-                                if (isModuleWithProviders(variableNode)) {
-                                    const routingInitializer = getModuleWithProviders(variableNode);
-                                    RouterParserUtil.addModuleWithRoutes(
-                                        name,
-                                        [routingInitializer],
-                                        file
-                                    );
-                                    RouterParserUtil.addModule(name, [routingInitializer]);
-                                }
-                                if (!isIgnore(variableNode)) {
-                                    // Check if variable is allowed by public API filter
-                                    if (!this.isSymbolAllowed(name, file)) {
-                                        logger.debug(`Skipping variable ${name} (not in public API)`);
-                                        return;
+                            // Check for destructuring array
+                            const nodeVariableDeclarations = node.declarationList.declarations;
+                            if (nodeVariableDeclarations) {
+                                if (nodeVariableDeclarations.length > 0) {
+                                    if (
+                                        nodeVariableDeclarations[0].name &&
+                                        nodeVariableDeclarations[0].name.kind ===
+                                            SyntaxKind.ArrayBindingPattern
+                                    ) {
+                                        isDestructured = true;
                                     }
-                                    this.debug(deps);
-                                    outputSymbols.miscellaneous.variables.push(deps);
                                 }
                             }
-                        };
 
-                        if (isDestructured) {
-                            if (nodeVariableDeclarations[0].name.elements) {
-                                const destructuredVariables =
-                                    nodeVariableDeclarations[0].name.elements;
-
-                                for (let i = 0; i < destructuredVariables.length; i++) {
-                                    const destructuredVariable = destructuredVariables[i];
-                                    const name = destructuredVariable.name
-                                        ? destructuredVariable.name.escapedText
-                                        : '';
+                            const visitVariableNode = variableNode => {
+                                const infos: any = this.visitVariableDeclaration(variableNode);
+                                if (infos) {
+                                    const name = infos.name;
+                                    const deprecated = infos.deprecated;
+                                    const deprecationMessage = infos.deprecationMessage;
                                     const deps: any = {
                                         name,
                                         ctype: 'miscellaneous',
                                         subtype: 'variable',
-                                        file: file
+                                        file: file,
+                                        deprecated,
+                                        deprecationMessage
                                     };
-                                    if (nodeVariableDeclarations[0].initializer) {
-                                        if (nodeVariableDeclarations[0].initializer.elements) {
-                                            deps.initializer =
-                                                nodeVariableDeclarations[0].initializer.elements[i];
-                                        }
-                                        deps.defaultValue = deps.initializer
-                                            ? this.classHelper.stringifyDefaultValue(
-                                                  deps.initializer
-                                              )
-                                            : undefined;
+                                    deps.type = infos.type ? infos.type : '';
+                                    if (infos.defaultValue) {
+                                        deps.defaultValue = infos.defaultValue;
                                     }
-
-                                    if (!isIgnore(destructuredVariables[i])) {
+                                    if (infos.initializer) {
+                                        deps.initializer = infos.initializer;
+                                    }
+                                    if (
+                                        variableNode.jsDoc &&
+                                        variableNode.jsDoc.length > 0 &&
+                                        variableNode.jsDoc[0].comment
+                                    ) {
+                                        const rawDescription = this.jsdocParserUtil.parseJSDocNode(
+                                            variableNode.jsDoc[0]
+                                        );
+                                        deps.rawdescription = rawDescription;
+                                        deps.description = markedAcl(rawDescription);
+                                    }
+                                    if (isModuleWithProviders(variableNode)) {
+                                        const routingInitializer =
+                                            getModuleWithProviders(variableNode);
+                                        RouterParserUtil.addModuleWithRoutes(
+                                            name,
+                                            [routingInitializer],
+                                            file
+                                        );
+                                        RouterParserUtil.addModule(name, [routingInitializer]);
+                                    }
+                                    if (!isIgnore(variableNode)) {
                                         // Check if variable is allowed by public API filter
                                         if (!this.isSymbolAllowed(name, file)) {
-                                            logger.debug(`Skipping destructured variable ${name} (not in public API)`);
-                                            continue;
+                                            logger.debug(
+                                                `Skipping variable ${name} (not in public API)`
+                                            );
+                                            return;
                                         }
                                         this.debug(deps);
                                         outputSymbols.miscellaneous.variables.push(deps);
                                     }
                                 }
+                            };
+
+                            if (isDestructured) {
+                                if (nodeVariableDeclarations[0].name.elements) {
+                                    const destructuredVariables =
+                                        nodeVariableDeclarations[0].name.elements;
+
+                                    for (let i = 0; i < destructuredVariables.length; i++) {
+                                        const destructuredVariable = destructuredVariables[i];
+                                        const name = destructuredVariable.name
+                                            ? destructuredVariable.name.escapedText
+                                            : '';
+                                        const deps: any = {
+                                            name,
+                                            ctype: 'miscellaneous',
+                                            subtype: 'variable',
+                                            file: file
+                                        };
+                                        if (nodeVariableDeclarations[0].initializer) {
+                                            if (nodeVariableDeclarations[0].initializer.elements) {
+                                                deps.initializer =
+                                                    nodeVariableDeclarations[0].initializer.elements[
+                                                        i
+                                                    ];
+                                            }
+                                            deps.defaultValue = deps.initializer
+                                                ? this.classHelper.stringifyDefaultValue(
+                                                      deps.initializer
+                                                  )
+                                                : undefined;
+                                        }
+
+                                        if (!isIgnore(destructuredVariables[i])) {
+                                            // Check if variable is allowed by public API filter
+                                            if (!this.isSymbolAllowed(name, file)) {
+                                                logger.debug(
+                                                    `Skipping destructured variable ${name} (not in public API)`
+                                                );
+                                                continue;
+                                            }
+                                            this.debug(deps);
+                                            outputSymbols.miscellaneous.variables.push(deps);
+                                        }
+                                    }
+                                }
+                            } else {
+                                visitVariableNode(node);
                             }
-                        } else {
-                            visitVariableNode(node);
-                        }
                         } // End of new if condition for isRoutesVariable || isExportedVariable
                     }
                     if (ts.isTypeAliasDeclaration(node)) {
@@ -1780,8 +1811,9 @@ export class AngularDependencies extends FrameworkDependencies {
      */
     private isExportedVariable(node: any): boolean {
         // Check if the node has export modifiers
-        return !!(node.modifiers && node.modifiers.some(modifier => 
-            modifier.kind === SyntaxKind.ExportKeyword
-        ));
+        return !!(
+            node.modifiers &&
+            node.modifiers.some(modifier => modifier.kind === SyntaxKind.ExportKeyword)
+        );
     }
 }
