@@ -122,7 +122,6 @@
         "minimist": "^1.2.8",
         "neotraverse": "^0.6.18",
         "opencollective-postinstall": "^2.0.3",
-        "os-name": "4.0.1",
         "picocolors": "^1.1.1",
         "polka": "^0.5.2",
         "prismjs": "^1.30.0",

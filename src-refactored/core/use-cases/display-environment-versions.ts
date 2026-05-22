@@ -4,7 +4,7 @@ import * as path from 'path';
 import { ts } from 'ts-morph';
 
 const os = require('os');
-const osName = require('os-name');
+import { osName } from '../../infrastructure/os-name.util';
 
 import AngularVersionUtil from '../../infrastructure/angular/angular-version.util';
 import FileEngine from '../../infrastructure/files/file.engine';

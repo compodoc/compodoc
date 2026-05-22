@@ -22,8 +22,8 @@ import { cosmiconfigSync } from 'cosmiconfig';
 
 const fg = require('fast-glob');
 const os = require('os');
-const osName = require('os-name');
 const pkg = require('../package.json');
+import { osName } from './utils/os-name.util';
 const { program } = require('commander');
 
 const cosmiconfigModuleName = 'compodoc';

@@ -1,6 +1,6 @@
 {
     "extends": ["config:base"],
-    "ignoreDeps": ["os-name", "marked", "chai", "eslint", "pdfjs-dist", "uuid"],
+    "ignoreDeps": ["chai", "cheerio"],
     "packageRules": [
         {
             "updateTypes": ["major", "minor", "patch"],
