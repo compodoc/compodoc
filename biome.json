@@ -1,0 +1,120 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": [
+            "src/**/*.ts",
+            "test/**/*.ts",
+            "tools/**/*.js",
+            "tools/**/*.mjs",
+            "scripts/**/*.mjs",
+            "!src/resources",
+            "!test/fixtures"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "lf",
+        "lineWidth": 100,
+        "bracketSpacing": true
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "trailingCommas": "none",
+            "semicolons": "always",
+            "arrowParentheses": "asNeeded",
+            "bracketSameLine": false
+        },
+        "globals": ["SharedArrayBuffer", "Atomics"]
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedImports": "error",
+                "noUnusedVariables": "warn",
+                "noSelfAssign": "warn",
+                "noSwitchDeclarations": "error",
+                "noUnsafeOptionalChaining": "error"
+            },
+            "style": {
+                "useConst": "warn",
+                "useBlockStatements": "error",
+                "noUnusedTemplateLiteral": "off",
+                "noUselessElse": "off",
+                "useDefaultParameterLast": "off",
+                "noParameterAssign": "off",
+                "noNonNullAssertion": "off",
+                "useImportType": "warn",
+                "useExportType": "warn"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noAssignInExpressions": "off",
+                "noPrototypeBuiltins": "warn",
+                "noControlCharactersInRegex": "off",
+                "noEmptyBlockStatements": "off",
+                "noDoubleEquals": "off",
+                "noImplicitAnyLet": "off",
+                "noShadowRestrictedNames": "off",
+                "noAsyncPromiseExecutor": "error",
+                "noDebugger": "error",
+                "noDuplicateCase": "error",
+                "noFallthroughSwitchClause": "error",
+                "noGlobalAssign": "error",
+                "noRedeclare": "error",
+                "useIterableCallbackReturn": "off",
+                "noTemplateCurlyInString": "off"
+            },
+            "complexity": {
+                "noForEach": "off",
+                "noUselessSwitchCase": "off",
+                "noStaticOnlyClass": "off",
+                "useLiteralKeys": "off",
+                "noUselessConstructor": "off",
+                "noUselessEscapeInRegex": "warn",
+                "noExtraBooleanCast": "error",
+                "noBannedTypes": "off",
+                "noArguments": "off"
+            },
+            "performance": {
+                "noDelete": "off",
+                "noAccumulatingSpread": "off"
+            }
+        }
+    },
+    "overrides": [
+        {
+            "includes": ["test/**/*.ts"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noExplicitAny": "off"
+                    },
+                    "correctness": {
+                        "noUnusedVariables": "off"
+                    },
+                    "style": {
+                        "useImportType": "off"
+                    }
+                }
+            }
+        }
+    ],
+    "assist": {
+        "enabled": true,
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    }
+}
