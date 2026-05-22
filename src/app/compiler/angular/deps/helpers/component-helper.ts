@@ -426,7 +426,9 @@ export class ComponentHelper {
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
     ): string[] {
-        return this.symbolHelper.getSymbolDeps(props, 'styleUrls', srcFile);
+        const plural = this.symbolHelper.getSymbolDeps(props, 'styleUrls', srcFile);
+        const singular = this.symbolHelper.getSymbolDeps(props, 'styleUrl', srcFile);
+        return [...new Set([...plural, ...singular])];
     }
 
     public getComponentStyleUrl(

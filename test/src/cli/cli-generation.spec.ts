@@ -1489,4 +1489,40 @@ describe('CLI simple generation', () => {
             expect(stdoutString).to.contain('allPartRoutes');
         });
     });
+
+    describe('singular styleUrl is included in the component styleUrls list', () => {
+        const distFolder = tmp.name + '-style-url-singular';
+        let componentFile;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            componentFile = read(`${distFolder}/components/StyleUrlSingularComponent.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should generate a page for the component', () => {
+            expect(componentFile).to.contain('StyleUrlSingularComponent');
+        });
+
+        it('should list the singular styleUrl in the styleUrls metadata row', () => {
+            expect(componentFile).to.contain('bar.style.scss');
+        });
+
+        it('should render the styleUrls metadata row, not a separate styleUrl row', () => {
+            expect(componentFile).to.contain('>styleUrls<');
+        });
+    });
 });
