@@ -207,6 +207,19 @@ export class SymbolHelper {
             return [data];
         }
 
+        // Handle: @NgModule({ providers: PROVIDERS }) where PROVIDERS is an identifier
+        // referencing a local const or imported variable
+        if (localNode.initializer && ts.isIdentifier(localNode.initializer)) {
+            const resolved = ImportsUtil.findValueInImportOrLocalVariables(
+                localNode.initializer.text,
+                srcFile,
+                decoratorType
+            );
+            if (resolved && !Array.isArray(resolved) && (resolved as any).initializer) {
+                localNode = resolved as any;
+            }
+        }
+
         if (localNode.initializer && ts.isArrayLiteralExpression(localNode.initializer)) {
             return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
         } else if (

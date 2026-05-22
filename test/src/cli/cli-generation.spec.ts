@@ -1525,4 +1525,36 @@ describe('CLI simple generation', () => {
             expect(componentFile).to.contain('>styleUrls<');
         });
     });
+
+    describe('providers via identifier reference are resolved in NgModule', () => {
+        const distFolder = tmp.name + '-providers-identifier-ref';
+        let moduleFile;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            moduleFile = read(`${distFolder}/modules/ProvidersIdentifierRefModule.html`);
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should generate a page for the module', () => {
+            expect(moduleFile).to.contain('ProvidersIdentifierRefModule');
+        });
+
+        it('should list the provider from the referenced const array', () => {
+            expect(moduleFile).to.contain('ProvidersIdentifierRefService');
+        });
+    });
 });

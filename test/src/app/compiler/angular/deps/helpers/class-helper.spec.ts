@@ -266,6 +266,10 @@ describe('ClassHelper', () => {
                 }
             ];
 
+            jsdocParserStub.parseJSDocNode.callsFake((tag: any) =>
+                typeof tag.comment === 'string' ? tag.comment : ''
+            );
+
             const jsdoctags = [{ tags: mockTags }];
             const result = { deprecated: false, deprecationMessage: '' };
 
