@@ -1107,6 +1107,20 @@ export class ClassHelper {
                     _return += ' | ';
                 }
             }
+        } else if (node.kind === SyntaxKind.IndexedAccessType && node.objectType) {
+            let objectTypePart = '';
+            if (node.objectType.typeName) {
+                objectTypePart = this.visitTypeName(node.objectType.typeName);
+            } else {
+                objectTypePart = this.visitType(node.objectType);
+            }
+            let indexTypePart = '';
+            if (node.indexType && ts.isLiteralTypeNode(node.indexType) && (node.indexType.literal as any).text) {
+                indexTypePart = (node.indexType.literal as any).text;
+            } else if (node.indexType) {
+                indexTypePart = this.visitType(node.indexType);
+            }
+            _return = `${objectTypePart}['${indexTypePart}']`;
         } else if (node.dotDotDotToken) {
             _return = 'any[]';
         } else {

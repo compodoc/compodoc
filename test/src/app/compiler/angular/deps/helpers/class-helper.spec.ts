@@ -120,6 +120,44 @@ describe('ClassHelper', () => {
             const result = classHelper.visitType(node);
             expect(result).to.equal('Array<string>');
         });
+
+        it('should handle IndexedAccessType as a direct node (e.g. as a generic type argument)', () => {
+            const node = {
+                kind: SyntaxKind.IndexedAccessType,
+                objectType: {
+                    typeName: { escapedText: 'BadgeComponent', text: 'BadgeComponent' }
+                },
+                indexType: {
+                    kind: SyntaxKind.LiteralType,
+                    literal: { text: 'color' }
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal("BadgeComponent['color']");
+        });
+
+        it('should handle generic type with IndexedAccessType argument (issue #1574)', () => {
+            const node = {
+                type: {
+                    kind: SyntaxKind.TypeReference,
+                    typeName: { escapedText: 'UnwrapInputSignal', text: 'UnwrapInputSignal' },
+                    typeArguments: [
+                        {
+                            kind: SyntaxKind.IndexedAccessType,
+                            objectType: {
+                                typeName: { escapedText: 'BadgeComponent', text: 'BadgeComponent' }
+                            },
+                            indexType: {
+                                kind: SyntaxKind.LiteralType,
+                                literal: { text: 'color' }
+                            }
+                        }
+                    ]
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal("UnwrapInputSignal<BadgeComponent['color']>");
+        });
     });
 
     describe('visitTypeIndex', () => {
