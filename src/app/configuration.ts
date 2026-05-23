@@ -112,7 +112,7 @@ export class Configuration implements ConfigurationInterface {
     }
 
     public addPage(page: PageInterface) {
-        let indexPage = _.findIndex(this._pages, { name: page.name });
+        let indexPage = _.findIndex(this._pages, { name: page.name, path: page.path });
         if (indexPage === -1) {
             this._pages.push(page);
         }

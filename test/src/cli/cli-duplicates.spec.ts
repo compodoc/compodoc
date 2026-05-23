@@ -116,4 +116,14 @@ describe('CLI duplicates support', () => {
         file = exists(distFolder + '/injectables/MyService-1.html');
         expect(file).to.be.false;
     });
+
+    it('SharedModel class generated when same name exists as injectable (cross-category duplicate)', () => {
+        const file = exists(distFolder + '/classes/SharedModel.html');
+        expect(file).to.be.true;
+    });
+
+    it('SharedModel injectable generated when same name exists as class (cross-category duplicate)', () => {
+        const file = exists(distFolder + '/injectables/SharedModel.html');
+        expect(file).to.be.true;
+    });
 });
