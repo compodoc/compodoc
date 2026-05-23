@@ -57,6 +57,20 @@
             </p>
         {{/if}}
 
+        {{#if injectable.providedIn}}
+        <section data-compodoc="block-metadata">
+            <h3>{{t "metadata" }}</h3>
+            <table class="table table-sm table-hover metadata">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">providedIn</td>
+                        <td class="col-md-9"><code>{{injectable.providedIn}}</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{/if}}
+
         {{#if injectable.jsdoctags}}
             <p class="comment">
                 <h3>{{t "example" }}</h3>

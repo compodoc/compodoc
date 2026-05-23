@@ -228,6 +228,11 @@ describe("CLI simple generation - big app", () => {
         expect(file).to.be.true;
     });
 
+    it("should display providedIn metadata for injectables", () => {
+        expect(todoStoreFile).to.contain("providedIn");
+        expect(todoStoreFile).to.contain("<code>root</code>");
+    });
+
     it("should have generated the not-injectable guards", () => {
         const file = exists(`${distFolder}/guards/AuthGuard.html`);
         expect(file).to.be.true;

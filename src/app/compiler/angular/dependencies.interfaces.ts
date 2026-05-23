@@ -16,6 +16,7 @@ export interface IInjectableDep extends IDep {
     sourceCode: string;
     exampleUrls?;
     extends?;
+    providedIn?: string;
 
     accessors?: Object;
     constructorObj?: Object;

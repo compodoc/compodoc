@@ -740,6 +740,18 @@ export class AngularDependencies extends FrameworkDependencies {
                             if (IO.extends) {
                                 injectableDeps.extends = IO.extends;
                             }
+                            const providedInRaw = this.symbolHelper.getSymbolDepsRaw(
+                                props,
+                                'providedIn',
+                            );
+                            if (providedInRaw.length > 0) {
+                                const rawNode = providedInRaw[0] as ts.PropertyAssignment;
+                                if (rawNode && rawNode.initializer) {
+                                    injectableDeps.providedIn = ts.isStringLiteral(rawNode.initializer)
+                                        ? rawNode.initializer.text
+                                        : rawNode.initializer.getText(srcFile);
+                                }
+                            }
                             if (Configuration.mainData.disableLifeCycleHooks) {
                                 injectableDeps.methods =
                                     cleanLifecycleHooksFromMethods(
