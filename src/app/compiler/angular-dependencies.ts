@@ -1223,7 +1223,9 @@ export class AngularDependencies extends FrameworkDependencies {
                             this.isExportedVariable(node)
                         ) {
                             let isDestructured = false;
-                            // Check for destructuring array
+                            let isArrayDestructured = false;
+                            let isObjectDestructured = false;
+                            // Check for destructuring array or object
                             const nodeVariableDeclarations =
                                 node.declarationList.declarations;
                             if (nodeVariableDeclarations) {
@@ -1235,6 +1237,15 @@ export class AngularDependencies extends FrameworkDependencies {
                                             SyntaxKind.ArrayBindingPattern
                                     ) {
                                         isDestructured = true;
+                                        isArrayDestructured = true;
+                                    } else if (
+                                        nodeVariableDeclarations[0].name &&
+                                        nodeVariableDeclarations[0].name
+                                            .kind ===
+                                            SyntaxKind.ObjectBindingPattern
+                                    ) {
+                                        isDestructured = true;
+                                        isObjectDestructured = true;
                                     }
                                 }
                             }
@@ -1318,34 +1329,109 @@ export class AngularDependencies extends FrameworkDependencies {
                                     ) {
                                         const destructuredVariable =
                                             destructuredVariables[i];
-                                        const name = destructuredVariable.name
-                                            ? destructuredVariable.name
-                                                  .escapedText
-                                            : "";
+                                        let name = "";
+
+                                        if (isObjectDestructured) {
+                                            // For object destructuring like { question } or { baseUrl: serverUrl }
+                                            // element.name is the local variable name (alias or original)
+                                            if (destructuredVariable.name) {
+                                                name =
+                                                    destructuredVariable.name
+                                                        .escapedText ||
+                                                    destructuredVariable.name
+                                                        .text ||
+                                                    "";
+                                            }
+                                        } else {
+                                            // For array destructuring like [a, b, c]
+                                            name = destructuredVariable.name
+                                                ? destructuredVariable.name
+                                                      .escapedText
+                                                : "";
+                                        }
+
                                         const deps: any = {
                                             name,
                                             ctype: "miscellaneous",
                                             subtype: "variable",
                                             file: file,
+                                            deprecated: false,
+                                            deprecationMessage: "",
                                         };
-                                        if (
-                                            nodeVariableDeclarations[0]
-                                                .initializer
-                                        ) {
+
+                                        if (isArrayDestructured) {
                                             if (
                                                 nodeVariableDeclarations[0]
-                                                    .initializer.elements
+                                                    .initializer
                                             ) {
-                                                deps.initializer =
-                                                    nodeVariableDeclarations[0].initializer.elements[
-                                                        i
-                                                    ];
+                                                if (
+                                                    nodeVariableDeclarations[0]
+                                                        .initializer.elements
+                                                ) {
+                                                    deps.initializer =
+                                                        nodeVariableDeclarations[0].initializer.elements[
+                                                            i
+                                                        ];
+                                                }
+                                                deps.defaultValue =
+                                                    deps.initializer
+                                                        ? this.classHelper.stringifyDefaultValue(
+                                                              deps.initializer,
+                                                          )
+                                                        : undefined;
                                             }
-                                            deps.defaultValue = deps.initializer
-                                                ? this.classHelper.stringifyDefaultValue(
-                                                      deps.initializer,
-                                                  )
-                                                : undefined;
+                                        } else if (isObjectDestructured) {
+                                            if (
+                                                nodeVariableDeclarations[0]
+                                                    .initializer
+                                            ) {
+                                                deps.defaultValue =
+                                                    this.classHelper.stringifyDefaultValue(
+                                                        nodeVariableDeclarations[0]
+                                                            .initializer,
+                                                    );
+
+                                                // Try to infer type from function return type
+                                                if (
+                                                    ts.isCallExpression(
+                                                        nodeVariableDeclarations[0]
+                                                            .initializer,
+                                                    )
+                                                ) {
+                                                    const functionType =
+                                                        this.inferTypeFromFunctionCall(
+                                                            nodeVariableDeclarations[0]
+                                                                .initializer,
+                                                            name,
+                                                            srcFile,
+                                                        );
+                                                    if (functionType) {
+                                                        deps.type =
+                                                            functionType;
+                                                    }
+                                                }
+                                            }
+
+                                            // Extract JSDoc from the variable statement
+                                            if (
+                                                node.jsDoc &&
+                                                node.jsDoc.length > 0
+                                            ) {
+                                                for (const jsDoc of node.jsDoc) {
+                                                    if (jsDoc.comment) {
+                                                        const rawDescription =
+                                                            this.jsdocParserUtil.parseJSDocNode(
+                                                                jsDoc,
+                                                            );
+                                                        deps.rawdescription =
+                                                            rawDescription;
+                                                        deps.description =
+                                                            markedAcl(
+                                                                rawDescription,
+                                                            );
+                                                    }
+                                                }
+                                            }
                                         }
 
                                         if (
@@ -2180,5 +2266,75 @@ export class AngularDependencies extends FrameworkDependencies {
                 (modifier) => modifier.kind === SyntaxKind.ExportKeyword,
             )
         );
+    }
+
+    /**
+     * Try to infer the type of a destructured property from a function call return type
+     */
+    private inferTypeFromFunctionCall(
+        callExpression: ts.CallExpression,
+        propertyName: string,
+        sourceFile: ts.SourceFile,
+    ): string | undefined {
+        if (
+            !callExpression.expression ||
+            !ts.isIdentifier(callExpression.expression)
+        ) {
+            return undefined;
+        }
+
+        const functionName = callExpression.expression.text;
+        const functionDeclaration = this.findFunctionDeclaration(
+            functionName,
+            sourceFile,
+        );
+
+        if (
+            functionDeclaration &&
+            functionDeclaration.type &&
+            functionDeclaration.type.kind === SyntaxKind.TypeLiteral
+        ) {
+            const typeLiteral = functionDeclaration.type as ts.TypeLiteralNode;
+            if (typeLiteral.members) {
+                for (const member of typeLiteral.members) {
+                    if (
+                        ts.isPropertySignature(member) &&
+                        member.name &&
+                        member.type
+                    ) {
+                        const memberName =
+                            (member.name as any).text ||
+                            (member.name as any).escapedText;
+                        if (memberName === propertyName) {
+                            return this.classHelper.visitType(member.type);
+                        }
+                    }
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    /**
+     * Find a function declaration by name in the source file
+     */
+    private findFunctionDeclaration(
+        functionName: string,
+        sourceFile: ts.SourceFile,
+    ): ts.FunctionDeclaration | undefined {
+        const findFunction = (
+            node: ts.Node,
+        ): ts.FunctionDeclaration | undefined => {
+            if (
+                ts.isFunctionDeclaration(node) &&
+                node.name &&
+                node.name.text === functionName
+            ) {
+                return node;
+            }
+            return ts.forEachChild(node, findFunction);
+        };
+        return findFunction(sourceFile);
     }
 }

@@ -449,7 +449,7 @@ describe('CLI simple generation', () => {
                 </tr>
                 <tr>
                     <td class="col-md-4">
-                        <i>Type : </i>    <code>EventEmitter&lt;literal type&gt;</code>
+                        <i>Type : </i>        <code><a href="../miscellaneous/functions.html#foo" target="_self" >EventEmitter&lt;{ foo: string }&gt;</a></code>
 
                     </td>
                 </tr>

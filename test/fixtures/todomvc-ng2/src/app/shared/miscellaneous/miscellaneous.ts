@@ -11,9 +11,9 @@ export let PIT = 4;
  *
  * @param {string} status A status
  */
-export function foo(status: string = 'toto'): string {
-    console.log('bar');
-    return 'yo';
+export function foo(status: string = "toto"): string {
+    console.log("bar");
+    return "yo";
 }
 
 export class StringIndexedItems<T> {
@@ -31,7 +31,7 @@ export enum Direction {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 /*
@@ -45,13 +45,13 @@ export type Flags = {
 export let yo:{ [index:string] : {message: string} } = {};
 */
 
-export type ChartChange = 'creating' | 'created' | 'updating' | 'updated';
+export type ChartChange = "creating" | "created" | "updating" | "updated";
 
 export type TableColumnTarget = number | string | (number | string)[];
 
 export type TableSyncRenderer = Type<TableCellRendererBase> | TemplateRef<any>;
 
-import { Todo } from '../models/todo.model';
+import { Todo } from "../models/todo.model";
 
 export type LinearDomain = [number, number];
 
@@ -59,18 +59,47 @@ export type LinearTodo = [Todo, Todo];
 
 export type TypeOrTypeArray = string | symbol | Array<string | symbol>;
 
-export type RouterAdapterOptions = Pick<NavigationExtras, 'replaceUrl'>;
+export type RouterAdapterOptions = Pick<NavigationExtras, "replaceUrl">;
 
-type Foo = '320' | '360' | '1440';
+type Foo = "320" | "360" | "1440";
 
 type Bar = `(min-width: ${Foo}px)`;
 
-function sumFunction0({ a = 0, b = 1, c = 2 }: { a: number; b: number; c: number }) {
+function sumFunction0({
+    a = 0,
+    b = 1,
+    c = 2,
+}: {
+    a: number;
+    b: number;
+    c: number;
+}) {
     return a + b + c;
 }
 
-function sumFunction(trackId, { a, b, c }: { a: number; b: number; c: number }, test: string) {
+function sumFunction(
+    trackId,
+    { a, b, c }: { a: number; b: number; c: number },
+    test: string,
+) {
     return a + b + c;
 }
 
-var [first, second, third] = ['Laide', 'Gabriel', 'Jets'];
+/**
+ * Returns a question and answer for documentation
+ */
+function getQuestionAndAnswer(): { question: string; answer: number } {
+    return { question: "What is 2 + 2?", answer: 4 };
+}
+
+/**
+ * Question extracted from object destructuring
+ */
+export const { question } = getQuestionAndAnswer();
+
+/**
+ * Answer extracted from object destructuring
+ */
+export const { answer } = getQuestionAndAnswer();
+
+var [first, second, third] = ["Laide", "Gabriel", "Jets"];
