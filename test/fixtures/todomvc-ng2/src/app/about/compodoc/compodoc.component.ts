@@ -56,4 +56,9 @@ export class CompodocComponent {
     outputSignalWithStringType = output<'value'>();
     outputSignalWithMultipleTypes = output<string | number>();
     outputSignalWithMultipleMixedTypes = output<'asc' | 'dsc' | number>();
+
+    // issue #1571: input with two type params (output type + transform input type)
+    inputSignalWithTransform = input.required<number, number>({ transform: Number });
+    // issue #1571: input with union type default value
+    inputSignalWithUnionType = input<'left' | 'right'>('right');
 }

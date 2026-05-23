@@ -251,7 +251,11 @@ export class ComponentHelper {
 
         const result = {
             required,
-            type: this.parseSignalType(signalType) ?? this.inferTypeFromValue(signalDefaultValue),
+            // For signals like input<OutputType, TransformType>(...), only the first
+            // type parameter is the signal's value type (issue #1571).
+            type:
+                this.parseSignalType(this.extractFirstTypeParam(signalType)) ??
+                this.inferTypeFromValue(signalDefaultValue),
             defaultValue: signalDefaultValue
         };
 
@@ -347,6 +351,34 @@ export class ComponentHelper {
             }
         }
         return -1;
+    }
+
+    /**
+     * Extracts the first type parameter from a comma-separated generic type string.
+     * For Angular signals like `input<OutputType, TransformInputType>`, only the
+     * first type parameter is the signal's value type (issue #1571).
+     * For example:
+     *   "number, number"          → "number"
+     *   "string[], string | string[]" → "string[]"
+     *   "() => string[], () => string[]" → "() => string[]"
+     *   "string | number"         → "string | number" (no top-level comma)
+     */
+    private extractFirstTypeParam(typeStr: string): string {
+        if (!typeStr) return typeStr;
+        let depth = 0;
+        for (let i = 0; i < typeStr.length; i++) {
+            const ch = typeStr[i];
+            if (ch === '<' || ch === '(' || ch === '[' || ch === '{') {
+                depth++;
+            } else if (ch === '>' || ch === ')' || ch === ']' || ch === '}') {
+                // Skip '>' that is part of '=>' (arrow function syntax)
+                if (ch === '>' && i > 0 && typeStr[i - 1] === '=') continue;
+                depth--;
+            } else if (ch === ',' && depth === 0) {
+                return typeStr.slice(0, i).trim();
+            }
+        }
+        return typeStr;
     }
 
     /**

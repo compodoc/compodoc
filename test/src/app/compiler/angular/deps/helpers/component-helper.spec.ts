@@ -312,23 +312,27 @@ describe('ComponentHelper', () => {
             // This case caused catastrophic backtracking in the old regex.
             // The options object { transform: ... } is the sole argument and must not
             // leak into defaultValue — it should be treated as the options object.
+            // The second type param is the transform input type; only the first (output) type
+            // is shown in documentation (issue #1571).
             const defaultValue = `input.required<string[], string | string[]>({ transform: v => (Array.isArray(v) ? v : [v]) })`;
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
                 required: true,
-                type: 'string[], string | string[]',
+                type: 'string[]',
                 defaultValue: undefined
             });
         });
 
         it('should parse input signal with arrow function types containing => without hanging (issue #1654)', () => {
+            // The second type param is the transform input type; only the first (output) type
+            // is shown in documentation (issue #1571).
             const defaultValue = `input<() => string[], () => string[]>(() => [])`;
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.deep.equal({
                 required: false,
-                type: '() => string[], () => string[]',
+                type: '() => string[]',
                 defaultValue: '() => []'
             });
         });
@@ -475,6 +479,40 @@ describe('ComponentHelper', () => {
             const result = componentHelper['getSignalConfig']('input', defaultValue);
 
             expect(result).to.not.have.property('name');
+        });
+
+        // Tests for issue #1571: signal with two type params (output type + transform input type)
+        it('should extract only the output type from input.required<T, U> with transform (issue #1571)', () => {
+            const defaultValue = `input.required<number, number>({ transform: numberAttribute })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: true,
+                type: 'number',
+                defaultValue: undefined
+            });
+        });
+
+        it('should extract only the output type from input<T, U> with transform and default (issue #1571)', () => {
+            const defaultValue = `input<string, string | null>('default', { transform: someTransform })`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string',
+                defaultValue: "'default'"
+            });
+        });
+
+        it('should not split union types that are a single type param (issue #1571)', () => {
+            const defaultValue = `input<'left' | 'right'>('right')`;
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: '"left" | "right"',
+                defaultValue: "'right'"
+            });
         });
     });
 
