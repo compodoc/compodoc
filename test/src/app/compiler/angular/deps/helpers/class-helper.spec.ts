@@ -650,6 +650,7 @@ describe('ClassHelper', () => {
             const result = (classHelper as any).visitInputAndHostBinding(property, decorator, mockSourceFile);
 
             expect(result.name).to.equal('externalProp');
+            expect(result.actualName).to.equal('internalProp');
         });
 
         it('should handle @Input with object literal configuration', () => {
@@ -680,6 +681,7 @@ describe('ClassHelper', () => {
             const result = (classHelper as any).visitInputAndHostBinding(property, decorator, mockSourceFile);
 
             expect(result.name).to.equal('aliasProp');
+            expect(result.actualName).to.equal('configProp');
             expect(result.required).to.be.true;
             expect(result.optional).to.be.false;
         });

@@ -1519,11 +1519,15 @@ export class ClassHelper {
                 _return.required = !!getRequiredField();
             }
 
-            _return.name = isInputConfigStringLiteral
-                ? inArgs[0].text
-                : hasAlias
-                  ? getAliasProperty().initializer.text
-                  : property.name.text;
+            if (isInputConfigStringLiteral) {
+                _return.name = inArgs[0].text;
+                _return.actualName = property.name.text;
+            } else if (hasAlias) {
+                _return.name = getAliasProperty().initializer.text;
+                _return.actualName = property.name.text;
+            } else {
+                _return.name = property.name.text;
+            }
         } else {
             _return.name = property.name.text;
         }
