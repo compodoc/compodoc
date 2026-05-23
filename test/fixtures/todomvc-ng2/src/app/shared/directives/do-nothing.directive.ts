@@ -1,6 +1,12 @@
-import { Directive, HostBinding, HostListener, Input, Output } from '@angular/core';
+import {
+    Directive,
+    HostBinding,
+    HostListener,
+    Input,
+    Output,
+} from "@angular/core";
 
-import { DoNothingDirectiveSchema } from './do-nothing-directive.metadata';
+import { DoNothingDirectiveSchema } from "./do-nothing-directive.metadata";
 
 /**
  * @example
@@ -14,13 +20,20 @@ export class DoNothingDirective {
      * @example
      * directive property
      */
-    emptyProperty = '';
+    emptyProperty = "";
 
     /**
      * @example
      * directive input
      */
     @Input() public emptyInput: string;
+
+    /**
+     * @optional The number of lines to display per row. This adjusts the row height.
+     *
+     * The minimum value is 2 lines.
+     */
+    @Input() numOfLinesToDisplayPerRow = 2;
 
     /**
      * @example
@@ -32,7 +45,7 @@ export class DoNothingDirective {
     set emptyAccessor(val) {
         this._emptyAccessor = val;
     }
-    private _emptyAccessor = '';
+    private _emptyAccessor = "";
 
     /**
      * @example
@@ -41,7 +54,7 @@ export class DoNothingDirective {
     @Output() public emptyOutput: string;
 
     constructor() {
-        console.log('Do nothing directive');
+        console.log("Do nothing directive");
     }
 
     ngOnDestroy() {}
@@ -61,25 +74,25 @@ export class DoNothingDirective {
      * @example
      * directive hostBinding
      */
-    @HostBinding('style.color') color: string;
+    @HostBinding("style.color") color: string;
 
     /**
      * HostListener description 1
      * @example
      * directive hostListener
      */
-    @HostListener('mouseup', ['$event.clientX', '$event.clientY'])
+    @HostListener("mouseup", ["$event.clientX", "$event.clientY"])
     onMouseup(mouseX: number, mouseY: number): void {}
     /**
      * HostListener description 2
      */
-    @HostListener('mousedown', ['$event.clientX', '$event.clientY'])
+    @HostListener("mousedown", ["$event.clientX", "$event.clientY"])
     onMousedown(mouseX: number, mouseY: number): void {}
     /**
      * HostListener description 3
      */
-    @HostListener('focus', ['$event'])
-    @HostListener('click', ['$event'])
+    @HostListener("focus", ["$event"])
+    @HostListener("click", ["$event"])
     onClick(e: Event): void {}
 
     private _fullName: string;

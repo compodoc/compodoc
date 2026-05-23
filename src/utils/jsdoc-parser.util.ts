@@ -1,7 +1,31 @@
-import * as _ from 'lodash';
-import { ts, SyntaxKind } from 'ts-morph';
+import * as _ from "lodash";
+import { ts, SyntaxKind } from "ts-morph";
 
-import * as _ts from './ts-internal';
+import * as _ts from "./ts-internal";
+
+/**
+ * Standard JSDoc tags whose inline text should NOT be folded into the description.
+ * For any other (custom) tag, text on the same line as the tag is included.
+ */
+const SKIP_TAG_INLINE_CONTENT = new Set([
+    "param",
+    "arg",
+    "argument",
+    "parameter",
+    "returns",
+    "return",
+    "throws",
+    "exception",
+    "throw",
+    "type",
+    "typedef",
+    "template",
+    "deprecated",
+    "example",
+    "see",
+    "ignore",
+    "internal",
+]);
 
 export class JsdocParserUtil {
     public isVariableLike(node: ts.Node): node is ts.VariableLikeDeclaration {
@@ -22,7 +46,10 @@ export class JsdocParserUtil {
     }
 
     isTopmostModuleDeclaration(node: ts.ModuleDeclaration): boolean {
-        if ((node as any).nextContainer && (node as any).nextContainer.kind === ts.SyntaxKind.ModuleDeclaration) {
+        if (
+            (node as any).nextContainer &&
+            (node as any).nextContainer.kind === ts.SyntaxKind.ModuleDeclaration
+        ) {
             const next = <ts.ModuleDeclaration>(node as any).nextContainer;
             if (node.name.end + 1 === next.name.pos) {
                 return false;
@@ -33,7 +60,10 @@ export class JsdocParserUtil {
     }
 
     getRootModuleDeclaration(node: ts.ModuleDeclaration): ts.Node {
-        while (node.parent && node.parent.kind === ts.SyntaxKind.ModuleDeclaration) {
+        while (
+            node.parent &&
+            node.parent.kind === ts.SyntaxKind.ModuleDeclaration
+        ) {
             let parent = <ts.ModuleDeclaration>node.parent;
             if (node.name.pos === parent.name.end + 1) {
                 node = parent;
@@ -45,20 +75,31 @@ export class JsdocParserUtil {
         return node;
     }
 
-    public getMainCommentOfNode(node: ts.Node, sourceFile?: ts.SourceFile): string {
-        let description: string = '';
+    public getMainCommentOfNode(
+        node: ts.Node,
+        sourceFile?: ts.SourceFile,
+    ): string {
+        let description: string = "";
 
-        if (node.parent && node.parent.kind === ts.SyntaxKind.VariableDeclarationList) {
+        if (
+            node.parent &&
+            node.parent.kind === ts.SyntaxKind.VariableDeclarationList
+        ) {
             node = node.parent.parent;
         } else if (node.kind === ts.SyntaxKind.ModuleDeclaration) {
             if (!this.isTopmostModuleDeclaration(<ts.ModuleDeclaration>node)) {
                 return null;
             } else {
-                node = this.getRootModuleDeclaration(<ts.ModuleDeclaration>node);
+                node = this.getRootModuleDeclaration(
+                    <ts.ModuleDeclaration>node,
+                );
             }
         }
 
-        const comments = _ts.getJSDocCommentRanges(node as any, sourceFile.text);
+        const comments = _ts.getJSDocCommentRanges(
+            node as any,
+            sourceFile.text,
+        );
         if (comments && comments.length) {
             let comment: ts.CommentRange;
             if (node.kind === ts.SyntaxKind.SourceFile) {
@@ -76,18 +117,18 @@ export class JsdocParserUtil {
     }
 
     public parseComment(text: string): string {
-        let comment = '';
+        let comment = "";
         let shortText = 0;
 
         function readBareLine(line: string) {
-            comment += '\n' + line;
-            if (line === '' && shortText === 0) {
+            comment += "\n" + line;
+            if (line === "" && shortText === 0) {
                 // Ignore
-            } else if (line === '' && shortText === 1) {
+            } else if (line === "" && shortText === 1) {
                 shortText = 2;
             } else {
                 if (shortText === 2) {
-                    comment += (comment === '' ? '' : '\n') + line;
+                    comment += (comment === "" ? "" : "\n") + line;
                 }
             }
         }
@@ -98,8 +139,8 @@ export class JsdocParserUtil {
         let exampleHasCodeFence = false; // track if the example already has code fences
         function readLine(line: string, index: number) {
             const originalLine = line;
-            line = line.replace(/^\s*\*? ?/, '');
-            line = line.replace(/\s*$/, '');
+            line = line.replace(/^\s*\*? ?/, "");
+            line = line.replace(/\s*$/, "");
 
             if (CODE_FENCE.test(line)) {
                 inCode = !inCode;
@@ -108,14 +149,16 @@ export class JsdocParserUtil {
                 }
             }
 
-            if (line.indexOf('@example') !== -1) {
+            if (line.indexOf("@example") !== -1) {
                 inExample = true;
                 exampleHasCodeFence = false;
                 // Check if the next non-empty line has a code fence
                 const lines = text.split(/\r\n?|\n/);
                 for (let i = index + 1; i < lines.length; i++) {
-                    const nextLine = lines[i].replace(/^\s*\*? ?/, '').replace(/\s*$/, '');
-                    if (nextLine === '') continue; // Skip empty lines
+                    const nextLine = lines[i]
+                        .replace(/^\s*\*? ?/, "")
+                        .replace(/\s*$/, "");
+                    if (nextLine === "") continue; // Skip empty lines
                     if (CODE_FENCE.test(nextLine)) {
                         exampleHasCodeFence = true;
                     }
@@ -123,7 +166,7 @@ export class JsdocParserUtil {
                 }
 
                 if (!exampleHasCodeFence) {
-                    line = '```html';
+                    line = "```html";
                 } else {
                     // Skip the @example line if it already has code fences
                     return;
@@ -131,14 +174,14 @@ export class JsdocParserUtil {
             }
 
             // Preserve empty lines within code blocks by using a placeholder
-            if (inCode && inExample && exampleHasCodeFence && line === '') {
-                line = '___COMPODOC_EMPTY_LINE___';
+            if (inCode && inExample && exampleHasCodeFence && line === "") {
+                line = "___COMPODOC_EMPTY_LINE___";
             }
 
-            if (inExample && line === '') {
+            if (inExample && line === "") {
                 inExample = false;
                 if (!exampleHasCodeFence) {
-                    line = '```';
+                    line = "```";
                 } else {
                     // Don't add closing fence if example has its own
                     return;
@@ -150,10 +193,17 @@ export class JsdocParserUtil {
                 const SeeTag = /^@see/.exec(line);
 
                 if (SeeTag) {
-                    line = line.replace(/^@see/, 'See');
+                    line = line.replace(/^@see/, "See");
                 }
 
                 if (tag && !SeeTag) {
+                    const tagName = tag[1].toLowerCase();
+                    if (!SKIP_TAG_INLINE_CONTENT.has(tagName)) {
+                        const textAfterTag = line.slice(tag[0].length).trim();
+                        if (textAfterTag) {
+                            readBareLine(textAfterTag);
+                        }
+                    }
                     return;
                 }
             }
@@ -161,8 +211,8 @@ export class JsdocParserUtil {
             readBareLine(line);
         }
 
-        text = text.replace(/^\s*\/\*+/, '');
-        text = text.replace(/\*+\/\s*$/, '');
+        text = text.replace(/^\s*\/\*+/, "");
+        text = text.replace(/\*+\/\s*$/, "");
 
         text.split(/\r\n?|\n/).forEach((line, index) => readLine(line, index));
 
@@ -179,9 +229,11 @@ export class JsdocParserUtil {
                         result.push(doc);
                     }
                 } else if (ts.isJSDoc(doc)) {
-                    result.push(..._.filter(doc.tags, tag => tag.kind === kind));
+                    result.push(
+                        ..._.filter(doc.tags, (tag) => tag.kind === kind),
+                    );
                 } else {
-                    throw new Error('Unexpected type');
+                    throw new Error("Unexpected type");
                 }
             }
             return result;
@@ -190,9 +242,10 @@ export class JsdocParserUtil {
 
     public getJSDocs(node: ts.Node): ReadonlyArray<ts.JSDoc | ts.JSDocTag> {
         // TODO: jsDocCache is internal, see if there's a way around it
-        let cache: ReadonlyArray<ts.JSDoc | ts.JSDocTag> = (node as any).jsDocCache;
+        let cache: ReadonlyArray<ts.JSDoc | ts.JSDocTag> = (node as any)
+            .jsDocCache;
         if (!cache) {
-            cache = this.getJSDocsWorker(node, []).filter(x => x);
+            cache = this.getJSDocsWorker(node, []).filter((x) => x);
             (node as any).jsDocCache = cache;
         }
         return cache;
@@ -213,11 +266,12 @@ export class JsdocParserUtil {
             ts.isVariableStatement(parent.parent.parent);
         const isVariableOfVariableDeclarationStatement =
             this.isVariableLike(node) && ts.isVariableStatement(parent.parent);
-        const variableStatementNode = isInitializerOfVariableDeclarationInStatement
-            ? parent.parent.parent
-            : isVariableOfVariableDeclarationStatement
-            ? parent.parent
-            : undefined;
+        const variableStatementNode =
+            isInitializerOfVariableDeclarationInStatement
+                ? parent.parent.parent
+                : isVariableOfVariableDeclarationStatement
+                  ? parent.parent
+                  : undefined;
         if (variableStatementNode) {
             cache = this.getJSDocsWorker(variableStatementNode, cache);
         }
@@ -234,8 +288,11 @@ export class JsdocParserUtil {
         }
 
         const isModuleDeclaration =
-            ts.isModuleDeclaration(node) && parent && ts.isModuleDeclaration(parent);
-        const isPropertyAssignmentExpression = parent && ts.isPropertyAssignment(parent);
+            ts.isModuleDeclaration(node) &&
+            parent &&
+            ts.isModuleDeclaration(parent);
+        const isPropertyAssignmentExpression =
+            parent && ts.isPropertyAssignment(parent);
         if (isModuleDeclaration || isPropertyAssignmentExpression) {
             cache = this.getJSDocsWorker(parent, cache);
         }
@@ -261,31 +318,33 @@ export class JsdocParserUtil {
     }
 
     private getJSDocParameterTags(
-        param: ts.ParameterDeclaration
+        param: ts.ParameterDeclaration,
     ): ReadonlyArray<ts.JSDocParameterTag> {
         const func = param.parent as ts.FunctionLikeDeclaration;
         const tags = this.getJSDocTags(
             func,
-            SyntaxKind.JSDocParameterTag
+            SyntaxKind.JSDocParameterTag,
         ) as ts.JSDocParameterTag[];
 
         if (!param.name) {
             // this is an anonymous jsdoc param from a `function(type1, type2): type3` specification
             const i = func.parameters.indexOf(param);
-            const paramTags = _.filter(tags, tag => ts.isJSDocParameterTag(tag));
+            const paramTags = _.filter(tags, (tag) =>
+                ts.isJSDocParameterTag(tag),
+            );
 
             if (paramTags && 0 <= i && i < paramTags.length) {
                 return [paramTags[i]];
             }
         } else if (ts.isIdentifier(param.name)) {
             const name = param.name.text;
-            return _.filter(tags, tag => {
+            return _.filter(tags, (tag) => {
                 if (ts && ts.isJSDocParameterTag(tag)) {
                     const t = tag as any;
-                    if (typeof t.parameterName !== 'undefined') {
+                    if (typeof t.parameterName !== "undefined") {
                         return t.parameterName.text === name;
-                    } else if (typeof t.name !== 'undefined') {
-                        if (typeof t.name.escapedText !== 'undefined') {
+                    } else if (typeof t.name !== "undefined") {
+                        if (typeof t.name.escapedText !== "undefined") {
                             return t.name.escapedText === name;
                         }
                     }
@@ -299,9 +358,9 @@ export class JsdocParserUtil {
     }
 
     public parseJSDocNode(node): string {
-        let rawDescription = '';
+        let rawDescription = "";
 
-        if (typeof node.comment === 'string') {
+        if (typeof node.comment === "string") {
             rawDescription += node.comment;
         } else {
             if (node.comment) {
@@ -326,10 +385,11 @@ export class JsdocParserUtil {
                                 ) {
                                     text =
                                         JSDocNode.name.left.escapedText +
-                                        '.' +
+                                        "." +
                                         JSDocNode.name.right.escapedText;
                                 }
-                                rawDescription += JSDocNode.text + '{@link ' + text + '}';
+                                rawDescription +=
+                                    JSDocNode.text + "{@link " + text + "}";
                             }
                             break;
                         default:

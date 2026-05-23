@@ -89,6 +89,7 @@ export interface IFunctionDecDep extends IDep {
     subtype: string;
     deprecated: boolean;
     deprecationMessage: string;
+    rawdescription?: string;
     description: string;
 
     returnType?: string;
@@ -101,6 +102,7 @@ export interface IEnumDecDep extends IDep {
     subtype: string;
     deprecated: boolean;
     deprecationMessage: string;
+    rawdescription?: string;
     description: string;
     file: any;
 }
@@ -111,6 +113,7 @@ export interface ITypeAliasDecDep extends IDep {
     rawtype: any;
     deprecated: boolean;
     deprecationMessage: string;
+    rawdescription?: string;
     description: string;
 
     kind?;
