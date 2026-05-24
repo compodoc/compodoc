@@ -26,16 +26,32 @@ document.addEventListener('DOMContentLoaded', function () {
     var tree = ROUTES_INDEX;
 
     function cleanStringChildren(obj) {
+        if (!obj || typeof obj !== 'object') {
+            return;
+        }
         for (var property in obj) {
-            if (obj.hasOwnProperty(property)) {
-                if (property === 'children' && typeof obj[property] === 'object') {
-                    for (var i = obj[property].length - 1; i >= 0; i--) {
-                        if (typeof obj[property][i] === 'string') {
-                            obj[property].splice(i, 1);
+            if (Object.prototype.hasOwnProperty.call(obj, property)) {
+                if (property === 'children') {
+                    if (typeof obj[property] === 'string') {
+                        obj[property] = [];
+                        continue;
+                    }
+
+                    if (Array.isArray(obj[property])) {
+                        for (var i = obj[property].length - 1; i >= 0; i--) {
+                            if (
+                                typeof obj[property][i] !== 'object' ||
+                                obj[property][i] === null
+                            ) {
+                                obj[property].splice(i, 1);
+                            }
                         }
+                    } else if (obj[property] && typeof obj[property] === 'object') {
+                        obj[property] = [];
                     }
                 }
-                if (typeof obj[property] === 'object') {
+
+                if (obj[property] && typeof obj[property] === 'object') {
                     cleanStringChildren(obj[property]);
                 }
             }
