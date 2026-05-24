@@ -367,6 +367,9 @@ export class AngularDependencies extends FrameworkDependencies {
         astFile,
     ) {
         const name = this.getSymboleName(node);
+        if (!name) {
+            return;
+        }
         const IO = this.getClassIO(file, srcFile, node, fileBody, astFile);
         const sourceCode = srcFile.getText();
         const hash = crypto
@@ -624,6 +627,10 @@ export class AngularDependencies extends FrameworkDependencies {
                         let deps: IDep;
 
                         const name = this.getSymboleName(node);
+
+                        if (!name) {
+                            return;
+                        }
 
                         // Check if this decorated class is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
@@ -890,6 +897,9 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (node.symbol.flags === ts.SymbolFlags.Class) {
                         // Check if class is allowed by public API filter
                         const className = this.getSymboleName(node);
+                        if (!className) {
+                            return;
+                        }
                         if (!this.isSymbolAllowed(className, file)) {
                             logger.debug(
                                 `Skipping class ${className} (not in public API)`,
@@ -906,6 +916,10 @@ export class AngularDependencies extends FrameworkDependencies {
                         );
                     } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
                         const name = this.getSymboleName(node);
+
+                        if (!name) {
+                            return;
+                        }
 
                         // Check if interface is allowed by public API filter
                         if (!this.isSymbolAllowed(name, file)) {
@@ -1802,7 +1816,7 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private getSymboleName(node): string {
-        return node.name.text;
+        return node.name?.text;
     }
 
     private findProperties(

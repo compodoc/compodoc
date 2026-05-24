@@ -65,5 +65,11 @@ describe('CLI nest projects support', () => {
                 'code><a href="../classes/ControllerBase.html" target="_self" >ControllerBase'
             );
         });
+
+        it('it should not crash on anonymous class (issue #1547)', () => {
+            // compodoc must complete without error even when a class has no name
+            const isDistCreated = exists(distFolder);
+            expect(isDistCreated).to.be.true;
+        });
     });
 });
