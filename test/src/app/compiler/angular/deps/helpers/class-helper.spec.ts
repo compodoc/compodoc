@@ -174,6 +174,36 @@ describe('ClassHelper', () => {
             expect(result).to.equal('keyof typeof MyEnum');
         });
 
+        it('should keep keyof typeof in generic arguments (issue #1329)', () => {
+            const node = {
+                type: {
+                    kind: SyntaxKind.TypeReference,
+                    typeName: { escapedText: 'Extract', text: 'Extract' },
+                    typeArguments: [
+                        {
+                            kind: SyntaxKind.TypeOperator,
+                            operator: SyntaxKind.KeyOfKeyword,
+                            type: {
+                                kind: SyntaxKind.TypeQuery,
+                                exprName: { escapedText: 'UiSizes', text: 'UiSizes' }
+                            }
+                        },
+                        {
+                            kind: SyntaxKind.UnionType,
+                            types: [
+                                { kind: SyntaxKind.LiteralType, literal: { text: 'sm' } },
+                                { kind: SyntaxKind.LiteralType, literal: { text: 'md' } },
+                                { kind: SyntaxKind.LiteralType, literal: { text: 'lg' } },
+                                { kind: SyntaxKind.LiteralType, literal: { text: 'xl' } }
+                            ]
+                        }
+                    ]
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal('Extract<keyof typeof UiSizes | "sm" | "md" | "lg" | "xl">');
+        });
+
         it('should handle simple intersection types (issue #1525)', () => {
             const node = {
                 type: {
@@ -692,6 +722,77 @@ describe('ClassHelper', () => {
             const result = (realHelper as any).visitArgument(methodParam);
 
             expect(result.type).to.equal('"One" | "Two"');
+        });
+
+        it('should resolve utility types in method arguments with type checker (issue #1424)', () => {
+            const realProject = new Project({ useInMemoryFileSystem: true });
+            const realSourceFile = realProject.createSourceFile(
+                'issue-1424.ts',
+                `
+                class MyService {
+                    myMethod(myParam: Uncapitalize<'ExampleA' | 'ExampleB'>): void {}
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+
+            const methodParam = realSourceFile
+                .getClassOrThrow('MyService')
+                .getMethodOrThrow('myMethod')
+                .compilerNode.parameters[0];
+
+            const result = (realHelper as any).visitArgument(methodParam);
+
+            expect(result.type).to.equal('"exampleA" | "exampleB"');
+        });
+
+        it('should resolve Extract<keyof typeof ...> in method arguments with type checker (issue #1329)', () => {
+            const realProject = new Project({ useInMemoryFileSystem: true });
+            const realSourceFile = realProject.createSourceFile(
+                'issue-1329.ts',
+                `
+                const UiSizes = { sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' } as const;
+
+                class MyService {
+                    myMethod(myParam: Extract<keyof typeof UiSizes, 'sm' | 'md' | 'lg' | 'xl'>): void {}
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+
+            const methodParam = realSourceFile
+                .getClassOrThrow('MyService')
+                .getMethodOrThrow('myMethod')
+                .compilerNode.parameters[0];
+
+            const result = (realHelper as any).visitArgument(methodParam);
+
+            expect(result.type).to.equal('"sm" | "md" | "lg" | "xl"');
+        });
+
+        it('should resolve utility types in properties with type checker (issue #1424)', () => {
+            const realProject = new Project({ useInMemoryFileSystem: true });
+            const realSourceFile = realProject.createSourceFile(
+                'issue-1424-property.ts',
+                `
+                class MyService {
+                    myProperty: Uncapitalize<'ExampleA' | 'ExampleB'>;
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+
+            const propertyNode = realSourceFile
+                .getClassOrThrow('MyService')
+                .getPropertyOrThrow('myProperty')
+                .compilerNode;
+
+            const result = (realHelper as any).visitProperty(
+                propertyNode,
+                realSourceFile.compilerNode,
+            );
+
+            expect(result.type).to.equal('"exampleA" | "exampleB"');
         });
     });
 

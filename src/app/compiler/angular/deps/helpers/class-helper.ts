@@ -166,6 +166,54 @@ export class ClassHelper {
         return undefined;
     }
 
+    private shouldResolveTypeWithTypeChecker(typeNode: ts.TypeNode): boolean {
+        if (ts.isTypeOperatorNode(typeNode)) {
+            return true;
+        }
+
+        if (!ts.isTypeReferenceNode(typeNode)) {
+            return false;
+        }
+
+        const utilityTypeNames = [
+            "Awaited",
+            "Partial",
+            "Required",
+            "Readonly",
+            "Record",
+            "Pick",
+            "Omit",
+            "Exclude",
+            "Extract",
+            "NonNullable",
+            "Parameters",
+            "ConstructorParameters",
+            "ReturnType",
+            "InstanceType",
+            "ThisParameterType",
+            "OmitThisParameter",
+            "ThisType",
+            "Uppercase",
+            "Lowercase",
+            "Capitalize",
+            "Uncapitalize",
+        ];
+
+        const typeName = this.visitTypeName(typeNode.typeName as any);
+        if (utilityTypeNames.includes(typeName as string)) {
+            return true;
+        }
+
+        return !!(
+            typeNode.typeArguments &&
+            typeNode.typeArguments.some(
+                (argument) =>
+                    ts.isTypeOperatorNode(argument) ||
+                    ts.isTypeQueryNode(argument),
+            )
+        );
+    }
+
     /**
      * Extract and filter modifier kinds from a node
      */
@@ -1166,6 +1214,16 @@ export class ClassHelper {
             return _return;
         }
 
+        if (ts.isTypeOperatorNode(node)) {
+            const operator = this.getTypeOperatorKeyword(node.operator);
+            const operand = this.visitType(node.type);
+            return operand ? `${operator} ${operand}` : operator;
+        }
+
+        if (ts.isTypeQueryNode(node)) {
+            return `typeof ${this.visitTypeName(node.exprName as any)}`;
+        }
+
         if (node.typeName) {
             _return = this.visitTypeName(node.typeName);
         } else if (node.type) {
@@ -1648,6 +1706,16 @@ export class ClassHelper {
             line: this.getPosition(property, sourceFile).line + 1,
         };
 
+        if (property.type && this.shouldResolveTypeWithTypeChecker(property.type)) {
+            const resolvedType = this.tryResolveTypeFromTypeChecker(
+                property.type,
+                property,
+            );
+            if (resolvedType) {
+                result.type = resolvedType;
+            }
+        }
+
         if (initializer && initializer.kind === SyntaxKind.ArrowFunction) {
             result.defaultValue = "() => {...}";
         }
@@ -1849,6 +1917,15 @@ export class ClassHelper {
 
         if (property.type) {
             _return.type = this.visitType(property);
+            if (this.shouldResolveTypeWithTypeChecker(property.type)) {
+                const resolvedType = this.tryResolveTypeFromTypeChecker(
+                    property.type,
+                    property,
+                );
+                if (resolvedType) {
+                    _return.type = resolvedType;
+                }
+            }
         } else {
             // handle NewExpression
             if (property.initializer) {
@@ -1875,7 +1952,7 @@ export class ClassHelper {
             ...this.initializeDocumentationFields(),
         };
 
-        if (arg.type && ts.isTypeOperatorNode(arg.type)) {
+        if (arg.type && this.shouldResolveTypeWithTypeChecker(arg.type)) {
             const resolvedType = this.tryResolveTypeFromTypeChecker(
                 arg.type,
                 arg,
@@ -1972,7 +2049,7 @@ export class ClassHelper {
         _return.line = this.getPosition(property, sourceFile).line + 1;
         if (property.type) {
             _return.type = this.visitType(property);
-            if (ts.isTypeOperatorNode(property.type)) {
+            if (this.shouldResolveTypeWithTypeChecker(property.type)) {
                 const resolvedType = this.tryResolveTypeFromTypeChecker(
                     property.type,
                     property,
