@@ -124,6 +124,19 @@ describe("Utils - RouterParserUtil", () => {
             });
         });
 
+        it("should normalize shorthand object properties in route data for JSON5 parseability (issue #1354)", () => {
+            const cleaned = routerParser.cleanRawRoute(
+                '[{path:"x",data:{preload,delay:2500}}]',
+            );
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(parsed[0].data.preload).to.equal("preload");
+            expect(parsed[0].data.delay).to.equal(2500);
+        });
+
         it('should normalize CodeGenerator dotted output like "Enum"."VALUE" (issue #1417)', () => {
             expect(
                 routerParser.cleanRawRoute(

@@ -179,6 +179,14 @@ export class RouterParserUtil {
                 '$1"$2"',
             );
 
+        // Step 3c: Expand object shorthand properties to key/value form.
+        //   data:{flag,delay:2500} -> data:{flag:"flag",delay:2500}
+        // JSON5 cannot parse object shorthand, so we normalize it here.
+        cleaned = cleaned.replace(
+            /([{,])([a-zA-Z_$][a-zA-Z0-9_$]*)(?=[,}])/g,
+            '$1$2:"$2"',
+        );
+
         // Step 4: Replace non-block arrow function expressions in property values.
         //   :(params) => simpleExpr  →  :"[Function]"
         //   loadChildren/loadComponent are already converted to strings by Step 0 above.
