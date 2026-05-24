@@ -88,6 +88,47 @@ describe("Utils - RouterParserUtil", () => {
             ).to.equal('[{path:"USER/CREATE"}]');
         });
 
+        it("should keep a plain route string with multiple params JSON5-parseable (issue #1302)", () => {
+            const cleaned = routerParser.cleanRawRoute(
+                '[{path:"sample/:sample/example/:example"}]',
+            );
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(parsed[0].path).to.equal("sample/:sample/example/:example");
+        });
+
+        it("should keep a template-literal route with multiple params JSON5-parseable (issue #1302)", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1302.ts",
+                `
+import { Routes } from "@angular/router";
+const sample = "sample";
+const example = "example";
+const routes: Routes = [
+    { path: \`sample/:\${sample}/example/:\${example}\` }
+];
+`,
+            );
+
+            routerParser.cleanFileDynamics(sourceFile);
+            routerParser.cleanCallExpressions(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(parsed[0].path).to.equal("sample/:sample/example/:example");
+        });
+
         // ── Standalone property-access chains — normalized for safe parsing ──
 
         it("should quote a standalone property-access chain to keep JSON5 parseable", () => {
