@@ -6,9 +6,11 @@ import { Project, ts, SourceFile, SyntaxKind, Node } from "ts-morph";
 
 import FileEngine from "../app/engines/file.engine";
 import { RoutingGraphNode } from "../app/nodes/routing-graph-node";
+import Configuration from "../app/configuration";
 
 import ImportsUtil from "./imports.util";
 import { logger } from "./logger";
+import { readConfig } from "./utils";
 
 const traverse = require("neotraverse/legacy");
 
@@ -464,10 +466,7 @@ export class RouterParserUtil {
 
             // Helper: process a single route item and push entries into validChildren
             const processRouteItem = (routeItem, filename: string) => {
-                if (
-                    routeItem.component &&
-                    isValidName(routeItem.component)
-                ) {
+                if (routeItem.component && isValidName(routeItem.component)) {
                     validChildren.push({
                         name: routeItem.component,
                         kind: "component",
@@ -477,8 +476,7 @@ export class RouterParserUtil {
                 }
                 if (routeItem.loadChildren) {
                     // Extract module name from loadChildren ("./path#ModuleName")
-                    const moduleMatch =
-                        routeItem.loadChildren.match(/#(\w+)/);
+                    const moduleMatch = routeItem.loadChildren.match(/#(\w+)/);
                     if (moduleMatch && isValidName(moduleMatch[1])) {
                         validChildren.push({
                             name: moduleMatch[1],
@@ -1048,6 +1046,53 @@ export class RouterParserUtil {
         return file;
     }
 
+    /**
+     * Resolve a TypeScript path alias (tsconfig compilerOptions.paths) to an absolute file path.
+     * Returns undefined when no alias matches or the tsconfig is unavailable.
+     */
+    private resolvePathAlias(moduleSpecifier: string): string | undefined {
+        try {
+            const tsconfigPath = Configuration.mainData.tsconfig;
+            if (!tsconfigPath) return undefined;
+
+            const tsconfig = readConfig(tsconfigPath);
+            const compilerOptions = tsconfig?.compilerOptions;
+            if (!compilerOptions?.paths) return undefined;
+
+            const baseUrl = compilerOptions.baseUrl
+                ? path.resolve(
+                      path.dirname(tsconfigPath),
+                      compilerOptions.baseUrl,
+                  )
+                : path.dirname(tsconfigPath);
+
+            for (const [pattern, replacements] of Object.entries(
+                compilerOptions.paths as Record<string, string[]>,
+            )) {
+                if (!Array.isArray(replacements) || replacements.length === 0)
+                    continue;
+
+                // Convert glob pattern to regex: "@shared/*" → /^@shared\/(.*)$/
+                const regexStr = pattern
+                    .replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&")
+                    .replace(/\*/g, "(.*)");
+                const regex = new RegExp("^" + regexStr + "$");
+                const match = moduleSpecifier.match(regex);
+
+                if (match) {
+                    const resolved = (replacements[0] as string).replace(
+                        /\*/g,
+                        match[1] ?? "",
+                    );
+                    return path.resolve(baseUrl, resolved);
+                }
+            }
+        } catch (_e) {
+            // silently skip — tsconfig may not be readable at this point
+        }
+        return undefined;
+    }
+
     public cleanFileSpreads(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
         const spreadElements = file
@@ -1158,14 +1203,17 @@ export class RouterParserUtil {
                         .split("/")
                         .shift();
 
-                    let importPath = path.resolve(
-                        dirNamePath +
-                            "/" +
-                            searchedImport.getModuleSpecifierValue() +
-                            ".ts",
-                    );
+                    // Try tsconfig path alias first (e.g. "@shared/*" → "src/app/shared/*")
+                    const aliasResolved =
+                        this.resolvePathAlias(searchedImportPath);
 
-                    if (routePathIsBad(importPath)) {
+                    let importPath = aliasResolved
+                        ? aliasResolved + ".ts"
+                        : path.resolve(
+                              dirNamePath + "/" + searchedImportPath + ".ts",
+                          );
+
+                    if (!aliasResolved && routePathIsBad(importPath)) {
                         const leadingIndices = getIndicesOf(
                             leadingFilePath,
                             importPath,
@@ -1191,7 +1239,7 @@ export class RouterParserUtil {
                     const sourceFileImport =
                         typeof ast.getSourceFile(importPath) !== "undefined"
                             ? ast.getSourceFile(importPath)
-                            : ast.addSourceFileAtPath(importPath);
+                            : ast.addSourceFileAtPathIfExists(importPath);
                     if (sourceFileImport) {
                         const variableName = foundWithAlias
                             ? aliasOriginalName
@@ -1200,6 +1248,11 @@ export class RouterParserUtil {
                             sourceFileImport.getVariableDeclaration(
                                 variableName,
                             );
+                    } else {
+                        logger.warn(
+                            `Could not resolve spread import "${searchedImportPath}" — skipping. ` +
+                                `If this is a path alias, ensure tsconfig compilerOptions.paths is configured correctly.`,
+                        );
                     }
                 }
             } else {
@@ -1208,6 +1261,11 @@ export class RouterParserUtil {
                     .getExpression()
                     .getSymbolOrThrow()
                     .getValueDeclarationOrThrow();
+            }
+
+            if (typeof referencedDeclaration === "undefined") {
+                // File could not be resolved (e.g. unresolvable path alias) — skip silently
+                continue;
             }
 
             if (!Node.isVariableDeclaration(referencedDeclaration)) {

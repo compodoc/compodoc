@@ -1,5 +1,10 @@
 import { expect } from "chai";
+import * as path from "path";
+import * as sinon from "sinon";
+import { Project } from "ts-morph";
+import Configuration from "../../../src/app/configuration";
 import { RouterParserUtil } from "../../../src/utils/router-parser.util";
+import { logger } from "../../../src/utils/logger";
 
 describe("Utils - RouterParserUtil", () => {
     let routerParser: RouterParserUtil;
@@ -255,6 +260,54 @@ describe("Utils - RouterParserUtil", () => {
                 result = require("json5").parse(cleaned);
             }).not.to.throw();
             expect(result[0].data.fn).to.equal("[Function]");
+        });
+    });
+
+    // ── cleanFileSpreads() — path alias resolution (issue #1545) ─────────────
+
+    describe("cleanFileSpreads() — path alias resolution (issue #1545)", () => {
+        const fixtureRoot = path.join(
+            __dirname,
+            "../../../../../test/fixtures/path-alias-spread",
+        );
+
+        afterEach(() => {
+            Configuration.mainData.tsconfig = "";
+        });
+
+        it("should not throw when the spread import file cannot be resolved at all (safety net)", () => {
+            // No tsconfig paths configured → alias stays unresolvable → must not crash
+            Configuration.mainData.tsconfig = "";
+            const warnStub = sinon.stub(logger, "warn");
+            try {
+                const project = new Project();
+                const sourceFile = project.createSourceFile(
+                    "/tmp/test-unresolvable-routes.ts",
+                    `import { Routes } from '@angular/router';
+import { missingRoutes } from '@missing/does-not-exist';
+export const routes: Routes = [...missingRoutes];`,
+                    { overwrite: true },
+                );
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+            } finally {
+                warnStub.restore();
+            }
+        });
+
+        it("should resolve a path alias from tsconfig.paths and inline the spread without crashing (issue #1545)", () => {
+            Configuration.mainData.tsconfig = path.join(
+                fixtureRoot,
+                "tsconfig.json",
+            );
+            const project = new Project();
+            const sourceFile = project.addSourceFileAtPath(
+                path.join(fixtureRoot, "src/app/app.routes.ts"),
+            );
+            expect(() =>
+                routerParser.cleanFileSpreads(sourceFile),
+            ).not.to.throw();
         });
     });
 });
