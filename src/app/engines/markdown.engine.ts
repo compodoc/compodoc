@@ -95,7 +95,7 @@ export class MarkdownEngine {
             .catch(err => FileEngine.get(process.cwd() + path.sep + filepath))
             .then(data => {
                 const returnedData: markdownReadedDatas = {
-                    markdown: this.markedInstance(data),
+                    markdown: this.renderMarkdown(data),
                     rawData: data
                 };
                 return returnedData;
@@ -103,12 +103,12 @@ export class MarkdownEngine {
     }
 
     public getTraditionalMarkdownSync(filepath: string): string {
-        return this.markedInstance(FileEngine.getSync(process.cwd() + path.sep + filepath));
+        return this.renderMarkdown(FileEngine.getSync(process.cwd() + path.sep + filepath));
     }
 
     private getReadmeFile(): Promise<string> {
         return FileEngine.get(process.cwd() + path.sep + 'README.md').then(data =>
-            this.markedInstance(data)
+            this.renderMarkdown(data)
         );
     }
 
@@ -164,6 +164,17 @@ export class MarkdownEngine {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;')
             .replace(/@/g, '&#64;');
+    }
+
+    private renderMarkdown(markdown: string): string {
+        return this.markedInstance(this.normalizeBitbucketCommitLinks(markdown));
+    }
+
+    private normalizeBitbucketCommitLinks(markdown: string): string {
+        return markdown.replace(
+            /(https?:\/\/bitbucket\.org\/[^\s)\]>]+\/)commit\/([^\s)\]>]+)/g,
+            '$1commits/$2'
+        );
     }
 
     /**

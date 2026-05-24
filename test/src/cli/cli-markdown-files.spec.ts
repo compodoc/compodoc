@@ -6,8 +6,9 @@ import * as path from 'path';
 const tmp = temporaryDir();
 
 describe('CLI Markdown files generation', () => {
-    const distFolder = tmp.name + '-markdown-files';
-    const fixtureFolder = tmp.name + '-markdown-fixture';
+    const distFolder = path.resolve(tmp.name + '-markdown-files');
+    const fixtureFolder = path.resolve(tmp.name + '-markdown-fixture');
+    const cliPath = path.resolve('./bin/index-cli.js');
     
     describe('when CHANGELOG, CONTRIBUTING, and LICENSE markdown files exist', () => {
         let stdoutString = undefined;
@@ -50,14 +51,27 @@ describe('CLI Markdown files generation', () => {
                 path.join(fixtureFolder, 'tsconfig.json'),
                 JSON.stringify(tsconfigContent, null, 2)
             );
+
+            fs.writeFileSync(
+                path.join(fixtureFolder, 'CHANGELOG.md'),
+                '# Changelog\n\n- fix: bitbucket link ([abc1234](https://bitbucket.org/team/repo/commit/abc1234))\n'
+            );
+            fs.writeFileSync(
+                path.join(fixtureFolder, 'CONTRIBUTING.md'),
+                '# Contributing\n\nPlease contribute.\n'
+            );
+            fs.writeFileSync(
+                path.join(fixtureFolder, 'LICENSE.md'),
+                '# License\n\nMIT\n'
+            );
             
             const ls = shell('node', [
-                './bin/index-cli.js',
+                cliPath,
                 '-p',
-                path.join(fixtureFolder, 'tsconfig.json'),
+                'tsconfig.json',
                 '-d',
                 distFolder
-            ]);
+            ], { cwd: fixtureFolder });
 
             if (ls.stderr.toString() !== '') {
                 console.error(`shell error: ${ls.stderr.toString()}`);
@@ -93,8 +107,17 @@ describe('CLI Markdown files generation', () => {
             const changelogExists = exists(`${distFolder}/changelog.html`);
             expect(changelogExists).to.be.true;
             const changelogContent = read(`${distFolder}/changelog.html`);
-            // Note: reads from project root CHANGELOG.md, not fixture
             expect(changelogContent).to.contain('changelog');
+        });
+
+        it('should normalize bitbucket commit links in changelog to /commits/', () => {
+            const changelogContent = read(`${distFolder}/changelog.html`);
+            expect(changelogContent).to.contain(
+                'https://bitbucket.org/team/repo/commits/abc1234'
+            );
+            expect(changelogContent).to.not.contain(
+                'https://bitbucket.org/team/repo/commit/abc1234'
+            );
         });
 
         it('should generate contributing.html page', () => {
