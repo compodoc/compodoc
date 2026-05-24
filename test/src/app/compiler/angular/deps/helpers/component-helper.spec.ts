@@ -301,6 +301,28 @@ describe('ComponentHelper', () => {
             });
         });
 
+        it('should parse input signal with array generic type and array default value (issue #1489)', () => {
+            const defaultValue = 'input<string[]>([])';
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'string[]',
+                defaultValue: '[]'
+            });
+        });
+
+        it('should parse input signal with array generic type and no default value (issue #1489)', () => {
+            const defaultValue = 'input<TestInput[]>()';
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'TestInput[]',
+                defaultValue: undefined
+            });
+        });
+
         it('should parse output signal configuration', () => {
             const defaultValue = 'output<string>()';
             const result = componentHelper['getSignalConfig']('output', defaultValue);
