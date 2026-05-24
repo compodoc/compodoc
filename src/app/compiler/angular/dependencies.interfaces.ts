@@ -74,6 +74,7 @@ export interface IPipeDep extends IDep {
 export interface IInterfaceDep extends IDep {
     file: any;
     sourceCode: string;
+    declarationMergeId?: string;
 
     properties?: Array<any>;
     indexSignatures?: any;

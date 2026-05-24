@@ -915,6 +915,9 @@ export class AngularDependencies extends FrameworkDependencies {
                             astFile,
                         );
                     } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
+                        if (!ts.isInterfaceDeclaration(node)) {
+                            return;
+                        }
                         const name = this.getSymboleName(node);
 
                         if (!name) {
@@ -928,6 +931,27 @@ export class AngularDependencies extends FrameworkDependencies {
                             );
                             return;
                         }
+
+                        const mergedInterfaceDeclarations =
+                            this.getMergedInterfaceDeclarations(node);
+                        const declarationToProcess =
+                            mergedInterfaceDeclarations.find(
+                                (declaration) =>
+                                    !declaration
+                                        .getSourceFile()
+                                        .fileName.endsWith(".d.ts"),
+                            ) || mergedInterfaceDeclarations[0];
+                        if (
+                            mergedInterfaceDeclarations.length > 1 &&
+                            declarationToProcess !== node
+                        ) {
+                            return;
+                        }
+
+                        const declarationMergeId =
+                            this.getInterfaceDeclarationMergeId(
+                                mergedInterfaceDeclarations,
+                            );
 
                         const IO = this.getInterfaceIO(
                             file,
@@ -945,6 +969,10 @@ export class AngularDependencies extends FrameworkDependencies {
                             type: "interface",
                             sourceCode: srcFile.getText(),
                         };
+                        if (declarationMergeId) {
+                            interfaceDeps.declarationMergeId =
+                                declarationMergeId;
+                        }
                         if (IO.properties) {
                             interfaceDeps.properties = IO.properties;
                         }
@@ -1817,6 +1845,40 @@ export class AngularDependencies extends FrameworkDependencies {
 
     private getSymboleName(node): string {
         return node.name?.text;
+    }
+
+    private getMergedInterfaceDeclarations(
+        node: ts.InterfaceDeclaration,
+    ): ts.InterfaceDeclaration[] {
+        const symbolDeclarations = node.symbol?.declarations;
+        if (!symbolDeclarations || symbolDeclarations.length === 0) {
+            return [node];
+        }
+
+        const declarations = symbolDeclarations
+            .filter(ts.isInterfaceDeclaration)
+            .sort((a, b) => {
+                const byFile = a
+                    .getSourceFile()
+                    .fileName.localeCompare(b.getSourceFile().fileName);
+                return byFile !== 0 ? byFile : a.pos - b.pos;
+            });
+
+        return declarations.length > 0 ? declarations : [node];
+    }
+
+    private getInterfaceDeclarationMergeId(
+        declarations: ts.InterfaceDeclaration[],
+    ): string | undefined {
+        if (declarations.length < 2) {
+            return undefined;
+        }
+        return declarations
+            .map((declaration) => {
+                const sourceFile = declaration.getSourceFile();
+                return `${sourceFile.fileName}:${declaration.pos}:${declaration.end}`;
+            })
+            .join("|");
     }
 
     private findProperties(

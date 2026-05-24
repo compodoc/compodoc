@@ -51,6 +51,21 @@ describe('CLI duplicates support', () => {
         expect(file).to.be.true;
     });
 
+    it('DeclarationMergedInterface generated once when declarations are merged', () => {
+        const mergedInterface = exists(distFolder + '/interfaces/DeclarationMergedInterface.html');
+        const duplicateMergedInterface = exists(
+            distFolder + '/interfaces/DeclarationMergedInterface-1.html'
+        );
+        expect(mergedInterface).to.be.true;
+        expect(duplicateMergedInterface).to.be.false;
+    });
+
+    it('DeclarationMergedInterface should include members from all merged declarations', () => {
+        const file = read(distFolder + '/interfaces/DeclarationMergedInterface.html');
+        expect(file).to.contain('test1');
+        expect(file).to.contain('test2');
+    });
+
     it('EmptyService generated', () => {
         const file = exists(distFolder + '/injectables/EmptyService.html');
         expect(file).to.be.true;
