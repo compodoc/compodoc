@@ -9,7 +9,6 @@ const chokidar = require("chokidar");
 
 const traverse = require("neotraverse/legacy");
 const crypto = require("crypto");
-const babel = require("@babel/core");
 
 import { logger } from "../utils/logger";
 
@@ -2178,7 +2177,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
                     if (typeof tag.label === "string") {
                         return (
-                            tag.label.toLowerCase().indexOf("coverageignore") > -1
+                            tag.label.toLowerCase().indexOf("coverageignore") >
+                            -1
                         );
                     }
 
@@ -3187,31 +3187,6 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             });
     }
 
-    private transpileMenuWCToES5(es6Code) {
-        return babel.transformAsync(es6Code, {
-            cwd: __dirname,
-            filename: "menu-wc_es5.js",
-            presets: [
-                [
-                    "@babel/preset-env",
-                    {
-                        targets: {
-                            ie: "11",
-                        },
-                    },
-                ],
-            ],
-            plugins: [
-                [
-                    "@babel/plugin-transform-private-methods",
-                    {
-                        loose: false,
-                    },
-                ],
-            ],
-        });
-    }
-
     private processMenu(mainData): Promise<void> {
         logger.info("Process menu...");
 
@@ -3222,37 +3197,12 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                 output = output.slice(0, -1);
             }
             const finalPathES6 = `${output}/js/menu-wc.js`;
-            const finalPathES5 = `${output}/js/menu-wc_es5.js`;
 
             HtmlEngine.renderMenu(Configuration.mainData.templates, mainData)
                 .then((htmlData) => {
                     FileEngine.write(finalPathES6, htmlData)
                         .then(() => {
-                            this.transpileMenuWCToES5(htmlData)
-                                .then((es5Data) => {
-                                    FileEngine.write(finalPathES5, es5Data.code)
-                                        .then(() => {
-                                            resolveProcessMenu();
-                                        })
-                                        .catch((err) => {
-                                            logger.error(
-                                                "Error during " +
-                                                    finalPathES5 +
-                                                    " page generation",
-                                            );
-                                            logger.error(err);
-                                            return rejectProcessMenu("");
-                                        });
-                                })
-                                .catch((err) => {
-                                    logger.error(
-                                        "Error during " +
-                                            finalPathES5 +
-                                            " page generation",
-                                    );
-                                    logger.error(err);
-                                    return rejectProcessMenu("");
-                                });
+                            resolveProcessMenu();
                         })
                         .catch((err) => {
                             logger.error(
