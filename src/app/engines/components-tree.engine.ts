@@ -63,7 +63,7 @@ class ComponentsTreeEngine {
     private findChildrenAndParents() {
         return new Promise((resolve, reject) => {
             _.forEach(this.componentsForTree, component => {
-                let $component = cheerio(component.templateData);
+                let $component = cheerio.load(component.templateData);
                 _.forEach(this.componentsForTree, componentToFind => {
                     if ($component.find(componentToFind.selector).length > 0) {
                         console.log(componentToFind.name + ' found in ' + component.name);
