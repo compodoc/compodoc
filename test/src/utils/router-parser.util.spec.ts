@@ -538,6 +538,44 @@ const routes: Route[] = [
                 "UserType2",
             ]);
         });
+
+        it("should allow resolve callbacks using inject() in feature Route[] declarations (issue #1433)", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/people-routing.module.ts",
+                `
+import { Route } from "@angular/router";
+
+const routes: Route[] = [
+    {
+        path: "",
+        component: "PersonListComponent",
+        canActivate: ["AuthGuard"],
+        resolve: {
+            personListLink: () => inject(PersonListResolver).resolvePersonListLink()
+        }
+    }
+];
+`,
+            );
+
+            routerParser.cleanFileSpreads(sourceFile);
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].resolve.personListLink).to.equal("[Function]");
+        });
     });
 
     // ── cleanFileSpreads() — path alias resolution (issue #1545) ─────────────
