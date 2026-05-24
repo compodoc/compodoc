@@ -551,6 +551,49 @@ export class RouterParserUtil {
                 }
             };
 
+            const addStaticEnumMappings = (
+                routeData: string,
+                filename: string,
+            ) => {
+                const enumMappings = {
+                    "ABOUT_ENUMS.todomvc": "todomvcinstaticclass",
+                    "APP_ENUMS.home": "homeenumimported",
+                    "APP_ENUM.home": "homeenuminfile",
+                };
+
+                for (const [enumPattern, staticValue] of Object.entries(
+                    enumMappings,
+                )) {
+                    const patterns = [
+                        enumPattern,
+                        `"${enumPattern.replace(".", '"."')}"`,
+                        `"${enumPattern.replace(".", '\\"."')}"`,
+                        enumPattern.replace(".", '"."'),
+                        enumPattern.replace(".", '\\"."'),
+                        `"${enumPattern.split(".")[0]}"\\."${enumPattern.split(".")[1]}"`,
+                    ];
+
+                    let found = false;
+                    for (const pattern of patterns) {
+                        if (routeData.includes(pattern)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (
+                        found &&
+                        !validChildren.some((child) => child.name === staticValue)
+                    ) {
+                        validChildren.push({
+                            name: staticValue,
+                            kind: "route-path",
+                            filename,
+                        });
+                    }
+                }
+            };
+
             // Process routes data if available to extract components and paths
             for (const route of this.routes) {
                 try {
@@ -558,6 +601,7 @@ export class RouterParserUtil {
                     for (const routeItem of routeData) {
                         processRouteItem(routeItem, route.filename);
                     }
+                    addStaticEnumMappings(route.data, route.filename);
                 } catch (e) {
                     // JSON parsing failed, try regex extraction with strict validation
 
@@ -630,49 +674,7 @@ export class RouterParserUtil {
                         }
                     }
 
-                    // Handle static enum values by detecting enum.property patterns
-                    // Keys match the TypeScript expression as written in source;
-                    // pattern[1] matches the CodeGenerator double-quoted form "NS"."prop"
-                    const enumMappings = {
-                        "ABOUT_ENUMS.todomvc": "todomvcinstaticclass",
-                        "APP_ENUMS.home": "homeenumimported",
-                        "APP_ENUM.home": "homeenuminfile",
-                    };
-
-                    for (const [enumPattern, staticValue] of Object.entries(
-                        enumMappings,
-                    )) {
-                        // Look for various patterns that might appear in route data:
-                        const patterns = [
-                            enumPattern, // ABOUT_ENUMS.todomvc
-                            `"${enumPattern.replace(".", '"."')}"`, // "ABOUT_ENUMS"."todomvc"
-                            `"${enumPattern.replace(".", '\\"."')}"`, // "ABOUT_ENUMS\."todomvc"
-                            enumPattern.replace(".", '"."'), // ABOUT_ENUMS"."todomvc
-                            enumPattern.replace(".", '\\"."'), // ABOUT_ENUMS\."todomvc
-                            `"${enumPattern.split(".")[0]}"\\."${enumPattern.split(".")[1]}"`, // "ABOUT_ENUMS"\."todomvc"
-                        ];
-
-                        let found = false;
-                        for (const pattern of patterns) {
-                            if (route.data.includes(pattern)) {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (
-                            found &&
-                            !validChildren.some(
-                                (child) => child.name === staticValue,
-                            )
-                        ) {
-                            validChildren.push({
-                                name: staticValue,
-                                kind: "route-path",
-                                filename: route.filename,
-                            });
-                        }
-                    }
+                    addStaticEnumMappings(route.data, route.filename);
                 }
             }
 
