@@ -501,6 +501,10 @@ const routes = [
             __dirname,
             "../../../../../test/fixtures/baseurl-spread",
         );
+        const appAliasFixtureRoot = path.join(
+            __dirname,
+            "../../../../../test/fixtures/path-alias-app-spread",
+        );
         const relativeFixtureRoot = path.join(
             __dirname,
             "../../../../../test/fixtures/relative-spread-import",
@@ -635,6 +639,32 @@ export const routes: Routes = [{ path: 'root', children: [...langs.map(lang => (
                     "...customCategoryRoutes",
                 );
                 expect(sourceFile.getText()).to.contain('path: "category"');
+            } finally {
+                routerParser.scannedFiles = previousScannedFiles;
+            }
+        });
+
+        it("should resolve @app/* path aliases from tsconfig.paths in nested routes (issue #654)", () => {
+            const previousScannedFiles = routerParser.scannedFiles;
+            try {
+                routerParser.scannedFiles = [];
+                Configuration.mainData.tsconfig = path.join(
+                    appAliasFixtureRoot,
+                    "tsconfig.json",
+                );
+
+                const project = new Project();
+                const sourceFile = project.addSourceFileAtPath(
+                    path.join(
+                        appAliasFixtureRoot,
+                        "src/app/stage/stage-routing.module.ts",
+                    ),
+                );
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+                expect(sourceFile.getText()).not.to.contain("...appsRoutes");
+                expect(sourceFile.getText()).to.contain('path: "apps"');
             } finally {
                 routerParser.scannedFiles = previousScannedFiles;
             }
