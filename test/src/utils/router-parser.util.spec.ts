@@ -488,6 +488,56 @@ const routes = [
 
             expect(parsed[0].path).to.equal("dynamicPath()");
         });
+
+        it("should allow enum references in feature-module Route[] data objects (issue #1334)", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            project.createSourceFile(
+                "/tmp/user-types.enum.ts",
+                `
+export enum UserTypes {
+    UserType1 = "UserType1",
+    UserType2 = "UserType2"
+}
+`,
+            );
+            const sourceFile = project.createSourceFile(
+                "/tmp/feature-routing.module.ts",
+                `
+import { Route } from "@angular/router";
+import { UserTypes } from "./user-types.enum";
+
+const routes: Route[] = [
+    {
+        path: "userType2",
+        component: "UserType2Component",
+        canActivate: ["RoleGuard"],
+        data: {
+            allowedUserTypes: [UserTypes.UserType2]
+        }
+    }
+];
+`,
+            );
+
+            routerParser.cleanFileSpreads(sourceFile);
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].data.allowedUserTypes).to.deep.equal([
+                "UserType2",
+            ]);
+        });
     });
 
     // ── cleanFileSpreads() — path alias resolution (issue #1545) ─────────────
