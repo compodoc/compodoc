@@ -977,11 +977,62 @@ export class RouterParserUtil {
     public isVariableRoutes(node) {
         let result = false;
         if (node.declarationList && node.declarationList.declarations) {
+            const routeLikePropertyNames = new Set([
+                "path",
+                "component",
+                "redirectTo",
+                "loadChildren",
+                "loadComponent",
+                "children",
+                "data",
+                "canActivate",
+            ]);
+
+            const hasRouteLikeArrayInitializer = (declaration): boolean => {
+                if (!declaration.initializer) {
+                    return false;
+                }
+                if (!ts.isArrayLiteralExpression(declaration.initializer)) {
+                    return false;
+                }
+                if (!ts.isIdentifier(declaration.name)) {
+                    return false;
+                }
+
+                const variableName = declaration.name.text.toLowerCase();
+                if (!variableName.includes("route")) {
+                    return false;
+                }
+
+                return declaration.initializer.elements.some((element) => {
+                    if (ts.isSpreadElement(element)) {
+                        return true;
+                    }
+                    if (!ts.isObjectLiteralExpression(element)) {
+                        return false;
+                    }
+                    return element.properties.some((property) => {
+                        if (!ts.isPropertyAssignment(property)) {
+                            return false;
+                        }
+                        const propertyName = property.name.getText().replace(
+                            /^['"]|['"]$/g,
+                            "",
+                        );
+                        return routeLikePropertyNames.has(propertyName);
+                    });
+                });
+            };
+
             let i = 0;
             const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
-                const declarationType = node.declarationList.declarations[i].type;
+                const declaration = node.declarationList.declarations[i];
+                const declarationType = declaration.type;
                 if (!declarationType) {
+                    if (hasRouteLikeArrayInitializer(declaration)) {
+                        result = true;
+                    }
                     continue;
                 }
 
@@ -1031,6 +1082,10 @@ export class RouterParserUtil {
                     ) {
                         result = true;
                     }
+                }
+
+                if (!result && hasRouteLikeArrayInitializer(declaration)) {
+                    result = true;
                 }
             }
         }
@@ -1533,63 +1588,15 @@ export class RouterParserUtil {
      */
     public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
-
-        const isRouteVariableDeclaration = (declaration): boolean => {
-            const declarationType = declaration.compilerNode.type;
-            if (!declarationType) {
+        const routesVariableDeclarations = sourceFile.getVariableDeclarations().filter((declaration) => {
+            const variableStatement = declaration.getFirstAncestorByKind(
+                SyntaxKind.VariableStatement,
+            );
+            if (!variableStatement) {
                 return false;
             }
-
-            if (
-                ts.isTypeReferenceNode(declarationType) &&
-                declarationType.typeName
-            ) {
-                const typeName = declarationType.typeName.getText();
-                if (typeName === "Routes" || typeName.endsWith(".Routes")) {
-                    return true;
-                }
-
-                if (
-                    (typeName === "Array" || typeName === "ReadonlyArray") &&
-                    declarationType.typeArguments &&
-                    declarationType.typeArguments.length === 1
-                ) {
-                    const routeType = declarationType.typeArguments[0];
-                    if (
-                        ts.isTypeReferenceNode(routeType) &&
-                        routeType.typeName
-                    ) {
-                        const routeTypeName = routeType.typeName.getText();
-                        if (
-                            routeTypeName === "Route" ||
-                            routeTypeName.endsWith(".Route")
-                        ) {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            if (
-                ts.isArrayTypeNode(declarationType) &&
-                ts.isTypeReferenceNode(declarationType.elementType) &&
-                declarationType.elementType.typeName
-            ) {
-                const elementTypeName = declarationType.elementType.typeName.getText();
-                if (
-                    elementTypeName === "Route" ||
-                    elementTypeName.endsWith(".Route")
-                ) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-
-        const routesVariableDeclarations = sourceFile
-            .getVariableDeclarations()
-            .filter((declaration) => isRouteVariableDeclaration(declaration));
+            return this.isVariableRoutes(variableStatement.compilerNode);
+        });
 
         for (const variableDeclaration of routesVariableDeclarations) {
             const initializer = variableDeclaration.getInitializer();
