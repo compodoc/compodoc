@@ -97,18 +97,38 @@ export class ClassHelper {
         sourceFile: ts.SourceFile,
         result: any,
     ): void {
-        if (node.jsDoc) {
-            const comment = this.jsdocParserUtil.getMainCommentOfNode(
-                node,
-                sourceFile,
-            );
-            if (typeof comment !== "undefined") {
-                const cleanedDescription =
-                    this.jsdocParserUtil.parseComment(comment);
-                result.rawdescription = cleanedDescription;
-                result.description = markedAcl(cleanedDescription);
+        const comment = this.jsdocParserUtil.getMainCommentOfNode(
+            node,
+            sourceFile,
+        );
+        if (typeof comment === "string") {
+            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
+            result.rawdescription = cleanedDescription;
+            result.description = markedAcl(cleanedDescription);
+        }
+    }
+
+    private hasJSDocTag(member: ts.Node, tagName: string): boolean {
+        const jsdocs = this.jsdocParserUtil.getJSDocs(member) as any[] | undefined;
+        if (!jsdocs || jsdocs.length === 0) {
+            return false;
+        }
+
+        for (const doc of jsdocs) {
+            if (doc?.tagName?.text === tagName) {
+                return true;
+            }
+
+            if (doc?.tags) {
+                for (const tag of doc.tags) {
+                    if (tag?.tagName?.text === tagName) {
+                        return true;
+                    }
+                }
             }
         }
+
+        return false;
     }
 
     /**
@@ -623,19 +643,7 @@ export class ClassHelper {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const internalTags: string[] = ["internal"];
-        if (member.jsDoc) {
-            for (const doc of member.jsDoc) {
-                if (doc.tags) {
-                    for (const tag of doc.tags) {
-                        if (internalTags.indexOf(tag.tagName.text) > -1) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return this.hasJSDocTag(member, "internal");
     }
 
     private isPublic(member): boolean {
@@ -654,19 +662,7 @@ export class ClassHelper {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        const internalTags: string[] = ["hidden"];
-        if (member.jsDoc) {
-            for (const doc of member.jsDoc) {
-                if (doc.tags) {
-                    for (const tag of doc.tags) {
-                        if (internalTags.indexOf(tag.tagName.text) > -1) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return this.hasJSDocTag(member, "hidden");
     }
 
     private isPipeDecorator(decorator) {
@@ -2037,11 +2033,7 @@ export class ClassHelper {
                 getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
         }
 
-        if (
-            !_return.description &&
-            property.jsDoc &&
-            property.jsDoc.length > 0
-        ) {
+        if (!_return.description) {
             const jsdoctags = this.jsdocParserUtil.getJSDocs(property);
             this.processJSDocTags(jsdoctags, _return);
             this.extractAndProcessJSDocComment(property, sourceFile, _return);

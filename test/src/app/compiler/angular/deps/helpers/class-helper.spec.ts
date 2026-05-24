@@ -886,6 +886,64 @@ describe('ClassHelper', () => {
             expect(result.required).to.be.true;
             expect(result.optional).to.be.false;
         });
+
+        it('should extract jsdoc tags and description even when property.jsDoc is missing (issue #1441)', () => {
+            const property = {
+                name: { text: 'internalOverrideInput', kind: SyntaxKind.Identifier },
+                type: { kind: SyntaxKind.StringKeyword },
+                initializer: undefined,
+                kind: SyntaxKind.PropertyDeclaration,
+                pos: 10,
+                end: 20
+            } as any;
+
+            const mockJSDoc = [
+                {
+                    tags: [
+                        { tagName: { text: 'internal' }, comment: '' }
+                    ]
+                }
+            ] as any;
+
+            jsdocParserStub.getJSDocs.withArgs(property).returns(mockJSDoc);
+            jsdocParserStub.getMainCommentOfNode
+                .withArgs(property, mockSourceFile)
+                .returns('/** Internal override input */');
+            jsdocParserStub.parseComment
+                .withArgs('/** Internal override input */')
+                .returns('Internal override input');
+
+            const decorator = {
+                expression: {
+                    arguments: []
+                }
+            } as any;
+
+            const result = (classHelper as any).visitInputAndHostBinding(property, decorator, mockSourceFile);
+
+            expect(result.jsdoctags).to.be.an('array').with.length(1);
+            expect(result.description).to.contain('Internal override input');
+        });
+    });
+
+    describe('isInternal', () => {
+        it('should detect @internal tag from parsed JSDoc cache even when member.jsDoc is missing (issue #1441)', () => {
+            const member = {
+                kind: SyntaxKind.PropertyDeclaration
+            } as any;
+
+            jsdocParserStub.getJSDocs.withArgs(member).returns([
+                {
+                    tags: [
+                        { tagName: { text: 'internal' }, comment: '' }
+                    ]
+                }
+            ] as any);
+
+            const result = (classHelper as any).isInternal(member);
+
+            expect(result).to.be.true;
+        });
     });
 
     describe('visitOutput', () => {
