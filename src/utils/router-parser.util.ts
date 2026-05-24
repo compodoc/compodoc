@@ -1146,7 +1146,8 @@ export class RouterParserUtil {
 
     /**
      * Resolve a TypeScript path alias (tsconfig compilerOptions.paths) to an absolute file path.
-     * Returns undefined when no alias matches or the tsconfig is unavailable.
+     * Also supports non-relative imports resolved via compilerOptions.baseUrl.
+     * Returns undefined when no mapping matches or the tsconfig is unavailable.
      */
     private resolvePathAlias(moduleSpecifier: string): string | undefined {
         try {
@@ -1155,7 +1156,7 @@ export class RouterParserUtil {
 
             const tsconfig = readConfig(tsconfigPath);
             const compilerOptions = tsconfig?.compilerOptions;
-            if (!compilerOptions?.paths) return undefined;
+            if (!compilerOptions) return undefined;
 
             const baseUrl = compilerOptions.baseUrl
                 ? path.resolve(
@@ -1164,26 +1165,39 @@ export class RouterParserUtil {
                   )
                 : path.dirname(tsconfigPath);
 
-            for (const [pattern, replacements] of Object.entries(
-                compilerOptions.paths as Record<string, string[]>,
-            )) {
-                if (!Array.isArray(replacements) || replacements.length === 0)
-                    continue;
+            if (compilerOptions.paths) {
+                for (const [pattern, replacements] of Object.entries(
+                    compilerOptions.paths as Record<string, string[]>,
+                )) {
+                    if (
+                        !Array.isArray(replacements) ||
+                        replacements.length === 0
+                    )
+                        continue;
 
-                // Convert glob pattern to regex: "@shared/*" → /^@shared\/(.*)$/
-                const regexStr = pattern
-                    .replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&")
-                    .replace(/\*/g, "(.*)");
-                const regex = new RegExp("^" + regexStr + "$");
-                const match = moduleSpecifier.match(regex);
+                    // Convert glob pattern to regex: "@shared/*" → /^@shared\/(.*)$/
+                    const regexStr = pattern
+                        .replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&")
+                        .replace(/\*/g, "(.*)");
+                    const regex = new RegExp("^" + regexStr + "$");
+                    const match = moduleSpecifier.match(regex);
 
-                if (match) {
-                    const resolved = (replacements[0] as string).replace(
-                        /\*/g,
-                        match[1] ?? "",
-                    );
-                    return path.resolve(baseUrl, resolved);
+                    if (match) {
+                        const resolved = (replacements[0] as string).replace(
+                            /\*/g,
+                            match[1] ?? "",
+                        );
+                        return path.resolve(baseUrl, resolved);
+                    }
                 }
+            }
+
+            const isNonRelative =
+                !moduleSpecifier.startsWith("./") &&
+                !moduleSpecifier.startsWith("../") &&
+                !path.isAbsolute(moduleSpecifier);
+            if (isNonRelative) {
+                return path.resolve(baseUrl, moduleSpecifier);
             }
         } catch (_e) {
             // silently skip — tsconfig may not be readable at this point

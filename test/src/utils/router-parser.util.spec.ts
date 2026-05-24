@@ -497,6 +497,10 @@ const routes = [
             __dirname,
             "../../../../../test/fixtures/path-alias-spread",
         );
+        const baseUrlFixtureRoot = path.join(
+            __dirname,
+            "../../../../../test/fixtures/baseurl-spread",
+        );
         const relativeFixtureRoot = path.join(
             __dirname,
             "../../../../../test/fixtures/relative-spread-import",
@@ -603,6 +607,34 @@ export const routes: Routes = [{ path: 'root', children: [...langs.map(lang => (
                 ).not.to.throw();
                 expect(sourceFile.getText()).not.to.contain("...appRoutes");
                 expect(sourceFile.getText()).to.contain('path: "custom"');
+            } finally {
+                routerParser.scannedFiles = previousScannedFiles;
+            }
+        });
+
+        it("should resolve spread imports via tsconfig baseUrl in nested routing files (issue #1308)", () => {
+            const previousScannedFiles = routerParser.scannedFiles;
+            try {
+                routerParser.scannedFiles = [];
+                Configuration.mainData.tsconfig = path.join(
+                    baseUrlFixtureRoot,
+                    "tsconfig.json",
+                );
+
+                const project = new Project();
+                const sourceFile = project.addSourceFileAtPath(
+                    path.join(
+                        baseUrlFixtureRoot,
+                        "src/app/sections/main/main-routing.module.ts",
+                    ),
+                );
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+                expect(sourceFile.getText()).not.to.contain(
+                    "...customCategoryRoutes",
+                );
+                expect(sourceFile.getText()).to.contain('path: "category"');
             } finally {
                 routerParser.scannedFiles = previousScannedFiles;
             }
