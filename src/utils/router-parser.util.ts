@@ -1534,37 +1534,71 @@ export class RouterParserUtil {
     public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
 
-        // Find all variable declarations with Routes type
-        const variableDeclarations = sourceFile.getVariableDeclarations();
-        const routesVariableDeclarations = variableDeclarations.filter((v) => {
-            const type = v.compilerNode.type;
-            if (
-                typeof type !== "undefined" &&
-                ts.isTypeReferenceNode(type) &&
-                typeof type.typeName !== "undefined"
-            ) {
-                return (type.typeName as ts.Identifier).text === "Routes";
+        const isRouteVariableDeclaration = (declaration): boolean => {
+            const declarationType = declaration.compilerNode.type;
+            if (!declarationType) {
+                return false;
             }
+
+            if (
+                ts.isTypeReferenceNode(declarationType) &&
+                declarationType.typeName
+            ) {
+                const typeName = declarationType.typeName.getText();
+                if (typeName === "Routes" || typeName.endsWith(".Routes")) {
+                    return true;
+                }
+
+                if (
+                    (typeName === "Array" || typeName === "ReadonlyArray") &&
+                    declarationType.typeArguments &&
+                    declarationType.typeArguments.length === 1
+                ) {
+                    const routeType = declarationType.typeArguments[0];
+                    if (
+                        ts.isTypeReferenceNode(routeType) &&
+                        routeType.typeName
+                    ) {
+                        const routeTypeName = routeType.typeName.getText();
+                        if (
+                            routeTypeName === "Route" ||
+                            routeTypeName.endsWith(".Route")
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            if (
+                ts.isArrayTypeNode(declarationType) &&
+                ts.isTypeReferenceNode(declarationType.elementType) &&
+                declarationType.elementType.typeName
+            ) {
+                const elementTypeName = declarationType.elementType.typeName.getText();
+                if (
+                    elementTypeName === "Route" ||
+                    elementTypeName.endsWith(".Route")
+                ) {
+                    return true;
+                }
+            }
+
             return false;
-        });
+        };
 
-        if (routesVariableDeclarations.length === 0) {
-            return file;
-        }
+        const routesVariableDeclarations = sourceFile
+            .getVariableDeclarations()
+            .filter((declaration) => isRouteVariableDeclaration(declaration));
 
-        // Process all Routes variable declarations
         for (const variableDeclaration of routesVariableDeclarations) {
             const initializer = variableDeclaration.getInitializer();
-            if (!initializer) {
-                continue;
-            }
+            if (!initializer) continue;
 
             for (const callExpr of initializer.getDescendantsOfKind(
                 SyntaxKind.CallExpression,
             )) {
-                if (callExpr.wasForgotten()) {
-                    continue;
-                }
+                if (callExpr.wasForgotten()) continue;
                 callExpr.replaceWithText((writer) =>
                     writer.quote(callExpr.getText()),
                 );

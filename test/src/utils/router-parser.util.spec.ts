@@ -348,6 +348,76 @@ const routes: Routes = [
 
             expect(parsed[0].path).to.equal("homePageRoutePath()");
         });
+
+        it("should allow JSON5.parse for Route[] declarations with function calls", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1293-route-array.ts",
+                `
+import { Route } from "@angular/router";
+function homePageRoutePath(): string {
+    return "";
+}
+const routes: Route[] = [
+    {
+        path: homePageRoutePath(),
+        component: "HomePageComponent"
+    }
+];
+`,
+            );
+
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].path).to.equal("homePageRoutePath()");
+        });
+
+        it("should allow JSON5.parse for ReadonlyArray<Route> declarations with function calls", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1293-readonly-route-array.ts",
+                `
+import { Route } from "@angular/router";
+function buildPath(): string {
+    return "";
+}
+const routes: ReadonlyArray<Route> = [
+    {
+        path: buildPath(),
+        component: "HomePageComponent"
+    }
+];
+`,
+            );
+
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].path).to.equal("buildPath()");
+        });
     });
 
     // ── cleanFileSpreads() — path alias resolution (issue #1545) ─────────────
