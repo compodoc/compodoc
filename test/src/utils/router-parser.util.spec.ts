@@ -345,6 +345,44 @@ const routes: Routes = [
         });
     });
 
+    describe("cleanFileDynamics() — enum values in route outlet (issue #1335)", () => {
+        it("should resolve enum member values used as outlet and stay JSON5-parseable", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1335.ts",
+                `
+import { Routes } from "@angular/router";
+
+export enum MyRoutes {
+    RouteOne = "one",
+    RouteTwo = "two",
+    RouteThree = "three",
+    RouteFour = "four"
+}
+
+const routes: Routes = [
+    { path: "", component: "MyComponent", outlet: MyRoutes.RouteFour }
+];
+`,
+            );
+
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(parsed[0].outlet).to.equal("four");
+        });
+    });
+
     describe("cleanCallExpressions() — function calls in route values (issue #1293)", () => {
         it("should allow JSON5.parse when path is defined by a function call", () => {
             const project = new Project({ useInMemoryFileSystem: true });
