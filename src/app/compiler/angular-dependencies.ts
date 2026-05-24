@@ -566,24 +566,9 @@ export class AngularDependencies extends FrameworkDependencies {
         let hasRoutesStatements = false;
 
         if (variableRoutesStatements.length > 0) {
-            // Clean file for spread and dynamics inside routes definitions
-            variableRoutesStatements.forEach((s) => {
-                const variableDeclarations = s.getDeclarations();
-                let len = variableDeclarations.length;
-                let i = 0;
-                for (i; i < len; i++) {
-                    if (variableDeclarations[i].compilerNode.type) {
-                        if (
-                            variableDeclarations[i].compilerNode.type
-                                .typeName &&
-                            variableDeclarations[i].compilerNode.type.typeName
-                                .text === "Routes"
-                        ) {
-                            hasRoutesStatements = true;
-                        }
-                    }
-                }
-            });
+            hasRoutesStatements = variableRoutesStatements.some((statement) =>
+                RouterParserUtil.isVariableRoutes(statement.compilerNode),
+            );
         }
 
         if (hasRoutesStatements && !Configuration.mainData.disableRoutesGraph) {

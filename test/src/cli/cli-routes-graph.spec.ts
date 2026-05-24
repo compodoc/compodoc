@@ -83,6 +83,33 @@ describe('CLI Routes graph', () => {
         });
     });
 
+    describe('should support standalone routing with provideRouter', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/standalone-provide-router/tsconfig.app.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should have a clean graph', () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.true;
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('StandaloneHomeComponent');
+        });
+    });
+
     describe('should support lazy-loaded modules with loadChildren syntax (containing possible trailing commas)', () => {
         before(function (done) {
             tmp.create(distFolder);

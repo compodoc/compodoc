@@ -980,11 +980,54 @@ export class RouterParserUtil {
             let i = 0;
             const len = node.declarationList.declarations.length;
             for (i; i < len; i++) {
-                if (node.declarationList.declarations[i].type) {
+                const declarationType = node.declarationList.declarations[i].type;
+                if (!declarationType) {
+                    continue;
+                }
+
+                if (
+                    ts.isTypeReferenceNode(declarationType) &&
+                    declarationType.typeName
+                ) {
+                    const typeName = declarationType.typeName.getText();
+                    if (typeName === "Routes" || typeName.endsWith(".Routes")) {
+                        result = true;
+                        continue;
+                    }
+
                     if (
-                        node.declarationList.declarations[i].type.typeName &&
-                        node.declarationList.declarations[i].type.typeName
-                            .text === "Routes"
+                        (typeName === "Array" ||
+                            typeName === "ReadonlyArray") &&
+                        declarationType.typeArguments &&
+                        declarationType.typeArguments.length === 1
+                    ) {
+                        const routeType = declarationType.typeArguments[0];
+                        if (
+                            ts.isTypeReferenceNode(routeType) &&
+                            routeType.typeName
+                        ) {
+                            const routeTypeName = routeType.typeName.getText();
+                            if (
+                                routeTypeName === "Route" ||
+                                routeTypeName.endsWith(".Route")
+                            ) {
+                                result = true;
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                if (
+                    ts.isArrayTypeNode(declarationType) &&
+                    ts.isTypeReferenceNode(declarationType.elementType) &&
+                    declarationType.elementType.typeName
+                ) {
+                    const elementTypeName =
+                        declarationType.elementType.typeName.getText();
+                    if (
+                        elementTypeName === "Route" ||
+                        elementTypeName.endsWith(".Route")
                     ) {
                         result = true;
                     }
