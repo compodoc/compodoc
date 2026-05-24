@@ -1304,6 +1304,12 @@ export class RouterParserUtil {
 
     public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
+        const routeStringProperties = new Set([
+            "path",
+            "redirectTo",
+            "outlet",
+            "pathMatch",
+        ]);
 
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
@@ -1370,6 +1376,90 @@ export class RouterParserUtil {
                     continue;
                 }
             }
+        }
+
+        const templateExpressions = file
+            .getDescendantsOfKind(SyntaxKind.TemplateExpression)
+            .filter((templateExpression) => {
+                let foundParentVariableStatement = false;
+                templateExpression.getParentWhile((n) => {
+                    if (n.getKind() === SyntaxKind.VariableStatement) {
+                        if (this.isVariableRoutes(n.compilerNode)) {
+                            foundParentVariableStatement = true;
+                        }
+                    }
+                    return true;
+                });
+                if (!foundParentVariableStatement) {
+                    return false;
+                }
+
+                const propertyAssignment =
+                    templateExpression.getFirstAncestorByKind(
+                        SyntaxKind.PropertyAssignment,
+                    );
+
+                if (!propertyAssignment) {
+                    return false;
+                }
+
+                return routeStringProperties.has(propertyAssignment.getName());
+            });
+
+        for (const templateExpression of templateExpressions) {
+            const templateNode = templateExpression.compilerNode;
+            if (!ts.isTemplateExpression(templateNode)) {
+                continue;
+            }
+
+            let resolved = templateNode.head.text || "";
+            for (const span of templateNode.templateSpans) {
+                let expressionText = span.expression.getText();
+                expressionText = expressionText.trim();
+                if (
+                    (expressionText.startsWith('"') &&
+                        expressionText.endsWith('"')) ||
+                    (expressionText.startsWith("'") &&
+                        expressionText.endsWith("'")) ||
+                    (expressionText.startsWith("`") &&
+                        expressionText.endsWith("`"))
+                ) {
+                    expressionText = expressionText.slice(1, -1);
+                }
+                resolved += expressionText + (span.literal.text || "");
+            }
+
+            templateExpression.replaceWithText(JSON.stringify(resolved));
+        }
+
+        const noSubstitutionTemplateLiterals = file
+            .getDescendantsOfKind(SyntaxKind.NoSubstitutionTemplateLiteral)
+            .filter((literal) => {
+                let foundParentVariableStatement = false;
+                literal.getParentWhile((n) => {
+                    if (n.getKind() === SyntaxKind.VariableStatement) {
+                        if (this.isVariableRoutes(n.compilerNode)) {
+                            foundParentVariableStatement = true;
+                        }
+                    }
+                    return true;
+                });
+                if (!foundParentVariableStatement) {
+                    return false;
+                }
+
+                const propertyAssignment = literal.getFirstAncestorByKind(
+                    SyntaxKind.PropertyAssignment,
+                );
+                if (!propertyAssignment) {
+                    return false;
+                }
+
+                return routeStringProperties.has(propertyAssignment.getName());
+            });
+
+        for (const literal of noSubstitutionTemplateLiterals) {
+            literal.replaceWithText(JSON.stringify(literal.getLiteralValue()));
         }
 
         return file;

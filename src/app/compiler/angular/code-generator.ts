@@ -37,12 +37,17 @@ class TsKindsToText {
     constructor(public output: (node: ts.Node) => Array<string>, public kinds: Array<SyntaxKind>) {}
 }
 
+function textOfNode(node: ts.Node): string {
+    const textNode = node as ts.Node & { text?: string };
+    return typeof textNode.text === 'string' ? textNode.text : node.getText();
+}
+
 const TsKindConversion: Array<TsKindsToText> = [
     new TsKindsToText(
-        node => ['"', node.text, '"'],
+        node => ['"', textOfNode(node), '"'],
         [SyntaxKind.FirstLiteralToken, SyntaxKind.Identifier]
     ),
-    new TsKindsToText(node => ['"', node.text, '"'], [SyntaxKind.StringLiteral]),
+    new TsKindsToText(node => ['"', textOfNode(node), '"'], [SyntaxKind.StringLiteral]),
     new TsKindsToText(node => [], [SyntaxKind.ArrayLiteralExpression]),
     new TsKindsToText(node => ['import', ' '], [SyntaxKind.ImportKeyword]),
     new TsKindsToText(node => ['from', ' '], [SyntaxKind.FromKeyword]),

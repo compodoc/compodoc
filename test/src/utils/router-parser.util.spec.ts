@@ -2,6 +2,7 @@ import { expect } from "chai";
 import * as path from "path";
 import * as sinon from "sinon";
 import { Project } from "ts-morph";
+import { CodeGenerator } from "../../../src/app/compiler/angular/code-generator";
 import Configuration from "../../../src/app/configuration";
 import { RouterParserUtil } from "../../../src/utils/router-parser.util";
 import { logger } from "../../../src/utils/logger";
@@ -260,6 +261,55 @@ describe("Utils - RouterParserUtil", () => {
                 result = require("json5").parse(cleaned);
             }).not.to.throw();
             expect(result[0].data.fn).to.equal("[Function]");
+        });
+    });
+
+    describe("cleanFileDynamics() — template literals in route path (issue #1493)", () => {
+        it("should keep template static text (/:) and allow JSON5.parse after CodeGenerator output", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1493.ts",
+                `
+const ATTRIBUTES_ROUTING_REGISTRY = {
+    ATTRIBUTES_ENGINEERING: "engineering",
+    ATTRIBUTES__ID: "id"
+};
+const ComponentConstants = {
+    FLE_ASSET_MAINTENANCE_PLAN: "AssetMaintenancePlanComponent"
+};
+type AssetMaintenancePlanOutput = { assetText: string };
+import { Routes } from "@angular/router";
+const routes: Routes = [
+    {
+        path: \`\${ATTRIBUTES_ROUTING_REGISTRY.ATTRIBUTES_ENGINEERING}/:\${ATTRIBUTES_ROUTING_REGISTRY.ATTRIBUTES__ID}\`,
+        data: {
+            name: ComponentConstants.FLE_ASSET_MAINTENANCE_PLAN,
+            desc: ({ data }: { data: AssetMaintenancePlanOutput }) => data.assetText
+        }
+    }
+];
+`,
+            );
+
+            routerParser.cleanFileDynamics(sourceFile);
+            routerParser.cleanCallExpressions(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].path).to.equal("engineering/:id");
+            expect(parsed[0].data.name).to.equal(
+                "AssetMaintenancePlanComponent",
+            );
+            expect(parsed[0].data.desc).to.equal("[Function]");
         });
     });
 
