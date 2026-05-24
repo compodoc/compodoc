@@ -73,4 +73,12 @@ describe('CLI simple generation - extends app', () => {
             'code><a href="../interfaces/BooInterface.html" target="_self" >BooInterface'
         );
     });
+
+    it('OmitClockInterface extends Omit and keeps non-omitted properties', () => {
+        const file = read(distFolder + '/interfaces/OmitClockInterface.html');
+        expect(file).to.contain('Omit&lt;OmitBaseInterface, &#x27;prop1&#x27; | &#x27;propHidden&#x27;&gt;');
+        expect(file).to.contain('>prop2<');
+        expect(file).to.contain('>prop3<');
+        expect(file).to.not.contain('>propHidden<');
+    });
 });

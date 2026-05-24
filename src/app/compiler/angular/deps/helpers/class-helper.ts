@@ -775,25 +775,16 @@ export class ClassHelper {
                         if (Array.isArray(extendsListRaw)) {
                             if (extendsListRaw.length > 0) {
                                 extendsListRaw.forEach((extendElement) => {
-                                    const extendElementExpression =
-                                        extendElement.getExpression();
-                                    if (extendElementExpression) {
-                                        const text =
-                                            extendElementExpression.getText();
-                                        if (text) {
-                                            extendsList.push(text);
-                                        }
+                                    const text = extendElement.getText();
+                                    if (text) {
+                                        extendsList.push(text);
                                     }
                                 });
                             }
                         } else {
-                            const extendElementExpression =
-                                extendsListRaw.getExpression();
-                            if (extendElementExpression) {
-                                const text = extendElementExpression.getText();
-                                if (text) {
-                                    extendsList.push(text);
-                                }
+                            const text = extendsListRaw.getText();
+                            if (text) {
+                                extendsList.push(text);
                             }
                         }
                     }

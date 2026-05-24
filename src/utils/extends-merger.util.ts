@@ -6,6 +6,7 @@ import Configuration from '../app/configuration';
 export class ExtendsMerger {
     private components;
     private classes;
+    private interfaces;
     private injectables;
     private directives;
     private controllers;
@@ -21,12 +22,13 @@ export class ExtendsMerger {
     }
 
     public merge(deps) {
-        this.components = deps.components;
-        this.classes = deps.classes;
-        this.injectables = deps.injectables;
-        this.directives = deps.directives;
-        this.controllers = deps.controllers;
-        this.aliases = deps.aliases;
+        this.components = deps.components || [];
+        this.classes = deps.classes || [];
+        this.interfaces = deps.interfaces || [];
+        this.injectables = deps.injectables || [];
+        this.directives = deps.directives || [];
+        this.controllers = deps.controllers || [];
+        this.aliases = deps.aliases || {};
 
         const mergeExtendedProperties = component => {
             let ext;
@@ -35,6 +37,9 @@ export class ExtendsMerger {
 
                 if (ext) {
                     const recursiveScanWithInheritance = cls => {
+                        if (!cls) {
+                            return;
+                        }
                         // From class to component
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
@@ -133,6 +138,9 @@ export class ExtendsMerger {
                 ext = this.findInDependencies(el.extends[0]);
                 if (ext) {
                     const recursiveScanWithInheritance = cls => {
+                        if (!cls) {
+                            return;
+                        }
                         if (typeof cls.methods !== 'undefined' && cls.methods.length > 0) {
                             let newMethods = cloneDeep(cls.methods);
                             newMethods = this.markInheritance(newMethods, cls);
@@ -158,6 +166,7 @@ export class ExtendsMerger {
         };
 
         this.classes.forEach(mergeExtendedClasses);
+        this.interfaces.forEach(mergeExtendedClasses);
         this.injectables.forEach(mergeExtendedClasses);
         this.directives.forEach(mergeExtendedClasses);
         this.controllers.forEach(mergeExtendedClasses);
@@ -190,15 +199,68 @@ export class ExtendsMerger {
     }
 
     private findInDependencies(name: string) {
-        const mergedData = concat(
+        const trimmedName = (name || '').trim();
+        const mergedData = this.getMergedDependenciesData();
+
+        const result = this.findDirectDependency(trimmedName, mergedData);
+        if (result) {
+            return result;
+        }
+
+        const parsedTypeReference = this.parseGenericTypeReference(trimmedName);
+        if (!parsedTypeReference) {
+            return false;
+        }
+
+        if (parsedTypeReference.name === 'Omit' && parsedTypeReference.typeArguments.length >= 2) {
+            const baseTypeName = parsedTypeReference.typeArguments[0];
+            const baseType = this.resolveTypeReference(baseTypeName, mergedData);
+            if (!baseType) {
+                return false;
+            }
+
+            const omittedKeys = this.extractStringLiteralUnionValues(
+                parsedTypeReference.typeArguments[1]
+            );
+
+            if (!omittedKeys || omittedKeys.length === 0) {
+                return baseType;
+            }
+
+            const omittedKeySet = new Set(omittedKeys);
+            const mergedType = cloneDeep(baseType);
+
+            if (Array.isArray(mergedType.properties)) {
+                mergedType.properties = mergedType.properties.filter(
+                    (property) => property && !omittedKeySet.has(property.name)
+                );
+            }
+
+            if (Array.isArray(mergedType.methods)) {
+                mergedType.methods = mergedType.methods.filter(
+                    (method) => method && !omittedKeySet.has(method.name)
+                );
+            }
+
+            return mergedType;
+        }
+
+        return this.resolveTypeReference(trimmedName, mergedData) || false;
+    }
+
+    private getMergedDependenciesData() {
+        return concat(
             [],
             this.components,
             this.classes,
+            this.interfaces,
             this.injectables,
             this.directives,
             this.controllers
         );
+    }
 
+    private findDirectDependency(name: string, mergedData: any[]) {
         let result = find(mergedData, { name: name } as any);
 
         // Find in aliases ?
@@ -214,6 +276,163 @@ export class ExtendsMerger {
         }
 
         return result || false;
+    }
+
+    private resolveTypeReference(typeReference: string, mergedData: any[]) {
+        const trimmedTypeReference = (typeReference || '').trim();
+        let result = this.findDirectDependency(trimmedTypeReference, mergedData);
+        if (result) {
+            return result;
+        }
+
+        const parsedTypeReference = this.parseGenericTypeReference(trimmedTypeReference);
+        if (parsedTypeReference) {
+            result = this.findDirectDependency(parsedTypeReference.name, mergedData);
+            if (result) {
+                return result;
+            }
+        }
+
+        return false;
+    }
+
+    private parseGenericTypeReference(typeReference: string) {
+        const trimmedTypeReference = (typeReference || '').trim();
+        const openingBracketIndex = trimmedTypeReference.indexOf('<');
+        const closingBracketIndex = trimmedTypeReference.lastIndexOf('>');
+
+        if (
+            openingBracketIndex === -1 ||
+            closingBracketIndex === -1 ||
+            closingBracketIndex <= openingBracketIndex
+        ) {
+            return null;
+        }
+
+        const typeName = trimmedTypeReference.slice(0, openingBracketIndex).trim();
+        const rawTypeArguments = trimmedTypeReference
+            .slice(openingBracketIndex + 1, closingBracketIndex)
+            .trim();
+        if (!typeName || !rawTypeArguments) {
+            return null;
+        }
+
+        const typeArguments = this.splitTopLevelTypeArguments(rawTypeArguments);
+        return {
+            name: typeName,
+            typeArguments
+        };
+    }
+
+    private splitTopLevelTypeArguments(typeArguments: string): string[] {
+        const result = [];
+        let current = '';
+        let angleDepth = 0;
+        let parenthesisDepth = 0;
+        let bracketDepth = 0;
+        let braceDepth = 0;
+        let quote: string | null = null;
+
+        for (let i = 0; i < typeArguments.length; i++) {
+            const character = typeArguments[i];
+            const previousCharacter = i > 0 ? typeArguments[i - 1] : '';
+
+            if (quote) {
+                current += character;
+                if (character === quote && previousCharacter !== '\\') {
+                    quote = null;
+                }
+                continue;
+            }
+
+            if (character === "'" || character === '"' || character === '`') {
+                quote = character;
+                current += character;
+                continue;
+            }
+
+            if (character === '<') {
+                angleDepth += 1;
+                current += character;
+                continue;
+            }
+
+            if (character === '>') {
+                angleDepth = Math.max(0, angleDepth - 1);
+                current += character;
+                continue;
+            }
+
+            if (character === '(') {
+                parenthesisDepth += 1;
+                current += character;
+                continue;
+            }
+
+            if (character === ')') {
+                parenthesisDepth = Math.max(0, parenthesisDepth - 1);
+                current += character;
+                continue;
+            }
+
+            if (character === '[') {
+                bracketDepth += 1;
+                current += character;
+                continue;
+            }
+
+            if (character === ']') {
+                bracketDepth = Math.max(0, bracketDepth - 1);
+                current += character;
+                continue;
+            }
+
+            if (character === '{') {
+                braceDepth += 1;
+                current += character;
+                continue;
+            }
+
+            if (character === '}') {
+                braceDepth = Math.max(0, braceDepth - 1);
+                current += character;
+                continue;
+            }
+
+            if (
+                character === ',' &&
+                angleDepth === 0 &&
+                parenthesisDepth === 0 &&
+                bracketDepth === 0 &&
+                braceDepth === 0
+            ) {
+                const argument = current.trim();
+                if (argument) {
+                    result.push(argument);
+                }
+                current = '';
+                continue;
+            }
+
+            current += character;
+        }
+
+        const trailingArgument = current.trim();
+        if (trailingArgument) {
+            result.push(trailingArgument);
+        }
+
+        return result;
+    }
+
+    private extractStringLiteralUnionValues(typeExpression: string): string[] {
+        const values = [];
+        const stringLiteralRegex = /(['"`])((?:\\.|(?!\1).)*)\1/g;
+        let match;
+        while ((match = stringLiteralRegex.exec(typeExpression)) !== null) {
+            values.push(match[2]);
+        }
+        return values;
     }
 
     public findInAliases(name: string) {
