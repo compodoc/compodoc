@@ -497,6 +497,10 @@ const routes = [
             __dirname,
             "../../../../../test/fixtures/path-alias-spread",
         );
+        const relativeFixtureRoot = path.join(
+            __dirname,
+            "../../../../../test/fixtures/relative-spread-import",
+        );
 
         afterEach(() => {
             Configuration.mainData.tsconfig = "";
@@ -581,6 +585,27 @@ export const routes: Routes = [{ path: 'root', children: [...langs.map(lang => (
             expect(() =>
                 routerParser.cleanFileSpreads(sourceFile),
             ).not.to.throw();
+        });
+
+        it("should inline relative spread imports without mangling the path (issue #1307)", () => {
+            const previousScannedFiles = routerParser.scannedFiles;
+            try {
+                routerParser.scannedFiles = [];
+                const project = new Project();
+                const sourceFile = project.addSourceFileAtPath(
+                    path.join(
+                        relativeFixtureRoot,
+                        "src/app/app-routing.module.ts",
+                    ),
+                );
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+                expect(sourceFile.getText()).not.to.contain("...appRoutes");
+                expect(sourceFile.getText()).to.contain('path: "custom"');
+            } finally {
+                routerParser.scannedFiles = previousScannedFiles;
+            }
         });
     });
 });

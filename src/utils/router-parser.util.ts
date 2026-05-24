@@ -1313,6 +1313,9 @@ export class RouterParserUtil {
                     const leadingFilePath = searchedImportPath
                         .split("/")
                         .shift();
+                    const isRelativeImport =
+                        searchedImportPath.startsWith("./") ||
+                        searchedImportPath.startsWith("../");
 
                     // Try tsconfig path alias first (e.g. "@shared/*" → "src/app/shared/*")
                     const aliasResolved =
@@ -1324,7 +1327,11 @@ export class RouterParserUtil {
                               dirNamePath + "/" + searchedImportPath + ".ts",
                           );
 
-                    if (!aliasResolved && routePathIsBad(importPath)) {
+                    if (
+                        !aliasResolved &&
+                        !isRelativeImport &&
+                        routePathIsBad(importPath)
+                    ) {
                         const leadingIndices = getIndicesOf(
                             leadingFilePath,
                             importPath,
