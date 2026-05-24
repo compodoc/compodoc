@@ -148,9 +148,28 @@ export class RouterParserUtil {
                 .replace(/"([^"]*)"\+([a-zA-Z_$][a-zA-Z0-9_$.]*)/g, '"$1$2"');
         } while (cleaned !== prev);
 
-        // NOTE: Property-access chains used as standalone values (e.g. path:SomeEnum.VALUE)
-        // are intentionally left unquoted so that JSON parsing fails gracefully and the
-        // existing enum-resolution fallback in constructRoutesTree() can handle them.
+        // Step 3b: Normalize CodeGenerator dotted chains and unresolved enum/property refs
+        //   "Enum"."VALUE" -> "Enum.VALUE"
+        //   :Enum.VALUE -> :"Enum.VALUE"
+        //   [Enum.VALUE] -> ["Enum.VALUE"]
+        // This keeps route parsing resilient even when symbols cannot be resolved earlier.
+        do {
+            prev = cleaned;
+            cleaned = cleaned.replace(
+                /"([a-zA-Z_$][a-zA-Z0-9_$]*)"\."([a-zA-Z_$][a-zA-Z0-9_$]*)"/g,
+                '"$1.$2"',
+            );
+        } while (cleaned !== prev);
+
+        cleaned = cleaned
+            .replace(
+                /:([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)/g,
+                ':"$1"',
+            )
+            .replace(
+                /([\[,])([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)(?=[,\]])/g,
+                '$1"$2"',
+            );
 
         // Step 4: Replace non-block arrow function expressions in property values.
         //   :(params) => simpleExpr  →  :"[Function]"

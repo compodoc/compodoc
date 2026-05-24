@@ -88,28 +88,33 @@ describe("Utils - RouterParserUtil", () => {
             ).to.equal('[{path:"USER/CREATE"}]');
         });
 
-        // ── Standalone property-access chains — preserved for enum fallback ──
-        // Property-access chains as standalone values are intentionally left unquoted so
-        // the enum-resolution fallback in constructRoutesTree() can resolve them.
+        // ── Standalone property-access chains — normalized for safe parsing ──
 
-        it("should leave a standalone property-access chain unquoted (enum fallback handles it)", () => {
+        it("should quote a standalone property-access chain to keep JSON5 parseable", () => {
             expect(
                 routerParser.cleanRawRoute("[{path:AppRoutes.center}]"),
-            ).to.equal("[{path:AppRoutes.center}]");
+            ).to.equal('[{path:"AppRoutes.center"}]');
         });
 
-        it("should leave a deep property-access chain unquoted", () => {
+        it("should quote a deep property-access chain", () => {
             expect(
                 routerParser.cleanRawRoute("[{path:AppRoutes.shared.main}]"),
-            ).to.equal("[{path:AppRoutes.shared.main}]");
+            ).to.equal('[{path:"AppRoutes.shared.main"}]');
         });
 
-        it("should leave enum references in data objects unquoted", () => {
+        it("should quote enum references in data objects", () => {
             const result = routerParser.cleanRawRoute(
                 '[{path:"x",data:{mode:NemoViewerMode.PATIENT}}]',
             );
-            expect(result).to.include("NemoViewerMode.PATIENT");
-            expect(result).not.to.include(':"NemoViewerMode.PATIENT"');
+            expect(result).to.include(':"NemoViewerMode.PATIENT"');
+        });
+
+        it('should normalize CodeGenerator dotted output like "Enum"."VALUE" (issue #1417)', () => {
+            expect(
+                routerParser.cleanRawRoute(
+                    '[{"data":{"mode":"NemoViewerMode"."PATIENT"}}]',
+                ),
+            ).to.equal('[{"data":{"mode":"NemoViewerMode.PATIENT"}}]');
         });
 
         it("should not quote JSON5 reserved identifiers (true/false/null)", () => {
@@ -261,6 +266,18 @@ describe("Utils - RouterParserUtil", () => {
                 result = require("json5").parse(cleaned);
             }).not.to.throw();
             expect(result[0].data.fn).to.equal("[Function]");
+        });
+
+        it("should allow JSON5.parse to succeed with unresolved dotted references in values and arrays (issue #1417)", () => {
+            const cleaned = routerParser.cleanRawRoute(
+                '[{"data":{"mode":"NemoViewerMode"."PATIENT","allowed":["UserTypes"."UserType2"]}}]',
+            );
+            let result: any;
+            expect(() => {
+                result = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(result[0].data.mode).to.equal("NemoViewerMode.PATIENT");
+            expect(result[0].data.allowed[0]).to.equal("UserTypes.UserType2");
         });
     });
 
