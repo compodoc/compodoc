@@ -1162,13 +1162,26 @@ export class RouterParserUtil {
 
         // inline the ArrayLiteralExpression SpreadElements
         for (const spreadElement of spreadElementsInRoutesVariableStatement) {
-            let spreadElementIdentifier = spreadElement
-                    .getExpression()
-                    .getText(),
+            const spreadExpression = spreadElement.getExpression();
+            let spreadElementIdentifier = spreadExpression.getText(),
                 searchedImport,
                 aliasOriginalName = "",
                 foundWithAliasInImports = false,
                 foundWithAlias = false;
+
+            // Route spreads can be function calls (e.g. ...buildRoutes()).
+            // These are not always inlineable, but they should never crash parsing.
+            if (Node.isCallExpression(spreadExpression)) {
+                const callee = spreadExpression.getExpression();
+                if (Node.isIdentifier(callee)) {
+                    spreadElementIdentifier = callee.getText();
+                } else {
+                    logger.warn(
+                        `Spread call "${spreadExpression.getText()}" cannot be inlined because its callee is not an identifier.`,
+                    );
+                    continue;
+                }
+            }
 
             // Try to find it in imports
             const imports = file.getImportDeclarations();
@@ -1300,10 +1313,14 @@ export class RouterParserUtil {
                 }
             } else {
                 // if not, try directly in file
-                referencedDeclaration = spreadElement
-                    .getExpression()
-                    .getSymbolOrThrow()
-                    .getValueDeclarationOrThrow();
+                const spreadSymbol = spreadExpression.getSymbol();
+                if (!spreadSymbol) {
+                    logger.warn(
+                        `Spread element "${spreadExpression.getText()}" cannot be resolved and will be skipped.`,
+                    );
+                    continue;
+                }
+                referencedDeclaration = spreadSymbol.getValueDeclaration();
             }
 
             if (typeof referencedDeclaration === "undefined") {
@@ -1312,9 +1329,11 @@ export class RouterParserUtil {
             }
 
             if (!Node.isVariableDeclaration(referencedDeclaration)) {
-                throw new Error(
-                    `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`,
+                logger.warn(
+                    `Spread element "${spreadExpression.getText()}" references a ${referencedDeclaration.getKindName()} and cannot be inlined. ` +
+                        `This spread will be skipped in route documentation.`,
                 );
+                continue;
             }
 
             const referencedArray = referencedDeclaration.getInitializerIfKind(

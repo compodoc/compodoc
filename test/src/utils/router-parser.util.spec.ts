@@ -313,6 +313,43 @@ const routes: Routes = [
         });
     });
 
+    describe("cleanCallExpressions() — function calls in route values (issue #1293)", () => {
+        it("should allow JSON5.parse when path is defined by a function call", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/routes-1293.ts",
+                `
+import { Routes } from "@angular/router";
+export function homePageRoutePath(): string {
+    return "";
+}
+const routes: Routes = [
+    {
+        path: homePageRoutePath(),
+        component: "HomePageComponent"
+    }
+];
+`,
+            );
+
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].path).to.equal("homePageRoutePath()");
+        });
+    });
+
     // ── cleanFileSpreads() — path alias resolution (issue #1545) ─────────────
 
     describe("cleanFileSpreads() — path alias resolution (issue #1545)", () => {
@@ -341,6 +378,52 @@ export const routes: Routes = [...missingRoutes];`,
                 expect(() =>
                     routerParser.cleanFileSpreads(sourceFile),
                 ).not.to.throw();
+            } finally {
+                warnStub.restore();
+            }
+        });
+
+        it("should not throw when spread uses a function call expression (issue #1317)", () => {
+            const warnStub = sinon.stub(logger, "warn");
+            try {
+                const project = new Project({ useInMemoryFileSystem: true });
+                const sourceFile = project.createSourceFile(
+                    "/tmp/test-spread-call-routes.ts",
+                    `import { Routes } from '@angular/router';
+const communicationCommonRoutes = () => [{ path: 'communication' }];
+export const routes: Routes = [{ path: 'root', children: [...communicationCommonRoutes(), { path: 'fallback' }] }];`,
+                    { overwrite: true },
+                );
+
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+                expect(sourceFile.getText()).to.contain(
+                    "...communicationCommonRoutes()",
+                );
+                expect(warnStub.called).to.equal(true);
+            } finally {
+                warnStub.restore();
+            }
+        });
+
+        it("should not throw when spread uses a property-access call expression (issue #1293)", () => {
+            const warnStub = sinon.stub(logger, "warn");
+            try {
+                const project = new Project({ useInMemoryFileSystem: true });
+                const sourceFile = project.createSourceFile(
+                    "/tmp/test-spread-map-routes.ts",
+                    `import { Routes } from '@angular/router';
+const langs = ['en', 'pl'];
+export const routes: Routes = [{ path: 'root', children: [...langs.map(lang => ({ path: lang }))] }];`,
+                    { overwrite: true },
+                );
+
+                expect(() =>
+                    routerParser.cleanFileSpreads(sourceFile),
+                ).not.to.throw();
+                expect(sourceFile.getText()).to.contain("...langs.map");
+                expect(warnStub.called).to.equal(true);
             } finally {
                 warnStub.restore();
             }
