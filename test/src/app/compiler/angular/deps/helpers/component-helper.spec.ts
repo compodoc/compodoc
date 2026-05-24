@@ -290,6 +290,17 @@ describe('ComponentHelper', () => {
             });
         });
 
+        it('should parse input signal with custom type and default value (issue #1490)', () => {
+            const defaultValue = "input<ButtonColors>('primary')";
+            const result = componentHelper['getSignalConfig']('input', defaultValue);
+
+            expect(result).to.deep.equal({
+                required: false,
+                type: 'ButtonColors',
+                defaultValue: "'primary'"
+            });
+        });
+
         it('should parse output signal configuration', () => {
             const defaultValue = 'output<string>()';
             const result = componentHelper['getSignalConfig']('output', defaultValue);
