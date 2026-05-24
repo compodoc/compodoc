@@ -159,6 +159,41 @@ describe('ClassHelper', () => {
             expect(result).to.equal("UnwrapInputSignal<BadgeComponent['color']>");
         });
 
+        it('should handle parenthesized typeof indexed access (issue #1368)', () => {
+            const node = {
+                type: {
+                    kind: SyntaxKind.IndexedAccessType,
+                    objectType: {
+                        kind: SyntaxKind.ParenthesizedType,
+                        type: {
+                            kind: SyntaxKind.TypeQuery,
+                            exprName: { escapedText: 'LETTERS', text: 'LETTERS' }
+                        }
+                    },
+                    indexType: { kind: SyntaxKind.NumberKeyword }
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal("typeof LETTERS['number']");
+        });
+
+        it('should keep base type for indexed access in wrapped property nodes', () => {
+            const node = {
+                type: {
+                    kind: SyntaxKind.IndexedAccessType,
+                    objectType: {
+                        typeName: { escapedText: 'Person', text: 'Person' }
+                    },
+                    indexType: {
+                        kind: SyntaxKind.LiteralType,
+                        literal: { text: 'age' }
+                    }
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal('Person');
+        });
+
         it('should handle keyof typeof type operator', () => {
             const node = {
                 type: {

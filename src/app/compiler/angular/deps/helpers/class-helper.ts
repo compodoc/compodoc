@@ -1380,10 +1380,13 @@ export class ClassHelper {
             if (
                 node.type &&
                 node.type.kind === SyntaxKind.IndexedAccessType &&
-                node.type.objectType &&
-                node.type.objectType.typeName
+                node.type.objectType
             ) {
-                _return = this.visitTypeName(node.type.objectType.typeName);
+                if (node.type.objectType.typeName) {
+                    _return = this.visitTypeName(node.type.objectType.typeName);
+                } else {
+                    _return = this.visitType(node.type);
+                }
             }
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
