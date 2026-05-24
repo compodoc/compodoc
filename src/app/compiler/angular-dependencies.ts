@@ -1334,6 +1334,44 @@ export class AngularDependencies extends FrameworkDependencies {
                                         deps.description =
                                             markedAcl(rawDescription);
                                     }
+                                    if (this.isFunctionalGuardType(infos.type)) {
+                                        const guardDep: any = {
+                                            name,
+                                            id:
+                                                "guard-" +
+                                                name +
+                                                "-" +
+                                                crypto
+                                                    .createHash("sha512")
+                                                    .update(name + file)
+                                                    .digest("hex"),
+                                            file: file,
+                                            type: "guard",
+                                            coverageIgnore: isCoverageIgnore(
+                                                variableNode,
+                                            ),
+                                            deprecated,
+                                            deprecationMessage,
+                                            description:
+                                                deps.description || "",
+                                            rawdescription:
+                                                deps.rawdescription || "",
+                                            properties: [],
+                                            methods: [],
+                                            sourceCode: srcFile.getText(),
+                                        };
+                                        if (!isIgnore(variableNode)) {
+                                            if (!this.isSymbolAllowed(name, file)) {
+                                                logger.debug(
+                                                    `Skipping guard ${name} (not in public API)`,
+                                                );
+                                                return;
+                                            }
+                                            this.debug(guardDep);
+                                            outputSymbols.guards.push(guardDep);
+                                        }
+                                        return;
+                                    }
                                     if (isModuleWithProviders(variableNode)) {
                                         const routingInitializer =
                                             getModuleWithProviders(
@@ -1825,6 +1863,15 @@ export class AngularDependencies extends FrameworkDependencies {
             _.includes(ioImplements, "CanDeactivate") ||
             _.includes(ioImplements, "Resolve") ||
             _.includes(ioImplements, "CanLoad")
+        );
+    }
+
+    private isFunctionalGuardType(type?: string): boolean {
+        if (!type) {
+            return false;
+        }
+        return /(?:^|\W)(CanActivateFn|CanActivateChildFn|CanDeactivateFn|CanLoadFn|CanMatchFn|ResolveFn)(?:\W|$)/.test(
+            type,
         );
     }
 

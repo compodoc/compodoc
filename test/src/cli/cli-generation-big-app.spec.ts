@@ -24,6 +24,7 @@ describe("CLI simple generation - big app", () => {
         todoStoreFile,
         typeAliasesFile,
         functionsFile,
+        variablesFile,
         contactInfoInterfaceFile;
 
     let routesIndex;
@@ -82,6 +83,7 @@ describe("CLI simple generation - big app", () => {
 
         typeAliasesFile = read(`${distFolder}/miscellaneous/typealiases.html`);
         functionsFile = read(`${distFolder}/miscellaneous/functions.html`);
+        variablesFile = read(`${distFolder}/miscellaneous/variables.html`);
 
         contactInfoInterfaceFile = read(
             `${distFolder}/interfaces/ContactInfo.html`,
@@ -251,6 +253,15 @@ describe("CLI simple generation - big app", () => {
     it(`shouldn't have generated injectables for the corresponding guards`, () => {
         const file = exists(`${distFolder}/injectables/NotAuthGuard.html`);
         expect(file).to.be.false;
+    });
+
+    it("should have generated functional guards", () => {
+        const file = exists(`${distFolder}/guards/functionalAuthGuard.html`);
+        expect(file).to.be.true;
+    });
+
+    it("shouldn't list functional guards in miscellaneous variables", () => {
+        expect(variablesFile).to.not.contain("functionalAuthGuard");
     });
 
     it("should have generated modules", () => {
