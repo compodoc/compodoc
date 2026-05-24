@@ -35,7 +35,7 @@ export class JsdocCodeExampleHelper implements IHtmlEngineHelper {
     }
 
     private parseCodeFences(comment: string): CodeBlock[] {
-        const codeFenceRegex = /```(\w+)?\s*\n([\s\S]*?)```/g;
+        const codeFenceRegex = /(?:^|\n)\s*```([^\s`]+)?\s*\n([\s\S]*?)\n\s*```/g;
         const blocks: CodeBlock[] = [];
         let match;
         let hasCodeFences = false;

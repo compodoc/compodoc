@@ -107,6 +107,16 @@ describe('JsdocCodeExampleHelper', () => {
             expect(result[0].language).to.equal('typescript');
             expect(result[0].code).to.equal('const test = "hello";');
         });
+
+        it('should parse indented code fences correctly', () => {
+            const comment = '  ```html\n<y-map>\n  <y-map-default-scheme-layer />\n</y-map>\n  ```';
+            const result = helper['parseCodeFences'](comment);
+
+            expect(result).to.have.length(1);
+            expect(result[0].language).to.equal('html');
+            expect(result[0].code).to.contain('<y-map>');
+            expect(result[0].code).to.contain('</y-map>');
+        });
     });
 
     describe('cleanTag method', () => {
@@ -260,6 +270,22 @@ describe('JsdocCodeExampleHelper', () => {
             expect(mockContext.tags[0].comment).to.contain('<pre class="line-numbers">');
             expect(mockContext.tags[0].comment).to.contain('<code class="language-typescript">');
             expect(mockContext.tags[0].comment).to.contain('</code></pre>');
+        });
+
+        it('should process @example tags with indented fenced html blocks', () => {
+            const jsdocTags: JsdocTagInterface[] = [
+                createMockJsdocTag(
+                    'example',
+                    '  ```html\n<y-map>\n  <y-map-default-scheme-layer />\n  <y-map-default-features-layer />\n</y-map>\n  ```'
+                )
+            ];
+
+            helper.helperFunc(mockContext, jsdocTags, mockOptions);
+
+            expect(mockContext.tags).to.have.length(1);
+            expect(mockContext.tags[0].comment).to.contain('language-html');
+            expect(mockContext.tags[0].comment).to.contain('&lt;y-map&gt;');
+            expect(mockContext.tags[0].comment).to.not.contain('```html');
         });
     });
 });
