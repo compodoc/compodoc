@@ -185,6 +185,16 @@ describe("Utils - RouterParserUtil", () => {
             expect(result).not.to.include("[Function]");
         });
 
+        it('should convert loadComponent default-export syntax to "path#default" string (issue #1363)', () => {
+            const result = routerParser.cleanRawRoute(
+                "[{path:'faq',loadComponent:()=>import('./pages/faq/faq.component')}]",
+            );
+            expect(result).to.include(
+                'loadComponent:"./pages/faq/faq.component#default"',
+            );
+            expect(result).not.to.include("[Function]");
+        });
+
         // ── CodeGenerator output format (issue #1546) ────────────────────────
         // CodeGenerator wraps identifiers in double quotes and produces:
         //   "loadComponent":()=>import("path")."then"("m"=>"m"."Module")
@@ -629,6 +639,46 @@ const routes: Route[] = [
 
             expect(parsed[0].data.allowedUserTypes).to.deep.equal([
                 "UserType2",
+            ]);
+        });
+
+        it("should keep unresolved enum member references in data arrays JSON5-parseable (issue #1366)", () => {
+            const project = new Project({ useInMemoryFileSystem: true });
+            const sourceFile = project.createSourceFile(
+                "/tmp/feature-routing-1366.module.ts",
+                `
+import { Routes } from "@angular/router";
+import { PermissionCode } from "@shared/permissions";
+
+const routes: Routes = [
+    {
+        path: "",
+        component: "MapPageComponent",
+        data: {
+            permissions: [PermissionCode.Map_View]
+        }
+    }
+];
+`,
+            );
+
+            routerParser.cleanFileSpreads(sourceFile);
+            routerParser.cleanCallExpressions(sourceFile);
+            routerParser.cleanFileDynamics(sourceFile);
+
+            const initializer = sourceFile
+                .getVariableDeclarationOrThrow("routes")
+                .getInitializerOrThrow().compilerNode;
+            const generated = new CodeGenerator().generate(initializer);
+            const cleaned = routerParser.cleanRawRoute(generated);
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+
+            expect(parsed[0].data.permissions).to.deep.equal([
+                "PermissionCode.Map_View",
             ]);
         });
 

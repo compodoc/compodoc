@@ -129,6 +129,10 @@ export class RouterParserUtil {
             .replace(
                 /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
                 'loadComponent:"$1#$2"',
+            )
+            .replace(
+                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)(?!\."?then"?\()/g,
+                'loadComponent:"$1#default"',
             );
 
         // Step 1: Convert template literal interpolations to bare identifiers
