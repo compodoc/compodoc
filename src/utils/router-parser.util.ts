@@ -180,6 +180,11 @@ export class RouterParserUtil {
         //   :(params) => { ... }  →  :"[Function]"
         cleaned = this.replaceBlockArrowFunctions(cleaned);
 
+        // Step 6: Unwrap constructor-wrapped object literals used in route metadata.
+        //   data:newLazyRoutingOptions({preload:true}) -> data:{preload:true}
+        // This keeps JSON5 parsing resilient for typed route data objects.
+        cleaned = this.unwrapConstructorWrappedObjectValues(cleaned);
+
         return cleaned;
     }
 
@@ -271,6 +276,112 @@ export class RouterParserUtil {
             result += ch;
             i++;
         }
+        return result;
+    }
+
+    private unwrapConstructorWrappedObjectValues(input: string): string {
+        const isIdentifierStart = (ch: string | undefined): boolean =>
+            !!ch && /[A-Za-z_$]/.test(ch);
+        const isIdentifierPart = (ch: string | undefined): boolean =>
+            !!ch && /[A-Za-z0-9_$]/.test(ch);
+
+        let result = "";
+        let i = 0;
+        let inDouble = false;
+        let inSingle = false;
+
+        while (i < input.length) {
+            const ch = input[i];
+
+            if (ch === '"' && !inSingle) {
+                inDouble = !inDouble;
+                result += ch;
+                i++;
+                continue;
+            }
+            if (ch === "'" && !inDouble) {
+                inSingle = !inSingle;
+                result += ch;
+                i++;
+                continue;
+            }
+            if (ch === "\\" && (inDouble || inSingle)) {
+                result += ch + (input[i + 1] || "");
+                i += 2;
+                continue;
+            }
+
+            if (
+                !inDouble &&
+                !inSingle &&
+                ch === ":" &&
+                input.slice(i + 1, i + 4) === "new"
+            ) {
+                let nameStart = i + 4;
+                if (!isIdentifierStart(input[nameStart])) {
+                    result += ch;
+                    i++;
+                    continue;
+                }
+
+                while (isIdentifierPart(input[nameStart])) {
+                    nameStart++;
+                }
+
+                if (input[nameStart] !== "(" || input[nameStart + 1] !== "{") {
+                    result += ch;
+                    i++;
+                    continue;
+                }
+
+                let cursor = nameStart + 1; // points to '{'
+                let braceDepth = 1;
+                let objInDouble = false;
+                let objInSingle = false;
+
+                cursor++;
+                while (cursor < input.length && braceDepth > 0) {
+                    const c = input[cursor];
+                    if (c === "\\" && (objInDouble || objInSingle)) {
+                        cursor += 2;
+                        continue;
+                    }
+                    if (c === '"' && !objInSingle) {
+                        objInDouble = !objInDouble;
+                        cursor++;
+                        continue;
+                    }
+                    if (c === "'" && !objInDouble) {
+                        objInSingle = !objInSingle;
+                        cursor++;
+                        continue;
+                    }
+                    if (!objInDouble && !objInSingle) {
+                        if (c === "{") {
+                            braceDepth++;
+                        } else if (c === "}") {
+                            braceDepth--;
+                        }
+                    }
+                    cursor++;
+                }
+
+                if (braceDepth !== 0 || input[cursor] !== ")") {
+                    result += ch;
+                    i++;
+                    continue;
+                }
+
+                const objectLiteral = input.slice(nameStart + 1, cursor);
+                result += ":" + objectLiteral;
+                i = cursor + 1;
+                continue;
+            }
+
+            result += ch;
+            i++;
+        }
+
         return result;
     }
 

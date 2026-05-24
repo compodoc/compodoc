@@ -109,6 +109,21 @@ describe("Utils - RouterParserUtil", () => {
             expect(result).to.include(':"NemoViewerMode.PATIENT"');
         });
 
+        it("should unwrap constructor-wrapped data objects for JSON5 parseability (issue #661)", () => {
+            const cleaned = routerParser.cleanRawRoute(
+                '[{path:"details/:id/:detailsSection",loadChildren:"../lazy/xx-yy-details.module#DetailsModule",data:newLazyRoutingOptions({preload:true,delay:2500})}]',
+            );
+
+            let parsed: any;
+            expect(() => {
+                parsed = require("json5").parse(cleaned);
+            }).not.to.throw();
+            expect(parsed[0].data).to.deep.equal({
+                preload: true,
+                delay: 2500,
+            });
+        });
+
         it('should normalize CodeGenerator dotted output like "Enum"."VALUE" (issue #1417)', () => {
             expect(
                 routerParser.cleanRawRoute(
