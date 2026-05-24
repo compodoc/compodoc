@@ -1324,11 +1324,17 @@ export class AngularDependencies extends FrameworkDependencies {
                                     if (
                                         variableNode.jsDoc &&
                                         variableNode.jsDoc.length > 0 &&
-                                        variableNode.jsDoc[0].comment
+                                        variableNode.jsDoc[
+                                            variableNode.jsDoc.length - 1
+                                        ].comment
                                     ) {
+                                        const lastJsDoc =
+                                            variableNode.jsDoc[
+                                                variableNode.jsDoc.length - 1
+                                            ];
                                         const rawDescription =
                                             this.jsdocParserUtil.parseJSDocNode(
-                                                variableNode.jsDoc[0],
+                                                lastJsDoc,
                                             );
                                         deps.rawdescription = rawDescription;
                                         deps.description =

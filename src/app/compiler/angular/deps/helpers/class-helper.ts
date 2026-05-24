@@ -269,12 +269,13 @@ export class ClassHelper {
     }
 
     /**
-     * Set fallback description from jsDoc[0].comment if no description exists
+     * Set fallback description from the closest JSDoc comment if no description exists
      */
     private setFallbackDescription(result: any, node: any): void {
         if (!result.description && node.jsDoc && node.jsDoc.length > 0) {
-            if (typeof node.jsDoc[0].comment !== "undefined") {
-                const rawDescription = node.jsDoc[0].comment;
+            const lastJsDoc = node.jsDoc[node.jsDoc.length - 1];
+            if (typeof lastJsDoc.comment !== "undefined") {
+                const rawDescription = lastJsDoc.comment;
                 result.rawdescription = rawDescription;
                 result.description = markedAcl(rawDescription);
             }

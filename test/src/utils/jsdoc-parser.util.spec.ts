@@ -153,6 +153,22 @@ describe('Utils - JsdocParserUtil', () => {
             expect(result).to.equal('/** comment */');
         });
 
+        it('should return the closest variable comment when a file header JSDoc exists', () => {
+            const sourceFile = project.createSourceFile('test.ts', `/**
+ * TEST FILE
+ * @file test file
+ */
+/** first constant */
+const FIRST = 1;
+/** second constant */
+const SECOND = 2;`);
+            const variableDeclaration = sourceFile.getVariableDeclaration('FIRST');
+
+            const result = jsdocParserUtil.getMainCommentOfNode(variableDeclaration!.compilerNode, sourceFile.compilerNode);
+
+            expect(result).to.equal('/** first constant */');
+        });
+
         it('should return comment for function declaration', () => {
             const sourceFile = project.createSourceFile('test.ts', '/** comment */ function test() {}');
             const functionDeclaration = sourceFile.getFunction('test');
