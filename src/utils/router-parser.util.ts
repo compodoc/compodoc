@@ -108,14 +108,16 @@ export class RouterParserUtil {
         // Step 0: Convert modern lazy-loading arrow syntax to "path#Module" strings
         //   BEFORE any arrow-function sanitization so loadChildren/loadComponent
         //   are never treated as generic arrow functions.
-        //   loadChildren:()=>import('./path').then(m=>m.Module) → loadChildren:"./path#Module"
+        //   Raw source:      loadChildren:()=>import('./path').then(m=>m.Module)
+        //   CodeGenerator:   "loadChildren":()=>import("./path")."then"("m"=>"m"."Module")
+        //   Both → loadChildren:"./path#Module"
         cleaned = cleaned
             .replace(
-                /loadChildren:\(\)=>import\(["'`]([^"'`]+)["'`]\)\.then\(\(?\w+\)?=>(?:\w+\.)?(\w+)\)/g,
+                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
                 'loadChildren:"$1#$2"',
             )
             .replace(
-                /loadComponent:\(\)=>import\(["'`]([^"'`]+)["'`]\)\.then\(\(?\w+\)?=>(?:\w+\.)?(\w+)\)/g,
+                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
                 'loadComponent:"$1#$2"',
             );
 
@@ -460,59 +462,84 @@ export class RouterParserUtil {
                 ); // Not just whitespace
             };
 
+            // Helper: process a single route item and push entries into validChildren
+            const processRouteItem = (routeItem, filename: string) => {
+                if (
+                    routeItem.component &&
+                    isValidName(routeItem.component)
+                ) {
+                    validChildren.push({
+                        name: routeItem.component,
+                        kind: "component",
+                        path: routeItem.path || "",
+                        filename,
+                    });
+                }
+                if (routeItem.loadChildren) {
+                    // Extract module name from loadChildren ("./path#ModuleName")
+                    const moduleMatch =
+                        routeItem.loadChildren.match(/#(\w+)/);
+                    if (moduleMatch && isValidName(moduleMatch[1])) {
+                        validChildren.push({
+                            name: moduleMatch[1],
+                            kind: "module",
+                            path: routeItem.path || "",
+                            filename,
+                        });
+                    }
+                }
+                if (routeItem.loadComponent) {
+                    // Extract component name from loadComponent ("./path#ComponentName")
+                    const componentName = this.foundLazyComponentWithPath(
+                        routeItem.loadComponent,
+                    );
+                    if (componentName && isValidName(componentName)) {
+                        validChildren.push({
+                            name: componentName,
+                            kind: "component",
+                            path: routeItem.path || "",
+                            filename,
+                        });
+                    }
+                }
+                // Also capture simple string paths (e.g. routes from external files)
+                if (
+                    routeItem.path &&
+                    isValidName(routeItem.path) &&
+                    !routeItem.path.includes("*")
+                ) {
+                    validChildren.push({
+                        name: routeItem.path,
+                        kind: "route-path",
+                        filename,
+                    });
+                }
+                // Capture redirectTo values (enums resolved by cleanFileDynamics)
+                if (
+                    routeItem.redirectTo &&
+                    isValidName(routeItem.redirectTo) &&
+                    !routeItem.redirectTo.includes(".")
+                ) {
+                    validChildren.push({
+                        name: routeItem.redirectTo,
+                        kind: "route-redirect",
+                        filename,
+                    });
+                }
+                // Recurse into children routes (standalone nested routes)
+                if (routeItem.children && Array.isArray(routeItem.children)) {
+                    for (const child of routeItem.children) {
+                        processRouteItem(child, filename);
+                    }
+                }
+            };
+
             // Process routes data if available to extract components and paths
             for (const route of this.routes) {
                 try {
-                    const routeData = JSON.parse(route.data);
+                    const routeData = JSON5.parse(route.data);
                     for (const routeItem of routeData) {
-                        if (
-                            routeItem.component &&
-                            isValidName(routeItem.component)
-                        ) {
-                            validChildren.push({
-                                name: routeItem.component,
-                                kind: "component",
-                                path: routeItem.path || "",
-                                filename: route.filename,
-                            });
-                        }
-                        if (routeItem.loadChildren) {
-                            // Extract module name from loadChildren
-                            const moduleMatch =
-                                routeItem.loadChildren.match(/#(\w+)/);
-                            if (moduleMatch && isValidName(moduleMatch[1])) {
-                                validChildren.push({
-                                    name: moduleMatch[1],
-                                    kind: "module",
-                                    path: routeItem.path || "",
-                                    filename: route.filename,
-                                });
-                            }
-                        }
-                        // Also capture simple string paths (e.g. routes from external files)
-                        if (
-                            routeItem.path &&
-                            isValidName(routeItem.path) &&
-                            !routeItem.path.includes("*")
-                        ) {
-                            validChildren.push({
-                                name: routeItem.path,
-                                kind: "route-path",
-                                filename: route.filename,
-                            });
-                        }
-                        // Capture redirectTo values (enums resolved by cleanFileDynamics)
-                        if (
-                            routeItem.redirectTo &&
-                            isValidName(routeItem.redirectTo) &&
-                            !routeItem.redirectTo.includes(".")
-                        ) {
-                            validChildren.push({
-                                name: routeItem.redirectTo,
-                                kind: "route-redirect",
-                                filename: route.filename,
-                            });
-                        }
+                        processRouteItem(routeItem, route.filename);
                     }
                 } catch (e) {
                     // JSON parsing failed, try regex extraction with strict validation

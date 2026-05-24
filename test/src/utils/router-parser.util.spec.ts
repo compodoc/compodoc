@@ -136,6 +136,42 @@ describe("Utils - RouterParserUtil", () => {
             expect(result).not.to.include("[Function]");
         });
 
+        // ── CodeGenerator output format (issue #1546) ────────────────────────
+        // CodeGenerator wraps identifiers in double quotes and produces:
+        //   "loadComponent":()=>import("path")."then"("m"=>"m"."Module")
+
+        it('should convert CodeGenerator loadComponent output to "path#Component" string (issue #1546)', () => {
+            // Simulates CodeGenerator output after whitespace removal
+            const result = routerParser.cleanRawRoute(
+                '[{"loadComponent":()=>import("./pages/rank.component")."then"("page"=>"page"."RankPage"),"path":"rank"}]',
+            );
+            expect(result).to.include(
+                'loadComponent:"./pages/rank.component#RankPage"',
+            );
+            expect(result).not.to.include("[Function]");
+        });
+
+        it('should convert CodeGenerator loadComponent with explicit parens to "path#Component" string (issue #1546)', () => {
+            // Simulates CodeGenerator output with (m)=>m.Module style
+            const result = routerParser.cleanRawRoute(
+                '[{"loadComponent":()=>import("./pages/login.component")."then"(("page")=>"page"."LoginPage"),"path":"login"}]',
+            );
+            expect(result).to.include(
+                'loadComponent:"./pages/login.component#LoginPage"',
+            );
+            expect(result).not.to.include("[Function]");
+        });
+
+        it('should convert CodeGenerator loadChildren output to "path#Module" string (issue #1546)', () => {
+            const result = routerParser.cleanRawRoute(
+                '[{"loadChildren":()=>import("./admin/admin.module")."then"("m"=>"m"."AdminModule"),"path":"admin"}]',
+            );
+            expect(result).to.include(
+                'loadChildren:"./admin/admin.module#AdminModule"',
+            );
+            expect(result).not.to.include("[Function]");
+        });
+
         // ── Arrow functions in data/canActivate (issues #1287, #1484, #1480) ─
 
         it('should replace a simple arrow function in a data property with "[Function]" (issue #1484)', () => {
