@@ -1,33 +1,36 @@
 // @ts-nocheck
 
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
-import { ts, SyntaxKind } from 'ts-morph';
+import { ts, SyntaxKind } from "ts-morph";
 
-import { TsPrinterUtil } from '../../../../../utils/ts-printer.util';
+import { TsPrinterUtil } from "../../../../../utils/ts-printer.util";
 
-import ImportsUtil from '../../../../../utils/imports.util';
+import ImportsUtil from "../../../../../utils/imports.util";
 
 enum AngularProviderConfigProperties {
-    Useclass = 'useClass',
-    UseValue = 'useValue',
-    UseFactory = 'useFactory',
-    UseExisting = 'useExisting',
-};
+    Useclass = "useClass",
+    UseValue = "useValue",
+    UseFactory = "useFactory",
+    UseExisting = "useExisting",
+}
 
 export class SymbolHelper {
-    private readonly unknown = '???';
+    private readonly unknown = "???";
 
-    public parseDeepIndentifier(name: string, srcFile?: ts.SourceFile): IParseDeepIdentifierResult {
+    public parseDeepIndentifier(
+        name: string,
+        srcFile?: ts.SourceFile,
+    ): IParseDeepIdentifierResult {
         let result = {
-            name: '',
-            type: ''
+            name: "",
+            type: "",
         };
 
-        if (typeof name === 'undefined') {
+        if (typeof name === "undefined") {
             return result;
         }
-        let nsModule = name.split('.');
+        let nsModule = name.split(".");
         let type = this.getType(name);
 
         if (nsModule.length > 1) {
@@ -36,7 +39,7 @@ export class SymbolHelper {
             result.type = type;
             return result;
         }
-        if (typeof srcFile !== 'undefined') {
+        if (typeof srcFile !== "undefined") {
             result.file = ImportsUtil.getFileNameOfImport(name, srcFile);
         }
         result.name = name;
@@ -46,21 +49,21 @@ export class SymbolHelper {
 
     public getType(name: string): string {
         let type;
-        if (name.toLowerCase().indexOf('component') !== -1) {
-            type = 'component';
-        } else if (name.toLowerCase().indexOf('pipe') !== -1) {
-            type = 'pipe';
-        } else if (name.toLowerCase().indexOf('controller') !== -1) {
-            type = 'controller';
-        } else if (name.toLowerCase().indexOf('module') !== -1) {
-            type = 'module';
-        } else if (name.toLowerCase().indexOf('directive') !== -1) {
-            type = 'directive';
+        if (name.toLowerCase().indexOf("component") !== -1) {
+            type = "component";
+        } else if (name.toLowerCase().indexOf("pipe") !== -1) {
+            type = "pipe";
+        } else if (name.toLowerCase().indexOf("controller") !== -1) {
+            type = "controller";
+        } else if (name.toLowerCase().indexOf("module") !== -1) {
+            type = "module";
+        } else if (name.toLowerCase().indexOf("directive") !== -1) {
+            type = "directive";
         } else if (
-            name.toLowerCase().indexOf('injectable') !== -1 ||
-            name.toLowerCase().indexOf('service') !== -1
+            name.toLowerCase().indexOf("injectable") !== -1 ||
+            name.toLowerCase().indexOf("service") !== -1
         ) {
-            type = 'injectable';
+            type = "injectable";
         }
         return type;
     }
@@ -71,13 +74,13 @@ export class SymbolHelper {
      */
     public buildIdentifierName(
         node: ts.Identifier | ts.PropertyAccessExpression | ts.SpreadElement,
-        name
+        name,
     ) {
         if (ts.isIdentifier(node) && !ts.isPropertyAccessExpression(node)) {
             return `${node.text}.${name}`;
         }
 
-        name = name ? `.${name}` : '';
+        name = name ? `.${name}` : "";
 
         let nodeName = this.unknown;
         if (node.name) {
@@ -89,7 +92,9 @@ export class SymbolHelper {
                 nodeName = node.expression.text;
             } else if (node.expression.elements) {
                 if (ts.isArrayLiteralExpression(node.expression)) {
-                    nodeName = node.expression.elements.map(el => el.text).join(', ');
+                    nodeName = node.expression.elements
+                        .map((el) => el.text)
+                        .join(", ");
                     nodeName = `[${nodeName}]`;
                 }
             }
@@ -106,18 +111,28 @@ export class SymbolHelper {
      * { provide: APP_BASE_HREF, useValue: '/' }
      * { provide: 'Date', useFactory: (d1, d2) => new Date(), deps: ['d1', 'd2'] }
      */
-    public parseProviderConfiguration(node: ts.ObjectLiteralExpression): string {
+    public parseProviderConfiguration(
+        node: ts.ObjectLiteralExpression,
+    ): string {
         if (node.kind && node.kind === SyntaxKind.ObjectLiteralExpression) {
-            const provideProperty = node.properties.find((props) => props.name.getText() === 'provide');
+            const provideProperty = node.properties.find(
+                (props) => props.name.getText() === "provide",
+            );
 
             if (!provideProperty) {
-                throw new Error("provide property not found in provider object config");
+                throw new Error(
+                    "provide property not found in provider object config",
+                );
             }
 
-            const providerObjectProps = Object.values(AngularProviderConfigProperties)
+            const providerObjectProps = Object.values(
+                AngularProviderConfigProperties,
+            );
             for (let i = 0; i < providerObjectProps.length; i++) {
                 const providerProp = providerObjectProps[i];
-                const prop = node.properties.find((props) => props.name.getText() === providerProp);
+                const prop = node.properties.find(
+                    (props) => props.name.getText() === providerProp,
+                );
                 if (prop) {
                     return prop.getLastToken().getText();
                 }
@@ -139,13 +154,15 @@ export class SymbolHelper {
             | ts.Identifier
             | ts.StringLiteral
             | ts.PropertyAccessExpression
-            | ts.SpreadElement
+            | ts.SpreadElement,
     ): string {
         // parse expressions such as: AngularFireModule.initializeApp(firebaseConfig)
         // if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
         if (
-            (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) ||
-            (ts.isNewExpression(node) && ts.isElementAccessExpression(node.expression))
+            (ts.isCallExpression(node) &&
+                ts.isPropertyAccessExpression(node.expression)) ||
+            (ts.isNewExpression(node) &&
+                ts.isElementAccessExpression(node.expression))
         ) {
             let className = this.buildIdentifierName(node.expression);
 
@@ -153,7 +170,7 @@ export class SymbolHelper {
             // many use cases that we can't handle. Just print "args" to indicate
             // that we have arguments.
 
-            let functionArgs = node.arguments.length > 0 ? 'args' : '';
+            let functionArgs = node.arguments.length > 0 ? "args" : "";
             let text = `${className}(${functionArgs})`;
             return text;
         } else if (ts.isPropertyAccessExpression(node)) {
@@ -187,22 +204,28 @@ export class SymbolHelper {
     private parseSymbols(
         node: ts.ObjectLiteralElement,
         srcFile: ts.SourceFile,
-        decoratorType: string
+        decoratorType: string,
     ): Array<string | boolean> {
         let localNode = node;
 
-        if (ts.isShorthandPropertyAssignment(localNode) && decoratorType !== 'template') {
+        if (
+            ts.isShorthandPropertyAssignment(localNode) &&
+            decoratorType !== "template"
+        ) {
             localNode = ImportsUtil.findValueInImportOrLocalVariables(
                 node.name.text,
                 srcFile,
-                decoratorType
+                decoratorType,
             );
         }
-        if (ts.isShorthandPropertyAssignment(localNode) && decoratorType === 'template') {
+        if (
+            ts.isShorthandPropertyAssignment(localNode) &&
+            decoratorType === "template"
+        ) {
             const data = ImportsUtil.findValueInImportOrLocalVariables(
                 node.name.text,
                 srcFile,
-                decoratorType
+                decoratorType,
             );
             return [data];
         }
@@ -213,21 +236,33 @@ export class SymbolHelper {
             const resolved = ImportsUtil.findValueInImportOrLocalVariables(
                 localNode.initializer.text,
                 srcFile,
-                decoratorType
+                decoratorType,
             );
-            if (resolved && !Array.isArray(resolved) && (resolved as any).initializer) {
+            if (
+                resolved &&
+                !Array.isArray(resolved) &&
+                (resolved as any).initializer
+            ) {
                 localNode = resolved as any;
             }
         }
 
-        if (localNode.initializer && ts.isArrayLiteralExpression(localNode.initializer)) {
-            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
+        if (
+            localNode.initializer &&
+            ts.isArrayLiteralExpression(localNode.initializer)
+        ) {
+            return localNode.initializer.elements.map((x) =>
+                this.parseSymbolElements(x),
+            );
         } else if (
-            (localNode.initializer && ts.isStringLiteral(localNode.initializer)) ||
-            (localNode.initializer && ts.isTemplateLiteral(localNode.initializer)) ||
+            (localNode.initializer &&
+                ts.isStringLiteral(localNode.initializer)) ||
+            (localNode.initializer &&
+                ts.isTemplateLiteral(localNode.initializer)) ||
             (localNode.initializer &&
                 ts.isPropertyAssignment(localNode) &&
-                localNode.initializer.text)
+                localNode.initializer.text &&
+                !ts.isIdentifier(localNode.initializer))
         ) {
             return [localNode.initializer.text];
         } else if (
@@ -236,8 +271,15 @@ export class SymbolHelper {
             (localNode.initializer.kind === SyntaxKind.TrueKeyword ||
                 localNode.initializer.kind === SyntaxKind.FalseKeyword)
         ) {
-            return [localNode.initializer.kind === SyntaxKind.TrueKeyword ? true : false];
-        } else if (localNode.initializer && ts.isPropertyAccessExpression(localNode.initializer)) {
+            return [
+                localNode.initializer.kind === SyntaxKind.TrueKeyword
+                    ? true
+                    : false,
+            ];
+        } else if (
+            localNode.initializer &&
+            ts.isPropertyAccessExpression(localNode.initializer)
+        ) {
             let identifier = this.parseSymbolElements(localNode.initializer);
             return [identifier];
         } else if (
@@ -246,7 +288,9 @@ export class SymbolHelper {
             localNode.initializer.elements.length > 0
         ) {
             // Node replaced by ts-simple-ast & kind = 265
-            return localNode.initializer.elements.map(x => this.parseSymbolElements(x));
+            return localNode.initializer.elements.map((x) =>
+                this.parseSymbolElements(x),
+            );
         }
     }
 
@@ -254,7 +298,7 @@ export class SymbolHelper {
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         decoratorType: string,
         srcFile: ts.SourceFile,
-        multiLine?: boolean
+        multiLine?: boolean,
     ): Array<string> {
         if (props.length === 0) {
             return [];
@@ -270,15 +314,19 @@ export class SymbolHelper {
             }
         }
 
-        return filteredProps.map(x => this.parseSymbols(x, srcFile, decoratorType)).pop() || [];
+        return (
+            filteredProps
+                .map((x) => this.parseSymbols(x, srcFile, decoratorType))
+                .pop() || []
+        );
     }
 
     public getSymbolDepsRaw(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         type: string,
-        multiLine?: boolean
+        multiLine?: boolean,
     ): Array<ts.ObjectLiteralElementLike> {
-        return props.filter(node => node.name.getText() === type);
+        return props.filter((node) => node.name.getText() === type);
     }
 }
 

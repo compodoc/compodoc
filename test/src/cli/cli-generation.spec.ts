@@ -1626,4 +1626,88 @@ describe("CLI simple generation", () => {
             expect(moduleFile).to.contain("ProvidersIdentifierRefService");
         });
     });
+
+    describe("styleUrls as local const variable reference are resolved in component", () => {
+        const distFolder = tmp.name + "-style-urls-variable";
+        let componentFile;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell("node", [
+                "./bin/index-cli.js",
+                "-p",
+                "./test/fixtures/sample-files/tsconfig.simple.json",
+                "-d",
+                distFolder,
+            ]);
+
+            if (ls.stderr.toString() !== "") {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done("error");
+            }
+            componentFile = read(
+                `${distFolder}/components/StyleUrlsVariableComponent.html`,
+            );
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it("should generate a page for the component", () => {
+            expect(componentFile).to.contain("StyleUrlsVariableComponent");
+        });
+
+        it("should list styleUrls resolved from the local const variable", () => {
+            expect(componentFile).to.contain("bar.style.scss");
+        });
+
+        it("should not list the variable name as a styleUrl in the metadata row", () => {
+            // The styleUrls metadata cell should contain the resolved filename, not the variable name
+            expect(componentFile).not.to.match(
+                /<td class="col-md-3">styleUrls<\/td>[\s\S]*?COMPONENT_STYLE_URLS[\s\S]*?<\/td>/,
+            );
+        });
+    });
+
+    describe("styleUrls as imported const variable reference are resolved in component", () => {
+        const distFolder = tmp.name + "-style-urls-variable-imported";
+        let componentFile;
+
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell("node", [
+                "./bin/index-cli.js",
+                "-p",
+                "./test/fixtures/sample-files/tsconfig.simple.json",
+                "-d",
+                distFolder,
+            ]);
+
+            if (ls.stderr.toString() !== "") {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done("error");
+            }
+            componentFile = read(
+                `${distFolder}/components/StyleUrlsVariableImportedComponent.html`,
+            );
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it("should generate a page for the component", () => {
+            expect(componentFile).to.contain(
+                "StyleUrlsVariableImportedComponent",
+            );
+        });
+
+        it("should list styleUrls resolved from the imported const variable", () => {
+            expect(componentFile).to.contain("bar.style.scss");
+        });
+
+        it("should not list the variable name as a styleUrl in the metadata row", () => {
+            // The styleUrls metadata cell should contain the resolved filename, not the variable name
+            expect(componentFile).not.to.match(
+                /<td class="col-md-3">styleUrls<\/td>[\s\S]*?COMPONENT_STYLE_URLS_IMPORTED[\s\S]*?<\/td>/,
+            );
+        });
+    });
 });
