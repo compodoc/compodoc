@@ -1130,7 +1130,8 @@ export class ClassHelper {
             if (
                 node.type.kind &&
                 !ts.isUnionTypeNode(node.type) &&
-                !ts.isTupleTypeNode(node.type)
+                !ts.isTupleTypeNode(node.type) &&
+                !ts.isIntersectionTypeNode(node.type)
             ) {
                 _return = kindToType(node.type.kind);
             }
@@ -1191,6 +1192,12 @@ export class ClassHelper {
                             type.type
                         ) {
                             _return += "..." + this.visitType(type.type);
+                        } else if (ts.isIntersectionTypeNode(type) && type.types) {
+                            const parts: string[] = [];
+                            for (const t of type.types) {
+                                parts.push(this.visitType(t));
+                            }
+                            _return += parts.join(" & ");
                         } else {
                             _return += kindToType(type.kind);
                         }
@@ -1218,6 +1225,10 @@ export class ClassHelper {
             if (node.type.types && ts.isUnionTypeNode(node.type)) {
                 _return = "";
                 parseTypesOrElements(node.type.types, " | ");
+            }
+            if (node.type.types && ts.isIntersectionTypeNode(node.type)) {
+                _return = "";
+                parseTypesOrElements(node.type.types, " & ");
             }
             if (node.type.elementTypes) {
                 let elementTypes = node.type.elementTypes;
@@ -1303,6 +1314,27 @@ export class ClassHelper {
                 }
                 if (i < len - 1) {
                     _return += " | ";
+                }
+            }
+        } else if (node.types && ts.isIntersectionTypeNode(node)) {
+            _return = "";
+            let i = 0;
+            let len = node.types.length;
+            for (i; i < len; i++) {
+                let type = node.types[i];
+                if (ts.isLiteralTypeNode(type) && type.literal) {
+                    if ((type.literal as any).text) {
+                        _return += '"' + (type.literal as any).text + '"';
+                    } else {
+                        _return += kindToType(type.literal.kind);
+                    }
+                } else if ((type as any).typeName) {
+                    _return += this.visitTypeName((type as any).typeName);
+                } else {
+                    _return += this.visitType(type);
+                }
+                if (i < len - 1) {
+                    _return += " & ";
                 }
             }
         } else if (

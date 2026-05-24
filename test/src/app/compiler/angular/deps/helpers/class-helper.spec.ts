@@ -158,6 +158,64 @@ describe('ClassHelper', () => {
             const result = classHelper.visitType(node);
             expect(result).to.equal("UnwrapInputSignal<BadgeComponent['color']>");
         });
+
+        it('should handle simple intersection types (issue #1525)', () => {
+            const node = {
+                type: {
+                    types: [
+                        { kind: SyntaxKind.StringKeyword },
+                        { kind: SyntaxKind.NumberKeyword }
+                    ],
+                    kind: SyntaxKind.IntersectionType
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal('string & number');
+        });
+
+        it('should handle intersection type with TypeReference and TypeLiteral (issue #1525)', () => {
+            const node = {
+                type: {
+                    types: [
+                        {
+                            kind: SyntaxKind.TypeReference,
+                            typeName: { escapedText: 'Test', text: 'Test' }
+                        },
+                        {
+                            kind: SyntaxKind.TypeLiteral,
+                            members: [
+                                {
+                                    kind: SyntaxKind.PropertySignature,
+                                    name: { text: 'id' },
+                                    type: {
+                                        kind: SyntaxKind.IndexedAccessType,
+                                        objectType: { typeName: { escapedText: 'Test', text: 'Test' } },
+                                        indexType: { kind: SyntaxKind.LiteralType, literal: { text: 'id' } }
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    kind: SyntaxKind.IntersectionType
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.include('Test');
+            expect(result).to.include('&');
+            expect(result).to.not.equal('');
+        });
+
+        it('should handle intersection type as a direct node (issue #1525)', () => {
+            const node = {
+                types: [
+                    { kind: SyntaxKind.StringKeyword },
+                    { kind: SyntaxKind.NumberKeyword }
+                ],
+                kind: SyntaxKind.IntersectionType
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal('string & number');
+        });
     });
 
     describe('visitTypeIndex', () => {
