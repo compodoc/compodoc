@@ -44,6 +44,20 @@ export class CliApplication extends Application {
             return val.split(",");
         }
 
+        function normalizePatternList(patterns): string[] {
+            if (!patterns) {
+                return [];
+            }
+
+            const values = Array.isArray(patterns)
+                ? patterns
+                : String(patterns).split(",");
+
+            return values
+                .map((pattern) => String(pattern).trim())
+                .filter((pattern) => pattern.length > 0);
+        }
+
         program
             .version(pkg.version)
             .usage("<src> [options]")
@@ -152,6 +166,11 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             .option(
                 "--coverageMinimumPerFile [minimum]",
                 "Test command of documentation coverage per file with a minimum (default 0)",
+            )
+            .option(
+                "--coverageExclude <patterns>",
+                "Exclude files from documentation coverage only (comma-separated globs)",
+                list,
             )
             .option(
                 "--coverageTestThresholdFail [true|false]",
@@ -525,6 +544,17 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 typeof programOptions.coverageMinimumPerFile === "string"
                     ? parseInt(programOptions.coverageMinimumPerFile, 10)
                     : COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile;
+        }
+
+        if (configFile.coverageExclude) {
+            Configuration.mainData.coverageExclude = normalizePatternList(
+                configFile.coverageExclude,
+            );
+        }
+        if (programOptions.coverageExclude) {
+            Configuration.mainData.coverageExclude = normalizePatternList(
+                programOptions.coverageExclude,
+            );
         }
 
         if (configFile.coverageTestThresholdFail) {

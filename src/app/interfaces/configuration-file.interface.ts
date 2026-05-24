@@ -21,6 +21,7 @@ export interface ConfigurationFileInterface {
     hideDarkModeToggle: boolean;
     coverageTest: number;
     coverageMinimumPerFile: number;
+    coverageExclude: string[] | string;
     coverageTestThresholdFail: string;
     coverageTestShowOnlyFailed: boolean;
     unitTestCoverage: string;

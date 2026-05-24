@@ -3,6 +3,7 @@ export interface IDep {
     type?: string;
     ctype?: string;
     name: string;
+    coverageIgnore?: boolean;
 }
 
 export interface IInjectableDep extends IDep {

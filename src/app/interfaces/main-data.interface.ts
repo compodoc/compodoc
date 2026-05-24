@@ -69,6 +69,7 @@ export interface MainDataInterface {
     coverageTestThresholdFail: boolean;
     coverageTestPerFile: boolean;
     coverageMinimumPerFile: number;
+    coverageExclude: string[];
     coverageTestShowOnlyFailed: boolean;
     unitTestCoverage: string;
     unitTestData: Object;

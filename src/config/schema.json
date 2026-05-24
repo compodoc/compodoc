@@ -193,6 +193,28 @@
             "default": 0,
             "examples": [0]
         },
+        "coverageExclude": {
+            "$id": "/properties/coverageExclude",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "title": "Exclude files from documentation coverage only (comma-separated globs)",
+            "default": [],
+            "examples": [
+                [
+                    "**/*.dto.ts",
+                    "**/*.config.ts"
+                ]
+            ]
+        },
         "coverageTestThresholdFail": {
             "$id": "/properties/coverageTestThresholdFail",
             "type": "boolean",

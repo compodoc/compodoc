@@ -39,6 +39,7 @@ export class ComponentDepFactory {
             outputsClass: IO.outputs,
             propertiesClass: IO.properties,
             methodsClass: IO.methods,
+            coverageIgnore: IO.coverageIgnore,
 
             deprecated: IO.deprecated,
             deprecationMessage: IO.deprecationMessage,
@@ -126,6 +127,7 @@ export interface IComponentDep extends IDep {
     outputsClass: Array<any>;
     propertiesClass: Array<any>;
     methodsClass: Array<any>;
+    coverageIgnore?: boolean;
 
     deprecated: boolean;
     deprecationMessage: string;

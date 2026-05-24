@@ -162,19 +162,44 @@ export function getNamesCompareFn(name?) {
     return t;
 }
 
-export function isIgnore(member): boolean {
-    if (member.jsDoc) {
-        for (const doc of member.jsDoc) {
-            if (doc.tags) {
-                for (const tag of doc.tags) {
-                    if (tag.tagName.text.indexOf('ignore') > -1) {
-                        return true;
-                    }
-                }
+function hasJSDocTag(member, searchedTag: string): boolean {
+    if (!member || !member.jsDoc) {
+        return false;
+    }
+
+    const normalizedTag = searchedTag.toLowerCase();
+
+    for (const doc of member.jsDoc) {
+        if (!doc.tags) {
+            continue;
+        }
+
+        for (const tag of doc.tags) {
+            const tagName =
+                (tag.tagName && (tag.tagName.text || tag.tagName.escapedText)) || "";
+            if (!tagName) {
+                continue;
+            }
+
+            const normalizedTagName = String(tagName).toLowerCase();
+            if (
+                normalizedTagName === normalizedTag ||
+                normalizedTagName.indexOf(normalizedTag) > -1
+            ) {
+                return true;
             }
         }
     }
+
     return false;
+}
+
+export function isIgnore(member): boolean {
+    return hasJSDocTag(member, "ignore");
+}
+
+export function isCoverageIgnore(member): boolean {
+    return hasJSDocTag(member, "coverageIgnore");
 }
 
 // https://tc39.github.io/ecma262/#sec-array.prototype.includes

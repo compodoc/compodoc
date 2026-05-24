@@ -78,6 +78,7 @@ export class Configuration implements ConfigurationInterface {
         coverageTestThresholdFail: COMPODOC_DEFAULTS.coverageTestThresholdFail,
         coverageTestPerFile: false,
         coverageMinimumPerFile: COMPODOC_DEFAULTS.defaultCoverageMinimumPerFile,
+        coverageExclude: [],
         unitTestCoverage: "",
         unitTestData: undefined,
         coverageTestShowOnlyFailed:

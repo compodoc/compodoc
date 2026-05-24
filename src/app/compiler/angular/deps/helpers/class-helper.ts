@@ -9,7 +9,7 @@ import {
 } from "../../../../../utils/utils";
 import { kindToType } from "../../../../../utils/kind-to-type";
 import { JsdocParserUtil } from "../../../../../utils/jsdoc-parser.util";
-import { isIgnore } from "../../../../../utils";
+import { isCoverageIgnore, isIgnore } from "../../../../../utils";
 import AngularVersionUtil from "../../../../..//utils/angular-version.util";
 import BasicTypeUtil from "../../../../../utils/basic-type.util";
 import { StringifyObjectLiteralExpression } from "../../../../../utils/object-literal-expression.util";
@@ -653,6 +653,7 @@ export class ClassHelper {
         let members;
         let implementsElements = [];
         let extendsElements = [];
+        const coverageIgnore = isCoverageIgnore(classDeclaration);
 
         if (
             typeof (ts as any).getEffectiveImplementsTypeNodes !== "undefined"
@@ -748,6 +749,7 @@ export class ClassHelper {
                 return {
                     deprecated: deprecation.deprecated,
                     deprecationMessage: deprecation.deprecationMessage,
+                    coverageIgnore,
                     description,
                     rawdescription: rawdescription,
                     inputs: members.inputs,
@@ -771,6 +773,7 @@ export class ClassHelper {
                         className,
                         deprecated: deprecation.deprecated,
                         deprecationMessage: deprecation.deprecationMessage,
+                        coverageIgnore,
                         description,
                         rawdescription: rawdescription,
                         methods: members.methods,
@@ -791,6 +794,7 @@ export class ClassHelper {
                         className,
                         deprecated: deprecation.deprecated,
                         deprecationMessage: deprecation.deprecationMessage,
+                        coverageIgnore,
                         description,
                         rawdescription: rawdescription,
                         jsdoctags: jsdoctags,
@@ -805,6 +809,7 @@ export class ClassHelper {
                         className,
                         deprecated: deprecation.deprecated,
                         deprecationMessage: deprecation.deprecationMessage,
+                        coverageIgnore,
                         description,
                         rawdescription: rawdescription,
                         jsdoctags: jsdoctags,
@@ -816,6 +821,7 @@ export class ClassHelper {
                     {
                         deprecated: deprecation.deprecated,
                         deprecationMessage: deprecation.deprecationMessage,
+                        coverageIgnore,
                         description,
                         rawdescription: rawdescription,
                         methods: members.methods,
@@ -836,6 +842,7 @@ export class ClassHelper {
                 {
                     deprecated: deprecation.deprecated,
                     deprecationMessage: deprecation.deprecationMessage,
+                    coverageIgnore,
                     description,
                     rawdescription: rawdescription,
                     inputs: members.inputs,
@@ -858,6 +865,7 @@ export class ClassHelper {
                 {
                     deprecated: deprecation.deprecated,
                     deprecationMessage: deprecation.deprecationMessage,
+                    coverageIgnore,
                     methods: members.methods,
                     inputs: members.inputs,
                     outputs: members.outputs,
@@ -1538,6 +1546,7 @@ export class ClassHelper {
 
         const result: any = {
             name: propertyName,
+            coverageIgnore: isCoverageIgnore(property),
             defaultValue: initializer
                 ? this.stringifyDefaultValue(initializer)
                 : undefined,
@@ -1651,6 +1660,7 @@ export class ClassHelper {
             name:
                 (method.name as any).text ||
                 (ts.isIdentifier(method.name) ? method.name.text : ""),
+            coverageIgnore: isCoverageIgnore(method),
             args: method.parameters
                 ? method.parameters.map((prop) => this.visitArgument(prop))
                 : [],
@@ -1731,6 +1741,7 @@ export class ClassHelper {
                       (ts.isIdentifier(property.name)
                           ? property.name.text
                           : ""),
+            coverageIgnore: isCoverageIgnore(property),
             defaultValue: property.initializer
                 ? this.stringifyDefaultValue(property.initializer)
                 : undefined,
@@ -1789,7 +1800,9 @@ export class ClassHelper {
     private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
         const inArgs = inDecorator.expression.arguments;
 
-        let _return: any = {};
+        let _return: any = {
+            coverageIgnore: isCoverageIgnore(property),
+        };
 
         let isInputConfigStringLiteral = false;
         let isInputConfigObjectLiteralExpression = false;
@@ -1905,7 +1918,9 @@ export class ClassHelper {
 
     private visitHostListener(property, hostListenerDecorator, sourceFile?) {
         let inArgs = hostListenerDecorator.expression.arguments;
-        let _return: any = {};
+        let _return: any = {
+            coverageIgnore: isCoverageIgnore(property),
+        };
         _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
         _return.args = property.parameters
             ? property.parameters.map((prop) => this.visitArgument(prop))

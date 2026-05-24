@@ -2124,6 +2124,105 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
              */
             let files = [];
             let totalProjectStatementDocumented = 0;
+            const coverageExcludePatterns =
+                Configuration.mainData.coverageExclude || [];
+
+            const toUnixPath = (filePath: string): string =>
+                (filePath || "").replace(/\\/g, "/");
+
+            const escapeRegex = (value: string): string =>
+                value.replace(/[|\\{}()[\]^$+?.]/g, "\\$&");
+
+            const globToRegExp = (globPattern: string): RegExp => {
+                const normalized = toUnixPath(globPattern);
+                const escaped = escapeRegex(normalized)
+                    .replace(/\*\*/g, "::DOUBLE_STAR::")
+                    .replace(/\*/g, "[^/]*")
+                    .replace(/::DOUBLE_STAR::/g, ".*");
+                return new RegExp(`^${escaped}$`);
+            };
+
+            const coverageExcludeRegexes = coverageExcludePatterns
+                .map((pattern) => String(pattern || "").trim())
+                .filter((pattern) => pattern.length > 0)
+                .map((pattern) => globToRegExp(pattern));
+
+            const hasCoverageIgnoredTag = (tags): boolean => {
+                if (!tags || !Array.isArray(tags)) {
+                    return false;
+                }
+
+                return tags.some((tag) => {
+                    if (!tag) {
+                        return false;
+                    }
+
+                    const explicitTagName =
+                        tag.tagName?.text ||
+                        tag.tagName?.escapedText ||
+                        tag.tagName ||
+                        tag.name?.text ||
+                        tag.name ||
+                        "";
+
+                    if (explicitTagName) {
+                        return (
+                            String(explicitTagName).toLowerCase() ===
+                            "coverageignore"
+                        );
+                    }
+
+                    if (typeof tag === "string") {
+                        return tag.toLowerCase().indexOf("coverageignore") > -1;
+                    }
+
+                    if (typeof tag.label === "string") {
+                        return (
+                            tag.label.toLowerCase().indexOf("coverageignore") > -1
+                        );
+                    }
+
+                    return false;
+                });
+            };
+
+            const isCoverageIgnoredElement = (element): boolean => {
+                if (!element) {
+                    return false;
+                }
+
+                if (element.coverageIgnore === true) {
+                    return true;
+                }
+
+                if (hasCoverageIgnoredTag(element.jsdoctags)) {
+                    return true;
+                }
+
+                return false;
+            };
+
+            const isCoverageIgnoredByFile = (filePath: string): boolean => {
+                if (!coverageExcludeRegexes.length || !filePath) {
+                    return false;
+                }
+
+                const normalizedPath = toUnixPath(filePath);
+                return coverageExcludeRegexes.some((regex) =>
+                    regex.test(normalizedPath),
+                );
+            };
+
+            const shouldSkipCoverage = (element): boolean => {
+                if (!element) {
+                    return true;
+                }
+
+                return (
+                    isCoverageIgnoredByFile(element.file || element.filePath) ||
+                    isCoverageIgnoredElement(element)
+                );
+            };
             const getStatus = function (percent) {
                 let status;
                 if (percent <= 25) {
@@ -2142,6 +2241,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             ) => {
                 _.forEach(list, (el: any) => {
                     const element = (Object as any).assign({}, el);
+                    if (shouldSkipCoverage(element)) {
+                        return;
+                    }
                     if (!element.propertiesClass) {
                         element.propertiesClass = [];
                     }
@@ -2191,6 +2293,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
 
                     _.forEach(element.propertiesClass, (property: any) => {
+                        if (isCoverageIgnoredElement(property)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (
                             property.modifierKind === SyntaxKind.PrivateKeyword
                         ) {
@@ -2206,6 +2312,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.methodsClass, (method: any) => {
+                        if (isCoverageIgnoredElement(method)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
@@ -2219,6 +2329,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.hostBindings, (property: any) => {
+                        if (isCoverageIgnoredElement(property)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (
                             property.modifierKind === SyntaxKind.PrivateKeyword
                         ) {
@@ -2234,6 +2348,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.hostListeners, (method: any) => {
+                        if (isCoverageIgnoredElement(method)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
@@ -2247,6 +2365,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.inputsClass, (input: any) => {
+                        if (isCoverageIgnoredElement(input)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (input.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
@@ -2260,6 +2382,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.outputsClass, (output: any) => {
+                        if (isCoverageIgnoredElement(output)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (output.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
@@ -2324,6 +2450,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             };
             let processFunctionsAndVariables = (id, type) => {
                 _.forEach(id, (el: any) => {
+                    if (shouldSkipCoverage(el)) {
+                        return;
+                    }
                     let cl: any = {
                         filePath: el.file,
                         type: type,
@@ -2367,6 +2496,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let processClasses = (list, type, linktype) => {
                 _.forEach(list, (cl: any) => {
                     let element = (Object as any).assign({}, cl);
+                    if (shouldSkipCoverage(element)) {
+                        return;
+                    }
                     if (!element.properties) {
                         element.properties = [];
                     }
@@ -2398,6 +2530,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                     }
 
                     _.forEach(element.properties, (property: any) => {
+                        if (isCoverageIgnoredElement(property)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (
                             property.modifierKind === SyntaxKind.PrivateKeyword
                         ) {
@@ -2413,6 +2549,10 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         }
                     });
                     _.forEach(element.methods, (method: any) => {
+                        if (isCoverageIgnoredElement(method)) {
+                            totalStatements -= 1;
+                            return;
+                        }
                         if (method.modifierKind === SyntaxKind.PrivateKeyword) {
                             // Doesn't handle private for coverage
                             totalStatements -= 1;
@@ -2472,6 +2612,9 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             );
 
             _.forEach(Configuration.mainData.pipes, (pipe: any) => {
+                if (shouldSkipCoverage(pipe)) {
+                    return;
+                }
                 let cl: any = {
                     filePath: pipe.file,
                     type: pipe.type,

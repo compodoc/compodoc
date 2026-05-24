@@ -20,6 +20,7 @@ export class EntityDepFactory {
             id: 'controller-' + name + '-' + hash,
             file: file,
             type: 'entity',
+            coverageIgnore: IO.coverageIgnore,
             description: IO.description,
             rawdescription: IO.rawdescription,
             sourceCode: srcFile.text,
@@ -36,6 +37,7 @@ export interface IEntityDep extends IDep {
     sourceCode: string;
     description: string;
     rawdescription: string;
+    coverageIgnore?: boolean;
     deprecated: boolean;
     deprecationMessage: string;
     properties: Array<any>;

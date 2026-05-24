@@ -21,6 +21,7 @@ export class ControllerDepFactory {
             file: file,
             methodsClass: IO.methods,
             type: 'controller',
+            coverageIgnore: IO.coverageIgnore,
             description: IO.description,
             rawdescription: IO.rawdescription,
             sourceCode: srcFile.text,
@@ -46,6 +47,7 @@ export interface IControllerDep extends IDep {
     rawdescription: string;
     prefix?: string;
     methodsClass: Array<any>;
+    coverageIgnore?: boolean;
     deprecated: boolean;
     deprecationMessage: string;
     extends?: any;

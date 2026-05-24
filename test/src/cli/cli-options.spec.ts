@@ -141,6 +141,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`
             );
         });
 
+        it(`--coverageExclude`, () => {
+            expect(runHelp.stdout.toString()).to.contain('--coverageExclude <patterns>');
+            expect(runHelp.stdout.toString()).to.contain(
+                'Exclude files from documentation coverage only (comma-separated globs)'
+            );
+        });
+
         it(`--coverageTestThresholdFail`, () => {
             expect(runHelp.stdout.toString()).to.contain(
                 '--coverageTestThresholdFail [true|false]'

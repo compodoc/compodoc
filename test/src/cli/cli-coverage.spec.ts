@@ -489,4 +489,38 @@ describe('CLI coverage report', () => {
             expect(stdoutString).to.not.contain('under minimum per file');
         });
     });
+
+    describe('coverage exclusion - file patterns and @coverageIgnore tags', () => {
+        let stdoutString = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/coverage-ignore/tsconfig.json',
+                '--coverageMinimumPerFile',
+                '100',
+                '--coverageExclude',
+                '**/*.dto.ts',
+                '--coverageTestShowOnlyFailed',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should pass per-file coverage threshold when excluded symbols are ignored', () => {
+            expect(stdoutString).to.contain(
+                'Documentation coverage per file is over threshold (100%)'
+            );
+            expect(stdoutString).to.not.contain('under minimum per file');
+        });
+    });
 });

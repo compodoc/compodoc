@@ -18,6 +18,7 @@ import ImportsUtil from "../../utils/imports.util";
 
 import {
     getModuleWithProviders,
+    isCoverageIgnore,
     isIgnore,
     isModuleWithProviders,
     JsdocParserUtil,
@@ -376,6 +377,7 @@ export class AngularDependencies extends FrameworkDependencies {
             name,
             id: "class-" + name + "-" + hash,
             file: file,
+            coverageIgnore: !!IO.coverageIgnore,
             deprecated: IO.deprecated,
             deprecationMessage: IO.deprecationMessage,
             type: "class",
@@ -713,6 +715,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 name,
                                 id: "injectable-" + name + "-" + hash,
                                 file: file,
+                                coverageIgnore: !!IO.coverageIgnore,
                                 properties: IO.properties,
                                 methods: IO.methods,
                                 deprecated: IO.deprecated,
@@ -784,6 +787,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 id: "pipe-" + name + "-" + hash,
                                 file: file,
                                 type: "pipe",
+                                coverageIgnore: !!IO.coverageIgnore,
                                 deprecated: IO.deprecated,
                                 deprecationMessage: IO.deprecationMessage,
                                 description: IO.description,
@@ -971,6 +975,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             file: file,
                             ctype: "miscellaneous",
                             subtype: "function",
+                            coverageIgnore: isCoverageIgnore(node),
                             deprecated,
                             deprecationMessage,
                             rawdescription:
@@ -1061,6 +1066,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             name,
                             ctype: "miscellaneous",
                             subtype: "typealias",
+                            coverageIgnore: isCoverageIgnore(node),
                             rawtype: this.classHelper.visitType(node),
                             file: file,
                             deprecated,
@@ -1275,6 +1281,9 @@ export class AngularDependencies extends FrameworkDependencies {
                                         ctype: "miscellaneous",
                                         subtype: "variable",
                                         file: file,
+                                        coverageIgnore: isCoverageIgnore(
+                                            variableNode,
+                                        ),
                                         deprecated,
                                         deprecationMessage,
                                     };
@@ -1367,6 +1376,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                             ctype: "miscellaneous",
                                             subtype: "variable",
                                             file: file,
+                                            coverageIgnore:
+                                                isCoverageIgnore(node),
                                             deprecated: false,
                                             deprecationMessage: "",
                                         };
@@ -1482,6 +1493,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             name,
                             ctype: "miscellaneous",
                             subtype: "typealias",
+                            coverageIgnore: isCoverageIgnore(node),
                             rawtype: this.classHelper.visitType(node),
                             file: file,
                             deprecated,
@@ -1523,6 +1535,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             ctype: "miscellaneous",
                             subtype: "function",
                             file: file,
+                            coverageIgnore: isCoverageIgnore(node),
                             deprecated,
                             deprecationMessage,
                             rawdescription:

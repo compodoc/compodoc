@@ -37,6 +37,7 @@ export class DirectiveDepFactory {
 
             propertiesClass: IO.properties,
             methodsClass: IO.methods,
+            coverageIgnore: IO.coverageIgnore,
             exampleUrls: this.helper.getComponentExampleUrls(srcFile.getText())
         };
 
@@ -97,6 +98,7 @@ export interface IDirectiveDep extends IDep {
 
     propertiesClass: any;
     methodsClass: any;
+    coverageIgnore?: boolean;
     exampleUrls: Array<string>;
 
     constructorObj?: Object;
