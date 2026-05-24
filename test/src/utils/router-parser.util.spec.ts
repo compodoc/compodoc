@@ -152,6 +152,16 @@ describe("Utils - RouterParserUtil", () => {
             expect(result).not.to.include("[Function]");
         });
 
+        it('should convert loadChildren syntax using destructured then parameter to "path#Module" string (issue #1319)', () => {
+            const result = routerParser.cleanRawRoute(
+                "[{path:'admin',loadChildren:()=>import('./admin/admin.module').then(({AdminModule})=>AdminModule)}]",
+            );
+            expect(result).to.include(
+                'loadChildren:"./admin/admin.module#AdminModule"',
+            );
+            expect(result).not.to.include("[Function]");
+        });
+
         it('should convert loadComponent arrow syntax to "path#Component" string', () => {
             const result = routerParser.cleanRawRoute(
                 "[{path:'profile',loadComponent:()=>import('./profile/profile.component').then(m=>m.ProfileComponent)}]",

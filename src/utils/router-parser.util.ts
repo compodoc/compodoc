@@ -115,6 +115,14 @@ export class RouterParserUtil {
         //   Both → loadChildren:"./path#Module"
         cleaned = cleaned
             .replace(
+                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(\{["']?(\w+)["']?\}\)=>["']?\2["']?\)/g,
+                'loadChildren:"$1#$2"',
+            )
+            .replace(
+                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(\{["']?(\w+)["']?\}\)=>["']?\2["']?\)/g,
+                'loadComponent:"$1#$2"',
+            )
+            .replace(
                 /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
                 'loadChildren:"$1#$2"',
             )
