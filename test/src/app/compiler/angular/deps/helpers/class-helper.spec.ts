@@ -159,6 +159,21 @@ describe('ClassHelper', () => {
             expect(result).to.equal("UnwrapInputSignal<BadgeComponent['color']>");
         });
 
+        it('should handle keyof typeof type operator', () => {
+            const node = {
+                type: {
+                    kind: SyntaxKind.TypeOperator,
+                    operator: SyntaxKind.KeyOfKeyword,
+                    type: {
+                        kind: SyntaxKind.TypeQuery,
+                        exprName: { escapedText: 'MyEnum', text: 'MyEnum' }
+                    }
+                }
+            } as any;
+            const result = classHelper.visitType(node);
+            expect(result).to.equal('keyof typeof MyEnum');
+        });
+
         it('should handle simple intersection types (issue #1525)', () => {
             const node = {
                 type: {
@@ -650,6 +665,33 @@ describe('ClassHelper', () => {
             const result = (classHelper as any).visitArgument(param);
 
             expect(result.defaultValue).to.equal('"default"');
+        });
+
+        it('should resolve keyof typeof enum argument with type checker (issue #1425)', () => {
+            const realProject = new Project({ useInMemoryFileSystem: true });
+            const realSourceFile = realProject.createSourceFile(
+                'issue-1425.ts',
+                `
+                enum MyEnum {
+                    One,
+                    Two
+                }
+
+                class MyService {
+                    myMethod(myParam: keyof typeof MyEnum): void {}
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+
+            const methodParam = realSourceFile
+                .getClassOrThrow('MyService')
+                .getMethodOrThrow('myMethod')
+                .compilerNode.parameters[0];
+
+            const result = (realHelper as any).visitArgument(methodParam);
+
+            expect(result.type).to.equal('"One" | "Two"');
         });
     });
 

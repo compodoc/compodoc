@@ -124,6 +124,48 @@ export class ClassHelper {
         };
     }
 
+    private getTypeOperatorKeyword(operator: SyntaxKind): string {
+        switch (operator) {
+            case SyntaxKind.KeyOfKeyword:
+                return "keyof";
+            case SyntaxKind.UniqueKeyword:
+                return "unique";
+            case SyntaxKind.ReadonlyKeyword:
+                return "readonly";
+            default:
+                return kindToType(operator);
+        }
+    }
+
+    private tryResolveTypeFromTypeChecker(
+        node: ts.Node,
+        enclosingDeclaration?: ts.Node,
+    ): string | undefined {
+        if (
+            !this.typeChecker ||
+            typeof this.typeChecker.getTypeAtLocation !== "function" ||
+            typeof this.typeChecker.typeToString !== "function"
+        ) {
+            return undefined;
+        }
+
+        try {
+            const resolvedType = this.typeChecker.getTypeAtLocation(node);
+            const typeAsString = this.typeChecker.typeToString(
+                resolvedType,
+                enclosingDeclaration || node,
+                ts.TypeFormatFlags.NoTruncation,
+            );
+
+            if (typeAsString && typeAsString !== "unknown") {
+                return typeAsString;
+            }
+            // tslint:disable-next-line:no-empty
+        } catch (error) {}
+
+        return undefined;
+    }
+
     /**
      * Extract and filter modifier kinds from a node
      */
@@ -1127,8 +1169,18 @@ export class ClassHelper {
         if (node.typeName) {
             _return = this.visitTypeName(node.typeName);
         } else if (node.type) {
+            if (ts.isTypeOperatorNode(node.type)) {
+                const operator = this.getTypeOperatorKeyword(node.type.operator);
+                const operand = this.visitType(node.type.type);
+                _return = operand ? `${operator} ${operand}` : operator;
+            }
+            if (ts.isTypeQueryNode(node.type)) {
+                _return = `typeof ${this.visitTypeName(node.type.exprName as any)}`;
+            }
             if (
                 node.type.kind &&
+                !ts.isTypeOperatorNode(node.type) &&
+                !ts.isTypeQueryNode(node.type) &&
                 !ts.isUnionTypeNode(node.type) &&
                 !ts.isTupleTypeNode(node.type) &&
                 !ts.isIntersectionTypeNode(node.type)
@@ -1295,6 +1347,12 @@ export class ClassHelper {
                     this.visitTypeName(node.elementType.typeName) +
                     kindToType(node.kind);
             }
+        } else if (ts.isTypeOperatorNode(node)) {
+            const operator = this.getTypeOperatorKeyword(node.operator);
+            const operand = this.visitType(node.type);
+            _return = operand ? `${operator} ${operand}` : operator;
+        } else if (ts.isTypeQueryNode(node)) {
+            _return = `typeof ${this.visitTypeName(node.exprName as any)}`;
         } else if (node.types && ts.isUnionTypeNode(node)) {
             _return = "";
             let i = 0;
@@ -1816,6 +1874,17 @@ export class ClassHelper {
             dotDotDotToken: !!arg.dotDotDotToken,
             ...this.initializeDocumentationFields(),
         };
+
+        if (arg.type && ts.isTypeOperatorNode(arg.type)) {
+            const resolvedType = this.tryResolveTypeFromTypeChecker(
+                arg.type,
+                arg,
+            );
+            if (resolvedType) {
+                _result.type = resolvedType;
+            }
+        }
+
         if (arg.type && arg.type.kind && ts.isFunctionTypeNode(arg.type)) {
             _result.function = arg.type.parameters
                 ? arg.type.parameters.map((prop) => this.visitArgument(prop))
@@ -1903,6 +1972,15 @@ export class ClassHelper {
         _return.line = this.getPosition(property, sourceFile).line + 1;
         if (property.type) {
             _return.type = this.visitType(property);
+            if (ts.isTypeOperatorNode(property.type)) {
+                const resolvedType = this.tryResolveTypeFromTypeChecker(
+                    property.type,
+                    property,
+                );
+                if (resolvedType) {
+                    _return.type = resolvedType;
+                }
+            }
         } else {
             // handle NewExpression
             if (property.initializer) {
