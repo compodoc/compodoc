@@ -89,6 +89,36 @@ describe('CLI coverage report', () => {
         });
     });
 
+    describe('coverage test command with minimal mode', () => {
+        let stdoutString = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/sample-files/tsconfig.simple.json',
+                '--coverageTest',
+                '10',
+                '--minimal',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            stdoutString = ls.stdout.toString();
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('it should run coverage test without rendering pages', () => {
+            expect(stdoutString).to.contain('is over threshold');
+            expect(stdoutString).to.not.contain('compiledPage is not a function');
+        });
+    });
+
     describe('coverage test command under', () => {
         let stdoutString = undefined;
         before(function (done) {

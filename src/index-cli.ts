@@ -741,6 +741,13 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
             Configuration.mainData.disableCoverage = true;
         }
 
+        if (
+            Configuration.mainData.coverageTest ||
+            Configuration.mainData.coverageTestPerFile
+        ) {
+            Configuration.mainData.disableCoverage = false;
+        }
+
         if (configFile.customFavicon) {
             Configuration.mainData.customFavicon = configFile.customFavicon;
         }
