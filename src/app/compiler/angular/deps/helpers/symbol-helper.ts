@@ -288,6 +288,16 @@ export class SymbolHelper {
             ts.isPropertyAccessExpression(localNode.initializer)
         ) {
             let identifier = this.parseSymbolElements(localNode.initializer);
+            if (decoratorType === "templateUrl") {
+                const resolvedTemplateUrl =
+                    ImportsUtil.findPropertyValueInImportOrLocalVariables(
+                        identifier,
+                        srcFile,
+                    );
+                if (resolvedTemplateUrl) {
+                    return [resolvedTemplateUrl];
+                }
+            }
             return [identifier];
         } else if (
             localNode.initializer &&
