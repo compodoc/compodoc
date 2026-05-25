@@ -2813,6 +2813,50 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         logger.info("Process unit test coverage report");
         return new Promise((resolve, reject) => {
             let covDat, covFileNames;
+            const normalizeCoveragePath = (filePath: string): string => {
+                return path
+                    .normalize(filePath)
+                    .replace(/\\/g, "/")
+                    .replace(/^[A-Za-z]:\//, "/")
+                    .replace(/\/+/g, "/")
+                    .toLowerCase();
+            };
+            const getSourceRelativePath = (
+                normalizedFilePath: string,
+            ): string => {
+                const sourceRootIndex = normalizedFilePath.lastIndexOf("/src/");
+                if (sourceRootIndex === -1) {
+                    return normalizedFilePath;
+                }
+                return normalizedFilePath.slice(sourceRootIndex + 1);
+            };
+            const isCoveragePathMatch = (
+                sourceFilePath: string,
+                coverageFilePath: string,
+            ): boolean => {
+                const normalizedSourcePath = normalizeCoveragePath(sourceFilePath);
+                const normalizedCoveragePath =
+                    normalizeCoveragePath(coverageFilePath);
+
+                if (
+                    normalizedSourcePath === normalizedCoveragePath ||
+                    normalizedSourcePath.endsWith(normalizedCoveragePath) ||
+                    normalizedCoveragePath.endsWith(normalizedSourcePath)
+                ) {
+                    return true;
+                }
+
+                const sourceRelativePath =
+                    getSourceRelativePath(normalizedSourcePath);
+                const coverageRelativePath =
+                    getSourceRelativePath(normalizedCoveragePath);
+
+                return (
+                    sourceRelativePath === coverageRelativePath ||
+                    sourceRelativePath.endsWith(coverageRelativePath) ||
+                    coverageRelativePath.endsWith(sourceRelativePath)
+                );
+            };
 
             let coverageData: CoverageData =
                 Configuration.mainData.coverageData;
@@ -2865,13 +2909,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                         out = { name: fileName, filePath: fileName };
                     } else {
                         const findMatch = _.filter(covFileNames, (el) => {
-                            const normalizedFilename = path
-                                .normalize(fileName)
-                                .replace(/\\/g, "/");
-                            return (
-                                el.includes(fileName) ||
-                                normalizedFilename.includes(el)
-                            );
+                            return isCoveragePathMatch(el, fileName);
                         });
                         if (findMatch.length > 0) {
                             out = _.clone(covDat[findMatch[0]]);
