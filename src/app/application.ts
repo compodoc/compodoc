@@ -37,6 +37,7 @@ import {
     cleanNameWithoutSpaceAndToLowerCase,
     cleanSourcesForWatch,
     findMainSourceFolder,
+    normalizeWatchFilePath,
 } from "../utils/utils";
 
 import { AdditionalNode } from "./interfaces/additional-node.interface";
@@ -3711,7 +3712,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             path.extname(file) === ".json"
                         ) {
                             this.watchChangedFiles.push(
-                                path.join(cwd + path.sep + file),
+                                normalizeWatchFilePath(file, cwd),
                             );
                             waiterChange();
                         }

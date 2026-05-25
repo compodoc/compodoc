@@ -141,10 +141,22 @@ export function cleanLifecycleHooksFromMethods(methods: Array<any>): Array<any> 
 
 export function cleanSourcesForWatch(list) {
     return list.filter(element => {
-        if (fs.existsSync(process.cwd() + path.sep + element)) {
-            return element;
-        }
+        const normalizedPath = isAbsoluteFilePath(element)
+            ? path.normalize(element)
+            : path.resolve(process.cwd(), element);
+        return fs.existsSync(normalizedPath);
     });
+}
+
+export function isAbsoluteFilePath(filePath: string): boolean {
+    return path.isAbsolute(filePath) || /^[A-Za-z]:[\\/]/.test(filePath);
+}
+
+export function normalizeWatchFilePath(filePath: string, basePath: string): string {
+    if (isAbsoluteFilePath(filePath)) {
+        return path.normalize(filePath);
+    }
+    return path.resolve(basePath, filePath);
 }
 
 export function getNamesCompareFn(name?) {
