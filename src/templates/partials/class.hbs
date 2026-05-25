@@ -2,7 +2,7 @@
   <li class="breadcrumb-item">{{t "classes" }}</li>
   <li class="breadcrumb-item" {{#if class.deprecated}}
         class="breadcrumb-item deprecated-name"
-    {{/if}}>{{class.name}}</li>
+    {{/if}}>{{#if class.displayName}}{{class.displayName}}{{else}}{{class.name}}{{/if}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">

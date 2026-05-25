@@ -3,6 +3,8 @@ export interface IDep {
     type?: string;
     ctype?: string;
     name: string;
+    displayName?: string;
+    typeParameters?: string[];
     coverageIgnore?: boolean;
 }
 

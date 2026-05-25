@@ -321,7 +321,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'classes'}}in{{/isNotToggle}}" ${ isNormalMode ? 'id="classes-links"' : 'id="xs-classes-links"' }>
                             {{#each classes}}
                             <li class="link">
-                                <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                <a href="classes/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{#if displayName}}{{displayName}}{{else}}{{name}}{{/if}}</a>
                             </li>
                             {{/each}}
                         </ul>
@@ -391,7 +391,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         <ul class="links collapse {{#isNotToggle 'interfaces'}}in{{/isNotToggle}}" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
                             {{#each interfaces}}
                             <li class="link">
-                                <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{ name }}</a>
+                                <a href="interfaces/{{#if duplicateName}}{{duplicateName}}{{else}}{{name}}{{/if}}.html" data-type="entity-link" {{#if deprecated}}class="deprecated-name"{{/if}}>{{#if displayName}}{{displayName}}{{else}}{{name}}{{/if}}</a>
                             </li>
                             {{/each}}
                         </ul>

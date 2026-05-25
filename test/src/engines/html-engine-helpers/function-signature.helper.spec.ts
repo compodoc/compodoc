@@ -126,6 +126,29 @@ describe('Engines - FunctionSignatureHelper', () => {
             expect(result).to.equal('myMethod()');
         });
 
+        it('should include generic type parameters in method signature', () => {
+            findStub.returns(null);
+            isKnownTypeStub.returns(false);
+
+            const context = {};
+            const method = {
+                name: 'mapValue',
+                typeParameters: ['T', 'R extends Record<string, unknown>'],
+                args: [
+                    {
+                        name: 'value',
+                        type: 'T',
+                        optional: false
+                    }
+                ]
+            };
+
+            const result = helper.helperFunc(context, method);
+            expect(result).to.contain(
+                'mapValue&lt;T, R extends Record<string, unknown>&gt;(value: T)'
+            );
+        });
+
         it('should handle method with internal type argument', () => {
             findStub.returns({
                 source: 'internal',
@@ -408,4 +431,3 @@ describe('Engines - FunctionSignatureHelper', () => {
         });
     });
 });
-

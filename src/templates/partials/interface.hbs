@@ -5,7 +5,7 @@
         class="breadcrumb-item deprecated-name"
     {{/if}}
   >
-  {{interface.name}}</li>
+  {{#if interface.displayName}}{{interface.displayName}}{{else}}{{interface.name}}{{/if}}</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">

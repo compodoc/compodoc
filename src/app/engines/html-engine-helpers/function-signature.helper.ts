@@ -87,6 +87,14 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
         return arg.optional ? '?' : '';
     }
 
+    private getTypeParametersString(method): string {
+        if (!method || !method.typeParameters || method.typeParameters.length === 0) {
+            return '';
+        }
+
+        return `&lt;${method.typeParameters.join(', ')}&gt;`;
+    }
+
     public helperFunc(context: any, method) {
         let args = '';
 
@@ -152,10 +160,11 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
             });
         }
 
+        const typeParameters = this.getTypeParametersString(method);
         if (method.name) {
-            return `${method.name}(${args})`;
+            return `${method.name}${typeParameters}(${args})`;
         } else {
-            return `(${args})`;
+            return `${typeParameters}(${args})`;
         }
     }
 }

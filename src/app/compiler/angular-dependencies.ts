@@ -386,6 +386,11 @@ export class AngularDependencies extends FrameworkDependencies {
             type: "class",
             sourceCode: srcFile.getText(),
         };
+        const typeParameters = this.getTypeParameters(node, srcFile);
+        deps.displayName = this.getDisplayName(name, typeParameters);
+        if (typeParameters.length > 0) {
+            deps.typeParameters = typeParameters;
+        }
         let excludeFromClassArray = false;
 
         if (IO.constructor && !Configuration.mainData.disableConstructors) {
@@ -954,6 +959,16 @@ export class AngularDependencies extends FrameworkDependencies {
                             type: "interface",
                             sourceCode: srcFile.getText(),
                         };
+                        const typeParameters = this.getTypeParameters(
+                            declarationToProcess,
+                        );
+                        interfaceDeps.displayName = this.getDisplayName(
+                            name,
+                            typeParameters,
+                        );
+                        if (typeParameters.length > 0) {
+                            interfaceDeps.typeParameters = typeParameters;
+                        }
                         if (declarationMergeId) {
                             interfaceDeps.declarationMergeId =
                                 declarationMergeId;
@@ -1014,6 +1029,16 @@ export class AngularDependencies extends FrameworkDependencies {
                                     node,
                                 ),
                         };
+                        functionDep.displayName = this.getDisplayName(
+                            name,
+                            infos.typeParameters,
+                        );
+                        if (
+                            infos.typeParameters &&
+                            infos.typeParameters.length > 0
+                        ) {
+                            functionDep.typeParameters = infos.typeParameters;
+                        }
                         if (infos.args) {
                             functionDep.args = infos.args;
                         }
@@ -2091,6 +2116,54 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
+    private getTypeParameterText(
+        typeParameter: ts.TypeParameterDeclaration,
+        sourceFile?: ts.SourceFile,
+    ): string {
+        const getText = (typeParameter as any).getText;
+        if (typeof getText === "function") {
+            try {
+                const text = getText.call(typeParameter, sourceFile);
+                if (text) {
+                    return text;
+                }
+                // tslint:disable-next-line:no-empty
+            } catch (error) {}
+        }
+
+        if (typeParameter.name && typeParameter.name.text) {
+            return typeParameter.name.text;
+        }
+
+        return "";
+    }
+
+    private getTypeParameters(
+        node: { typeParameters?: ts.NodeArray<ts.TypeParameterDeclaration> },
+        sourceFile?: ts.SourceFile,
+    ): string[] {
+        if (!node || !node.typeParameters || node.typeParameters.length === 0) {
+            return [];
+        }
+
+        return node.typeParameters
+            .map((typeParameter) =>
+                this.getTypeParameterText(typeParameter, sourceFile),
+            )
+            .filter(Boolean);
+    }
+
+    private getDisplayName(
+        name: string,
+        typeParameters?: string[],
+    ): string {
+        if (!typeParameters || typeParameters.length === 0) {
+            return name;
+        }
+
+        return `${name}<${typeParameters.join(", ")}>`;
+    }
+
     private visitFunctionDeclaration(method: ts.FunctionDeclaration) {
         const methodName = method.name ? method.name.text : "Unnamed function";
         const resultArguments = [];
@@ -2117,6 +2190,11 @@ export class AngularDependencies extends FrameworkDependencies {
         }
 
         result.args = resultArguments;
+
+        const typeParameters = this.getTypeParameters(method);
+        if (typeParameters.length > 0) {
+            result.typeParameters = typeParameters;
+        }
 
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
 
