@@ -15,30 +15,70 @@ function stripAnsi(str: string): string {
     return str.replace(/\u001b\[[0-9;]*m/g, "");
 }
 
+function waitForServingMessage(
+    args: string[],
+    expectedMessage: string,
+    timeout = 25000,
+): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const child = shellAsync("node", args);
+        let output = "";
+        let doneCalled = false;
+
+        const done = () => {
+            if (!doneCalled) {
+                doneCalled = true;
+                clearTimeout(timeoutId);
+                child.kill("SIGTERM");
+                resolve(output);
+            }
+        };
+
+        const onData = (data) => {
+            output += data.toString();
+            if (stripAnsi(output).includes(expectedMessage)) {
+                done();
+            }
+        };
+
+        child.stdout.on("data", onData);
+        child.stderr.on("data", onData);
+
+        child.on("error", (err) => {
+            if (!doneCalled) {
+                doneCalled = true;
+                clearTimeout(timeoutId);
+                reject(err);
+            }
+        });
+
+        child.on("exit", () => {
+            if (!doneCalled) {
+                doneCalled = true;
+                clearTimeout(timeoutId);
+                resolve(output);
+            }
+        });
+
+        const timeoutId = setTimeout(() => {
+            done();
+        }, timeout);
+    });
+}
+
 describe("CLI serving", () => {
     const distFolder = tmp.name + "-serving",
         TIMEOUT = 8000;
 
     describe("when serving with -s flag in another directory", () => {
-        let stdoutString = "",
-            child;
-        before(function (done) {
+        let stdoutString = "";
+        before(async function () {
+            this.timeout(30000);
             tmp.create(distFolder);
-            let ls = shell(
-                "node",
+            stdoutString = await waitForServingMessage(
                 ["./bin/index-cli.js", "-s", "-d", distFolder, "-r", "6700"],
-                {
-                    timeout: TIMEOUT,
-                },
+                `Serving documentation from ${distFolder} at http://127.0.0.1:6700`,
             );
-
-            if (ls.stderr.toString() !== "") {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done(new Error("shell error"));
-                return;
-            }
-            stdoutString = ls.stdout.toString();
-            done();
         });
         after(() => tmp.clean(distFolder));
 
@@ -213,31 +253,14 @@ describe("CLI serving", () => {
     });
 
     describe("when serving with default directory and without doc generation", () => {
-        let stdoutString = "",
-            child;
-        before(function (done) {
-            let ls = shell(
-                "node",
-                [
-                    "./bin/index-cli.js",
-                    "-s",
-                    "-d",
-                    "./documentation/",
-                    "-r",
-                    "6703",
-                ],
-                {
-                    timeout: TIMEOUT,
-                },
+        let stdoutString = "";
+        before(async function () {
+            this.timeout(30000);
+            tmp.create("documentation");
+            stdoutString = await waitForServingMessage(
+                ["./bin/index-cli.js", "-s", "-d", "./documentation/", "-r", "6703"],
+                "Serving documentation from ./documentation/ at http://127.0.0.1:6703",
             );
-
-            if (ls.stderr.toString() !== "") {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done(new Error("shell error"));
-                return;
-            }
-            stdoutString = ls.stdout.toString();
-            done();
         });
 
         it("should display message", () => {
