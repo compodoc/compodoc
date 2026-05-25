@@ -1498,8 +1498,12 @@ export class RouterParserUtil {
                         !isRelativeImport &&
                         routePathIsBad(importPath)
                     ) {
+                        // Match only full path segments when trying to remove
+                        // duplicated import prefixes. This avoids false positives
+                        // when user folders contain dots/partial names (e.g. "felipe.jesus").
+                        const duplicatedSegmentPattern = `${path.sep}${leadingFilePath}${path.sep}`;
                         const leadingIndices = getIndicesOf(
-                            leadingFilePath,
+                            duplicatedSegmentPattern,
                             importPath,
                             true,
                         );
