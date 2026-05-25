@@ -232,6 +232,14 @@ export class JsdocParserUtil {
                     result.push(
                         ..._.filter(doc.tags, (tag) => tag.kind === kind),
                     );
+                } else if ((doc as any) && (doc as any).kind === kind) {
+                    result.push(doc as ts.JSDocTag);
+                } else if (
+                    (doc as any) &&
+                    typeof (doc as any).kind === "number"
+                ) {
+                    // Ignore other JSDoc node kinds to avoid hard crashes on TS AST variations.
+                    continue;
                 } else {
                     throw new Error("Unexpected type");
                 }

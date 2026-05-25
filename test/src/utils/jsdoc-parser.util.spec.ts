@@ -312,6 +312,31 @@ const SECOND = 2;`);
         });
     });
 
+    describe('getJSDocTags()', () => {
+        it('should support direct JSDocTag entries in cache without throwing', () => {
+            const sourceFile = project.createSourceFile('test.ts', `class Test {
+                /**
+                 * @deprecated This method has been replaced by AppStripeService:getPrice
+                 */
+                test() {}
+            }`);
+
+            const method = sourceFile.getClass('Test')!.getMethod('test')!;
+            const deprecatedTag = (method.compilerNode as any).jsDoc[0].tags[0];
+            const utilWithMockedCache = jsdocParserUtil as any;
+
+            utilWithMockedCache.getJSDocs = () => [deprecatedTag];
+
+            const result = utilWithMockedCache.getJSDocTags(
+                method.compilerNode,
+                SyntaxKind.JSDocDeprecatedTag
+            );
+
+            expect(result).to.have.length(1);
+            expect(result[0]).to.equal(deprecatedTag);
+        });
+    });
+
     describe('parseJSDocNode()', () => {
         it('should parse JSDoc node with string comment', () => {
             const sourceFile = project.createSourceFile('test.ts', '/** Simple comment */ function test() {}');
