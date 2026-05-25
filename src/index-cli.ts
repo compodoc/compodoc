@@ -964,6 +964,7 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                 }
 
                 let sourceFolder;
+                let sourceFileInput: string | undefined;
                 if (program.args.length > 0) {
                     /**
                      * tsconfig file provided with source folder in arg
@@ -978,14 +979,22 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
                             );
                     }
 
-                    sourceFolder = program.args[0];
-                    if (!FileEngine.existsSync(sourceFolder)) {
+                    const providedSourcePath = program.args[0];
+                    if (!FileEngine.existsSync(providedSourcePath)) {
                         logger.error(
-                            `Provided source folder ${sourceFolder} was not found in the current directory`,
+                            `Provided source ${providedSourcePath} was not found in the current directory`,
                         );
                         process.exit(1);
                     } else {
-                        logger.info("Using provided source folder");
+                        const sourceStats = fs.statSync(providedSourcePath);
+                        if (sourceStats.isFile()) {
+                            sourceFolder = path.dirname(providedSourcePath);
+                            sourceFileInput = providedSourcePath;
+                            logger.info("Using provided source file");
+                        } else {
+                            sourceFolder = providedSourcePath;
+                            logger.info("Using provided source folder");
+                        }
                     }
                 }
 
@@ -1027,6 +1036,12 @@ Note: Certain tabs will only be shown if applicable to a given dependency`,
 
                     if (scannedFiles.length > 0) {
                         includeFiles = [...includeFiles, ...scannedFiles];
+                    }
+
+                    if (sourceFileInput) {
+                        // Restrict scanning to the provided single file to avoid treating it as a directory.
+                        includeFiles = [path.basename(sourceFileInput)];
+                        scannedFiles = [];
                     }
 
                     if (!includeFiles.length) {
