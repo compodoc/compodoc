@@ -190,6 +190,13 @@ export class SymbolHelper {
             if (node.expression && node.expression.text) {
                 return node.expression.text;
             }
+            // parse expressions such as: ...fromComponents.components
+            if (
+                node.expression &&
+                ts.isPropertyAccessExpression(node.expression)
+            ) {
+                return node.expression.name.text;
+            }
         }
 
         return node.text ? node.text : this.parseProviderConfiguration(node);
