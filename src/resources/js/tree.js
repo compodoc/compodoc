@@ -58,10 +58,18 @@ document.addEventListener('DOMContentLoaded', function() {
             type
         } of it) {
         if (type === 'NonIterableObject' && typeof key !== 'undefined' && value.type === 'tag') {
+            var parentId = parentNode && parentNode._parent ? parentNode._parent._id : null,
+                parentLevel = parentNode && parentNode._parent && typeof parentNode._parent._level === 'number'
+                    ? parentNode._parent._level
+                    : 0,
+                nodeLevel = parentLevel + 1;
+            value._level = nodeLevel;
+
             var newNode = {
                 id: value._id,
                 label: value.name,
-                type: value.type
+                type: value.type,
+                level: nodeLevel
             };
             for(var i = 0; i < COMPONENTS.length; i++) {
                 if (COMPONENTS[i].selector === value.name) {
@@ -88,15 +96,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             newNodes.push(newNode);
-            newEdges.push({
-                from: parentNode._parent._id,
-                to: value._id,
-                arrows: 'to'
-            });
+            if (parentId !== null && typeof parentId !== 'undefined') {
+                newEdges.push({
+                    from: parentId,
+                    to: value._id
+                });
+            }
         }
     }
 
     newNodes.shift();
+
+    var stripHtml = function(value) {
+            return String(value || '').replace(/<[^>]*>/g, '');
+        },
+        longestLabelLength = newNodes.reduce(function(max, node) {
+            var labelLength = stripHtml(node.label).length;
+            return Math.max(max, labelLength);
+        }, 0),
+        uniformNodeWidth = Math.max(40, Math.ceil(longestLabelLength * 8 + 28));
 
     var container = document.getElementById('tree-container'),
         data = {
@@ -107,12 +125,26 @@ document.addEventListener('DOMContentLoaded', function() {
             layout: {
                 hierarchical: {
                     sortMethod: 'directed',
+                    shakeTowards: 'roots',
+                    levelSeparation: 130,
                     enabled: true
+                }
+            },
+            edges: {
+                smooth: {
+                    enabled: true,
+                    type: 'cubicBezier',
+                    forceDirection: 'vertical',
+                    roundness: 0.45
                 }
             },
             nodes: {
                 shape: 'ellipse',
-                fixed: true
+                fixed: true,
+                widthConstraint: {
+                    minimum: uniformNodeWidth,
+                    maximum: uniformNodeWidth
+                }
             }
         },
 
