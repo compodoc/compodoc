@@ -1168,7 +1168,7 @@ ul.index-list {
 .dark-mode-switch {
     position: absolute;
     top: 70px;
-    right: 15px;
+    right: calc(15px + var(--content-scrollbar-width, 0px));
     display: inline-block;
     width: 60px;
     height: 34px;
