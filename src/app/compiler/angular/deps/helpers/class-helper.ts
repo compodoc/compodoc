@@ -1225,6 +1225,7 @@ export class ClassHelper {
             }
             if (
                 node.type.kind &&
+                !ts.isTypeLiteralNode(node.type) &&
                 !ts.isTypeOperatorNode(node.type) &&
                 !ts.isTypeQueryNode(node.type) &&
                 !ts.isUnionTypeNode(node.type) &&
@@ -1235,6 +1236,9 @@ export class ClassHelper {
             }
             if (node.type.typeName) {
                 _return = this.visitTypeName(node.type.typeName);
+            }
+            if (ts.isTypeLiteralNode(node.type) && node.type.members) {
+                _return = this.stringifyTypeLiteral(node.type);
             }
             if (node.type.typeArguments) {
                 _return += "<";
@@ -1472,54 +1476,7 @@ export class ClassHelper {
 
             // Enhanced handling for TypeLiteral to show actual object structure
             if (node.kind === SyntaxKind.TypeLiteral && node.members) {
-                _return = "{ ";
-                const memberStrings: string[] = [];
-                for (const member of node.members) {
-                    if (
-                        ts.isPropertySignature(member) &&
-                        member.name &&
-                        member.type
-                    ) {
-                        const memberName =
-                            (member.name as any).text ||
-                            (member.name as any).escapedText;
-                        const memberType = this.visitType(member.type);
-                        const optionalMarker = member.questionToken ? "?" : "";
-                        memberStrings.push(
-                            `${memberName}${optionalMarker}: ${memberType}`,
-                        );
-                    } else if (ts.isMethodSignature(member) && member.name) {
-                        const memberName =
-                            (member.name as any).text ||
-                            (member.name as any).escapedText;
-                        const returnType = member.type
-                            ? this.visitType(member.type)
-                            : "void";
-                        let parameters = "";
-                        if (member.parameters && member.parameters.length > 0) {
-                            parameters = member.parameters
-                                .map((param) => {
-                                    const paramName = param.name
-                                        ? (param.name as any).text ||
-                                          (param.name as any).escapedText
-                                        : "";
-                                    const paramType = param.type
-                                        ? this.visitType(param.type)
-                                        : "any";
-                                    const optionalMarker = param.questionToken
-                                        ? "?"
-                                        : "";
-                                    return `${paramName}${optionalMarker}: ${paramType}`;
-                                })
-                                .join(", ");
-                        }
-                        memberStrings.push(
-                            `${memberName}(${parameters}): ${returnType}`,
-                        );
-                    }
-                }
-                _return += memberStrings.join("; ");
-                _return += " }";
+                _return = this.stringifyTypeLiteral(node as ts.TypeLiteralNode);
             }
 
             if (
@@ -1552,6 +1509,86 @@ export class ClassHelper {
             _return += ">";
         }
         return _return;
+    }
+
+    private stringifyTypeLiteral(node: ts.TypeLiteralNode): string {
+        const memberStrings: string[] = [];
+        for (const member of node.members) {
+            if (ts.isPropertySignature(member) && member.name && member.type) {
+                const memberName =
+                    (member.name as any).text || (member.name as any).escapedText;
+                const memberType = this.visitType(member.type);
+                const optionalMarker = member.questionToken ? "?" : "";
+                memberStrings.push(
+                    `${memberName}${optionalMarker}: ${memberType}`,
+                );
+            } else if (ts.isMethodSignature(member) && member.name) {
+                const memberName =
+                    (member.name as any).text || (member.name as any).escapedText;
+                const returnType = member.type ? this.visitType(member.type) : "void";
+                let parameters = "";
+                if (member.parameters && member.parameters.length > 0) {
+                    parameters = member.parameters
+                        .map((param) => {
+                            const paramName = param.name
+                                ? (param.name as any).text ||
+                                  (param.name as any).escapedText
+                                : "";
+                            const paramType = param.type
+                                ? this.visitType(param.type)
+                                : "any";
+                            const optionalMarker = param.questionToken ? "?" : "";
+                            return `${paramName}${optionalMarker}: ${paramType}`;
+                        })
+                        .join(", ");
+                }
+                memberStrings.push(`${memberName}(${parameters}): ${returnType}`);
+            }
+        }
+        return `{ ${memberStrings.join("; ")} }`;
+    }
+
+    private extractTypeLiteralProperties(
+        typeNode: ts.TypeNode,
+        sourceFile: ts.SourceFile,
+    ): any[] {
+        if (!ts.isTypeLiteralNode(typeNode) || !typeNode.members) {
+            return [];
+        }
+
+        const subProperties: any[] = [];
+        for (const member of typeNode.members) {
+            if (!ts.isPropertySignature(member) || !member.name || !member.type) {
+                continue;
+            }
+
+            const memberName =
+                (member.name as any).text || (member.name as any).escapedText;
+            if (!memberName) {
+                continue;
+            }
+
+            const subProperty: any = {
+                name: memberName,
+                type: this.visitType(member.type),
+                optional: typeof member.questionToken !== "undefined",
+                description: "",
+            };
+
+            this.extractAndProcessJSDocComment(member, sourceFile, subProperty);
+
+            const nestedSubProperties = this.extractTypeLiteralProperties(
+                member.type,
+                sourceFile,
+            );
+            if (nestedSubProperties.length > 0) {
+                subProperty.subProperties = nestedSubProperties;
+            }
+
+            subProperties.push(subProperty);
+        }
+
+        return subProperties;
     }
 
     private visitCallDeclaration(
@@ -1705,6 +1742,13 @@ export class ClassHelper {
             if (resolvedType) {
                 result.type = resolvedType;
             }
+        }
+
+        if (property.type && ts.isTypeLiteralNode(property.type)) {
+            result.subProperties = this.extractTypeLiteralProperties(
+                property.type,
+                sourceFile,
+            );
         }
 
         if (initializer && initializer.kind === SyntaxKind.ArrowFunction) {

@@ -185,6 +185,26 @@
                                     </tr>
                                 {{/if}}
 
+                                {{#if subProperties}}
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <div class="io-nested-properties">
+                                                <i>{{t "properties" }} :</i>
+                                                <ul class="index-list">
+                                                    {{#each subProperties}}
+                                                        <li>
+                                                            <span class="io-nested-property-name"><code>{{name}}{{#if optional}}?{{/if}}: {{> link-type type=type }}</code></span>
+                                                            {{#if description}}
+                                                                <div class="io-description">{{{parseDescription description ../../depth}}}</div>
+                                                            {{/if}}
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
                                 {{#if optional}}
                                     <tr>
                                         <td class="col-md-4">
