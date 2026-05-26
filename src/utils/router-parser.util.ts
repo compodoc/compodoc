@@ -932,6 +932,9 @@ export class RouterParserUtil {
                     validChildren.push({
                         name: routeItem.redirectTo,
                         kind: "route-redirect",
+                        path: routeItem.path || "",
+                        redirectTo: routeItem.redirectTo,
+                        pathMatch: routeItem.pathMatch,
                         filename,
                     });
                 }
@@ -1044,24 +1047,59 @@ export class RouterParserUtil {
                         }
                     }
 
-                    // Extract redirectTo values with strict validation
-                    const redirectMatches = route.data.match(
-                        /"redirectTo"\s*:\s*"([^"]+)"/g,
+                    // Extract redirect routes with path + pathMatch when available
+                    const redirectRouteMatches = route.data.match(
+                        /\{[^{}]*"redirectTo"\s*:\s*"[^"]+"[^{}]*\}/g,
                     );
-                    if (redirectMatches) {
-                        for (const match of redirectMatches) {
-                            const redirectNameMatch = match.match(
+                    if (redirectRouteMatches) {
+                        for (const routeMatch of redirectRouteMatches) {
+                            const redirectNameMatch = routeMatch.match(
                                 /"redirectTo"\s*:\s*"([^"]+)"/,
                             );
                             if (
                                 redirectNameMatch &&
                                 isValidName(redirectNameMatch[1])
                             ) {
+                                const pathMatch = routeMatch.match(
+                                    /"path"\s*:\s*"([^"]*)"/,
+                                );
+                                const pathModeMatch = routeMatch.match(
+                                    /"pathMatch"\s*:\s*"([^"]+)"/,
+                                );
                                 validChildren.push({
                                     name: redirectNameMatch[1],
                                     kind: "route-redirect",
+                                    path: pathMatch ? pathMatch[1] : "",
+                                    redirectTo: redirectNameMatch[1],
+                                    pathMatch: pathModeMatch
+                                        ? pathModeMatch[1]
+                                        : undefined,
                                     filename: route.filename,
                                 });
+                            }
+                        }
+                    } else {
+                        // Legacy fallback when object-level extraction fails
+                        const redirectMatches = route.data.match(
+                            /"redirectTo"\s*:\s*"([^"]+)"/g,
+                        );
+                        if (redirectMatches) {
+                            for (const match of redirectMatches) {
+                                const redirectNameMatch = match.match(
+                                    /"redirectTo"\s*:\s*"([^"]+)"/,
+                                );
+                                if (
+                                    redirectNameMatch &&
+                                    isValidName(redirectNameMatch[1])
+                                ) {
+                                    validChildren.push({
+                                        name: redirectNameMatch[1],
+                                        kind: "route-redirect",
+                                        path: "",
+                                        redirectTo: redirectNameMatch[1],
+                                        filename: route.filename,
+                                    });
+                                }
                             }
                         }
                     }

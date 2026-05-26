@@ -66,6 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return '<a href="' + safeHref(href) + '" target="_top">' + label + '</a>';
     }
 
+    function withLeadingSlash(routeValue) {
+        var value = String(routeValue || '');
+        if (value.length === 0) {
+            return '/';
+        }
+        return value.charAt(0) === '/' ? value : '/' + value;
+    }
+
     function getBB(selection) {
         selection.each(function (d) {
             d.bbox = this.getBBox();
@@ -229,10 +237,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     _name += '<tspan x="0" dy="1.4em">&lt;outlet&gt; : ' + d.outlet + '</tspan>';
                 }
             } else {
-                _name +=
-                    '<tspan x="0" dy="1.4em">' +
-                    wrapLabelWithLink('/' + (d.path || d.name), nodeHref) +
-                    '</tspan>';
+                if (d.kind === 'route-redirect') {
+                    var fromPath = d.path === '' ? "''" : withLeadingSlash(d.path || '');
+                    var redirectTo = withLeadingSlash(d.redirectTo || d.name);
+                    _name += '<tspan x="0" dy="1.4em">' + fromPath + ' &rarr; ' + redirectTo + '</tspan>';
+                    if (d.pathMatch) {
+                        _name += '<tspan x="0" dy="1.4em">pathMatch: ' + d.pathMatch + '</tspan>';
+                    }
+                } else {
+                    _name +=
+                        '<tspan x="0" dy="1.4em">' +
+                        wrapLabelWithLink(withLeadingSlash(d.path || d.name), nodeHref) +
+                        '</tspan>';
+                }
                 if (d.component) {
                     _name +=
                         '<tspan x="0" dy="1.4em">' +
