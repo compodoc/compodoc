@@ -2,12 +2,22 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">{{t "dependencies" }}</li>
     </ol>
-    <ul class="dependencies-list">
-        {{#each packageDependencies}}
-        <li>
-            <b>{{@key}}</b> : {{this}}</li>
-        {{/each}}
-    </ul>
+    <table class="table table-sm table-bordered dependencies-table">
+        <thead>
+            <tr>
+                <th>{{t "name" }}</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each packageDependencies}}
+            <tr>
+                <td><b>{{@key}}</b></td>
+                <td>{{this}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 {{/if}}
 
 {{#if packagePeerDependencies}}
@@ -18,10 +28,20 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">{{t "peer-dependencies" }}</li>
     </ol>
-    <ul class="dependencies-list">
-        {{#each packagePeerDependencies}}
-        <li>
-            <b>{{@key}}</b> : {{this}}</li>
-        {{/each}}
-    </ul>
+    <table class="table table-sm table-bordered dependencies-table">
+        <thead>
+            <tr>
+                <th>{{t "name" }}</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each packagePeerDependencies}}
+            <tr>
+                <td><b>{{@key}}</b></td>
+                <td>{{this}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 {{/if}}

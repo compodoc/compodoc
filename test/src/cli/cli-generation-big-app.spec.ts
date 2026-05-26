@@ -641,6 +641,8 @@ describe("CLI simple generation - big app", () => {
         expect(file).to.be.true;
         const dependencies = read(distFolder + "/dependencies.html");
         expect(dependencies).to.contain("angular/forms");
+        expect(dependencies).to.contain('<table class="table table-sm table-bordered dependencies-table">');
+        expect(dependencies).to.not.contain('<ul class="dependencies-list">');
     });
 
     it("should display project properties", () => {

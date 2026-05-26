@@ -998,13 +998,8 @@ ul.index-list {
  * Dependencies
  */
 
-.package-dependencies ul {
-    list-style: none;
-    margin: 0;
-}
-
-.package-dependencies li {
-    margin: 5px 0;
+.package-dependencies .dependencies-table {
+    margin-bottom: 0;
 }
 
 .deprecated {
