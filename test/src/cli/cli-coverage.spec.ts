@@ -403,6 +403,15 @@ describe('CLI coverage report', () => {
         it('it should have coverage page - score', () => {
             expect(coverageFile).to.contain('17/17');
         });
+
+        it('it should have coverage summary and filter controls', () => {
+            expect(coverageFile).to.contain('data-coverage-summary');
+            expect(coverageFile).to.contain('class="coverage-filter"');
+            expect(coverageFile).to.contain('data-coverage-filter');
+            expect(coverageFile).to.contain('data-coverage-filter-clear');
+            expect(coverageFile).to.contain('placeholder="Filter entities..."');
+            expect(coverageFile).to.contain('renderSummary(getCoverageStats());');
+        });
     });
 
     describe('coverage page links', () => {
