@@ -15,6 +15,57 @@ document.addEventListener('DOMContentLoaded', function () {
         return lazyModuleName;
     }
 
+    function foundLazyComponentWithPath(path) {
+        var split = path.split('#'),
+            lazyComponentName = split[1];
+        return lazyComponentName;
+    }
+
+    function safeHref(href) {
+        return String(href || '').replace(/"/g, '&quot;');
+    }
+
+    function resolveNodeHref(d) {
+        if (!d) {
+            return '';
+        }
+
+        if (d.href) {
+            return d.href;
+        }
+
+        if (d.component && d.component !== 'default') {
+            return './components/' + d.component + '.html';
+        }
+
+        if (d.module && d.module !== 'default') {
+            return './modules/' + d.module + '.html';
+        }
+
+        if (d.loadComponent) {
+            var lazyComponent = foundLazyComponentWithPath(d.loadComponent);
+            if (lazyComponent && lazyComponent !== 'default') {
+                return './components/' + lazyComponent + '.html';
+            }
+        }
+
+        if (d.loadChildren) {
+            var lazyModule = foundLazyModuleWithPath(d.loadChildren);
+            if (lazyModule && lazyModule !== 'default') {
+                return './modules/' + lazyModule + '.html';
+            }
+        }
+
+        return '';
+    }
+
+    function wrapLabelWithLink(label, href) {
+        if (!href) {
+            return label;
+        }
+        return '<a href="' + safeHref(href) + '" target="_top">' + label + '</a>';
+    }
+
     function getBB(selection) {
         selection.each(function (d) {
             d.bbox = this.getBBox();
@@ -100,6 +151,17 @@ document.addEventListener('DOMContentLoaded', function () {
         dy: 0
     });
 
+    infos_group
+        .style('cursor', function (d) {
+            return resolveNodeHref(d) ? 'pointer' : null;
+        })
+        .on('click', function (d) {
+            var href = resolveNodeHref(d);
+            if (href) {
+                window.location.href = href;
+            }
+        });
+
     //Node icon
     infos_group
         .append('text')
@@ -134,56 +196,57 @@ document.addEventListener('DOMContentLoaded', function () {
             // if kind === module name + module
             // if kind === component component + path
             var _name = '';
+            var nodeHref = resolveNodeHref(d);
             if (d.kind === 'module') {
                 if (d.module) {
                     _name +=
-                        '<tspan x="0" dy="1.4em"><a href="./modules/' +
-                        d.module +
-                        '.html">' +
-                        d.module +
-                        '</a></tspan>';
+                        '<tspan x="0" dy="1.4em">' +
+                        wrapLabelWithLink(d.module, nodeHref || './modules/' + d.module + '.html') +
+                        '</tspan>';
                     if (d.name) {
                         _name += '<tspan x="0" dy="1.4em">' + d.name + '</tspan>';
                     }
                 } else {
-                    _name += '<tspan x="0" dy="1.4em">' + htmlEntities(d.name) + '</tspan>';
-                }
-            } else if (d.kind === 'component') {
-                _name += '<tspan x="0" dy="1.4em">' + (d.path || d.name) + '</tspan>';
-                if (d.component) {
-                    _name +=
-                        '<tspan x="0" dy="1.4em"><a href="./components/' +
-                        d.component +
-                        '.html">' +
-                        d.component +
-                        '</a></tspan>';
-                } else if (d.name && d.name.includes('Component')) {
                     _name +=
                         '<tspan x="0" dy="1.4em">' +
-                        d.name +
+                        wrapLabelWithLink(htmlEntities(d.name), nodeHref) +
                         '</tspan>';
+                }
+            } else if (d.kind === 'component') {
+                _name +=
+                    '<tspan x="0" dy="1.4em">' +
+                    wrapLabelWithLink(d.path || d.name, nodeHref) +
+                    '</tspan>';
+                if (d.component) {
+                    _name +=
+                        '<tspan x="0" dy="1.4em">' +
+                        wrapLabelWithLink(d.component, './components/' + d.component + '.html') +
+                        '</tspan>';
+                } else if (d.name && d.name.includes('Component')) {
+                    _name += '<tspan x="0" dy="1.4em">' + wrapLabelWithLink(d.name, nodeHref) + '</tspan>';
                 }
                 if (d.outlet) {
                     _name += '<tspan x="0" dy="1.4em">&lt;outlet&gt; : ' + d.outlet + '</tspan>';
                 }
             } else {
-                _name += '<tspan x="0" dy="1.4em">/' + (d.path || d.name) + '</tspan>';
+                _name +=
+                    '<tspan x="0" dy="1.4em">' +
+                    wrapLabelWithLink('/' + (d.path || d.name), nodeHref) +
+                    '</tspan>';
                 if (d.component) {
                     _name +=
-                        '<tspan x="0" dy="1.4em"><a href="./components/' +
-                        d.component +
-                        '.html">' +
-                        d.component +
-                        '</a></tspan>';
+                        '<tspan x="0" dy="1.4em">' +
+                        wrapLabelWithLink(d.component, './components/' + d.component + '.html') +
+                        '</tspan>';
                 }
                 if (d.loadChildren) {
                     var moduleName = foundLazyModuleWithPath(d.loadChildren);
-                    _name +=
-                        '<tspan x="0" dy="1.4em"><a href="./modules/' +
-                        moduleName +
-                        '.html">' +
-                        moduleName +
-                        '</a></tspan>';
+                    if (moduleName && moduleName !== 'default') {
+                        _name +=
+                            '<tspan x="0" dy="1.4em">' +
+                            wrapLabelWithLink(moduleName, './modules/' + moduleName + '.html') +
+                            '</tspan>';
+                    }
                 }
                 if (d.canActivate) {
                     _name += '<tspan x="0" dy="1.4em">&#10003; canActivate</tspan>';

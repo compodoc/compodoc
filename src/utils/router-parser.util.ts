@@ -17,6 +17,7 @@ const traverse = require("neotraverse/legacy");
 const ast = new Project();
 
 export class RouterParserUtil {
+    private static readonly DEFAULT_LAZY_EXPORT = "default";
     public scannedFiles: any[] = [];
     private routes: any[] = [];
     private incompleteRoutes = [];
@@ -133,6 +134,10 @@ export class RouterParserUtil {
             .replace(
                 /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)(?!\."?then"?\()/g,
                 'loadComponent:"$1#default"',
+            )
+            .replace(
+                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)(?!\."?then"?\()/g,
+                'loadChildren:"$1#default"',
             );
 
         // Step 1: Convert template literal interpolations to bare identifiers
@@ -589,6 +594,224 @@ export class RouterParserUtil {
         return lazyComponentName;
     }
 
+    private normalizeFsPath(filePath: string): string {
+        return path.normalize(filePath).replace(/\\/g, "/");
+    }
+
+    private getScannedFilePath(scannedFile: any): string | undefined {
+        if (typeof scannedFile?.getFilePath === "function") {
+            return scannedFile.getFilePath();
+        }
+        if (scannedFile?.path) {
+            return scannedFile.path;
+        }
+        if (scannedFile?.fileName) {
+            return scannedFile.fileName;
+        }
+        return undefined;
+    }
+
+    private findScannedSourceFileByRelativeName(filename: string): any {
+        const normalizedFilename = this.normalizeFsPath(filename || "");
+        if (!normalizedFilename) {
+            return undefined;
+        }
+
+        return this.scannedFiles.find((scannedFile) => {
+            const scannedPath = this.getScannedFilePath(scannedFile);
+            if (!scannedPath) {
+                return false;
+            }
+            return this.normalizeFsPath(scannedPath).endsWith(normalizedFilename);
+        });
+    }
+
+    private getComponentClassNames(scannedFile: any): string[] {
+        if (!scannedFile) {
+            return [];
+        }
+
+        if (typeof scannedFile.getClasses === "function") {
+            return scannedFile
+                .getClasses()
+                .map((classDeclaration) => classDeclaration.getName?.())
+                .filter(
+                    (name) => typeof name === "string" && name.endsWith("Component"),
+                );
+        }
+
+        const statements =
+            scannedFile && scannedFile.statements
+                ? Array.from(scannedFile.statements as any)
+                : [];
+
+        if (statements.length > 0) {
+            return statements
+                .filter((statement) => ts.isClassDeclaration(statement))
+                .map((classDeclaration) =>
+                    classDeclaration?.name ? classDeclaration.name.text : undefined,
+                )
+                .filter(
+                    (name) => typeof name === "string" && name.endsWith("Component"),
+                );
+        }
+
+        return [];
+    }
+
+    private resolveImportSpecifierToFilePath(
+        importSpecifier: string,
+        fromFilename: string,
+    ): string | undefined {
+        if (!importSpecifier || !fromFilename) {
+            return undefined;
+        }
+
+        const originScannedFile =
+            this.findScannedSourceFileByRelativeName(fromFilename);
+        const fromPath = this.getScannedFilePath(originScannedFile);
+        const baseDir = fromPath
+            ? path.dirname(fromPath)
+            : path.dirname(path.resolve(fromFilename));
+        const candidates = [
+            path.resolve(baseDir, `${importSpecifier}.ts`),
+            path.resolve(baseDir, importSpecifier, "index.ts"),
+        ];
+
+        return candidates.find((candidate) =>
+            this.scannedFiles.some((scannedFile) => {
+                const scannedPath = this.getScannedFilePath(scannedFile);
+                if (!scannedPath) {
+                    return false;
+                }
+                return (
+                    this.normalizeFsPath(scannedPath) ===
+                    this.normalizeFsPath(candidate)
+                );
+            }),
+        );
+    }
+
+    private resolveLazyComponentName(
+        loadComponent: string,
+        filename: string,
+        routePath?: string,
+    ): string | undefined {
+        if (!loadComponent) {
+            return undefined;
+        }
+
+        const [importSpecifier, exportName] = loadComponent.split("#");
+
+        if (
+            exportName &&
+            exportName !== RouterParserUtil.DEFAULT_LAZY_EXPORT &&
+            exportName !== "undefined"
+        ) {
+            return exportName;
+        }
+
+        const resolvedFile = this.resolveImportSpecifierToFilePath(
+            importSpecifier,
+            filename,
+        );
+
+        if (!resolvedFile) {
+            return this.inferComponentNameFromRoutePath(routePath);
+        }
+
+        const sourceFile: any = this.scannedFiles.find((scannedFile) => {
+            const scannedPath = this.getScannedFilePath(scannedFile);
+            if (!scannedPath) {
+                return false;
+            }
+            return (
+                this.normalizeFsPath(scannedPath) ===
+                this.normalizeFsPath(resolvedFile)
+            );
+        });
+
+        if (!sourceFile) {
+            return this.inferComponentNameFromRoutePath(routePath);
+        }
+
+        const statements =
+            sourceFile && sourceFile.statements
+                ? Array.from(sourceFile.statements as any)
+                : [];
+
+        if (statements.length > 0) {
+            const classDeclarations = statements.filter((statement) =>
+                ts.isClassDeclaration(statement),
+            );
+            const hasDefaultModifier = (classDeclaration: ts.ClassDeclaration) =>
+                !!classDeclaration.modifiers?.some(
+                    (modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword,
+                );
+
+            const defaultComponentClass = classDeclarations.find(
+                (classDeclaration: ts.ClassDeclaration) =>
+                    hasDefaultModifier(classDeclaration) &&
+                    classDeclaration.name &&
+                    classDeclaration.name.text.endsWith("Component"),
+            );
+
+            if (defaultComponentClass && defaultComponentClass.name) {
+                return defaultComponentClass.name.text;
+            }
+
+            const firstComponentClass = classDeclarations.find(
+                (classDeclaration: ts.ClassDeclaration) =>
+                    classDeclaration.name &&
+                    classDeclaration.name.text.endsWith("Component"),
+            );
+
+            if (firstComponentClass && firstComponentClass.name) {
+                return firstComponentClass.name.text;
+            }
+        }
+
+        return this.inferComponentNameFromRoutePath(routePath);
+    }
+
+    private inferComponentNameFromRoutePath(routePath?: string): string | undefined {
+        if (!routePath) {
+            return undefined;
+        }
+
+        const cleanedPath = routePath
+            .replace(/^\//, "")
+            .replace(/\*\*/g, "")
+            .replace(/:[^/]+/g, "")
+            .trim();
+
+        if (!cleanedPath) {
+            return undefined;
+        }
+
+        const guessedName =
+            cleanedPath
+                .split("/")
+                .filter((segment) => segment.length > 0)
+                .map((segment) =>
+                    segment
+                        .split(/[-_]/g)
+                        .filter((part) => part.length > 0)
+                        .map(
+                            (part) =>
+                                part.charAt(0).toUpperCase() + part.slice(1),
+                        )
+                        .join(""),
+                )
+                .join("") + "Component";
+
+        if (!guessedName || guessedName === "Component") {
+            return undefined;
+        }
+
+        return guessedName;
+    }
+
     public constructRoutesTree() {
         // routes[] contains routes with module link
         // modulesTree contains modules tree
@@ -616,35 +839,69 @@ export class RouterParserUtil {
 
             // Helper: process a single route item and push entries into validChildren
             const processRouteItem = (routeItem, filename: string) => {
+                let routeComponentName;
+                let routeModuleName;
+
                 if (routeItem.component && isValidName(routeItem.component)) {
+                    routeComponentName = routeItem.component;
                     validChildren.push({
                         name: routeItem.component,
                         kind: "component",
+                        component: routeItem.component,
                         path: routeItem.path || "",
                         filename,
                     });
                 }
                 if (routeItem.loadChildren) {
-                    // Extract module name from loadChildren ("./path#ModuleName")
-                    const moduleMatch = routeItem.loadChildren.match(/#(\w+)/);
-                    if (moduleMatch && isValidName(moduleMatch[1])) {
+                    const lazyModuleName = this.foundLazyModuleWithPath(
+                        routeItem.loadChildren,
+                    );
+                    if (
+                        lazyModuleName &&
+                        isValidName(lazyModuleName) &&
+                        lazyModuleName !== RouterParserUtil.DEFAULT_LAZY_EXPORT
+                    ) {
+                        routeModuleName = lazyModuleName;
                         validChildren.push({
-                            name: moduleMatch[1],
+                            name: lazyModuleName,
                             kind: "module",
+                            module: lazyModuleName,
                             path: routeItem.path || "",
                             filename,
                         });
                     }
+                    if (!routeModuleName) {
+                        const inferredComponentName =
+                            this.inferComponentNameFromRoutePath(
+                                routeItem.path,
+                            );
+                        if (
+                            inferredComponentName &&
+                            isValidName(inferredComponentName)
+                        ) {
+                            routeComponentName = inferredComponentName;
+                            validChildren.push({
+                                name: inferredComponentName,
+                                kind: "component",
+                                component: inferredComponentName,
+                                path: routeItem.path || "",
+                                filename,
+                            });
+                        }
+                    }
                 }
                 if (routeItem.loadComponent) {
-                    // Extract component name from loadComponent ("./path#ComponentName")
-                    const componentName = this.foundLazyComponentWithPath(
+                    const componentName = this.resolveLazyComponentName(
                         routeItem.loadComponent,
+                        filename,
+                        routeItem.path,
                     );
                     if (componentName && isValidName(componentName)) {
+                        routeComponentName = componentName;
                         validChildren.push({
                             name: componentName,
                             kind: "component",
+                            component: componentName,
                             path: routeItem.path || "",
                             filename,
                         });
@@ -659,6 +916,10 @@ export class RouterParserUtil {
                     validChildren.push({
                         name: routeItem.path,
                         kind: "route-path",
+                        component: routeComponentName,
+                        module: routeModuleName,
+                        loadChildren: routeItem.loadChildren,
+                        loadComponent: routeItem.loadComponent,
                         filename,
                     });
                 }
