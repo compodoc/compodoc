@@ -3576,6 +3576,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                             "dependencies.svg",
                                     ),
                                     modules[i].name,
+                                    "module",
                                 ).then(
                                     (data) => {
                                         modules[i].graph = data;
@@ -3620,6 +3621,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                             finalMainGraphPath + path.sep + "dependencies.svg",
                         ),
                         "Main graph",
+                        "overview",
                     ).then(
                         (data) => {
                             Configuration.mainData.mainGraph = data;
