@@ -649,14 +649,16 @@ export class RouterParserUtil {
                 );
         }
 
-        const statements =
+        const statements: ts.Node[] =
             scannedFile && scannedFile.statements
-                ? Array.from(scannedFile.statements as any)
+                ? (Array.from(scannedFile.statements as any) as ts.Node[])
                 : [];
 
         if (statements.length > 0) {
-            return statements
-                .filter((statement) => ts.isClassDeclaration(statement))
+            const classDeclarations = statements.filter((statement) =>
+                ts.isClassDeclaration(statement),
+            ) as ts.ClassDeclaration[];
+            return classDeclarations
                 .map((classDeclaration) =>
                     classDeclaration?.name ? classDeclaration.name.text : undefined,
                 )
@@ -698,6 +700,46 @@ export class RouterParserUtil {
                     this.normalizeFsPath(candidate)
                 );
             }),
+        );
+    }
+
+    private isComponentDecorator(decorator: ts.Decorator): boolean {
+        const expression = decorator.expression;
+        if (ts.isIdentifier(expression)) {
+            return expression.text === "Component";
+        }
+        if (ts.isCallExpression(expression) && ts.isIdentifier(expression.expression)) {
+            return expression.expression.text === "Component";
+        }
+        return false;
+    }
+
+    private getNodeDecorators(node: ts.Node): readonly ts.Decorator[] {
+        const tsWithDecorators = ts as unknown as {
+            canHaveDecorators?: (node: ts.Node) => boolean;
+            getDecorators?: (node: ts.Node) => readonly ts.Decorator[] | undefined;
+        };
+
+        if (
+            tsWithDecorators.canHaveDecorators &&
+            tsWithDecorators.getDecorators &&
+            tsWithDecorators.canHaveDecorators(node)
+        ) {
+            return tsWithDecorators.getDecorators(node) || [];
+        }
+
+        return ((node as any).decorators as readonly ts.Decorator[] | undefined) || [];
+    }
+
+    private classHasComponentDecorator(
+        classDeclaration: ts.ClassDeclaration,
+    ): boolean {
+        const decorators = this.getNodeDecorators(classDeclaration);
+        if (!decorators || decorators.length === 0) {
+            return false;
+        }
+        return decorators.some((decorator) =>
+            this.isComponentDecorator(decorator),
         );
     }
 
@@ -744,19 +786,30 @@ export class RouterParserUtil {
             return this.inferComponentNameFromRoutePath(routePath);
         }
 
-        const statements =
+        const statements: ts.Node[] =
             sourceFile && sourceFile.statements
-                ? Array.from(sourceFile.statements as any)
+                ? (Array.from(sourceFile.statements as any) as ts.Node[])
                 : [];
 
         if (statements.length > 0) {
             const classDeclarations = statements.filter((statement) =>
                 ts.isClassDeclaration(statement),
-            );
+            ) as ts.ClassDeclaration[];
             const hasDefaultModifier = (classDeclaration: ts.ClassDeclaration) =>
                 !!classDeclaration.modifiers?.some(
                     (modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword,
                 );
+
+            const defaultDecoratedClass = classDeclarations.find(
+                (classDeclaration: ts.ClassDeclaration) =>
+                    hasDefaultModifier(classDeclaration) &&
+                    classDeclaration.name &&
+                    this.classHasComponentDecorator(classDeclaration),
+            );
+
+            if (defaultDecoratedClass && defaultDecoratedClass.name) {
+                return defaultDecoratedClass.name.text;
+            }
 
             const defaultComponentClass = classDeclarations.find(
                 (classDeclaration: ts.ClassDeclaration) =>
@@ -767,6 +820,25 @@ export class RouterParserUtil {
 
             if (defaultComponentClass && defaultComponentClass.name) {
                 return defaultComponentClass.name.text;
+            }
+
+            const defaultClass = classDeclarations.find(
+                (classDeclaration: ts.ClassDeclaration) =>
+                    hasDefaultModifier(classDeclaration) && classDeclaration.name,
+            );
+
+            if (defaultClass && defaultClass.name) {
+                return defaultClass.name.text;
+            }
+
+            const firstDecoratedClass = classDeclarations.find(
+                (classDeclaration: ts.ClassDeclaration) =>
+                    classDeclaration.name &&
+                    this.classHasComponentDecorator(classDeclaration),
+            );
+
+            if (firstDecoratedClass && firstDecoratedClass.name) {
+                return firstDecoratedClass.name.text;
             }
 
             const firstComponentClass = classDeclarations.find(
@@ -819,6 +891,138 @@ export class RouterParserUtil {
         }
 
         return guessedName;
+    }
+
+    private findRouteByResolvedFilePath(
+        resolvedFilePath: string,
+    ): { data: string; filename: string } | undefined {
+        const normalizedResolved = this.normalizeFsPath(resolvedFilePath || "");
+        if (!normalizedResolved) {
+            return undefined;
+        }
+
+        return this.routes.find((route) => {
+            const routeFilename = this.normalizeFsPath(route?.filename || "");
+            if (!routeFilename) {
+                return false;
+            }
+            return (
+                normalizedResolved.endsWith(routeFilename) ||
+                routeFilename.endsWith(normalizedResolved)
+            );
+        });
+    }
+
+    private resolveRouteItemComponentName(
+        routeItem: any,
+        filename: string,
+    ): string | undefined {
+        if (!routeItem || typeof routeItem !== "object") {
+            return undefined;
+        }
+
+        if (
+            typeof routeItem.component === "string" &&
+            routeItem.component.trim() !== ""
+        ) {
+            return routeItem.component;
+        }
+
+        if (
+            typeof routeItem.loadComponent === "string" &&
+            routeItem.loadComponent.trim() !== ""
+        ) {
+            return this.resolveLazyComponentName(
+                routeItem.loadComponent,
+                filename,
+                routeItem.path,
+            );
+        }
+
+        return undefined;
+    }
+
+    private resolveDefaultChildComponentNameFromRoutes(
+        routeItems: any[],
+        filename: string,
+    ): string | undefined {
+        if (!Array.isArray(routeItems) || routeItems.length === 0) {
+            return undefined;
+        }
+
+        const defaultRouteItems = routeItems.filter(
+            (routeItem) =>
+                routeItem &&
+                typeof routeItem === "object" &&
+                routeItem.path === "",
+        );
+
+        for (const routeItem of defaultRouteItems) {
+            const componentName = this.resolveRouteItemComponentName(
+                routeItem,
+                filename,
+            );
+            if (componentName) {
+                return componentName;
+            }
+
+            if (Array.isArray(routeItem.children)) {
+                const nested = this.resolveDefaultChildComponentNameFromRoutes(
+                    routeItem.children,
+                    filename,
+                );
+                if (nested) {
+                    return nested;
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    private resolveLazyChildrenLandingComponentName(
+        loadChildren: string,
+        filename: string,
+    ): string | undefined {
+        if (!loadChildren || typeof loadChildren !== "string") {
+            return undefined;
+        }
+
+        const [importSpecifier, exportName] = loadChildren.split("#");
+
+        if (
+            exportName &&
+            exportName !== RouterParserUtil.DEFAULT_LAZY_EXPORT &&
+            exportName !== "undefined"
+        ) {
+            return undefined;
+        }
+
+        const resolvedFile = this.resolveImportSpecifierToFilePath(
+            importSpecifier,
+            filename,
+        );
+        if (!resolvedFile) {
+            return undefined;
+        }
+
+        const lazyRoute = this.findRouteByResolvedFilePath(resolvedFile);
+        if (!lazyRoute) {
+            return undefined;
+        }
+
+        try {
+            const parsedRoutes = JSON5.parse(lazyRoute.data);
+            if (!Array.isArray(parsedRoutes)) {
+                return undefined;
+            }
+            return this.resolveDefaultChildComponentNameFromRoutes(
+                parsedRoutes,
+                lazyRoute.filename || filename,
+            );
+        } catch {
+            return undefined;
+        }
     }
 
     public constructRoutesTree() {
@@ -881,25 +1085,14 @@ export class RouterParserUtil {
                             filename,
                         });
                     }
-                    if (!routeModuleName) {
-                        const inferredComponentName =
-                            this.inferComponentNameFromRoutePath(
-                                routeItem.path,
+                    if (!routeModuleName && !routeComponentName) {
+                        const landingComponentName =
+                            this.resolveLazyChildrenLandingComponentName(
+                                routeItem.loadChildren,
+                                filename,
                             );
-                        if (
-                            inferredComponentName &&
-                            isValidName(inferredComponentName)
-                        ) {
-                            routeComponentName = inferredComponentName;
-                            if (!routeItem.path) {
-                                validChildren.push({
-                                    name: inferredComponentName,
-                                    kind: "component",
-                                    component: inferredComponentName,
-                                    path: routeItem.path || "",
-                                    filename,
-                                });
-                            }
+                        if (landingComponentName && isValidName(landingComponentName)) {
+                            routeComponentName = landingComponentName;
                         }
                     }
                 }
@@ -1017,12 +1210,12 @@ export class RouterParserUtil {
 
                     // Extract component names with rigorous validation
                     const componentMatches = route.data.match(
-                        /"component"\s*:\s*"(\w+Component)"/g,
+                        /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/g,
                     );
                     if (componentMatches) {
                         for (const match of componentMatches) {
                             const componentNameMatch = match.match(
-                                /"component"\s*:\s*"(\w+Component)"/,
+                                /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/,
                             );
                             if (
                                 componentNameMatch &&

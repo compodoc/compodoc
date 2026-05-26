@@ -110,6 +110,60 @@ describe('CLI Routes graph', () => {
         });
     });
 
+    describe('should support standalone provideRouter with inline lazy routes and default export route files', () => {
+        before(function (done) {
+            tmp.create(distFolder);
+            const ls = shell('node', [
+                './bin/index-cli.js',
+                '-p',
+                './test/fixtures/standalone-provide-router-inline-lazy/tsconfig.app.json',
+                '-d',
+                distFolder
+            ]);
+
+            if (ls.stderr.toString() !== '') {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done('error');
+            }
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it('should extract routes from provideRouter inline arrays and default-export route files', () => {
+            const isFileExists = exists(`${distFolder}/js/routes/routes_index.js`);
+            expect(isFileExists).to.be.true;
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+
+            expect(file).to.contain('"name":"home"');
+            expect(file).to.contain('"name":"about"');
+            expect(file).to.contain('"name":"login"');
+            expect(file).to.contain('"name":"profile/:username"');
+            expect(file).to.contain('"name":"favorites"');
+            expect(file).to.contain('"kind":"route-redirect"');
+            expect(file).to.contain('"path":"**"');
+            expect(file).to.contain('"pathMatch":"full"');
+        });
+
+        it('should resolve default-export lazy component names without forcing Component suffix', () => {
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('"name":"login"');
+            expect(file).to.contain('"component":"Login"');
+            expect(file).not.to.contain('"component":"LoginComponent"');
+
+            expect(exists(`${distFolder}/components/Login.html`)).to.be.true;
+            expect(exists(`${distFolder}/components/LoginComponent.html`)).to.be.false;
+        });
+
+        it('should resolve loadChildren parent routes to real lazy landing components', () => {
+            const file = read(`${distFolder}/js/routes/routes_index.js`);
+            expect(file).to.contain('"name":"profile/:username"');
+            expect(file).to.contain('"name":"profile/:username","kind":"route-path","component":"Profile"');
+            expect(file).not.to.contain('"name":"profile/:username","kind":"route-path","component":"ProfileComponent"');
+            expect(exists(`${distFolder}/components/Profile.html`)).to.be.true;
+            expect(exists(`${distFolder}/components/ProfileComponent.html`)).to.be.false;
+        });
+    });
+
     describe('should support lazy-loaded modules with loadChildren syntax (containing possible trailing commas)', () => {
         before(function (done) {
             tmp.create(distFolder);

@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (d.component) {
                     _name +=
                         '<tspan x="0" dy="1.4em">' +
-                        wrapLabelWithLink(d.component, './components/' + d.component + '.html') +
+                        wrapLabelWithLink(d.component, nodeHref) +
                         '</tspan>';
                 } else if (d.name && d.name.includes('Component')) {
                     _name += '<tspan x="0" dy="1.4em">' + wrapLabelWithLink(d.name, nodeHref) + '</tspan>';
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (d.component) {
                     _name +=
                         '<tspan x="0" dy="1.4em">' +
-                        wrapLabelWithLink(d.component, './components/' + d.component + '.html') +
+                        wrapLabelWithLink(d.component, nodeHref) +
                         '</tspan>';
                 }
                 if (d.loadChildren) {
@@ -362,9 +362,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var area_ave = area_sum / nodes.length;
     var scale = 80 / Math.sqrt(area_ave);
+    var depthHorizontalSpacing = 40;
 
     function svg_x(node_y) {
         return node_y - ymin;
+    }
+
+    function projected_x(node) {
+        return svg_x(node.y) + (node.depth || 0) * depthHorizontalSpacing;
     }
 
     function svg_y(node_x) {
@@ -375,11 +380,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var nodebox_vertical_margin = Math.min(y_size_min * scale, 3);
 
     node.attr('transform', function (d) {
-        return 'translate(' + svg_x(d.y) + ',' + svg_y(d.x) + ')';
+        return 'translate(' + projected_x(d) + ',' + svg_y(d.x) + ')';
     });
 
     var diagonal = d3.svg.diagonal().projection(function (d) {
-        return [svg_x(d.y), svg_y(d.x)];
+        return [projected_x(d), svg_y(d.x)];
     });
 
     var links = engine.links(nodes);
