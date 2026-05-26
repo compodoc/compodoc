@@ -1143,7 +1143,7 @@ ul.index-list {
  */
 
 .package-dependencies .dependencies-table {
-    margin-bottom: 0;
+    width: inherit;
 }
 
 .deprecated {
