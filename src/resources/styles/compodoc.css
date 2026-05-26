@@ -250,6 +250,7 @@ a[href] {
  */
 
 #book-search-input {
+    position: relative;
     padding: 6px;
     transition: top 0.5s ease;
     background: #fff;
@@ -268,8 +269,28 @@ a[href] {
     box-shadow: none;
     outline: 0;
     line-height: 22px;
-    padding: 7px 7px;
+    padding: 7px 30px 7px 7px;
     color: inherit;
+}
+
+#book-search-input .search-input-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: #6c757d;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#book-search-input .search-input-clear.is-visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .panel-body {

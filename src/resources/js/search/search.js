@@ -8,6 +8,8 @@
         $searchTitle,
         $searchResultsCount,
         $searchQuery,
+        $searchInputs,
+        $searchClearButtons,
         $mainContainer,
         $xsMenu;
 
@@ -160,12 +162,44 @@
             $searchInputs.forEach((item, index) => {
                 item.value = '';
             });
+            syncSearchClearButtons();
+        });
+    }
+
+    function getSearchInputContainer(element) {
+        var current = element;
+        while (current && current !== document) {
+            if (current.id === 'book-search-input') {
+                return current;
+            }
+            current = current.parentNode;
+        }
+        return null;
+    }
+
+    function syncSearchClearButtons() {
+        if (!$searchInputs || !$searchClearButtons) {
+            return;
+        }
+
+        var hasValue = false;
+        $searchInputs.forEach((input) => {
+            if (input.value && input.value.length > 0) {
+                hasValue = true;
+            }
+        });
+
+        $searchClearButtons.forEach((button) => {
+            button.classList.toggle('is-visible', hasValue);
         });
     }
 
     function bindSearch() {
         // Bind DOM
         $searchInputs = document.querySelectorAll('#book-search-input input');
+        $searchClearButtons = document.querySelectorAll(
+            '#book-search-input [data-search-input-clear]'
+        );
 
         $searchResults = document.querySelector('.search-results');
         $searchList = $searchResults.querySelector('.search-results-list');
@@ -194,11 +228,13 @@
             // HTML5 (IE9 & others)
             item.addEventListener('input', function (e) {
                 handleUpdate(this);
+                syncSearchClearButtons();
             });
             // Workaround for IE < 9
             item.addEventListener('propertychange', function (e) {
                 if (e.originalEvent.propertyName == 'value') {
                     handleUpdate(this);
+                    syncSearchClearButtons();
                 }
             });
             // Push to history on blur
@@ -212,6 +248,31 @@
                 }
             });
         });
+
+        $searchClearButtons.forEach((button) => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                var container = getSearchInputContainer(this);
+                var containerInput = container ? container.querySelector('input') : null;
+                var nextValue = '';
+
+                $searchInputs.forEach((input) => {
+                    input.value = nextValue;
+                });
+
+                if (containerInput) {
+                    handleUpdate(containerInput);
+                    containerInput.focus();
+                } else if ($searchInputs.length > 0) {
+                    handleUpdate($searchInputs[0]);
+                }
+
+                syncSearchClearButtons();
+            });
+        });
+
+        syncSearchClearButtons();
     }
 
     function launchSearchFromQueryString() {
@@ -221,6 +282,7 @@
             $searchInputs.forEach((item, index) => {
                 item.value = q;
             });
+            syncSearchClearButtons();
             // Launch search
             launchSearch(q);
         }

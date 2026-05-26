@@ -129,6 +129,12 @@ describe("CLI simple generation - big app", () => {
         expect(index).to.contain('href="./styles/style.css"');
     });
 
+    it("should render a clear button in menu search input", () => {
+        const index = read(`${distFolder}/index.html`);
+        expect(index).to.contain('data-search-input-clear');
+        expect(index).to.contain('class="search-input-clear"');
+    });
+
     /**
      * Dynamic imports for metadatas
      */
