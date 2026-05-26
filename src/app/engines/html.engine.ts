@@ -46,6 +46,7 @@ export class HtmlEngine {
             'search-results',
             'search-input',
             'link-type',
+            'file-path',
             'block-method',
             'block-host-listener',
             'block-enum',

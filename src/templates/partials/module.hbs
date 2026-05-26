@@ -5,6 +5,8 @@
     {{/if}}>{{name}}</li>
 </ol>
 
+{{> file-path filePath=module.file }}
+
 {{#unless disableGraph}}
 {{#if module.graph }}
 <div class="text-center module-graph-container">
@@ -38,16 +40,7 @@
     {{#isTabEnabled navTabs "info"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "info"}}active in{{/isInitialTab}}" id="info">
 
-       {{#unless disableFilePath}}
-        <p class="comment">
-            <h3>{{t "file" }}</h3>
-        </p>
-        <p class="comment">
-            <code>{{module.file}}</code>
-        </p>
-        {{/unless}}
-
-        {{#if module.ngid}}
+       {{#if module.ngid}}
         <p class="comment">
             <h3>{{t "identifier" }}</h3>
         </p>

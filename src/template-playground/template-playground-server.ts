@@ -1323,13 +1323,6 @@ export class TemplatePlaygroundServer {
         Handlebars.registerPartial(
             'component-detail',
             `
-            <p class="comment">
-                <h3>{{t "file"}}</h3>
-            </p>
-            <p class="comment">
-                <code>{{component.file}}</code>
-            </p>
-
             {{#if component.description}}
                 <p class="comment">
                     <h3>{{t "description"}}</h3>
@@ -1458,6 +1451,19 @@ export class TemplatePlaygroundServer {
 
         Handlebars.registerPartial('index', '<!-- Index partial placeholder -->');
         Handlebars.registerPartial('link-type', '<code>{{type}}</code>');
+        Handlebars.registerPartial(
+            'file-path',
+            `
+            {{#unless disableFilePath}}
+            {{#if filePath}}
+            <div class="io-file io-file-path">
+                <span class="icon ion-ios-document" aria-hidden="true"></span>
+                <code>{{filePath}}</code>
+            </div>
+            {{/if}}
+            {{/unless}}
+        `
+        );
     }
 
     private generateCompodocHtml(data: any): string {
