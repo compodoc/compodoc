@@ -188,6 +188,15 @@ export class RouterParserUtil {
                 '$1"$2"',
             );
 
+        // Step 3d: Normalize CodeGenerator-emitted call-like tokens into plain strings.
+        //   "nonAuthGuard"() -> "nonAuthGuard()"
+        //   "provideX"("foo") -> "provideX("foo")"
+        // This prevents JSON5 parse failures for canMatch/providers arrays in routes.
+        cleaned = cleaned.replace(
+            /"([a-zA-Z_$][a-zA-Z0-9_$]*)"\(([^()]*)\)/g,
+            '"$1()"',
+        );
+
         // Step 3c: Expand object shorthand properties to key/value form.
         //   data:{flag,delay:2500} -> data:{flag:"flag",delay:2500}
         // JSON5 cannot parse object shorthand, so we normalize it here.
@@ -844,13 +853,15 @@ export class RouterParserUtil {
 
                 if (routeItem.component && isValidName(routeItem.component)) {
                     routeComponentName = routeItem.component;
-                    validChildren.push({
-                        name: routeItem.component,
-                        kind: "component",
-                        component: routeItem.component,
-                        path: routeItem.path || "",
-                        filename,
-                    });
+                    if (!routeItem.path) {
+                        validChildren.push({
+                            name: routeItem.component,
+                            kind: "component",
+                            component: routeItem.component,
+                            path: routeItem.path || "",
+                            filename,
+                        });
+                    }
                 }
                 if (routeItem.loadChildren) {
                     const lazyModuleName = this.foundLazyModuleWithPath(
@@ -880,13 +891,15 @@ export class RouterParserUtil {
                             isValidName(inferredComponentName)
                         ) {
                             routeComponentName = inferredComponentName;
-                            validChildren.push({
-                                name: inferredComponentName,
-                                kind: "component",
-                                component: inferredComponentName,
-                                path: routeItem.path || "",
-                                filename,
-                            });
+                            if (!routeItem.path) {
+                                validChildren.push({
+                                    name: inferredComponentName,
+                                    kind: "component",
+                                    component: inferredComponentName,
+                                    path: routeItem.path || "",
+                                    filename,
+                                });
+                            }
                         }
                     }
                 }
@@ -898,13 +911,15 @@ export class RouterParserUtil {
                     );
                     if (componentName && isValidName(componentName)) {
                         routeComponentName = componentName;
-                        validChildren.push({
-                            name: componentName,
-                            kind: "component",
-                            component: componentName,
-                            path: routeItem.path || "",
-                            filename,
-                        });
+                        if (!routeItem.path) {
+                            validChildren.push({
+                                name: componentName,
+                                kind: "component",
+                                component: componentName,
+                                path: routeItem.path || "",
+                                filename,
+                            });
+                        }
                     }
                 }
                 // Also capture simple string paths (e.g. routes from external files)
@@ -1121,11 +1136,44 @@ export class RouterParserUtil {
                 }
             }
 
+            const normalizeRoutePath = (value: string): string =>
+                String(value || "").replace(/^\//, "").trim();
+
+            const deduplicatedChildren = validChildren.filter((child) => {
+                if (
+                    child.kind !== "component" ||
+                    !isValidName(child.component || child.name) ||
+                    !isValidName(child.path)
+                ) {
+                    return true;
+                }
+
+                const componentName = child.component || child.name;
+                const componentPath = normalizeRoutePath(child.path);
+
+                return !validChildren.some((otherChild) => {
+                    if (otherChild.kind !== "route-path") {
+                        return false;
+                    }
+
+                    const otherPath = normalizeRoutePath(
+                        otherChild.path || otherChild.name,
+                    );
+                    const otherComponent = otherChild.component;
+
+                    return (
+                        isValidName(otherComponent) &&
+                        otherComponent === componentName &&
+                        otherPath === componentPath
+                    );
+                });
+            });
+
             const routesTree = {
                 name: "<root>",
                 kind: "module",
                 className: this.rootModule,
-                children: validChildren,
+                children: deduplicatedChildren,
             };
 
             return routesTree;

@@ -610,6 +610,30 @@ export class AngularDependencies extends FrameworkDependencies {
                     .update(sourceCode)
                     .digest("hex");
 
+                const routeIO = this.getRouteIO(file, srcFile, node);
+                if (routeIO.routes) {
+                    let newRoutes;
+                    try {
+                        newRoutes = RouterParserUtil.cleanRawRouteParsed(
+                            routeIO.routes,
+                        );
+                    } catch (e) {
+                        logger.error(
+                            "Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.",
+                        );
+                        newRoutes = routeIO.routes.replace(/ /gm, "");
+                        RouterParserUtil.addIncompleteRoute({
+                            data: newRoutes,
+                            file: file,
+                        });
+                        return true;
+                    }
+                    outputSymbols.routes = [
+                        ...outputSymbols.routes,
+                        ...newRoutes,
+                    ];
+                }
+
                 if (nodeHasDecorator(node)) {
                     let classWithCustomDecorator = false;
                     const nodeDecorators = getNodeDecorators(node);
@@ -1180,30 +1204,6 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     }
                 } else {
-                    const IO = this.getRouteIO(file, srcFile, node);
-                    if (IO.routes) {
-                        let newRoutes;
-                        try {
-                            newRoutes = RouterParserUtil.cleanRawRouteParsed(
-                                IO.routes,
-                            );
-                        } catch (e) {
-                            // tslint:disable-next-line:max-line-length
-                            logger.error(
-                                "Routes parsing error, maybe a trailing comma or an external variable, trying to fix that later after sources scanning.",
-                            );
-                            newRoutes = IO.routes.replace(/ /gm, "");
-                            RouterParserUtil.addIncompleteRoute({
-                                data: newRoutes,
-                                file: file,
-                            });
-                            return true;
-                        }
-                        outputSymbols.routes = [
-                            ...outputSymbols.routes,
-                            ...newRoutes,
-                        ];
-                    }
                     if (ts.isClassDeclaration(node)) {
                         this.processClass(
                             node,
@@ -2376,6 +2376,130 @@ export class AngularDependencies extends FrameworkDependencies {
         return [];
     }
 
+    private unwrapRoutesExpression(
+        expression: ts.Expression | undefined,
+    ): ts.Expression | undefined {
+        let current = expression;
+        while (current) {
+            if (ts.isAsExpression(current)) {
+                current = current.expression;
+                continue;
+            }
+            if (ts.isParenthesizedExpression(current)) {
+                current = current.expression;
+                continue;
+            }
+            if (ts.isTypeAssertionExpression(current)) {
+                current = current.expression;
+                continue;
+            }
+            if (
+                (ts as any).isSatisfiesExpression &&
+                (ts as any).isSatisfiesExpression(current)
+            ) {
+                current = (current as any).expression;
+                continue;
+            }
+            break;
+        }
+        return current;
+    }
+
+    private findRoutesVariableInitializer(
+        sourceFile: ts.SourceFile,
+        variableName: string,
+    ): ts.Expression | undefined {
+        for (const statement of sourceFile.statements) {
+            if (!ts.isVariableStatement(statement)) {
+                continue;
+            }
+            for (const declaration of statement.declarationList.declarations) {
+                if (
+                    ts.isIdentifier(declaration.name) &&
+                    declaration.name.text === variableName
+                ) {
+                    return declaration.initializer;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private findProvideRouterCallInStatement(
+        statement: ts.Statement,
+    ): ts.CallExpression | undefined {
+        let foundCall: ts.CallExpression | undefined;
+        const visit = (node: ts.Node) => {
+            if (foundCall) {
+                return;
+            }
+            if (
+                ts.isCallExpression(node) &&
+                ts.isIdentifier(node.expression) &&
+                node.expression.text === "provideRouter"
+            ) {
+                foundCall = node;
+                return;
+            }
+            ts.forEachChild(node, visit);
+        };
+        visit(statement);
+        return foundCall;
+    }
+
+    private extractRoutesFromStatement(
+        filename: string,
+        sourceFile: ts.SourceFile,
+        statement: ts.Statement,
+    ): any[] {
+        const routes: any[] = [];
+
+        if (RouterParserUtil.isVariableRoutes(statement)) {
+            return this.visitEnumDeclarationForRoutes(filename, statement);
+        }
+
+        if (ts.isExportAssignment(statement)) {
+            const unwrappedExport = this.unwrapRoutesExpression(
+                statement.expression,
+            );
+            if (unwrappedExport && ts.isArrayLiteralExpression(unwrappedExport)) {
+                const data = new CodeGenerator().generate(unwrappedExport);
+                RouterParserUtil.addRoute({
+                    name: "__default_routes__",
+                    data: RouterParserUtil.cleanRawRoute(data),
+                    filename,
+                });
+                routes.push({ routes: data });
+                return routes;
+            }
+        }
+
+        const provideRouterCall = this.findProvideRouterCallInStatement(statement);
+        if (provideRouterCall && provideRouterCall.arguments.length > 0) {
+            let firstArg = this.unwrapRoutesExpression(provideRouterCall.arguments[0]);
+
+            if (firstArg && ts.isIdentifier(firstArg)) {
+                const variableInitializer = this.findRoutesVariableInitializer(
+                    sourceFile,
+                    firstArg.text,
+                );
+                firstArg = this.unwrapRoutesExpression(variableInitializer);
+            }
+
+            if (firstArg && ts.isArrayLiteralExpression(firstArg)) {
+                const data = new CodeGenerator().generate(firstArg);
+                RouterParserUtil.addRoute({
+                    name: "__provide_router_routes__",
+                    data: RouterParserUtil.cleanRawRoute(data),
+                    filename,
+                });
+                routes.push({ routes: data });
+            }
+        }
+
+        return routes;
+    }
+
     private getRouteIO(
         filename: string,
         sourceFile: ts.SourceFile,
@@ -2384,18 +2508,17 @@ export class AngularDependencies extends FrameworkDependencies {
         let res;
         if (sourceFile.statements) {
             res = sourceFile.statements.reduce((directive, statement) => {
-                if (RouterParserUtil.isVariableRoutes(statement)) {
-                    if (
-                        statement.pos === node.pos &&
-                        statement.end === node.end
-                    ) {
-                        return directive.concat(
-                            this.visitEnumDeclarationForRoutes(
-                                filename,
-                                statement,
-                            ),
-                        );
-                    }
+                if (
+                    statement.pos === node.pos &&
+                    statement.end === node.end
+                ) {
+                    return directive.concat(
+                        this.extractRoutesFromStatement(
+                            filename,
+                            sourceFile,
+                            statement,
+                        ),
+                    );
                 }
 
                 return directive;

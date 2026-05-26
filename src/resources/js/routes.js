@@ -277,10 +277,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (d.canLoad) {
                     _name += '<tspan x="0" dy="1.4em">&#8594; canLoad</tspan>';
                 }
-                if (d.redirectTo) {
+                if (d.kind !== 'route-redirect' && d.redirectTo) {
                     _name += '<tspan x="0" dy="1.4em">&rarr; ' + d.redirectTo + '</tspan>';
                 }
-                if (d.pathMatch) {
+                if (d.kind !== 'route-redirect' && d.pathMatch) {
                     _name += '<tspan x="0" dy="1.4em">&gt; ' + d.pathMatch + '</tspan>';
                 }
                 if (d.outlet) {
