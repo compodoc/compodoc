@@ -7,7 +7,7 @@
                     <ul class="index-list">
                     {{#each list}}
                         <li>
-                            <a href="#{{name}}" title="{{file}}" {{#if deprecated}}class="deprecated-name"{{/if}}><b>{{name}}</b>&nbsp;&nbsp;&nbsp;({{short-url file}})</a>
+                            <a href="#{{name}}" title="{{file}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}">{{#if ../refLetter}}<span class="reference-badge{{#if ../refKind}} reference-badge--{{../refKind}}{{/if}}" aria-hidden="true">{{../refLetter}}</span>{{/if}}<span class="reference-link-label"><b>{{name}}</b>&nbsp;&nbsp;&nbsp;({{short-url file}})</span></a>
                         </li>
                     {{/each}}
                     </ul>

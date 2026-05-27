@@ -11,23 +11,83 @@ import Configuration from '../../configuration';
 export class LinkTypeHelper implements IHtmlEngineHelper {
     constructor() {}
 
+    private normalizeTypeName(name: any): any {
+        if (typeof name === 'string') {
+            return name.trim();
+        }
+        return name;
+    }
+
+    private getReferenceBadge(resultData: any, source?: string): { letter: string; kind: string } {
+        if (source && source !== 'internal') {
+            return { letter: 'A', kind: 'angular' };
+        }
+
+        const subtype = resultData?.subtype;
+        if (subtype === 'enum') {
+            return { letter: 'E', kind: 'enum' };
+        }
+        if (subtype === 'function') {
+            return { letter: 'F', kind: 'function' };
+        }
+        if (subtype === 'typealias' || subtype === 'type-alias') {
+            return { letter: 'T', kind: 'typealias' };
+        }
+        if (subtype === 'variable') {
+            return { letter: 'V', kind: 'variable' };
+        }
+
+        const kind = resultData?.type;
+        if (kind === 'interface') {
+            return { letter: 'I', kind: 'interface' };
+        }
+        if (
+            kind === 'class' ||
+            kind === 'component' ||
+            kind === 'directive' ||
+            kind === 'injectable' ||
+            kind === 'interceptor' ||
+            kind === 'controller' ||
+            kind === 'guard' ||
+            kind === 'pipe' ||
+            kind === 'entity'
+        ) {
+            return { letter: 'C', kind: 'class' };
+        }
+        if (kind === 'enum') {
+            return { letter: 'E', kind: 'enum' };
+        }
+        if (kind === 'function') {
+            return { letter: 'F', kind: 'function' };
+        }
+        if (kind === 'typealias' || kind === 'type-alias') {
+            return { letter: 'T', kind: 'typealias' };
+        }
+        if (kind === 'variable') {
+            return { letter: 'V', kind: 'variable' };
+        }
+
+        return { letter: '', kind: '' };
+    }
+
     public helperFunc(context: any, name: string, options: IHandlebarsOptions) {
-        let _result = DependenciesEngine.find(name);
+        const normalizedName = this.normalizeTypeName(name);
+        let _result = DependenciesEngine.find(normalizedName);
         // Find in aliases ?
         if (!_result) {
-            const potentialAlias = ExtendsMerger.findInAliases(name);
+            const potentialAlias = ExtendsMerger.findInAliases(normalizedName);
             if (potentialAlias) {
                 _result = DependenciesEngine.find(potentialAlias);
             }
         }
 
-        const angularDocPrefix = AngularVersionUtil.prefixOfficialDoc(
-            Configuration.mainData.angularVersion
-        );
         if (_result) {
+            const refBadge = this.getReferenceBadge(_result.data, _result.source);
             context.type = {
-                raw: name,
-                indexKey: ''
+                raw: normalizedName,
+                indexKey: '',
+                refBadge: refBadge.letter,
+                refBadgeKind: refBadge.kind
             };
             if (_result.source === 'internal') {
                 if (_result.data.type === 'class') {
@@ -66,18 +126,21 @@ export class LinkTypeHelper implements IHtmlEngineHelper {
                 }
                 context.type.target = '_self';
             } else {
-                context.type.href = `https://${angularDocPrefix}angular.io/${_result.data.path}`;
+                context.type.href = AngularVersionUtil.getApiLink(
+                    _result.data,
+                    Configuration.mainData.angularVersion
+                );
                 context.type.target = '_blank';
             }
 
             return options.fn(context);
-        } else if (BasicTypeUtil.isKnownType(name)) {
+        } else if (BasicTypeUtil.isKnownType(normalizedName)) {
             context.type = {
-                raw: name,
+                raw: normalizedName,
                 indexKey: ''
             };
             context.type.target = '_blank';
-            context.type.href = BasicTypeUtil.getTypeUrl(name);
+            context.type.href = BasicTypeUtil.getTypeUrl(normalizedName);
             return options.fn(context);
         } else {
             return options.inverse(context);

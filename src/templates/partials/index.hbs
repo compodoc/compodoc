@@ -18,7 +18,7 @@
                                 {{#if optional}}
                                     <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -47,7 +47,7 @@
                                 {{#if optional}}
                                     <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--method" aria-hidden="true">M</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -70,7 +70,7 @@
                         <ul class="index-list">
                         {{#each inputs}}
                             <li>
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -93,7 +93,7 @@
                         <ul class="index-list">
                         {{#each outputs}}
                             <li>
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -116,7 +116,7 @@
                         <ul class="index-list">
                         {{#each hostBindings}}
                             <li>
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -139,7 +139,7 @@
                         <ul class="index-list">
                         {{#each hostListeners}}
                             <li>
-                                <a href="#{{name}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{name}}</a>
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--method" aria-hidden="true">M</span><span class="reference-link-label">{{name}}</span></a>
                             </li>
                         {{/each}}
                         </ul>
@@ -165,7 +165,7 @@
                                 {{#each modifierKind}}
                                     <span class="modifier">{{modifKind this}}</span>
                                 {{/each}}
-                                <a href="#{{@key}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{@key}}</a>
+                                <a href="#{{@key}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}"><span class="reference-badge reference-badge--accessor" aria-hidden="true">A</span><span class="reference-link-label">{{@key}}</span></a>
                             </li>
                         {{/each}}
                         </ul>

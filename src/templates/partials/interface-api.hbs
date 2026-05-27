@@ -16,15 +16,12 @@
                                 {{#if optional}}
                                     <span class="modifier">{{t "optional" }}</span>
                                 {{/if}}
-                                <a href="#{{name}}" 
-                                    {{#if deprecated}}
-                                        class="deprecated-name"
-                                    {{/if}}>
-                                    {{name}}
+                                <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{name}}</span>
                                 </a>
                             {{else}}
                                 {{#if id}}
-                                    <a href="#{{id}}">{{t "unamed-property" }}</a>
+                                    <a href="#{{id}}" class="reference-link"><span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">{{t "unamed-property" }}</span></a>
                                 {{/if}}
                             {{/if}}
                         </li>
@@ -52,11 +49,8 @@
                             {{#if optional}}
                                 <span class="modifier">{{t "optional" }}</span>
                             {{/if}}
-                            <a href="#{{name}}" 
-                                {{#if deprecated}}
-                                    class="deprecated-name"
-                                {{/if}}>
-                                {{name}}
+                            <a href="#{{name}}" class="reference-link {{#if deprecated}}deprecated-name{{/if}}">
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span><span class="reference-link-label">{{name}}</span>
                             </a>
                         </li>
                     {{/each}}

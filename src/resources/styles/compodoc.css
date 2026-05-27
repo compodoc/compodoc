@@ -925,6 +925,99 @@ th[role="columnheader"].statements:not(.no-sort):after {
     display: none;
 }
 
+.reference-badge {
+    --reference-color-ts: #9600ff;
+    --reference-color-ts-interface: #647f1b;
+    --reference-color-ts-enum: #937210;
+    --reference-color-ts-class: #0672de;
+    --reference-color-angular: #dd0031;
+    --reference-color-ts-private: #707070;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 999px;
+    background: #6f7b88;
+    color: #fff;
+    font-size: 0.72em;
+    font-weight: 700;
+    line-height: 1;
+    margin-right: 0.75em;
+    vertical-align: middle;
+}
+
+a .reference-badge {
+    text-decoration: none;
+}
+
+.reference-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28em;
+}
+
+.reference-link-label {
+    line-height: 1.2;
+}
+
+.reference-badge--method {
+    background: var(--reference-color-ts-class);
+}
+
+.reference-badge--property {
+    background: var(--reference-color-ts-class);
+}
+
+.reference-badge--constructor {
+    background: var(--reference-color-ts-class);
+}
+
+.reference-badge--accessor {
+    background: var(--reference-color-ts-class);
+}
+
+.reference-badge--variable {
+    background: var(--reference-color-ts);
+}
+
+.reference-badge--interface {
+    background: var(--reference-color-ts-interface);
+}
+
+.reference-badge--function {
+    background: var(--reference-color-ts);
+}
+
+.reference-badge--enum {
+    background: var(--reference-color-ts-enum);
+}
+
+.reference-badge--typealias {
+    background: var(--reference-color-ts);
+}
+
+.reference-badge--class {
+    background: var(--reference-color-ts-class);
+}
+
+.reference-badge--angular {
+    background: var(--reference-color-angular);
+}
+
+.dark .reference-badge {
+    --reference-color-ts: #c97dff;
+    --reference-color-ts-interface: #9cbe3c;
+    --reference-color-ts-enum: #d6ab29;
+    --reference-color-ts-class: #3695f3;
+    --reference-color-angular: #dd0031;
+    --reference-color-ts-private: #e2e2e2;
+}
+
+.dark .reference-badge--enum {
+    color: #2f3136;
+}
+
 .modifier-icon {
     color: #c7254e;
 }

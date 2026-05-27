@@ -1458,6 +1458,10 @@ export class TemplatePlaygroundServer {
         );
         Handlebars.registerPartial('link-type', '<code>{{type}}</code>');
         Handlebars.registerPartial(
+            'reference-badge',
+            '<span class="reference-badge" aria-hidden="true">{{letter}}</span>'
+        );
+        Handlebars.registerPartial(
             'file-path',
             `
             {{#unless disableFilePath}}

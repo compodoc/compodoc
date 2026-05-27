@@ -108,6 +108,14 @@ describe('CLI Routes graph', () => {
             const file = read(`${distFolder}/js/routes/routes_index.js`);
             expect(file).to.contain('StandaloneHomeComponent');
         });
+
+        it('should display a non-zero routes count in overview', () => {
+            const overviewFile = read(`${distFolder}/overview.html`);
+            const routeCountMatch = overviewFile.match(/href="\.\/routes\.html">(\d+)\s/);
+
+            expect(routeCountMatch).to.not.equal(null);
+            expect(Number(routeCountMatch![1])).to.be.greaterThan(0);
+        });
     });
 
     describe('should support standalone provideRouter with inline lazy routes and default export route files', () => {

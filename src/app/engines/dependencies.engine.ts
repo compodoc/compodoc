@@ -27,6 +27,10 @@ import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
 const traverse = require('neotraverse/legacy');
 
 export class DependenciesEngine {
+    private static readonly angularApiAliases: { [name: string]: string[] } = {
+        NgFor: ['NgForOf']
+    };
+
     public rawData: ParsedData;
     public modules: Object[];
     public rawModules: Object[];
@@ -328,33 +332,40 @@ export class DependenciesEngine {
     }
 
     public find(name: string): IApiSourceResult<any> | undefined {
-        const searchFunctions: Array<() => IApiSourceResult<any>> = [
-            () => this.findInCompodocDependencies(name, this.modules),
-            () => this.findInCompodocDependencies(name, this.injectables),
-            () => this.findInCompodocDependencies(name, this.interceptors),
-            () => this.findInCompodocDependencies(name, this.guards),
-            () => this.findInCompodocDependencies(name, this.interfaces),
-            () => this.findInCompodocDependencies(name, this.classes),
-            () => this.findInCompodocDependencies(name, this.components),
-            () => this.findInCompodocDependencies(name, this.controllers),
-            () => this.findInCompodocDependencies(name, this.entities),
-            () => this.findInCompodocDependencies(name, this.directives),
-            () => this.findInCompodocDependencies(name, this.miscellaneous.variables),
-            () => this.findInCompodocDependencies(name, this.miscellaneous.functions),
-            () => this.findInCompodocDependencies(name, this.miscellaneous.typealiases),
-            () => this.findInCompodocDependencies(name, this.miscellaneous.enumerations),
-            () => AngularApiUtil.findApi(name)
-        ];
+        const normalizedName = typeof name === 'string' ? name.trim() : name;
+        const namesToResolve = [normalizedName];
+        if (DependenciesEngine.angularApiAliases[normalizedName]) {
+            namesToResolve.push(...DependenciesEngine.angularApiAliases[normalizedName]);
+        }
 
         let bestScore = 0;
         let bestResult = undefined;
 
-        for (let searchFunction of searchFunctions) {
-            const result = searchFunction();
+        for (const resolvedName of namesToResolve) {
+            const searchFunctions: Array<() => IApiSourceResult<any>> = [
+                () => this.findInCompodocDependencies(resolvedName, this.modules),
+                () => this.findInCompodocDependencies(resolvedName, this.injectables),
+                () => this.findInCompodocDependencies(resolvedName, this.interceptors),
+                () => this.findInCompodocDependencies(resolvedName, this.guards),
+                () => this.findInCompodocDependencies(resolvedName, this.interfaces),
+                () => this.findInCompodocDependencies(resolvedName, this.classes),
+                () => this.findInCompodocDependencies(resolvedName, this.components),
+                () => this.findInCompodocDependencies(resolvedName, this.controllers),
+                () => this.findInCompodocDependencies(resolvedName, this.entities),
+                () => this.findInCompodocDependencies(resolvedName, this.directives),
+                () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.variables),
+                () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.functions),
+                () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.typealiases),
+                () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.enumerations),
+                () => AngularApiUtil.findApi(resolvedName)
+            ];
 
-            if (result.data && result.score > bestScore) {
-                bestScore = result.score;
-                bestResult = result;
+            for (let searchFunction of searchFunctions) {
+                const result = searchFunction();
+                if (result.data && result.score > bestScore) {
+                    bestScore = result.score;
+                    bestResult = result;
+                }
             }
         }
 
