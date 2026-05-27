@@ -26,6 +26,12 @@
     </div>
     {{/isTabEnabled}}
 
+    {{#isTabEnabled navTabs "api"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
+        {{~> component-api component=component ~}}
+    </div>
+    {{/isTabEnabled}}
+
     {{#isTabEnabled navTabs "readme"}}
     <div class="tab-pane fade {{#isInitialTab navTabs "readme"}}active in{{/isInitialTab}}" id="readme">
         <p>{{{component.readme}}}</p>

@@ -82,6 +82,7 @@ export class HbsRenderService {
       // Simple translation mapping for preview
       const translations: { [key: string]: string } = {
         'info': 'Information',
+        'api': 'API',
         'source': 'Source',
         'example': 'Example',
         'template': 'Template',
@@ -97,7 +98,10 @@ export class HbsRenderService {
         'properties': 'Properties',
         'methods': 'Methods',
         'inputs': 'Inputs',
-        'outputs': 'Outputs'
+        'outputs': 'Outputs',
+        'relationships': 'Relationships',
+        'relationships-used-by': 'Used by',
+        'relationships-depends-on': 'Depends on'
       };
       return translations[key] || key;
     });
@@ -204,6 +208,7 @@ export class HbsRenderService {
       ],
       navTabs: [
         { id: 'info', label: 'Info', href: '#info' },
+        { id: 'api', label: 'API', href: '#api' },
         { id: 'source', label: 'Source', href: '#source' },
         { id: 'example', label: 'Example', href: '#example' }
       ]

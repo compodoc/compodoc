@@ -8,6 +8,24 @@ export const COMPODOC_CONSTANTS = {
             depTypes: ['all']
         },
         {
+            id: 'api',
+            href: '#api',
+            'data-link': 'api',
+            label: 'API',
+            depTypes: [
+                'component',
+                'directive',
+                'injectable',
+                'pipe',
+                'class',
+                'interface',
+                'guard',
+                'interceptor',
+                'entity',
+                'controller'
+            ]
+        },
+        {
             id: 'readme',
             href: '#readme',
             'data-link': 'readme',

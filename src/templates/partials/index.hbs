@@ -1,16 +1,14 @@
 <section data-compodoc="block-index">
     <h3 id="index">{{t "index" }}</h3>
-    <table class="table table-sm table-bordered index-table">
-        <tbody>
-            {{#if properties}}
-                {{#compare properties.length ">" 0}}
+    {{#if properties}}
+        {{#compare properties.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "properties" }}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each properties}}
                             <li>
@@ -26,18 +24,20 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if methods}}
-                {{#compare methods.length ">" 0}}
+    {{#if methods}}
+        {{#compare methods.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "methods" }}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each methods}}
                             <li>
@@ -53,18 +53,20 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if inputs}}
-                {{#compare inputs.length ">" 0}}
+    {{#if inputs}}
+        {{#compare inputs.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "inputs" }}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each inputs}}
                             <li>
@@ -74,18 +76,20 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if outputs}}
-                {{#compare outputs.length ">" 0}}
+    {{#if outputs}}
+        {{#compare outputs.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "outputs" }}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each outputs}}
                             <li>
@@ -95,18 +99,20 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if hostBindings}}
-                {{#compare hostBindings.length ">" 0}}
+    {{#if hostBindings}}
+        {{#compare hostBindings.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "hostbindings"}}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each hostBindings}}
                             <li>
@@ -116,18 +122,20 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if hostListeners}}
-                {{#compare hostListeners.length ">" 0}}
+    {{#if hostListeners}}
+        {{#compare hostListeners.length ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
                 <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-3">
                         <h6><b>{{t "hostlisteners"}}</b></h6>
                     </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
+                    <td class="col-md-9">
                         <ul class="index-list">
                         {{#each hostListeners}}
                             <li>
@@ -137,32 +145,34 @@
                         </ul>
                     </td>
                 </tr>
-                {{/compare}}
-            {{/if}}
+            </tbody>
+        </table>
+        {{/compare}}
+    {{/if}}
 
-            {{#if accessors}}
-                {{#objectLength accessors ">" 0}}
-                    <tr>
-                        <td class="col-md-4">
-                            <h6><b>{{t "accessors" }}</b></h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <ul class="index-list">
-                            {{#each accessors}}
-                                <li>
-                                    {{#each modifierKind}}
-                                        <span class="modifier">{{modifKind this}}</span>
-                                    {{/each}}
-                                    <a href="#{{@key}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{@key}}</a>
-                                </li>
-                            {{/each}}
-                            </ul>
-                        </td>
-                    </tr>
-                {{/objectLength}}
-            {{/if}}
-        </tbody>
-    </table>
+    {{#if accessors}}
+        {{#objectLength accessors ">" 0}}
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>{{t "accessors" }}</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                        {{#each accessors}}
+                            <li>
+                                {{#each modifierKind}}
+                                    <span class="modifier">{{modifKind this}}</span>
+                                {{/each}}
+                                <a href="#{{@key}}" {{#if deprecated}}class="deprecated-name"{{/if}}>{{@key}}</a>
+                            </li>
+                        {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {{/objectLength}}
+    {{/if}}
 </section>

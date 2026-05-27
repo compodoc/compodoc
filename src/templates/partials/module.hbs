@@ -194,6 +194,8 @@
             </div>
         </div>
 
+        {{> block-relationships relationships=module.relationships }}
+
         {{#if module.methods}}
         {{> block-method methods=module.methods file=module.file }}
         {{/if}}

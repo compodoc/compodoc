@@ -141,6 +141,13 @@
         </section>
         {{/orLength}}
 
+        {{> block-relationships relationships=directive.relationships }}
+
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "api"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
         {{#orLength directive.propertiesClass directive.methodsClass directive.inputsClass directive.outputClass directive.hostBindings directive.hostListeners directive.accessors}}
             {{> index methods=directive.methodsClass properties=directive.propertiesClass inputs=directive.inputsClass outputs=directive.outputsClass hostBindings=directive.hostBindings hostListeners=directive.hostListeners accessors=directive.accessors }}
         {{/orLength}}
@@ -176,7 +183,6 @@
         {{#if directive.accessors}}
             {{> block-accessors accessors=directive.accessors file=directive.file }}
         {{/if}}
-
     </div>
     {{/isTabEnabled}}
 

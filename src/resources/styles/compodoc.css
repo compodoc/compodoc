@@ -230,6 +230,10 @@ a[href] {
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .content-data .tab-content {
@@ -247,6 +251,15 @@ a[href] {
 .content-data .exampleContainer {
     height: 100%;
     width: 100%;
+}
+
+.relationships-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.relationships-list li {
+    list-style: none;
 }
 
 /**
@@ -1095,10 +1108,14 @@ table.params td p {
 ul.index-list {
     list-style: none;
     padding: 0;
-    column-gap: 20px;
-    column-count: 3;
+    column-gap: 0;
+    column-count: 1;
     line-height: 25px;
     margin-bottom: 0;
+}
+
+section[data-compodoc="block-index"] + section {
+    margin-top: 50px;
 }
 
 .no-graph {
@@ -1115,6 +1132,10 @@ ul.index-list {
 
 .name:hover a {
     display: inline-block;
+}
+
+.link-to-prism {
+    opacity: 0.9;
 }
 
 .accessor b {

@@ -1328,6 +1328,8 @@ export class Application {
                         Configuration.mainData.modules[i].readme =
                             markedAcl(readme);
                     }
+                    Configuration.mainData.modules[i].relationships =
+                        this.getRelationships(Configuration.mainData.modules[i]);
                     Configuration.addPage({
                         path: "modules",
                         name: Configuration.mainData.modules[i].name,
@@ -1371,6 +1373,7 @@ export class Application {
                         );
                         pipe.readme = markedAcl(readme);
                     }
+                    pipe.relationships = this.getRelationships(pipe);
                     const page = {
                         path: "pipes",
                         name: pipe.name,
@@ -1416,6 +1419,7 @@ export class Application {
                         );
                         classe.readme = markedAcl(readme);
                     }
+                    classe.relationships = this.getRelationships(classe);
                     const page = {
                         path: "classes",
                         name: classe.name,
@@ -1461,6 +1465,7 @@ export class Application {
                         );
                         interf.readme = markedAcl(readme);
                     }
+                    interf.relationships = this.getRelationships(interf);
                     const page = {
                         path: "interfaces",
                         name: interf.name,
@@ -1603,6 +1608,46 @@ export class Application {
         );
     }
 
+    private getRelationships(dependency: any): {
+        incoming: Array<{ name: string; type: string; description?: string }>;
+        outgoing: Array<{ name: string; type: string; description?: string }>;
+    } {
+        if (!dependency?.name) {
+            return { incoming: [], outgoing: [] };
+        }
+        return DependenciesEngine.getRelationships(dependency);
+    }
+
+    private hasApiSections(dependency: any): boolean {
+        if (!dependency) {
+            return false;
+        }
+
+        const candidates = [
+            dependency.constructorObj,
+            dependency.inputsClass,
+            dependency.outputsClass,
+            dependency.hostBindings,
+            dependency.hostListeners,
+            dependency.methodsClass,
+            dependency.propertiesClass,
+            dependency.accessors,
+            dependency.properties,
+            dependency.methods,
+            dependency.indexSignatures
+        ];
+
+        return candidates.some((entry) => {
+            if (!entry) {
+                return false;
+            }
+            if (Array.isArray(entry)) {
+                return entry.length > 0;
+            }
+            return true;
+        });
+    }
+
     private getNavTabs(dependency): Array<any> {
         let navTabConfig = Configuration.mainData.navTabConfig;
         const hasCustomNavTabConfig = navTabConfig.length !== 0;
@@ -1682,6 +1727,9 @@ export class Application {
             ) {
                 return;
             }
+            if (customTab.id === "api" && !this.hasApiSections(dependency)) {
+                return;
+            }
 
             navTabs.push(navTab);
         });
@@ -1706,6 +1754,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             const loop = () => {
                 if (i < len) {
                     const controller = Configuration.mainData.controllers[i];
+                    controller.relationships = this.getRelationships(controller);
                     const page = {
                         path: "controllers",
                         name: controller.name,
@@ -1742,6 +1791,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             const loop = () => {
                 if (i < len) {
                     let entity = Configuration.mainData.entities[i];
+                    entity.relationships = this.getRelationships(entity);
                     let page = {
                         path: "entities",
                         name: entity.name,
@@ -1793,6 +1843,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
                                 );
                             component.readme = markedAcl(readmeFile);
                         }
+                        component.relationships = this.getRelationships(component);
                         const page = {
                             path: "components",
                             name: component.name,
@@ -1906,6 +1957,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i < len) {
                     let directive = Configuration.mainData.directives[i];
+                    directive.relationships = this.getRelationships(directive);
                     if (MarkdownEngine.hasNeighbourReadmeFile(directive.file)) {
                         logger.info(
                             ` ${directive.name} has a README file, include it`,
@@ -1952,6 +2004,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             let loop = () => {
                 if (i < len) {
                     let injec = Configuration.mainData.injectables[i];
+                    injec.relationships = this.getRelationships(injec);
                     if (MarkdownEngine.hasNeighbourReadmeFile(injec.file)) {
                         logger.info(
                             ` ${injec.name} has a README file, include it`,
@@ -1998,6 +2051,8 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             const loop = () => {
                 if (i < len) {
                     const interceptor = Configuration.mainData.interceptors[i];
+                    interceptor.relationships =
+                        this.getRelationships(interceptor);
                     if (
                         MarkdownEngine.hasNeighbourReadmeFile(interceptor.file)
                     ) {
@@ -2046,6 +2101,7 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
             const loop = () => {
                 if (i < len) {
                     const guard = Configuration.mainData.guards[i];
+                    guard.relationships = this.getRelationships(guard);
                     if (MarkdownEngine.hasNeighbourReadmeFile(guard.file)) {
                         logger.info(
                             ` ${guard.name} has a README file, include it`,

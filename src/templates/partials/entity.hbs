@@ -54,6 +54,12 @@
             </div>
         {{/if}}
 
+        {{> block-relationships relationships=entity.relationships }}
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "api"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
         {{#orLength entity.properties}}
             {{> index properties=entity.properties}}
         {{/orLength}}

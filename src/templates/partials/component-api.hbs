@@ -1,0 +1,35 @@
+{{#orLength component.propertiesClass component.methodsClass component.inputsClass component.outputClass component.hostBindings component.hostListeners component.accessors}}
+    {{> index methods=component.methodsClass properties=component.propertiesClass inputs=component.inputsClass outputs=component.outputsClass hostBindings=component.hostBindings hostListeners=component.hostListeners accessors=component.accessors}}
+{{/orLength}}
+
+{{#if component.constructorObj}}
+    {{> block-constructor constructor=component.constructorObj file=component.file }}
+{{/if}}
+
+{{#if component.inputsClass}}
+    {{> block-input element=component file=component.file }}
+{{/if}}
+
+{{#if component.outputsClass}}
+    {{> block-output element=component file=component.file }}
+{{/if}}
+
+{{#if component.hostBindings}}
+    {{> block-property properties=component.hostBindings file=component.file title="HostBindings" }}
+{{/if}}
+
+{{#if component.hostListeners}}
+    {{> block-method methods=component.hostListeners file=component.file title="HostListeners" }}
+{{/if}}
+
+{{#if component.methodsClass}}
+    {{> block-method methods=component.methodsClass file=component.file }}
+{{/if}}
+
+{{#if component.propertiesClass}}
+    {{> block-property properties=component.propertiesClass file=component.file }}
+{{/if}}
+
+{{#if component.accessors}}
+    {{> block-accessors accessors=component.accessors file=component.file }}
+{{/if}}

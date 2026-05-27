@@ -1,5 +1,6 @@
 export const TRANSLATION_EN_US = {
     accessors: 'Accessors',
+    api: 'API',
     arguments: 'Arguments',
     bootstrap: 'Bootstrap',
     branches: 'Branches',
@@ -71,6 +72,9 @@ export const TRANSLATION_EN_US = {
     'no-svg': 'Your browser does not support SVG',
     optional: 'Optional',
     outputs: 'Outputs',
+    relationships: 'Relationships',
+    'relationships-used-by': 'Used by',
+    'relationships-depends-on': 'Depends on',
     overview: 'Overview',
     parameters: 'Parameters',
     'peer-dependencies': 'Peer dependencies',

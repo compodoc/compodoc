@@ -85,6 +85,12 @@
             </div>
         {{/if}}
 
+        {{> block-relationships relationships=controller.relationships }}
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "api"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
         {{#orLength controller.methodsClass}}
             {{> index methods=controller.methodsClass}}
         {{/orLength}}

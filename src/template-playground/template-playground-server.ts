@@ -1450,6 +1450,12 @@ export class TemplatePlaygroundServer {
         );
 
         Handlebars.registerPartial('index', '<!-- Index partial placeholder -->');
+        Handlebars.registerPartial('component-api', '<!-- Component API partial placeholder -->');
+        Handlebars.registerPartial('interface-api', '<!-- Interface API partial placeholder -->');
+        Handlebars.registerPartial(
+            'block-relationships',
+            '<!-- Relationships block partial placeholder -->'
+        );
         Handlebars.registerPartial('link-type', '<code>{{type}}</code>');
         Handlebars.registerPartial(
             'file-path',
@@ -1477,6 +1483,7 @@ export class TemplatePlaygroundServer {
                 const activeClass = isActive ? 'nav-link active' : 'nav-link';
                 const labelMap = {
                     info: 'Info',
+                    api: 'API',
                     readme: 'Readme',
                     source: 'Source',
                     template: 'Template',

@@ -76,6 +76,12 @@
                 </div>
             {{/if}}
 
+            {{> block-relationships relationships=injectable.relationships }}
+        </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "api"}}
+        <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
             {{#orLength injectable.properties injectable.methods injectable.accessors}}
                 {{> index methods=injectable.methods properties=injectable.properties}}
             {{/orLength}}

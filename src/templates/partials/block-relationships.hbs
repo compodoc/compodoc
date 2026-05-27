@@ -1,0 +1,39 @@
+{{#if relationships}}
+    {{#orLength relationships.incoming relationships.outgoing}}
+        <section data-compodoc="block-relationships">
+            <h3>{{t "relationships" }}</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4><span class="icon ion-ios-arrow-up"></span>{{t "relationships-used-by" }}</h4>
+                    {{#if relationships.incoming.length}}
+                        <ul class="list-unstyled relationships-list">
+                            {{#each relationships.incoming}}
+                                <li>
+                                    {{> link-type type=name }}
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        <p class="comment"><i>{{t "no-result-matching" }}.</i></p>
+                    {{/if}}
+                </div>
+
+                <div class="col-sm-6">
+                    <h4><span class="icon ion-ios-arrow-down"></span>{{t "relationships-depends-on" }}</h4>
+                    {{#if relationships.outgoing.length}}
+                        <ul class="list-unstyled relationships-list">
+                            {{#each relationships.outgoing}}
+                                <li>
+                                    {{> link-type type=name }}
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        <p class="comment"><i>{{t "no-result-matching" }}.</i></p>
+                    {{/if}}
+                </div>
+            </div>
+        </section>
+    {{/orLength}}
+{{/if}}

@@ -1,5 +1,6 @@
 export const TRANSLATION_FR_FR = {
     accessors: 'Accesseurs',
+    api: 'API',
     arguments: 'Arguments',
     bootstrap: 'Bootstrap',
     branches: 'Branches',
@@ -71,6 +72,9 @@ export const TRANSLATION_FR_FR = {
     'no-svg': 'Votre navigateur ne supporte pas le SVG',
     optional: 'Optionnel',
     outputs: 'Sorties',
+    relationships: 'Relations',
+    'relationships-used-by': 'Utilisé par',
+    'relationships-depends-on': 'Dépend de',
     overview: "Vue d'ensemble",
     parameters: 'Paramètres',
     'peer-dependencies': 'Dépendances de pair',

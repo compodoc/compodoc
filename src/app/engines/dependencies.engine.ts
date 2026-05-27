@@ -52,6 +52,7 @@ export class DependenciesEngine {
         groupedEnumerations: [],
         groupedTypeAliases: []
     };
+    private relationshipsCache: { [name: string]: { incoming: any[]; outgoing: any[] } } = {};
 
     private static instance: DependenciesEngine;
     private constructor() {}
@@ -136,6 +137,7 @@ export class DependenciesEngine {
         this.routes = this.rawData.routesTree;
         this.manageDuplicatesName();
         this.cleanRawModulesNames();
+        this.relationshipsCache = {};
     }
 
     private cleanRawModulesNames() {
@@ -466,6 +468,7 @@ export class DependenciesEngine {
             });
         }
         this.prepareMiscellaneous();
+        this.relationshipsCache = {};
     }
 
     public findInCompodoc(name: string) {
@@ -489,6 +492,307 @@ export class DependenciesEngine {
         );
         const result = _.find(mergedData, { name: name } as any);
         return result || false;
+    }
+
+    /**
+     * Returns entity relationships split in two lists:
+     * - incoming: entities that reference/use the current entity
+     * - outgoing: entities referenced by the current entity
+     */
+    public getRelationships(entityRef: any): {
+        incoming: Array<{ name: string; type: string; description?: string }>;
+        outgoing: Array<{ name: string; type: string; description?: string }>;
+    } {
+        const target = this.resolveEntityFromReference(entityRef);
+        const entityName =
+            typeof entityRef === 'string' ? entityRef : entityRef?.name;
+        if (!entityName) {
+            return { incoming: [], outgoing: [] };
+        }
+        const cacheKey = target?.id || entityName;
+
+        if (this.relationshipsCache[cacheKey]) {
+            return this.relationshipsCache[cacheKey];
+        }
+
+        const MAX_ITEMS = 80;
+        const incoming: Array<{ name: string; type: string; description?: string }> = [];
+        const outgoing: Array<{ name: string; type: string; description?: string }> = [];
+        const incomingSet = new Set<string>();
+        const outgoingSet = new Set<string>();
+
+        const addIncoming = (dep: any) => {
+            if (!dep?.name || dep.name === entityName || incoming.length >= MAX_ITEMS) {
+                return;
+            }
+            const key = `${dep.type || 'unknown'}::${dep.name}`;
+            if (incomingSet.has(key)) {
+                return;
+            }
+            incomingSet.add(key);
+            incoming.push({
+                name: dep.name,
+                type: dep.type || 'unknown',
+                description: this.extractShortDescription(dep)
+            });
+        };
+
+        const addOutgoing = (item: any, fallbackType = 'dependency') => {
+            if (!item) {
+                return;
+            }
+            const name = typeof item === 'string' ? item : item.name;
+            if (!name || name === entityName || outgoing.length >= MAX_ITEMS) {
+                return;
+            }
+            const resolved = this.resolveEntityByName(name);
+            const type = resolved?.type || item.type || fallbackType;
+            const key = `${type}::${name}`;
+            if (outgoingSet.has(key)) {
+                return;
+            }
+            outgoingSet.add(key);
+            outgoing.push({
+                name,
+                type,
+                description: this.extractShortDescription(resolved || item)
+            });
+        };
+
+        const includeIfReferences = (dep: any, references?: Array<any>) => {
+            if (!references || references.length === 0) {
+                return;
+            }
+            if (
+                references.some((ref) =>
+                    this.referencePointsToEntity(ref, target, entityName, dep)
+                )
+            ) {
+                addIncoming(dep);
+            }
+        };
+
+        const allInternalEntities: any[] = this.getAllInternalEntities();
+
+        allInternalEntities.forEach((dep) => {
+            includeIfReferences(dep, dep.imports);
+            includeIfReferences(dep, dep.exports);
+            includeIfReferences(dep, dep.declarations);
+            includeIfReferences(dep, dep.controllers);
+            includeIfReferences(dep, dep.providers);
+            includeIfReferences(dep, dep.viewProviders);
+            includeIfReferences(dep, dep.entryComponents);
+            includeIfReferences(dep, dep.bootstrap);
+            includeIfReferences(dep, dep.hostDirectives);
+
+            if (dep.extends) {
+                const extendsList = Array.isArray(dep.extends) ? dep.extends : [dep.extends];
+                if (extendsList.some((item) => item === entityName || item?.name === entityName)) {
+                    addIncoming(dep);
+                }
+            }
+            if (dep.implements) {
+                const implList = Array.isArray(dep.implements)
+                    ? dep.implements
+                    : [dep.implements];
+                if (implList.some((item) => item === entityName || item?.name === entityName)) {
+                    addIncoming(dep);
+                }
+            }
+        });
+
+        if (target) {
+            (target.imports || []).forEach((item) => addOutgoing(item, 'module'));
+            (target.exports || []).forEach((item) => addOutgoing(item, 'module'));
+            (target.declarations || []).forEach((item) => addOutgoing(item));
+            (target.controllers || []).forEach((item) => addOutgoing(item, 'controller'));
+            (target.providers || []).forEach((item) => addOutgoing(item, 'injectable'));
+            (target.viewProviders || []).forEach((item) => addOutgoing(item, 'injectable'));
+            (target.entryComponents || []).forEach((item) => addOutgoing(item, 'component'));
+            (target.bootstrap || []).forEach((item) => addOutgoing(item, 'component'));
+            (target.hostDirectives || []).forEach((item) => addOutgoing(item, 'directive'));
+
+            if (target.extends) {
+                const extendsList = Array.isArray(target.extends)
+                    ? target.extends
+                    : [target.extends];
+                extendsList.forEach((item) => addOutgoing(item, 'class'));
+            }
+            if (target.implements) {
+                const implList = Array.isArray(target.implements)
+                    ? target.implements
+                    : [target.implements];
+                implList.forEach((item) => addOutgoing(item, 'interface'));
+            }
+        }
+
+        const relationships = { incoming, outgoing };
+        this.relationshipsCache[cacheKey] = relationships;
+        return relationships;
+    }
+
+    private referencePointsToEntity(
+        reference: any,
+        targetEntity: any,
+        fallbackName: string,
+        originEntity?: any
+    ): boolean {
+        if (!reference || !fallbackName) {
+            return false;
+        }
+
+        if (targetEntity?.id && typeof reference === 'object' && reference.id) {
+            return reference.id === targetEntity.id;
+        }
+
+        const resolved = this.resolveEntityFromReference(reference, originEntity);
+        if (resolved && targetEntity) {
+            return resolved.id === targetEntity.id;
+        }
+
+        if (typeof reference === 'string') {
+            return reference === fallbackName;
+        }
+
+        if (reference?.name !== fallbackName) {
+            return false;
+        }
+
+        const refType = this.normalizeEntityType(reference?.type);
+        const targetType = this.normalizeEntityType(targetEntity?.type);
+        if (refType && targetType && refType !== targetType) {
+            return false;
+        }
+        return true;
+    }
+
+    private normalizeEntityType(type?: string): string | undefined {
+        if (!type) {
+            return undefined;
+        }
+        return type === 'classe' ? 'class' : type;
+    }
+
+    private normalizeFilePath(filePath?: string): string | undefined {
+        return filePath ? String(filePath).replace(/\\/g, '/') : undefined;
+    }
+
+    private getAllInternalEntities(): any[] {
+        return _.concat(
+            [],
+            this.modules,
+            this.components,
+            this.controllers,
+            this.entities,
+            this.directives,
+            this.injectables,
+            this.interceptors,
+            this.guards,
+            this.interfaces,
+            this.pipes,
+            this.classes
+        );
+    }
+
+    private resolveEntityByName(name: string): any {
+        if (!name) {
+            return undefined;
+        }
+        return this.resolveEntityFromReference({ name });
+    }
+
+    private resolveEntityFromReference(reference: any, originEntity?: any): any {
+        if (!reference) {
+            return undefined;
+        }
+
+        const entities = this.getAllInternalEntities();
+        if (typeof reference === 'object' && reference.id) {
+            const byId = _.find(entities, { id: reference.id } as any);
+            if (byId) {
+                return byId;
+            }
+        }
+
+        const refName = typeof reference === 'string' ? reference : reference.name;
+        if (!refName) {
+            return undefined;
+        }
+
+        let candidates = entities.filter(
+            (entity: any) => entity.name === refName || entity.duplicateName === refName
+        );
+        if (candidates.length === 0) {
+            return undefined;
+        }
+        if (candidates.length === 1) {
+            return candidates[0];
+        }
+
+        const refType = this.normalizeEntityType(
+            typeof reference === 'object' ? reference.type : undefined
+        );
+        if (refType) {
+            const typeCandidates = candidates.filter(
+                (entity: any) => this.normalizeEntityType(entity.type) === refType
+            );
+            if (typeCandidates.length === 1) {
+                return typeCandidates[0];
+            }
+            if (typeCandidates.length > 0) {
+                candidates = typeCandidates;
+            }
+        }
+
+        const refFile = this.normalizeFilePath(
+            typeof reference === 'object' ? reference.file : undefined
+        );
+        if (refFile) {
+            const fileCandidates = candidates.filter((entity: any) => {
+                const entityFile = this.normalizeFilePath(entity.file);
+                return !!entityFile && (entityFile === refFile || refFile.indexOf(entityFile) !== -1);
+            });
+            if (fileCandidates.length === 1) {
+                return fileCandidates[0];
+            }
+            if (fileCandidates.length > 0) {
+                candidates = fileCandidates;
+            }
+        }
+
+        const originFile = this.normalizeFilePath(originEntity?.file);
+        if (originFile) {
+            const sameFileCandidates = candidates.filter((entity: any) => {
+                const entityFile = this.normalizeFilePath(entity.file);
+                return !!entityFile && entityFile === originFile;
+            });
+            if (sameFileCandidates.length === 1) {
+                return sameFileCandidates[0];
+            }
+        }
+
+        const nonDuplicateCandidates = candidates.filter((entity: any) => !entity.isDuplicate);
+        if (nonDuplicateCandidates.length === 1) {
+            return nonDuplicateCandidates[0];
+        }
+
+        // Ambiguous homonym: avoid linking to the wrong entity.
+        return undefined;
+    }
+
+    private extractShortDescription(entity: any): string | undefined {
+        const raw = entity?.rawdescription || entity?.description || '';
+        if (!raw) {
+            return undefined;
+        }
+        const cleaned = String(raw)
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (!cleaned) {
+            return undefined;
+        }
+        return cleaned.length > 140 ? `${cleaned.slice(0, 137).trim()}...` : cleaned;
     }
 
     private prepareMiscellaneous() {

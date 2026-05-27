@@ -76,6 +76,12 @@
             </div>
         {{/if}}
 
+        {{> block-relationships relationships=class.relationships }}
+    </div>
+    {{/isTabEnabled}}
+
+    {{#isTabEnabled navTabs "api"}}
+    <div class="tab-pane fade {{#isInitialTab navTabs "api"}}active in{{/isInitialTab}}" id="api">
         {{#orLength class.properties class.methods class.accessors}}
             {{> index methods=class.methods properties=class.properties inputs=class.inputsClass outputs=class.outputsClass hostBindings=class.hostBindings hostListeners=class.hostListeners accessors=class.accessors}}
         {{/orLength}}

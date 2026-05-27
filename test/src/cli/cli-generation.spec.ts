@@ -97,6 +97,31 @@ describe("CLI simple generation", () => {
             expect(fooServiceFile).to.contain("export class FooService");
         });
 
+        it("should expose Info and API tabs on component pages by default", () => {
+            expect(componentFile).to.contain('data-link="info">Info');
+            expect(componentFile).to.contain('data-link="api">API');
+        });
+
+        it("should render relationships in Info for components and modules", () => {
+            expect(componentFile).to.contain("<h3>Relationships</h3>");
+            expect(componentFile).to.contain("<h4>Used by</h4>");
+            expect(componentFile).to.contain("<h4>Depends on</h4>");
+
+            expect(moduleFile).to.contain("<h3>Relationships</h3>");
+            expect(moduleFile).to.contain("<h4>Used by</h4>");
+            expect(moduleFile).to.contain("<h4>Depends on</h4>");
+        });
+
+        it("should keep API sections in the API tab content", () => {
+            expect(componentFile).to.contain('<h3 id="index">Index</h3>');
+            expect(componentFile).to.contain('<h3 id="constructor">Constructor</h3>');
+            expect(componentFile).to.contain('<h3 id="inputs">Inputs</h3>');
+        });
+
+        it("should not render an API tab for module pages without API sections", () => {
+            expect(moduleFile).to.not.contain('data-link="api">API');
+        });
+
         /**
          *   JSDOC
          */
@@ -1192,6 +1217,42 @@ describe("CLI simple generation", () => {
         });
         it("should set the info tab label", () => {
             expect(index).to.contain('data-link="info">Test Label 2');
+        });
+        it("should not contain the API tab when omitted from navTabConfig", () => {
+            expect(index).to.not.contain('data-link="api">');
+        });
+    });
+
+    describe("when generation of component dependency doc with --navTabConfig option including API", () => {
+        let index = undefined;
+        before(function (done) {
+            tmp.create(distFolder);
+            let ls = shell("node", [
+                "./bin/index-cli.js",
+                "-p",
+                "./test/fixtures/sample-files/tsconfig.simple.json",
+                "--navTabConfig",
+                `[
+                    {\"id\": \"source\",\"label\": \"Source\"},
+                    {\"id\": \"info\",\"label\": \"Info\"},
+                    {\"id\": \"api\",\"label\": \"API Surface\"}
+                ]`,
+                "-d",
+                distFolder,
+            ]);
+
+            if (ls.stderr.toString() !== "") {
+                console.error(`shell error: ${ls.stderr.toString()}`);
+                done("error");
+            }
+            index = read(`${distFolder}/components/BarComponent.html`);
+            index = index.replace(/\r?\n|\r/g, "");
+            done();
+        });
+        after(() => tmp.clean(distFolder));
+
+        it("should set the API tab label", () => {
+            expect(index).to.contain('data-link="api">API Surface');
         });
     });
 
