@@ -9,7 +9,6 @@
     "scripts": {
         "start": "npm run test:watch",
         "copy-libs": "node tools/copy-libs.js",
-        "postinstall": "opencollective-postinstall || exit 0",
         "*********BUILD********": "*******************",
         "prebuild": "rimraf dist/*",
         "build": "tsdown && npm run build-schematics",
@@ -118,7 +117,6 @@
         "marked": "18.0.4",
         "minimist": "^1.2.8",
         "neotraverse": "^0.6.18",
-        "opencollective-postinstall": "^2.0.3",
         "picocolors": "^1.1.1",
         "polka": "^0.5.2",
         "prismjs": "^1.30.0",
@@ -180,5 +178,9 @@
     "schematics": "./dist/collection.json",
     "ng-add": {
         "save": "devDependencies"
+    },
+    "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/compodoc"
     }
 }
