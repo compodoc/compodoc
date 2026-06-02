@@ -35,6 +35,7 @@ export const TRANSLATION_ZH_TW = {
     functions: '函數',
     'generated-using': '產生文件使用',
     'getting-started': '快速上手',
+    architecture: '架構',
     guard: '路由守衛',
     guards: '路由守衛列表',
     hostbindings: 'Host Bindings',

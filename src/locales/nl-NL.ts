@@ -35,6 +35,7 @@ export const TRANSLATION_NL_NL = {
     functions: 'Functies',
     'generated-using': 'Documentatie gegenereed met',
     'getting-started': 'Aan de slag',
+    architecture: 'Architectuur',
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',

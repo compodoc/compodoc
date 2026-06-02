@@ -35,6 +35,7 @@ export const TRANSLATION_SK_SK = {
     functions: 'Funkcie',
     'generated-using': 'Dokumentácia vytvorená pomocou',
     'getting-started': 'Začíname',
+    architecture: 'Architektúra',
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',

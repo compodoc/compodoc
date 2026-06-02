@@ -127,6 +127,9 @@
                    {{#compare data.context "===" 'overview'}}
                         {{~> overview data ~}}
                    {{/compare}}
+                   {{#compare data.context "===" 'architecture'}}
+                        {{~> architecture data ~}}
+                   {{/compare}}
 
                    {{#compare data.context "===" 'modules'}}
                         {{~> modules data ~}}

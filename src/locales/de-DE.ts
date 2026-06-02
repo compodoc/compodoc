@@ -35,6 +35,7 @@ export const TRANSLATION_DE_DE = {
     functions: 'Funktionen',
     'generated-using': 'Dokumentation generiert mit',
     'getting-started': "Los geht's",
+    architecture: 'Architektur',
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',

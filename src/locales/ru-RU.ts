@@ -35,6 +35,7 @@ export const TRANSLATION_RU_RU = {
     functions: 'Функции',
     'generated-using': 'Документация создана с помощью',
     'getting-started': 'Начало работы',
+    architecture: 'Архитектура',
     guard: 'Защитник',
     guards: 'Защитники',
     hostbindings: 'Привязки хоста',

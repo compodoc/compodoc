@@ -35,6 +35,7 @@ export const TRANSLATION_ZH_CN = {
     functions: '函数',
     'generated-using': '文档生成使用',
     'getting-started': '入门指南',
+    architecture: '架构',
     guard: '路由守卫',
     guards: '路由守卫列表',
     hostbindings: '宿主绑定',

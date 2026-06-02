@@ -35,6 +35,7 @@ export const TRANSLATION_KA_GE = {
   functions: 'ფუნქციები',
   'generated-using': 'დოკუმენტაცია დაგენერირდა გამოყენებით',
   'getting-started': 'ვიწყებთ',
+  architecture: 'არქიტექტურა',
   guard: 'მცველი',
   guards: 'მცველები',
   hostbindings: 'ჰოსტის დამაკავშირებლები',

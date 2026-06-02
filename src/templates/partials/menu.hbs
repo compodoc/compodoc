@@ -66,6 +66,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </a>
                         </li>
                         {{/each}}
+                        {{#unless disableGraph}}
+                            {{#if dependencyGraph.nodes.length}}
+                                <li class="link">
+                                    <a href="architecture.html" data-type="chapter-link">
+                                        <span class="icon ion-ios-git-branch"></span>{{t "architecture" }}
+                                    </a>
+                                </li>
+                            {{/if}}
+                        {{/unless}}
                         {{#unless disableDependencies}}
                             {{#orLength packageDependencies packagePeerDependencies}}
                                 <li class="link">

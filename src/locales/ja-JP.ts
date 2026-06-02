@@ -35,6 +35,7 @@ export const TRANSLATION_JA_JP = {
     functions: '関数',
     'generated-using': 'このドキュメントは以下を使用して生成されています',
     'getting-started': 'はじめに',
+    architecture: 'アーキテクチャ',
     guard: 'ガード',
     guards: 'ガード',
     hostbindings: 'ホストバインディング',

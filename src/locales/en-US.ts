@@ -36,6 +36,7 @@ export const TRANSLATION_EN_US = {
     functions: 'Functions',
     'generated-using': 'Documentation generated using',
     'getting-started': 'Getting started',
+    architecture: 'Architecture',
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',

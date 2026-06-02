@@ -445,6 +445,15 @@ export class Application {
                             loop();
                         });
                 } else {
+                    if (!Configuration.hasPage("architecture")) {
+                        Configuration.addPage({
+                            name: "architecture",
+                            id: "architecture",
+                            context: "architecture",
+                            depth: 0,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT,
+                        });
+                    }
                     resolve(true);
                 }
             };
@@ -3632,7 +3641,131 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
         });
     }
 
+    private extractDepName(dep: any): string | undefined {
+        if (!dep) {
+            return undefined;
+        }
+        if (typeof dep === "string") {
+            return dep;
+        }
+        if (typeof dep.name === "string") {
+            return dep.name;
+        }
+        return undefined;
+    }
+
+    private buildArchitectureGraph() {
+        const components = (Configuration.mainData.components as any[]) || [];
+        const directives = (Configuration.mainData.directives as any[]) || [];
+        const pipes = (Configuration.mainData.pipes as any[]) || [];
+        const modules = (Configuration.mainData.modules as any[]) || [];
+        const injectables = (Configuration.mainData.injectables as any[]) || [];
+
+        const entityMap = new Map<
+            string,
+            { id: string; name: string; type: string; url?: string }
+        >();
+        const addEntity = (items: any[], type: string, routePrefix: string) => {
+            for (const item of items) {
+                if (!item?.name || entityMap.has(item.name)) {
+                    continue;
+                }
+                const slug = item.duplicateName || item.name;
+                entityMap.set(item.name, {
+                    id: `${type}:${item.name}`,
+                    name: item.name,
+                    type,
+                    url: `${routePrefix}${slug}.html`,
+                });
+            }
+        };
+
+        addEntity(components, "component", "./components/");
+        addEntity(directives, "directive", "./directives/");
+        addEntity(pipes, "pipe", "./pipes/");
+        addEntity(modules, "module", "./modules/");
+        addEntity(injectables, "injectable", "./injectables/");
+
+        const usedNodeNames = new Set<string>();
+        const edgeKeys = new Set<string>();
+        const edges: Array<{ source: string; target: string }> = [];
+
+        const addEdge = (sourceName?: string, targetName?: string) => {
+            if (!sourceName || !targetName || sourceName === targetName) {
+                return;
+            }
+            const source = entityMap.get(sourceName);
+            const target = entityMap.get(targetName);
+            if (!source || !target) {
+                return;
+            }
+            const edgeKey = `${source.id}->${target.id}`;
+            if (edgeKeys.has(edgeKey)) {
+                return;
+            }
+            edgeKeys.add(edgeKey);
+            usedNodeNames.add(sourceName);
+            usedNodeNames.add(targetName);
+            edges.push({ source: source.id, target: target.id });
+        };
+
+        for (const module of modules) {
+            for (const dependency of module.imports || []) {
+                addEdge(module.name, this.extractDepName(dependency));
+            }
+            for (const declaration of module.declarations || []) {
+                addEdge(module.name, this.extractDepName(declaration));
+            }
+            for (const exported of module.exports || []) {
+                addEdge(module.name, this.extractDepName(exported));
+            }
+            for (const bootstrap of module.bootstrap || []) {
+                addEdge(module.name, this.extractDepName(bootstrap));
+            }
+            for (const provider of module.providers || []) {
+                addEdge(module.name, this.extractDepName(provider));
+            }
+        }
+
+        for (const component of components) {
+            if (component.standalone) {
+                for (const dependency of component.imports || []) {
+                    addEdge(component.name, this.extractDepName(dependency));
+                }
+            }
+            for (const provider of component.providers || []) {
+                addEdge(component.name, this.extractDepName(provider));
+            }
+        }
+
+        for (const directive of directives) {
+            for (const provider of directive.providers || []) {
+                addEdge(directive.name, this.extractDepName(provider));
+            }
+        }
+
+        const nodes = Array.from(usedNodeNames)
+            .map((name) => entityMap.get(name))
+            .filter(
+                (
+                    node,
+                ): node is {
+                    id: string;
+                    name: string;
+                    type: string;
+                    url?: string;
+                } => !!node,
+            );
+
+        Configuration.mainData.dependencyGraph = { nodes, edges };
+        Configuration.mainData.dependencyGraphSerialized = JSON.stringify({
+            nodes,
+            edges,
+        });
+    }
+
     public processGraphs() {
+        this.buildArchitectureGraph();
         if (Configuration.mainData.disableGraph) {
             logger.info("Graph generation disabled");
             this.processPages();

@@ -1163,6 +1163,74 @@ path.link {
     height: 100%;
 }
 
+#architecture-graph {
+    width: 100%;
+    height: 68vh;
+    min-height: 460px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    background: #fafafa;
+}
+
+.architecture-graph-wrapper .size-buttons {
+    margin-top: 12px;
+}
+
+.architecture-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.architecture-legend-item {
+    border: 1px solid #d6d6d6;
+    border-radius: 16px;
+    background: #fff;
+    font-size: 12px;
+    color: #2f2f2f;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+.architecture-legend-item.is-disabled {
+    opacity: 0.45;
+    text-decoration: line-through;
+}
+
+.architecture-legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.architecture-component {
+    background: #10b39c;
+}
+
+.architecture-directive {
+    background: #6747dd;
+}
+
+.architecture-pipe {
+    background: #de3b91;
+}
+
+.architecture-module {
+    background: #2973f0;
+}
+
+.architecture-injectable {
+    background: #b77006;
+}
+
 .content ul.type-parameters {
     margin-bottom: 5px;
 }

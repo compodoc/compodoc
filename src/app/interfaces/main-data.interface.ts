@@ -64,6 +64,11 @@ export interface MainDataInterface {
     disableOverview: boolean;
     watch: boolean;
     mainGraph: string;
+    dependencyGraph: {
+        nodes: Array<{ id: string; name: string; type: string; url?: string }>;
+        edges: Array<{ source: string; target: string }>;
+    };
+    dependencyGraphSerialized: string;
     coverageTest: boolean;
     coverageTestThreshold: number;
     coverageTestThresholdFail: boolean;

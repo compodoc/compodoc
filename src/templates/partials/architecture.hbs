@@ -1,0 +1,44 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">{{t "architecture" }}</li>
+</ol>
+
+{{#unless disableGraph}}
+    {{#if dependencyGraph.nodes.length}}
+    <div class="architecture-legend">
+        <button type="button" class="architecture-legend-item" data-architecture-filter="component" aria-pressed="true">
+            <span class="architecture-legend-color architecture-component"></span>{{t "component" }}
+        </button>
+        <button type="button" class="architecture-legend-item" data-architecture-filter="directive" aria-pressed="true">
+            <span class="architecture-legend-color architecture-directive"></span>{{t "directive" }}
+        </button>
+        <button type="button" class="architecture-legend-item" data-architecture-filter="pipe" aria-pressed="true">
+            <span class="architecture-legend-color architecture-pipe"></span>{{t "pipe" }}
+        </button>
+        <button type="button" class="architecture-legend-item" data-architecture-filter="module" aria-pressed="true">
+            <span class="architecture-legend-color architecture-module"></span>{{t "module" }}
+        </button>
+        <button type="button" class="architecture-legend-item" data-architecture-filter="injectable" aria-pressed="true">
+            <span class="architecture-legend-color architecture-injectable"></span>{{t "injectable" }}
+        </button>
+    </div>
+
+    <div class="text-center module-graph-container architecture-graph-wrapper">
+        <div id="architecture-graph"></div>
+        <div class="btn-group size-buttons">
+            <button id="architecture-zoom-in" class="btn btn-default btn-sm">{{t "zoomin" }}</button>
+            <button id="architecture-reset" class="btn btn-default btn-sm">{{t "reset" }}</button>
+            <button id="architecture-zoom-out" class="btn btn-default btn-sm">{{t "zoomout" }}</button>
+        </div>
+    </div>
+
+    <script>
+        var ARCHITECTURE_DEP_GRAPH = {{{dependencyGraphSerialized}}};
+    </script>
+    <script src="{{relativeURL depth 'architecture'}}js/libs/vis-network.min.js"></script>
+    <script src="{{relativeURL depth 'architecture'}}js/architecture-graph.js"></script>
+    {{else}}
+    <p class="alert alert-warning">No Angular dependency graph data available for this project.</p>
+    {{/if}}
+{{else}}
+<p class="alert alert-warning">Graph generation is disabled.</p>
+{{/unless}}

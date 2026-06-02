@@ -35,6 +35,7 @@ export const TRANSLATION_KO_KR = {
     functions: '함수',
     'generated-using': '이 문서는 다음을 이용하여 생성되었습니다',
     'getting-started': '시작하기',
+    architecture: '아키텍처',
     guard: '가드',
     guards: '가드',
     hostbindings: 'HostBindings',

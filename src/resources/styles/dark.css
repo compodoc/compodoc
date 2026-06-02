@@ -76,6 +76,11 @@ body.dark {
     fill: #212121 !important;
 }
 
+.dark #module-graph-svg svg text,
+.dark #module-graph-svg svg a {
+    fill: #f0f0f0;
+}
+
 .dark .navbar-default,
 .dark .btn-default {
     background-color: black;
@@ -118,4 +123,15 @@ body.dark {
 
 .dark .content table {
     --bs-table-color: #fafafa;
+}
+
+.dark #architecture-graph {
+    border-color: rgba(0, 0, 0, 0.07);
+    background: #fafafa;
+}
+
+.dark .architecture-legend-item {
+    background: #262626;
+    border-color: #4a4a4a;
+    color: #f0f0f0;
 }

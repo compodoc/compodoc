@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
         uniformNodeWidth = Math.max(40, Math.ceil(longestLabelLength * 8 + 28));
 
     var container = document.getElementById('tree-container'),
+        isDarkMode = document.body && document.body.classList.contains('dark'),
+        treeFontColor = isDarkMode ? '#f0f0f0' : '#2d2d2d',
         data = {
             nodes: newNodes,
             edges: newEdges
@@ -141,6 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
             nodes: {
                 shape: 'ellipse',
                 fixed: true,
+                font: {
+                    color: treeFontColor
+                },
                 widthConstraint: {
                     minimum: uniformNodeWidth,
                     maximum: uniformNodeWidth

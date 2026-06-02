@@ -23,6 +23,9 @@ describe("CLI simple generation", () => {
             emptyModuleFile,
             barModuleFile,
             emptyModuleRawFile,
+            architectureFile,
+            architectureGraphScript,
+            menuFile,
             exampleTagComponentFile;
         before(function (done) {
             tmp.create(distFolder);
@@ -50,6 +53,11 @@ describe("CLI simple generation", () => {
                 `${distFolder}/modules/EmptyRawModule.html`,
             );
             barModuleFile = read(`${distFolder}/modules/BarModule.html`);
+            architectureFile = read(`${distFolder}/architecture.html`);
+            architectureGraphScript = read(
+                `${distFolder}/js/architecture-graph.js`,
+            );
+            menuFile = read(`${distFolder}/js/menu-wc.js`);
             exampleTagComponentFile = read(
                 `${distFolder}/components/ExampleTagComponent.html`,
             );
@@ -71,6 +79,8 @@ describe("CLI simple generation", () => {
             expect(isIndexExists).to.be.true;
             const isModulesExists = exists(`${distFolder}/modules.html`);
             expect(isModulesExists).to.be.true;
+            const isArchitectureExists = exists(`${distFolder}/architecture.html`);
+            expect(isArchitectureExists).to.be.true;
         });
 
         it("should have generated resources folder", () => {
@@ -89,6 +99,80 @@ describe("CLI simple generation", () => {
                 `${distFolder}/js/search/search_index.js`,
             );
             expect(isIndexExists).to.be.true;
+        });
+
+        it("should expose the Architecture page in the getting started menu", () => {
+            expect(menuFile).to.contain('href="architecture.html"');
+            expect(menuFile).to.contain(
+                '<span class="icon ion-ios-git-branch"></span>Architecture',
+            );
+        });
+
+        it("should render the Architecture dependency graph shell", () => {
+            expect(architectureFile).to.contain('id="architecture-graph"');
+            expect(architectureFile).to.contain("ARCHITECTURE_DEP_GRAPH");
+            expect(architectureFile).to.contain("./js/libs/vis-network.min.js");
+            expect(architectureFile).to.contain("./js/architecture-graph.js");
+            expect(architectureFile).to.contain('id="architecture-zoom-in"');
+            expect(architectureFile).to.contain('id="architecture-reset"');
+            expect(architectureFile).to.contain('id="architecture-zoom-out"');
+        });
+
+        it("should render multi-filter legend controls for Architecture graph types", () => {
+            [
+                "component",
+                "directive",
+                "pipe",
+                "module",
+                "injectable",
+            ].forEach((type) => {
+                expect(architectureFile).to.contain(
+                    `data-architecture-filter="${type}"`,
+                );
+            });
+        });
+
+        it("should serialize Angular dependency nodes and links for the Architecture graph", () => {
+            const graphMatch = architectureFile.match(
+                /var ARCHITECTURE_DEP_GRAPH = (.*);/,
+            );
+            expect(graphMatch).not.to.equal(null);
+            const graph = JSON.parse(graphMatch[1]);
+
+            expect(graph.nodes).to.deep.include({
+                id: "module:AppModule",
+                name: "AppModule",
+                type: "module",
+                url: "./modules/AppModule.html",
+            });
+            expect(graph.nodes).to.deep.include({
+                id: "component:FooComponent",
+                name: "FooComponent",
+                type: "component",
+                url: "./components/FooComponent.html",
+            });
+            expect(graph.nodes).to.deep.include({
+                id: "injectable:FooService",
+                name: "FooService",
+                type: "injectable",
+                url: "./injectables/FooService.html",
+            });
+            expect(graph.edges).to.deep.include({
+                source: "module:AppModule",
+                target: "component:FooComponent",
+            });
+            expect(graph.edges).to.deep.include({
+                source: "module:AppModule",
+                target: "injectable:FooService",
+            });
+        });
+
+        it("should ship the Architecture graph runtime", () => {
+            expect(architectureGraphScript).to.contain("ARCHITECTURE_DEP_GRAPH");
+            expect(architectureGraphScript).to.contain(
+                "data-architecture-filter",
+            );
+            expect(architectureGraphScript).to.contain("MutationObserver");
         });
 
         it("should have generated sourceCode for files", () => {
@@ -1394,6 +1478,19 @@ describe("CLI simple generation", () => {
                 "modules/AppModule/dependencies.svg",
             );
             expect(fileContents).to.not.contain("svg-pan-zoom");
+        });
+
+        it("should not link to the Architecture graph from the menu", () => {
+            fileContents = read(`${distFolder}/js/menu-wc.js`);
+            expect(fileContents).to.not.contain('href="architecture.html"');
+        });
+
+        it("should not include the Architecture graph runtime", () => {
+            fileContents = read(`${distFolder}/architecture.html`);
+            expect(fileContents).to.contain("Graph generation is disabled.");
+            expect(fileContents).to.not.contain("ARCHITECTURE_DEP_GRAPH");
+            expect(fileContents).to.not.contain("architecture-graph.js");
+            expect(fileContents).to.not.contain("vis-network.min.js");
         });
     });
 

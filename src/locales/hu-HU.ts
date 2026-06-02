@@ -35,6 +35,7 @@ export const TRANSLATION_HU_HU = {
     functions: 'Függvények',
     'generated-using': 'A dokumentációt generálta:',
     'getting-started': 'Bevezető',
+    architecture: 'Architektúra',
     guard: 'Guard',
     guards: 'Guardok',
     hostbindings: 'HostBindingok',

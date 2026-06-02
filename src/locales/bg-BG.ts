@@ -35,6 +35,7 @@ export const TRANSLATION_BG_BG = {
     functions: 'Функции',
     'generated-using': 'Документацията е генерирана, използвайки',
     'getting-started': 'Начало',
+    architecture: 'Архитектура',
     guard: 'Guard',
     guards: 'Guards',
     hostbindings: 'HostBindings',
