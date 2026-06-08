@@ -602,7 +602,7 @@ export class ClassHelper {
     }
 
     private isServiceDecorator(decorator) {
-        return this.hasDecoratorType(decorator, "Injectable");
+        return this.hasDecoratorType(decorator, "Injectable", "Service");
     }
 
     private isPrivate(member): boolean {
@@ -798,7 +798,7 @@ export class ClassHelper {
         if (nodeHasDecorator(classDeclaration)) {
             const classDecorators = getNodeDecorators(classDeclaration);
             // Loop and search for official decorators at top-level :
-            // Angular : @NgModule, @Component, @Directive, @Injectable, @Pipe
+            // Angular : @NgModule, @Component, @Directive, @Injectable, @Service, @Pipe
             // Nestjs : @Controller, @Module, @Injectable
             // Stencil : @Component
             let isDirective = false;

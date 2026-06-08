@@ -1865,7 +1865,10 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private isInjectable(metadata) {
-        return this.parseDecorator(metadata, "Injectable");
+        return (
+            this.parseDecorator(metadata, "Injectable") ||
+            this.parseDecorator(metadata, "Service")
+        );
     }
 
     private isModule(metadata) {
@@ -1882,6 +1885,7 @@ export class AngularDependencies extends FrameworkDependencies {
             this.parseDecorators(metadatas, "Pipe") ||
             this.parseDecorators(metadatas, "Directive") ||
             this.parseDecorators(metadatas, "Injectable") ||
+            this.parseDecorators(metadatas, "Service") ||
             this.parseDecorators(metadatas, "NgModule") ||
             this.parseDecorators(metadatas, "Module")
         );

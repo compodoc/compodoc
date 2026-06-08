@@ -409,6 +409,37 @@ describe('ClassHelper', () => {
             jsdocParserStub.getMainCommentOfNode.returns('Test description');
         });
 
+        it('should handle @Service decorated class', () => {
+            const classDeclaration = {
+                name: { text: 'TestService', kind: SyntaxKind.Identifier },
+                members: [],
+                decorators: [{
+                    expression: {
+                        expression: { text: 'Service' },
+                        arguments: []
+                    }
+                }],
+                kind: SyntaxKind.ClassDeclaration
+            } as any;
+
+            const symbol = {
+                valueDeclaration: classDeclaration,
+                declarations: [classDeclaration]
+            } as any;
+
+            // Override the jsdoc stub for this test to return empty description
+            jsdocParserStub.getMainCommentOfNode.returns('');
+
+            (typeChecker as any).getSymbolAtLocation = sinon.stub().returns(symbol);
+
+            const result = classHelper.visitClassDeclaration('test.ts', classDeclaration, mockSourceFile);
+            expect(result).to.be.an('array');
+            expect(result[0]).to.have.property('className', 'TestService');
+
+            // Restore the stub
+            jsdocParserStub.getMainCommentOfNode.returns('Test description');
+        });
+
         it('should return ignore object for classes with @ignore', () => {
             const classDeclaration = {
                 name: { text: 'IgnoredClass', kind: SyntaxKind.Identifier },
@@ -490,9 +521,14 @@ describe('ClassHelper', () => {
                 expression: { expression: { text: 'Injectable' } }
             } as any;
 
+            const serviceDecorator = {
+                expression: { expression: { text: 'Service' } }
+            } as any;
+
             const isServiceDecorator = (classHelper as any).isServiceDecorator.bind(classHelper);
 
             expect(isServiceDecorator(injectableDecorator)).to.be.true;
+            expect(isServiceDecorator(serviceDecorator)).to.be.true;
         });
     });
 
