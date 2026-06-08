@@ -37,37 +37,37 @@ describe('Utils - AngularApiUtil', () => {
 
     describe('findApi()', () => {
         it('should find an existing API by title', () => {
-            const result = angularApiUtil.findApi('animate');
+            const result = angularApiUtil.findApi('Component');
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
             expect(result).to.have.property('data');
             expect(result).to.have.property('score', 1);
-            expect(result.data).to.have.property('title', 'animate');
-            expect(result.data).to.have.property('path', 'api/animations/animate');
-            expect(result.data).to.have.property('docType', 'function');
+            expect(result.data).to.have.property('title', 'Component');
+            expect(result.data).to.have.property('path', 'api/core/Component');
+            expect(result.data).to.have.property('docType', 'decorator');
         });
 
         it('should find another existing API by title', () => {
-            const result = angularApiUtil.findApi('AnimateChildOptions');
+            const result = angularApiUtil.findApi('HttpClient');
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
             expect(result).to.have.property('data');
             expect(result).to.have.property('score', 1);
-            expect(result.data).to.have.property('title', 'AnimateChildOptions');
-            expect(result.data).to.have.property('path', 'api/animations/AnimateChildOptions');
-            expect(result.data).to.have.property('docType', 'interface');
+            expect(result.data).to.have.property('title', 'HttpClient');
+            expect(result.data).to.have.property('path', 'api/common/http/HttpClient');
+            expect(result.data).to.have.property('docType', 'class');
         });
 
         it('should find an API with different docType', () => {
-            const result = angularApiUtil.findApi('AnimationBuilder');
+            const result = angularApiUtil.findApi('TransferState');
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
             expect(result).to.have.property('data');
             expect(result).to.have.property('score', 1);
-            expect(result.data).to.have.property('title', 'AnimationBuilder');
+            expect(result.data).to.have.property('title', 'TransferState');
             expect(result.data).to.have.property('docType', 'class');
         });
 
@@ -90,7 +90,7 @@ describe('Utils - AngularApiUtil', () => {
         });
 
         it('should be case sensitive when searching for API', () => {
-            const result = angularApiUtil.findApi('animatechild'); // lowercase
+            const result = angularApiUtil.findApi('component'); // lowercase
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
@@ -99,23 +99,38 @@ describe('Utils - AngularApiUtil', () => {
         });
 
         it('should find API with correct case', () => {
-            const result = angularApiUtil.findApi('animateChild'); // correct case
+            const result = angularApiUtil.findApi('httpResource'); // correct case
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
             expect(result).to.have.property('data');
             expect(result).to.have.property('score', 1);
-            expect(result.data).to.have.property('title', 'animateChild');
+            expect(result.data).to.have.property('title', 'httpResource');
+            expect(result.data).to.have.property('path', 'api/common/http/httpResource');
         });
 
         it('should handle API titles with special characters', () => {
-            const result = angularApiUtil.findApi('AnimationMetadataType');
+            const result = angularApiUtil.findApi('@let');
 
             expect(result).to.be.an('object');
             expect(result).to.have.property('source', 'external');
             expect(result).to.have.property('data');
             expect(result).to.have.property('score', 1);
-            expect(result.data).to.have.property('title', 'AnimationMetadataType');
+            expect(result.data).to.have.property('title', '@let');
+            expect(result.data).to.have.property('docType', 'block');
+        });
+
+        it('should find modern Angular APIs from angular.dev', () => {
+            const formField = angularApiUtil.findApi('FormField');
+            const rxResource = angularApiUtil.findApi('rxResource');
+
+            expect(formField).to.have.property('score', 1);
+            expect(formField.data).to.have.property('path', 'api/forms/signals/FormField');
+            expect(formField.data).to.have.property('docType', 'directive');
+
+            expect(rxResource).to.have.property('score', 1);
+            expect(rxResource.data).to.have.property('path', 'api/core/rxjs-interop/rxResource');
+            expect(rxResource.data).to.have.property('docType', 'function');
         });
     });
 });
