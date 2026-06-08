@@ -65,6 +65,15 @@ const renderProperties = (heading: string, props: ReadonlyArray<any>): string =>
 const renderMethods = (heading: string, methods: ReadonlyArray<any>): string =>
     renderList(heading, methods.map(renderMethod));
 
+const renderTemplateVariables = (variables: ReadonlyArray<any>): string =>
+    renderList(
+        "Template variables",
+        variables.map(
+            variable =>
+                `- ${inlineCode(variable.name)} = ${inlineCode(String(variable.defaultValue))}`,
+        ),
+    );
+
 const heroLines = (
     name: string,
     file: string | undefined,
@@ -101,6 +110,7 @@ export const emitComponent = (entity: any): string => {
         renderProperties("Inputs", entity.inputsClass ?? []),
         renderProperties("Outputs", entity.outputsClass ?? []),
         renderProperties("Properties", entity.propertiesClass ?? []),
+        renderTemplateVariables(entity.templateVariables ?? []),
         renderMethods("Methods", entity.methodsClass ?? []),
     ]);
 };

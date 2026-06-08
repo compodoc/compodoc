@@ -33,6 +33,7 @@ export class ComponentDepFactory {
             styles: this.helper.getComponentStyles(props, srcFile), // TODO fix args
             template: this.helper.getComponentTemplate(props, srcFile),
             templateUrl: this.helper.getComponentTemplateUrl(props, srcFile),
+            templateVariables: [],
             viewProviders: this.helper.getComponentViewProviders(props, srcFile),
             hostDirectives: [...this.helper.getComponentHostDirectives(props)],
             inputsClass: IO.inputs,
@@ -65,6 +66,9 @@ export class ComponentDepFactory {
             styleUrlsData: '',
             stylesData: ''
         };
+        componentDep.templateVariables = this.helper.getComponentTemplateVariables(
+            componentDep.template
+        );
         if (typeof this.helper.getComponentPreserveWhitespaces(props, srcFile) !== 'undefined') {
             componentDep.preserveWhitespaces = this.helper.getComponentPreserveWhitespaces(
                 props,
@@ -122,6 +126,7 @@ export interface IComponentDep extends IDep {
     stylesData: string;
     template: string;
     templateUrl: Array<string>;
+    templateVariables: Array<any>;
     viewProviders: Array<any>;
     inputsClass: Array<any>;
     outputsClass: Array<any>;

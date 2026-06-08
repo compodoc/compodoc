@@ -26,6 +26,7 @@ describe('ComponentHelper', () => {
 
     afterEach(() => {
         sinon.restore();
+        Configuration.mainData.angularVersion = '';
     });
 
     describe('constructor', () => {
@@ -87,6 +88,43 @@ describe('ComponentHelper', () => {
         });
     });
 
+    describe('getComponentChangeDetection', () => {
+        it('should extract explicit component change detection from props', () => {
+            const props = createMockProps({ changeDetection: 'ChangeDetectionStrategy.Default' });
+            symbolHelperStub.getSymbolDeps.returns(['ChangeDetectionStrategy.Default']);
+
+            const result = componentHelper.getComponentChangeDetection(props, sourceFile);
+
+            sinon.assert.calledWith(
+                symbolHelperStub.getSymbolDeps,
+                props,
+                'changeDetection',
+                sourceFile
+            );
+            expect(result).to.equal('ChangeDetectionStrategy.Default');
+        });
+
+        it('should infer OnPush when no changeDetection is declared and Angular version is >= 22', () => {
+            const props = createMockProps({});
+            symbolHelperStub.getSymbolDeps.returns([]);
+            Configuration.mainData.angularVersion = '22.0.0';
+
+            const result = componentHelper.getComponentChangeDetection(props, sourceFile);
+
+            expect(result).to.equal('ChangeDetectionStrategy.OnPush');
+        });
+
+        it('should not infer OnPush when Angular version is < 22', () => {
+            const props = createMockProps({});
+            symbolHelperStub.getSymbolDeps.returns([]);
+            Configuration.mainData.angularVersion = '21.2.0';
+
+            const result = componentHelper.getComponentChangeDetection(props, sourceFile);
+
+            expect(result).to.be.undefined;
+        });
+    });
+
     describe('getComponentTemplate', () => {
         it('should extract component template from props', () => {
             const props = createMockProps({ template: '<div>Hello</div>' });
@@ -115,6 +153,35 @@ describe('ComponentHelper', () => {
                 result = componentHelper.getComponentTemplate(props, sourceFile);
             }).to.not.throw();
             expect(result).to.be.undefined;
+        });
+    });
+
+    describe('getComponentTemplateVariables', () => {
+        it('should extract @let declarations from a template', () => {
+            const template = `
+                @let userName = user().name;
+                <span>{{ userName }}</span>
+                @let total = items.length + 1;
+            `;
+
+            const result = componentHelper.getComponentTemplateVariables(template);
+
+            expect(result).to.deep.equal([
+                {
+                    name: 'userName',
+                    defaultValue: 'user().name'
+                },
+                {
+                    name: 'total',
+                    defaultValue: 'items.length + 1'
+                }
+            ]);
+        });
+
+        it('should return an empty list when template has no @let declaration', () => {
+            const result = componentHelper.getComponentTemplateVariables('<div>Hello</div>');
+
+            expect(result).to.deep.equal([]);
         });
     });
 

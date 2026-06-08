@@ -57,7 +57,7 @@
             component.exportAs component.host component.interpolation component.moduleId
             component.providers component.queries component.selector component.styleUrls component.styles
             component.template component.templateUrl component.viewProviders component.tag component.styleUrl
-            component.shadow component.scoped component.assetsDir component.assetsDirs}}
+            component.templateVariables component.shadow component.scoped component.assetsDir component.assetsDirs}}
 <section data-compodoc="block-metadata">
     <h3>{{t "metadata" }}</h3>
     <table class="table table-sm table-hover metadata">
@@ -211,6 +211,24 @@
             <tr>
                 <td class="col-md-3">template</td>
                 <td class="col-md-9"><pre class="line-numbers"><code class="language-html">{{ component.template }}</code></pre></td>
+            </tr>
+            {{/if}}
+
+            {{#if component.templateVariables}}
+            <tr>
+                <td class="col-md-3">templateVariables</td>
+                <td class="col-md-9">
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            {{#each component.templateVariables}}
+                            <tr>
+                                <td class="col-md-3"><code>{{name}}</code></td>
+                                <td class="col-md-9"><code>{{defaultValue}}</code></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </td>
             </tr>
             {{/if}}
 

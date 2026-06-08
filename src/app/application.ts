@@ -45,6 +45,7 @@ import { CoverageData } from "./interfaces/coverageData.interface";
 import { LiveServerConfiguration } from "./interfaces/live-server-configuration.interface";
 import { markedAcl } from "../utils/marked.acl";
 import { IComponentDep } from "./compiler/angular/deps/component-dep.factory";
+import { ComponentHelper } from "./compiler/angular/deps/helpers/component-helper";
 import { renderLlmMd } from "../llm-md";
 
 const cwd = process.cwd();
@@ -1605,7 +1606,11 @@ export class Application {
         }
 
         return FileEngine.get(templatePath).then(
-            (data) => (component.templateData = data),
+            (data) => {
+                component.templateData = data;
+                component.templateVariables =
+                    ComponentHelper.getTemplateVariablesFromTemplate(data);
+            },
             (err) => {
                 logger.error(err);
                 return Promise.reject("");

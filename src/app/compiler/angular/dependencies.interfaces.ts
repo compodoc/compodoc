@@ -156,6 +156,7 @@ export interface Deps {
     styles?: string[];
     template?: string;
     templateUrl?: string[];
+    templateVariables?: Object[];
     viewProviders?: Deps[];
     exampleUrls?: string[];
 

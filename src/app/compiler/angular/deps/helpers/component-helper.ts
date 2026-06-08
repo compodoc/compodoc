@@ -15,7 +15,17 @@ export class ComponentHelper {
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
     ): string {
-        return this.symbolHelper.getSymbolDeps(props, 'changeDetection', srcFile).pop();
+        const result = this.symbolHelper.getSymbolDeps(props, 'changeDetection', srcFile).pop();
+
+        if (typeof result === 'undefined') {
+            const angularVersion = Configuration.mainData.angularVersion;
+            const coerced = angularVersion ? semver.coerce(angularVersion) : null;
+            if (coerced && semver.valid(coerced) && semver.gte(coerced.version, '22.0.0')) {
+                return 'ChangeDetectionStrategy.OnPush';
+            }
+        }
+
+        return result;
     }
 
     public getComponentEncapsulation(
@@ -454,6 +464,31 @@ export class ComponentHelper {
         return t;
     }
 
+    public getComponentTemplateVariables(template: string): Array<IComponentTemplateVariable> {
+        return ComponentHelper.getTemplateVariablesFromTemplate(template);
+    }
+
+    public static getTemplateVariablesFromTemplate(
+        template: string
+    ): Array<IComponentTemplateVariable> {
+        if (!template || typeof template !== 'string') {
+            return [];
+        }
+
+        const variables: Array<IComponentTemplateVariable> = [];
+        const regex = /@let\s+([A-Za-z_$][\w$]*)\s*=\s*([^;]+);/g;
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(template))) {
+            variables.push({
+                name: match[1],
+                defaultValue: match[2].trim()
+            });
+        }
+
+        return variables;
+    }
+
     public getComponentStyleUrls(
         props: ReadonlyArray<ts.ObjectLiteralElementLike>,
         srcFile: ts.SourceFile
@@ -648,6 +683,11 @@ export class ComponentHelper {
     private sanitizeUrls(urls: Array<string>): Array<string> {
         return urls.map(url => url.replace('./', ''));
     }
+}
+
+export interface IComponentTemplateVariable {
+    name: string;
+    defaultValue: string;
 }
 
 export class ComponentCache {
