@@ -200,8 +200,10 @@ describe('Engines - FunctionSignatureHelper', () => {
 
             const result = helper.helperFunc(context, method);
             expect(result).to.contain('https://angular.io/api/router/ActivatedRoute');
-            expect(result).to.contain('reference-badge--angular');
-            expect(result).to.contain('>A</span>');
+            expect(result).to.contain(
+                'constructor(route: <a href="https://angular.io/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>)'
+            );
+            expect(result).to.not.contain('reference-badge');
         });
 
         it('should handle method with basic type argument', () => {

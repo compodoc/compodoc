@@ -5,7 +5,7 @@
 
             <div class="row pt-3">
                 <div class="col-sm-6">
-                    <h4><span class="icon ion-ios-arrow-up"></span>{{t "relationships-used-by" }}</h4>
+                    <h4>{{t "relationships-used-by" }}</h4>
                     {{#if relationships.incoming.length}}
                         <ul class="list-unstyled relationships-list">
                             {{#each relationships.incoming}}
@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <h4><span class="icon ion-ios-arrow-down"></span>{{t "relationships-depends-on" }}</h4>
+                    <h4>{{t "relationships-depends-on" }}</h4>
                     {{#if relationships.outgoing.length}}
                         <ul class="list-unstyled relationships-list">
                             {{#each relationships.outgoing}}

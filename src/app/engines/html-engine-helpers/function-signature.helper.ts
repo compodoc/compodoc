@@ -122,21 +122,15 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
             if (_result) {
                 if (_result.source === 'internal') {
                     const href = this.buildHrefForInternalType(_result.data);
-                    const badge = this.getBadgeMarkup(
-                        this.getReferenceBadge(_result.data, _result.source)
-                    );
-                    return `${argu.name}${this.getOptionalString(arg)}: <a href="${href}">${badge}${normalizedArgType}</a>`;
+                    return `${argu.name}${this.getOptionalString(arg)}: <a href="${href}">${normalizedArgType}</a>`;
                 } else {
                     const path = AngularVersionUtil.getApiLink(
                         _result.data,
                         Configuration.mainData.angularVersion
                     );
-                    const badge = this.getBadgeMarkup(
-                        this.getReferenceBadge(_result.data, _result.source)
-                    );
                     return `${argu.name}${this.getOptionalString(
                         arg
-                    )}: <a href="${path}" target="_blank">${badge}${normalizedArgType}</a>`;
+                    )}: <a href="${path}" target="_blank">${normalizedArgType}</a>`;
                 }
             } else if (BasicTypeUtil.isKnownType(normalizedArgType)) {
                 const path = BasicTypeUtil.getTypeUrl(normalizedArgType);
@@ -195,21 +189,15 @@ export class FunctionSignatureHelper implements IHtmlEngineHelper {
                 if (_result) {
                     if (_result.source === 'internal') {
                         const href = this.buildHrefForInternalType(_result.data);
-                        const badge = this.getBadgeMarkup(
-                            this.getReferenceBadge(_result.data, _result.source)
-                        );
-                        args += `${arg.name}${this.getOptionalString(arg)}: <a href="${href}" target="_self">${badge}${Handlebars.escapeExpression(normalizedArgType)}</a>`;
+                        args += `${arg.name}${this.getOptionalString(arg)}: <a href="${href}" target="_self">${Handlebars.escapeExpression(normalizedArgType)}</a>`;
                     } else {
                         let path = AngularVersionUtil.getApiLink(
                             _result.data,
                             Configuration.mainData.angularVersion
                         );
-                        const badge = this.getBadgeMarkup(
-                            this.getReferenceBadge(_result.data, _result.source)
-                        );
                         args += `${arg.name}${this.getOptionalString(
                             arg
-                        )}: <a href="${path}" target="_blank">${badge}${Handlebars.escapeExpression(
+                        )}: <a href="${path}" target="_blank">${Handlebars.escapeExpression(
                             normalizedArgType
                         )}</a>`;
                     }

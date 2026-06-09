@@ -1,8 +1,8 @@
 {{#linkType type}}
     {{#if withline}}
-        <code><a href="{{type.href}}#source" target="{{type.target}}" >{{#if type.refBadge}}<span class="reference-badge{{#if type.refBadgeKind}} reference-badge--{{type.refBadgeKind}}{{/if}}" aria-hidden="true">{{type.refBadge}}</span>{{/if}}{{type.raw}}:{{{line}}}</a></code>
+        <code><a href="{{type.href}}#source" target="{{type.target}}" >{{type.raw}}:{{{line}}}</a></code>
     {{else}}
-        <code><a href="{{type.href}}" target="{{type.target}}" >{{#if type.refBadge}}<span class="reference-badge{{#if type.refBadgeKind}} reference-badge--{{type.refBadgeKind}}{{/if}}" aria-hidden="true">{{type.refBadge}}</span>{{/if}}{{type.raw}}{{#compare type.indexKey "!==" ''}}['{{type.indexKey}}']{{/compare}}</a></code>
+        <code><a href="{{type.href}}" target="{{type.target}}" >{{type.raw}}{{#compare type.indexKey "!==" ''}}['{{type.indexKey}}']{{/compare}}</a></code>
     {{/if}}
 {{else}}
     <code>{{type}}</code>
