@@ -1,34 +1,34 @@
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
-import { ts, SyntaxKind } from "ts-morph";
+import { ts, SyntaxKind } from 'ts-morph';
 
-import {
-    getNamesCompareFn,
-    mergeTagsAndArgs,
-    markedtags,
-} from "../../../../../utils/utils";
-import { kindToType } from "../../../../../utils/kind-to-type";
-import { JsdocParserUtil } from "../../../../../utils/jsdoc-parser.util";
-import { isCoverageIgnore, isIgnore } from "../../../../../utils";
-import AngularVersionUtil from "../../../../..//utils/angular-version.util";
-import BasicTypeUtil from "../../../../../utils/basic-type.util";
-import { StringifyObjectLiteralExpression } from "../../../../../utils/object-literal-expression.util";
+import { getNamesCompareFn, mergeTagsAndArgs, markedtags } from '../../../../../utils/utils';
+import { kindToType } from '../../../../../utils/kind-to-type';
+import { JsdocParserUtil } from '../../../../../utils/jsdoc-parser.util';
+import { isCoverageIgnore, isIgnore } from '../../../../../utils';
+import AngularVersionUtil from '../../../../..//utils/angular-version.util';
+import BasicTypeUtil from '../../../../../utils/basic-type.util';
+import { StringifyObjectLiteralExpression } from '../../../../../utils/object-literal-expression.util';
 
-import DependenciesEngine from "../../../../engines/dependencies.engine";
-import Configuration from "../../../../configuration";
-import { StringifyArrowFunction } from "../../../../../utils/arrow-function.util";
-import {
-    getNodeDecorators,
-    nodeHasDecorator,
-} from "../../../../../utils/node.util";
-import { markedAcl } from "../../../../../utils/marked.acl";
+import DependenciesEngine from '../../../../engines/dependencies.engine';
+import Configuration from '../../../../configuration';
+import { StringifyArrowFunction } from '../../../../../utils/arrow-function.util';
+import { getNodeDecorators, nodeHasDecorator } from '../../../../../utils/node.util';
+import { markedAcl } from '../../../../../utils/marked.acl';
+import { ClassJsDocHelper } from './class-jsdoc.helper';
+import { TypeExpressionResolver } from './type-expression-resolver';
 
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
+    private jsDocHelper: ClassJsDocHelper;
+    private typeExpressionResolver: TypeExpressionResolver;
 
-    constructor(private typeChecker: ts.TypeChecker) {}
+    constructor(private typeChecker: ts.TypeChecker) {
+        this.jsDocHelper = new ClassJsDocHelper(this.jsdocParserUtil);
+        this.typeExpressionResolver = new TypeExpressionResolver(typeChecker);
+    }
 
     /**
      * HELPERS
@@ -41,94 +41,33 @@ export class ClassHelper {
         if (node && (node as any).getText && node.getText()) {
             return node.getText();
         } else if (node && node.kind === SyntaxKind.FalseKeyword) {
-            return "false";
+            return 'false';
         } else if (node && node.kind === SyntaxKind.TrueKeyword) {
-            return "true";
+            return 'true';
         }
-        return "";
+        return '';
     }
 
-    private checkForDeprecation(
-        tags: any[],
-        result: { [key in string | number]: any },
-    ) {
-        _.forEach(tags, (tag) => {
-            if (
-                tag.tagName &&
-                tag.tagName.text &&
-                tag.tagName.text.indexOf("deprecated") > -1
-            ) {
-                result.deprecated = true;
-                result.deprecationMessage =
-                    this.jsdocParserUtil.parseJSDocNode(tag);
-            }
-        });
+    private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
+        this.jsDocHelper.checkForDeprecation(tags, result);
     }
 
     /**
      * Process JSDoc tags and apply them to a result object
      */
-    private processJSDocTags(
-        jsdoctags: any,
-        result: any,
-        includeTagsArray: boolean = true,
-    ): void {
-        if (jsdoctags && jsdoctags.length >= 1) {
-            const jsdoc = jsdoctags[0];
-            if (jsdoc && jsdoc.tags) {
-                this.checkForDeprecation(
-                    jsdoc.tags as unknown as any[],
-                    result,
-                );
-                if (includeTagsArray) {
-                    result.jsdoctags = markedtags(
-                        jsdoc.tags as unknown as any[],
-                    );
-                }
-            }
-        }
+    private processJSDocTags(jsdoctags: any, result: any, includeTagsArray: boolean = true): void {
+        this.jsDocHelper.processTags(jsdoctags, result, includeTagsArray);
     }
 
     /**
      * Extract and process JSDoc comment for a node
      */
-    private extractAndProcessJSDocComment(
-        node: any,
-        sourceFile: ts.SourceFile,
-        result: any,
-    ): void {
-        const comment = this.jsdocParserUtil.getMainCommentOfNode(
-            node,
-            sourceFile,
-        );
-        if (typeof comment === "string") {
-            const cleanedDescription = this.jsdocParserUtil.parseComment(comment);
-            result.rawdescription = cleanedDescription;
-            result.description = markedAcl(cleanedDescription);
-        }
+    private extractAndProcessJSDocComment(node: any, sourceFile: ts.SourceFile, result: any): void {
+        this.jsDocHelper.extractComment(node, sourceFile, result);
     }
 
     private hasJSDocTag(member: ts.Node, tagName: string): boolean {
-        const jsdocs = this.jsdocParserUtil.getJSDocs(member) as any[] | undefined;
-        if (!jsdocs || jsdocs.length === 0) {
-            return false;
-        }
-
-        for (const doc of jsdocs) {
-            if (doc?.tagName?.text === tagName) {
-                return true;
-            }
-
-            if (doc?.tags) {
-                for (const tag of doc.tags) {
-                    if (tag?.tagName?.text === tagName) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return this.jsDocHelper.hasTag(member, tagName);
     }
 
     /**
@@ -138,100 +77,26 @@ export class ClassHelper {
         deprecated: boolean;
         deprecationMessage: string;
     } {
-        return {
-            deprecated: false,
-            deprecationMessage: "",
-        };
+        return this.jsDocHelper.createDocumentationFields();
     }
 
     private getTypeOperatorKeyword(operator: SyntaxKind): string {
-        switch (operator) {
-            case SyntaxKind.KeyOfKeyword:
-                return "keyof";
-            case SyntaxKind.UniqueKeyword:
-                return "unique";
-            case SyntaxKind.ReadonlyKeyword:
-                return "readonly";
-            default:
-                return kindToType(operator);
-        }
+        return this.typeExpressionResolver.getOperatorKeyword(operator);
     }
 
     private tryResolveTypeFromTypeChecker(
         node: ts.Node,
-        enclosingDeclaration?: ts.Node,
+        enclosingDeclaration?: ts.Node
     ): string | undefined {
-        if (
-            !this.typeChecker ||
-            typeof this.typeChecker.getTypeAtLocation !== "function" ||
-            typeof this.typeChecker.typeToString !== "function"
-        ) {
-            return undefined;
-        }
-
-        try {
-            const resolvedType = this.typeChecker.getTypeAtLocation(node);
-            const typeAsString = this.typeChecker.typeToString(
-                resolvedType,
-                enclosingDeclaration || node,
-                ts.TypeFormatFlags.NoTruncation,
-            );
-
-            if (typeAsString && typeAsString !== "unknown") {
-                return typeAsString;
-            }
-            // tslint:disable-next-line:no-empty
-        } catch (error) {}
-
-        return undefined;
+        return this.typeExpressionResolver.tryResolve(node, enclosingDeclaration);
     }
 
     private shouldResolveTypeWithTypeChecker(typeNode: ts.TypeNode): boolean {
-        if (ts.isTypeOperatorNode(typeNode)) {
-            return true;
-        }
+        const typeName = ts.isTypeReferenceNode(typeNode)
+            ? this.visitTypeName(typeNode.typeName as any)
+            : '';
 
-        if (!ts.isTypeReferenceNode(typeNode)) {
-            return false;
-        }
-
-        const utilityTypeNames = [
-            "Awaited",
-            "Partial",
-            "Required",
-            "Readonly",
-            "Record",
-            "Pick",
-            "Omit",
-            "Exclude",
-            "Extract",
-            "NonNullable",
-            "Parameters",
-            "ConstructorParameters",
-            "ReturnType",
-            "InstanceType",
-            "ThisParameterType",
-            "OmitThisParameter",
-            "ThisType",
-            "Uppercase",
-            "Lowercase",
-            "Capitalize",
-            "Uncapitalize",
-        ];
-
-        const typeName = this.visitTypeName(typeNode.typeName as any);
-        if (utilityTypeNames.includes(typeName as string)) {
-            return true;
-        }
-
-        return !!(
-            typeNode.typeArguments &&
-            typeNode.typeArguments.some(
-                (argument) =>
-                    ts.isTypeOperatorNode(argument) ||
-                    ts.isTypeQueryNode(argument),
-            )
-        );
+        return this.typeExpressionResolver.shouldResolve(typeNode, typeName as string);
     }
 
     /**
@@ -241,12 +106,12 @@ export class ClassHelper {
         if (!node.modifiers || node.modifiers.length === 0) {
             return undefined;
         }
-        let kinds = node.modifiers.map((modifier) => modifier.kind);
+        let kinds = node.modifiers.map((modifier: any) => modifier.kind);
         if (
             _.indexOf(kinds, SyntaxKind.PublicKeyword) !== -1 &&
             _.indexOf(kinds, SyntaxKind.StaticKeyword) !== -1
         ) {
-            kinds = kinds.filter((kind) => kind !== SyntaxKind.PublicKeyword);
+            kinds = kinds.filter((kind: number) => kind !== SyntaxKind.PublicKeyword);
         }
         return kinds;
     }
@@ -260,7 +125,7 @@ export class ClassHelper {
                 result.modifierKind = [];
             }
             const hasAlreadyPrivateKeyword = result.modifierKind.includes(
-                SyntaxKind.PrivateKeyword,
+                SyntaxKind.PrivateKeyword
             );
             if (!hasAlreadyPrivateKeyword) {
                 result.modifierKind.push(SyntaxKind.PrivateKeyword);
@@ -274,7 +139,7 @@ export class ClassHelper {
     private setFallbackDescription(result: any, node: any): void {
         if (!result.description && node.jsDoc && node.jsDoc.length > 0) {
             const lastJsDoc = node.jsDoc[node.jsDoc.length - 1];
-            if (typeof lastJsDoc.comment !== "undefined") {
+            if (typeof lastJsDoc.comment !== 'undefined') {
                 const rawDescription = lastJsDoc.comment;
                 result.rawdescription = rawDescription;
                 result.description = markedAcl(rawDescription);
@@ -282,9 +147,9 @@ export class ClassHelper {
         }
     }
 
-    private getDecoratorOfType(node, decoratorType) {
+    private getDecoratorOfType(node: any, decoratorType: any) {
         let decorators = getNodeDecorators(node) || [];
-        let result = [];
+        let result: any[] = [];
         const len = decorators.length;
 
         if (len > 1) {
@@ -314,8 +179,8 @@ export class ClassHelper {
         return undefined;
     }
 
-    private formatDecorators(decorators) {
-        let _decorators = [];
+    private formatDecorators(decorators: any) {
+        let _decorators: any[] = [];
 
         _.forEach(decorators, (decorator: any) => {
             if (decorator.expression) {
@@ -324,11 +189,11 @@ export class ClassHelper {
                 }
                 if (decorator.expression.expression) {
                     let info: any = {
-                        name: decorator.expression.expression.text,
+                        name: decorator.expression.expression.text
                     };
                     if (decorator.expression.arguments) {
                         info.stringifiedArguments = this.stringifyArguments(
-                            decorator.expression.arguments,
+                            decorator.expression.arguments
                         );
                     }
                     _decorators.push(info);
@@ -339,18 +204,18 @@ export class ClassHelper {
         return _decorators;
     }
 
-    private handleFunction(arg): string {
+    private handleFunction(arg: any): string {
         if (arg.function.length === 0) {
             return `${arg.name}${this.getOptionalString(arg)}: () => void`;
         }
 
-        let argums = arg.function.map((argu) => {
+        let argums = arg.function.map((argu: any) => {
             let _result = DependenciesEngine.find(argu.type);
             if (_result) {
-                if (_result.source === "internal") {
+                if (_result.source === 'internal') {
                     let path = _result.data.type;
-                    if (_result.data.type === "class") {
-                        path = "classe";
+                    if (_result.data.type === 'class') {
+                        path = 'classe';
                     }
                     return `${argu.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
                         _result.data.name
@@ -358,16 +223,16 @@ export class ClassHelper {
                 } else {
                     let path = AngularVersionUtil.getApiLink(
                         _result.data,
-                        Configuration.mainData.angularVersion,
+                        Configuration.mainData.angularVersion
                     );
                     return `${argu.name}${this.getOptionalString(
-                        arg,
+                        arg
                     )}: <a href="${path}" target="_blank">${argu.type}</a>`;
                 }
             } else if (BasicTypeUtil.isKnownType(argu.type)) {
                 let path = BasicTypeUtil.getTypeUrl(argu.type);
                 return `${argu.name}${this.getOptionalString(
-                    arg,
+                    arg
                 )}: <a href="${path}" target="_blank">${argu.type}</a>`;
             } else {
                 if (argu.name && argu.type) {
@@ -376,7 +241,7 @@ export class ClassHelper {
                     if (argu.name) {
                         return `${argu.name.text}`;
                     } else {
-                        return "";
+                        return '';
                     }
                 }
             }
@@ -384,21 +249,21 @@ export class ClassHelper {
         return `${arg.name}${this.getOptionalString(arg)}: (${argums}) => void`;
     }
 
-    private getOptionalString(arg): string {
-        return arg.optional ? "?" : "";
+    private getOptionalString(arg: any): string {
+        return arg.optional ? '?' : '';
     }
 
-    private stringifyArguments(args) {
-        let stringifyArgs = [];
+    private stringifyArguments(args: any) {
+        let stringifyArgs: any[] = [];
 
         stringifyArgs = args
-            .map((arg) => {
+            .map((arg: any) => {
                 const _result = DependenciesEngine.find(arg.type);
                 if (_result) {
-                    if (_result.source === "internal") {
+                    if (_result.source === 'internal') {
                         let path = _result.data.type;
-                        if (_result.data.type === "class") {
-                            path = "classe";
+                        if (_result.data.type === 'class') {
+                            path = 'classe';
                         }
                         return `${arg.name}${this.getOptionalString(arg)}: <a href="../${path}s/${
                             _result.data.name
@@ -406,10 +271,10 @@ export class ClassHelper {
                     } else {
                         let path = AngularVersionUtil.getApiLink(
                             _result.data,
-                            Configuration.mainData.angularVersion,
+                            Configuration.mainData.angularVersion
                         );
                         return `${arg.name}${this.getOptionalString(
-                            arg,
+                            arg
                         )}: <a href="${path}" target="_blank">${arg.type}</a>`;
                     }
                 } else if (arg.dotDotDotToken) {
@@ -417,12 +282,9 @@ export class ClassHelper {
                 } else if (arg.function) {
                     return this.handleFunction(arg);
                 } else if (arg.expression && arg.name) {
-                    return arg.expression.text + "." + arg.name.text;
-                } else if (
-                    arg.expression &&
-                    arg.kind === SyntaxKind.NewExpression
-                ) {
-                    return "new " + arg.expression.text + "()";
+                    return arg.expression.text + '.' + arg.name.text;
+                } else if (arg.expression && arg.kind === SyntaxKind.NewExpression) {
+                    return 'new ' + arg.expression.text + '()';
                 } else if (arg.kind && arg.kind === SyntaxKind.StringLiteral) {
                     return `'` + arg.text + `'`;
                 } else if (
@@ -433,14 +295,14 @@ export class ClassHelper {
                 ) {
                     let i = 0,
                         len = arg.elements.length,
-                        result = "[";
+                        result = '[';
                     for (i; i < len; i++) {
                         result += `'` + arg.elements[i].text + `'`;
                         if (i < len - 1) {
-                            result += ", ";
+                            result += ', ';
                         }
                     }
-                    result += "]";
+                    result += ']';
                     return result;
                 } else if (
                     arg.kind &&
@@ -449,20 +311,17 @@ export class ClassHelper {
                     arg.parameters.length > 0
                 ) {
                     return StringifyArrowFunction(arg);
-                } else if (
-                    arg.kind &&
-                    arg.kind === SyntaxKind.ObjectLiteralExpression
-                ) {
+                } else if (arg.kind && arg.kind === SyntaxKind.ObjectLiteralExpression) {
                     return StringifyObjectLiteralExpression(arg);
                 } else if (BasicTypeUtil.isKnownType(arg.type)) {
                     const path = BasicTypeUtil.getTypeUrl(arg.type);
                     return `${arg.name}${this.getOptionalString(
-                        arg,
+                        arg
                     )}: <a href="${path}" target="_blank">${arg.type}</a>`;
                 } else {
                     if (arg.type) {
-                        let finalStringifiedArgument = "";
-                        let separator = ":";
+                        let finalStringifiedArgument = '';
+                        let separator = ':';
                         if (arg.name) {
                             finalStringifiedArgument += arg.name;
                         }
@@ -472,15 +331,13 @@ export class ClassHelper {
                             arg.expression.text
                         ) {
                             finalStringifiedArgument += arg.expression.text;
-                            separator = " as";
+                            separator = ' as';
                         }
                         if (arg.optional) {
-                            finalStringifiedArgument +=
-                                this.getOptionalString(arg);
+                            finalStringifiedArgument += this.getOptionalString(arg);
                         }
                         if (arg.type) {
-                            finalStringifiedArgument +=
-                                separator + " " + this.visitType(arg.type);
+                            finalStringifiedArgument += separator + ' ' + this.visitType(arg.type);
                         }
                         return finalStringifiedArgument;
                     } else if (arg.text) {
@@ -490,29 +347,23 @@ export class ClassHelper {
                     }
                 }
             })
-            .join(", ");
+            .join(', ');
 
         return stringifyArgs;
     }
 
-    private getPosition(
-        node: ts.Node,
-        sourceFile: ts.SourceFile,
-    ): ts.LineAndCharacter {
+    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
         let position: ts.LineAndCharacter;
         if ((node as any).name && (node as any).name.end) {
-            position = ts.getLineAndCharacterOfPosition(
-                sourceFile,
-                (node as any).name.end,
-            );
+            position = ts.getLineAndCharacterOfPosition(sourceFile, (node as any).name.end);
         } else {
             position = ts.getLineAndCharacterOfPosition(sourceFile, node.pos);
         }
         return position;
     }
 
-    private addAccessor(accessors, nodeAccessor, sourceFile) {
-        let nodeName = "";
+    private addAccessor(accessors: any, nodeAccessor: any, sourceFile: any) {
+        let nodeName = '';
         if (nodeAccessor.name) {
             nodeName = nodeAccessor.name.text;
             let jsdoctags = this.jsdocParserUtil.getJSDocs(nodeAccessor);
@@ -521,43 +372,30 @@ export class ClassHelper {
                 accessors[nodeName] = {
                     name: nodeName,
                     setSignature: undefined,
-                    getSignature: undefined,
+                    getSignature: undefined
                 };
             }
 
             if (nodeAccessor.kind === SyntaxKind.SetAccessor) {
                 let setSignature: any = {
                     name: nodeName,
-                    type: "void",
+                    type: 'void',
                     ...this.initializeDocumentationFields(),
-                    args: nodeAccessor.parameters.map((param) =>
-                        this.visitArgument(param),
-                    ),
-                    returnType: nodeAccessor.type
-                        ? this.visitType(nodeAccessor.type)
-                        : "void",
-                    line: this.getPosition(nodeAccessor, sourceFile).line + 1,
+                    args: nodeAccessor.parameters.map((param: any) => this.visitArgument(param)),
+                    returnType: nodeAccessor.type ? this.visitType(nodeAccessor.type) : 'void',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
                 };
 
-                this.extractAndProcessJSDocComment(
-                    nodeAccessor,
-                    sourceFile,
-                    setSignature,
-                );
+                this.extractAndProcessJSDocComment(nodeAccessor, sourceFile, setSignature);
                 this.processJSDocTags(jsdoctags, setSignature);
 
-                if (
-                    setSignature.jsdoctags &&
-                    setSignature.jsdoctags.length > 0
-                ) {
+                if (setSignature.jsdoctags && setSignature.jsdoctags.length > 0) {
                     setSignature.jsdoctags = mergeTagsAndArgs(
                         setSignature.args,
-                        setSignature.jsdoctags,
+                        setSignature.jsdoctags
                     );
                 } else if (setSignature.args && setSignature.args.length > 0) {
-                    setSignature.jsdoctags = mergeTagsAndArgs(
-                        setSignature.args,
-                    );
+                    setSignature.jsdoctags = mergeTagsAndArgs(setSignature.args);
                 }
 
                 accessors[nodeName].setSignature = setSignature;
@@ -565,20 +403,12 @@ export class ClassHelper {
             if (nodeAccessor.kind === SyntaxKind.GetAccessor) {
                 let getSignature: any = {
                     name: nodeName,
-                    type: nodeAccessor.type
-                        ? kindToType(nodeAccessor.type.kind)
-                        : "",
-                    returnType: nodeAccessor.type
-                        ? this.visitType(nodeAccessor.type)
-                        : "",
-                    line: this.getPosition(nodeAccessor, sourceFile).line + 1,
+                    type: nodeAccessor.type ? kindToType(nodeAccessor.type.kind) : '',
+                    returnType: nodeAccessor.type ? this.visitType(nodeAccessor.type) : '',
+                    line: this.getPosition(nodeAccessor, sourceFile).line + 1
                 };
 
-                this.extractAndProcessJSDocComment(
-                    nodeAccessor,
-                    sourceFile,
-                    getSignature,
-                );
+                this.extractAndProcessJSDocComment(nodeAccessor, sourceFile, getSignature);
                 this.processJSDocTags(jsdoctags, getSignature);
 
                 accessors[nodeName].getSignature = getSignature;
@@ -586,10 +416,7 @@ export class ClassHelper {
         }
     }
 
-    private hasDecoratorType(
-        decorator: ts.Decorator,
-        ...types: string[]
-    ): boolean {
+    private hasDecoratorType(decorator: ts.Decorator, ...types: string[]): boolean {
         if ((decorator.expression as any).expression) {
             const decoratorText = (decorator.expression as any).expression.text;
             return types.includes(decoratorText);
@@ -598,20 +425,20 @@ export class ClassHelper {
     }
 
     private isDirectiveDecorator(decorator: ts.Decorator): boolean {
-        return this.hasDecoratorType(decorator, "Directive", "Component");
+        return this.hasDecoratorType(decorator, 'Directive', 'Component');
     }
 
-    private isServiceDecorator(decorator) {
-        return this.hasDecoratorType(decorator, "Injectable", "Service");
+    private isServiceDecorator(decorator: any) {
+        return this.hasDecoratorType(decorator, 'Injectable', 'Service');
     }
 
-    private isPrivate(member): boolean {
+    private isPrivate(member: any): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         if (member.modifiers) {
             const isPrivate: boolean = member.modifiers.some(
-                (modifier) => modifier.kind === SyntaxKind.PrivateKeyword,
+                (modifier: any) => modifier.kind === SyntaxKind.PrivateKeyword
             );
             if (isPrivate) {
                 return true;
@@ -619,8 +446,7 @@ export class ClassHelper {
         }
         // Check for ECMAScript Private Fields
         if (member.name && member.name.escapedText) {
-            const isPrivate: boolean =
-                member.name.escapedText.indexOf("#") === 0;
+            const isPrivate: boolean = member.name.escapedText.indexOf('#') === 0;
             if (isPrivate) {
                 return true;
             }
@@ -628,10 +454,10 @@ export class ClassHelper {
         return this.isHiddenMember(member);
     }
 
-    private isProtected(member): boolean {
+    private isProtected(member: any): boolean {
         if (member.modifiers) {
             const isProtected: boolean = member.modifiers.some(
-                (modifier) => modifier.kind === SyntaxKind.ProtectedKeyword,
+                (modifier: any) => modifier.kind === SyntaxKind.ProtectedKeyword
             );
             if (isProtected) {
                 return true;
@@ -640,17 +466,17 @@ export class ClassHelper {
         return this.isHiddenMember(member);
     }
 
-    private isInternal(member): boolean {
+    private isInternal(member: any): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return this.hasJSDocTag(member, "internal");
+        return this.hasJSDocTag(member, 'internal');
     }
 
-    private isPublic(member): boolean {
+    private isPublic(member: any): boolean {
         if (member.modifiers) {
             const isPublic: boolean = member.modifiers.some(
-                (modifier) => modifier.kind === SyntaxKind.PublicKeyword,
+                (modifier: any) => modifier.kind === SyntaxKind.PublicKeyword
             );
             if (isPublic) {
                 return true;
@@ -659,23 +485,23 @@ export class ClassHelper {
         return this.isHiddenMember(member);
     }
 
-    private isHiddenMember(member): boolean {
+    private isHiddenMember(member: any): boolean {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        return this.hasJSDocTag(member, "hidden");
+        return this.hasJSDocTag(member, 'hidden');
     }
 
-    private isPipeDecorator(decorator) {
-        return this.hasDecoratorType(decorator, "Pipe");
+    private isPipeDecorator(decorator: any) {
+        return this.hasDecoratorType(decorator, 'Pipe');
     }
 
-    private isControllerDecorator(decorator) {
-        return this.hasDecoratorType(decorator, "Controller");
+    private isControllerDecorator(decorator: any) {
+        return this.hasDecoratorType(decorator, 'Controller');
     }
 
-    private isModuleDecorator(decorator) {
-        return this.hasDecoratorType(decorator, "NgModule", "Module");
+    private isModuleDecorator(decorator: any) {
+        return this.hasDecoratorType(decorator, 'NgModule', 'Module');
     }
 
     /**
@@ -686,48 +512,38 @@ export class ClassHelper {
         fileName: string,
         classDeclaration: ts.ClassDeclaration | ts.InterfaceDeclaration,
         sourceFile?: ts.SourceFile,
-        astFile?: ts.SourceFile,
+        astFile?: ts.SourceFile
     ): any {
-        let symbol = this.typeChecker.getSymbolAtLocation(
-            classDeclaration.name,
-        );
-        let rawdescription = "";
+        let symbol = classDeclaration.name
+            ? this.typeChecker.getSymbolAtLocation(classDeclaration.name)
+            : undefined;
+        let rawdescription = '';
         let deprecation = this.initializeDocumentationFields();
-        let description = "";
+        let description = '';
         let jsdoctags: any[] = [];
 
         if (symbol) {
-            const comment = this.jsdocParserUtil.getMainCommentOfNode(
-                classDeclaration,
-                sourceFile,
-            );
+            const comment = this.jsdocParserUtil.getMainCommentOfNode(classDeclaration, sourceFile);
             rawdescription = this.jsdocParserUtil.parseComment(comment);
             description = markedAcl(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
-                let declarationsjsdoctags = this.jsdocParserUtil.getJSDocs(
-                    symbol.declarations[0],
-                );
-                this.processJSDocTags(
-                    declarationsjsdoctags,
-                    deprecation,
-                    false,
-                );
+                let declarationsjsdoctags = this.jsdocParserUtil.getJSDocs(symbol.declarations[0]);
+                this.processJSDocTags(declarationsjsdoctags, deprecation, false);
                 if (isIgnore(symbol.declarations[0])) {
                     return [{ ignore: true }];
                 }
             }
             if (symbol.valueDeclaration) {
                 jsdoctags = this.jsdocParserUtil.getJSDocs(
-                    symbol.valueDeclaration,
+                    symbol.valueDeclaration
                 ) as unknown as any[];
                 if (jsdoctags && jsdoctags.length >= 1) {
                     const jsdoc = jsdoctags[0] as any;
                     if (jsdoc && jsdoc.tags) {
-                        const tempDeprecation =
-                            this.initializeDocumentationFields();
+                        const tempDeprecation = this.initializeDocumentationFields();
                         this.checkForDeprecation(jsdoc.tags, tempDeprecation);
                         deprecation = tempDeprecation;
                         jsdoctags = markedtags(jsdoc.tags);
@@ -736,46 +552,38 @@ export class ClassHelper {
             }
         }
 
-        let className = classDeclaration.name.text;
-        let members;
-        let implementsElements = [];
-        let extendsElements = [];
+        let className = classDeclaration.name?.text || '';
+        let members: any;
+        let implementsElements: any[] = [];
+        let extendsElements: any[] = [];
         const coverageIgnore = isCoverageIgnore(classDeclaration);
 
-        if (
-            typeof (ts as any).getEffectiveImplementsTypeNodes !== "undefined"
-        ) {
-            let implementedTypes = (ts as any).getEffectiveImplementsTypeNodes(
-                classDeclaration,
-            );
+        if (typeof (ts as any).getEffectiveImplementsTypeNodes !== 'undefined') {
+            let implementedTypes = (ts as any).getEffectiveImplementsTypeNodes(classDeclaration);
             if (implementedTypes) {
                 let i = 0;
                 let len = implementedTypes.length;
                 for (i; i < len; i++) {
                     if (implementedTypes[i].expression) {
-                        implementsElements.push(
-                            implementedTypes[i].expression.text,
-                        );
+                        implementsElements.push(implementedTypes[i].expression.text);
                     }
                 }
             }
         }
 
-        if (typeof (ts as any).getClassExtendsHeritageElement !== "undefined") {
+        if (typeof (ts as any).getClassExtendsHeritageElement !== 'undefined') {
             if (astFile) {
-                let interfaceOrClassNode = (astFile as any).getInterface(
-                    className,
-                );
+                let interfaceOrClassNode = (astFile as any).getInterface(className);
                 if (!interfaceOrClassNode) {
                     interfaceOrClassNode = (astFile as any).getClass(className);
                 }
                 if (interfaceOrClassNode) {
                     const extendsListRaw = interfaceOrClassNode.getExtends();
-                    let extendsList = [];
+                    let extendsList: any[] = [];
                     if (extendsListRaw) {
                         if (Array.isArray(extendsListRaw)) {
                             if (extendsListRaw.length > 0) {
-                                extendsListRaw.forEach((extendElement) => {
+                                extendsListRaw.forEach((extendElement: any) => {
                                     const text = extendElement.getText();
                                     if (text) {
                                         extendsList.push(text);
@@ -811,17 +619,11 @@ export class ClassHelper {
 
                 // RETURN TOO EARLY FOR MANY DECORATORS !!!!
                 // iterating through the decorators array we have to keep the flags `true` values from the previous loop iteration
-                isDirective =
-                    isDirective ||
-                    this.isDirectiveDecorator(classDecorators[a]);
-                isService =
-                    isService || this.isServiceDecorator(classDecorators[a]);
+                isDirective = isDirective || this.isDirectiveDecorator(classDecorators[a]);
+                isService = isService || this.isServiceDecorator(classDecorators[a]);
                 isPipe = isPipe || this.isPipeDecorator(classDecorators[a]);
-                isModule =
-                    isModule || this.isModuleDecorator(classDecorators[a]);
-                isController =
-                    isController ||
-                    this.isControllerDecorator(classDecorators[a]);
+                isModule = isModule || this.isModuleDecorator(classDecorators[a]);
+                isController = isController || this.isControllerDecorator(classDecorators[a]);
             }
             if (isDirective) {
                 return {
@@ -842,7 +644,7 @@ export class ClassHelper {
                     jsdoctags: jsdoctags,
                     extends: extendsElements,
                     implements: implementsElements,
-                    accessors: members.accessors,
+                    accessors: members.accessors
                 };
             } else if (isService) {
                 return [
@@ -862,8 +664,8 @@ export class ClassHelper {
                         jsdoctags: jsdoctags,
                         extends: extendsElements,
                         implements: implementsElements,
-                        accessors: members.accessors,
-                    },
+                        accessors: members.accessors
+                    }
                 ];
             } else if (isPipe) {
                 return [
@@ -877,8 +679,8 @@ export class ClassHelper {
                         rawdescription: rawdescription,
                         jsdoctags: jsdoctags,
                         properties: members.properties,
-                        methods: members.methods,
-                    },
+                        methods: members.methods
+                    }
                 ];
             } else if (isModule) {
                 return [
@@ -891,8 +693,8 @@ export class ClassHelper {
                         description,
                         rawdescription: rawdescription,
                         jsdoctags: jsdoctags,
-                        methods: members.methods,
-                    },
+                        methods: members.methods
+                    }
                 ];
             } else {
                 return [
@@ -910,8 +712,8 @@ export class ClassHelper {
                         jsdoctags: jsdoctags,
                         extends: extendsElements,
                         implements: implementsElements,
-                        accessors: members.accessors,
-                    },
+                        accessors: members.accessors
+                    }
                 ];
             }
         }
@@ -935,8 +737,8 @@ export class ClassHelper {
                     jsdoctags: jsdoctags,
                     extends: extendsElements,
                     implements: implementsElements,
-                    accessors: members.accessors,
-                },
+                    accessors: members.accessors
+                }
             ];
         } else {
             return [
@@ -956,8 +758,8 @@ export class ClassHelper {
                     jsdoctags: jsdoctags,
                     extends: extendsElements,
                     implements: implementsElements,
-                    accessors: members.accessors,
-                },
+                    accessors: members.accessors
+                }
             ];
         }
     }
@@ -966,34 +768,28 @@ export class ClassHelper {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
-        let inputs = [];
-        let outputs = [];
-        let methods = [];
-        let properties = [];
-        let indexSignatures = [];
+        let inputs: any[] = [];
+        let outputs: any[] = [];
+        let methods: any[] = [];
+        let properties: any[] = [];
+        let indexSignatures: any[] = [];
         let kind;
         let inputDecorator;
-        let hostBindings = [];
-        let hostListeners = [];
+        let hostBindings: any[] = [];
+        let hostListeners: any[] = [];
         let constructor;
         let outputDecorator;
-        let accessors = {};
-        let result = {};
+        let accessors: any = {};
+        let result: any = {};
 
         for (let i = 0; i < members.length; i++) {
             // Allows typescript guess type when using ts.is*
             let member = members[i];
 
-            inputDecorator = this.getDecoratorOfType(member, "Input");
-            outputDecorator = this.getDecoratorOfType(member, "Output");
-            const parsedHostBindings = this.getDecoratorOfType(
-                member,
-                "HostBinding",
-            );
-            const parsedHostListeners = this.getDecoratorOfType(
-                member,
-                "HostListener",
-            );
+            inputDecorator = this.getDecoratorOfType(member, 'Input');
+            outputDecorator = this.getDecoratorOfType(member, 'Output');
+            const parsedHostBindings = this.getDecoratorOfType(member, 'HostBinding');
+            const parsedHostListeners = this.getDecoratorOfType(member, 'HostListener');
 
             kind = member.kind;
 
@@ -1001,38 +797,23 @@ export class ClassHelper {
                 continue;
             }
 
-            if (
-                this.isInternal(member) &&
-                Configuration.mainData.disableInternal
-            ) {
+            if (this.isInternal(member) && Configuration.mainData.disableInternal) {
                 continue;
             }
 
             if (inputDecorator && inputDecorator.length > 0) {
-                inputs.push(
-                    this.visitInputAndHostBinding(
-                        member,
-                        inputDecorator[0],
-                        sourceFile,
-                    ),
-                );
+                inputs.push(this.visitInputAndHostBinding(member, inputDecorator[0], sourceFile));
                 if (ts.isSetAccessorDeclaration(member)) {
                     this.addAccessor(accessors, members[i], sourceFile);
                 }
             } else if (outputDecorator && outputDecorator.length > 0) {
-                outputs.push(
-                    this.visitOutput(member, outputDecorator[0], sourceFile),
-                );
+                outputs.push(this.visitOutput(member, outputDecorator[0], sourceFile));
             } else if (parsedHostBindings && parsedHostBindings.length > 0) {
                 let k = 0;
                 const lenHB = parsedHostBindings.length;
                 for (k; k < lenHB; k++) {
                     hostBindings.push(
-                        this.visitInputAndHostBinding(
-                            member,
-                            parsedHostBindings[k],
-                            sourceFile,
-                        ),
+                        this.visitInputAndHostBinding(member, parsedHostBindings[k], sourceFile)
                     );
                 }
             } else if (parsedHostListeners && parsedHostListeners.length > 0) {
@@ -1040,91 +821,48 @@ export class ClassHelper {
                 const lenHL = parsedHostListeners.length;
                 for (l; l < lenHL; l++) {
                     hostListeners.push(
-                        this.visitHostListener(
-                            member,
-                            parsedHostListeners[l],
-                            sourceFile,
-                        ),
+                        this.visitHostListener(member, parsedHostListeners[l], sourceFile)
                     );
                 }
             }
 
             if (!this.isHiddenMember(member)) {
-                if (
-                    !(
-                        this.isPrivate(member) &&
-                        Configuration.mainData.disablePrivate
-                    )
-                ) {
-                    if (
-                        !(
-                            this.isInternal(member) &&
-                            Configuration.mainData.disableInternal
-                        )
-                    ) {
+                if (!(this.isPrivate(member) && Configuration.mainData.disablePrivate)) {
+                    if (!(this.isInternal(member) && Configuration.mainData.disableInternal)) {
                         if (
-                            !(
-                                this.isProtected(member) &&
-                                Configuration.mainData.disableProtected
-                            )
+                            !(this.isProtected(member) && Configuration.mainData.disableProtected)
                         ) {
-                            if (
-                                ts.isMethodDeclaration(member) ||
-                                ts.isMethodSignature(member)
-                            ) {
-                                methods.push(
-                                    this.visitMethodDeclaration(
-                                        member,
-                                        sourceFile,
-                                    ),
-                                );
+                            if (ts.isMethodDeclaration(member) || ts.isMethodSignature(member)) {
+                                methods.push(this.visitMethodDeclaration(member, sourceFile));
                             } else if (
                                 ts.isPropertyDeclaration(member) ||
                                 ts.isPropertySignature(member)
                             ) {
                                 if (!inputDecorator && !outputDecorator) {
-                                    properties.push(
-                                        this.visitProperty(member, sourceFile),
-                                    );
+                                    properties.push(this.visitProperty(member, sourceFile));
                                 }
                             } else if (ts.isCallSignatureDeclaration(member)) {
-                                properties.push(
-                                    this.visitCallDeclaration(
-                                        member,
-                                        sourceFile,
-                                    ),
-                                );
+                                properties.push(this.visitCallDeclaration(member, sourceFile));
                             } else if (
                                 ts.isGetAccessorDeclaration(member) ||
                                 ts.isSetAccessorDeclaration(member)
                             ) {
-                                this.addAccessor(
-                                    accessors,
-                                    members[i],
-                                    sourceFile,
-                                );
+                                this.addAccessor(accessors, members[i], sourceFile);
                             } else if (ts.isIndexSignatureDeclaration(member)) {
                                 indexSignatures.push(
-                                    this.visitIndexDeclaration(
-                                        member,
-                                        sourceFile,
-                                    ),
+                                    this.visitIndexDeclaration(member, sourceFile)
                                 );
                             } else if (ts.isConstructorDeclaration(member)) {
-                                let _constructorProperties =
-                                    this.visitConstructorProperties(
-                                        member,
-                                        sourceFile,
-                                    );
+                                let _constructorProperties = this.visitConstructorProperties(
+                                    member,
+                                    sourceFile
+                                );
                                 let j = 0;
                                 let len = _constructorProperties.length;
                                 for (j; j < len; j++) {
                                     properties.push(_constructorProperties[j]);
                                 }
-                                constructor = this.visitConstructorDeclaration(
-                                    member,
-                                    sourceFile,
-                                );
+                                constructor = this.visitConstructorDeclaration(member, sourceFile);
                             }
                         }
                     }
@@ -1149,17 +887,17 @@ export class ClassHelper {
             properties,
             indexSignatures,
             kind,
-            constructor,
+            constructor
         };
 
         if (Object.keys(accessors).length) {
-            result["accessors"] = accessors;
+            result['accessors'] = accessors;
         }
 
         return result;
     }
 
-    private visitTypeName(typeName: ts.Identifier) {
+    private visitTypeName(typeName: any): any {
         if (typeName.escapedText) {
             return typeName.escapedText;
         }
@@ -1169,15 +907,15 @@ export class ClassHelper {
         if ((typeName as any).left && (typeName as any).right) {
             return (
                 this.visitTypeName((typeName as any).left) +
-                "." +
+                '.' +
                 this.visitTypeName((typeName as any).right)
             );
         }
-        return "";
+        return '';
     }
 
-    public visitTypeIndex(node): string {
-        let _return = "";
+    public visitTypeIndex(node: any): string {
+        let _return = '';
 
         if (!node) {
             return _return;
@@ -1195,8 +933,8 @@ export class ClassHelper {
         return _return;
     }
 
-    public visitType(node): string {
-        let _return = "void";
+    public visitType(node: any): string {
+        let _return = 'void';
 
         if (!node) {
             return _return;
@@ -1241,26 +979,23 @@ export class ClassHelper {
                 _return = this.stringifyTypeLiteral(node.type);
             }
             if (node.type.typeArguments) {
-                _return += "<";
+                _return += '<';
                 const typeArguments = [];
                 for (const argument of node.type.typeArguments) {
                     typeArguments.push(this.visitType(argument));
                 }
-                _return += typeArguments.join(" | ");
-                _return += ">";
+                _return += typeArguments.join(' | ');
+                _return += '>';
             }
             if (node.type.elementType) {
                 const _firstPart = this.visitType(node.type.elementType);
                 _return = _firstPart + kindToType(node.type.kind);
-                if (
-                    node.type.elementType.kind === SyntaxKind.ParenthesizedType
-                ) {
-                    _return =
-                        "(" + _firstPart + ")" + kindToType(node.type.kind);
+                if (node.type.elementType.kind === SyntaxKind.ParenthesizedType) {
+                    _return = '(' + _firstPart + ')' + kindToType(node.type.kind);
                 }
             }
 
-            const parseTypesOrElements = (arr, separator) => {
+            const parseTypesOrElements = (arr: any[], separator: any) => {
                 let i = 0;
                 let len = arr.length;
                 for (i; i < len; i++) {
@@ -1268,49 +1003,39 @@ export class ClassHelper {
 
                     if (type.elementType) {
                         const _firstPart = this.visitType(type.elementType);
-                        if (
-                            type.elementType.kind ===
-                            SyntaxKind.ParenthesizedType
-                        ) {
-                            _return +=
-                                "(" + _firstPart + ")" + kindToType(type.kind);
+                        if (type.elementType.kind === SyntaxKind.ParenthesizedType) {
+                            _return += '(' + _firstPart + ')' + kindToType(type.kind);
                         } else {
                             _return += _firstPart + kindToType(type.kind);
                         }
                     } else {
                         if (ts.isLiteralTypeNode(type) && type.literal) {
                             if ((type.literal as any).text) {
-                                _return +=
-                                    '"' + (type.literal as any).text + '"';
+                                _return += '"' + (type.literal as any).text + '"';
                             } else {
                                 _return += kindToType(type.literal.kind);
                             }
                         } else if ((type as any).typeName) {
-                            _return += this.visitTypeName(
-                                (type as any).typeName,
-                            );
-                        } else if (
-                            type.kind === SyntaxKind.RestType &&
-                            type.type
-                        ) {
-                            _return += "..." + this.visitType(type.type);
+                            _return += this.visitTypeName((type as any).typeName);
+                        } else if (type.kind === SyntaxKind.RestType && type.type) {
+                            _return += '...' + this.visitType(type.type);
                         } else if (ts.isIntersectionTypeNode(type) && type.types) {
                             const parts: string[] = [];
                             for (const t of type.types) {
                                 parts.push(this.visitType(t));
                             }
-                            _return += parts.join(" & ");
+                            _return += parts.join(' & ');
                         } else {
                             _return += kindToType(type.kind);
                         }
                         if (type.typeArguments) {
-                            _return += "<";
+                            _return += '<';
                             const typeArguments = [];
                             for (const argument of type.typeArguments) {
                                 typeArguments.push(this.visitType(argument));
                             }
                             _return += typeArguments.join(separator);
-                            _return += ">";
+                            _return += '>';
                         }
                     }
                     if (i < len - 1) {
@@ -1320,66 +1045,60 @@ export class ClassHelper {
             };
 
             if (node.type.elements && ts.isTupleTypeNode(node.type)) {
-                _return = "[";
-                parseTypesOrElements(node.type.elements, ", ");
-                _return += "]";
+                _return = '[';
+                parseTypesOrElements(node.type.elements, ', ');
+                _return += ']';
             }
             if (node.type.types && ts.isUnionTypeNode(node.type)) {
-                _return = "";
-                parseTypesOrElements(node.type.types, " | ");
+                _return = '';
+                parseTypesOrElements(node.type.types, ' | ');
             }
             if (node.type.types && ts.isIntersectionTypeNode(node.type)) {
-                _return = "";
-                parseTypesOrElements(node.type.types, " & ");
+                _return = '';
+                parseTypesOrElements(node.type.types, ' & ');
             }
             if (node.type.elementTypes) {
                 let elementTypes = node.type.elementTypes;
                 let i = 0;
                 let len = elementTypes.length;
                 if (len > 0) {
-                    _return = "[";
+                    _return = '[';
 
                     for (i; i < len; i++) {
                         let type = elementTypes[i];
-                        if (
-                            type.kind === SyntaxKind.ArrayType &&
-                            type.elementType
-                        ) {
+                        if (type.kind === SyntaxKind.ArrayType && type.elementType) {
                             _return += kindToType(type.elementType.kind);
                             _return += kindToType(type.kind);
                         } else if ((type as any).typeName) {
                             // For type references, use the type name directly instead of kindToType + typeName
-                            _return += this.visitTypeName(
-                                (type as any).typeName,
-                            );
+                            _return += this.visitTypeName((type as any).typeName);
                         } else {
                             _return += kindToType(type.kind);
                         }
                         if (ts.isLiteralTypeNode(type) && type.literal) {
                             if ((type.literal as any).text) {
-                                _return +=
-                                    '"' + (type.literal as any).text + '"';
+                                _return += '"' + (type.literal as any).text + '"';
                             } else {
                                 _return += kindToType(type.literal.kind);
                             }
                         }
                         if (type.kind === SyntaxKind.RestType && type.type) {
-                            _return += "..." + this.visitType(type.type);
+                            _return += '...' + this.visitType(type.type);
                         }
 
                         if (
                             type.kind === SyntaxKind.TypeReference &&
                             type.typeName &&
-                            typeof type.typeName.escapedText !== "undefined" &&
-                            type.typeName.escapedText === ""
+                            typeof type.typeName.escapedText !== 'undefined' &&
+                            type.typeName.escapedText === ''
                         ) {
                             continue;
                         }
                         if (i < len - 1) {
-                            _return += ", ";
+                            _return += ', ';
                         }
                     }
-                    _return += "]";
+                    _return += ']';
                 }
             }
             if (
@@ -1396,9 +1115,7 @@ export class ClassHelper {
         } else if (node.elementType) {
             _return = kindToType(node.elementType.kind) + kindToType(node.kind);
             if (node.elementType.typeName) {
-                _return =
-                    this.visitTypeName(node.elementType.typeName) +
-                    kindToType(node.kind);
+                _return = this.visitTypeName(node.elementType.typeName) + kindToType(node.kind);
             }
         } else if (ts.isTypeOperatorNode(node)) {
             const operator = this.getTypeOperatorKeyword(node.operator);
@@ -1407,7 +1124,7 @@ export class ClassHelper {
         } else if (ts.isTypeQueryNode(node)) {
             _return = `typeof ${this.visitTypeName(node.exprName as any)}`;
         } else if (node.types && ts.isUnionTypeNode(node)) {
-            _return = "";
+            _return = '';
             let i = 0;
             let len = node.types.length;
             for (i; i < len; i++) {
@@ -1424,11 +1141,11 @@ export class ClassHelper {
                     _return += kindToType(type.kind);
                 }
                 if (i < len - 1) {
-                    _return += " | ";
+                    _return += ' | ';
                 }
             }
         } else if (node.types && ts.isIntersectionTypeNode(node)) {
-            _return = "";
+            _return = '';
             let i = 0;
             let len = node.types.length;
             for (i; i < len; i++) {
@@ -1445,20 +1162,17 @@ export class ClassHelper {
                     _return += this.visitType(type);
                 }
                 if (i < len - 1) {
-                    _return += " & ";
+                    _return += ' & ';
                 }
             }
-        } else if (
-            node.kind === SyntaxKind.IndexedAccessType &&
-            node.objectType
-        ) {
-            let objectTypePart = "";
+        } else if (node.kind === SyntaxKind.IndexedAccessType && node.objectType) {
+            let objectTypePart = '';
             if (node.objectType.typeName) {
                 objectTypePart = this.visitTypeName(node.objectType.typeName);
             } else {
                 objectTypePart = this.visitType(node.objectType);
             }
-            let indexTypePart = "";
+            let indexTypePart = '';
             if (
                 node.indexType &&
                 ts.isLiteralTypeNode(node.indexType) &&
@@ -1470,7 +1184,7 @@ export class ClassHelper {
             }
             _return = `${objectTypePart}['${indexTypePart}']`;
         } else if (node.dotDotDotToken) {
-            _return = "any[]";
+            _return = 'any[]';
         } else {
             _return = kindToType(node.kind);
 
@@ -1480,11 +1194,10 @@ export class ClassHelper {
             }
 
             if (
-                (_return === "" || _return === "unknown") &&
+                (_return === '' || _return === 'unknown') &&
                 node.initializer &&
                 node.initializer.kind &&
-                (node.kind === SyntaxKind.PropertyDeclaration ||
-                    node.kind === SyntaxKind.Parameter)
+                (node.kind === SyntaxKind.PropertyDeclaration || node.kind === SyntaxKind.Parameter)
             ) {
                 _return = kindToType(node.initializer.kind);
             }
@@ -1496,17 +1209,17 @@ export class ClassHelper {
             }
         }
         if (node.typeArguments && node.typeArguments.length > 0) {
-            _return += "<";
+            _return += '<';
             let i = 0,
                 len = node.typeArguments.length;
             for (i; i < len; i++) {
                 let argument = node.typeArguments[i];
                 _return += this.visitType(argument);
                 if (i >= 0 && i < len - 1) {
-                    _return += ", ";
+                    _return += ', ';
                 }
             }
-            _return += ">";
+            _return += '>';
         }
         return _return;
     }
@@ -1515,43 +1228,33 @@ export class ClassHelper {
         const memberStrings: string[] = [];
         for (const member of node.members) {
             if (ts.isPropertySignature(member) && member.name && member.type) {
-                const memberName =
-                    (member.name as any).text || (member.name as any).escapedText;
+                const memberName = (member.name as any).text || (member.name as any).escapedText;
                 const memberType = this.visitType(member.type);
-                const optionalMarker = member.questionToken ? "?" : "";
-                memberStrings.push(
-                    `${memberName}${optionalMarker}: ${memberType}`,
-                );
+                const optionalMarker = member.questionToken ? '?' : '';
+                memberStrings.push(`${memberName}${optionalMarker}: ${memberType}`);
             } else if (ts.isMethodSignature(member) && member.name) {
-                const memberName =
-                    (member.name as any).text || (member.name as any).escapedText;
-                const returnType = member.type ? this.visitType(member.type) : "void";
-                let parameters = "";
+                const memberName = (member.name as any).text || (member.name as any).escapedText;
+                const returnType = member.type ? this.visitType(member.type) : 'void';
+                let parameters = '';
                 if (member.parameters && member.parameters.length > 0) {
                     parameters = member.parameters
-                        .map((param) => {
+                        .map(param => {
                             const paramName = param.name
-                                ? (param.name as any).text ||
-                                  (param.name as any).escapedText
-                                : "";
-                            const paramType = param.type
-                                ? this.visitType(param.type)
-                                : "any";
-                            const optionalMarker = param.questionToken ? "?" : "";
+                                ? (param.name as any).text || (param.name as any).escapedText
+                                : '';
+                            const paramType = param.type ? this.visitType(param.type) : 'any';
+                            const optionalMarker = param.questionToken ? '?' : '';
                             return `${paramName}${optionalMarker}: ${paramType}`;
                         })
-                        .join(", ");
+                        .join(', ');
                 }
                 memberStrings.push(`${memberName}(${parameters}): ${returnType}`);
             }
         }
-        return `{ ${memberStrings.join("; ")} }`;
+        return `{ ${memberStrings.join('; ')} }`;
     }
 
-    private extractTypeLiteralProperties(
-        typeNode: ts.TypeNode,
-        sourceFile: ts.SourceFile,
-    ): any[] {
+    private extractTypeLiteralProperties(typeNode: ts.TypeNode, sourceFile: ts.SourceFile): any[] {
         if (!ts.isTypeLiteralNode(typeNode) || !typeNode.members) {
             return [];
         }
@@ -1562,8 +1265,7 @@ export class ClassHelper {
                 continue;
             }
 
-            const memberName =
-                (member.name as any).text || (member.name as any).escapedText;
+            const memberName = (member.name as any).text || (member.name as any).escapedText;
             if (!memberName) {
                 continue;
             }
@@ -1571,16 +1273,13 @@ export class ClassHelper {
             const subProperty: any = {
                 name: memberName,
                 type: this.visitType(member.type),
-                optional: typeof member.questionToken !== "undefined",
-                description: "",
+                optional: typeof member.questionToken !== 'undefined',
+                description: ''
             };
 
             this.extractAndProcessJSDocComment(member, sourceFile, subProperty);
 
-            const nestedSubProperties = this.extractTypeLiteralProperties(
-                member.type,
-                sourceFile,
-            );
+            const nestedSubProperties = this.extractTypeLiteralProperties(member.type, sourceFile);
             if (nestedSubProperties.length > 0) {
                 subProperty.subProperties = nestedSubProperties;
             }
@@ -1591,20 +1290,15 @@ export class ClassHelper {
         return subProperties;
     }
 
-    private visitCallDeclaration(
-        method: ts.CallSignatureDeclaration,
-        sourceFile: ts.SourceFile,
-    ) {
+    private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash("sha512").update(sourceCode).digest("hex");
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result: any = {
-            id: "call-declaration-" + hash,
-            args: method.parameters
-                ? method.parameters.map((prop) => this.visitArgument(prop))
-                : [],
+            id: 'call-declaration-' + hash,
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1,
-            ...this.initializeDocumentationFields(),
+            ...this.initializeDocumentationFields()
         };
         this.extractAndProcessJSDocComment(method, sourceFile, result);
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -1612,20 +1306,15 @@ export class ClassHelper {
         return result;
     }
 
-    private visitIndexDeclaration(
-        method: ts.IndexSignatureDeclaration,
-        sourceFile?: ts.SourceFile,
-    ) {
+    private visitIndexDeclaration(method: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
-        let hash = crypto.createHash("sha512").update(sourceCode).digest("hex");
+        let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result = {
-            id: "index-declaration-" + hash,
-            args: method.parameters
-                ? method.parameters.map((prop) => this.visitArgument(prop))
-                : [],
+            id: 'index-declaration-' + hash,
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
             returnType: this.visitType(method.type),
             line: this.getPosition(method, sourceFile).line + 1,
-            ...this.initializeDocumentationFields(),
+            ...this.initializeDocumentationFields()
         };
         this.extractAndProcessJSDocComment(method, sourceFile, result);
         const jsdoctags = this.jsdocParserUtil.getJSDocs(method);
@@ -1635,19 +1324,17 @@ export class ClassHelper {
 
     private visitConstructorDeclaration(
         method: ts.ConstructorDeclaration,
-        sourceFile?: ts.SourceFile,
+        sourceFile: ts.SourceFile
     ) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
         let result: any = {
-            name: "constructor",
-            description: "",
+            name: 'constructor',
+            description: '',
             ...this.initializeDocumentationFields(),
-            args: method.parameters
-                ? method.parameters.map((prop) => this.visitArgument(prop))
-                : [],
-            line: this.getPosition(method, sourceFile).line + 1,
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
+            line: this.getPosition(method, sourceFile).line + 1
         };
         this.extractAndProcessJSDocComment(method, sourceFile, result);
 
@@ -1667,11 +1354,7 @@ export class ClassHelper {
 
         // Thread @param descriptions back into result.args so that consumers
         // reading args directly (e.g. JSON export) see the per-parameter description.
-        if (
-            result.args.length > 0 &&
-            result.jsdoctags &&
-            result.jsdoctags.length > 0
-        ) {
+        if (result.args.length > 0 && result.jsdoctags && result.jsdoctags.length > 0) {
             const commentByName = new Map<string, any>();
             for (const tag of result.jsdoctags) {
                 const tagName = tag.name?.text ?? tag.name;
@@ -1692,18 +1375,16 @@ export class ClassHelper {
 
     private visitProperty(
         property: ts.PropertyDeclaration | ts.PropertySignature,
-        sourceFile,
+        sourceFile: ts.SourceFile
     ) {
         // PropertySignature (interfaces) don't have initializer, PropertyDeclaration (classes) do
-        const initializer = ts.isPropertyDeclaration(property)
-            ? property.initializer
-            : undefined;
+        const initializer = ts.isPropertyDeclaration(property) ? property.initializer : undefined;
 
         // Extract property name, handling different node types:
         // - Identifier: regular property names
         // - PrivateIdentifier: ECMAScript private fields like #privateField
         // - ComputedPropertyName: computed names like ['__allAnd']
-        let propertyName = "";
+        let propertyName = '';
         // Check for mock objects first (for testing)
         if ((property.name as any).text) {
             propertyName = (property.name as any).text;
@@ -1723,42 +1404,31 @@ export class ClassHelper {
         const result: any = {
             name: propertyName,
             coverageIgnore: isCoverageIgnore(property),
-            defaultValue: initializer
-                ? this.stringifyDefaultValue(initializer)
-                : undefined,
+            defaultValue: initializer ? this.stringifyDefaultValue(initializer) : undefined,
             ...this.initializeDocumentationFields(),
             type: this.visitType(property),
             indexKey: this.visitTypeIndex(property),
-            optional: typeof property.questionToken !== "undefined",
-            description: "",
-            line: this.getPosition(property, sourceFile).line + 1,
+            optional: typeof property.questionToken !== 'undefined',
+            description: '',
+            line: this.getPosition(property, sourceFile).line + 1
         };
 
         if (property.type && this.shouldResolveTypeWithTypeChecker(property.type)) {
-            const resolvedType = this.tryResolveTypeFromTypeChecker(
-                property.type,
-                property,
-            );
+            const resolvedType = this.tryResolveTypeFromTypeChecker(property.type, property);
             if (resolvedType) {
                 result.type = resolvedType;
             }
         }
 
         if (property.type && ts.isTypeLiteralNode(property.type)) {
-            result.subProperties = this.extractTypeLiteralProperties(
-                property.type,
-                sourceFile,
-            );
+            result.subProperties = this.extractTypeLiteralProperties(property.type, sourceFile);
         }
 
         if (initializer && initializer.kind === SyntaxKind.ArrowFunction) {
-            result.defaultValue = "() => {...}";
+            result.defaultValue = '() => {...}';
         }
 
-        if (
-            typeof result.name === "undefined" &&
-            (property.name as any).expression
-        ) {
+        if (typeof result.name === 'undefined' && (property.name as any).expression) {
             result.name = (property.name as any).expression.text;
         }
 
@@ -1790,9 +1460,9 @@ export class ClassHelper {
         return result;
     }
 
-    private visitConstructorProperties(constr, sourceFile) {
+    private visitConstructorProperties(constr: any, sourceFile: ts.SourceFile) {
         if (constr.parameters) {
-            let _parameters = [];
+            let _parameters: any[] = [];
             let i = 0;
             let len = constr.parameters.length;
             for (i; i < len; i++) {
@@ -1807,9 +1477,7 @@ export class ClassHelper {
                     continue;
                 }
                 if (this.isPublic(parameterOfConstructor)) {
-                    _parameters.push(
-                        this.visitProperty(constr.parameters[i], sourceFile),
-                    );
+                    _parameters.push(this.visitProperty(constr.parameters[i], sourceFile));
                 }
             }
             /**
@@ -1819,12 +1487,12 @@ export class ClassHelper {
                 if (constr.jsDoc.length > 0) {
                     let constrTags = constr.jsDoc[0].tags;
                     if (constrTags && constrTags.length > 0) {
-                        constrTags.forEach((tag) => {
-                            _parameters.forEach((param) => {
+                        constrTags.forEach((tag: any) => {
+                            _parameters.forEach((param: any) => {
                                 if (
                                     tag.tagName &&
                                     tag.tagName.escapedText &&
-                                    tag.tagName.escapedText === "param"
+                                    tag.tagName.escapedText === 'param'
                                 ) {
                                     if (
                                         tag.name &&
@@ -1847,41 +1515,36 @@ export class ClassHelper {
 
     private visitMethodDeclaration(
         method: ts.MethodDeclaration | ts.MethodSignature,
-        sourceFile: ts.SourceFile,
+        sourceFile: ts.SourceFile
     ) {
         let result: any = {
             name:
-                (method.name as any).text ||
-                (ts.isIdentifier(method.name) ? method.name.text : ""),
+                (method.name as any).text || (ts.isIdentifier(method.name) ? method.name.text : ''),
             coverageIgnore: isCoverageIgnore(method),
-            args: method.parameters
-                ? method.parameters.map((prop) => this.visitArgument(prop))
-                : [],
-            optional: typeof method.questionToken !== "undefined",
+            args: method.parameters ? method.parameters.map(prop => this.visitArgument(prop)) : [],
+            optional: typeof method.questionToken !== 'undefined',
             returnType: this.visitType(method.type),
             typeParameters: [],
             line: this.getPosition(method, sourceFile).line + 1,
-            ...this.initializeDocumentationFields(),
+            ...this.initializeDocumentationFields()
         };
 
-        if (typeof method.type === "undefined") {
+        if (typeof method.type === 'undefined') {
             // Try to get inferred type
             if ((method as any).symbol) {
                 let symbol: ts.Symbol = (method as any).symbol;
                 if (symbol.valueDeclaration) {
                     let symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
                         symbol,
-                        symbol.valueDeclaration,
+                        symbol.valueDeclaration
                     );
                     if (symbolType) {
                         try {
-                            const signature =
-                                this.typeChecker.getSignatureFromDeclaration(
-                                    method,
-                                );
-                            const returnType = signature.getReturnType();
-                            result.returnType =
-                                this.typeChecker.typeToString(returnType);
+                            const signature = this.typeChecker.getSignatureFromDeclaration(method);
+                            const returnType = signature?.getReturnType();
+                            if (returnType) {
+                                result.returnType = this.typeChecker.typeToString(returnType);
+                            }
                             // tslint:disable-next-line:no-empty
                         } catch (error) {}
                     }
@@ -1890,8 +1553,8 @@ export class ClassHelper {
         }
 
         if (method.typeParameters && method.typeParameters.length > 0) {
-            result.typeParameters = method.typeParameters.map((typeParameter) =>
-                this.visitType(typeParameter),
+            result.typeParameters = method.typeParameters.map(typeParameter =>
+                this.visitType(typeParameter)
             );
         }
 
@@ -1923,7 +1586,7 @@ export class ClassHelper {
     private visitOutput(
         property: ts.PropertyDeclaration,
         outDecorator: ts.Decorator,
-        sourceFile?: ts.SourceFile,
+        sourceFile: ts.SourceFile
     ) {
         let inArgs = (outDecorator.expression as any).arguments;
         let _return: any = {
@@ -1931,14 +1594,12 @@ export class ClassHelper {
                 inArgs.length > 0
                     ? (inArgs[0] as any).text
                     : (property.name as any).text ||
-                      (ts.isIdentifier(property.name)
-                          ? property.name.text
-                          : ""),
+                      (ts.isIdentifier(property.name) ? property.name.text : ''),
             coverageIgnore: isCoverageIgnore(property),
             defaultValue: property.initializer
                 ? this.stringifyDefaultValue(property.initializer)
                 : undefined,
-            ...this.initializeDocumentationFields(),
+            ...this.initializeDocumentationFields()
         };
 
         if ((property as any).jsDoc) {
@@ -1953,10 +1614,7 @@ export class ClassHelper {
         if (property.type) {
             _return.type = this.visitType(property);
             if (this.shouldResolveTypeWithTypeChecker(property.type)) {
-                const resolvedType = this.tryResolveTypeFromTypeChecker(
-                    property.type,
-                    property,
-                );
+                const resolvedType = this.tryResolveTypeFromTypeChecker(property.type, property);
                 if (resolvedType) {
                     _return.type = resolvedType;
                 }
@@ -1966,9 +1624,7 @@ export class ClassHelper {
             if (property.initializer) {
                 if (ts.isNewExpression(property.initializer)) {
                     if (property.initializer.expression) {
-                        _return.type = (
-                            property.initializer.expression as any
-                        ).text;
+                        _return.type = (property.initializer.expression as any).text;
                     }
                 }
             }
@@ -1978,20 +1634,15 @@ export class ClassHelper {
 
     private visitArgument(arg: ts.ParameterDeclaration) {
         let _result: any = {
-            name:
-                (arg.name as any).text ||
-                (ts.isIdentifier(arg.name) ? arg.name.text : ""),
+            name: (arg.name as any).text || (ts.isIdentifier(arg.name) ? arg.name.text : ''),
             type: this.visitType(arg),
             optional: !!arg.questionToken,
             dotDotDotToken: !!arg.dotDotDotToken,
-            ...this.initializeDocumentationFields(),
+            ...this.initializeDocumentationFields()
         };
 
         if (arg.type && this.shouldResolveTypeWithTypeChecker(arg.type)) {
-            const resolvedType = this.tryResolveTypeFromTypeChecker(
-                arg.type,
-                arg,
-            );
+            const resolvedType = this.tryResolveTypeFromTypeChecker(arg.type, arg);
             if (resolvedType) {
                 _result.type = resolvedType;
             }
@@ -1999,7 +1650,7 @@ export class ClassHelper {
 
         if (arg.type && arg.type.kind && ts.isFunctionTypeNode(arg.type)) {
             _result.function = arg.type.parameters
-                ? arg.type.parameters.map((prop) => this.visitArgument(prop))
+                ? arg.type.parameters.map(prop => this.visitArgument(prop))
                 : [];
         }
         if (arg.initializer) {
@@ -2010,11 +1661,11 @@ export class ClassHelper {
         return _result;
     }
 
-    private visitInputAndHostBinding(property, inDecorator, sourceFile?) {
+    private visitInputAndHostBinding(property: any, inDecorator: any, sourceFile: ts.SourceFile) {
         const inArgs = inDecorator.expression.arguments;
 
         let _return: any = {
-            coverageIgnore: isCoverageIgnore(property),
+            coverageIgnore: isCoverageIgnore(property)
         };
 
         let isInputConfigStringLiteral = false;
@@ -2023,28 +1674,19 @@ export class ClassHelper {
         let hasAlias = false;
 
         const getRequiredField = () =>
-            inArgs[0].properties.find(
-                (property) => property.name.escapedText === "required",
-            );
+            inArgs[0].properties.find((property: any) => property.name.escapedText === 'required');
         const getAliasProperty = () =>
-            inArgs[0].properties.find(
-                (property) => property.name.escapedText === "alias",
-            );
+            inArgs[0].properties.find((property: any) => property.name.escapedText === 'alias');
 
         if (inArgs.length > 0) {
-            isInputConfigStringLiteral =
-                inArgs[0] && ts.isStringLiteral(inArgs[0]);
+            isInputConfigStringLiteral = inArgs[0] && ts.isStringLiteral(inArgs[0]);
 
             isInputConfigObjectLiteralExpression =
                 inArgs[0] && ts.isObjectLiteralExpression(inArgs[0]);
 
             if (isInputConfigObjectLiteralExpression && inArgs[0].properties) {
-                hasRequiredField =
-                    isInputConfigObjectLiteralExpression &&
-                    !!getRequiredField();
-                hasAlias = isInputConfigObjectLiteralExpression
-                    ? !!getAliasProperty()
-                    : false;
+                hasRequiredField = isInputConfigObjectLiteralExpression && !!getRequiredField();
+                hasAlias = isInputConfigObjectLiteralExpression ? !!getAliasProperty() : false;
 
                 _return.required = !!getRequiredField();
             }
@@ -2068,8 +1710,7 @@ export class ClassHelper {
         Object.assign(_return, this.initializeDocumentationFields());
 
         if (inArgs.length > 0 && inArgs[0].properties && hasRequiredField) {
-            _return.optional =
-                getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
+            _return.optional = getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
         }
 
         if (!_return.description) {
@@ -2081,10 +1722,7 @@ export class ClassHelper {
         if (property.type) {
             _return.type = this.visitType(property);
             if (this.shouldResolveTypeWithTypeChecker(property.type)) {
-                const resolvedType = this.tryResolveTypeFromTypeChecker(
-                    property.type,
-                    property,
-                );
+                const resolvedType = this.tryResolveTypeFromTypeChecker(property.type, property);
                 if (resolvedType) {
                     _return.type = resolvedType;
                 }
@@ -2102,14 +1740,12 @@ export class ClassHelper {
             if (property.symbol) {
                 const symbol: ts.Symbol = property.symbol;
                 if (symbol.valueDeclaration) {
-                    const symbolType =
-                        this.typeChecker.getTypeOfSymbolAtLocation(
-                            symbol,
-                            symbol.valueDeclaration,
-                        );
+                    const symbolType = this.typeChecker.getTypeOfSymbolAtLocation(
+                        symbol,
+                        symbol.valueDeclaration
+                    );
                     if (symbolType) {
-                        _return.type =
-                            this.typeChecker.typeToString(symbolType);
+                        _return.type = this.typeChecker.typeToString(symbolType);
                     }
                 }
             }
@@ -2125,27 +1761,29 @@ export class ClassHelper {
 
         if (nodeHasDecorator(property)) {
             const propertyDecorators = getNodeDecorators(property);
-            _return.decorators = this.formatDecorators(
-                propertyDecorators,
-            ).filter(
-                (item) => item.name !== "Input" && item.name !== "HostBinding",
+            _return.decorators = this.formatDecorators(propertyDecorators).filter(
+                (item: any) => item.name !== 'Input' && item.name !== 'HostBinding'
             );
         }
         return _return;
     }
 
-    private visitHostListener(property, hostListenerDecorator, sourceFile?) {
+    private visitHostListener(
+        property: any,
+        hostListenerDecorator: any,
+        sourceFile: ts.SourceFile
+    ) {
         let inArgs = hostListenerDecorator.expression.arguments;
         let _return: any = {
-            coverageIgnore: isCoverageIgnore(property),
+            coverageIgnore: isCoverageIgnore(property)
         };
         _return.name = inArgs.length > 0 ? inArgs[0].text : property.name.text;
         _return.args = property.parameters
-            ? property.parameters.map((prop) => this.visitArgument(prop))
+            ? property.parameters.map((prop: any) => this.visitArgument(prop))
             : [];
         _return.argsDecorator =
             inArgs.length > 1
-                ? inArgs[1].elements.map((prop) => {
+                ? inArgs[1].elements.map((prop: any) => {
                       return prop.text;
                   })
                 : [];

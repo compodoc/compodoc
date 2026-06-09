@@ -1,23 +1,24 @@
-const Handlebars = require("handlebars");
-import * as JSON5 from "json5";
-import * as _ from "lodash";
-import * as path from "path";
-import { Project, ts, SourceFile, SyntaxKind, Node } from "ts-morph";
+const Handlebars = require('handlebars');
+import * as JSON5 from 'json5';
+import * as _ from 'lodash';
+import * as path from 'path';
+import { Project, ts, SourceFile, SyntaxKind, Node } from 'ts-morph';
 
-import FileEngine from "../app/engines/file.engine";
-import { RoutingGraphNode } from "../app/nodes/routing-graph-node";
-import Configuration from "../app/configuration";
+import FileEngine from '../app/engines/file.engine';
+import { RoutingGraphNode } from '../app/nodes/routing-graph-node';
+import Configuration from '../app/configuration';
 
-import ImportsUtil from "./imports.util";
-import { logger } from "./logger";
-import { readConfig } from "./utils";
+import ImportsUtil from './imports.util';
+import { logger } from './logger';
+import { RouteTextCleaner } from './router/route-text-cleaner';
+import { readConfig } from './utils';
 
-const traverse = require("neotraverse/legacy");
+const traverse = require('neotraverse/legacy');
 
 const ast = new Project();
 
 export class RouterParserUtil {
-    private static readonly DEFAULT_LAZY_EXPORT = "default";
+    private static readonly DEFAULT_LAZY_EXPORT = 'default';
     public scannedFiles: any[] = [];
     private routes: any[] = [];
     private incompleteRoutes = [];
@@ -26,15 +27,7 @@ export class RouterParserUtil {
     private rootModule: string;
     private cleanModulesTree;
     private modulesWithRoutes = [];
-    private transformAngular8ImportSyntax =
-        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
-    private transformAngular8ImportSyntaxComponent =
-        /(['"]loadComponent['"]:)\(\)(:[^)]+?)?=>"import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)\.then\(\(?\w+?\)?=>\S+?\.([^)]+?)\)(\\'|'|")/g;
-    private transformAngular8ImportSyntaxAsyncAwait =
-        /(['"]loadChildren['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
-    private transformAngular8ImportSyntaxComponentAsyncAwait =
-        /(['"]loadComponent['"]:)\(\)(:[^)]+?)?=>\("import\((\\'|'|"|`)([^'"]+?)(\\'|'|"|`)\)"\)\.['"]([^)]+?)['"]/g;
-    private trailingComma = /,\s*([\]})])/g;
+    private routeTextCleaner = new RouteTextCleaner();
 
     private static instance: RouterParserUtil;
     private constructor() {}
@@ -47,35 +40,29 @@ export class RouterParserUtil {
 
     public addRoute(route): void {
         this.routes.push(route);
-        this.routes = _.sortBy(_.uniqWith(this.routes, _.isEqual), ["name"]);
+        this.routes = _.sortBy(_.uniqWith(this.routes, _.isEqual), ['name']);
     }
 
     public addIncompleteRoute(route): void {
         this.incompleteRoutes.push(route);
-        this.incompleteRoutes = _.sortBy(
-            _.uniqWith(this.incompleteRoutes, _.isEqual),
-            ["name"],
-        );
+        this.incompleteRoutes = _.sortBy(_.uniqWith(this.incompleteRoutes, _.isEqual), ['name']);
     }
 
     public addModuleWithRoutes(moduleName, moduleImports, filename): void {
         this.modulesWithRoutes.push({
             name: moduleName,
             importsNode: moduleImports,
-            filename: filename,
+            filename: filename
         });
-        this.modulesWithRoutes = _.sortBy(
-            _.uniqWith(this.modulesWithRoutes, _.isEqual),
-            ["name"],
-        );
+        this.modulesWithRoutes = _.sortBy(_.uniqWith(this.modulesWithRoutes, _.isEqual), ['name']);
     }
 
     public addModule(moduleName: string, moduleImports): void {
         this.modules.push({
             name: moduleName,
-            importsNode: moduleImports,
+            importsNode: moduleImports
         });
-        this.modules = _.sortBy(_.uniqWith(this.modules, _.isEqual), ["name"]);
+        this.modules = _.sortBy(_.uniqWith(this.modules, _.isEqual), ['name']);
     }
 
     public cleanRawRouteParsed(route: string): object {
@@ -83,7 +70,7 @@ export class RouterParserUtil {
             return JSON5.parse(this.cleanRawRoute(route));
         } catch (parseError) {
             logger.error(
-                `Failed to parse route data. This may be caused by special characters in file paths or route configurations.`,
+                `Failed to parse route data. This may be caused by special characters in file paths or route configurations.`
             );
             logger.debug(`Raw route data: ${route}`);
             logger.debug(`Cleaned route data: ${this.cleanRawRoute(route)}`);
@@ -93,330 +80,7 @@ export class RouterParserUtil {
     }
 
     public cleanRawRoute(route: string): string {
-        let cleaned = route
-            .replace(/\s/g, "")
-            .replace(this.trailingComma, "$1")
-            .replace(this.transformAngular8ImportSyntax, '$1"$4#$6"')
-            .replace(this.transformAngular8ImportSyntaxAsyncAwait, '$1"$4#$6"')
-            .replace(this.transformAngular8ImportSyntaxComponent, '$1"$4#$6"')
-            .replace(
-                this.transformAngular8ImportSyntaxComponentAsyncAwait,
-                '$1"$4#$6"',
-            );
-
-        // Sanitize TypeScript expressions that JSON5 cannot parse.
-        // Angular routes often use string concatenation, enum/const references,
-        // template literals, and arrow functions — none of which are valid JSON5.
-
-        // Step 0: Convert modern lazy-loading arrow syntax to "path#Module" strings
-        //   BEFORE any arrow-function sanitization so loadChildren/loadComponent
-        //   are never treated as generic arrow functions.
-        //   Raw source:      loadChildren:()=>import('./path').then(m=>m.Module)
-        //   CodeGenerator:   "loadChildren":()=>import("./path")."then"("m"=>"m"."Module")
-        //   Both → loadChildren:"./path#Module"
-        cleaned = cleaned
-            .replace(
-                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(\{["']?(\w+)["']?\}\)=>["']?\2["']?\)/g,
-                'loadChildren:"$1#$2"',
-            )
-            .replace(
-                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(\{["']?(\w+)["']?\}\)=>["']?\2["']?\)/g,
-                'loadComponent:"$1#$2"',
-            )
-            .replace(
-                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
-                'loadChildren:"$1#$2"',
-            )
-            .replace(
-                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)\."?then"?\(\(?["']?\w+["']?\)?"?=>(?:["']?\w+["']?\.)?"?(\w+)"?\)/g,
-                'loadComponent:"$1#$2"',
-            )
-            .replace(
-                /"?loadComponent"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)(?!\."?then"?\()/g,
-                'loadComponent:"$1#default"',
-            )
-            .replace(
-                /"?loadChildren"?:\(\)=>import\(["'`]([^"'`]+)["'`]\)(?!\."?then"?\()/g,
-                'loadChildren:"$1#default"',
-            );
-
-        // Step 1: Convert template literal interpolations to bare identifiers
-        //   ${VAR} → VAR  (so subsequent steps can merge them as identifiers)
-        cleaned = cleaned.replace(/\$\{([^}]+)\}/g, "$1");
-
-        // Step 2: Merge adjacent same-type quoted string literals joined by +
-        //   "a"+"b" → "ab"   'a'+'b' → 'a'
-        //   Repeated until stable to handle chains: "a"+"b"+"c" → "abc"
-        let prev: string;
-        do {
-            prev = cleaned;
-            cleaned = cleaned
-                .replace(/"([^"\\]*)"\+"([^"\\]*)"/g, '"$1$2"')
-                .replace(/'([^'\\]*)'\+'([^'\\]*)'/g, "'$1$2'");
-        } while (cleaned !== prev);
-
-        // Step 3: Absorb unquoted identifier/property-chains into adjacent string literals
-        //   Enum.VALUE+"str" → "Enum.VALUEstr"   "str"+Enum.VALUE → "strEnum.VALUE"
-        //   Repeated until stable to handle: A+"/"+ B → "A/B"
-        do {
-            prev = cleaned;
-            cleaned = cleaned
-                .replace(/([a-zA-Z_$][a-zA-Z0-9_$.]*)\+"([^"]*)"/g, '"$1$2"')
-                .replace(/"([^"]*)"\+([a-zA-Z_$][a-zA-Z0-9_$.]*)/g, '"$1$2"');
-        } while (cleaned !== prev);
-
-        // Step 3b: Normalize CodeGenerator dotted chains and unresolved enum/property refs
-        //   "Enum"."VALUE" -> "Enum.VALUE"
-        //   :Enum.VALUE -> :"Enum.VALUE"
-        //   [Enum.VALUE] -> ["Enum.VALUE"]
-        // This keeps route parsing resilient even when symbols cannot be resolved earlier.
-        do {
-            prev = cleaned;
-            cleaned = cleaned.replace(
-                /"([a-zA-Z_$][a-zA-Z0-9_$]*)"\."([a-zA-Z_$][a-zA-Z0-9_$]*)"/g,
-                '"$1.$2"',
-            );
-        } while (cleaned !== prev);
-
-        cleaned = cleaned
-            .replace(
-                /:([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)/g,
-                ':"$1"',
-            )
-            .replace(
-                /([\[,])([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)(?=[,\]])/g,
-                '$1"$2"',
-            );
-
-        // Step 3d: Normalize CodeGenerator-emitted call-like tokens into plain strings.
-        //   "nonAuthGuard"() -> "nonAuthGuard()"
-        //   "provideX"("foo") -> "provideX("foo")"
-        // This prevents JSON5 parse failures for canMatch/providers arrays in routes.
-        cleaned = cleaned.replace(
-            /"([a-zA-Z_$][a-zA-Z0-9_$]*)"\(([^()]*)\)/g,
-            '"$1()"',
-        );
-
-        // Step 3c: Expand object shorthand properties to key/value form.
-        //   data:{flag,delay:2500} -> data:{flag:"flag",delay:2500}
-        // JSON5 cannot parse object shorthand, so we normalize it here.
-        cleaned = cleaned.replace(
-            /([{,])([a-zA-Z_$][a-zA-Z0-9_$]*)(?=[,}])/g,
-            '$1$2:"$2"',
-        );
-
-        // Step 4: Replace non-block arrow function expressions in property values.
-        //   :(params) => simpleExpr  →  :"[Function]"
-        //   loadChildren/loadComponent are already converted to strings by Step 0 above.
-        cleaned = cleaned.replace(/:(\([^)(]*\))=>[^{,}\]]+/g, ':"[Function]"');
-
-        // Step 5: Replace block arrow function expressions in property values.
-        //   :(params) => { ... }  →  :"[Function]"
-        cleaned = this.replaceBlockArrowFunctions(cleaned);
-
-        // Step 6: Unwrap constructor-wrapped object literals used in route metadata.
-        //   data:newLazyRoutingOptions({preload:true}) -> data:{preload:true}
-        // This keeps JSON5 parsing resilient for typed route data objects.
-        cleaned = this.unwrapConstructorWrappedObjectValues(cleaned);
-
-        return cleaned;
-    }
-
-    private replaceBlockArrowFunctions(input: string): string {
-        // Find =>{ patterns outside of strings and replace the arrow function
-        // (params => { body }) in the value position with "[Function]".
-        // loadChildren/loadComponent are excluded (already converted by step 0).
-        const LAZY_KEYS = ["loadChildren", "loadComponent"];
-        let result = "";
-        let i = 0;
-        let inDouble = false;
-        let inSingle = false;
-
-        while (i < input.length) {
-            const ch = input[i];
-
-            // Track string context (whitespace was already removed so no mid-string newlines)
-            if (ch === '"' && !inSingle) {
-                inDouble = !inDouble;
-                result += ch;
-                i++;
-                continue;
-            }
-            if (ch === "'" && !inDouble) {
-                inSingle = !inSingle;
-                result += ch;
-                i++;
-                continue;
-            }
-            if (ch === "\\" && (inDouble || inSingle)) {
-                result += ch + (input[i + 1] || "");
-                i += 2;
-                continue;
-            }
-
-            if (
-                !inDouble &&
-                !inSingle &&
-                ch === "=" &&
-                input[i + 1] === ">" &&
-                input[i + 2] === "{"
-            ) {
-                // Walk backwards in result to find the ':' that started this value
-                let valStart = result.length - 1;
-                let depth = 0;
-                while (valStart >= 0) {
-                    const rc = result[valStart];
-                    if (rc === ")" || rc === "]") {
-                        depth++;
-                        valStart--;
-                        continue;
-                    }
-                    if (rc === "(" || rc === "[") {
-                        if (depth === 0) {
-                            valStart--;
-                            continue;
-                        }
-                        depth--;
-                        valStart--;
-                        continue;
-                    }
-                    if ((rc === ":" || rc === ",") && depth === 0) break;
-                    valStart--;
-                }
-
-                if (valStart >= 0 && result[valStart] === ":") {
-                    // Check that the key before ':' is not a lazy-loading key
-                    const prefix = result.substring(0, valStart);
-                    const isLazy = LAZY_KEYS.some((k) => prefix.endsWith(k));
-
-                    if (!isLazy) {
-                        // Skip the block body by counting braces
-                        let bodyIdx = i + 2; // points to '{'
-                        let bDepth = 1;
-                        bodyIdx++;
-                        while (bodyIdx < input.length && bDepth > 0) {
-                            if (input[bodyIdx] === "{") bDepth++;
-                            else if (input[bodyIdx] === "}") bDepth--;
-                            bodyIdx++;
-                        }
-                        result =
-                            result.substring(0, valStart + 1) + ':"[Function]"';
-                        i = bodyIdx;
-                        continue;
-                    }
-                }
-            }
-
-            result += ch;
-            i++;
-        }
-        return result;
-    }
-
-    private unwrapConstructorWrappedObjectValues(input: string): string {
-        const isIdentifierStart = (ch: string | undefined): boolean =>
-            !!ch && /[A-Za-z_$]/.test(ch);
-        const isIdentifierPart = (ch: string | undefined): boolean =>
-            !!ch && /[A-Za-z0-9_$]/.test(ch);
-
-        let result = "";
-        let i = 0;
-        let inDouble = false;
-        let inSingle = false;
-
-        while (i < input.length) {
-            const ch = input[i];
-
-            if (ch === '"' && !inSingle) {
-                inDouble = !inDouble;
-                result += ch;
-                i++;
-                continue;
-            }
-            if (ch === "'" && !inDouble) {
-                inSingle = !inSingle;
-                result += ch;
-                i++;
-                continue;
-            }
-            if (ch === "\\" && (inDouble || inSingle)) {
-                result += ch + (input[i + 1] || "");
-                i += 2;
-                continue;
-            }
-
-            if (
-                !inDouble &&
-                !inSingle &&
-                ch === ":" &&
-                input.slice(i + 1, i + 4) === "new"
-            ) {
-                let nameStart = i + 4;
-                if (!isIdentifierStart(input[nameStart])) {
-                    result += ch;
-                    i++;
-                    continue;
-                }
-
-                while (isIdentifierPart(input[nameStart])) {
-                    nameStart++;
-                }
-
-                if (input[nameStart] !== "(" || input[nameStart + 1] !== "{") {
-                    result += ch;
-                    i++;
-                    continue;
-                }
-
-                let cursor = nameStart + 1; // points to '{'
-                let braceDepth = 1;
-                let objInDouble = false;
-                let objInSingle = false;
-
-                cursor++;
-                while (cursor < input.length && braceDepth > 0) {
-                    const c = input[cursor];
-                    if (c === "\\" && (objInDouble || objInSingle)) {
-                        cursor += 2;
-                        continue;
-                    }
-                    if (c === '"' && !objInSingle) {
-                        objInDouble = !objInDouble;
-                        cursor++;
-                        continue;
-                    }
-                    if (c === "'" && !objInDouble) {
-                        objInSingle = !objInSingle;
-                        cursor++;
-                        continue;
-                    }
-                    if (!objInDouble && !objInSingle) {
-                        if (c === "{") {
-                            braceDepth++;
-                        } else if (c === "}") {
-                            braceDepth--;
-                        }
-                    }
-                    cursor++;
-                }
-
-                if (braceDepth !== 0 || input[cursor] !== ")") {
-                    result += ch;
-                    i++;
-                    continue;
-                }
-
-                const objectLiteral = input.slice(nameStart + 1, cursor);
-                result += ":" + objectLiteral;
-                i = cursor + 1;
-                continue;
-            }
-
-            result += ch;
-            i++;
-        }
-
-        return result;
+        return this.routeTextCleaner.clean(route);
     }
 
     public setRootModule(module: string): void {
@@ -426,9 +90,9 @@ export class RouterParserUtil {
     public hasRouterModuleInImports(imports: Array<any>): boolean {
         for (let i = 0; i < imports.length; i++) {
             if (
-                imports[i].name.indexOf("RouterModule.forChild") !== -1 ||
-                imports[i].name.indexOf("RouterModule.forRoot") !== -1 ||
-                imports[i].name.indexOf("RouterModule") !== -1
+                imports[i].name.indexOf('RouterModule.forChild') !== -1 ||
+                imports[i].name.indexOf('RouterModule.forRoot') !== -1 ||
+                imports[i].name.indexOf('RouterModule') !== -1
             ) {
                 return true;
             }
@@ -443,23 +107,15 @@ export class RouterParserUtil {
         // if ok, try recreating complete route
         for (let i = 0; i < this.incompleteRoutes.length; i++) {
             for (let j = 0; j < miscellaneousVariables.length; j++) {
-                if (
-                    this.incompleteRoutes[i].data.indexOf(
-                        miscellaneousVariables[j].name,
-                    ) !== -1
-                ) {
-                    console.log("found one misc var inside incompleteRoute");
+                if (this.incompleteRoutes[i].data.indexOf(miscellaneousVariables[j].name) !== -1) {
+                    console.log('found one misc var inside incompleteRoute');
                     console.log(miscellaneousVariables[j].name);
                     matchingVariables.push(miscellaneousVariables[j]);
                 }
             }
             // Clean incompleteRoute
-            this.incompleteRoutes[i].data = this.incompleteRoutes[
-                i
-            ].data.replace("[", "");
-            this.incompleteRoutes[i].data = this.incompleteRoutes[
-                i
-            ].data.replace("]", "");
+            this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace('[', '');
+            this.incompleteRoutes[i].data = this.incompleteRoutes[i].data.replace(']', '');
         }
     }
 
@@ -467,121 +123,74 @@ export class RouterParserUtil {
         let i = 0;
         const len = this.modulesWithRoutes.length;
         for (i; i < len; i++) {
-            _.forEach(
-                this.modulesWithRoutes[i].importsNode,
-                (node: ts.Node) => {
-                    if (ts.isPropertyDeclaration(node)) {
-                        const initializer =
-                            node.initializer as ts.ArrayLiteralExpression;
-                        if (initializer) {
-                            if (initializer.elements) {
-                                _.forEach(
-                                    initializer.elements,
-                                    (element: ts.CallExpression) => {
-                                        // find element with arguments
-                                        if (element.arguments) {
-                                            _.forEach(
-                                                element.arguments,
-                                                (argument: ts.Identifier) => {
-                                                    _.forEach(
-                                                        this.routes,
-                                                        (route) => {
-                                                            if (
-                                                                argument.text &&
-                                                                route.name ===
-                                                                    argument.text &&
-                                                                route.filename ===
-                                                                    this
-                                                                        .modulesWithRoutes[
-                                                                        i
-                                                                    ].filename
-                                                            ) {
-                                                                route.module =
-                                                                    this.modulesWithRoutes[
-                                                                        i
-                                                                    ].name;
-                                                            } else if (
-                                                                argument.text &&
-                                                                route.name ===
-                                                                    argument.text &&
-                                                                route.filename !==
-                                                                    this
-                                                                        .modulesWithRoutes[
-                                                                        i
-                                                                    ].filename
-                                                            ) {
-                                                                let argumentImportPath =
-                                                                    ImportsUtil.findFilePathOfImportedVariable(
-                                                                        argument.text,
-                                                                        this
-                                                                            .modulesWithRoutes[
-                                                                            i
-                                                                        ]
-                                                                            .filename,
-                                                                    );
-
-                                                                argumentImportPath =
-                                                                    argumentImportPath
-                                                                        .replace(
-                                                                            process.cwd() +
-                                                                                path.sep,
-                                                                            "",
-                                                                        )
-                                                                        .replace(
-                                                                            /\\/g,
-                                                                            "/",
-                                                                        );
-
-                                                                if (
-                                                                    argument.text &&
-                                                                    route.name ===
-                                                                        argument.text &&
-                                                                    route.filename ===
-                                                                        argumentImportPath
-                                                                ) {
-                                                                    route.module =
-                                                                        this.modulesWithRoutes[
-                                                                            i
-                                                                        ].name;
-                                                                }
-                                                            }
-                                                        },
+            _.forEach(this.modulesWithRoutes[i].importsNode, (node: ts.Node) => {
+                if (ts.isPropertyDeclaration(node)) {
+                    const initializer = node.initializer as ts.ArrayLiteralExpression;
+                    if (initializer) {
+                        if (initializer.elements) {
+                            _.forEach(initializer.elements, (element: ts.CallExpression) => {
+                                // find element with arguments
+                                if (element.arguments) {
+                                    _.forEach(element.arguments, (argument: ts.Identifier) => {
+                                        _.forEach(this.routes, route => {
+                                            if (
+                                                argument.text &&
+                                                route.name === argument.text &&
+                                                route.filename ===
+                                                    this.modulesWithRoutes[i].filename
+                                            ) {
+                                                route.module = this.modulesWithRoutes[i].name;
+                                            } else if (
+                                                argument.text &&
+                                                route.name === argument.text &&
+                                                route.filename !==
+                                                    this.modulesWithRoutes[i].filename
+                                            ) {
+                                                let argumentImportPath =
+                                                    ImportsUtil.findFilePathOfImportedVariable(
+                                                        argument.text,
+                                                        this.modulesWithRoutes[i].filename
                                                     );
-                                                },
-                                            );
-                                        }
-                                    },
-                                );
-                            }
-                        }
-                    }
-                    /**
-                     * direct support of for example
-                     * export const HomeRoutingModule: ModuleWithProviders = RouterModule.forChild(HOME_ROUTES);
-                     */
-                    if (ts.isCallExpression(node)) {
-                        if (node.arguments) {
-                            _.forEach(
-                                node.arguments,
-                                (argument: ts.Identifier) => {
-                                    _.forEach(this.routes, (route) => {
-                                        if (
-                                            argument.text &&
-                                            route.name === argument.text &&
-                                            route.filename ===
-                                                this.modulesWithRoutes[i]
-                                                    .filename
-                                        ) {
-                                            route.module =
-                                                this.modulesWithRoutes[i].name;
-                                        }
+
+                                                argumentImportPath = argumentImportPath
+                                                    .replace(process.cwd() + path.sep, '')
+                                                    .replace(/\\/g, '/');
+
+                                                if (
+                                                    argument.text &&
+                                                    route.name === argument.text &&
+                                                    route.filename === argumentImportPath
+                                                ) {
+                                                    route.module = this.modulesWithRoutes[i].name;
+                                                }
+                                            }
+                                        });
                                     });
-                                },
-                            );
+                                }
+                            });
                         }
                     }
-                },
-            );
+                }
+                /**
+                 * direct support of for example
+                 * export const HomeRoutingModule: ModuleWithProviders = RouterModule.forChild(HOME_ROUTES);
+                 */
+                if (ts.isCallExpression(node)) {
+                    if (node.arguments) {
+                        _.forEach(node.arguments, (argument: ts.Identifier) => {
+                            _.forEach(this.routes, route => {
+                                if (
+                                    argument.text &&
+                                    route.name === argument.text &&
+                                    route.filename === this.modulesWithRoutes[i].filename
+                                ) {
+                                    route.module = this.modulesWithRoutes[i].name;
+                                }
+                            });
+                        });
+                    }
+                }
+            });
         }
     }
 
@@ -591,24 +200,24 @@ export class RouterParserUtil {
 
     public foundLazyModuleWithPath(modulePath: string): string {
         // path is like app/customers/customers.module#CustomersModule
-        const split = modulePath.split("#");
+        const split = modulePath.split('#');
         const lazyModuleName = split[1];
         return lazyModuleName;
     }
 
     public foundLazyComponentWithPath(componentPath: string): string {
         // path is like app/customers/customers.component#CustomersComponent
-        const split = componentPath.split("#");
+        const split = componentPath.split('#');
         const lazyComponentName = split[1];
         return lazyComponentName;
     }
 
     private normalizeFsPath(filePath: string): string {
-        return path.normalize(filePath).replace(/\\/g, "/");
+        return path.normalize(filePath).replace(/\\/g, '/');
     }
 
     private getScannedFilePath(scannedFile: any): string | undefined {
-        if (typeof scannedFile?.getFilePath === "function") {
+        if (typeof scannedFile?.getFilePath === 'function') {
             return scannedFile.getFilePath();
         }
         if (scannedFile?.path) {
@@ -621,12 +230,12 @@ export class RouterParserUtil {
     }
 
     private findScannedSourceFileByRelativeName(filename: string): any {
-        const normalizedFilename = this.normalizeFsPath(filename || "");
+        const normalizedFilename = this.normalizeFsPath(filename || '');
         if (!normalizedFilename) {
             return undefined;
         }
 
-        return this.scannedFiles.find((scannedFile) => {
+        return this.scannedFiles.find(scannedFile => {
             const scannedPath = this.getScannedFilePath(scannedFile);
             if (!scannedPath) {
                 return false;
@@ -640,13 +249,11 @@ export class RouterParserUtil {
             return [];
         }
 
-        if (typeof scannedFile.getClasses === "function") {
+        if (typeof scannedFile.getClasses === 'function') {
             return scannedFile
                 .getClasses()
-                .map((classDeclaration) => classDeclaration.getName?.())
-                .filter(
-                    (name) => typeof name === "string" && name.endsWith("Component"),
-                );
+                .map(classDeclaration => classDeclaration.getName?.())
+                .filter(name => typeof name === 'string' && name.endsWith('Component'));
         }
 
         const statements: ts.Node[] =
@@ -655,16 +262,14 @@ export class RouterParserUtil {
                 : [];
 
         if (statements.length > 0) {
-            const classDeclarations = statements.filter((statement) =>
-                ts.isClassDeclaration(statement),
+            const classDeclarations = statements.filter(statement =>
+                ts.isClassDeclaration(statement)
             ) as ts.ClassDeclaration[];
             return classDeclarations
-                .map((classDeclaration) =>
-                    classDeclaration?.name ? classDeclaration.name.text : undefined,
+                .map(classDeclaration =>
+                    classDeclaration?.name ? classDeclaration.name.text : undefined
                 )
-                .filter(
-                    (name) => typeof name === "string" && name.endsWith("Component"),
-                );
+                .filter(name => typeof name === 'string' && name.endsWith('Component'));
         }
 
         return [];
@@ -672,44 +277,40 @@ export class RouterParserUtil {
 
     private resolveImportSpecifierToFilePath(
         importSpecifier: string,
-        fromFilename: string,
+        fromFilename: string
     ): string | undefined {
         if (!importSpecifier || !fromFilename) {
             return undefined;
         }
 
-        const originScannedFile =
-            this.findScannedSourceFileByRelativeName(fromFilename);
+        const originScannedFile = this.findScannedSourceFileByRelativeName(fromFilename);
         const fromPath = this.getScannedFilePath(originScannedFile);
         const baseDir = fromPath
             ? path.dirname(fromPath)
             : path.dirname(path.resolve(fromFilename));
         const candidates = [
             path.resolve(baseDir, `${importSpecifier}.ts`),
-            path.resolve(baseDir, importSpecifier, "index.ts"),
+            path.resolve(baseDir, importSpecifier, 'index.ts')
         ];
 
-        return candidates.find((candidate) =>
-            this.scannedFiles.some((scannedFile) => {
+        return candidates.find(candidate =>
+            this.scannedFiles.some(scannedFile => {
                 const scannedPath = this.getScannedFilePath(scannedFile);
                 if (!scannedPath) {
                     return false;
                 }
-                return (
-                    this.normalizeFsPath(scannedPath) ===
-                    this.normalizeFsPath(candidate)
-                );
-            }),
+                return this.normalizeFsPath(scannedPath) === this.normalizeFsPath(candidate);
+            })
         );
     }
 
     private isComponentDecorator(decorator: ts.Decorator): boolean {
         const expression = decorator.expression;
         if (ts.isIdentifier(expression)) {
-            return expression.text === "Component";
+            return expression.text === 'Component';
         }
         if (ts.isCallExpression(expression) && ts.isIdentifier(expression.expression)) {
-            return expression.expression.text === "Component";
+            return expression.expression.text === 'Component';
         }
         return false;
     }
@@ -731,55 +332,45 @@ export class RouterParserUtil {
         return ((node as any).decorators as readonly ts.Decorator[] | undefined) || [];
     }
 
-    private classHasComponentDecorator(
-        classDeclaration: ts.ClassDeclaration,
-    ): boolean {
+    private classHasComponentDecorator(classDeclaration: ts.ClassDeclaration): boolean {
         const decorators = this.getNodeDecorators(classDeclaration);
         if (!decorators || decorators.length === 0) {
             return false;
         }
-        return decorators.some((decorator) =>
-            this.isComponentDecorator(decorator),
-        );
+        return decorators.some(decorator => this.isComponentDecorator(decorator));
     }
 
     private resolveLazyComponentName(
         loadComponent: string,
         filename: string,
-        routePath?: string,
+        routePath?: string
     ): string | undefined {
         if (!loadComponent) {
             return undefined;
         }
 
-        const [importSpecifier, exportName] = loadComponent.split("#");
+        const [importSpecifier, exportName] = loadComponent.split('#');
 
         if (
             exportName &&
             exportName !== RouterParserUtil.DEFAULT_LAZY_EXPORT &&
-            exportName !== "undefined"
+            exportName !== 'undefined'
         ) {
             return exportName;
         }
 
-        const resolvedFile = this.resolveImportSpecifierToFilePath(
-            importSpecifier,
-            filename,
-        );
+        const resolvedFile = this.resolveImportSpecifierToFilePath(importSpecifier, filename);
 
         if (!resolvedFile) {
             return this.inferComponentNameFromRoutePath(routePath);
         }
 
-        const sourceFile: any = this.scannedFiles.find((scannedFile) => {
+        const sourceFile: any = this.scannedFiles.find(scannedFile => {
             const scannedPath = this.getScannedFilePath(scannedFile);
             if (!scannedPath) {
                 return false;
             }
-            return (
-                this.normalizeFsPath(scannedPath) ===
-                this.normalizeFsPath(resolvedFile)
-            );
+            return this.normalizeFsPath(scannedPath) === this.normalizeFsPath(resolvedFile);
         });
 
         if (!sourceFile) {
@@ -792,19 +383,19 @@ export class RouterParserUtil {
                 : [];
 
         if (statements.length > 0) {
-            const classDeclarations = statements.filter((statement) =>
-                ts.isClassDeclaration(statement),
+            const classDeclarations = statements.filter(statement =>
+                ts.isClassDeclaration(statement)
             ) as ts.ClassDeclaration[];
             const hasDefaultModifier = (classDeclaration: ts.ClassDeclaration) =>
                 !!classDeclaration.modifiers?.some(
-                    (modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword,
+                    modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword
                 );
 
             const defaultDecoratedClass = classDeclarations.find(
                 (classDeclaration: ts.ClassDeclaration) =>
                     hasDefaultModifier(classDeclaration) &&
                     classDeclaration.name &&
-                    this.classHasComponentDecorator(classDeclaration),
+                    this.classHasComponentDecorator(classDeclaration)
             );
 
             if (defaultDecoratedClass && defaultDecoratedClass.name) {
@@ -815,7 +406,7 @@ export class RouterParserUtil {
                 (classDeclaration: ts.ClassDeclaration) =>
                     hasDefaultModifier(classDeclaration) &&
                     classDeclaration.name &&
-                    classDeclaration.name.text.endsWith("Component"),
+                    classDeclaration.name.text.endsWith('Component')
             );
 
             if (defaultComponentClass && defaultComponentClass.name) {
@@ -824,7 +415,7 @@ export class RouterParserUtil {
 
             const defaultClass = classDeclarations.find(
                 (classDeclaration: ts.ClassDeclaration) =>
-                    hasDefaultModifier(classDeclaration) && classDeclaration.name,
+                    hasDefaultModifier(classDeclaration) && classDeclaration.name
             );
 
             if (defaultClass && defaultClass.name) {
@@ -833,8 +424,7 @@ export class RouterParserUtil {
 
             const firstDecoratedClass = classDeclarations.find(
                 (classDeclaration: ts.ClassDeclaration) =>
-                    classDeclaration.name &&
-                    this.classHasComponentDecorator(classDeclaration),
+                    classDeclaration.name && this.classHasComponentDecorator(classDeclaration)
             );
 
             if (firstDecoratedClass && firstDecoratedClass.name) {
@@ -843,8 +433,7 @@ export class RouterParserUtil {
 
             const firstComponentClass = classDeclarations.find(
                 (classDeclaration: ts.ClassDeclaration) =>
-                    classDeclaration.name &&
-                    classDeclaration.name.text.endsWith("Component"),
+                    classDeclaration.name && classDeclaration.name.text.endsWith('Component')
             );
 
             if (firstComponentClass && firstComponentClass.name) {
@@ -861,9 +450,9 @@ export class RouterParserUtil {
         }
 
         const cleanedPath = routePath
-            .replace(/^\//, "")
-            .replace(/\*\*/g, "")
-            .replace(/:[^/]+/g, "")
+            .replace(/^\//, '')
+            .replace(/\*\*/g, '')
+            .replace(/:[^/]+/g, '')
             .trim();
 
         if (!cleanedPath) {
@@ -872,21 +461,18 @@ export class RouterParserUtil {
 
         const guessedName =
             cleanedPath
-                .split("/")
-                .filter((segment) => segment.length > 0)
-                .map((segment) =>
+                .split('/')
+                .filter(segment => segment.length > 0)
+                .map(segment =>
                     segment
                         .split(/[-_]/g)
-                        .filter((part) => part.length > 0)
-                        .map(
-                            (part) =>
-                                part.charAt(0).toUpperCase() + part.slice(1),
-                        )
-                        .join(""),
+                        .filter(part => part.length > 0)
+                        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                        .join('')
                 )
-                .join("") + "Component";
+                .join('') + 'Component';
 
-        if (!guessedName || guessedName === "Component") {
+        if (!guessedName || guessedName === 'Component') {
             return undefined;
         }
 
@@ -894,15 +480,15 @@ export class RouterParserUtil {
     }
 
     private findRouteByResolvedFilePath(
-        resolvedFilePath: string,
+        resolvedFilePath: string
     ): { data: string; filename: string } | undefined {
-        const normalizedResolved = this.normalizeFsPath(resolvedFilePath || "");
+        const normalizedResolved = this.normalizeFsPath(resolvedFilePath || '');
         if (!normalizedResolved) {
             return undefined;
         }
 
-        return this.routes.find((route) => {
-            const routeFilename = this.normalizeFsPath(route?.filename || "");
+        return this.routes.find(route => {
+            const routeFilename = this.normalizeFsPath(route?.filename || '');
             if (!routeFilename) {
                 return false;
             }
@@ -913,30 +499,17 @@ export class RouterParserUtil {
         });
     }
 
-    private resolveRouteItemComponentName(
-        routeItem: any,
-        filename: string,
-    ): string | undefined {
-        if (!routeItem || typeof routeItem !== "object") {
+    private resolveRouteItemComponentName(routeItem: any, filename: string): string | undefined {
+        if (!routeItem || typeof routeItem !== 'object') {
             return undefined;
         }
 
-        if (
-            typeof routeItem.component === "string" &&
-            routeItem.component.trim() !== ""
-        ) {
+        if (typeof routeItem.component === 'string' && routeItem.component.trim() !== '') {
             return routeItem.component;
         }
 
-        if (
-            typeof routeItem.loadComponent === "string" &&
-            routeItem.loadComponent.trim() !== ""
-        ) {
-            return this.resolveLazyComponentName(
-                routeItem.loadComponent,
-                filename,
-                routeItem.path,
-            );
+        if (typeof routeItem.loadComponent === 'string' && routeItem.loadComponent.trim() !== '') {
+            return this.resolveLazyComponentName(routeItem.loadComponent, filename, routeItem.path);
         }
 
         return undefined;
@@ -944,24 +517,18 @@ export class RouterParserUtil {
 
     private resolveDefaultChildComponentNameFromRoutes(
         routeItems: any[],
-        filename: string,
+        filename: string
     ): string | undefined {
         if (!Array.isArray(routeItems) || routeItems.length === 0) {
             return undefined;
         }
 
         const defaultRouteItems = routeItems.filter(
-            (routeItem) =>
-                routeItem &&
-                typeof routeItem === "object" &&
-                routeItem.path === "",
+            routeItem => routeItem && typeof routeItem === 'object' && routeItem.path === ''
         );
 
         for (const routeItem of defaultRouteItems) {
-            const componentName = this.resolveRouteItemComponentName(
-                routeItem,
-                filename,
-            );
+            const componentName = this.resolveRouteItemComponentName(routeItem, filename);
             if (componentName) {
                 return componentName;
             }
@@ -969,7 +536,7 @@ export class RouterParserUtil {
             if (Array.isArray(routeItem.children)) {
                 const nested = this.resolveDefaultChildComponentNameFromRoutes(
                     routeItem.children,
-                    filename,
+                    filename
                 );
                 if (nested) {
                     return nested;
@@ -982,26 +549,23 @@ export class RouterParserUtil {
 
     private resolveLazyChildrenLandingComponentName(
         loadChildren: string,
-        filename: string,
+        filename: string
     ): string | undefined {
-        if (!loadChildren || typeof loadChildren !== "string") {
+        if (!loadChildren || typeof loadChildren !== 'string') {
             return undefined;
         }
 
-        const [importSpecifier, exportName] = loadChildren.split("#");
+        const [importSpecifier, exportName] = loadChildren.split('#');
 
         if (
             exportName &&
             exportName !== RouterParserUtil.DEFAULT_LAZY_EXPORT &&
-            exportName !== "undefined"
+            exportName !== 'undefined'
         ) {
             return undefined;
         }
 
-        const resolvedFile = this.resolveImportSpecifierToFilePath(
-            importSpecifier,
-            filename,
-        );
+        const resolvedFile = this.resolveImportSpecifierToFilePath(importSpecifier, filename);
         if (!resolvedFile) {
             return undefined;
         }
@@ -1018,7 +582,7 @@ export class RouterParserUtil {
             }
             return this.resolveDefaultChildComponentNameFromRoutes(
                 parsedRoutes,
-                lazyRoute.filename || filename,
+                lazyRoute.filename || filename
             );
         } catch {
             return undefined;
@@ -1040,11 +604,11 @@ export class RouterParserUtil {
             const isValidName = (name: string): boolean => {
                 return (
                     name &&
-                    typeof name === "string" &&
-                    name.trim() !== "" &&
-                    name !== "undefined" &&
-                    name !== "null" &&
-                    !name.includes("undefined") &&
+                    typeof name === 'string' &&
+                    name.trim() !== '' &&
+                    name !== 'undefined' &&
+                    name !== 'null' &&
+                    !name.includes('undefined') &&
                     name.length > 0 &&
                     !/^\s*$/.test(name)
                 ); // Not just whitespace
@@ -1060,17 +624,15 @@ export class RouterParserUtil {
                     if (!routeItem.path) {
                         validChildren.push({
                             name: routeItem.component,
-                            kind: "component",
+                            kind: 'component',
                             component: routeItem.component,
-                            path: routeItem.path || "",
-                            filename,
+                            path: routeItem.path || '',
+                            filename
                         });
                     }
                 }
                 if (routeItem.loadChildren) {
-                    const lazyModuleName = this.foundLazyModuleWithPath(
-                        routeItem.loadChildren,
-                    );
+                    const lazyModuleName = this.foundLazyModuleWithPath(routeItem.loadChildren);
                     if (
                         lazyModuleName &&
                         isValidName(lazyModuleName) &&
@@ -1079,18 +641,17 @@ export class RouterParserUtil {
                         routeModuleName = lazyModuleName;
                         validChildren.push({
                             name: lazyModuleName,
-                            kind: "module",
+                            kind: 'module',
                             module: lazyModuleName,
-                            path: routeItem.path || "",
-                            filename,
+                            path: routeItem.path || '',
+                            filename
                         });
                     }
                     if (!routeModuleName && !routeComponentName) {
-                        const landingComponentName =
-                            this.resolveLazyChildrenLandingComponentName(
-                                routeItem.loadChildren,
-                                filename,
-                            );
+                        const landingComponentName = this.resolveLazyChildrenLandingComponentName(
+                            routeItem.loadChildren,
+                            filename
+                        );
                         if (landingComponentName && isValidName(landingComponentName)) {
                             routeComponentName = landingComponentName;
                         }
@@ -1100,17 +661,17 @@ export class RouterParserUtil {
                     const componentName = this.resolveLazyComponentName(
                         routeItem.loadComponent,
                         filename,
-                        routeItem.path,
+                        routeItem.path
                     );
                     if (componentName && isValidName(componentName)) {
                         routeComponentName = componentName;
                         if (!routeItem.path) {
                             validChildren.push({
                                 name: componentName,
-                                kind: "component",
+                                kind: 'component',
                                 component: componentName,
-                                path: routeItem.path || "",
-                                filename,
+                                path: routeItem.path || '',
+                                filename
                             });
                         }
                     }
@@ -1119,31 +680,31 @@ export class RouterParserUtil {
                 if (
                     routeItem.path &&
                     isValidName(routeItem.path) &&
-                    !routeItem.path.includes("*")
+                    !routeItem.path.includes('*')
                 ) {
                     validChildren.push({
                         name: routeItem.path,
-                        kind: "route-path",
+                        kind: 'route-path',
                         component: routeComponentName,
                         module: routeModuleName,
                         loadChildren: routeItem.loadChildren,
                         loadComponent: routeItem.loadComponent,
-                        filename,
+                        filename
                     });
                 }
                 // Capture redirectTo values (enums resolved by cleanFileDynamics)
                 if (
                     routeItem.redirectTo &&
                     isValidName(routeItem.redirectTo) &&
-                    !routeItem.redirectTo.includes(".")
+                    !routeItem.redirectTo.includes('.')
                 ) {
                     validChildren.push({
                         name: routeItem.redirectTo,
-                        kind: "route-redirect",
-                        path: routeItem.path || "",
+                        kind: 'route-redirect',
+                        path: routeItem.path || '',
                         redirectTo: routeItem.redirectTo,
                         pathMatch: routeItem.pathMatch,
-                        filename,
+                        filename
                     });
                 }
                 // Recurse into children routes (standalone nested routes)
@@ -1154,26 +715,21 @@ export class RouterParserUtil {
                 }
             };
 
-            const addStaticEnumMappings = (
-                routeData: string,
-                filename: string,
-            ) => {
+            const addStaticEnumMappings = (routeData: string, filename: string) => {
                 const enumMappings = {
-                    "ABOUT_ENUMS.todomvc": "todomvcinstaticclass",
-                    "APP_ENUMS.home": "homeenumimported",
-                    "APP_ENUM.home": "homeenuminfile",
+                    'ABOUT_ENUMS.todomvc': 'todomvcinstaticclass',
+                    'APP_ENUMS.home': 'homeenumimported',
+                    'APP_ENUM.home': 'homeenuminfile'
                 };
 
-                for (const [enumPattern, staticValue] of Object.entries(
-                    enumMappings,
-                )) {
+                for (const [enumPattern, staticValue] of Object.entries(enumMappings)) {
                     const patterns = [
                         enumPattern,
-                        `"${enumPattern.replace(".", '"."')}"`,
-                        `"${enumPattern.replace(".", '\\"."')}"`,
-                        enumPattern.replace(".", '"."'),
-                        enumPattern.replace(".", '\\"."'),
-                        `"${enumPattern.split(".")[0]}"\\."${enumPattern.split(".")[1]}"`,
+                        `"${enumPattern.replace('.', '"."')}"`,
+                        `"${enumPattern.replace('.', '\\"."')}"`,
+                        enumPattern.replace('.', '"."'),
+                        enumPattern.replace('.', '\\"."'),
+                        `"${enumPattern.split('.')[0]}"\\."${enumPattern.split('.')[1]}"`
                     ];
 
                     let found = false;
@@ -1184,14 +740,11 @@ export class RouterParserUtil {
                         }
                     }
 
-                    if (
-                        found &&
-                        !validChildren.some((child) => child.name === staticValue)
-                    ) {
+                    if (found && !validChildren.some(child => child.name === staticValue)) {
                         validChildren.push({
                             name: staticValue,
-                            kind: "route-path",
-                            filename,
+                            kind: 'route-path',
+                            filename
                         });
                     }
                 }
@@ -1210,46 +763,39 @@ export class RouterParserUtil {
 
                     // Extract component names with rigorous validation
                     const componentMatches = route.data.match(
-                        /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/g,
+                        /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/g
                     );
                     if (componentMatches) {
                         for (const match of componentMatches) {
                             const componentNameMatch = match.match(
-                                /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/,
+                                /"component"\s*:\s*"([A-Za-z_$][\w$]*)"/
                             );
-                            if (
-                                componentNameMatch &&
-                                isValidName(componentNameMatch[1])
-                            ) {
+                            if (componentNameMatch && isValidName(componentNameMatch[1])) {
                                 validChildren.push({
                                     name: componentNameMatch[1],
-                                    kind: "component",
-                                    filename: route.filename,
+                                    kind: 'component',
+                                    filename: route.filename
                                 });
                             }
                         }
                     }
 
                     // Extract path values with strict validation (avoiding problematic patterns)
-                    const pathMatches = route.data.match(
-                        /"path"\s*:\s*"([^"]+)"/g,
-                    );
+                    const pathMatches = route.data.match(/"path"\s*:\s*"([^"]+)"/g);
                     if (pathMatches) {
                         for (const match of pathMatches) {
-                            const pathNameMatch = match.match(
-                                /"path"\s*:\s*"([^"]+)"/,
-                            );
+                            const pathNameMatch = match.match(/"path"\s*:\s*"([^"]+)"/);
                             if (
                                 pathNameMatch &&
                                 isValidName(pathNameMatch[1]) &&
-                                !pathNameMatch[1].includes("ABOUT_ENUMS") &&
-                                !pathNameMatch[1].includes(".")
+                                !pathNameMatch[1].includes('ABOUT_ENUMS') &&
+                                !pathNameMatch[1].includes('.')
                             ) {
                                 // Avoid dynamic property access
                                 validChildren.push({
                                     name: pathNameMatch[1],
-                                    kind: "route-path",
-                                    filename: route.filename,
+                                    kind: 'route-path',
+                                    filename: route.filename
                                 });
                             }
                         }
@@ -1257,55 +803,43 @@ export class RouterParserUtil {
 
                     // Extract redirect routes with path + pathMatch when available
                     const redirectRouteMatches = route.data.match(
-                        /\{[^{}]*"redirectTo"\s*:\s*"[^"]+"[^{}]*\}/g,
+                        /\{[^{}]*"redirectTo"\s*:\s*"[^"]+"[^{}]*\}/g
                     );
                     if (redirectRouteMatches) {
                         for (const routeMatch of redirectRouteMatches) {
                             const redirectNameMatch = routeMatch.match(
-                                /"redirectTo"\s*:\s*"([^"]+)"/,
+                                /"redirectTo"\s*:\s*"([^"]+)"/
                             );
-                            if (
-                                redirectNameMatch &&
-                                isValidName(redirectNameMatch[1])
-                            ) {
-                                const pathMatch = routeMatch.match(
-                                    /"path"\s*:\s*"([^"]*)"/,
-                                );
+                            if (redirectNameMatch && isValidName(redirectNameMatch[1])) {
+                                const pathMatch = routeMatch.match(/"path"\s*:\s*"([^"]*)"/);
                                 const pathModeMatch = routeMatch.match(
-                                    /"pathMatch"\s*:\s*"([^"]+)"/,
+                                    /"pathMatch"\s*:\s*"([^"]+)"/
                                 );
                                 validChildren.push({
                                     name: redirectNameMatch[1],
-                                    kind: "route-redirect",
-                                    path: pathMatch ? pathMatch[1] : "",
+                                    kind: 'route-redirect',
+                                    path: pathMatch ? pathMatch[1] : '',
                                     redirectTo: redirectNameMatch[1],
-                                    pathMatch: pathModeMatch
-                                        ? pathModeMatch[1]
-                                        : undefined,
-                                    filename: route.filename,
+                                    pathMatch: pathModeMatch ? pathModeMatch[1] : undefined,
+                                    filename: route.filename
                                 });
                             }
                         }
                     } else {
                         // Legacy fallback when object-level extraction fails
-                        const redirectMatches = route.data.match(
-                            /"redirectTo"\s*:\s*"([^"]+)"/g,
-                        );
+                        const redirectMatches = route.data.match(/"redirectTo"\s*:\s*"([^"]+)"/g);
                         if (redirectMatches) {
                             for (const match of redirectMatches) {
                                 const redirectNameMatch = match.match(
-                                    /"redirectTo"\s*:\s*"([^"]+)"/,
+                                    /"redirectTo"\s*:\s*"([^"]+)"/
                                 );
-                                if (
-                                    redirectNameMatch &&
-                                    isValidName(redirectNameMatch[1])
-                                ) {
+                                if (redirectNameMatch && isValidName(redirectNameMatch[1])) {
                                     validChildren.push({
                                         name: redirectNameMatch[1],
-                                        kind: "route-redirect",
-                                        path: "",
+                                        kind: 'route-redirect',
+                                        path: '',
                                         redirectTo: redirectNameMatch[1],
-                                        filename: route.filename,
+                                        filename: route.filename
                                     });
                                 }
                             }
@@ -1322,19 +856,21 @@ export class RouterParserUtil {
                     if (isValidName(module.name) && module.filename) {
                         validChildren.push({
                             name: module.name,
-                            kind: "module",
-                            filename: module.filename,
+                            kind: 'module',
+                            filename: module.filename
                         });
                     }
                 }
             }
 
             const normalizeRoutePath = (value: string): string =>
-                String(value || "").replace(/^\//, "").trim();
+                String(value || '')
+                    .replace(/^\//, '')
+                    .trim();
 
-            const deduplicatedChildren = validChildren.filter((child) => {
+            const deduplicatedChildren = validChildren.filter(child => {
                 if (
-                    child.kind !== "component" ||
+                    child.kind !== 'component' ||
                     !isValidName(child.component || child.name) ||
                     !isValidName(child.path)
                 ) {
@@ -1344,14 +880,12 @@ export class RouterParserUtil {
                 const componentName = child.component || child.name;
                 const componentPath = normalizeRoutePath(child.path);
 
-                return !validChildren.some((otherChild) => {
-                    if (otherChild.kind !== "route-path") {
+                return !validChildren.some(otherChild => {
+                    if (otherChild.kind !== 'route-path') {
                         return false;
                     }
 
-                    const otherPath = normalizeRoutePath(
-                        otherChild.path || otherChild.name,
-                    );
+                    const otherPath = normalizeRoutePath(otherChild.path || otherChild.name);
                     const otherComponent = otherChild.component;
 
                     return (
@@ -1363,10 +897,10 @@ export class RouterParserUtil {
             });
 
             const routesTree = {
-                name: "<root>",
-                kind: "module",
+                name: '<root>',
+                kind: 'module',
                 className: this.rootModule,
-                children: deduplicatedChildren,
+                children: deduplicatedChildren
             };
 
             return routesTree;
@@ -1389,33 +923,31 @@ export class RouterParserUtil {
         this.cleanModulesTree = _.cloneDeep(this.modulesTree);
 
         const routesTree = {
-            name: "<root>",
-            kind: "module",
+            name: '<root>',
+            kind: 'module',
             className: this.rootModule,
-            children: [],
+            children: []
         };
 
-        const loopModulesParser = (node) => {
+        const loopModulesParser = node => {
             if (node.children && node.children.length > 0) {
                 // If module has child modules
                 for (const i in node.children) {
-                    const route = this.foundRouteWithModuleName(
-                        node.children[i].name,
-                    );
+                    const route = this.foundRouteWithModuleName(node.children[i].name);
                     if (route && route.data) {
                         try {
                             route.children = JSON5.parse(route.data);
                         } catch (e) {
                             logger.error(
-                                "Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.",
+                                'Error during generation of routes JSON file, maybe a trailing comma or an external variable inside one route.'
                             );
                             logger.debug(
-                                `Route data for "${node.children[i].name}": ${route.data}`,
+                                `Route data for "${node.children[i].name}": ${route.data}`
                             );
                             logger.debug(`Parse error: ${e.message}`);
                         }
                         delete route.data;
-                        route.kind = "module";
+                        route.kind = 'module';
                         routesTree.children.push(route);
                     }
                     if (node.children[i].children) {
@@ -1433,7 +965,7 @@ export class RouterParserUtil {
                     } catch (parseError) {
                         logger.error(
                             `Failed to parse route data for module "${node.name}". ` +
-                                `This may be caused by special characters in file paths or route configurations.`,
+                                `This may be caused by special characters in file paths or route configurations.`
                         );
                         logger.debug(`Route data: ${rawRoutes.data}`);
                         logger.debug(`Parse error: ${parseError.message}`);
@@ -1448,17 +980,14 @@ export class RouterParserUtil {
                             if (route.component) {
                                 routeAddedOnce = true;
                                 routesTree.children.push({
-                                    kind: "component",
+                                    kind: 'component',
                                     component: route.component,
-                                    path: route.path,
+                                    path: route.path
                                 });
                             }
                         }
                         if (!routeAddedOnce) {
-                            routesTree.children = [
-                                ...routesTree.children,
-                                ...routes,
-                            ];
+                            routesTree.children = [...routesTree.children, ...routes];
                         }
                     }
                 }
@@ -1466,7 +995,7 @@ export class RouterParserUtil {
         };
 
         const startModule = _.find(this.cleanModulesTree, {
-            name: this.rootModule,
+            name: this.rootModule
         });
 
         if (startModule) {
@@ -1477,7 +1006,7 @@ export class RouterParserUtil {
 
         let cleanedRoutesTree = undefined;
 
-        const cleanRoutesTree = (route) => {
+        const cleanRoutesTree = route => {
             return route;
         };
 
@@ -1488,25 +1017,21 @@ export class RouterParserUtil {
         const loopInsideModule = (mod, _rawModule) => {
             if (mod.children) {
                 for (const z in mod.children) {
-                    const route = this.foundRouteWithModuleName(
-                        mod.children[z].name,
-                    );
-                    if (typeof route !== "undefined") {
+                    const route = this.foundRouteWithModuleName(mod.children[z].name);
+                    if (typeof route !== 'undefined') {
                         if (route.data) {
                             try {
                                 route.children = JSON5.parse(route.data);
                                 delete route.data;
-                                route.kind = "module";
+                                route.kind = 'module';
                                 _rawModule.children.push(route);
                             } catch (parseError) {
                                 logger.warn(
                                     `Failed to parse route data for module "${mod.children[z].name}". ` +
-                                        `Skipping route parsing for this module.`,
+                                        `Skipping route parsing for this module.`
                                 );
                                 logger.debug(`Route data: ${route.data}`);
-                                logger.debug(
-                                    `Parse error: ${parseError.message}`,
-                                );
+                                logger.debug(`Parse error: ${parseError.message}`);
                                 // Skip this route but continue processing others
                             }
                         }
@@ -1514,17 +1039,17 @@ export class RouterParserUtil {
                 }
             } else {
                 const route = this.foundRouteWithModuleName(mod.name);
-                if (typeof route !== "undefined") {
+                if (typeof route !== 'undefined') {
                     if (route.data) {
                         try {
                             route.children = JSON5.parse(route.data);
                             delete route.data;
-                            route.kind = "module";
+                            route.kind = 'module';
                             _rawModule.children.push(route);
                         } catch (parseError) {
                             logger.warn(
                                 `Failed to parse route data for module "${mod.name}". ` +
-                                    `Skipping route parsing for this module.`,
+                                    `Skipping route parsing for this module.`
                             );
                             logger.debug(`Route data: ${route.data}`);
                             logger.debug(`Parse error: ${parseError.message}`);
@@ -1535,22 +1060,17 @@ export class RouterParserUtil {
             }
         };
 
-        const loopRoutesParser = (route) => {
+        const loopRoutesParser = route => {
             if (route.children) {
                 for (const i in route.children) {
                     if (route.children[i].loadChildren) {
-                        const child = this.foundLazyModuleWithPath(
-                            route.children[i].loadChildren,
-                        );
-                        const module: RoutingGraphNode = _.find(
-                            this.cleanModulesTree,
-                            {
-                                name: child,
-                            },
-                        );
+                        const child = this.foundLazyModuleWithPath(route.children[i].loadChildren);
+                        const module: RoutingGraphNode = _.find(this.cleanModulesTree, {
+                            name: child
+                        });
                         if (module) {
                             const _rawModule: RoutingGraphNode = {};
-                            _rawModule.kind = "module";
+                            _rawModule.kind = 'module';
                             _rawModule.children = [];
                             _rawModule.module = module.name;
                             loopInsideModule(module, _rawModule);
@@ -1561,7 +1081,7 @@ export class RouterParserUtil {
                     }
                     if (route.children[i].loadComponent) {
                         const child = this.foundLazyComponentWithPath(
-                            route.children[i].loadComponent,
+                            route.children[i].loadComponent
                         );
                         if (child) {
                             route.children[i].component = child;
@@ -1592,9 +1112,9 @@ export class RouterParserUtil {
         };
 
         // Scan each module and add parent property
-        _.forEach(this.modules, (firstLoopModule) => {
-            _.forEach(firstLoopModule.importsNode, (importNode) => {
-                _.forEach(this.modules, (module) => {
+        _.forEach(this.modules, firstLoopModule => {
+            _.forEach(firstLoopModule.importsNode, importNode => {
+                _.forEach(this.modules, module => {
                     if (module.name === importNode.name) {
                         module.parent = firstLoopModule.name;
                     }
@@ -1604,40 +1124,32 @@ export class RouterParserUtil {
         this.modulesTree = getNestedChildren(this.modules);
     }
 
-    public generateRoutesIndex(
-        outputFolder: string,
-        routes: Array<any>,
-    ): Promise<void> {
-        return FileEngine.get(
-            __dirname + "/../src/templates/partials/routes-index.hbs",
-        ).then(
-            (data) => {
+    public generateRoutesIndex(outputFolder: string, routes: Array<any>): Promise<void> {
+        return FileEngine.get(__dirname + '/../src/templates/partials/routes-index.hbs').then(
+            data => {
                 const template: any = Handlebars.compile(data);
                 const result = template({
-                    routes: JSON.stringify(routes),
+                    routes: JSON.stringify(routes)
                 });
                 const testOutputDir = outputFolder.match(process.cwd());
 
                 if (testOutputDir && testOutputDir.length > 0) {
-                    outputFolder = outputFolder.replace(
-                        process.cwd() + path.sep,
-                        "",
-                    );
+                    outputFolder = outputFolder.replace(process.cwd() + path.sep, '');
                 }
 
                 return FileEngine.write(
-                    outputFolder + path.sep + "/js/routes/routes_index.js",
-                    result,
+                    outputFolder + path.sep + '/js/routes/routes_index.js',
+                    result
                 );
             },
-            (_err) => Promise.reject("Error during routes index generation"),
+            _err => Promise.reject('Error during routes index generation')
         );
     }
 
     public routesLength(): number {
         let _n = 0;
-        const routesParser = (route) => {
-            if (typeof route.path !== "undefined") {
+        const routesParser = route => {
+            if (typeof route.path !== 'undefined') {
                 _n += 1;
             }
             if (route.children) {
@@ -1655,14 +1167,14 @@ export class RouterParserUtil {
     }
 
     public printRoutes(): void {
-        console.log("");
-        console.log("printRoutes: ");
+        console.log('');
+        console.log('printRoutes: ');
         console.log(this.routes);
     }
 
     public printModulesRoutes(): void {
-        console.log("");
-        console.log("printModulesRoutes: ");
+        console.log('');
+        console.log('printModulesRoutes: ');
         console.log(this.modulesWithRoutes);
     }
 
@@ -1670,14 +1182,14 @@ export class RouterParserUtil {
         let result = false;
         if (node.declarationList && node.declarationList.declarations) {
             const routeLikePropertyNames = new Set([
-                "path",
-                "component",
-                "redirectTo",
-                "loadChildren",
-                "loadComponent",
-                "children",
-                "data",
-                "canActivate",
+                'path',
+                'component',
+                'redirectTo',
+                'loadChildren',
+                'loadComponent',
+                'children',
+                'data',
+                'canActivate'
             ]);
 
             const hasRouteLikeArrayInitializer = (declaration): boolean => {
@@ -1692,25 +1204,22 @@ export class RouterParserUtil {
                 }
 
                 const variableName = declaration.name.text.toLowerCase();
-                if (!variableName.includes("route")) {
+                if (!variableName.includes('route')) {
                     return false;
                 }
 
-                return declaration.initializer.elements.some((element) => {
+                return declaration.initializer.elements.some(element => {
                     if (ts.isSpreadElement(element)) {
                         return true;
                     }
                     if (!ts.isObjectLiteralExpression(element)) {
                         return false;
                     }
-                    return element.properties.some((property) => {
+                    return element.properties.some(property => {
                         if (!ts.isPropertyAssignment(property)) {
                             return false;
                         }
-                        const propertyName = property.name.getText().replace(
-                            /^['"]|['"]$/g,
-                            "",
-                        );
+                        const propertyName = property.name.getText().replace(/^['"]|['"]$/g, '');
                         return routeLikePropertyNames.has(propertyName);
                     });
                 });
@@ -1728,32 +1237,22 @@ export class RouterParserUtil {
                     continue;
                 }
 
-                if (
-                    ts.isTypeReferenceNode(declarationType) &&
-                    declarationType.typeName
-                ) {
+                if (ts.isTypeReferenceNode(declarationType) && declarationType.typeName) {
                     const typeName = declarationType.typeName.getText();
-                    if (typeName === "Routes" || typeName.endsWith(".Routes")) {
+                    if (typeName === 'Routes' || typeName.endsWith('.Routes')) {
                         result = true;
                         continue;
                     }
 
                     if (
-                        (typeName === "Array" ||
-                            typeName === "ReadonlyArray") &&
+                        (typeName === 'Array' || typeName === 'ReadonlyArray') &&
                         declarationType.typeArguments &&
                         declarationType.typeArguments.length === 1
                     ) {
                         const routeType = declarationType.typeArguments[0];
-                        if (
-                            ts.isTypeReferenceNode(routeType) &&
-                            routeType.typeName
-                        ) {
+                        if (ts.isTypeReferenceNode(routeType) && routeType.typeName) {
                             const routeTypeName = routeType.typeName.getText();
-                            if (
-                                routeTypeName === "Route" ||
-                                routeTypeName.endsWith(".Route")
-                            ) {
+                            if (routeTypeName === 'Route' || routeTypeName.endsWith('.Route')) {
                                 result = true;
                                 continue;
                             }
@@ -1766,12 +1265,8 @@ export class RouterParserUtil {
                     ts.isTypeReferenceNode(declarationType.elementType) &&
                     declarationType.elementType.typeName
                 ) {
-                    const elementTypeName =
-                        declarationType.elementType.typeName.getText();
-                    if (
-                        elementTypeName === "Route" ||
-                        elementTypeName.endsWith(".Route")
-                    ) {
+                    const elementTypeName = declarationType.elementType.typeName.getText();
+                    if (elementTypeName === 'Route' || elementTypeName.endsWith('.Route')) {
                         result = true;
                     }
                 }
@@ -1786,21 +1281,19 @@ export class RouterParserUtil {
 
     public cleanFileIdentifiers(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
-        const identifiers = file
-            .getDescendantsOfKind(SyntaxKind.Identifier)
-            .filter((p) => {
-                return (
-                    Node.isArrayLiteralExpression(p.getParentOrThrow()) ||
-                    Node.isPropertyAssignment(p.getParentOrThrow())
-                );
-            });
+        const identifiers = file.getDescendantsOfKind(SyntaxKind.Identifier).filter(p => {
+            return (
+                Node.isArrayLiteralExpression(p.getParentOrThrow()) ||
+                Node.isPropertyAssignment(p.getParentOrThrow())
+            );
+        });
 
         const identifiersInRoutesVariableStatement = [];
 
         for (const identifier of identifiers) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            identifier.getParentWhile((n) => {
+            identifier.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -1823,13 +1316,11 @@ export class RouterParserUtil {
                 !Node.isVariableDeclaration(identifierDeclaration)
             ) {
                 throw new Error(
-                    `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`,
+                    `Not implemented referenced declaration kind: ${identifierDeclaration.getKindName()}`
                 );
             }
             if (Node.isVariableDeclaration(identifierDeclaration)) {
-                identifier.replaceWithText(
-                    identifierDeclaration.getInitializerOrThrow().getText(),
-                );
+                identifier.replaceWithText(identifierDeclaration.getInitializerOrThrow().getText());
             }
         }
 
@@ -1851,42 +1342,32 @@ export class RouterParserUtil {
             if (!compilerOptions) return undefined;
 
             const baseUrl = compilerOptions.baseUrl
-                ? path.resolve(
-                      path.dirname(tsconfigPath),
-                      compilerOptions.baseUrl,
-                  )
+                ? path.resolve(path.dirname(tsconfigPath), compilerOptions.baseUrl)
                 : path.dirname(tsconfigPath);
 
             if (compilerOptions.paths) {
                 for (const [pattern, replacements] of Object.entries(
-                    compilerOptions.paths as Record<string, string[]>,
+                    compilerOptions.paths as Record<string, string[]>
                 )) {
-                    if (
-                        !Array.isArray(replacements) ||
-                        replacements.length === 0
-                    )
-                        continue;
+                    if (!Array.isArray(replacements) || replacements.length === 0) continue;
 
                     // Convert glob pattern to regex: "@shared/*" → /^@shared\/(.*)$/
                     const regexStr = pattern
-                        .replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&")
-                        .replace(/\*/g, "(.*)");
-                    const regex = new RegExp("^" + regexStr + "$");
+                        .replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&')
+                        .replace(/\*/g, '(.*)');
+                    const regex = new RegExp('^' + regexStr + '$');
                     const match = moduleSpecifier.match(regex);
 
                     if (match) {
-                        const resolved = (replacements[0] as string).replace(
-                            /\*/g,
-                            match[1] ?? "",
-                        );
+                        const resolved = (replacements[0] as string).replace(/\*/g, match[1] ?? '');
                         return path.resolve(baseUrl, resolved);
                     }
                 }
             }
 
             const isNonRelative =
-                !moduleSpecifier.startsWith("./") &&
-                !moduleSpecifier.startsWith("../") &&
+                !moduleSpecifier.startsWith('./') &&
+                !moduleSpecifier.startsWith('../') &&
                 !path.isAbsolute(moduleSpecifier);
             if (isNonRelative) {
                 return path.resolve(baseUrl, moduleSpecifier);
@@ -1901,14 +1382,14 @@ export class RouterParserUtil {
         const file = sourceFile;
         const spreadElements = file
             .getDescendantsOfKind(SyntaxKind.SpreadElement)
-            .filter((p) => Node.isArrayLiteralExpression(p.getParentOrThrow()));
+            .filter(p => Node.isArrayLiteralExpression(p.getParentOrThrow()));
 
         const spreadElementsInRoutesVariableStatement = [];
 
         for (const spreadElement of spreadElements) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            spreadElement.getParentWhile((n) => {
+            spreadElement.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -1926,7 +1407,7 @@ export class RouterParserUtil {
             const spreadExpression = spreadElement.getExpression();
             let spreadElementIdentifier = spreadExpression.getText(),
                 searchedImport,
-                aliasOriginalName = "",
+                aliasOriginalName = '',
                 foundWithAliasInImports = false,
                 foundWithAlias = false;
 
@@ -1938,7 +1419,7 @@ export class RouterParserUtil {
                     spreadElementIdentifier = callee.getText();
                 } else {
                     logger.warn(
-                        `Spread call "${spreadExpression.getText()}" cannot be inlined because its callee is not an identifier.`,
+                        `Spread call "${spreadExpression.getText()}" cannot be inlined because its callee is not an identifier.`
                     );
                     continue;
                 }
@@ -1947,22 +1428,18 @@ export class RouterParserUtil {
             // Try to find it in imports
             const imports = file.getImportDeclarations();
 
-            imports.forEach((i) => {
+            imports.forEach(i => {
                 let namedImports = i.getNamedImports(),
                     namedImportsLength = namedImports.length,
                     j = 0;
 
                 if (namedImportsLength > 0) {
                     for (j; j < namedImportsLength; j++) {
-                        let importName = namedImports[j]
-                                .getNameNode()
-                                .getText() as string,
+                        let importName = namedImports[j].getNameNode().getText() as string,
                             importAlias;
 
                         if (namedImports[j].getAliasNode()) {
-                            importAlias = namedImports[j]
-                                .getAliasNode()
-                                .getText();
+                            importAlias = namedImports[j].getAliasNode().getText();
                         }
 
                         if (importName === spreadElementIdentifier) {
@@ -1984,10 +1461,10 @@ export class RouterParserUtil {
             let referencedDeclaration;
 
             if (foundWithAliasInImports) {
-                if (typeof searchedImport !== "undefined") {
-                    const routePathIsBad = (path) => {
+                if (typeof searchedImport !== 'undefined') {
+                    const routePathIsBad = path => {
                         const result = this.scannedFiles.find(
-                            (scannedFile) => path === scannedFile.path,
+                            scannedFile => path === scannedFile.path
                         );
                         return !result;
                     };
@@ -2004,9 +1481,7 @@ export class RouterParserUtil {
                             str = str.toLowerCase();
                             searchStr = searchStr.toLowerCase();
                         }
-                        while (
-                            (index = str.indexOf(searchStr, startIndex)) > -1
-                        ) {
+                        while ((index = str.indexOf(searchStr, startIndex)) > -1) {
                             indices.push(index);
                             startIndex = index + searchStrLen;
                         }
@@ -2014,30 +1489,19 @@ export class RouterParserUtil {
                     };
 
                     const dirNamePath = path.dirname(file.getFilePath());
-                    const searchedImportPath =
-                        searchedImport.getModuleSpecifierValue();
-                    const leadingFilePath = searchedImportPath
-                        .split("/")
-                        .shift();
+                    const searchedImportPath = searchedImport.getModuleSpecifierValue();
+                    const leadingFilePath = searchedImportPath.split('/').shift();
                     const isRelativeImport =
-                        searchedImportPath.startsWith("./") ||
-                        searchedImportPath.startsWith("../");
+                        searchedImportPath.startsWith('./') || searchedImportPath.startsWith('../');
 
                     // Try tsconfig path alias first (e.g. "@shared/*" → "src/app/shared/*")
-                    const aliasResolved =
-                        this.resolvePathAlias(searchedImportPath);
+                    const aliasResolved = this.resolvePathAlias(searchedImportPath);
 
                     let importPath = aliasResolved
-                        ? aliasResolved + ".ts"
-                        : path.resolve(
-                              dirNamePath + "/" + searchedImportPath + ".ts",
-                          );
+                        ? aliasResolved + '.ts'
+                        : path.resolve(dirNamePath + '/' + searchedImportPath + '.ts');
 
-                    if (
-                        !aliasResolved &&
-                        !isRelativeImport &&
-                        routePathIsBad(importPath)
-                    ) {
+                    if (!aliasResolved && !isRelativeImport && routePathIsBad(importPath)) {
                         // Match only full path segments when trying to remove
                         // duplicated import prefixes. This avoids false positives
                         // when user folders contain dots/partial names (e.g. "felipe.jesus").
@@ -2045,27 +1509,22 @@ export class RouterParserUtil {
                         const leadingIndices = getIndicesOf(
                             duplicatedSegmentPattern,
                             importPath,
-                            true,
+                            true
                         );
                         if (leadingIndices.length > 1) {
                             // Nested route fixes
                             const startIndex = leadingIndices[0];
-                            const endIndex =
-                                leadingIndices[leadingIndices.length - 1];
+                            const endIndex = leadingIndices[leadingIndices.length - 1];
                             importPath =
-                                importPath.slice(0, startIndex) +
-                                importPath.slice(endIndex);
+                                importPath.slice(0, startIndex) + importPath.slice(endIndex);
                         } else {
                             // Top level route fixes
                             importPath =
-                                path.dirname(dirNamePath) +
-                                "/" +
-                                searchedImportPath +
-                                ".ts";
+                                path.dirname(dirNamePath) + '/' + searchedImportPath + '.ts';
                         }
                     }
                     const sourceFileImport =
-                        typeof ast.getSourceFile(importPath) !== "undefined"
+                        typeof ast.getSourceFile(importPath) !== 'undefined'
                             ? ast.getSourceFile(importPath)
                             : ast.addSourceFileAtPathIfExists(importPath);
                     if (sourceFileImport) {
@@ -2073,13 +1532,11 @@ export class RouterParserUtil {
                             ? aliasOriginalName
                             : spreadElementIdentifier;
                         referencedDeclaration =
-                            sourceFileImport.getVariableDeclaration(
-                                variableName,
-                            );
+                            sourceFileImport.getVariableDeclaration(variableName);
                     } else {
                         logger.warn(
                             `Could not resolve spread import "${searchedImportPath}" — skipping. ` +
-                                `If this is a path alias, ensure tsconfig compilerOptions.paths is configured correctly.`,
+                                `If this is a path alias, ensure tsconfig compilerOptions.paths is configured correctly.`
                         );
                     }
                 }
@@ -2088,14 +1545,14 @@ export class RouterParserUtil {
                 const spreadSymbol = spreadExpression.getSymbol();
                 if (!spreadSymbol) {
                     logger.warn(
-                        `Spread element "${spreadExpression.getText()}" cannot be resolved and will be skipped.`,
+                        `Spread element "${spreadExpression.getText()}" cannot be resolved and will be skipped.`
                     );
                     continue;
                 }
                 referencedDeclaration = spreadSymbol.getValueDeclaration();
             }
 
-            if (typeof referencedDeclaration === "undefined") {
+            if (typeof referencedDeclaration === 'undefined') {
                 // File could not be resolved (e.g. unresolvable path alias) — skip silently
                 continue;
             }
@@ -2103,33 +1560,30 @@ export class RouterParserUtil {
             if (!Node.isVariableDeclaration(referencedDeclaration)) {
                 logger.warn(
                     `Spread element "${spreadExpression.getText()}" references a ${referencedDeclaration.getKindName()} and cannot be inlined. ` +
-                        `This spread will be skipped in route documentation.`,
+                        `This spread will be skipped in route documentation.`
                 );
                 continue;
             }
 
             const referencedArray = referencedDeclaration.getInitializerIfKind(
-                SyntaxKind.ArrayLiteralExpression,
+                SyntaxKind.ArrayLiteralExpression
             );
             if (!referencedArray) {
                 const initializerKind =
-                    referencedDeclaration.getInitializer()?.getKindName() ??
-                    "unknown";
+                    referencedDeclaration.getInitializer()?.getKindName() ?? 'unknown';
                 logger.warn(
-                    `Spread element "${spreadElement.getExpression().getText()}" has a non-array initializer (${initializerKind}) and cannot be inlined. Routes using computed arrays (e.g. via .map()) may not appear in the documentation.`,
+                    `Spread element "${spreadElement.getExpression().getText()}" has a non-array initializer (${initializerKind}) and cannot be inlined. Routes using computed arrays (e.g. via .map()) may not appear in the documentation.`
                 );
                 continue;
             }
             const spreadElementArray = spreadElement.getParentIfKindOrThrow(
-                SyntaxKind.ArrayLiteralExpression,
+                SyntaxKind.ArrayLiteralExpression
             );
-            const insertIndex = spreadElementArray
-                .getElements()
-                .indexOf(spreadElement);
+            const insertIndex = spreadElementArray.getElements().indexOf(spreadElement);
             spreadElementArray.removeElement(spreadElement);
             spreadElementArray.insertElements(
                 insertIndex,
-                referencedArray.getElements().map((e) => e.getText()),
+                referencedArray.getElements().map(e => e.getText())
             );
         }
 
@@ -2138,25 +1592,18 @@ export class RouterParserUtil {
 
     public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
-        const routeStringProperties = new Set([
-            "path",
-            "redirectTo",
-            "outlet",
-            "pathMatch",
-        ]);
+        const routeStringProperties = new Set(['path', 'redirectTo', 'outlet', 'pathMatch']);
 
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
-            .filter(
-                (p) => !Node.isPropertyAccessExpression(p.getParentOrThrow()),
-            );
+            .filter(p => !Node.isPropertyAccessExpression(p.getParentOrThrow()));
 
         const propertyAccessExpressionsInRoutesVariableStatement = [];
 
         for (const propertyAccessExpression of propertyAccessExpressions) {
             // Loop through their parents nodes, and if one is a variableStatement and === 'routes'
             let foundParentVariableStatement = false;
-            propertyAccessExpression.getParentWhile((n) => {
+            propertyAccessExpression.getParentWhile(n => {
                 if (n.getKind() === SyntaxKind.VariableStatement) {
                     if (this.isVariableRoutes(n.compilerNode)) {
                         foundParentVariableStatement = true;
@@ -2165,16 +1612,13 @@ export class RouterParserUtil {
                 return true;
             });
             if (foundParentVariableStatement) {
-                propertyAccessExpressionsInRoutesVariableStatement.push(
-                    propertyAccessExpression,
-                );
+                propertyAccessExpressionsInRoutesVariableStatement.push(propertyAccessExpression);
             }
         }
 
         // inline the property access expressions
         for (const propertyAccessExpression of propertyAccessExpressionsInRoutesVariableStatement) {
-            const propertyAccessExpressionNodeName =
-                propertyAccessExpression.getNameNode();
+            const propertyAccessExpressionNodeName = propertyAccessExpression.getNameNode();
             if (propertyAccessExpressionNodeName) {
                 try {
                     const propertyAccessExpressionNodeNameSymbol =
@@ -2188,17 +1632,12 @@ export class RouterParserUtil {
                             !Node.isEnumMember(referencedDeclaration)
                         ) {
                             throw new Error(
-                                `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`,
+                                `Not implemented referenced declaration kind: ${referencedDeclaration.getKindName()}`
                             );
                         }
-                        if (
-                            typeof referencedDeclaration.getInitializerOrThrow !==
-                            "undefined"
-                        ) {
+                        if (typeof referencedDeclaration.getInitializerOrThrow !== 'undefined') {
                             propertyAccessExpression.replaceWithText(
-                                referencedDeclaration
-                                    .getInitializerOrThrow()
-                                    .getText(),
+                                referencedDeclaration.getInitializerOrThrow().getText()
                             );
                         }
                     }
@@ -2214,9 +1653,9 @@ export class RouterParserUtil {
 
         const templateExpressions = file
             .getDescendantsOfKind(SyntaxKind.TemplateExpression)
-            .filter((templateExpression) => {
+            .filter(templateExpression => {
                 let foundParentVariableStatement = false;
-                templateExpression.getParentWhile((n) => {
+                templateExpression.getParentWhile(n => {
                     if (n.getKind() === SyntaxKind.VariableStatement) {
                         if (this.isVariableRoutes(n.compilerNode)) {
                             foundParentVariableStatement = true;
@@ -2228,10 +1667,9 @@ export class RouterParserUtil {
                     return false;
                 }
 
-                const propertyAssignment =
-                    templateExpression.getFirstAncestorByKind(
-                        SyntaxKind.PropertyAssignment,
-                    );
+                const propertyAssignment = templateExpression.getFirstAncestorByKind(
+                    SyntaxKind.PropertyAssignment
+                );
 
                 if (!propertyAssignment) {
                     return false;
@@ -2246,21 +1684,18 @@ export class RouterParserUtil {
                 continue;
             }
 
-            let resolved = templateNode.head.text || "";
+            let resolved = templateNode.head.text || '';
             for (const span of templateNode.templateSpans) {
                 let expressionText = span.expression.getText();
                 expressionText = expressionText.trim();
                 if (
-                    (expressionText.startsWith('"') &&
-                        expressionText.endsWith('"')) ||
-                    (expressionText.startsWith("'") &&
-                        expressionText.endsWith("'")) ||
-                    (expressionText.startsWith("`") &&
-                        expressionText.endsWith("`"))
+                    (expressionText.startsWith('"') && expressionText.endsWith('"')) ||
+                    (expressionText.startsWith("'") && expressionText.endsWith("'")) ||
+                    (expressionText.startsWith('`') && expressionText.endsWith('`'))
                 ) {
                     expressionText = expressionText.slice(1, -1);
                 }
-                resolved += expressionText + (span.literal.text || "");
+                resolved += expressionText + (span.literal.text || '');
             }
 
             templateExpression.replaceWithText(JSON.stringify(resolved));
@@ -2268,9 +1703,9 @@ export class RouterParserUtil {
 
         const noSubstitutionTemplateLiterals = file
             .getDescendantsOfKind(SyntaxKind.NoSubstitutionTemplateLiteral)
-            .filter((literal) => {
+            .filter(literal => {
                 let foundParentVariableStatement = false;
-                literal.getParentWhile((n) => {
+                literal.getParentWhile(n => {
                     if (n.getKind() === SyntaxKind.VariableStatement) {
                         if (this.isVariableRoutes(n.compilerNode)) {
                             foundParentVariableStatement = true;
@@ -2283,7 +1718,7 @@ export class RouterParserUtil {
                 }
 
                 const propertyAssignment = literal.getFirstAncestorByKind(
-                    SyntaxKind.PropertyAssignment,
+                    SyntaxKind.PropertyAssignment
                 );
                 if (!propertyAssignment) {
                     return false;
@@ -2305,27 +1740,25 @@ export class RouterParserUtil {
      */
     public cleanCallExpressions(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
-        const routesVariableDeclarations = sourceFile.getVariableDeclarations().filter((declaration) => {
-            const variableStatement = declaration.getFirstAncestorByKind(
-                SyntaxKind.VariableStatement,
-            );
-            if (!variableStatement) {
-                return false;
-            }
-            return this.isVariableRoutes(variableStatement.compilerNode);
-        });
+        const routesVariableDeclarations = sourceFile
+            .getVariableDeclarations()
+            .filter(declaration => {
+                const variableStatement = declaration.getFirstAncestorByKind(
+                    SyntaxKind.VariableStatement
+                );
+                if (!variableStatement) {
+                    return false;
+                }
+                return this.isVariableRoutes(variableStatement.compilerNode);
+            });
 
         for (const variableDeclaration of routesVariableDeclarations) {
             const initializer = variableDeclaration.getInitializer();
             if (!initializer) continue;
 
-            for (const callExpr of initializer.getDescendantsOfKind(
-                SyntaxKind.CallExpression,
-            )) {
+            for (const callExpr of initializer.getDescendantsOfKind(SyntaxKind.CallExpression)) {
                 if (callExpr.wasForgotten()) continue;
-                callExpr.replaceWithText((writer) =>
-                    writer.quote(callExpr.getText()),
-                );
+                callExpr.replaceWithText(writer => writer.quote(callExpr.getText()));
             }
         }
 
@@ -2362,30 +1795,25 @@ export class RouterParserUtil {
     public cleanRoutesDefinitionWithImport(
         initializer: ts.ArrayLiteralExpression,
         node: ts.Node,
-        sourceFile: ts.SourceFile,
+        sourceFile: ts.SourceFile
     ): ts.Node {
         initializer.elements.forEach((element: ts.ObjectLiteralExpression) => {
             element.properties.forEach((property: ts.PropertyAssignment) => {
                 const propertyName = property.name.getText(),
                     propertyInitializer = property.initializer;
                 switch (propertyName) {
-                    case "path":
-                    case "redirectTo":
-                    case "outlet":
-                    case "pathMatch":
+                    case 'path':
+                    case 'redirectTo':
+                    case 'outlet':
+                    case 'pathMatch':
                         if (propertyInitializer) {
-                            if (
-                                propertyInitializer.kind !==
-                                SyntaxKind.StringLiteral
-                            ) {
+                            if (propertyInitializer.kind !== SyntaxKind.StringLiteral) {
                                 // Identifier(71) won't break parsing, but it will be better to retrive them
                                 // PropertyAccessExpression(179) ex: MYIMPORT.path will break it, find it in import
                                 if (
                                     propertyInitializer.kind ===
                                         SyntaxKind.PropertyAccessExpression &&
-                                    ts.isPropertyAccessExpression(
-                                        propertyInitializer,
-                                    )
+                                    ts.isPropertyAccessExpression(propertyInitializer)
                                 ) {
                                     let lastObjectLiteralAttributeName =
                                             propertyInitializer.name.getText(),
@@ -2396,15 +1824,13 @@ export class RouterParserUtil {
                                         const result =
                                             ImportsUtil.findPropertyValueInImportOrLocalVariables(
                                                 firstObjectLiteralAttributeName +
-                                                    "." +
+                                                    '.' +
                                                     lastObjectLiteralAttributeName,
-                                                sourceFile,
+                                                sourceFile
                                             ); // tslint:disable-line
-                                        if (result !== "") {
-                                            (propertyInitializer as any).kind =
-                                                9;
-                                            (propertyInitializer as any).text =
-                                                result;
+                                        if (result !== '') {
+                                            (propertyInitializer as any).kind = 9;
+                                            (propertyInitializer as any).text = result;
                                         }
                                     }
                                 }

@@ -29,6 +29,7 @@ import ExtendsMerger from "../../utils/extends-merger.util";
 import RouterParserUtil from "../../utils/router-parser.util";
 
 import { CodeGenerator } from "./angular/code-generator";
+import { PublicApiFilter } from "./angular/public-api-filter";
 
 import { ComponentDepFactory } from "./angular/deps/component-dep.factory";
 import { ControllerDepFactory } from "./angular/deps/controller-dep.factory";
@@ -59,6 +60,14 @@ import { markedAcl } from "../../utils/marked.acl";
 const crypto = require("crypto");
 const project = new Project();
 
+type NodeWithJsDoc = ts.Node & {
+    jsDoc?: ReadonlyArray<ts.JSDoc | ts.JSDocTag>;
+};
+
+type InterfaceDeclarationWithSymbol = ts.InterfaceDeclaration & {
+    symbol?: ts.Symbol;
+};
+
 // TypeScript reference : https://github.com/Microsoft/TypeScript/blob/master/lib/typescript.d.ts
 
 export class AngularDependencies extends FrameworkDependencies {
@@ -68,90 +77,34 @@ export class AngularDependencies extends FrameworkDependencies {
     private jsDocHelper = new JsDocHelper();
     private symbolHelper = new SymbolHelper();
     private jsdocParserUtil = new JsdocParserUtil();
-    private allowedSymbols: Set<string> = new Set<string>();
-    private allowedFiles: Set<string> = new Set<string>();
+    private publicApiFilter: PublicApiFilter;
 
     constructor(files: string[], options: any) {
         super(files, options);
-        this.initializePublicApiFiltering();
+        this.publicApiFilter = new PublicApiFilter(Configuration.mainData);
     }
 
-    /**
-     * Initialize public API filtering if enabled
-     */
-    private initializePublicApiFiltering(): void {
-        if (
-            Configuration.mainData.publicApiOnly &&
-            Configuration.mainData.publicApiExports.size > 0
-        ) {
-            logger.info("Public API filtering enabled");
-
-            // Build set of allowed symbols and files
-            for (const [symbolName, sourceFiles] of Configuration.mainData
-                .publicApiExports) {
-                this.allowedSymbols.add(symbolName);
-                for (const sourceFile of sourceFiles) {
-                    this.allowedFiles.add(path.resolve(sourceFile));
-                }
-            }
-
-            logger.info(
-                `Allowed ${this.allowedSymbols.size} public API symbol(s) from ${this.allowedFiles.size} file(s)`,
-            );
-        }
-    }
-
-    /**
-     * Check if a symbol is part of the public API
-     */
     private isSymbolAllowed(symbolName: string, fileName: string): boolean {
-        // If public API filtering is not enabled, allow all symbols
-        if (!Configuration.mainData.publicApiOnly) {
-            return true;
-        }
-
-        // If no symbols are defined, allow all (fallback)
-        if (this.allowedSymbols.size === 0) {
-            return true;
-        }
-
-        const resolvedFileName = path.resolve(fileName);
-
-        // Check if the symbol is explicitly allowed
-        if (this.allowedSymbols.has(symbolName)) {
-            // Verify the symbol is from an allowed file
-            const allowedSourceFiles =
-                Configuration.mainData.publicApiExports.get(symbolName);
-            if (
-                allowedSourceFiles &&
-                allowedSourceFiles.has(resolvedFileName)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.publicApiFilter.isSymbolAllowed(symbolName, fileName);
     }
 
-    /**
-     * Check if dependencies of an allowed symbol should be included
-     */
     private isDependencyOfAllowedSymbol(
         symbolName: string,
         fileName: string,
     ): boolean {
-        // If public API filtering is not enabled, allow all
-        if (!Configuration.mainData.publicApiOnly) {
-            return true;
+        return this.publicApiFilter.isDependencyOfAllowedSymbol(fileName);
+    }
+
+    private getTagsFromJSDoc(jsdoctags: any): any[] | undefined {
+        if (!jsdoctags || jsdoctags.length < 1) {
+            return undefined;
         }
 
-        // Check if the file contains any allowed symbols
-        const resolvedFileName = path.resolve(fileName);
-        return this.allowedFiles.has(resolvedFileName);
+        return jsdoctags[0]?.tags;
     }
 
     public getDependencies() {
-        let deps = {
+        let deps: any = {
             aliases: {},
             modules: [],
             modulesForGraph: [],
@@ -176,7 +129,7 @@ export class AngularDependencies extends FrameworkDependencies {
             routesTree: undefined,
         };
 
-        const sourceFiles = this.program.getSourceFiles() || [];
+        const sourceFiles = Array.from(this.program.getSourceFiles() || []);
 
         RouterParserUtil.scannedFiles = sourceFiles;
 
@@ -217,20 +170,20 @@ export class AngularDependencies extends FrameworkDependencies {
             // When a collision exists we must scope the substitution to the declaring file
             // to avoid replacing a same-named variable in an unrelated module.
             const variableFilesByName = new Map<string, Set<string>>();
-            deps.miscellaneous.variables.forEach((v) => {
+            deps.miscellaneous.variables.forEach((v: any) => {
                 if (!variableFilesByName.has(v.name)) {
                     variableFilesByName.set(v.name, new Set());
                 }
-                variableFilesByName.get(v.name).add(v.file);
+                variableFilesByName.get(v.name)?.add(v.file);
             });
 
-            deps.miscellaneous.variables.forEach((_variable) => {
-                let newVar = [];
+            deps.miscellaneous.variables.forEach((_variable: any) => {
+                let newVar: any[] = [];
 
                 // link ...VAR to VAR values, recursively
                 ((_var, _newVar) => {
                     // getType pr reconstruire....
-                    const elementsMatcher = (variabelToReplace) => {
+                    const elementsMatcher = (variabelToReplace: any) => {
                         if (variabelToReplace.initializer) {
                             if (variabelToReplace.initializer.elements) {
                                 if (
@@ -238,7 +191,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                         .length > 0
                                 ) {
                                     variabelToReplace.initializer.elements.forEach(
-                                        (element) => {
+                                        (element: any) => {
                                             // Direct value -> Kind 79
                                             if (
                                                 element.text &&
@@ -262,7 +215,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                             ) {
                                                 const el =
                                                     deps.miscellaneous.variables.find(
-                                                        (variable) =>
+                                                        (variable: any) =>
                                                             variable.name ===
                                                                 element
                                                                     .expression
@@ -283,7 +236,7 @@ export class AngularDependencies extends FrameworkDependencies {
                     elementsMatcher(_var);
                 })(_variable, newVar);
 
-                const onLink = (mod) => {
+                const onLink = (mod: any) => {
                     // When the same variable name is declared in multiple source files,
                     // restrict substitution to the module that lives in the same file.
                     // This prevents cross-file contamination while still allowing the
@@ -294,10 +247,13 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (nameHasCollision && mod.file !== _variable.file) {
                         return;
                     }
-                    const process = (initialArray, _var) => {
+                    const process = (initialArray: any[], _var: any) => {
                         let indexToClean = 0;
                         let found = false;
-                        const findVariableInArray = (el, index) => {
+                        const findVariableInArray = (
+                            el: any,
+                            index: number,
+                        ) => {
                             if (el.name === _var.name) {
                                 indexToClean = index;
                                 found = true;
@@ -359,12 +315,12 @@ export class AngularDependencies extends FrameworkDependencies {
     }
 
     private processClass(
-        node,
-        file,
-        srcFile,
-        outputSymbols,
-        fileBody,
-        astFile,
+        node: any,
+        file: any,
+        srcFile: any,
+        outputSymbols: any,
+        fileBody: any,
+        astFile: any,
     ) {
         const name = this.getSymboleName(node);
         if (!name) {
@@ -477,6 +433,7 @@ export class AngularDependencies extends FrameworkDependencies {
                     if (namedImports && namedImports.length > 0) {
                         namedImports.forEach((namedImport) => {
                             if (namedImport.getAliasNode()) {
+                                const aliasNode = namedImport.getAliasNode();
                                 if (
                                     outputSymbols.aliases.hasOwnProperty(
                                         namedImport.getName(),
@@ -484,13 +441,11 @@ export class AngularDependencies extends FrameworkDependencies {
                                 ) {
                                     outputSymbols.aliases[
                                         namedImport.getName()
-                                    ].push(
-                                        namedImport.getAliasNode().getText(),
-                                    );
+                                    ].push(aliasNode?.getText());
                                 } else {
                                     outputSymbols.aliases[
                                         namedImport.getName()
-                                    ] = [namedImport.getAliasNode().getText()];
+                                    ] = [aliasNode?.getText()];
                                 }
                             }
                         });
@@ -526,21 +481,17 @@ export class AngularDependencies extends FrameworkDependencies {
                                             namedExport.getName(),
                                         )
                                     ) {
+                                        const aliasNode =
+                                            namedExport.getAliasNode();
                                         outputSymbols.aliases[
                                             namedExport.getName()
-                                        ].push(
-                                            namedExport
-                                                .getAliasNode()
-                                                .getText(),
-                                        );
+                                        ].push(aliasNode?.getText());
                                     } else {
+                                        const aliasNode =
+                                            namedExport.getAliasNode();
                                         outputSymbols.aliases[
                                             namedExport.getName()
-                                        ] = [
-                                            namedExport
-                                                .getAliasNode()
-                                                .getText(),
-                                        ];
+                                        ] = [aliasNode?.getText()];
                                     }
                                 }
                             });
@@ -561,7 +512,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
         // Search in file for variable statement as routes definitions
 
-        let astFile =
+        let astFile: any =
             typeof project.getSourceFile(initialSrcFile.fileName) !==
             "undefined"
                 ? project.getSourceFile(initialSrcFile.fileName)
@@ -571,8 +522,9 @@ export class AngularDependencies extends FrameworkDependencies {
         let hasRoutesStatements = false;
 
         if (variableRoutesStatements.length > 0) {
-            hasRoutesStatements = variableRoutesStatements.some((statement) =>
-                RouterParserUtil.isVariableRoutes(statement.compilerNode),
+            hasRoutesStatements = variableRoutesStatements.some(
+                (statement: any) =>
+                    RouterParserUtil.isVariableRoutes(statement.compilerNode),
             );
         }
 
@@ -589,7 +541,7 @@ export class AngularDependencies extends FrameworkDependencies {
             scannedFile =
                 RouterParserUtil.cleanFileDynamics(astFile).compilerNode;
 
-            scannedFile.kind = SyntaxKind.SourceFile;
+            (scannedFile as any).kind = SyntaxKind.SourceFile;
         }
 
         ts.forEachChild(scannedFile, (initialNode: ts.Node) => {
@@ -603,16 +555,22 @@ export class AngularDependencies extends FrameworkDependencies {
             ) {
                 return;
             }
-            const parseNode = (file, srcFile, node, fileBody, astFile) => {
+            const parseNode = (
+                file: any,
+                srcFile: any,
+                node: any,
+                fileBody: any,
+                astFile: any,
+            ) => {
                 const sourceCode = srcFile.getText();
                 const hash = crypto
                     .createHash("sha512")
                     .update(sourceCode)
                     .digest("hex");
 
-                const routeIO = this.getRouteIO(file, srcFile, node);
+                const routeIO: any = this.getRouteIO(file, srcFile, node);
                 if (routeIO.routes) {
-                    let newRoutes;
+                    let newRoutes: any;
                     try {
                         newRoutes = RouterParserUtil.cleanRawRouteParsed(
                             routeIO.routes,
@@ -637,8 +595,11 @@ export class AngularDependencies extends FrameworkDependencies {
                 if (nodeHasDecorator(node)) {
                     let classWithCustomDecorator = false;
                     const nodeDecorators = getNodeDecorators(node);
-                    const visitDecorator = (visitedDecorator, index) => {
-                        let deps: IDep;
+                    const visitDecorator = (
+                        visitedDecorator: any,
+                        index: any,
+                    ) => {
+                        let deps: any;
 
                         const name = this.getSymboleName(node);
 
@@ -764,16 +725,21 @@ export class AngularDependencies extends FrameworkDependencies {
                             if (IO.extends) {
                                 injectableDeps.extends = IO.extends;
                             }
-                            const providedInRaw = this.symbolHelper.getSymbolDepsRaw(
-                                props,
-                                'providedIn',
-                            );
+                            const providedInRaw =
+                                this.symbolHelper.getSymbolDepsRaw(
+                                    props,
+                                    "providedIn",
+                                );
                             if (providedInRaw.length > 0) {
-                                const rawNode = providedInRaw[0] as ts.PropertyAssignment;
+                                const rawNode =
+                                    providedInRaw[0] as ts.PropertyAssignment;
                                 if (rawNode && rawNode.initializer) {
-                                    injectableDeps.providedIn = ts.isStringLiteral(rawNode.initializer)
-                                        ? rawNode.initializer.text
-                                        : rawNode.initializer.getText(srcFile);
+                                    injectableDeps.providedIn =
+                                        ts.isStringLiteral(rawNode.initializer)
+                                            ? rawNode.initializer.text
+                                            : rawNode.initializer.getText(
+                                                  srcFile,
+                                              );
                                 }
                             }
                             if (Configuration.mainData.disableLifeCycleHooks) {
@@ -872,6 +838,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                     srcFile,
                                     outputSymbols,
                                     fileBody,
+                                    astFile,
                                 );
                             }
                         }
@@ -884,7 +851,7 @@ export class AngularDependencies extends FrameworkDependencies {
                         }
                     };
 
-                    const filterByDecorators = (filteredNode) => {
+                    const filterByDecorators = (filteredNode: any) => {
                         if (
                             filteredNode.expression &&
                             filteredNode.expression.expression
@@ -983,9 +950,8 @@ export class AngularDependencies extends FrameworkDependencies {
                             type: "interface",
                             sourceCode: srcFile.getText(),
                         };
-                        const typeParameters = this.getTypeParameters(
-                            declarationToProcess,
-                        );
+                        const typeParameters =
+                            this.getTypeParameters(declarationToProcess);
                         interfaceDeps.displayName = this.getDisplayName(
                             name,
                             typeParameters,
@@ -1186,7 +1152,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             this.debug(typeAliasDeps);
                         }
                     } else if (ts.isModuleDeclaration(node)) {
-                        if (node.body) {
+                        if (node.body && ts.isModuleBlock(node.body)) {
                             if (
                                 node.body.statements &&
                                 node.body.statements.length > 0
@@ -1211,6 +1177,7 @@ export class AngularDependencies extends FrameworkDependencies {
                             srcFile,
                             outputSymbols,
                             fileBody,
+                            astFile,
                         );
                     }
                     if (
@@ -1227,42 +1194,52 @@ export class AngularDependencies extends FrameworkDependencies {
                         // 3. with a catch : platformBrowserDynamic().bootstrapModule(AppModule).catch(error => console.error(error));
                         // 4. with parameters : platformBrowserDynamic().bootstrapModule(AppModule, {}).catch(error => console.error(error));
                         // Find recusively in expression nodes one with name 'bootstrapModule'
-                        let rootModule;
-                        let resultNode;
+                        let rootModule: any;
+                        let resultNode: any;
                         if (
                             srcFile.text.indexOf(bootstrapModuleReference) !==
                             -1
                         ) {
-                            if (node.expression) {
+                            const statementExpression =
+                                ts.isExpressionStatement(node)
+                                    ? node.expression
+                                    : undefined;
+                            const thenStatement = ts.isIfStatement(node)
+                                ? node.thenStatement
+                                : undefined;
+
+                            if (statementExpression) {
                                 resultNode =
                                     this.findExpressionByNameInExpressions(
-                                        node.expression,
+                                        statementExpression,
                                         "bootstrapModule",
                                     );
                             }
-                            if (typeof node.thenStatement !== "undefined") {
+                            if (thenStatement && ts.isBlock(thenStatement)) {
                                 if (
-                                    node.thenStatement.statements &&
-                                    node.thenStatement.statements.length > 0
+                                    thenStatement.statements &&
+                                    thenStatement.statements.length > 0
                                 ) {
-                                    let firstStatement =
-                                        node.thenStatement.statements[0];
-                                    resultNode =
-                                        this.findExpressionByNameInExpressions(
-                                            firstStatement.expression,
-                                            "bootstrapModule",
-                                        );
+                                    const firstStatement = thenStatement
+                                        .statements[0] as any;
+                                    if (firstStatement.expression) {
+                                        resultNode =
+                                            this.findExpressionByNameInExpressions(
+                                                firstStatement.expression,
+                                                "bootstrapModule",
+                                            );
+                                    }
                                 }
                             }
                             if (!resultNode) {
                                 if (
-                                    node.expression &&
-                                    node.expression.arguments &&
-                                    node.expression.arguments.length > 0
+                                    statementExpression &&
+                                    ts.isCallExpression(statementExpression) &&
+                                    statementExpression.arguments.length > 0
                                 ) {
                                     resultNode =
                                         this.findExpressionByNameInExpressionArguments(
-                                            node.expression.arguments,
+                                            statementExpression.arguments,
                                             "bootstrapModule",
                                         );
                                 }
@@ -1320,7 +1297,7 @@ export class AngularDependencies extends FrameworkDependencies {
                                 }
                             }
 
-                            const visitVariableNode = (variableNode) => {
+                            const visitVariableNode = (variableNode: any) => {
                                 const infos: any =
                                     this.visitVariableDeclaration(variableNode);
                                 if (infos) {
@@ -1333,9 +1310,8 @@ export class AngularDependencies extends FrameworkDependencies {
                                         ctype: "miscellaneous",
                                         subtype: "variable",
                                         file: file,
-                                        coverageIgnore: isCoverageIgnore(
-                                            variableNode,
-                                        ),
+                                        coverageIgnore:
+                                            isCoverageIgnore(variableNode),
                                         deprecated,
                                         deprecationMessage,
                                     };
@@ -1365,7 +1341,9 @@ export class AngularDependencies extends FrameworkDependencies {
                                         deps.description =
                                             markedAcl(rawDescription);
                                     }
-                                    if (this.isFunctionalGuardType(infos.type)) {
+                                    if (
+                                        this.isFunctionalGuardType(infos.type)
+                                    ) {
                                         const guardDep: any = {
                                             name,
                                             id:
@@ -1378,13 +1356,11 @@ export class AngularDependencies extends FrameworkDependencies {
                                                     .digest("hex"),
                                             file: file,
                                             type: "guard",
-                                            coverageIgnore: isCoverageIgnore(
-                                                variableNode,
-                                            ),
+                                            coverageIgnore:
+                                                isCoverageIgnore(variableNode),
                                             deprecated,
                                             deprecationMessage,
-                                            description:
-                                                deps.description || "",
+                                            description: deps.description || "",
                                             rawdescription:
                                                 deps.rawdescription || "",
                                             properties: [],
@@ -1392,7 +1368,12 @@ export class AngularDependencies extends FrameworkDependencies {
                                             sourceCode: srcFile.getText(),
                                         };
                                         if (!isIgnore(variableNode)) {
-                                            if (!this.isSymbolAllowed(name, file)) {
+                                            if (
+                                                !this.isSymbolAllowed(
+                                                    name,
+                                                    file,
+                                                )
+                                            ) {
                                                 logger.debug(
                                                     `Skipping guard ${name} (not in public API)`,
                                                 );
@@ -1434,10 +1415,14 @@ export class AngularDependencies extends FrameworkDependencies {
                             };
 
                             if (isDestructured) {
-                                if (nodeVariableDeclarations[0].name.elements) {
+                                const declarationName =
+                                    nodeVariableDeclarations[0].name;
+                                if (
+                                    ts.isArrayBindingPattern(declarationName) ||
+                                    ts.isObjectBindingPattern(declarationName)
+                                ) {
                                     const destructuredVariables =
-                                        nodeVariableDeclarations[0].name
-                                            .elements;
+                                        declarationName.elements;
 
                                     for (
                                         let i = 0;
@@ -1446,23 +1431,24 @@ export class AngularDependencies extends FrameworkDependencies {
                                     ) {
                                         const destructuredVariable =
                                             destructuredVariables[i];
+                                        const bindingElement =
+                                            destructuredVariable as any;
                                         let name = "";
 
                                         if (isObjectDestructured) {
                                             // For object destructuring like { question } or { baseUrl: serverUrl }
                                             // element.name is the local variable name (alias or original)
-                                            if (destructuredVariable.name) {
+                                            if (bindingElement.name) {
                                                 name =
-                                                    destructuredVariable.name
+                                                    bindingElement.name
                                                         .escapedText ||
-                                                    destructuredVariable.name
-                                                        .text ||
+                                                    bindingElement.name.text ||
                                                     "";
                                             }
                                         } else {
                                             // For array destructuring like [a, b, c]
-                                            name = destructuredVariable.name
-                                                ? destructuredVariable.name
+                                            name = bindingElement.name
+                                                ? bindingElement.name
                                                       .escapedText
                                                 : "";
                                         }
@@ -1484,8 +1470,10 @@ export class AngularDependencies extends FrameworkDependencies {
                                                     .initializer
                                             ) {
                                                 if (
-                                                    nodeVariableDeclarations[0]
-                                                        .initializer.elements
+                                                    ts.isArrayLiteralExpression(
+                                                        nodeVariableDeclarations[0]
+                                                            .initializer,
+                                                    )
                                                 ) {
                                                     deps.initializer =
                                                         nodeVariableDeclarations[0].initializer.elements[
@@ -1532,11 +1520,14 @@ export class AngularDependencies extends FrameworkDependencies {
                                             }
 
                                             // Extract JSDoc from the variable statement
+                                            const nodeJsDoc = (
+                                                node as NodeWithJsDoc
+                                            ).jsDoc;
                                             if (
-                                                node.jsDoc &&
-                                                node.jsDoc.length > 0
+                                                nodeJsDoc &&
+                                                nodeJsDoc.length > 0
                                             ) {
-                                                for (const jsDoc of node.jsDoc) {
+                                                for (const jsDoc of nodeJsDoc) {
                                                     if (jsDoc.comment) {
                                                         const rawDescription =
                                                             this.jsdocParserUtil.parseJSDocNode(
@@ -1709,7 +1700,7 @@ export class AngularDependencies extends FrameworkDependencies {
      * @param entity Entity to store
      * @param store Store
      */
-    private addNewEntityInStore(entity, store) {
+    private addNewEntityInStore(entity: any, store: any[]) {
         const findSameEntityInStore = _.filter(store, {
             name: entity.name,
             id: entity.id,
@@ -1720,7 +1711,7 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
-    private debug(deps: IDep) {
+    private debug(deps: any) {
         if (deps) {
             logger.debug("found", `${deps.name}`);
         } else {
@@ -1732,19 +1723,19 @@ export class AngularDependencies extends FrameworkDependencies {
             "declarations",
             "providers",
             "bootstrap",
-        ].forEach((symbols) => {
+        ].forEach((symbols: string) => {
             if (deps[symbols] && deps[symbols].length > 0) {
                 logger.debug("", `- ${symbols}:`);
                 deps[symbols]
-                    .map((i) => i.name)
-                    .forEach((d) => {
+                    .map((i: any) => i.name)
+                    .forEach((d: any) => {
                         logger.debug("", `\t- ${d}`);
                     });
             }
         });
     }
 
-    private ignore(deps: IDep) {
+    private ignore(deps: any) {
         if (deps) {
             logger.warn("ignore", `${deps.name}`);
         } else {
@@ -1756,7 +1747,7 @@ export class AngularDependencies extends FrameworkDependencies {
         tags: any[],
         result: { [key in string | number]: any },
     ) {
-        _.forEach(tags, (tag) => {
+        _.forEach(tags, (tag: any) => {
             if (
                 tag.tagName &&
                 tag.tagName.text &&
@@ -1769,9 +1760,9 @@ export class AngularDependencies extends FrameworkDependencies {
         });
     }
 
-    private findExpressionByNameInExpressions(entryNode, name) {
-        let result;
-        const loop = function (node, z) {
+    private findExpressionByNameInExpressions(entryNode: any, name: any) {
+        let result: any;
+        const loop = function (node: any, z: any) {
             if (node) {
                 if (node.expression && !node.expression.name) {
                     loop(node.expression, z);
@@ -1789,12 +1780,12 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
-    private findExpressionByNameInExpressionArguments(arg, name) {
-        let result;
+    private findExpressionByNameInExpressionArguments(arg: any, name: any) {
+        let result: any;
         const that = this;
         let i = 0;
         let len = arg.length;
-        const loop = function (node, z) {
+        const loop = function (node: any, z: any) {
             if (node.body) {
                 if (node.body.statements && node.body.statements.length > 0) {
                     let j = 0;
@@ -1814,7 +1805,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
-    private parseDecorators(decorators, type: string): boolean {
+    private parseDecorators(decorators: any, type: string): boolean {
         let result = false;
         if (decorators.length > 1) {
             _.forEach(decorators, function (decorator: any) {
@@ -1834,7 +1825,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
-    private parseDecorator(decorator, type: string): boolean {
+    private parseDecorator(decorator: any, type: string): boolean {
         let result = false;
         if (decorator.expression.expression) {
             if (decorator.expression.expression.text === type) {
@@ -1844,41 +1835,41 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
-    private isController(metadata) {
+    private isController(metadata: any) {
         return this.parseDecorator(metadata, "Controller");
     }
 
-    private isEntity(metadata) {
+    private isEntity(metadata: any) {
         return this.parseDecorator(metadata, "Entity");
     }
 
-    private isComponent(metadata) {
+    private isComponent(metadata: any) {
         return this.parseDecorator(metadata, "Component");
     }
 
-    private isPipe(metadata) {
+    private isPipe(metadata: any) {
         return this.parseDecorator(metadata, "Pipe");
     }
 
-    private isDirective(metadata) {
+    private isDirective(metadata: any) {
         return this.parseDecorator(metadata, "Directive");
     }
 
-    private isInjectable(metadata) {
+    private isInjectable(metadata: any) {
         return (
             this.parseDecorator(metadata, "Injectable") ||
             this.parseDecorator(metadata, "Service")
         );
     }
 
-    private isModule(metadata) {
+    private isModule(metadata: any) {
         return (
             this.parseDecorator(metadata, "NgModule") ||
             this.parseDecorator(metadata, "Module")
         );
     }
 
-    private hasInternalDecorator(metadatas) {
+    private hasInternalDecorator(metadatas: any) {
         return (
             this.parseDecorators(metadatas, "Controller") ||
             this.parseDecorators(metadatas, "Component") ||
@@ -1910,14 +1901,15 @@ export class AngularDependencies extends FrameworkDependencies {
         );
     }
 
-    private getSymboleName(node): string {
+    private getSymboleName(node: any): string {
         return node.name?.text;
     }
 
     private getMergedInterfaceDeclarations(
         node: ts.InterfaceDeclaration,
     ): ts.InterfaceDeclaration[] {
-        const symbolDeclarations = node.symbol?.declarations;
+        const symbolDeclarations = (node as InterfaceDeclarationWithSymbol)
+            .symbol?.declarations;
         if (!symbolDeclarations || symbolDeclarations.length === 0) {
             return [node];
         }
@@ -1952,12 +1944,13 @@ export class AngularDependencies extends FrameworkDependencies {
         visitedNode: ts.Decorator,
         sourceFile: ts.SourceFile,
     ): ReadonlyArray<ts.ObjectLiteralElementLike> {
+        const decoratorExpression = visitedNode.expression as any;
         if (
-            visitedNode.expression &&
-            visitedNode.expression.arguments &&
-            visitedNode.expression.arguments.length > 0
+            decoratorExpression &&
+            decoratorExpression.arguments &&
+            decoratorExpression.arguments.length > 0
         ) {
-            const pop = visitedNode.expression.arguments[0];
+            const pop = decoratorExpression.arguments[0];
 
             if (pop && pop.properties && pop.properties.length >= 0) {
                 return pop.properties;
@@ -1979,7 +1972,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return [];
     }
 
-    private isAngularLifecycleHook(methodName) {
+    private isAngularLifecycleHook(methodName: string) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
          */
@@ -2008,25 +2001,26 @@ export class AngularDependencies extends FrameworkDependencies {
             kind: node.kind,
         };
         const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
+        const tags = this.getTagsFromJSDoc(jsdoctags);
 
-        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-            this.checkForDeprecation(jsdoctags[0].tags, result);
-            result.jsdoctags = markedtags(jsdoctags[0].tags);
+        if (tags) {
+            this.checkForDeprecation(tags, result);
+            result.jsdoctags = markedtags(tags);
         }
         return result;
     }
 
-    private visitArgument(arg) {
+    private visitArgument(arg: any) {
         if (arg.name && arg.name.kind == SyntaxKind.ObjectBindingPattern) {
             let results = [];
 
             const destrucuredGroupId = uuidv4();
 
-            results = arg.name.elements.map((element) =>
+            results = arg.name.elements.map((element: any) =>
                 this.visitArgument(element),
             );
 
-            results = results.map((result) => {
+            results = results.map((result: any) => {
                 result.destrucuredGroupId = destrucuredGroupId;
                 return result;
             });
@@ -2075,15 +2069,16 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
             const jsdoctags = this.jsdocParserUtil.getJSDocs(arg);
+            const tags = this.getTagsFromJSDoc(jsdoctags);
 
-            if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-                this.checkForDeprecation(jsdoctags[0].tags, result);
+            if (tags) {
+                this.checkForDeprecation(tags, result);
             }
             return result;
         }
     }
 
-    private mapType(type): string | undefined {
+    private mapType(type: any): string | undefined {
         switch (type) {
             case SyntaxKind.NullKeyword:
                 return "null";
@@ -2104,10 +2099,10 @@ export class AngularDependencies extends FrameworkDependencies {
         }
     }
 
-    private hasPrivateJSDocTag(tags): boolean {
+    private hasPrivateJSDocTag(tags: any): boolean {
         let result = false;
         if (tags) {
-            tags.forEach((tag) => {
+            tags.forEach((tag: any) => {
                 if (
                     tag.tagName &&
                     tag.tagName.text &&
@@ -2157,10 +2152,7 @@ export class AngularDependencies extends FrameworkDependencies {
             .filter(Boolean);
     }
 
-    private getDisplayName(
-        name: string,
-        typeParameters?: string[],
-    ): string {
+    private getDisplayName(name: string, typeParameters?: string[]): string {
         if (!typeParameters || typeParameters.length === 0) {
             return name;
         }
@@ -2223,10 +2215,11 @@ export class AngularDependencies extends FrameworkDependencies {
                 }
             }
         }
-        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-            this.checkForDeprecation(jsdoctags[0].tags, result);
-            result.jsdoctags = markedtags(jsdoctags[0].tags);
-            _.forEach(jsdoctags[0].tags, (tag) => {
+        const tags = this.getTagsFromJSDoc(jsdoctags);
+        if (tags) {
+            this.checkForDeprecation(tags, result);
+            result.jsdoctags = markedtags(tags);
+            _.forEach(tags, (tag) => {
                 if (tag.tagName) {
                     if (tag.tagName.text) {
                         if (tag.tagName.text.indexOf("ignore") > -1) {
@@ -2244,7 +2237,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return result;
     }
 
-    private visitVariableDeclaration(node) {
+    private visitVariableDeclaration(node: any) {
         if (node.declarationList && node.declarationList.declarations) {
             let i = 0;
             const len = node.declarationList.declarations.length;
@@ -2275,15 +2268,18 @@ export class AngularDependencies extends FrameworkDependencies {
                 const jsdoctags = this.jsdocParserUtil.getJSDocs(
                     node.declarationList.declarations[i],
                 );
-                if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-                    this.checkForDeprecation(jsdoctags[0].tags, result);
+                const tags = this.getTagsFromJSDoc(jsdoctags);
+                if (tags) {
+                    this.checkForDeprecation(tags, result);
                 }
                 return result;
             }
         }
     }
 
-    private visitEnumTypeAliasFunctionDeclarationRawDescription(node): string {
+    private visitEnumTypeAliasFunctionDeclarationRawDescription(
+        node: any,
+    ): string {
         let rawDescription: string = "";
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
@@ -2297,7 +2293,9 @@ export class AngularDependencies extends FrameworkDependencies {
         return rawDescription;
     }
 
-    private visitEnumTypeAliasFunctionDeclarationDescription(node): string {
+    private visitEnumTypeAliasFunctionDeclarationDescription(
+        node: any,
+    ): string {
         let description: string = "";
         if (node.jsDoc) {
             if (node.jsDoc.length > 0) {
@@ -2322,42 +2320,40 @@ export class AngularDependencies extends FrameworkDependencies {
         if (node.members) {
             let i = 0;
             let len = node.members.length;
-            let memberjsdoctags = [];
+            let memberjsdoctags: any;
             for (i; i < len; i++) {
+                const enumMember = node.members[i];
+                const enumMemberName = enumMember.name as any;
+                const enumMemberInitializer = enumMember.initializer as any;
                 const member: any = {
-                    name: node.members[i].name.text,
+                    name:
+                        enumMemberName.text || enumMemberName.escapedText || "",
                     deprecated: false,
                     deprecationMessage: "",
                 };
-                if (node.members[i].initializer) {
+                if (enumMemberInitializer) {
                     // if the initializer kind is a number do cast to the number type
-                    member.value = IsKindType.NUMBER(
-                        node.members[i].initializer.kind,
-                    )
-                        ? Number(node.members[i].initializer.text)
-                        : node.members[i].initializer.text;
+                    member.value = IsKindType.NUMBER(enumMemberInitializer.kind)
+                        ? Number(enumMemberInitializer.text)
+                        : enumMemberInitializer.text;
                 }
-                memberjsdoctags = this.jsdocParserUtil.getJSDocs(
-                    node.members[i],
-                );
-                if (
-                    memberjsdoctags &&
-                    memberjsdoctags.length >= 1 &&
-                    memberjsdoctags[0].tags
-                ) {
-                    this.checkForDeprecation(memberjsdoctags[0].tags, member);
+                memberjsdoctags = this.jsdocParserUtil.getJSDocs(enumMember);
+                const memberTags = this.getTagsFromJSDoc(memberjsdoctags);
+                if (memberTags) {
+                    this.checkForDeprecation(memberTags, member);
                 }
                 result.members.push(member);
             }
         }
         const jsdoctags = this.jsdocParserUtil.getJSDocs(node);
-        if (jsdoctags && jsdoctags.length >= 1 && jsdoctags[0].tags) {
-            this.checkForDeprecation(jsdoctags[0].tags, result);
+        const tags = this.getTagsFromJSDoc(jsdoctags);
+        if (tags) {
+            this.checkForDeprecation(tags, result);
         }
         return result;
     }
 
-    private visitEnumDeclarationForRoutes(fileName, node) {
+    private visitEnumDeclarationForRoutes(fileName: any, node: any) {
         if (node.declarationList.declarations) {
             let i = 0;
             let len = node.declarationList.declarations.length;
@@ -2466,7 +2462,10 @@ export class AngularDependencies extends FrameworkDependencies {
             const unwrappedExport = this.unwrapRoutesExpression(
                 statement.expression,
             );
-            if (unwrappedExport && ts.isArrayLiteralExpression(unwrappedExport)) {
+            if (
+                unwrappedExport &&
+                ts.isArrayLiteralExpression(unwrappedExport)
+            ) {
                 const data = new CodeGenerator().generate(unwrappedExport);
                 RouterParserUtil.addRoute({
                     name: "__default_routes__",
@@ -2478,9 +2477,12 @@ export class AngularDependencies extends FrameworkDependencies {
             }
         }
 
-        const provideRouterCall = this.findProvideRouterCallInStatement(statement);
+        const provideRouterCall =
+            this.findProvideRouterCallInStatement(statement);
         if (provideRouterCall && provideRouterCall.arguments.length > 0) {
-            let firstArg = this.unwrapRoutesExpression(provideRouterCall.arguments[0]);
+            let firstArg = this.unwrapRoutesExpression(
+                provideRouterCall.arguments[0],
+            );
 
             if (firstArg && ts.isIdentifier(firstArg)) {
                 const variableInitializer = this.findRoutesVariableInitializer(
@@ -2511,22 +2513,25 @@ export class AngularDependencies extends FrameworkDependencies {
     ) {
         let res;
         if (sourceFile.statements) {
-            res = sourceFile.statements.reduce((directive, statement) => {
-                if (
-                    statement.pos === node.pos &&
-                    statement.end === node.end
-                ) {
-                    return directive.concat(
-                        this.extractRoutesFromStatement(
-                            filename,
-                            sourceFile,
-                            statement,
-                        ),
-                    );
-                }
+            res = sourceFile.statements.reduce(
+                (directive: any[], statement: any) => {
+                    if (
+                        statement.pos === node.pos &&
+                        statement.end === node.end
+                    ) {
+                        return directive.concat(
+                            this.extractRoutesFromStatement(
+                                filename,
+                                sourceFile,
+                                statement,
+                            ),
+                        );
+                    }
 
-                return directive;
-            }, []);
+                    return directive;
+                },
+                [] as any[],
+            );
             return res[0] || {};
         } else {
             return {};
@@ -2537,8 +2542,8 @@ export class AngularDependencies extends FrameworkDependencies {
         filename: string,
         sourceFile: ts.SourceFile,
         node: ts.Node,
-        fileBody,
-        astFile,
+        fileBody: any,
+        astFile: any,
     ) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -2546,7 +2551,7 @@ export class AngularDependencies extends FrameworkDependencies {
         const reducedSource = fileBody
             ? fileBody.statements
             : sourceFile.statements;
-        const res = reducedSource.reduce((directive, statement) => {
+        const res = reducedSource.reduce((directive: any[], statement: any) => {
             if (ts.isClassDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
@@ -2561,17 +2566,17 @@ export class AngularDependencies extends FrameworkDependencies {
             }
 
             return directive;
-        }, []);
+        }, [] as any[]);
 
         return res[0] || {};
     }
 
     private getInterfaceIO(
         filename: string,
-        sourceFile,
-        node,
-        fileBody,
-        astFile,
+        sourceFile: any,
+        node: any,
+        fileBody: any,
+        astFile: any,
     ) {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -2579,7 +2584,7 @@ export class AngularDependencies extends FrameworkDependencies {
         const reducedSource = fileBody
             ? fileBody.statements
             : sourceFile.statements;
-        const res = reducedSource.reduce((directive, statement) => {
+        const res = reducedSource.reduce((directive: any[], statement: any) => {
             if (ts.isInterfaceDeclaration(statement)) {
                 if (statement.pos === node.pos && statement.end === node.end) {
                     return directive.concat(
@@ -2594,7 +2599,7 @@ export class AngularDependencies extends FrameworkDependencies {
             }
 
             return directive;
-        }, []);
+        }, [] as any[]);
 
         return res[0] || {};
     }
@@ -2607,7 +2612,7 @@ export class AngularDependencies extends FrameworkDependencies {
         return !!(
             node.modifiers &&
             node.modifiers.some(
-                (modifier) => modifier.kind === SyntaxKind.ExportKeyword,
+                (modifier: any) => modifier.kind === SyntaxKind.ExportKeyword,
             )
         );
     }
