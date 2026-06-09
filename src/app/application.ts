@@ -27,10 +27,13 @@ import SearchEngine from './engines/search.engine';
 import { AngularDependencies } from './compiler/angular-dependencies';
 import { AngularJSDependencies } from './compiler/angularjs-dependencies';
 import { ProjectTypeDetector } from './application/project-type-detector';
+import {
+    applyPackageDocumentationMetadata,
+    copyDocumentedPackageProperties
+} from './application/package-json-metadata';
 import { RouteTreeMetrics } from './application/route-tree-metrics';
 import { WatchFileClassifier } from './application/watch-file-classifier';
 
-import AngularVersionUtil from '../utils/angular-version.util';
 import { COMPODOC_CONSTANTS } from '../utils/constants';
 import { COMPODOC_DEFAULTS } from '../utils/defaults';
 import { promiseSequential } from '../utils/promise-sequential';
@@ -217,18 +220,7 @@ export class Application {
             packageData => {
                 let parsedData = JSON.parse(packageData);
                 this.packageJsonData = parsedData;
-                if (
-                    typeof parsedData.name !== 'undefined' &&
-                    Configuration.mainData.documentationMainName === COMPODOC_DEFAULTS.title
-                ) {
-                    Configuration.mainData.documentationMainName =
-                        parsedData.name + ' documentation';
-                }
-                if (typeof parsedData.description !== 'undefined') {
-                    Configuration.mainData.documentationMainDescription = parsedData.description;
-                }
-                Configuration.mainData.angularVersion =
-                    AngularVersionUtil.getAngularVersionOfProject(parsedData);
+                applyPackageDocumentationMetadata(parsedData);
                 logger.info('package.json file found');
 
                 if (!Configuration.mainData.disableDependencies) {
@@ -241,24 +233,7 @@ export class Application {
                 }
 
                 if (!Configuration.mainData.disableProperties) {
-                    const propertiesToCheck = [
-                        'version',
-                        'description',
-                        'keywords',
-                        'homepage',
-                        'bugs',
-                        'license',
-                        'repository',
-                        'author'
-                    ];
-                    let hasOneOfCheckedProperties = false;
-                    propertiesToCheck.forEach(prop => {
-                        if (prop in parsedData) {
-                            hasOneOfCheckedProperties = true;
-                            Configuration.mainData.packageProperties[prop] = parsedData[prop];
-                        }
-                    });
-                    if (hasOneOfCheckedProperties) {
+                    if (copyDocumentedPackageProperties(parsedData)) {
                         Configuration.addPage({
                             name: 'properties',
                             id: 'packageProperties',

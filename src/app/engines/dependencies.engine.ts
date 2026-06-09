@@ -23,6 +23,7 @@ import { IComponentDep } from '../compiler/angular/deps/component-dep.factory';
 import { IControllerDep } from '../compiler/angular/deps/controller-dep.factory';
 import { IDirectiveDep } from '../compiler/angular/deps/directive-dep.factory';
 import { IModuleDep } from '../compiler/angular/deps/module-dep.factory';
+import { InterfaceDeclarationMerger } from './dependencies/interface-declaration-merger';
 
 const traverse = require('neotraverse/legacy');
 
@@ -57,6 +58,7 @@ export class DependenciesEngine {
         groupedTypeAliases: []
     };
     private relationshipsCache: { [name: string]: { incoming: any[]; outgoing: any[] } } = {};
+    private interfaceDeclarationMerger = new InterfaceDeclarationMerger();
 
     private static instance: DependenciesEngine;
     private constructor() {}
@@ -131,7 +133,7 @@ export class DependenciesEngine {
         this.injectables = _.sortBy(this.rawData.injectables, [el => el.name.toLowerCase()]);
         this.interceptors = _.sortBy(this.rawData.interceptors, [el => el.name.toLowerCase()]);
         this.guards = _.sortBy(this.rawData.guards, [el => el.name.toLowerCase()]);
-        this.interfaces = this.mergeDeclarationMergedInterfaces(this.rawData.interfaces);
+        this.interfaces = this.interfaceDeclarationMerger.merge(this.rawData.interfaces);
         this.interfaces = _.sortBy(this.interfaces, [el => el.name.toLowerCase()]);
         this.pipes = _.sortBy(this.rawData.pipes, [el => el.name.toLowerCase()]);
         this.classes = _.sortBy(this.rawData.classes, [el => el.name.toLowerCase()]);
@@ -149,83 +151,6 @@ export class DependenciesEngine {
             module.name = module.name.replace('$', '');
             return module;
         });
-    }
-
-    private mergeDeclarationMergedInterfaces(interfaces: IInterfaceDep[]): IInterfaceDep[] {
-        if (!interfaces || interfaces.length === 0) {
-            return [];
-        }
-
-        const mergedInterfaces = _.chain(interfaces)
-            .filter((interf: IInterfaceDep) => !!interf.declarationMergeId)
-            .groupBy((interf: IInterfaceDep) => interf.declarationMergeId)
-            .values()
-            .map((group: IInterfaceDep[]) => {
-                const merged = { ...group[0] };
-
-                const properties = this.mergeUniqueArrayValues(
-                    group.map((interf) => interf.properties)
-                );
-                if (properties) {
-                    merged.properties = properties;
-                }
-
-                const methods = this.mergeUniqueArrayValues(group.map((interf) => interf.methods));
-                if (methods) {
-                    merged.methods = methods;
-                }
-
-                const indexSignatures = this.mergeUniqueArrayValues(
-                    group.map((interf) => interf.indexSignatures)
-                );
-                if (indexSignatures) {
-                    merged.indexSignatures = indexSignatures;
-                }
-
-                const extendsList = this.mergeUniqueArrayValues(
-                    group.map((interf) => interf.extends)
-                );
-                if (extendsList) {
-                    merged.extends = extendsList;
-                }
-
-                merged.deprecated = group.some((interf) => !!interf.deprecated);
-
-                const deprecationMessages = _.uniq(
-                    group.map((interf) => interf.deprecationMessage).filter(Boolean)
-                );
-                merged.deprecationMessage =
-                    deprecationMessages.length > 0 ? deprecationMessages.join('\n\n') : '';
-
-                return merged;
-            })
-            .value();
-
-        const regularInterfaces = interfaces.filter((interf: IInterfaceDep) => !interf.declarationMergeId);
-
-        return _.concat(regularInterfaces, mergedInterfaces);
-    }
-
-    private mergeUniqueArrayValues<T>(arrays: Array<T[] | undefined>): T[] | undefined {
-        const merged = [];
-        const cache = new Set<string>();
-
-        for (const arr of arrays) {
-            if (!arr || arr.length === 0) {
-                continue;
-            }
-            for (const item of arr) {
-                const key =
-                    typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item);
-                if (cache.has(key)) {
-                    continue;
-                }
-                cache.add(key);
-                merged.push(item);
-            }
-        }
-
-        return merged.length > 0 ? merged : undefined;
     }
 
     private findInCompodocDependencies(name, data, file?): IApiSourceResult<any> {

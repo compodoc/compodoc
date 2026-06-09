@@ -10,6 +10,7 @@ import Configuration from '../app/configuration';
 
 import ImportsUtil from './imports.util';
 import { logger } from './logger';
+import { RouteStringExpressionNormalizer } from './router/route-string-expression-normalizer';
 import { RouteTextCleaner } from './router/route-text-cleaner';
 import { readConfig } from './utils';
 
@@ -27,6 +28,7 @@ export class RouterParserUtil {
     private rootModule: string;
     private cleanModulesTree;
     private modulesWithRoutes = [];
+    private routeStringExpressionNormalizer = new RouteStringExpressionNormalizer();
     private routeTextCleaner = new RouteTextCleaner();
 
     private static instance: RouterParserUtil;
@@ -1592,7 +1594,6 @@ export class RouterParserUtil {
 
     public cleanFileDynamics(sourceFile: SourceFile): SourceFile {
         const file = sourceFile;
-        const routeStringProperties = new Set(['path', 'redirectTo', 'outlet', 'pathMatch']);
 
         const propertyAccessExpressions = file
             .getDescendantsOfKind(SyntaxKind.PropertyAccessExpression)
@@ -1653,30 +1654,12 @@ export class RouterParserUtil {
 
         const templateExpressions = file
             .getDescendantsOfKind(SyntaxKind.TemplateExpression)
-            .filter(templateExpression => {
-                let foundParentVariableStatement = false;
-                templateExpression.getParentWhile(n => {
-                    if (n.getKind() === SyntaxKind.VariableStatement) {
-                        if (this.isVariableRoutes(n.compilerNode)) {
-                            foundParentVariableStatement = true;
-                        }
-                    }
-                    return true;
-                });
-                if (!foundParentVariableStatement) {
-                    return false;
-                }
-
-                const propertyAssignment = templateExpression.getFirstAncestorByKind(
-                    SyntaxKind.PropertyAssignment
-                );
-
-                if (!propertyAssignment) {
-                    return false;
-                }
-
-                return routeStringProperties.has(propertyAssignment.getName());
-            });
+            .filter(templateExpression =>
+                this.routeStringExpressionNormalizer.isRouteStringExpression(
+                    templateExpression,
+                    node => this.isVariableRoutes(node)
+                )
+            );
 
         for (const templateExpression of templateExpressions) {
             const templateNode = templateExpression.compilerNode;
@@ -1684,48 +1667,18 @@ export class RouterParserUtil {
                 continue;
             }
 
-            let resolved = templateNode.head.text || '';
-            for (const span of templateNode.templateSpans) {
-                let expressionText = span.expression.getText();
-                expressionText = expressionText.trim();
-                if (
-                    (expressionText.startsWith('"') && expressionText.endsWith('"')) ||
-                    (expressionText.startsWith("'") && expressionText.endsWith("'")) ||
-                    (expressionText.startsWith('`') && expressionText.endsWith('`'))
-                ) {
-                    expressionText = expressionText.slice(1, -1);
-                }
-                resolved += expressionText + (span.literal.text || '');
-            }
-
-            templateExpression.replaceWithText(JSON.stringify(resolved));
+            templateExpression.replaceWithText(
+                this.routeStringExpressionNormalizer.stringifyTemplateExpression(templateNode)
+            );
         }
 
         const noSubstitutionTemplateLiterals = file
             .getDescendantsOfKind(SyntaxKind.NoSubstitutionTemplateLiteral)
-            .filter(literal => {
-                let foundParentVariableStatement = false;
-                literal.getParentWhile(n => {
-                    if (n.getKind() === SyntaxKind.VariableStatement) {
-                        if (this.isVariableRoutes(n.compilerNode)) {
-                            foundParentVariableStatement = true;
-                        }
-                    }
-                    return true;
-                });
-                if (!foundParentVariableStatement) {
-                    return false;
-                }
-
-                const propertyAssignment = literal.getFirstAncestorByKind(
-                    SyntaxKind.PropertyAssignment
-                );
-                if (!propertyAssignment) {
-                    return false;
-                }
-
-                return routeStringProperties.has(propertyAssignment.getName());
-            });
+            .filter(literal =>
+                this.routeStringExpressionNormalizer.isRouteStringExpression(literal, node =>
+                    this.isVariableRoutes(node)
+                )
+            );
 
         for (const literal of noSubstitutionTemplateLiterals) {
             literal.replaceWithText(JSON.stringify(literal.getLiteralValue()));
