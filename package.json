@@ -128,20 +128,20 @@
         "vis-network": "^10.1.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.4.15",
+        "@biomejs/biome": "^2.4.16",
         "@istanbuljs/nyc-config-typescript": "1.0.2",
         "@playwright/test": "1.60.0",
-        "@types/archiver": "^7.0.0",
+        "@types/archiver": "^8.0.0",
         "@types/chai": "5.2.3",
         "@types/fs-extra": "11.0.4",
         "@types/marked": "6.0.0",
         "@types/mocha": "10.0.10",
-        "@types/node": "25.9.1",
+        "@types/node": "25.9.2",
         "@types/polka": "^0.5.8",
         "@types/semver": "7.7.1",
         "@types/traverse": "0.6.37",
         "archiver": "^8.0.0",
-        "auto-changelog": "2.5.1",
+        "auto-changelog": "2.6.0",
         "chai": "4.4.1",
         "codecov": "3.8.3",
         "cpx2": "^9.0.0",
@@ -159,9 +159,9 @@
         "source-map-support": "0.5.21",
         "supertest": "7.2.2",
         "ts-node": "10.9.2",
-        "tsdown": "^0.22.0",
+        "tsdown": "^0.22.2",
         "tslib": "2.8.1",
-        "unrun": "^0.3.0"
+        "unrun": "^0.3.1"
     },
     "collective": {
         "type": "opencollective",
