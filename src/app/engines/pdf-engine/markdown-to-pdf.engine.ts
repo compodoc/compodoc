@@ -1,4 +1,4 @@
-const decache = require('decache');
+import { clearModuleCache } from '../../../utils/module-cache.util';
 
 export class MarkdownToPDFEngine {
     private static instance: MarkdownToPDFEngine;
@@ -8,7 +8,7 @@ export class MarkdownToPDFEngine {
     private convertedTokens = [];
 
     private constructor() {
-        decache('marked');
+        clearModuleCache('marked');
         const { marked } = require('marked');
         this.markedInstance = marked;
 

@@ -5,8 +5,7 @@ import * as path from 'path';
 import FileEngine from './file.engine';
 import I18nEngine from './i18n.engine';
 import { markedAcl } from '../../utils/marked.acl';
-
-const decache = require('decache');
+import { clearModuleCache } from '../../utils/module-cache.util';
 
 export interface markdownReadedDatas {
     markdown: string;
@@ -23,7 +22,7 @@ export class MarkdownEngine {
 
     private static instance: MarkdownEngine;
     private constructor() {
-        decache('marked');
+        clearModuleCache('marked');
         this.markedInstance = markedAcl;
 
         const self = this;

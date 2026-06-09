@@ -8,6 +8,11 @@ export function splitFlagList(value: string): string[] {
     return value.split(',');
 }
 
+export function collectFlagValues(value: string, previous?: string | string[]): string[] {
+    const values = Array.isArray(previous) ? previous : previous ? [previous] : [];
+    return [...values, value];
+}
+
 export function defineCliFlags(program: Command): Command {
     const cli = program as any;
 
@@ -53,7 +58,11 @@ export function defineCliFlags(program: Command): Command {
             'Export in specified format (json, html)',
             COMPODOC_DEFAULTS.exportFormat
         )
-        .option('--files [files]', 'Files provided by external tool, used for coverage test')
+        .option(
+            '--files [files]',
+            'Files provided by external tool, used for coverage test',
+            collectFlagValues
+        )
         .option(
             '--language [language]',
             'Language used for the generated documentation (bg-BG, de-DE, en-US, es-ES, fr-FR, hu-HU, it-IT, ja-JP, ka-GE, ko-KR, nl-NL, pl-PL, pt-BR, ru-RU, sk-SK, zh-CN, zh-TW)',

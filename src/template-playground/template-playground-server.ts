@@ -1,7 +1,6 @@
 const polka = require('polka');
 const sirv = require('sirv');
 const { json, urlencoded } = require('body-parser');
-const send = require('@polka/send-type');
 import { IncomingMessage, ServerResponse } from 'http';
 import { Polka } from 'polka';
 import * as path from 'path';
@@ -14,6 +13,25 @@ import { execSync } from 'child_process';
 import { logger } from '../utils/logger';
 import { registerTemplatePlaygroundHandlebarsHelpers } from './handlebars-helpers';
 import { createSessionTemplateMockData } from './session-template-mock-data';
+
+function send(res: ServerResponse, statusCode: number, body: unknown): void {
+    res.statusCode = statusCode;
+
+    if (body === undefined) {
+        res.end();
+        return;
+    }
+
+    if (typeof body === 'string' || Buffer.isBuffer(body)) {
+        res.end(body);
+        return;
+    }
+
+    if (!res.getHeader('Content-Type')) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    }
+    res.end(JSON.stringify(body));
+}
 
 interface PlaygroundSession {
     id: string;

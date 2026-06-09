@@ -98,14 +98,12 @@ export class CliApplication extends Application {
         /**
          * Check --files argument call
          */
-        const argv = require("minimist")(process.argv.slice(2));
-        if (argv?.files) {
+        const filesOption = programOptions.files;
+        if (filesOption) {
             Configuration.mainData.hasFilesToCoverage = true;
-            if (typeof argv.files === "string") {
-                super.setFiles([argv.files]);
-            } else {
-                super.setFiles(argv.files);
-            }
+            super.setFiles(
+                Array.isArray(filesOption) ? filesOption : [filesOption],
+            );
         }
 
         if (

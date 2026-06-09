@@ -1,4 +1,3 @@
-let log = require('fancy-log');
 let c = require('picocolors');
 
 enum LEVEL {
@@ -13,7 +12,7 @@ class Logger {
     public silent;
 
     constructor() {
-        this.logger = log;
+        this.logger = console.log.bind(console);
         this.silent = true;
     }
 
