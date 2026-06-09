@@ -13,7 +13,6 @@ import { TypeExpressionResolver } from './type-expression-resolver';
 
 export class ClassHelper {
     private jsdocParserUtil = new JsdocParserUtil();
-    private jsDocHelper: ClassJsDocHelper;
     private argumentStringifier: ArgumentStringifier;
     private classDeclarationVisitor: ClassDeclarationVisitor;
     private classMemberVisitor: ClassMemberVisitor;
@@ -23,7 +22,6 @@ export class ClassHelper {
     private typeExpressionResolver: TypeExpressionResolver;
 
     constructor(private typeChecker: ts.TypeChecker) {
-        this.jsDocHelper = new ClassJsDocHelper(this.jsdocParserUtil);
         this.typeExpressionResolver = new TypeExpressionResolver(typeChecker);
         this.typeExpressionRenderer = new TypeExpressionRenderer(this.typeExpressionResolver);
         this.argumentStringifier = new ArgumentStringifier(node => this.visitType(node));
@@ -35,7 +33,7 @@ export class ClassHelper {
         );
         const visitorContext: ClassMemberVisitorContext = {
             typeChecker: this.typeChecker,
-            jsdocParserUtil: this.jsdocParserUtil,
+            getJsdocParserUtil: () => this.jsdocParserUtil,
             decoratorResolver: this.decoratorResolver,
             memberVisibility: this.memberVisibility,
             stringifyDefaultValue: node => this.stringifyDefaultValue(node),
@@ -63,6 +61,10 @@ export class ClassHelper {
      * HELPERS
      */
 
+    private getJsDocHelper(): ClassJsDocHelper {
+        return new ClassJsDocHelper(this.jsdocParserUtil);
+    }
+
     public stringifyDefaultValue(node: ts.Node): string {
         /**
          * Copyright https://github.com/ng-bootstrap/ng-bootstrap
@@ -78,25 +80,25 @@ export class ClassHelper {
     }
 
     private checkForDeprecation(tags: any[], result: { [key in string | number]: any }) {
-        this.jsDocHelper.checkForDeprecation(tags, result);
+        this.getJsDocHelper().checkForDeprecation(tags, result);
     }
 
     /**
      * Process JSDoc tags and apply them to a result object
      */
     private processJSDocTags(jsdoctags: any, result: any, includeTagsArray: boolean = true): void {
-        this.jsDocHelper.processTags(jsdoctags, result, includeTagsArray);
+        this.getJsDocHelper().processTags(jsdoctags, result, includeTagsArray);
     }
 
     /**
      * Extract and process JSDoc comment for a node
      */
     private extractAndProcessJSDocComment(node: any, sourceFile: ts.SourceFile, result: any): void {
-        this.jsDocHelper.extractComment(node, sourceFile, result);
+        this.getJsDocHelper().extractComment(node, sourceFile, result);
     }
 
     private hasJSDocTag(member: ts.Node, tagName: string): boolean {
-        return this.jsDocHelper.hasTag(member, tagName);
+        return this.getJsDocHelper().hasTag(member, tagName);
     }
 
     /**
@@ -106,7 +108,7 @@ export class ClassHelper {
         deprecated: boolean;
         deprecationMessage: string;
     } {
-        return this.jsDocHelper.createDocumentationFields();
+        return this.getJsDocHelper().createDocumentationFields();
     }
 
     private tryResolveTypeFromTypeChecker(
@@ -148,5 +150,110 @@ export class ClassHelper {
 
     private visitMembers(members: any, sourceFile: any): any {
         return this.classMemberVisitor.visitMembers(members, sourceFile);
+    }
+
+    private isPrivate(member: any): boolean {
+        return this.memberVisibility.isPrivate(member);
+    }
+
+    private isProtected(member: any): boolean {
+        return this.memberVisibility.isProtected(member);
+    }
+
+    private isInternal(member: any): boolean {
+        return this.memberVisibility.isInternal(member);
+    }
+
+    private isPublic(member: any): boolean {
+        return this.memberVisibility.isPublic(member);
+    }
+
+    private isHiddenMember(member: any): boolean {
+        return this.memberVisibility.isHiddenMember(member);
+    }
+
+    private isDirectiveDecorator(decorator: ts.Decorator): boolean {
+        return this.decoratorResolver.isDirectiveDecorator(decorator);
+    }
+
+    private isServiceDecorator(decorator: ts.Decorator): boolean {
+        return this.decoratorResolver.isServiceDecorator(decorator);
+    }
+
+    private isPipeDecorator(decorator: ts.Decorator): boolean {
+        return this.decoratorResolver.isPipeDecorator(decorator);
+    }
+
+    private isModuleDecorator(decorator: ts.Decorator): boolean {
+        return this.decoratorResolver.isModuleDecorator(decorator);
+    }
+
+    private isControllerDecorator(decorator: ts.Decorator): boolean {
+        return this.decoratorResolver.isControllerDecorator(decorator);
+    }
+
+    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
+        return this.classMemberVisitor.getPosition(node, sourceFile);
+    }
+
+    private addAccessor(accessors: any, nodeAccessor: any, sourceFile: any): void {
+        this.classMemberVisitor.addAccessor(accessors, nodeAccessor, sourceFile);
+    }
+
+    private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile): any {
+        return this.classMemberVisitor.visitCallDeclaration(method, sourceFile);
+    }
+
+    private visitIndexDeclaration(method: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): any {
+        return this.classMemberVisitor.visitIndexDeclaration(method, sourceFile);
+    }
+
+    private visitConstructorDeclaration(
+        method: ts.ConstructorDeclaration,
+        sourceFile: ts.SourceFile
+    ): any {
+        return this.classMemberVisitor.visitConstructorDeclaration(method, sourceFile);
+    }
+
+    private visitProperty(
+        property: ts.PropertyDeclaration | ts.PropertySignature,
+        sourceFile: ts.SourceFile
+    ): any {
+        return this.classMemberVisitor.visitProperty(property, sourceFile);
+    }
+
+    private visitConstructorProperties(constr: any, sourceFile: ts.SourceFile): any {
+        return this.classMemberVisitor.visitConstructorProperties(constr, sourceFile);
+    }
+
+    private visitMethodDeclaration(
+        method: ts.MethodDeclaration | ts.MethodSignature,
+        sourceFile: ts.SourceFile
+    ): any {
+        return this.classMemberVisitor.visitMethodDeclaration(method, sourceFile);
+    }
+
+    private visitOutput(
+        property: ts.PropertyDeclaration,
+        outDecorator: ts.Decorator,
+        sourceFile: ts.SourceFile
+    ): any {
+        return this.classMemberVisitor.visitOutput(property, outDecorator, sourceFile);
+    }
+
+    private visitArgument(arg: ts.ParameterDeclaration): any {
+        return this.classMemberVisitor.visitArgument(arg);
+    }
+
+    private visitInputAndHostBinding(property: any, inDecorator: any, sourceFile: ts.SourceFile): any {
+        return this.classMemberVisitor.visitInputAndHostBinding(property, inDecorator, sourceFile);
+    }
+
+    private visitHostListener(
+        property: any,
+        hostListenerDecorator: any,
+        sourceFile: ts.SourceFile
+    ): any {
+        return this.classMemberVisitor.visitHostListener(property, hostListenerDecorator, sourceFile);
     }
 }

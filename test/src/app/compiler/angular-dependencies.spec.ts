@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 
+import { AngularDependencies } from '../../../../src/app/compiler/angular-dependencies';
+
 describe('AngularDependencies', () => {
     let angularDependencies: any;
 
     beforeEach(() => {
-        const { AngularDependencies } = require('../../../../src/app/compiler/angular-dependencies');
         angularDependencies = new AngularDependencies([], {
             tsconfigDirectory: process.cwd()
         });

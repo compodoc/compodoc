@@ -14,7 +14,7 @@ const crypto = require('crypto');
 
 export interface ClassMemberVisitorContext {
     typeChecker: ts.TypeChecker;
-    jsdocParserUtil: JsdocParserUtil;
+    getJsdocParserUtil: () => JsdocParserUtil;
     decoratorResolver: DecoratorResolver;
     memberVisibility: MemberVisibilityPolicy;
     stringifyDefaultValue: (node: ts.Node) => string;
@@ -65,7 +65,7 @@ export class ClassMemberVisitor {
         }
     }
 
-    private getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
+    public getPosition(node: ts.Node, sourceFile: ts.SourceFile): ts.LineAndCharacter {
         let position: ts.LineAndCharacter;
         if ((node as any).name && (node as any).name.end) {
             position = ts.getLineAndCharacterOfPosition(sourceFile, (node as any).name.end);
@@ -75,11 +75,11 @@ export class ClassMemberVisitor {
         return position;
     }
 
-    private addAccessor(accessors: any, nodeAccessor: any, sourceFile: any) {
+    public addAccessor(accessors: any, nodeAccessor: any, sourceFile: any) {
         let nodeName = '';
         if (nodeAccessor.name) {
             nodeName = nodeAccessor.name.text;
-            let jsdoctags = this.context.jsdocParserUtil.getJSDocs(nodeAccessor);
+            let jsdoctags = this.context.getJsdocParserUtil().getJSDocs(nodeAccessor);
 
             if (!accessors[nodeName]) {
                 accessors[nodeName] = {
@@ -308,7 +308,7 @@ export class ClassMemberVisitor {
         return subProperties;
     }
 
-    private visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
+    public visitCallDeclaration(method: ts.CallSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
         let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result: any = {
@@ -319,12 +319,12 @@ export class ClassMemberVisitor {
             ...this.context.initializeDocumentationFields()
         };
         this.context.extractAndProcessJSDocComment(method, sourceFile, result);
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(method);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(method);
         this.context.processJSDocTags(jsdoctags, result);
         return result;
     }
 
-    private visitIndexDeclaration(method: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile) {
+    public visitIndexDeclaration(method: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile) {
         let sourceCode = sourceFile.getText();
         let hash = crypto.createHash('sha512').update(sourceCode).digest('hex');
         let result = {
@@ -335,12 +335,12 @@ export class ClassMemberVisitor {
             ...this.context.initializeDocumentationFields()
         };
         this.context.extractAndProcessJSDocComment(method, sourceFile, result);
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(method);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(method);
         this.context.processJSDocTags(jsdoctags, result);
         return result;
     }
 
-    private visitConstructorDeclaration(
+    public visitConstructorDeclaration(
         method: ts.ConstructorDeclaration,
         sourceFile: ts.SourceFile
     ) {
@@ -361,7 +361,7 @@ export class ClassMemberVisitor {
             result.modifierKind = kinds;
         }
 
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(method);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(method);
         this.context.processJSDocTags(jsdoctags, result);
 
         if (result.jsdoctags && result.jsdoctags.length > 0) {
@@ -391,7 +391,7 @@ export class ClassMemberVisitor {
         return result;
     }
 
-    private visitProperty(
+    public visitProperty(
         property: ts.PropertyDeclaration | ts.PropertySignature,
         sourceFile: ts.SourceFile
     ) {
@@ -464,7 +464,7 @@ export class ClassMemberVisitor {
         // Check for ECMAScript Private Fields
         this.context.memberVisibility.ensurePrivateKeyword(result, property);
 
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(property);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(property);
         if (jsdoctags && jsdoctags.length >= 1) {
             const jsdoc = jsdoctags[0] as any;
             if (jsdoc && jsdoc.tags) {
@@ -478,7 +478,7 @@ export class ClassMemberVisitor {
         return result;
     }
 
-    private visitConstructorProperties(constr: any, sourceFile: ts.SourceFile) {
+    public visitConstructorProperties(constr: any, sourceFile: ts.SourceFile) {
         if (constr.parameters) {
             let _parameters: any[] = [];
             let i = 0;
@@ -531,7 +531,7 @@ export class ClassMemberVisitor {
         }
     }
 
-    private visitMethodDeclaration(
+    public visitMethodDeclaration(
         method: ts.MethodDeclaration | ts.MethodSignature,
         sourceFile: ts.SourceFile
     ) {
@@ -590,7 +590,7 @@ export class ClassMemberVisitor {
         // Check for ECMAScript Private Fields
         this.context.memberVisibility.ensurePrivateKeyword(result, method);
 
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(method);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(method);
         this.context.processJSDocTags(jsdoctags, result);
 
         if (result.jsdoctags && result.jsdoctags.length > 0) {
@@ -601,7 +601,7 @@ export class ClassMemberVisitor {
         return result;
     }
 
-    private visitOutput(
+    public visitOutput(
         property: ts.PropertyDeclaration,
         outDecorator: ts.Decorator,
         sourceFile: ts.SourceFile
@@ -622,7 +622,7 @@ export class ClassMemberVisitor {
 
         if ((property as any).jsDoc) {
             this.context.extractAndProcessJSDocComment(property, sourceFile, _return);
-            const jsdoctags = this.context.jsdocParserUtil.getJSDocs(property);
+            const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(property);
             this.context.processJSDocTags(jsdoctags, _return);
         }
 
@@ -650,7 +650,7 @@ export class ClassMemberVisitor {
         return _return;
     }
 
-    private visitArgument(arg: ts.ParameterDeclaration) {
+    public visitArgument(arg: ts.ParameterDeclaration) {
         let _result: any = {
             name: (arg.name as any).text || (ts.isIdentifier(arg.name) ? arg.name.text : ''),
             type: this.visitType(arg),
@@ -674,12 +674,12 @@ export class ClassMemberVisitor {
         if (arg.initializer) {
             _result.defaultValue = this.context.stringifyDefaultValue(arg.initializer);
         }
-        const jsdoctags = this.context.jsdocParserUtil.getJSDocs(arg);
+        const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(arg);
         this.context.processJSDocTags(jsdoctags, _result, false);
         return _result;
     }
 
-    private visitInputAndHostBinding(property: any, inDecorator: any, sourceFile: ts.SourceFile) {
+    public visitInputAndHostBinding(property: any, inDecorator: any, sourceFile: ts.SourceFile) {
         const inArgs = inDecorator.expression.arguments;
 
         let _return: any = {
@@ -732,7 +732,7 @@ export class ClassMemberVisitor {
         }
 
         if (!_return.description) {
-            const jsdoctags = this.context.jsdocParserUtil.getJSDocs(property);
+            const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(property);
             this.context.processJSDocTags(jsdoctags, _return);
             this.context.extractAndProcessJSDocComment(property, sourceFile, _return);
         }
@@ -786,7 +786,7 @@ export class ClassMemberVisitor {
         return _return;
     }
 
-    private visitHostListener(
+    public visitHostListener(
         property: any,
         hostListenerDecorator: any,
         sourceFile: ts.SourceFile
@@ -809,7 +809,7 @@ export class ClassMemberVisitor {
 
         if (property.jsDoc) {
             this.context.extractAndProcessJSDocComment(property, sourceFile, _return);
-            const jsdoctags = this.context.jsdocParserUtil.getJSDocs(property);
+            const jsdoctags = this.context.getJsdocParserUtil().getJSDocs(property);
             this.context.processJSDocTags(jsdoctags, _return);
         }
 

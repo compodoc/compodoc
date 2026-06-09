@@ -27,17 +27,17 @@ export class ClassDeclarationVisitor {
         let jsdoctags: any[] = [];
 
         if (symbol) {
-            const comment = this.context.jsdocParserUtil.getMainCommentOfNode(
+            const comment = this.context.getJsdocParserUtil().getMainCommentOfNode(
                 classDeclaration,
                 sourceFile
             );
-            rawdescription = this.context.jsdocParserUtil.parseComment(comment);
+            rawdescription = this.context.getJsdocParserUtil().parseComment(comment);
             description = markedAcl(rawdescription);
             if (symbol.valueDeclaration && isIgnore(symbol.valueDeclaration)) {
                 return [{ ignore: true }];
             }
             if (symbol.declarations && symbol.declarations.length > 0) {
-                const declarationsjsdoctags = this.context.jsdocParserUtil.getJSDocs(
+                const declarationsjsdoctags = this.context.getJsdocParserUtil().getJSDocs(
                     symbol.declarations[0]
                 );
                 this.context.processJSDocTags(declarationsjsdoctags, deprecation, false);
@@ -46,7 +46,7 @@ export class ClassDeclarationVisitor {
                 }
             }
             if (symbol.valueDeclaration) {
-                jsdoctags = this.context.jsdocParserUtil.getJSDocs(
+                jsdoctags = this.context.getJsdocParserUtil().getJSDocs(
                     symbol.valueDeclaration
                 ) as unknown as any[];
                 if (jsdoctags && jsdoctags.length >= 1) {
