@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import * as _ from "lodash";
+import * as _ from '../../../../../utils/collection.util';
 
 import { ts, SyntaxKind } from "ts-morph";
 

@@ -1,6 +1,6 @@
 import * as path from "path";
 
-import * as _ from "lodash";
+import * as _ from '../../utils/collection.util';
 import { Project, ts, SyntaxKind } from "ts-morph";
 
 import { IsKindType, kindToType } from "../../utils/kind-to-type";

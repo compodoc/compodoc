@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from '../../utils/collection.util';
 
 import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 import { ParsedData } from '../interfaces/parsed-data.interface';

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from '../../../utils/collection.util';
 
 import { IInterfaceDep } from '../../compiler/angular/dependencies.interfaces';
 

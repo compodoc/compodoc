@@ -1,6 +1,6 @@
 const Handlebars = require('handlebars');
 import * as JSON5 from 'json5';
-import * as _ from 'lodash';
+import * as _ from './collection.util';
 import * as path from 'path';
 import { Project, ts, SourceFile, SyntaxKind, Node } from 'ts-morph';
 

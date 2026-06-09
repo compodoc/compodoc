@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import * as _ from './collection.util';
 import { ts, SyntaxKind } from "ts-morph";
 
 import * as _ts from "./ts-internal";

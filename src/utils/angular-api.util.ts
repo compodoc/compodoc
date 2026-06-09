@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from './collection.util';
 import { IApiSourceResult } from './api-source-result.interface';
 import * as path from 'path';
 

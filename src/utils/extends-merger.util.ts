@@ -1,4 +1,4 @@
-import { cloneDeep, concat, find } from 'lodash';
+import { cloneDeep, concat, find } from './collection.util';
 
 import { cleanLifecycleHooksFromMethods } from '.';
 import Configuration from '../app/configuration';

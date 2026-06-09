@@ -1,5 +1,5 @@
 import { IHtmlEngineHelper, IHandlebarsOptions } from './html-engine-helper.interface';
-import * as _ from 'lodash';
+import * as _ from '../../../utils/collection.util';
 
 export class IsTabEnabledHelper implements IHtmlEngineHelper {
     public helperFunc(context: any, tabs: Array<any>, tabId: String, options: IHandlebarsOptions) {

@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import * as _ from 'lodash';
+import * as _ from './collection.util';
 import * as path from 'path';
 import { ts } from 'ts-morph';
 
