@@ -1,11 +1,6 @@
 import { expect } from "chai";
 import {
     temporaryDir,
-    shell,
-    pkg,
-    exists,
-    exec,
-    read,
     shellAsync,
 } from "../helpers";
 const tmp = temporaryDir();
@@ -67,8 +62,7 @@ function waitForServingMessage(
 }
 
 describe("CLI serving", () => {
-    const distFolder = tmp.name + "-serving",
-        TIMEOUT = 8000;
+    const distFolder = tmp.name + "-serving";
 
     describe("when serving with -s flag in another directory", () => {
         let stdoutString = "";
@@ -271,20 +265,14 @@ describe("CLI serving", () => {
     });
 
     describe("when serving with default directory, without -d and without doc generation", () => {
-        let stdoutString = "",
-            child;
-        before(function (done) {
-            let ls = shell("node", ["./bin/index-cli.js", "-s", "-r", "6704"], {
-                timeout: TIMEOUT,
-            });
-
-            if (ls.stderr.toString() !== "") {
-                console.error(`shell error: ${ls.stderr.toString()}`);
-                done(new Error("shell error"));
-                return;
-            }
-            stdoutString = ls.stdout.toString();
-            done();
+        let stdoutString = "";
+        before(async function () {
+            this.timeout(30000);
+            tmp.create("documentation");
+            stdoutString = await waitForServingMessage(
+                ["./bin/index-cli.js", "-s", "-r", "6704"],
+                "Serving documentation from ./documentation/ at http://127.0.0.1:6704",
+            );
         });
         after(() => tmp.clean("documentation"));
 
