@@ -3,7 +3,7 @@ import * as path from 'path';
 import { ts } from 'ts-morph';
 import { logger } from './logger';
 
-const fg = require('fast-glob');
+const { glob } = require('tinyglobby');
 
 /**
  * Result of parsing public API exports
@@ -47,7 +47,7 @@ export class PublicApiParser {
 
         // Find all index.d.ts files recursively
         const pattern = path.join(this.distPath, '**/index.d.ts');
-        const indexFiles = await fg(pattern, {
+        const indexFiles = await glob(pattern, {
             absolute: true,
             ignore: ['**/node_modules/**']
         });
@@ -312,4 +312,3 @@ export async function parsePublicApi(distPath: string): Promise<PublicApiExports
     const parser = new PublicApiParser(distPath);
     return await parser.parseIndexFiles();
 }
-

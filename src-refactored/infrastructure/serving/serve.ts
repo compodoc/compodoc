@@ -1,27 +1,18 @@
-import * as LiveServer from '@compodoc/live-server';
-
 import { InternalConfiguration } from '../../core/entities/internal-configuration';
-
-interface LiveServerConfiguration {
-    root?: string;
-    open?: boolean;
-    quiet: boolean;
-    logLevel: number;
-    wait: number;
-    host?: string;
-    port?: number;
-}
+import {
+    DocumentationServerConfiguration,
+    startDocumentationServer
+} from '../../../src/utils/documentation-server';
 
 export class ServeService {
     private static instance: ServeService;
 
-    public liveServerConfiguration: LiveServerConfiguration;
+    public documentationServerConfiguration: DocumentationServerConfiguration;
 
     constructor() {
-        this.liveServerConfiguration = {
-            quiet: true,
-            logLevel: 0,
-            wait: 1000
+        this.documentationServerConfiguration = {
+            root: '',
+            port: 8080
         };
     }
 
@@ -34,13 +25,13 @@ export class ServeService {
 
     public serve(configuration: InternalConfiguration) {
         if (configuration.host !== '') {
-            this.liveServerConfiguration.host = configuration.host;
+            this.documentationServerConfiguration.host = configuration.host;
         }
-        this.liveServerConfiguration.root = configuration.output;
-        this.liveServerConfiguration.open = false;
-        this.liveServerConfiguration.port = configuration.port;
+        this.documentationServerConfiguration.root = configuration.output;
+        this.documentationServerConfiguration.open = false;
+        this.documentationServerConfiguration.port = configuration.port;
 
-        return LiveServer.start(this.liveServerConfiguration);
+        return startDocumentationServer(this.documentationServerConfiguration);
     }
 }
 

@@ -19,7 +19,7 @@ import { parsePublicApi } from "./utils/public-api-parser.util";
 import { parseApiMarkdownExports } from "./utils/api-markdown-parser.util";
 import { createSourcePathMapper } from "./utils/source-path-mapper.util";
 
-const fg = require("fast-glob");
+const { glob, globSync } = require("tinyglobby");
 const { program } = require("commander");
 
 let scannedFiles: string[] = [];
@@ -257,13 +257,13 @@ export class CliApplication extends Application {
                         );
                     }
 
-                    const stream = fg.stream(includeFiles, {
+                    const files = await glob(includeFiles, {
                         cwd: sourceFolder || cwd,
                         ignore: excludeFiles,
                         absolute: true,
                     });
 
-                    stream.on("data", (file: string) => {
+                    files.forEach((file: string) => {
                         if (
                             path.extname(file) === ".ts" ||
                             path.extname(file) === ".tsx"
@@ -275,18 +275,16 @@ export class CliApplication extends Application {
                         }
                     });
 
-                    stream.on("end", () => {
-                        super.setFiles(scannedFiles);
-                        if (
-                            programOptions.coverageTest ||
-                            programOptions.coverageTestPerFile
-                        ) {
-                            logger.info("Run documentation coverage test");
-                            super.testCoverage();
-                        } else {
-                            super.generate();
-                        }
-                    });
+                    super.setFiles(scannedFiles);
+                    if (
+                        programOptions.coverageTest ||
+                        programOptions.coverageTestPerFile
+                    ) {
+                        logger.info("Run documentation coverage test");
+                        super.testCoverage();
+                    } else {
+                        super.generate();
+                    }
                 }
             } else {
                 logger.error(
@@ -416,7 +414,7 @@ export class CliApplication extends Application {
         const sourceFolder = sourceRoot;
 
         try {
-            const files = fg.sync(path.join(sourceFolder, "**/*.ts"), {
+            const files = globSync(path.join(sourceFolder, "**/*.ts"), {
                 ignore: ["**/node_modules/**", "**/*.spec.ts", "**/*.d.ts"],
             });
 

@@ -6,7 +6,6 @@ import { SyntaxKind } from 'ts-morph';
 
 const chokidar = require('chokidar');
 
-const LiveServer = require('@compodoc/live-server');
 const traverse = require('neotraverse/legacy');
 const crypto = require('crypto');
 
@@ -49,10 +48,13 @@ import {
 
 import { AdditionalNode } from './interfaces/additional-node.interface';
 import { CoverageData } from './interfaces/coverageData.interface';
-import { LiveServerConfiguration } from './interfaces/live-server-configuration.interface';
 import { markedAcl } from '../utils/marked.acl';
 import { ComponentHelper } from './compiler/angular/deps/helpers/component-helper';
 import { renderLlmMd } from '../llm-md';
+import {
+    DocumentationServerConfiguration,
+    startDocumentationServer
+} from '../utils/documentation-server';
 
 const cwd = process.cwd();
 let startTime = new Date();
@@ -2811,18 +2813,15 @@ at least one config for the 'info' or 'source' tab in --navTabConfig.`);
 
     public runWebServer(folder: string) {
         if (!this.isWatching) {
-            let liveServerConfiguration: LiveServerConfiguration = {
+            let documentationServerConfiguration: DocumentationServerConfiguration = {
                 root: folder,
                 open: Configuration.mainData.open,
-                quiet: true,
-                logLevel: 0,
-                wait: 1000,
                 port: Configuration.mainData.port
             };
             if (Configuration.mainData.host !== '') {
-                liveServerConfiguration.host = Configuration.mainData.host;
+                documentationServerConfiguration.host = Configuration.mainData.host;
             }
-            LiveServer.start(liveServerConfiguration);
+            startDocumentationServer(documentationServerConfiguration);
         }
         if (Configuration.mainData.watch && !this.isWatching) {
             if (typeof this.files === 'undefined') {

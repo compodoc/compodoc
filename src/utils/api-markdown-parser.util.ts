@@ -3,7 +3,7 @@ import * as path from 'path';
 import { ts } from 'ts-morph';
 import { logger } from './logger';
 
-const fg = require('fast-glob');
+const { glob } = require('tinyglobby');
 
 /**
  * Result of parsing API markdown exports
@@ -45,7 +45,7 @@ export class ApiMarkdownParser {
 
         // Find all *.api.md files recursively
         const pattern = path.join(this.sourceRoot, '**/*.api.md');
-        const apiMdFiles = await fg(pattern, {
+        const apiMdFiles = await glob(pattern, {
             absolute: true,
             ignore: ['**/node_modules/**']
         });
@@ -382,4 +382,3 @@ export async function parseApiMarkdownExports(sourceRoot: string): Promise<ApiMa
     const parser = new ApiMarkdownParser(sourceRoot);
     return await parser.parseApiMarkdownFiles();
 }
-
