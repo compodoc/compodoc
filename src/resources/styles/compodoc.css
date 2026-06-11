@@ -255,7 +255,7 @@ a[href] {
 
 .relationships-list {
     list-style: none;
-    padding-left: 0;
+    padding-left: 0 !important;
 }
 
 .relationships-list li {
@@ -943,7 +943,7 @@ th[role="columnheader"].statements:not(.no-sort):after {
     font-size: 0.72em;
     font-weight: 700;
     line-height: 1;
-    margin-right: 0.75em;
+    margin-right: 0.5em;
     vertical-align: middle;
 }
 
