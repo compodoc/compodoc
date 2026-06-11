@@ -182,6 +182,23 @@
                         {{/if}}
 
                         {{#if jsdoctags}}
+                            {{#jsdoc-throws jsdoctags}}
+                                <tr>
+                                    <td class="col-md-4">
+                                        <div class="io-description">
+                                            <b>{{t "throws" }} :</b>
+                                            <ul>
+                                                {{#each tags}}
+                                                    <li>{{{comment}}}</li>
+                                                {{/each}}
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {{/jsdoc-throws}}
+                        {{/if}}
+
+                        {{#if jsdoctags}}
                             {{#jsdoc-params-valid jsdoctags}}
                             <tr>
                                 <td class="col-md-4">

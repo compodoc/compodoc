@@ -462,6 +462,74 @@ describe('ClassHelper', () => {
             const result = classHelper.visitClassDeclaration('test.ts', classDeclaration, mockSourceFile);
             expect(result).to.deep.equal([{ ignore: true }]);
         });
+
+        it('should inherit method documentation from implemented interfaces with {@inheritDoc}', () => {
+            const realProject = new Project();
+            const realSourceFile = realProject.createSourceFile(
+                'inherit-doc.ts',
+                `
+                interface Repository {
+                    /**
+                     * Saves a record.
+                     * @param record The record to save
+                     * @returns Saved id
+                     */
+                    save(record: string): string;
+                }
+
+                class JsonRepository implements Repository {
+                    /** {@inheritDoc} */
+                    save(record: string): string {
+                        return record;
+                    }
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+            const classDeclaration = realSourceFile.getClassOrThrow('JsonRepository').compilerNode;
+
+            const result = realHelper.visitClassDeclaration(
+                'inherit-doc.ts',
+                classDeclaration,
+                realSourceFile.compilerNode,
+                realSourceFile as any
+            );
+
+            expect(result[0].methods[0].rawdescription).to.contain('Saves a record.');
+            expect(result[0].methods[0].description).to.contain('Saves a record.');
+        });
+
+        it('should inherit method documentation from extended classes when local comment is missing', () => {
+            const realProject = new Project();
+            const realSourceFile = realProject.createSourceFile(
+                'inherit-doc-base.ts',
+                `
+                class BaseRepository {
+                    /**
+                     * Removes a record.
+                     * @throws NotFound When the record does not exist
+                     */
+                    remove(record: string): void {}
+                }
+
+                class JsonRepository extends BaseRepository {
+                    remove(record: string): void {}
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+            const classDeclaration = realSourceFile.getClassOrThrow('JsonRepository').compilerNode;
+
+            const result = realHelper.visitClassDeclaration(
+                'inherit-doc-base.ts',
+                classDeclaration,
+                realSourceFile.compilerNode,
+                realSourceFile as any
+            );
+
+            expect(result[0].methods[0].rawdescription).to.contain('Removes a record.');
+            expect(result[0].methods[0].description).to.contain('Removes a record.');
+        });
     });
 
     describe('private methods (tested via public interface)', () => {
@@ -705,6 +773,44 @@ describe('ClassHelper', () => {
 
             expect(result.typeParameters).to.be.an('array').with.length(1);
             expect(result.typeParameters[0]).to.equal('T');
+        });
+
+        it('should preserve @throws tags on methods', () => {
+            const realProject = new Project();
+            const realSourceFile = realProject.createSourceFile(
+                'throws-method.ts',
+                `
+                class Repository {
+                    /**
+                     * Saves a record.
+                     * @param record The record to save
+                     * @returns Saved id
+                     * @throws RecordAlreadyExists The record exists
+                     * @exception NoData JSONData was empty
+                     */
+                    save(record: string): string {
+                        return record;
+                    }
+                }
+                `
+            );
+            const realHelper = new ClassHelper(realProject.getTypeChecker().compilerObject);
+            const method = realSourceFile
+                .getClassOrThrow('Repository')
+                .getMethodOrThrow('save')
+                .compilerNode;
+
+            const result = (realHelper as any).visitMethodDeclaration(
+                method,
+                realSourceFile.compilerNode
+            );
+
+            const throwTags = result.jsdoctags.filter((tag: any) =>
+                ['throws', 'exception'].includes(tag.tagName.text)
+            );
+            expect(throwTags).to.have.length(2);
+            expect(throwTags[0].comment).to.contain('RecordAlreadyExists');
+            expect(throwTags[1].comment).to.contain('NoData');
         });
     });
 

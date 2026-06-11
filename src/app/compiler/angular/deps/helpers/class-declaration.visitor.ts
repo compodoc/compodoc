@@ -66,6 +66,11 @@ export class ClassDeclarationVisitor {
         const extendsElements = this.collectExtends(className, astFile);
         const coverageIgnore = isCoverageIgnore(classDeclaration);
         const members = this.visitMembers(classDeclaration.members, sourceFile);
+        this.applyInheritedDocumentation(
+            members,
+            implementsElements.concat(extendsElements),
+            astFile
+        );
 
         if (nodeHasDecorator(classDeclaration)) {
             return this.buildDecoratedClassResult(
@@ -148,6 +153,140 @@ export class ClassDeclarationVisitor {
             extendsList.push(text);
         }
         return extendsList;
+    }
+
+    private applyInheritedDocumentation(members: any, ancestorNames: any[], astFile?: any): void {
+        if (!astFile || !members?.methods || ancestorNames.length === 0) {
+            return;
+        }
+
+        for (const method of members.methods) {
+            if (!method.name || !this.needsInheritedDocumentation(method)) {
+                continue;
+            }
+
+            const inherited = this.findInheritedMethodDocumentation(
+                method.name,
+                ancestorNames,
+                astFile,
+                new Set<string>()
+            );
+
+            if (!inherited) {
+                continue;
+            }
+
+            const rawdescription = this.hasInheritDoc(method.rawdescription)
+                ? this.replaceInheritDoc(method.rawdescription, inherited.rawdescription)
+                : inherited.rawdescription;
+
+            method.rawdescription = rawdescription;
+            method.description = markedAcl(rawdescription);
+        }
+    }
+
+    private needsInheritedDocumentation(method: any): boolean {
+        return (
+            !method.rawdescription?.trim() ||
+            this.hasInheritDoc(method.rawdescription) ||
+            this.hasInheritDoc(method.description)
+        );
+    }
+
+    private hasInheritDoc(value: string): boolean {
+        return /\{@inheritDoc\}|@inheritDoc/i.test(value || '');
+    }
+
+    private replaceInheritDoc(value: string, inheritedValue: string): string {
+        return (value || '').replace(/\{@inheritDoc\}|@inheritDoc/gi, inheritedValue);
+    }
+
+    private findInheritedMethodDocumentation(
+        methodName: string,
+        ancestorNames: any[],
+        astFile: any,
+        visited: Set<string>
+    ): { rawdescription: string } | undefined {
+        for (const ancestorName of ancestorNames) {
+            const normalizedName = this.normalizeHeritageName(ancestorName);
+            if (!normalizedName || visited.has(normalizedName)) {
+                continue;
+            }
+            visited.add(normalizedName);
+
+            const declaration = this.getAstDeclaration(normalizedName, astFile);
+            if (!declaration) {
+                continue;
+            }
+
+            const inheritedMethod = this.findAstMethod(declaration, methodName);
+            if (inheritedMethod) {
+                const documentation = this.extractAstDocumentation(inheritedMethod);
+                if (documentation) {
+                    return documentation;
+                }
+            }
+
+            const nestedAncestors = this.collectNestedAncestorNames(normalizedName, declaration, astFile);
+            const nestedDocumentation = this.findInheritedMethodDocumentation(
+                methodName,
+                nestedAncestors,
+                astFile,
+                visited
+            );
+            if (nestedDocumentation) {
+                return nestedDocumentation;
+            }
+        }
+
+        return undefined;
+    }
+
+    private normalizeHeritageName(ancestorName: any): string {
+        return String(ancestorName || '')
+            .replace(/<[\s\S]*$/, '')
+            .trim();
+    }
+
+    private getAstDeclaration(name: string, astFile: any): any {
+        return astFile.getInterface?.(name) || astFile.getClass?.(name);
+    }
+
+    private findAstMethod(declaration: any, methodName: string): any {
+        const methods = declaration.getMethods?.() || [];
+        return methods.find((method: any) => method.getName?.() === methodName);
+    }
+
+    private extractAstDocumentation(method: any): { rawdescription: string } | undefined {
+        const compilerNode = method.compilerNode || method;
+        const sourceFile = method.getSourceFile?.()?.compilerNode || compilerNode.getSourceFile?.();
+        const comment = this.context.getJsdocParserUtil().getMainCommentOfNode(
+            compilerNode,
+            sourceFile
+        );
+
+        if (typeof comment !== 'string' || comment.length === 0) {
+            return undefined;
+        }
+
+        const rawdescription = this.replaceInheritDoc(
+            this.context.getJsdocParserUtil().parseComment(comment),
+            ''
+        );
+
+        if (!rawdescription.trim()) {
+            return undefined;
+        }
+
+        return { rawdescription };
+    }
+
+    private collectNestedAncestorNames(name: string, declaration: any, astFile: any): any[] {
+        const nestedAncestors = this.collectExtends(name, astFile);
+        if (declaration.compilerNode) {
+            nestedAncestors.push(...this.collectImplements(declaration.compilerNode));
+        }
+        return nestedAncestors;
     }
 
     private buildDecoratedClassResult(

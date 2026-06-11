@@ -182,6 +182,18 @@
                             </div>
                         {{/if}}
                     {{/if}}
+                    {{#if jsdoctags}}
+                        {{#jsdoc-throws jsdoctags}}
+                            <div class="io-description">
+                                <b>{{t "throws" }} :</b>
+                                <ul>
+                                    {{#each tags}}
+                                        <li>{{{comment}}}</li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                        {{/jsdoc-throws}}
+                    {{/if}}
                 </td>
             </tr>
             {{/or}}

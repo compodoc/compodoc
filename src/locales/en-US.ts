@@ -101,6 +101,7 @@ export const TRANSLATION_EN_US = {
     statements: 'Statements',
     styles: 'Styles',
     template: 'Template',
+    throws: 'Throws',
     type: 'Type',
     'type-aliases': 'Type aliases',
     'type-parameters': 'Type parameters',

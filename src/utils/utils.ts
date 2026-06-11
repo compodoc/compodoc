@@ -61,7 +61,7 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
             });
         }
     });
-    // Add example & returns & private
+    // Add example, returns, throws & private
     if (jsdoctags) {
         _.forEach(jsdoctags, jsdoctag => {
             if (
@@ -77,14 +77,23 @@ export function mergeTagsAndArgs(args: Array<any>, jsdoctags?: Array<any>): Arra
                 jsdoctag.tagName &&
                 (jsdoctag.tagName.text === 'returns' || jsdoctag.tagName.text === 'return')
             ) {
-                const ret: { tagName: string; comment: string; returnType?: string } = {
+                const ret: { tagName: any; comment: string; returnType?: string } = {
                     tagName: jsdoctag.tagName,
                     comment: jsdoctag.comment
                 };
-                if (jsdoctag.typeExpression && jsdoctag.typeExpression.type) {
+                if (jsdoctag.typeExpression?.type) {
                     ret.returnType = kindToType(jsdoctag.typeExpression.type.kind);
                 }
                 margs.push(ret);
+            }
+            if (
+                jsdoctag.tagName &&
+                ['throws', 'throw', 'exception'].includes(jsdoctag.tagName.text)
+            ) {
+                margs.push({
+                    tagName: jsdoctag.tagName,
+                    comment: jsdoctag.comment
+                });
             }
         });
     }

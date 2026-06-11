@@ -110,6 +110,18 @@
                                     </div>
                                 {{/if}}
                             {{/if}}
+                            {{#if this.getSignature.jsdoctags}}
+                                {{#jsdoc-throws this.getSignature.jsdoctags}}
+                                    <div class="io-description">
+                                        <b>{{t "throws" }} :</b>
+                                        <ul>
+                                            {{#each tags}}
+                                                <li>{{{comment}}}</li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                {{/jsdoc-throws}}
+                            {{/if}}
                         </td>
                     </tr>
                     {{/or}}
@@ -202,6 +214,18 @@
                                         {{{jsdoc-returns-comment this.setSignature.jsdoctags}}}
                                     </div>
                                 {{/if}}
+                            {{/if}}
+                            {{#if this.setSignature.jsdoctags}}
+                                {{#jsdoc-throws this.setSignature.jsdoctags}}
+                                    <div class="io-description">
+                                        <b>{{t "throws" }} :</b>
+                                        <ul>
+                                            {{#each tags}}
+                                                <li>{{{comment}}}</li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                {{/jsdoc-throws}}
                             {{/if}}
                         </td>
                     </tr>
