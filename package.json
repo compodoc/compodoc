@@ -102,7 +102,7 @@
         "vis-network": "^10.1.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.4.16",
+        "@biomejs/biome": "^2.5.1",
         "@istanbuljs/nyc-config-typescript": "1.0.2",
         "@playwright/test": "1.61.1",
         "@types/archiver": "^8.0.0",
