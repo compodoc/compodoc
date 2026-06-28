@@ -1,3 +1,116 @@
+<a name="2.0.0"></a>
+
+## [2.0.0](https://github.com/compodoc/compodoc/compare/1.2.1...2.0.0)
+
+Main features:
+
+Top 3:
+
+- Standalone-aware route graph generation for Angular apps using provideRouter, including standalone components, inline lazy routes, and default-export route files, alongside traditional NgModule routing.
+- Modern Angular support across the compiler and generated docs, including signal inputs, signal aliases, standalone metadata, styleUrl, and injectable providedIn / inheritance metadata.
+- More accurate TypeScript and JSDoc rendering for complex projects, covering advanced type syntax, inherited documentation, examples, custom tags, and richer interface docs.
+
+Other notable changes:
+
+- Clickable navigation for dependency graph nodes.
+- More robust CLI and coverage workflows, including single-file inputs, coverage exclusions, Windows absolute paths, watch path normalization, and duplicate component-name handling.
+- Security and runtime hardening, including ReDoS fixes in signal parsing and escaping of dangerous component template content.
+- Modernized package/runtime baseline with IE11/Babel legacy output removed and @compodoc/live-server no longer required.
+
+### Features
+
+- Add clickable navigation for dependency graph nodes ([573b56e](https://github.com/compodoc/compodoc/commit/573b56e)), closes [#513](https://github.com/compodoc/compodoc/issues/513) ([573b56e](https://github.com/compodoc/compodoc/commit/573b56e)), closes [#1296](https://github.com/compodoc/compodoc/issues/1296) ([573b56e](https://github.com/compodoc/compodoc/commit/573b56e)), closes [#1330](https://github.com/compodoc/compodoc/issues/1330) ([573b56e](https://github.com/compodoc/compodoc/commit/573b56e)), closes [#1359](https://github.com/compodoc/compodoc/issues/1359)
+- feat(coverage): add coverage exclusions without excluding generated docs ([b486945](https://github.com/compodoc/compodoc/commit/b486945)), closes [#1554](https://github.com/compodoc/compodoc/issues/1554) ([b486945](https://github.com/compodoc/compodoc/commit/b486945)), closes [#528](https://github.com/compodoc/compodoc/issues/528)
+- feat(injectable): display extends and providedIn metadata ([41f90f8](https://github.com/compodoc/compodoc/commit/41f90f8)), closes [#1556](https://github.com/compodoc/compodoc/issues/1556)
+- feat(interface): render nested type literal properties ([3ced357](https://github.com/compodoc/compodoc/commit/3ced357)), closes [#739](https://github.com/compodoc/compodoc/issues/739)
+- feat(app): remove @compodoc/live-server dependency ([8161056](https://github.com/compodoc/compodoc/commit/8161056)), closes [#1739](https://github.com/compodoc/compodoc/issues/1739) ([8161056](https://github.com/compodoc/compodoc/commit/8161056)), closes [#1742](https://github.com/compodoc/compodoc/issues/1742)
+- feat: drop IE 11 support, remove Babel transpilation ([1fd72d1](https://github.com/compodoc/compodoc/commit/1fd72d1)), closes [#1449](https://github.com/compodoc/compodoc/issues/1449)
+- feat(compiler): extract alias from signal options ([56ec91a](https://github.com/compodoc/compodoc/commit/56ec91a)), closes [#1681](https://github.com/compodoc/compodoc/issues/1681)
+- feat(compiler): handle files with license headers ([c0a53ba](https://github.com/compodoc/compodoc/commit/c0a53ba)), closes [#1728](https://github.com/compodoc/compodoc/issues/1728)
+
+### Bug fixes
+
+#### CLI, coverage and tooling
+
+- fix(tools): npm RFC #868 ([77be307](https://github.com/compodoc/compodoc/commit/77be307)), closes [#1738](https://github.com/compodoc/compodoc/issues/1738)
+- test(cli): guard duplicate component name inputs ([3266772](https://github.com/compodoc/compodoc/commit/3266772)), closes [#1390](https://github.com/compodoc/compodoc/issues/1390)
+- fix(cli): support single file source argument ([0e03704](https://github.com/compodoc/compodoc/commit/0e03704)), closes [#1384](https://github.com/compodoc/compodoc/issues/1384)
+- fix(coverage): support absolute Windows paths ([d303e4e](https://github.com/compodoc/compodoc/commit/d303e4e)), closes [#1272](https://github.com/compodoc/compodoc/issues/1272)
+- fix(watch): normalize changed file paths ([7f4b74f](https://github.com/compodoc/compodoc/commit/7f4b74f)), closes [#1488](https://github.com/compodoc/compodoc/issues/1488)
+- fix(cli): keep coverage enabled for coverage test mode ([0d983b8](https://github.com/compodoc/compodoc/commit/0d983b8)), closes [#1360](https://github.com/compodoc/compodoc/issues/1360)
+- fix(cli): resolve namespace barrel spread declarations ([79d7044](https://github.com/compodoc/compodoc/commit/79d7044)), closes [#623](https://github.com/compodoc/compodoc/issues/623)
+
+#### JSDoc and rendered documentation
+
+- chore(app): support throws and inherited docs ([2138b1b](https://github.com/compodoc/compodoc/commit/2138b1b)), closes [#450](https://github.com/compodoc/compodoc/issues/450) ([2138b1b](https://github.com/compodoc/compodoc/commit/2138b1b)), closes [#242](https://github.com/compodoc/compodoc/issues/242)
+- fix(jsdoc): avoid crash on deprecated tag parsing ([50e87d6](https://github.com/compodoc/compodoc/commit/50e87d6)), closes [#1300](https://github.com/compodoc/compodoc/issues/1300)
+- fix: preserve generic type parameters in docs ([eb34354](https://github.com/compodoc/compodoc/commit/eb34354)), closes [#555](https://github.com/compodoc/compodoc/issues/555)
+- fix: use nearest JSDoc comment for variable docs ([edb95aa](https://github.com/compodoc/compodoc/commit/edb95aa)), closes [#1274](https://github.com/compodoc/compodoc/issues/1274)
+- fix(jsdoc): support indented @example fenced code blocks ([02d2311](https://github.com/compodoc/compodoc/commit/02d2311)), closes [#1403](https://github.com/compodoc/compodoc/issues/1403)
+- fix(markdown): normalize Bitbucket commit links in rendered changelog pages ([133aa91](https://github.com/compodoc/compodoc/commit/133aa91)), closes [#1404](https://github.com/compodoc/compodoc/issues/1404)
+- fix(jsdoc): preserve description for custom JSDoc tags and add rawdescription on miscellaneous symbols ([55489d9](https://github.com/compodoc/compodoc/commit/55489d9)), closes [#1601](https://github.com/compodoc/compodoc/issues/1601)
+
+#### Routing and route graph parsing
+
+- fix(router): avoid spread import path truncation ([509bddb](https://github.com/compodoc/compodoc/commit/509bddb)), closes [#1394](https://github.com/compodoc/compodoc/issues/1394)
+- test(router): add regression coverage for multi-parameter routes ([92a8480](https://github.com/compodoc/compodoc/commit/92a8480)), closes [#1302](https://github.com/compodoc/compodoc/issues/1302)
+- fix(router): handle issues #1363 and #1366 ([592dea3](https://github.com/compodoc/compodoc/commit/592dea3)), closes [#1363](https://github.com/compodoc/compodoc/issues/1363) ([592dea3](https://github.com/compodoc/compodoc/commit/592dea3)), closes [#1366](https://github.com/compodoc/compodoc/issues/1366)
+- fix(router): support shorthand data properties ([62cc1c3](https://github.com/compodoc/compodoc/commit/62cc1c3)), closes [#1354](https://github.com/compodoc/compodoc/issues/1354)
+- fix(router): harden routes graph children parsing ([b75392a](https://github.com/compodoc/compodoc/commit/b75392a)), closes [#539](https://github.com/compodoc/compodoc/issues/539)
+- fix(router): support destructured lazy imports ([e73a86c](https://github.com/compodoc/compodoc/commit/e73a86c)), closes [#1319](https://github.com/compodoc/compodoc/issues/1319)
+- test(router): cover enum outlet route values ([05365f0](https://github.com/compodoc/compodoc/commit/05365f0)), closes [#1335](https://github.com/compodoc/compodoc/issues/1335)
+- fix(router): unwrap typed data constructors ([b5b44da](https://github.com/compodoc/compodoc/commit/b5b44da)), closes [#661](https://github.com/compodoc/compodoc/issues/661)
+- fix(router): preserve static enum route paths ([782acf0](https://github.com/compodoc/compodoc/commit/782acf0)), closes [#1415](https://github.com/compodoc/compodoc/issues/1415)
+- fix(router): normalize unresolved dotted references ([5ba3421](https://github.com/compodoc/compodoc/commit/5ba3421)), closes [#1417](https://github.com/compodoc/compodoc/issues/1417)
+- test(router): cover resolve inject callbacks ([9a1cc63](https://github.com/compodoc/compodoc/commit/9a1cc63)), closes [#1433](https://github.com/compodoc/compodoc/issues/1433)
+- test(router): cover enum data in feature routes ([f465fce](https://github.com/compodoc/compodoc/commit/f465fce)), closes [#1334](https://github.com/compodoc/compodoc/issues/1334)
+- test(router): cover @app alias spread resolution ([07dbf7a](https://github.com/compodoc/compodoc/commit/07dbf7a)), closes [#654](https://github.com/compodoc/compodoc/issues/654)
+- fix(router): resolve non-relative spreads via baseUrl ([e509952](https://github.com/compodoc/compodoc/commit/e509952)), closes [#1308](https://github.com/compodoc/compodoc/issues/1308)
+- fix(router): preserve relative spread import resolution ([fd97255](https://github.com/compodoc/compodoc/commit/fd97255)), closes [#1307](https://github.com/compodoc/compodoc/issues/1307)
+- fix(router): detect aliased and inferred route arrays ([6bc2dae](https://github.com/compodoc/compodoc/commit/6bc2dae)), closes [#1293](https://github.com/compodoc/compodoc/issues/1293)
+- fix(router): clean call expressions for Route[] types ([d73622a](https://github.com/compodoc/compodoc/commit/d73622a)), closes [#1436](https://github.com/compodoc/compodoc/issues/1436)
+- fix(router): avoid crashes on spread call expressions ([7b88115](https://github.com/compodoc/compodoc/commit/7b88115)), closes [#1317](https://github.com/compodoc/compodoc/issues/1317) ([7b88115](https://github.com/compodoc/compodoc/commit/7b88115)), closes [#1293](https://github.com/compodoc/compodoc/issues/1293)
+- fix(guards): classify functional route guards as guards, not miscellaneous variables ([947e4dd](https://github.com/compodoc/compodoc/commit/947e4dd)), closes [#1406](https://github.com/compodoc/compodoc/issues/1406)
+- fix(routing): support standalone provideRouter route detection ([d4c77de](https://github.com/compodoc/compodoc/commit/d4c77de)), closes [#1448](https://github.com/compodoc/compodoc/issues/1448)
+- fix(router): handle template-literal route paths and keep CodeGenerator TS-safe ([e0aeb2e](https://github.com/compodoc/compodoc/commit/e0aeb2e)), closes [#1493](https://github.com/compodoc/compodoc/issues/1493)
+- fix(router-parser): resolve tsconfig path aliases in cleanFileSpreads ([0309ffa](https://github.com/compodoc/compodoc/commit/0309ffa)), closes [#1545](https://github.com/compodoc/compodoc/issues/1545)
+- fix(router-parser): parse lazy-loaded standalone routes ([6170064](https://github.com/compodoc/compodoc/commit/6170064)), closes [#1546](https://github.com/compodoc/compodoc/issues/1546)
+- fix(router): handle TypeScript expressions in route definitions ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1610](https://github.com/compodoc/compodoc/issues/1610) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1594](https://github.com/compodoc/compodoc/issues/1594) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1581](https://github.com/compodoc/compodoc/issues/1581) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1550](https://github.com/compodoc/compodoc/issues/1550) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1533](https://github.com/compodoc/compodoc/issues/1533) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1346](https://github.com/compodoc/compodoc/issues/1346) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1287](https://github.com/compodoc/compodoc/issues/1287) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1426](https://github.com/compodoc/compodoc/issues/1426) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1484](https://github.com/compodoc/compodoc/issues/1484) ([1af3029](https://github.com/compodoc/compodoc/commit/1af3029)), closes [#1480](https://github.com/compodoc/compodoc/issues/1480)
+- fix(router): handle spread of .map()-computed route arrays ([6f1b63a](https://github.com/compodoc/compodoc/commit/6f1b63a)), closes [#1702](https://github.com/compodoc/compodoc/issues/1702)
+
+#### TypeScript, compiler and Angular metadata
+
+- fix(angular): resolve dynamic templateUrl property access ([7796f6d](https://github.com/compodoc/compodoc/commit/7796f6d)), closes [#1376](https://github.com/compodoc/compodoc/issues/1376)
+- fix(types): resolve parenthesized indexed-access raw types without regressing interface index links ([440f92c](https://github.com/compodoc/compodoc/commit/440f92c)), closes [#1368](https://github.com/compodoc/compodoc/issues/1368)
+- fix(interfaces): support extends Omit&lt;T, K&gt; inheritance in generated docs ([f0a9eef](https://github.com/compodoc/compodoc/commit/f0a9eef)), closes [#1483](https://github.com/compodoc/compodoc/issues/1483)
+- fix(class-helper): detect @internal tags for overridden @Input via parsed JSDoc cache ([7bd045b](https://github.com/compodoc/compodoc/commit/7bd045b)), closes [#1441](https://github.com/compodoc/compodoc/issues/1441)
+- fix(compiler): resolve utility types like Uncapitalize and Extract&lt;keyof typeof ...&gt; via type checker ([df0ebdd](https://github.com/compodoc/compodoc/commit/df0ebdd)), closes [#1424](https://github.com/compodoc/compodoc/issues/1424) ([df0ebdd](https://github.com/compodoc/compodoc/commit/df0ebdd)), closes [#1329](https://github.com/compodoc/compodoc/issues/1329)
+- fix(interfaces): support TypeScript declaration merging in generated docs ([b9a6ca5](https://github.com/compodoc/compodoc/commit/b9a6ca5)), closes [#1450](https://github.com/compodoc/compodoc/issues/1450)
+- test(compiler): add regression coverage for signal array generic parsing ([9088e57](https://github.com/compodoc/compodoc/commit/9088e57)), closes [#1489](https://github.com/compodoc/compodoc/issues/1489)
+- test(component-helper): add regression coverage for input&lt;ButtonColors&gt;('primary') parsing ([1fc0c57](https://github.com/compodoc/compodoc/commit/1fc0c57)), closes [#1490](https://github.com/compodoc/compodoc/issues/1490)
+- fix(types): resolve `keyof typeof` parameter types in generated documentation ([3fbb5b0](https://github.com/compodoc/compodoc/commit/3fbb5b0)), closes [#1425](https://github.com/compodoc/compodoc/issues/1425)
+- fix: resolve styleUrls when declared as a const variable reference ([6fbf563](https://github.com/compodoc/compodoc/commit/6fbf563)), closes [#1499](https://github.com/compodoc/compodoc/issues/1499)
+- fix: handle intersection types in visitType ([92613e0](https://github.com/compodoc/compodoc/commit/92613e0)), closes [#1525](https://github.com/compodoc/compodoc/issues/1525)
+- fix(compiler): handle anonymous classes without crashing ([86f3c12](https://github.com/compodoc/compodoc/commit/86f3c12)), closes [#1547](https://github.com/compodoc/compodoc/issues/1547)
+- fix(duplicates): handle cross-category same-name symbols ([693c02b](https://github.com/compodoc/compodoc/commit/693c02b)), closes [#1568](https://github.com/compodoc/compodoc/issues/1568)
+- fix(compiler): support object/array destructuring for variables ([b59107b](https://github.com/compodoc/compodoc/commit/b59107b)), closes [#1569](https://github.com/compodoc/compodoc/issues/1569)
+- fix(compiler): support styleUrl singular and safe template getter ([f445641](https://github.com/compodoc/compodoc/commit/f445641)), closes [#1571](https://github.com/compodoc/compodoc/issues/1571)
+- fix(compiler): thread @param descriptions into constructor args ([56e92a5](https://github.com/compodoc/compodoc/commit/56e92a5)), closes [#1572](https://github.com/compodoc/compodoc/issues/1572)
+- fix(compiler): thread @param descriptions into constructor args ([73264c7](https://github.com/compodoc/compodoc/commit/73264c7)), closes [#1574](https://github.com/compodoc/compodoc/issues/1574)
+- fix(app): Support for input&lt;T&gt;() Input Signals Missing or Incomplete ([fe7a9ed](https://github.com/compodoc/compodoc/commit/fe7a9ed)), closes [#1576](https://github.com/compodoc/compodoc/issues/1576)
+- test(compiler): add unit tests for component-helper ([3f84ee6](https://github.com/compodoc/compodoc/commit/3f84ee6)), closes [#1652](https://github.com/compodoc/compodoc/issues/1652)
+- fix(compiler): exclude options object from signal defaultValue ([5443c0e](https://github.com/compodoc/compodoc/commit/5443c0e)), closes [#1703](https://github.com/compodoc/compodoc/issues/1703)
+- fix(compiler): scope spread var substitution to declaring file ([b30be1a](https://github.com/compodoc/compodoc/commit/b30be1a)), closes [#1706](https://github.com/compodoc/compodoc/issues/1706)
+- fix(compiler): scope spread var substitution to declaring file ([eac1938](https://github.com/compodoc/compodoc/commit/eac1938)), closes [#1706](https://github.com/compodoc/compodoc/issues/1706)
+- test(compiler): add ComponentCache and signal parsing tests ([512207a](https://github.com/compodoc/compodoc/commit/512207a)), closes [#1707](https://github.com/compodoc/compodoc/issues/1707)
+
+#### Security and maintenance
+
+- fix(compiler): prevent ReDoS in signal type parsing ([22e039a](https://github.com/compodoc/compodoc/commit/22e039a)), closes [#1726](https://github.com/compodoc/compodoc/issues/1726)
+- fix(compiler): fix ReDoS in getSignalConfig regex ([beca03c](https://github.com/compodoc/compodoc/commit/beca03c)), closes [#1654](https://github.com/compodoc/compodoc/issues/1654)
+- fix(xss): escape `&lt;/script&gt;` in component templates ([a91d68c](https://github.com/compodoc/compodoc/commit/a91d68c)), closes [#1727](https://github.com/compodoc/compodoc/issues/1727)
+- chore(app): split and clean application.ts god file [71bcb5b](https://github.com/compodoc/compodoc/commit/71bcb5b27bf06480f5103595d0dd413b4b801f58)
+
 <a name="1.2.1"></a>
 
 ## [v1.2.1](https://github-personal/compodoc/compodoc/compare/1.2.0...1.2.1)
