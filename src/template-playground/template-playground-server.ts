@@ -265,14 +265,6 @@ export class TemplatePlaygroundServer {
         return ip;
     }
 
-    private generateSessionIdFromIP(ip: string): string {
-        // Create a consistent hash from IP address
-        return crypto
-            .createHash('md5')
-            .update(ip + 'template-playground-salt')
-            .digest('hex');
-    }
-
     private createOrGetSessionByIP(ip: string): PlaygroundSession {
         // Check if session already exists for this IP
         const existingSessionId = this.ipToSessionId.get(ip);
@@ -285,7 +277,7 @@ export class TemplatePlaygroundServer {
         }
 
         // Create new session
-        const sessionId = this.generateSessionIdFromIP(ip);
+        const sessionId = crypto.randomBytes(16).toString('hex');
         const templateDir = path.join(os.tmpdir(), `hbs-templates-copy-${sessionId}`);
         const documentationDir = path.join(os.tmpdir(), `generated-documentation-${sessionId}`);
 
