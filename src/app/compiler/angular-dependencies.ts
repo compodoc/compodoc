@@ -133,7 +133,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
         RouterParserUtil.scannedFiles = sourceFiles;
 
-        sourceFiles.map((file: ts.SourceFile) => {
+        sourceFiles.forEach((file: ts.SourceFile) => {
             const filePath = file.fileName;
 
             if (
@@ -158,8 +158,6 @@ export class AngularDependencies extends FrameworkDependencies {
                     }
                 }
             }
-
-            return deps;
         });
 
         // End of file scanning
@@ -595,10 +593,7 @@ export class AngularDependencies extends FrameworkDependencies {
                 if (nodeHasDecorator(node)) {
                     let classWithCustomDecorator = false;
                     const nodeDecorators = getNodeDecorators(node);
-                    const visitDecorator = (
-                        visitedDecorator: any,
-                        index: any,
-                    ) => {
+                    const visitDecorator = (visitedDecorator: any) => {
                         let deps: any;
 
                         const name = this.getSymboleName(node);
@@ -873,7 +868,7 @@ export class AngularDependencies extends FrameworkDependencies {
 
                     nodeDecorators
                         .filter(filterByDecorators)
-                        .forEach(visitDecorator);
+                        .forEach((decorator: any) => visitDecorator(decorator));
                 } else if (node.symbol) {
                     if (node.symbol.flags === ts.SymbolFlags.Class) {
                         // Check if class is allowed by public API filter
