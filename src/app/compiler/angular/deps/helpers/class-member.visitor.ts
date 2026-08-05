@@ -727,6 +727,8 @@ export class ClassMemberVisitor {
             : undefined;
         Object.assign(_return, this.context.initializeDocumentationFields());
 
+        _return.optional = typeof property.questionToken !== 'undefined';
+
         if (inArgs.length > 0 && inArgs[0].properties && hasRequiredField) {
             _return.optional = getRequiredField().initializer.kind !== SyntaxKind.TrueKeyword;
         }

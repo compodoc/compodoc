@@ -1064,6 +1064,96 @@ describe('ClassHelper', () => {
             expect(result.optional).to.be.false;
         });
 
+        it('should mark an @Input declared with a question token as optional', () => {
+            const property = {
+                name: { text: 'optionalProp', kind: SyntaxKind.Identifier },
+                type: { kind: SyntaxKind.StringKeyword },
+                questionToken: { kind: SyntaxKind.QuestionToken },
+                initializer: undefined,
+                jsDoc: [],
+                kind: SyntaxKind.PropertyDeclaration,
+                pos: 10,
+                end: 20
+            } as any;
+
+            const decorator = {
+                expression: {
+                    arguments: []
+                }
+            } as any;
+
+            const result = (classHelper as any).visitInputAndHostBinding(
+                property,
+                decorator,
+                mockSourceFile
+            );
+
+            expect(result.optional).to.be.true;
+        });
+
+        it('should mark an @Input without a question token as not optional', () => {
+            const property = {
+                name: { text: 'requiredProp', kind: SyntaxKind.Identifier },
+                type: { kind: SyntaxKind.StringKeyword },
+                initializer: undefined,
+                jsDoc: [],
+                kind: SyntaxKind.PropertyDeclaration,
+                pos: 10,
+                end: 20
+            } as any;
+
+            const decorator = {
+                expression: {
+                    arguments: []
+                }
+            } as any;
+
+            const result = (classHelper as any).visitInputAndHostBinding(
+                property,
+                decorator,
+                mockSourceFile
+            );
+
+            expect(result.optional).to.be.false;
+        });
+
+        it('should let an explicit required config win over the question token', () => {
+            const property = {
+                name: { text: 'configuredProp', kind: SyntaxKind.Identifier },
+                type: { kind: SyntaxKind.StringKeyword },
+                questionToken: { kind: SyntaxKind.QuestionToken },
+                initializer: undefined,
+                jsDoc: [],
+                kind: SyntaxKind.PropertyDeclaration,
+                pos: 10,
+                end: 20
+            } as any;
+
+            const mockObjectLiteral = {
+                kind: SyntaxKind.ObjectLiteralExpression,
+                properties: [
+                    {
+                        name: { escapedText: 'required' },
+                        initializer: { kind: SyntaxKind.TrueKeyword }
+                    }
+                ]
+            };
+
+            const decorator = {
+                expression: {
+                    arguments: [mockObjectLiteral]
+                }
+            } as any;
+
+            const result = (classHelper as any).visitInputAndHostBinding(
+                property,
+                decorator,
+                mockSourceFile
+            );
+
+            expect(result.optional).to.be.false;
+        });
+
         it('should extract jsdoc tags and description even when property.jsDoc is missing (issue #1441)', () => {
             const property = {
                 name: { text: 'internalOverrideInput', kind: SyntaxKind.Identifier },
