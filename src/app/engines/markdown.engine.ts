@@ -20,6 +20,12 @@ export class MarkdownEngine {
 
     private markedInstance;
 
+    /**
+     * Tracks heading slugs seen in the markdown document currently being rendered,
+     * so duplicate headings get distinct anchor ids (reset per renderMarkdown call).
+     */
+    private headingSlugs: Map<string, number> = new Map();
+
     private static instance: MarkdownEngine;
     private constructor() {
         clearModuleCache('marked');
@@ -30,6 +36,11 @@ export class MarkdownEngine {
             gfm: true,
             breaks: false,
             renderer: {
+                heading(token) {
+                    const text = this.parser.parseInline(token.tokens);
+                    const id = self.uniqueSlug(self.slugify(token.text));
+                    return `<h${token.depth} id="${id}">${text}</h${token.depth}>\n`;
+                },
                 code(token) {
                     const language = token.lang || 'none';
                     const highlighted = self.escape(token.text);
@@ -166,7 +177,36 @@ export class MarkdownEngine {
     }
 
     private renderMarkdown(markdown: string): string {
+        this.headingSlugs = new Map();
         return this.markedInstance(this.normalizeBitbucketCommitLinks(markdown));
+    }
+
+    /**
+     * Converts heading text into a URL-friendly anchor id (GitHub-style slug).
+     */
+    private slugify(text: string): string {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/<[^>]*>/g, '')
+            .replace(/[`*_~[\]()]/g, '')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-');
+    }
+
+    /**
+     * Ensures heading ids are unique within a single rendered document by
+     * suffixing repeats with -1, -2, etc, matching GitHub's anchor behavior.
+     */
+    private uniqueSlug(slug: string): string {
+        if (!this.headingSlugs.has(slug)) {
+            this.headingSlugs.set(slug, 0);
+            return slug;
+        }
+        const count = this.headingSlugs.get(slug) + 1;
+        this.headingSlugs.set(slug, count);
+        return `${slug}-${count}`;
     }
 
     private normalizeBitbucketCommitLinks(markdown: string): string {
