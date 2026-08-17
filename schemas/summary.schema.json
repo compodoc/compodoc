@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/compodoc/compodoc/blob/develop/schemas/summary.schema.json",
+    "title": "Compodoc additional documentation summary",
+    "description": "Describes the menu structure of markdown files provided via the --includes CLI flag. See https://compodoc.github.io/website/guides/includes.html",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/entry"
+    },
+    "definitions": {
+        "entry": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["title", "file"],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "Menu label for this page."
+                },
+                "file": {
+                    "type": "string",
+                    "description": "Path to the markdown file, relative to the --includes folder."
+                },
+                "children": {
+                    "type": "array",
+                    "description": "Nested pages, up to 5 levels of depth.",
+                    "items": {
+                        "$ref": "#/definitions/entry"
+                    }
+                }
+            }
+        }
+    }
+}
