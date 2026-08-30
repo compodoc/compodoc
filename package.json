@@ -77,7 +77,7 @@
         "cheerio": "1.2.0",
         "chokidar": "^5.0.0",
         "commander": "^15.0.0",
-        "cosmiconfig": "^9.0.2",
+        "cosmiconfig": "^10.0.1",
         "es6-shim": "^0.35.8",
         "fs-extra": "^11.3.5",
         "handlebars": "^4.7.9",
