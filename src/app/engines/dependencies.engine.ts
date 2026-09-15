@@ -58,6 +58,9 @@ export class DependenciesEngine {
         groupedTypeAliases: []
     };
     private relationshipsCache: { [name: string]: { incoming: any[]; outgoing: any[] } } = {};
+    private internalEntitiesIndex:
+        | { size: number; all: any[]; byId: Map<any, any>; byName: Map<string, any[]> }
+        | undefined;
     private interfaceDeclarationMerger = new InterfaceDeclarationMerger();
 
     private static instance: DependenciesEngine;
@@ -144,6 +147,7 @@ export class DependenciesEngine {
         this.manageDuplicatesName();
         this.cleanRawModulesNames();
         this.relationshipsCache = {};
+        this.internalEntitiesIndex = undefined;
     }
 
     private cleanRawModulesNames() {
@@ -281,7 +285,8 @@ export class DependenciesEngine {
                 () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.variables),
                 () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.functions),
                 () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.typealiases),
-                () => this.findInCompodocDependencies(resolvedName, this.miscellaneous.enumerations),
+                () =>
+                    this.findInCompodocDependencies(resolvedName, this.miscellaneous.enumerations),
                 () => AngularApiUtil.findApi(resolvedName)
             ];
 
@@ -440,8 +445,7 @@ export class DependenciesEngine {
         outgoing: Array<{ name: string; type: string; description?: string }>;
     } {
         const target = this.resolveEntityFromReference(entityRef);
-        const entityName =
-            typeof entityRef === 'string' ? entityRef : entityRef?.name;
+        const entityName = typeof entityRef === 'string' ? entityRef : entityRef?.name;
         if (!entityName) {
             return { incoming: [], outgoing: [] };
         }
@@ -500,9 +504,7 @@ export class DependenciesEngine {
                 return;
             }
             if (
-                references.some((ref) =>
-                    this.referencePointsToEntity(ref, target, entityName, dep)
-                )
+                references.some(ref => this.referencePointsToEntity(ref, target, entityName, dep))
             ) {
                 addIncoming(dep);
             }
@@ -510,7 +512,7 @@ export class DependenciesEngine {
 
         const allInternalEntities: any[] = this.getAllInternalEntities();
 
-        allInternalEntities.forEach((dep) => {
+        allInternalEntities.forEach(dep => {
             includeIfReferences(dep, dep.imports);
             includeIfReferences(dep, dep.exports);
             includeIfReferences(dep, dep.declarations);
@@ -523,42 +525,40 @@ export class DependenciesEngine {
 
             if (dep.extends) {
                 const extendsList = Array.isArray(dep.extends) ? dep.extends : [dep.extends];
-                if (extendsList.some((item) => item === entityName || item?.name === entityName)) {
+                if (extendsList.some(item => item === entityName || item?.name === entityName)) {
                     addIncoming(dep);
                 }
             }
             if (dep.implements) {
-                const implList = Array.isArray(dep.implements)
-                    ? dep.implements
-                    : [dep.implements];
-                if (implList.some((item) => item === entityName || item?.name === entityName)) {
+                const implList = Array.isArray(dep.implements) ? dep.implements : [dep.implements];
+                if (implList.some(item => item === entityName || item?.name === entityName)) {
                     addIncoming(dep);
                 }
             }
         });
 
         if (target) {
-            (target.imports || []).forEach((item) => addOutgoing(item, 'module'));
-            (target.exports || []).forEach((item) => addOutgoing(item, 'module'));
-            (target.declarations || []).forEach((item) => addOutgoing(item));
-            (target.controllers || []).forEach((item) => addOutgoing(item, 'controller'));
-            (target.providers || []).forEach((item) => addOutgoing(item, 'injectable'));
-            (target.viewProviders || []).forEach((item) => addOutgoing(item, 'injectable'));
-            (target.entryComponents || []).forEach((item) => addOutgoing(item, 'component'));
-            (target.bootstrap || []).forEach((item) => addOutgoing(item, 'component'));
-            (target.hostDirectives || []).forEach((item) => addOutgoing(item, 'directive'));
+            (target.imports || []).forEach(item => addOutgoing(item, 'module'));
+            (target.exports || []).forEach(item => addOutgoing(item, 'module'));
+            (target.declarations || []).forEach(item => addOutgoing(item));
+            (target.controllers || []).forEach(item => addOutgoing(item, 'controller'));
+            (target.providers || []).forEach(item => addOutgoing(item, 'injectable'));
+            (target.viewProviders || []).forEach(item => addOutgoing(item, 'injectable'));
+            (target.entryComponents || []).forEach(item => addOutgoing(item, 'component'));
+            (target.bootstrap || []).forEach(item => addOutgoing(item, 'component'));
+            (target.hostDirectives || []).forEach(item => addOutgoing(item, 'directive'));
 
             if (target.extends) {
                 const extendsList = Array.isArray(target.extends)
                     ? target.extends
                     : [target.extends];
-                extendsList.forEach((item) => addOutgoing(item, 'class'));
+                extendsList.forEach(item => addOutgoing(item, 'class'));
             }
             if (target.implements) {
                 const implList = Array.isArray(target.implements)
                     ? target.implements
                     : [target.implements];
-                implList.forEach((item) => addOutgoing(item, 'interface'));
+                implList.forEach(item => addOutgoing(item, 'interface'));
             }
         }
 
@@ -614,8 +614,22 @@ export class DependenciesEngine {
     }
 
     private getAllInternalEntities(): any[] {
-        return _.concat(
-            [],
+        return this.getInternalEntitiesIndex().all;
+    }
+
+    /**
+     * getRelationships() resolves every reference of every entity, so the merged entity
+     * list and its lookups are built once and reused until one of the lists changes size.
+     * Without this, each lookup rebuilt and scanned the full list, which made the classes
+     * phase take minutes on projects with a few thousand files.
+     */
+    private getInternalEntitiesIndex(): {
+        size: number;
+        all: any[];
+        byId: Map<any, any>;
+        byName: Map<string, any[]>;
+    } {
+        const lists = [
             this.modules,
             this.components,
             this.controllers,
@@ -627,7 +641,37 @@ export class DependenciesEngine {
             this.interfaces,
             this.pipes,
             this.classes
-        );
+        ];
+        const size = lists.reduce((total, list) => total + (list ? list.length : 0), 0);
+        if (this.internalEntitiesIndex && this.internalEntitiesIndex.size === size) {
+            return this.internalEntitiesIndex;
+        }
+
+        const all: any[] = _.concat([], ...lists);
+        const byId = new Map<any, any>();
+        const byName = new Map<string, any[]>();
+        all.forEach((entity: any) => {
+            if (!entity) {
+                return;
+            }
+            if (entity.id !== undefined && !byId.has(entity.id)) {
+                byId.set(entity.id, entity);
+            }
+            [entity.name, entity.duplicateName].forEach((key: string | undefined) => {
+                if (!key) {
+                    return;
+                }
+                const bucket = byName.get(key);
+                if (bucket) {
+                    bucket.push(entity);
+                } else {
+                    byName.set(key, [entity]);
+                }
+            });
+        });
+
+        this.internalEntitiesIndex = { size, all, byId, byName };
+        return this.internalEntitiesIndex;
     }
 
     private resolveEntityByName(name: string): any {
@@ -642,9 +686,9 @@ export class DependenciesEngine {
             return undefined;
         }
 
-        const entities = this.getAllInternalEntities();
+        const index = this.getInternalEntitiesIndex();
         if (typeof reference === 'object' && reference.id) {
-            const byId = _.find(entities, { id: reference.id } as any);
+            const byId = index.byId.get(reference.id);
             if (byId) {
                 return byId;
             }
@@ -655,9 +699,7 @@ export class DependenciesEngine {
             return undefined;
         }
 
-        let candidates = entities.filter(
-            (entity: any) => entity.name === refName || entity.duplicateName === refName
-        );
+        let candidates = index.byName.get(refName) || [];
         if (candidates.length === 0) {
             return undefined;
         }
@@ -686,7 +728,9 @@ export class DependenciesEngine {
         if (refFile) {
             const fileCandidates = candidates.filter((entity: any) => {
                 const entityFile = this.normalizeFilePath(entity.file);
-                return !!entityFile && (entityFile === refFile || refFile.indexOf(entityFile) !== -1);
+                return (
+                    !!entityFile && (entityFile === refFile || refFile.indexOf(entityFile) !== -1)
+                );
             });
             if (fileCandidates.length === 1) {
                 return fileCandidates[0];
