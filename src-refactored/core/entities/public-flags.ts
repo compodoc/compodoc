@@ -156,7 +156,7 @@ export const PUBLIC_FLAGS: Flag[] = [
     {
         label: 'exportFormat',
         flag: '-e, --exportFormat [format]',
-        description: 'Export in specified format (json, html)',
+        description: 'Export in specified format (json, html, llm-md)',
         defaultValue: COMPODOC_DEFAULTS.exportFormat
     },
     {

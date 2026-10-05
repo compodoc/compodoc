@@ -55,7 +55,7 @@ export function defineCliFlags(program: Command): Command {
         )
         .option(
             '-e, --exportFormat [format]',
-            'Export in specified format (json, html)',
+            'Export in specified format (json, html, llm-md)',
             COMPODOC_DEFAULTS.exportFormat
         )
         .option(
