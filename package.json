@@ -82,7 +82,7 @@
         "fs-extra": "^11.3.5",
         "handlebars": "^4.7.9",
         "html-entities": "^2.6.0",
-        "i18next": "26.3.3",
+        "i18next": "26.3.4",
         "json5": "^2.2.3",
         "loglevel": "^1.9.2",
         "loglevel-plugin-prefix": "^0.8.4",
